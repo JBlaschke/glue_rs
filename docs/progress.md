@@ -5,8 +5,8 @@ the baseline until reviewed.
 
 | Step | Branch | State | Evidence |
 | --- | --- | --- | --- |
-| A0 experimental contracts and Rust workspace | `codex/a0-contracts` | Implemented | 20 contract tests on macOS and Linux arm64 / Rust 1.88.0; format and Clippy clean on macOS |
-| A4 archive/resource foundation | Planned stacked branch | Pending | Deterministic ZIP64, corruption tests and bounded memory resources |
+| A0 experimental contracts and Rust workspace | `codex/a0-contracts` / `96e188b` | Implemented | 20 contract tests on macOS and Linux arm64 / Rust 1.88.0; format and Clippy clean on macOS |
+| A4 archive/resource foundation | `codex/a4-archive-resources` (stacked on A0) | Implemented | 56 tests on macOS and Linux arm64; deterministic ZIP64, corrupt/unsupported input rejection and bounded resources |
 | Packaging/inspection CLI scaffold | Planned stacked branch | Pending | Build synthetic app, inspect, verify and report resource sizes |
 
 ## Gate status

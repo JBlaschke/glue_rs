@@ -2,11 +2,19 @@
 //!
 //! Schema zero is an implementation contract, not a compatibility or loader claim.
 
+mod archive;
 mod manifest;
 mod path;
 
+pub use archive::{
+    ARCHIVE_MAGIC, ARCHIVE_VERSION, Archive, ArchiveEntry, ArchiveError, ArchiveLimits,
+    LOCATOR_SIZE, write_archive,
+};
 pub use manifest::*;
-pub use path::{ResourcePath, validate_resource_paths};
+pub use path::{
+    MAX_RESOURCE_DEPTH, MAX_RESOURCE_METADATA_BYTES, MAX_RESOURCE_NODES, ResourcePath,
+    validate_resource_paths,
+};
 
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
