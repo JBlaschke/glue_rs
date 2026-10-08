@@ -1,0 +1,5 @@
+local module, origin = require("lib.answer")
+assert(module == require("lib.answer"), "require must reuse the loaded module")
+assert(origin == glue.origin("app/lib/answer.lua"), "module origin must be virtual")
+local message = glue.read("assets/message.txt"):gsub("\n$", "")
+print(string.format("%s answer=%d asset=%s", _VERSION, module.answer(), message))
