@@ -1,0 +1,1 @@
+PASS answer=42 data=7 constructors=1 machine=aarch64 dependency_seals=0xf module_seals=0xf mechanism=sealed-memfd+/proc/self/fd runtime=unacquired-fixture-scaffold

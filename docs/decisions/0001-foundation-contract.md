@@ -71,4 +71,3 @@ The format can encode them now; no bundled-runtime lock is advertised yet.
 macOS deployment experiment. **G1 remains open** until native modules and runtime
 bootstraps execute on native OS runners. Cross-compilation and synthetic archive
 fixtures cannot close either gate.
-

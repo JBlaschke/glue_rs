@@ -1,0 +1,153 @@
+2574  execve("/build-target/debug/glue-linux-memfd-probe", ["/build-target/debug/glue-linux-memfd-probe", "run", "/evidence/app.glue"], 0xffffd88d6580 /* 10 vars */) = 0
+2574  brk(NULL)                         = 0xaaaaff931000
+2574  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa93b4000
+2574  faccessat(AT_FDCWD</workspace>, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2574  openat(AT_FDCWD</workspace>, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3</etc/ld.so.cache>
+2574  newfstatat(3</etc/ld.so.cache>, "", {st_mode=S_IFREG|0644, st_size=6999, ...}, AT_EMPTY_PATH) = 0
+2574  mmap(NULL, 6999, PROT_READ, MAP_PRIVATE, 3</etc/ld.so.cache>, 0) = 0xffffa93b2000
+2574  close(3</etc/ld.so.cache>)        = 0
+2574  openat(AT_FDCWD</workspace>, "/lib/aarch64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>
+2574  read(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\310\2\2\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0h2\1\0\0\0\0\0h2\1\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\270\375\1\0\0\0\0\0\270\375\2\0\0\0\0\0\270\375\2\0\0\0\0\0\350\3\0\0\0\0\0\0\20\5\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\310\375\1\0\0\0\0\0\310\375\2\0\0\0\0\0\310\375\2\0\0\0\0\0\360\1\0\0\0\0\0\0\360\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+2574  newfstatat(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "", {st_mode=S_IFREG|0644, st_size=133448, ...}, AT_EMPTY_PATH) = 0
+2574  mmap(NULL, 262856, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa933d000
+2574  mmap(0xffffa9340000, 197320, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0) = 0xffffa9340000
+2574  munmap(0xffffa933d000, 12288)     = 0
+2574  munmap(0xffffa9371000, 49864)     = 0
+2574  mprotect(0xffffa9354000, 110592, PROT_NONE) = 0
+2574  mmap(0xffffa936f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0x1f000) = 0xffffa936f000
+2574  close(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>) = 0
+2574  openat(AT_FDCWD</workspace>, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libc.so.6>
+2574  read(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0000y\2\0\0\0\0\0@\0\0\0\0\0\0\0\20#\31\0\0\0\0\0\0\0\0\0@\08\0\n\0@\0?\0>\0\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0000\2\0\0\0\0\0\0000\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\3\0\0\0\4\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\33\0\0\0\0\0\0\0\33\0\0\0\0\0\0\0\10\0\0\0\0\0\0\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\244d\30\0\0\0\0\0\244d\30\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\300\315\30\0\0\0\0\0\300\315\31\0\0\0\0\0"..., 832) = 832
+2574  newfstatat(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "", {st_mode=S_IFREG|0755, st_size=1651408, ...}, AT_EMPTY_PATH) = 0
+2574  mmap(NULL, 1826912, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa9181000
+2574  mmap(0xffffa9190000, 1761376, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xffffa9190000
+2574  munmap(0xffffa9181000, 61440)     = 0
+2574  munmap(0xffffa933f000, 96)        = 0
+2574  mprotect(0xffffa9317000, 86016, PROT_NONE) = 0
+2574  mmap(0xffffa932c000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0x18c000) = 0xffffa932c000
+2574  mmap(0xffffa9332000, 49248, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffffa9332000
+2574  close(3</usr/lib/aarch64-linux-gnu/libc.so.6>) = 0
+2574  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa93b0000
+2574  set_tid_address(0xffffa93b00f0)   = 2574
+2574  set_robust_list(0xffffa93b0100, 24) = 0
+2574  rseq(0xffffa93b0740, 0x20, 0, 0xd428bc00) = 0
+2574  mprotect(0xffffa932c000, 16384, PROT_READ) = 0
+2574  mprotect(0xffffa936f000, 4096, PROT_READ) = 0
+2574  mprotect(0xaaaacde9c000, 81920, PROT_READ) = 0
+2574  mprotect(0xffffa93bc000, 8192, PROT_READ) = 0
+2574  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+2574  munmap(0xffffa93b2000, 6999)      = 0
+2574  ppoll([{fd=0</dev/null<char 1:3>>, events=0}, {fd=1</evidence/probe.stdout.txt>, events=0}, {fd=2</evidence/probe.stderr.txt>, events=0}], 3, {tv_sec=0, tv_nsec=0}, NULL, 0) = 0 (Timeout)
+2574  rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+2574  getrandom("\x03\xba\xe0\xc2\x81\xa4\x99\xfe", 8, GRND_NONBLOCK) = 8
+2574  brk(NULL)                         = 0xaaaaff931000
+2574  brk(0xaaaaff952000)               = 0xaaaaff952000
+2574  openat(AT_FDCWD</workspace>, "/proc/self/maps", O_RDONLY|O_CLOEXEC) = 3</proc/2574/maps>
+2574  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+2574  newfstatat(3</proc/2574/maps>, "", {st_mode=S_IFREG|0444, st_size=0, ...}, AT_EMPTY_PATH) = 0
+2574  read(3</proc/2574/maps>, "aaaacdbd0000-aaaacde81000 r-xp 00000000 00:4f 979                        /build-target/debug/glue-linux-memfd-probe\naaaacde9c000-aaaacdeb0000 r--p 002bc000 00:4f 979                        /build-target/debug/glue-linux-memfd-probe\naaaacdeb0000-aaaacdeb100"..., 1024) = 1024
+2574  read(3</proc/2574/maps>, "s.so.1\nffffa9354000-ffffa936f000 ---p 00014000 00:3c 34696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffffa936f000-ffffa9370000 r--p 0001f000 00:3c 34696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffffa9370000-ffffa937"..., 1024) = 1024
+2574  read(3</proc/2574/maps>, "                      [stack]\n", 1024) = 30
+2574  close(3</proc/2574/maps>)         = 0
+2574  sched_getaffinity(2574, 32, [0 1 2 3]) = 8
+2574  rt_sigaction(SIGSEGV, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+2574  sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+2574  mmap(NULL, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xffffa93ab000
+2574  mprotect(0xffffa93ab000, 4096, PROT_NONE) = 0
+2574  sigaltstack({ss_sp=0xffffa93ac000, ss_flags=0, ss_size=16384}, NULL) = 0
+2574  rt_sigaction(SIGSEGV, {sa_handler=0xaaaacddce434, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+2574  rt_sigaction(SIGBUS, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+2574  rt_sigaction(SIGBUS, {sa_handler=0xaaaacddce434, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+2574  openat(AT_FDCWD</workspace>, "/evidence/app.glue", O_RDONLY|O_CLOEXEC) = 3</evidence/app.glue>
+2574  lseek(3</evidence/app.glue>, 0, SEEK_END) = 141570
+2574  lseek(3</evidence/app.glue>, 0, SEEK_SET) = 0
+2574  read(3</evidence/app.glue>, "GLUERS00\0\0\0\0\0\0\0\0;\7\0\0\0\0\0\0\207!\2\0\0\0\0\0\261\206\347\256\376#o\2,\226A\307f\354\257\255\343\215\342|;T\t\225\356\32z\323\221_\220z", 64) = 64
+2574  read(3</evidence/app.glue>, "{\"app_id\":\"linux.memfd.probe\",\"components\":{\"fixture\":{\"entry_point\":\"scaffold/main.lua\",\"native_modules\":[\"module\"],\"runtime\":\"scaffold\"}},\"entrypoint\":\"fixture\",\"host_imports\":{\"libc\":{\"class\":\"operating_system\",\"library\":\"libc.so.6\",\"symbols\":[\"strlen\"]"..., 1851) = 1851
+2574  lseek(3</evidence/app.glue>, 141548, SEEK_SET) = 141548
+2574  read(3</evidence/app.glue>, "PK\5\6\0\0\0\0\3\0\3\0\20\1\0\0a \2\0\0\0", 22) = 22
+2574  lseek(3</evidence/app.glue>, 141528, SEEK_SET) = 141528
+2574  read(3</evidence/app.glue>, "\1\0\20\0I\0\0\0\0\0\0\0I\0\0\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 141276, SEEK_SET) = 141276
+2574  read(3</evidence/app.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\276(\330\341\377\377\377\377\377\377\377\377\33\0\24\0\0\0\0\0\0\0\0\0\244\201\0\0\0\0", 46) = 46
+2574  lseek(3</evidence/app.glue>, 141322, SEEK_SET) = 141322
+2574  read(3</evidence/app.glue>, "native/libglue_probe_dep.so", 27) = 27
+2574  lseek(3</evidence/app.glue>, 141349, SEEK_SET) = 141349
+2574  read(3</evidence/app.glue>, "\1\0\20\0\200\16\1\0\0\0\0\0\200\16\1\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 141369, SEEK_SET) = 141369
+2574  read(3</evidence/app.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0Y\334Q\226\377\377\377\377\377\377\377\377\36\0\24\0\0\0\0\0\0\0\0\0\244\201\315\16\1\0", 46) = 46
+2574  lseek(3</evidence/app.glue>, 141415, SEEK_SET) = 141415
+2574  read(3</evidence/app.glue>, "native/libglue_probe_module.so", 30) = 30
+2574  lseek(3</evidence/app.glue>, 141445, SEEK_SET) = 141445
+2574  read(3</evidence/app.glue>, "\1\0\20\0\270\20\1\0\0\0\0\0\270\20\1\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 141465, SEEK_SET) = 141465
+2574  read(3</evidence/app.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\32\306\26\n\377\377\377\377\377\377\377\377\21\0\24\0\0\0\0\0\0\0\0\0\244\201\325\37\2\0", 46) = 46
+2574  lseek(3</evidence/app.glue>, 141511, SEEK_SET) = 141511
+2574  read(3</evidence/app.glue>, "scaffold/main.lua", 17) = 17
+2574  lseek(3</evidence/app.glue>, 141528, SEEK_SET) = 141528
+2574  read(3</evidence/app.glue>, "\1\0\20\0I\0\0\0\0\0\0\0I\0\0\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 1915, SEEK_SET) = 1915
+2574  read(3</evidence/app.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\276(\330\341\377\377\377\377\377\377\377\377\33\0\24\0", 30) = 30
+2574  lseek(3</evidence/app.glue>, 1945, SEEK_SET) = 1945
+2574  read(3</evidence/app.glue>, "native/libglue_probe_dep.so", 27) = 27
+2574  lseek(3</evidence/app.glue>, 1972, SEEK_SET) = 1972
+2574  read(3</evidence/app.glue>, "\1\0\20\0\200\16\1\0\0\0\0\0\200\16\1\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 71240, SEEK_SET) = 71240
+2574  read(3</evidence/app.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0Y\334Q\226\377\377\377\377\377\377\377\377\36\0\24\0", 30) = 30
+2574  lseek(3</evidence/app.glue>, 71270, SEEK_SET) = 71270
+2574  read(3</evidence/app.glue>, "native/libglue_probe_module.so", 30) = 30
+2574  lseek(3</evidence/app.glue>, 71300, SEEK_SET) = 71300
+2574  read(3</evidence/app.glue>, "\1\0\20\0\270\20\1\0\0\0\0\0\270\20\1\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 141136, SEEK_SET) = 141136
+2574  read(3</evidence/app.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\32\306\26\n\377\377\377\377\377\377\377\377\21\0\24\0", 30) = 30
+2574  lseek(3</evidence/app.glue>, 141166, SEEK_SET) = 141166
+2574  read(3</evidence/app.glue>, "scaffold/main.lua", 17) = 17
+2574  lseek(3</evidence/app.glue>, 141183, SEEK_SET) = 141183
+2574  read(3</evidence/app.glue>, "\1\0\20\0I\0\0\0\0\0\0\0I\0\0\0\0\0\0\0", 20) = 20
+2574  lseek(3</evidence/app.glue>, 1992, SEEK_SET) = 1992
+2574  read(3</evidence/app.glue>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\200\10\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\30\0\27\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\6\0\0\0\0\0\0`\6\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0 \376\0\0\0\0\0\0 \376\1\0\0\0\0\0 \376\1\0\0\0\0\0\370\1\0\0\0\0\0\0\0\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0000\376\0\0\0\0\0\0000\376\1\0\0\0\0\0000\376\1\0\0\0\0\0\220\1\0\0\0\0\0\0\220\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 32768) = 32768
+2574  read(3</evidence/app.glue>, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 32768) = 32768
+2574  read(3</evidence/app.glue>, "P\4\0\0\0\0\0\0P\4\0\0\0\0\0\0\20\0\2\0\0\0\0\0GCC: (Debian 12.2.0-14+deb12u1) 12.2.0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\1\0\310\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\2\0\360\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\3\0\30\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\4\0\330\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\5\0X\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\6\0\0\4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\7\0000\4\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 3712) = 3712
+2574  lseek(3</evidence/app.glue>, 71320, SEEK_SET) = 71320
+2574  brk(0xaaaaff97d000)               = 0xaaaaff97d000
+2574  read(3</evidence/app.glue>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\08\n\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\10\0\0\0\0\0\0`\10\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\310\375\0\0\0\0\0\0\310\375\1\0\0\0\0\0\310\375\1\0\0\0\0\0d\2\0\0\0\0\0\0p\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\340\375\0\0\0\0\0\0\340\375\1\0\0\0\0\0\340\375\1\0\0\0\0\0\340\1\0\0\0\0\0\0\340\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 32768) = 32768
+2574  read(3</evidence/app.glue>, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 32768) = 32768
+2574  read(3</evidence/app.glue>, "\240\5\0\0\0\0\0\0\240\5\0\0\0\0\0\0\240\5\0\0\0\0\0\0\240\5\0\0\0\0\0\0 \0\2\0\0\0\0\0\7\0\0\0GCC: (Debian 12.2.0-14+deb12u1) 12.2.0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\1\0\310\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\2\0\360\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\3\0 \2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\4\0@\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\5\0&\4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\6\0@\4\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4280) = 4280
+2574  lseek(3</evidence/app.glue>, 141203, SEEK_SET) = 141203
+2574  read(3</evidence/app.glue>, "-- Schema fixture only: this Lua scaffold is never acquired or executed.\n", 73) = 73
+2574  memfd_create("glue-probe-dependency", MFD_CLOEXEC|MFD_ALLOW_SEALING|0x10) = 4</memfd:glue-probe-dependency>(deleted)
+2574  write(4</memfd:glue-probe-dependency>(deleted), "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\200\10\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\30\0\27\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\6\0\0\0\0\0\0`\6\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0 \376\0\0\0\0\0\0 \376\1\0\0\0\0\0 \376\1\0\0\0\0\0\370\1\0\0\0\0\0\0\0\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0000\376\0\0\0\0\0\0000\376\1\0\0\0\0\0000\376\1\0\0\0\0\0\220\1\0\0\0\0\0\0\220\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 69248) = 69248
+2574  fcntl(4</memfd:glue-probe-dependency>(deleted), F_ADD_SEALS, F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE) = 0
+2574  fcntl(4</memfd:glue-probe-dependency>(deleted), F_GET_SEALS) = 0xf (seals F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE)
+2574  memfd_create("glue-probe-module", MFD_CLOEXEC|MFD_ALLOW_SEALING|0x10) = 5</memfd:glue-probe-module>(deleted)
+2574  write(5</memfd:glue-probe-module>(deleted), "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\08\n\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\10\0\0\0\0\0\0`\10\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\310\375\0\0\0\0\0\0\310\375\1\0\0\0\0\0\310\375\1\0\0\0\0\0d\2\0\0\0\0\0\0p\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\340\375\0\0\0\0\0\0\340\375\1\0\0\0\0\0\340\375\1\0\0\0\0\0\340\1\0\0\0\0\0\0\340\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 69816) = 69816
+2574  fcntl(5</memfd:glue-probe-module>(deleted), F_ADD_SEALS, F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE) = 0
+2574  fcntl(5</memfd:glue-probe-module>(deleted), F_GET_SEALS) = 0xf (seals F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE)
+2574  openat(AT_FDCWD</workspace>, "/proc/self/fd/4", O_RDONLY|O_CLOEXEC) = 6</memfd:glue-probe-dependency>(deleted)
+2574  read(6</memfd:glue-probe-dependency>(deleted), "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\200\10\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\30\0\27\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\6\0\0\0\0\0\0`\6\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0 \376\0\0\0\0\0\0 \376\1\0\0\0\0\0 \376\1\0\0\0\0\0\370\1\0\0\0\0\0\0\0\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0000\376\0\0\0\0\0\0000\376\1\0\0\0\0\0000\376\1\0\0\0\0\0\220\1\0\0\0\0\0\0\220\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+2574  newfstatat(6</memfd:glue-probe-dependency>(deleted), "", {st_mode=S_IFREG|0777, st_size=69248, ...}, AT_EMPTY_PATH) = 0
+2574  mmap(NULL, 196640, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa915f000
+2574  mmap(0xffffa9160000, 131104, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 6</memfd:glue-probe-dependency>(deleted), 0) = 0xffffa9160000
+2574  munmap(0xffffa915f000, 4096)      = 0
+2574  munmap(0xffffa9181000, 57376)     = 0
+2574  mprotect(0xffffa9161000, 122880, PROT_NONE) = 0
+2574  mmap(0xffffa917f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 6</memfd:glue-probe-dependency>(deleted), 0xf000) = 0xffffa917f000
+2574  close(6</memfd:glue-probe-dependency>(deleted)) = 0
+2574  mprotect(0xffffa917f000, 4096, PROT_READ) = 0
+2574  openat(AT_FDCWD</workspace>, "/proc/self/fd/5", O_RDONLY|O_CLOEXEC) = 6</memfd:glue-probe-module>(deleted)
+2574  read(6</memfd:glue-probe-module>(deleted), "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\08\n\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\10\0\0\0\0\0\0`\10\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\310\375\0\0\0\0\0\0\310\375\1\0\0\0\0\0\310\375\1\0\0\0\0\0d\2\0\0\0\0\0\0p\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\340\375\0\0\0\0\0\0\340\375\1\0\0\0\0\0\340\375\1\0\0\0\0\0\340\1\0\0\0\0\0\0\340\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+2574  newfstatat(6</memfd:glue-probe-module>(deleted), "", {st_mode=S_IFREG|0777, st_size=69816, ...}, AT_EMPTY_PATH) = 0
+2574  mmap(NULL, 196664, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa912f000
+2574  mmap(0xffffa9130000, 131128, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 6</memfd:glue-probe-module>(deleted), 0) = 0xffffa9130000
+2574  munmap(0xffffa912f000, 4096)      = 0
+2574  munmap(0xffffa9151000, 57400)     = 0
+2574  mprotect(0xffffa9131000, 122880, PROT_NONE) = 0
+2574  mmap(0xffffa914f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 6</memfd:glue-probe-module>(deleted), 0xf000) = 0xffffa914f000
+2574  close(6</memfd:glue-probe-module>(deleted)) = 0
+2574  mprotect(0xffffa914f000, 4096, PROT_READ) = 0
+2574  write(1</evidence/probe.stdout.txt>, "PASS answer=42 data=7 constructors=1 machine=aarch64 dependency_seals=0xf module_seals=0xf mechanism=sealed-memfd+/proc/self/fd runtime=unacquired-fixture-scaffold\n", 164) = 164
+2574  fcntl(3</evidence/app.glue>, F_GETFD) = 0x1 (flags FD_CLOEXEC)
+2574  close(3</evidence/app.glue>)      = 0
+2574  sigaltstack({ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=16384}, NULL) = 0
+2574  munmap(0xffffa93ab000, 20480)     = 0
+2574  exit_group(0)                     = ?
+2574  +++ exited with 0 +++
