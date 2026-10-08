@@ -97,12 +97,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-pack"
+version = "0.1.0"
+dependencies = [
+ "glue-format",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "glue-resources"
 version = "0.1.0"
 dependencies = [
  "glue-format",
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "glue-runner"
+version = "0.1.0"
+dependencies = [
+ "glue-format",
+ "glue-pack",
+ "glue-resources",
+ "serde_json",
 ]
 
 [[package]]

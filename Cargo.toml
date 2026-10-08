@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner"]
 resolver = "3"
 
 [workspace.package]
@@ -18,6 +18,7 @@ flate2 = { version = "=1.1.10", default-features = false, features = ["rust_back
 crc32fast = "=1.5.0"
 glue-format = { path = "crates/glue-format" }
 glue-resources = { path = "crates/glue-resources" }
+glue-pack = { path = "crates/glue-pack" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

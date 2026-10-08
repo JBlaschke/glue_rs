@@ -6,8 +6,8 @@ the baseline until reviewed.
 | Step | Branch | State | Evidence |
 | --- | --- | --- | --- |
 | A0 experimental contracts and Rust workspace | `codex/a0-contracts` / `96e188b` | Implemented | 20 contract tests on macOS and Linux arm64 / Rust 1.88.0; format and Clippy clean on macOS |
-| A4 archive/resource foundation | `codex/a4-archive-resources` (stacked on A0) | Implemented | 56 tests on macOS and Linux arm64; deterministic ZIP64, corrupt/unsupported input rejection and bounded resources |
-| Packaging/inspection CLI scaffold | Planned stacked branch | Pending | Build synthetic app, inspect, verify and report resource sizes |
+| A4 archive/resource foundation | `codex/a4-archive-resources` / `c4b307f` (stacked on A0) | Implemented | 56 tests on macOS and Linux arm64; deterministic ZIP64, corrupt/unsupported input rejection and bounded resources |
+| Packaging/inspection CLI scaffold | `codex/packaging-cli` (stacked on A4) | Implemented | 76 tests on macOS and Linux arm64; explicit-inventory builder and read-only CLI commands; format/Clippy clean |
 
 ## Gate status
 
@@ -26,6 +26,11 @@ tests offline in a read-only Podman container with build outputs in memory.
 Its default Linux arm64 image is Rust 1.88.0 / Debian bookworm, pinned by digest
 `sha256:93717e495a1029ba94b9b4a5768cf14d5376077d26cfad3354cbe70be27c2b1d`.
 This cell does not supply Linux x86_64 execution evidence.
+
+The synthetic resource fixture produces 1,469 archive bytes for 57 uncompressed
+resource bytes, with SHA-256
+`e2fa199105c8cffde55ec2dd403f27d3e1dc334c399aa334afba133c64be7d85`.
+It is a packaging/resource fixture and contains no actual Lua runtime.
 
 ## Next critical-path assignments
 
