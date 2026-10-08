@@ -97,6 +97,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-linux-memfd-probe"
+version = "0.1.0"
+dependencies = [
+ "glue-format",
+ "libc",
+]
+
+[[package]]
 name = "glue-pack"
 version = "0.1.0"
 dependencies = [

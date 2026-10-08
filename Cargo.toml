@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "spikes/linux-memfd"]
 resolver = "3"
 
 [workspace.package]
@@ -16,6 +16,7 @@ sha2 = "=0.11.0"
 zip = { version = "=8.6.0", default-features = false, features = ["deflate-flate2"] }
 flate2 = { version = "=1.1.10", default-features = false, features = ["rust_backend"] }
 crc32fast = "=1.5.0"
+libc = "=0.2.190"
 glue-format = { path = "crates/glue-format" }
 glue-resources = { path = "crates/glue-resources" }
 glue-pack = { path = "crates/glue-pack" }

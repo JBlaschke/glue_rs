@@ -7,12 +7,14 @@ the baseline until reviewed.
 | --- | --- | --- | --- |
 | A0 experimental contracts and Rust workspace | `codex/a0-contracts` / `96e188b` | Implemented | 20 contract tests on macOS and Linux arm64 / Rust 1.88.0; format and Clippy clean on macOS |
 | A4 archive/resource foundation | `codex/a4-archive-resources` / `c4b307f` (stacked on A0) | Implemented | 56 tests on macOS and Linux arm64; deterministic ZIP64, corrupt/unsupported input rejection and bounded resources |
-| Packaging/inspection CLI scaffold | `codex/packaging-cli` (stacked on A4) | Implemented | 76 tests on macOS and Linux arm64; explicit-inventory builder and read-only CLI commands; format/Clippy clean |
+| Packaging/inspection CLI scaffold | `codex/packaging-cli` / `4581386` (stacked on A4) | Implemented | 76 tests on macOS and Linux arm64; explicit-inventory builder and read-only CLI commands; format/Clippy clean |
+| A3 Linux memfd fixture | `codex/a3-linux-memfd-probe` (stacked on CLI) | Controlled spike | Sealed anonymous shared-library loading; ordinary-loader comparison and full syscall evidence described in the probe decision |
 
 ## Gate status
 
-G0 and G1 are open. No native backend, runtime bootstrap, approved system-library
-profile, signed deployment probe or four-platform execution evidence exists yet.
+G0 and G1 are open. The Linux memfd spike is separate from the product runner.
+No general native backend, runtime bootstrap, approved system-library profile,
+signed deployment probe or four-platform execution evidence exists yet.
 The archive and manifest are version 0. Candidate runtime sources are recorded
 in `docs/decisions/0001-foundation-contract.md`; exact release pins are pending
 the platform experiments. Later gates remain pending.
@@ -35,6 +37,6 @@ It is a packaging/resource fixture and contains no actual Lua runtime.
 ## Next critical-path assignments
 
 Run A1 (signed macOS arm64 mapping), A2 (Windows PE), and A3 (Linux/FreeBSD ELF)
-with minimal fixture images and actual runtime startup. Establish the FreeBSD
-bundled Python/Node producer and inspect pinned PBS artifacts. Publish capability
+with actual runtime startup, extending the initial Linux memfd fixture. Establish
+the FreeBSD bundled Python/Node producer and inspect pinned PBS artifacts. Publish capability
 evidence before implementing broad native coordination or language adapters.
