@@ -53,9 +53,10 @@ It deletes compiler-produced `.so` files before tracing archive execution.
 The traced child has a single process and uses `strace -f -yy -e trace=all`.
 The checker accepts only a small explicit syscall set and rejects unknown or
 incomplete calls, including failed filesystem mutation attempts. Writes are
-restricted to the two annotated fixture memfds and the recorded stdout/stderr
-sinks. Shared mappings of filesystem files, copy/async I/O and subprocesses are
-rejected. Both memfds must report all four seals and the process must exit 0.
+restricted to the two annotated fixture memfds and one exact, bounded PASS
+diagnostic on the recorded stdout sink. Stderr writes, shared mappings of
+filesystem files, copy/async I/O and subprocesses are rejected. Both memfds must
+report all four seals and the process must exit 0.
 This checks the observed fixture; it is not a sandbox for arbitrary native code.
 
 Evidence includes the parent commit and dirty state, source and lockfile hashes,

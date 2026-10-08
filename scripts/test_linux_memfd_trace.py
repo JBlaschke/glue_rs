@@ -1,6 +1,7 @@
 """Adversarial tests for the narrow, fail-closed native fixture trace policy."""
 
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -22,6 +23,20 @@ STDOUT = "1</evidence/probe.stdout.txt>"
 STDERR = "2</evidence/probe.stderr.txt>"
 
 
+def success_message(machine="aarch64"):
+    return (
+        f"PASS answer=42 data=7 constructors=1 machine={machine} "
+        "dependency_seals=0xf module_seals=0xf mechanism=sealed-memfd+/proc/self/fd "
+        "runtime=unacquired-fixture-scaffold\n"
+    )
+
+
+def success_call(machine="aarch64"):
+    message = success_message(machine)
+    count = len(message.encode("ascii"))
+    return f"write({STDOUT}, {json.dumps(message)}, {count}) = {count}"
+
+
 def fixture_lines():
     return [
         EXEC,
@@ -38,8 +53,7 @@ def fixture_lines():
         f"fcntl({MODULE}, F_GET_SEALS) = 0xf (seals {SEALS})",
         'openat(AT_FDCWD</workspace>, "/proc/self/fd/4", O_RDONLY|O_CLOEXEC) = 6</memfd:glue-probe-dependency>(deleted)',
         "mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE, 6</memfd:glue-probe-dependency>(deleted), 0) = 0x2000",
-        f'write({STDOUT}, "PASS\\n", 5) = 5',
-        f'writev({STDERR}, [{{iov_base="note", iov_len=4}}], 1) = 4',
+        success_call(),
         "fcntl(3</evidence/app.glue>, F_GETFD) = 0x1 (flags FD_CLOEXEC)",
         "exit_group(0) = ?",
         "+++ exited with 0 +++",
@@ -68,6 +82,53 @@ class TracePolicyTests(unittest.TestCase):
     def test_complete_fixture_with_and_without_numeric_pid(self):
         CHECKER.check_trace(trace())
         CHECKER.check_trace(trace(pid=2564))
+        CHECKER.check_trace(trace([
+            success_call("x86_64") if line == success_call() else line
+            for line in fixture_lines()
+        ]))
+
+    def test_stdout_only_admits_one_exact_complete_success_diagnostic(self):
+        message = success_message()
+        count = len(message.encode("ascii"))
+        for invalid in [
+            f'write({STDOUT}, "\\177ELF", 4) = 4',
+            f'write({STDOUT}, "arbitrary data", 14) = 14',
+            f'write({STDOUT}, {json.dumps(message + "payload")}, {count + 7}) = {count + 7}',
+            f'write({STDOUT}, {json.dumps(message[:-1])}, {count - 1}) = {count - 1}',
+            f'write({STDOUT}, "PASS"..., {count}) = {count}',
+            f'write({STDOUT}, {json.dumps(message)}, {count + 1}) = {count}',
+            f'write({STDOUT}, {json.dumps(message)}, {count}) = {count - 1}',
+            f'write({STDOUT}, {json.dumps(message)}, {count}) = -1 EIO (Input/output error)',
+            f'writev({STDOUT}, [{{iov_base={json.dumps(message)}, iov_len={count}}}], 1) = {count}',
+            success_call(),
+        ]:
+            with self.subTest(invalid=invalid):
+                # Exercise the first sink write itself: the otherwise valid
+                # trace's expected PASS is appended after the injected bytes.
+                lines = fixture_lines()
+                lines.insert(lines.index(success_call()), invalid)
+                self.reject(trace(lines))
+        self.reject(trace([line for line in fixture_lines() if line != success_call()]))
+        for altered in [
+            message.replace("answer=42", "answer=0"),
+            message.replace("machine=aarch64", "machine=unknown"),
+            message.replace("constructors=1", "constructors=2"),
+            message.replace("dependency_seals=0xf", "dependency_seals=0x7"),
+        ]:
+            invalid = f"write({STDOUT}, {json.dumps(altered)}, {len(altered)}) = {len(altered)}"
+            self.reject(trace([
+                invalid if line == success_call() else line for line in fixture_lines()
+            ]))
+
+    def test_stderr_receives_no_bytes_in_a_success_trace(self):
+        for call in [
+            f'write({STDERR}, "ELF", 3) = 3',
+            f'write({STDERR}, "", 0) = 0',
+            f'write({STDERR}, {json.dumps(success_message())}, 164) = 164',
+            f'writev({STDERR}, [{{iov_base="note", iov_len=4}}], 1) = 4',
+        ]:
+            with self.subTest(call=call):
+                self.reject(extra_call(call))
 
     def test_created_memfd_writes_and_harmless_queries_are_allowed(self):
         for call in [

@@ -3,8 +3,9 @@
 
 This is a narrow fixture policy, not a general syscall sandbox. Unrecognized
 operations, incomplete records, and attempted mutations fail even if the kernel
-rejected them. Only the two created fixture memfds and the annotated evidence
-stdout/stderr descriptors may receive writes.
+rejected them. Writes may target the two created fixture memfds. The annotated
+evidence stdout descriptor may receive its one exact success diagnostic. Stderr
+writes are outside this successful fixture's policy.
 """
 
 from __future__ import annotations
@@ -21,6 +22,14 @@ class TraceError(ValueError):
 
 MEMFD_NAMES = {"glue-probe-dependency", "glue-probe-module"}
 SINKS = {1: "/evidence/probe.stdout.txt", 2: "/evidence/probe.stderr.txt"}
+SUCCESS_MESSAGES = {
+    machine: (
+        f"PASS answer=42 data=7 constructors=1 machine={machine} "
+        "dependency_seals=0xf module_seals=0xf mechanism=sealed-memfd+/proc/self/fd "
+        "runtime=unacquired-fixture-scaffold\n"
+    )
+    for machine in ("aarch64", "x86_64")
+}
 READ_ONLY_OPEN_FLAGS = {
     "O_RDONLY", "O_CLOEXEC", "O_NOFOLLOW", "O_DIRECTORY", "O_NONBLOCK",
     "O_LARGEFILE", "O_NOCTTY", "O_PATH",
@@ -127,6 +136,7 @@ class Checker:
         self.memfds: dict[int, str] = {}
         self.sealed: set[int] = set()
         self.execs = 0
+        self.diagnostics = 0
         self.exit_group = False
         self.completed = False
 
@@ -214,8 +224,18 @@ class Checker:
                 "pwritev": (4,), "pwritev2": (5,), "ftruncate": (2,),
             }[name])
             number, path, deleted = descriptor(args[0])
-            if name in {"write", "writev"} and number in SINKS and SINKS[number] == path and not deleted:
-                return
+            if number == 1 and path == SINKS[1] and not deleted:
+                if name != "write" or self.diagnostics != 0:
+                    raise TraceError("stdout requires exactly one success diagnostic write")
+                for message in SUCCESS_MESSAGES.values():
+                    # strace's ordinary ASCII string rendering, without data
+                    # abbreviation, alternative escapes, or extra payload bytes.
+                    rendered = '"' + message[:-1] + '\\n"'
+                    count = len(message.encode("ascii"))
+                    if args[1] == rendered and args[2] == str(count) and result == str(count):
+                        self.diagnostics += 1
+                        return
+                raise TraceError("stdout write is not the complete expected success diagnostic")
             self.memfd(args[0])
         elif name == "fcntl":
             self.arity(name, args, (2, 3))
@@ -318,6 +338,8 @@ class Checker:
             raise TraceError("require two successful distinct fixture memfd creations")
         if self.sealed != set(self.created):
             raise TraceError("both created memfds require successful F_GET_SEALS = 0xf")
+        if self.diagnostics != 1:
+            raise TraceError("require exactly one complete success diagnostic write")
 
 
 def check_trace(text: str) -> None:
