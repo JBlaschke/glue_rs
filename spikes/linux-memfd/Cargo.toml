@@ -1,0 +1,20 @@
+[package]
+name = "glue-linux-memfd-probe"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+glue-format.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc.workspace = true
+
+# Unsafe code is admitted only inside the annotated Linux FFI module. The core
+# workspace continues to forbid unsafe code. This is a fixture, not a public API.
+[lints.rust]
+unsafe_code = "deny"
+
+[lints.clippy]
+all = "warn"

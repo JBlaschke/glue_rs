@@ -1,0 +1,51 @@
+{
+  "schema_version": 0,
+  "app_id": "resource-fixture",
+  "entrypoint": "main",
+  "targets": {
+    "linux-arm64-fixture": {
+      "os": "linux",
+      "arch": "aarch64",
+      "minimum_os_version": "6.1",
+      "abi": { "family": "glibc", "minimum_version": "2.36" },
+      "page_sizes": [4096],
+      "cpu_features": []
+    }
+  },
+  "resources": {
+    "app/main.lua": {
+      "size": 25,
+      "sha256": "9e1288aa012d3c1e4653b36c6ae3db2ecc7f7b6303167a5573e4f5e41878f65d",
+      "compression": "deflate"
+    },
+    "assets/message.txt": {
+      "size": 32,
+      "sha256": "bca9711c82c4ad200caf5a8bc11ebf17c801aa7aef9b139ccb9b48e4e262412d",
+      "compression": "stored"
+    }
+  },
+  "runtimes": {
+    "lua-fixture": {
+      "target": "linux-arm64-fixture",
+      "build_id": "synthetic-host-runtime-not-executed",
+      "abi": {
+        "language": "lua",
+        "version": { "major": 5, "minor": 4, "patch": 8 },
+        "integer_bits": 64,
+        "number": "float64"
+      },
+      "provisioning": {
+        "mode": "host",
+        "runtime_library": "/glue-fixture/liblua.so",
+        "stdlib": "/glue-fixture/lua-stdlib",
+        "discovery": "explicit_paths"
+      },
+      "required_features": []
+    }
+  },
+  "components": {
+    "main": { "runtime": "lua-fixture", "entry_point": "app/main.lua", "native_modules": [] }
+  },
+  "native_modules": {},
+  "host_imports": {}
+}

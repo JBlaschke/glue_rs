@@ -1,0 +1,20 @@
+test_additional_process_pid_rejects (test_linux_memfd_trace.TracePolicyTests.test_additional_process_pid_rejects) ... ok
+test_cli_reports_failure_without_success_output (test_linux_memfd_trace.TracePolicyTests.test_cli_reports_failure_without_success_output) ... ok
+test_complete_fixture_with_and_without_numeric_pid (test_linux_memfd_trace.TracePolicyTests.test_complete_fixture_with_and_without_numeric_pid) ... ok
+test_created_memfd_writes_and_harmless_queries_are_allowed (test_linux_memfd_trace.TracePolicyTests.test_created_memfd_writes_and_harmless_queries_are_allowed) ... ok
+test_each_creation_requires_an_explicit_exec_flag_without_fallback (test_linux_memfd_trace.TracePolicyTests.test_each_creation_requires_an_explicit_exec_flag_without_fallback) ... ok
+test_failed_unsafe_attempts_still_reject (test_linux_memfd_trace.TracePolicyTests.test_failed_unsafe_attempts_still_reject) ... ok
+test_only_readonly_fcntl_queries_and_fixture_seals_are_allowed (test_linux_memfd_trace.TracePolicyTests.test_only_readonly_fcntl_queries_and_fixture_seals_are_allowed) ... ok
+test_shared_path_mappings_reject_even_when_read_only (test_linux_memfd_trace.TracePolicyTests.test_shared_path_mappings_reject_even_when_read_only) ... ok
+test_stderr_receives_no_bytes_in_a_success_trace (test_linux_memfd_trace.TracePolicyTests.test_stderr_receives_no_bytes_in_a_success_trace) ... ok
+test_stdout_only_admits_one_exact_complete_success_diagnostic (test_linux_memfd_trace.TracePolicyTests.test_stdout_only_admits_one_exact_complete_success_diagnostic) ... ok
+test_two_distinct_successful_created_descriptors_must_have_all_seals (test_linux_memfd_trace.TracePolicyTests.test_two_distinct_successful_created_descriptors_must_have_all_seals) ... ok
+test_unknown_memfd_aliases_and_closed_descriptors_reject (test_linux_memfd_trace.TracePolicyTests.test_unknown_memfd_aliases_and_closed_descriptors_reject) ... ok
+test_unknown_path_mutation_async_io_and_copy_calls_reject (test_linux_memfd_trace.TracePolicyTests.test_unknown_path_mutation_async_io_and_copy_calls_reject) ... ok
+test_unparsed_unfinished_truncated_and_nonzero_exits_reject (test_linux_memfd_trace.TracePolicyTests.test_unparsed_unfinished_truncated_and_nonzero_exits_reject) ... ok
+test_writes_require_known_memfds_or_exact_evidence_sinks (test_linux_memfd_trace.TracePolicyTests.test_writes_require_known_memfds_or_exact_evidence_sinks) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.094s
+
+OK

@@ -1,0 +1,2 @@
+# Preserve Cargo's captured final separator in the evidence log.
+docs/evidence/**/workspace-tests.txt whitespace=-blank-at-eof

@@ -1,0 +1,28 @@
+[workspace]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "spikes/linux-memfd"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = "=1.0.149"
+thiserror = "=2.0.18"
+sha2 = "=0.11.0"
+zip = { version = "=8.6.0", default-features = false, features = ["deflate-flate2"] }
+flate2 = { version = "=1.1.10", default-features = false, features = ["rust_backend"] }
+crc32fast = "=1.5.0"
+libc = "=0.2.190"
+glue-format = { path = "crates/glue-format" }
+glue-resources = { path = "crates/glue-resources" }
+glue-pack = { path = "crates/glue-pack" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "warn"
