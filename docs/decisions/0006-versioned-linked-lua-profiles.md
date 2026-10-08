@@ -1,9 +1,13 @@
 # Version-specific linked Lua builds
 
-Status: experimental implementation on `codex/a6-lua55-profile`, stacked on the
-Lua 5.4 baseline `03303d7`. macOS arm64 passes 118/119 Rust tests for `lua54`/`lua55`,
-workspace Clippy for both, both CLI profiles and opposite-version rejection.
-The 27 Python policy tests pass. GNU Linux execution/trace validation is pending.
+Status: experimental implementation in `cb88d7d` on `codex/a6-lua55-profile`,
+stacked on the Lua 5.4 baseline `03303d7` (111 macOS Rust tests at that baseline).
+Final validation from clean `8b6eb1f` on `codex/a6-lua-linux-validation` passes
+118/119 Rust tests for `lua54`/`lua55` on macOS and GNU Linux arm64, with all-target
+Clippy clean for both. Both CLI profiles and opposite-version rejection pass;
+both relocated Linux profiles exit 0 with exact output and passing full trace
+checks. The 27 Python policy tests pass.
+[Linux evidence](../evidence/linux-arm64-lua-2026-10-08/README.md).
 
 The launcher now has two mutually exclusive compiled profiles:
 
@@ -34,6 +38,9 @@ acquisition, mixed workers and native modules remain later work. The archive
 import/resource surface and OS/architecture/ABI/prerequisite checks are unchanged
 from the [base decision](0005-linked-lua-source-profile.md). The [fixtures](../../fixtures/lua-linked/README.md)
 provide explicit macOS arm64 and GNU Linux arm64 manifests for each version.
+The Linux observation covers debug builds on one arm64/glibc/kernel/page-size
+cell, including read-only archive execution after relocation. It does not
+establish minimum-version compatibility, release/signing behavior or performance.
 
 The maintained `mlua` API protects calls and catches callback panics, but Lua
 longjmp may still cross a Drop-free Rust protected-call thunk. PLAN.md's literal

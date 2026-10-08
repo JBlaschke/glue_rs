@@ -1,0 +1,27 @@
+lua-src v551.0.2
+└── lua-src feature "default"
+    [build-dependencies]
+    ├── glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua)
+    │   └── glue-runner v0.1.0 (/workspace/crates/glue-runner)
+    │       ├── glue-runner feature "default" (command-line)
+    │       └── glue-runner feature "lua54"
+    │           └── glue-runner feature "default" (command-line)
+    │   ├── glue-runtime-lua feature "default" (command-line)
+    │   └── glue-runtime-lua feature "lua54"
+    │       ├── glue-runner feature "lua54" (*)
+    │       └── glue-runtime-lua feature "default" (command-line)
+    └── mlua-sys v0.13.0
+        ├── mlua-sys feature "default"
+        │   └── mlua v0.12.2
+        │       ├── mlua feature "lua54"
+        │       │   └── glue-runtime-lua feature "lua54" (*)
+        │       └── mlua feature "vendored"
+        │           └── glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua) (*)
+        ├── mlua-sys feature "lua-src"
+        │   └── mlua-sys feature "vendored"
+        │       └── mlua feature "vendored" (*)
+        ├── mlua-sys feature "lua54"
+        │   └── mlua feature "lua54" (*)
+        ├── mlua-sys feature "luajit-src"
+        │   └── mlua-sys feature "vendored" (*)
+        └── mlua-sys feature "vendored" (*)

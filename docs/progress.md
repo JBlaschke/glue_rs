@@ -10,7 +10,8 @@ the baseline until reviewed.
 | Packaging/inspection CLI scaffold | `codex/packaging-cli` / `4581386` (stacked on A4) | Implemented | 76 tests on macOS and Linux arm64; explicit-inventory builder and read-only CLI commands; format/Clippy clean |
 | A3 Linux memfd fixture | `codex/a3-linux-memfd-probe` / `447a339` (stacked on CLI) | Controlled spike | 80 Rust tests on macOS/Linux arm64, 15 trace-policy tests; Clippy clean on both; native ordinary-loader comparison and full syscall checks pass |
 | A6 linked Lua 5.4 source slice | `codex/a6-lua-linked-execution` / `03303d7` | Experimental implementation | macOS arm64 CLI fixture builds, reports readiness and prints the expected result; 111 Rust tests and workspace Clippy pass; Linux execution/trace evidence pending at this baseline |
-| A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` (stacked on `03303d7`), commit pending | Experimental implementation | macOS arm64: 118/119 Rust tests for `lua54`/`lua55`, workspace Clippy clean for both, both CLI profiles and opposite-version rejection pass; 27 Python policy tests pass; Linux execution/trace validation pending |
+| A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
+| A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
 
 ## Gate status
 
@@ -26,9 +27,10 @@ still depend on platform experiments. The logical Lua build ID is not a compiler
 configuration or artifact hash. See [the base profile decision](decisions/0005-linked-lua-source-profile.md)
 and [version selection](decisions/0006-versioned-linked-lua-profiles.md).
 
-The current branch adds mutually exclusive compiled `lua54` (default) and
-`lua55` profiles with exact manifest identities. Supporting both versions through separate launchers does not provide
-simultaneous multi-runtime acquisition or worker execution.
+The profile branch added mutually exclusive compiled `lua54` (default) and
+`lua55` profiles with exact manifest identities. Supporting both versions through
+separate launchers does not provide simultaneous multi-runtime acquisition or
+worker execution.
 
 The maintained `mlua` API protects Lua calls and catches callback panics, but
 upstream Lua longjmp may cross its Drop-free Rust protected-call thunk. This
@@ -63,19 +65,32 @@ declare the exact source/build/ABI and macOS arm64 or GNU Linux arm64 target.
 At the Lua 5.4 baseline, the macOS arm64 fixture was built through the CLI, reported ready through
 `doctor`, and printed its expected nested-import/asset result. The complete
 workspace passed 111 Rust tests and Clippy with warnings denied on this host.
-The current branch passed 118 Rust tests with `lua54` and 117 with `lua55` on
-macOS arm64, and workspace Clippy with warnings denied for both. Lua 5.5 built
+The final validation branch passed 118 Rust tests with `lua54` and 119 with
+`lua55` on macOS and GNU Linux arm64, and all-target Clippy with warnings denied
+for both. Lua 5.5 built
 through the CLI, reported ready for 5.5.1, and printed the expected `Lua 5.5`
 result. Its fixture archive SHA-256 is
 `4c0d21b1e8b2bec3bd146280958f0ddf958c03f7177451eb2049b9e3570a0094`.
 Opposite-version archives return 1 without executing source; 27 Python
-trace-policy tests pass. Linux execution/trace validation is pending and will
-remain separate from the historical native probe observation above.
+trace-policy tests pass.
+
+The final Linux captures used clean commit `8b6eb1f` on
+`codex/a6-lua-linux-validation`, stacked on source profiles `cb88d7d`. Both
+relocated Lua fixtures exited 0 with exactly the expected stdout and empty
+stderr, and passed full `strace` checks. The observed arm64 cell used Linux
+`7.1.4-200.fc44.aarch64`, glibc `2.36-9+deb12u10`, Rust 1.88.0, GCC 12.2.0,
+strace 6.1 and 4 KiB pages. Direct Podman commands were used because the
+sandboxed wrapper could not access its socket. The
+[retained evidence](evidence/linux-arm64-lua-2026-10-08/README.md) contains
+commands, source/fixture/artifact identities, all build-provenance instances,
+feature trees, test/Clippy logs and raw traces. These debug source-only
+observations remain separate from the native probe and do not establish the
+declared minimum kernel/glibc versions or other platforms/architectures.
 
 ## Next critical-path assignments
 
-Complete and record the linked-source CLI/relocation/trace checks, and resolve
-its error-boundary contract before release. Continue A1 (signed macOS arm64
+Resolve the linked-source error-boundary contract before release and extend
+platform/release evidence. Continue A1 (signed macOS arm64
 mapping), A2 (Windows PE) and A3 (Linux/FreeBSD ELF) with actual runtime startup.
 Establish the FreeBSD bundled Python/Node producer and inspect pinned PBS
 artifacts. G2 also requires a real native Lua module; the source-only slice and

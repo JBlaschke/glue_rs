@@ -111,11 +111,15 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The current macOS arm64 workspace passes 118 Rust tests with `lua54` and 117 with
-`lua55`, with workspace Clippy clean for both. Both CLI fixtures run, and the
-opposite minor-version archive is rejected before execution. The 27 Python
-trace-policy tests pass. Linux execution/trace validation is in progress;
-earlier native observations below remain separate evidence.
+The current macOS and GNU Linux arm64 workspaces pass 118 Rust tests with `lua54`
+and 119 with `lua55`, with all-target Clippy clean for both. Both CLI fixtures
+run, and the opposite minor-version archive is rejected before execution. The
+27 Python trace-policy tests pass. Both relocated Linux fixtures exit 0 with
+exact output and pass full syscall trace checks from clean source `8b6eb1f` on
+`codex/a6-lua-linux-validation`, stacked on profiles `cb88d7d`.
+The [retained Linux records](docs/evidence/linux-arm64-lua-2026-10-08/README.md)
+include source/artifact hashes, commands, build provenance and raw traces.
+The earlier native observation remains separate evidence.
 
 ```sh
 cargo test --workspace --locked
@@ -151,8 +155,11 @@ and the remaining platform/runtime experiments.
 The Lua harness reuses that local test image and records separate profile runs,
 including relocated CLI execution, binary/source identities and a complete
 syscall trace. Its checker admits only the fixture's exact output diagnostic
-and read-only runtime operations. This is fixture evidence, not a sandbox or
-a proof about arbitrary Lua programs.
+and read-only runtime operations. The final capture used direct Podman commands
+because the sandboxed wrapper could not access the Podman socket. This is
+debug/O0 fixture evidence on Linux arm64 kernel 7.1.4, glibc 2.36 and 4 KiB
+pages. It is not a sandbox or proof about arbitrary Lua programs, the declared
+kernel 6.1 minimum, release/performance behavior or other architectures.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [progress](docs/progress.md),
 [container contract](docs/decisions/0002-experimental-container.md) and

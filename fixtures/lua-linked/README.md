@@ -23,7 +23,13 @@ These declared minimums are checked at execution time; running on a newer host
 does not establish compatibility at every minimum version. The fixtures do not
 supply x86_64, Windows, FreeBSD, signed deployment or native-module evidence.
 Both macOS arm64 CLI profiles have been validated, including opposite-version
-rejection. GNU Linux arm64 execution/trace evidence is pending.
+rejection. Both relocated GNU Linux arm64 profiles also exited 0 with exact
+stdout, empty stderr and passing full trace checks from clean source `8b6eb1f`
+on `codex/a6-lua-linux-validation`, stacked on profiles `cb88d7d`. The final
+macOS/Linux workspaces pass 118/119 Rust tests for `lua54`/`lua55` and all-target
+Clippy for both. The Linux observation uses debug builds on kernel 7.1.4,
+glibc 2.36 and 4 KiB pages; it does not validate every declared minimum.
+See the [retained evidence](../../docs/evidence/linux-arm64-lua-2026-10-08/README.md).
 
 From the repository root, use the macOS manifest below or substitute the Linux
 manifest on GNU Linux arm64:

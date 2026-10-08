@@ -1,0 +1,1 @@
+Verified 46 source hashes against 8b6eb1f78a83d7325387938b806577321e51cad9; archive hash and exact stdout verified; 119 Rust tests passed; ucid absent from feature tree.
