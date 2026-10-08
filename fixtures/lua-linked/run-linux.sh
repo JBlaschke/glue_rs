@@ -50,9 +50,17 @@ sha256sum "$glue" '/build-target/relocated Lua fixture/app.glue' \
 readelf -d "$glue" > /evidence/launcher.dynamic.txt
 cargo tree --workspace --locked --offline -e features -i lua-src "$@" \
     > /evidence/lua-src-feature-tree.txt
-set -- /build-target/debug/build/glue-runtime-lua-*/out/linked-lua-provenance.txt
-test "$#" -eq 1
-cp "$1" /evidence/linked-lua-provenance.txt
+# Cargo build/test and Clippy can produce separate build-script instances. Keep
+# every instance rather than assuming one output directory or picking a record.
+mkdir /evidence/build-provenance
+provenance_count=0
+for provenance in /build-target/debug/build/glue-runtime-lua-*/out/linked-lua-provenance.txt; do
+    test -f "$provenance"
+    instance=$(basename "$(dirname "$(dirname "$provenance")")")
+    cp "$provenance" "/evidence/build-provenance/$instance.txt"
+    provenance_count=$((provenance_count + 1))
+done
+test "$provenance_count" -gt 0
 uname -srvmo > /evidence/environment.txt
 rustc --version >> /evidence/environment.txt
 cargo clippy --version >> /evidence/environment.txt
