@@ -13,7 +13,32 @@ use glue_format::{
 #[path = "platform.rs"]
 mod platform;
 
+// The crate's feature guards require exactly one selected profile. Defining the
+// default constants when lua55 is absent keeps invalid-feature diagnostics clear.
+#[cfg(not(feature = "lua55"))]
 pub const BUILD_ID: &str = "glue-lua54-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64";
+#[cfg(feature = "lua55")]
+pub const BUILD_ID: &str = "glue-lua55-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64";
+
+#[cfg(not(feature = "lua55"))]
+pub const LUA_RELEASE: &str = "5.4.9";
+#[cfg(feature = "lua55")]
+pub const LUA_RELEASE: &str = "5.5.1";
+
+#[cfg(not(feature = "lua55"))]
+pub const LUA_VERSION: &str = "Lua 5.4";
+#[cfg(feature = "lua55")]
+pub const LUA_VERSION: &str = "Lua 5.5";
+
+#[cfg(not(feature = "lua55"))]
+pub const LUA_MINOR: u16 = 4;
+#[cfg(feature = "lua55")]
+pub const LUA_MINOR: u16 = 5;
+
+#[cfg(not(feature = "lua55"))]
+pub const LUA_PATCH: u16 = 9;
+#[cfg(feature = "lua55")]
+pub const LUA_PATCH: u16 = 1;
 
 #[derive(Debug, thiserror::Error)]
 pub enum CapabilityError {
@@ -26,11 +51,11 @@ pub enum CapabilityError {
 /// The original source crate pin, distinct from any archive resource digest.
 pub fn source_pin() -> SourcePin {
     SourcePin {
-        release: "5.4.9".to_owned(),
+        release: LUA_RELEASE.to_owned(),
         revision: None,
         artifact: "https://static.crates.io/crates/lua-src/lua-src-551.0.2.crate".to_owned(),
         sha256: "d400ffef0e3d4d29287092bdc5a276d0bf468b2c69709d5bab0d469312d9f947".to_owned(),
-        variant: "lua54-static-int64-float64".to_owned(),
+        variant: format!("lua5{LUA_MINOR}-static-int64-float64"),
     }
 }
 
@@ -89,16 +114,16 @@ fn validate_declaration(manifest: &Manifest) -> Result<String, CapabilityError> 
     let expected_abi = RuntimeAbi::Lua {
         version: RuntimeVersion {
             major: 5,
-            minor: 4,
-            patch: 9,
+            minor: LUA_MINOR,
+            patch: LUA_PATCH,
         },
         integer_bits: 64,
         number: LuaNumber::Float64,
     };
     if runtime.abi != expected_abi {
-        return Err(invalid(
-            "runtime ABI must be Lua 5.4.9 with 64-bit integers and float64 numbers",
-        ));
+        return Err(invalid(format!(
+            "runtime ABI must be Lua {LUA_RELEASE} with 64-bit integers and float64 numbers"
+        )));
     }
     manifest
         .validate()
@@ -262,8 +287,8 @@ mod tests {
                     abi: RuntimeAbi::Lua {
                         version: RuntimeVersion {
                             major: 5,
-                            minor: 4,
-                            patch: 9,
+                            minor: LUA_MINOR,
+                            patch: LUA_PATCH,
                         },
                         integer_bits: 64,
                         number: LuaNumber::Float64,
@@ -339,8 +364,8 @@ mod tests {
                     runtime.abi = RuntimeAbi::Lua {
                         version: RuntimeVersion {
                             major: 5,
-                            minor: 4,
-                            patch: 8,
+                            minor: LUA_MINOR,
+                            patch: LUA_PATCH - 1,
                         },
                         integer_bits: 64,
                         number: LuaNumber::Float64,
@@ -350,8 +375,8 @@ mod tests {
                     runtime.abi = RuntimeAbi::Lua {
                         version: RuntimeVersion {
                             major: 5,
-                            minor: 4,
-                            patch: 9,
+                            minor: LUA_MINOR,
+                            patch: LUA_PATCH,
                         },
                         integer_bits: 32,
                         number: LuaNumber::Float64,
@@ -361,8 +386,8 @@ mod tests {
                     runtime.abi = RuntimeAbi::Lua {
                         version: RuntimeVersion {
                             major: 5,
-                            minor: 4,
-                            patch: 9,
+                            minor: LUA_MINOR,
+                            patch: LUA_PATCH,
                         },
                         integer_bits: 64,
                         number: LuaNumber::Float32,
@@ -374,7 +399,7 @@ mod tests {
                         unreachable!()
                     };
                     match field {
-                        "release" => source.release = "5.4.8".to_owned(),
+                        "release" => source.release = format!("5.{LUA_MINOR}.{}", LUA_PATCH - 1),
                         "revision" => source.revision = Some("unapproved".to_owned()),
                         "artifact" => source.artifact.push_str("?different"),
                         "sha256" => source.sha256 = "0".repeat(64),
@@ -383,6 +408,48 @@ mod tests {
                         _ => unreachable!(),
                     }
                 }
+            }
+            is_invalid(validate_on(&manifest, &host));
+        }
+    }
+
+    #[test]
+    fn another_minor_source_or_build_never_substitutes_for_the_compiled_profile() {
+        let host = linux_host();
+        let (minor, patch) = if LUA_MINOR == 4 { (5, 1) } else { (4, 9) };
+        let release = format!("5.{minor}.{patch}");
+        let build = format!("glue-lua5{minor}-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64");
+        let mut other_source = source_pin();
+        other_source.release = release;
+        other_source.variant = format!("lua5{minor}-static-int64-float64");
+        let other_abi = RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor,
+                patch,
+            },
+            integer_bits: 64,
+            number: LuaNumber::Float64,
+        };
+        for mismatch in ["abi", "source", "build", "all"] {
+            let mut manifest = fixture(&host);
+            let runtime = manifest.runtimes.get_mut("lua").unwrap();
+            if mismatch == "abi" || mismatch == "all" {
+                runtime.abi = other_abi.clone();
+            }
+            if mismatch == "build" || mismatch == "all" {
+                runtime.build_id = build.clone();
+            }
+            if mismatch == "source" || mismatch == "all" {
+                runtime.provisioning = Provisioning::Linked {
+                    provider: BundledProvider::LuaSource,
+                    source: other_source.clone(),
+                };
+            }
+            // Both complete declarations are format-valid; only acquisition
+            // against this exact compiled launcher rejects the other profile.
+            if mismatch == "all" {
+                manifest.validate().unwrap();
             }
             is_invalid(validate_on(&manifest, &host));
         }

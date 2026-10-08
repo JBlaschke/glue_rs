@@ -10,6 +10,14 @@ const OVERRIDE_ROOTS: &[&str] = &["CC", "CXX", "CFLAGS", "CXXFLAGS", "CPPFLAGS"]
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
+    let (release, compatibility) = match (
+        env::var_os("CARGO_FEATURE_LUA54").is_some(),
+        env::var_os("CARGO_FEATURE_LUA55").is_some(),
+    ) {
+        (true, false) => ("5.4.9", "LUA_COMPAT_5_3"),
+        (false, true) => ("5.5.1", "no compatibility define"),
+        _ => panic!("linked Lua source profile requires exactly one of lua54 or lua55"),
+    };
     let target = required_env("TARGET");
     let host = required_env("HOST");
     track_override_variables(&target, &host);
@@ -49,12 +57,13 @@ fn main() {
     let mut provenance = String::from(
         "glue linked Lua build provenance v1\n\
          This is local build evidence, not a complete artifact fingerprint.\n\
-         source=lua-src-551.0.2/lua-5.4.9\n\
          bindings=mlua-0.12.2/mlua-sys-0.13.0\n\
          source_numeric_defaults=int64/float64\n\
          compiler_override_policy=nonempty CC/CXX/CFLAGS/CXXFLAGS/CPPFLAGS variants rejected\n\
          optional_ucid_feature=absence must be audited in Cargo feature graph\n",
     );
+    writeln!(provenance, "source=lua-src-551.0.2/lua-{release}")
+        .expect("writing to a String cannot fail");
     for name in [
         "TARGET",
         "HOST",
@@ -87,7 +96,7 @@ fn main() {
     // defaults above. Whether -fno-common is supported is compiler-dependent.
     writeln!(
         provenance,
-        "lua_src_explicit_config=LUA_COMPAT_5_3; target LUA_USE_*; \
+        "lua_src_explicit_config={compatibility}; target LUA_USE_*; \
          debug LUA_USE_APICHECK; conditional -fno-common; C source files"
     )
     .expect("writing to a String cannot fail");

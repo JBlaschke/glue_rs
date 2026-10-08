@@ -6,8 +6,8 @@ silent runtime-provider fallback. See [PLAN.md](PLAN.md) for the full design.
 
 The current implementation packages explicit resources, validates manifest and
 ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
-resource tree with bounded memory caching. An experimental **linked Lua 5.4.9
-source profile** runs archive scripts and resources on matching macOS or GNU
+resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
+5.5.1 source profiles** run archive scripts and resources on matching macOS or GNU
 Linux targets. General native loading, host/archived runtime acquisition,
 Python/Node execution, workers and standalone executables remain pending.
 The archive and manifest are experimental version 0; G0/G1/G2 remain open.
@@ -34,8 +34,27 @@ origins, reads an asset, and prints
 `Lua 5.4 answer=42 asset=Hello from archived resources!`. Existing build outputs
 are preserved; choose a new output name when rebuilding.
 
-Provisioning must explicitly select `linked` / `lua_source`, the exact Lua 5.4.9
-source pin and build profile, and int64/float64 ABI. No installed Lua is required.
+Lua 5.4 is the default compiled profile. To select Lua 5.5 explicitly, use its
+matching manifest and a separate build directory. On GNU Linux arm64, substitute
+`manifest.lua55.linux-arm64.json` below:
+
+```sh
+cargo build --locked -p glue-runner --no-default-features --features lua55 \
+  --target-dir target/lua55
+target/lua55/debug/glue build --manifest fixtures/lua-linked/manifest.lua55.macos-arm64.json \
+  --root fixtures/lua-linked/input --output target/linked-lua55-demo.glue
+target/lua55/debug/glue doctor target/linked-lua55-demo.glue
+target/lua55/debug/glue run target/linked-lua55-demo.glue
+```
+
+The 5.5 fixture prints the same result with a `Lua 5.5` prefix. `lua54` and `lua55`
+are mutually exclusive build features. Each compiled launcher accepts only its
+own exact source/build/ABI identity; another Lua version is rejected. Supporting
+both versions through separate launchers does not provide simultaneous runtimes
+in one launcher/archive; those providers and workers remain later work.
+
+Provisioning must explicitly select `linked` / `lua_source`, the compiled Lua
+release's exact source pin and build profile, and int64/float64 ABI. No installed Lua is required.
 `require` searches `app/?.lua` and `app/?/init.lua`; `loadfile` and `dofile` read
 canonical archive keys. Every consumed resource is fully verified before use.
 `glue.read`, `glue.stat`, `glue.list` and `glue.origin` expose read-only assets.
@@ -43,13 +62,8 @@ Bytecode, `io`, `os`, `debug`, native loading, declared host imports and multipl
 components/runtimes/targets are unsupported in this initial profile. These are
 experimental compatibility restrictions, not a sandbox or the final host-I/O
 policy. See the [fixture](fixtures/lua-linked/README.md) and
-[profile decision](docs/decisions/0005-linked-lua-source-profile.md).
-
-The next feature branch will add Lua 5.5.1 as a separate compiled profile:
-`lua54` will remain the default, while `--no-default-features --features lua55`
-will explicitly select 5.5. Manifests must match that launcher's exact version,
-source and build ID; no version substitution is intended. Simultaneous runtimes
-in one launcher/archive remain later provider and worker work.
+[base profile decision](docs/decisions/0005-linked-lua-source-profile.md) and
+[version selection](docs/decisions/0006-versioned-linked-lua-profiles.md).
 
 The adapter uses the maintained `mlua` safe API to catch callback panics and
 protect Lua calls. Upstream Lua longjmp may still cross a Drop-free Rust
@@ -97,10 +111,11 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The current linked slice passes 111 Rust tests and workspace Clippy on macOS
-arm64, including the runnable CLI fixture. Current Linux execution/trace
-validation is pending; the earlier container/native observations below remain
-separate evidence.
+The current macOS arm64 workspace passes 118 Rust tests with `lua54` and 117 with
+`lua55`, with workspace Clippy clean for both. Both CLI fixtures run, and the
+opposite minor-version archive is rejected before execution. The 27 Python
+trace-policy tests pass. Linux execution/trace validation is in progress;
+earlier native observations below remain separate evidence.
 
 ```sh
 cargo test --workspace --locked
@@ -109,6 +124,9 @@ cargo clippy --workspace --all-targets --locked -- -D warnings
 sh scripts/test-linux.sh
 python3 -m unittest discover -s scripts -p 'test_linux_memfd_trace.py'
 sh scripts/run-linux-memfd.sh
+python3 -m unittest discover -s scripts -p 'test_linux_lua_trace.py'
+sh scripts/run-linux-lua.sh lua54
+sh scripts/run-linux-lua.sh lua55
 ```
 
 The Linux script vendors dependencies already present in the build machine's
@@ -129,6 +147,12 @@ and checks a full syscall trace. It requires Python 3.10+ for the trace checker.
 Build tools and Podman are development dependencies only. See the
 [probe decision](docs/decisions/0004-linux-memfd-probe.md) for its narrow scope
 and the remaining platform/runtime experiments.
+
+The Lua harness reuses that local test image and records separate profile runs,
+including relocated CLI execution, binary/source identities and a complete
+syscall trace. Its checker admits only the fixture's exact output diagnostic
+and read-only runtime operations. This is fixture evidence, not a sandbox or
+a proof about arbitrary Lua programs.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [progress](docs/progress.md),
 [container contract](docs/decisions/0002-experimental-container.md) and

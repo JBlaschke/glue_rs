@@ -44,12 +44,39 @@ fn run(files: &[(&str, &[u8])]) -> mlua::Result<()> {
 }
 
 #[test]
+fn interpreter_matches_the_compiled_profile() {
+    let source = format!(
+        "assert(_VERSION == {:?})",
+        glue_runtime_lua::profile::LUA_VERSION
+    );
+    run(&[("app/main.lua", source.as_bytes())]).unwrap();
+}
+
+#[cfg(feature = "lua55")]
+#[test]
+fn lua55_named_vararg_tables_and_global_declarations_execute() {
+    run(&[(
+        "app/main.lua",
+        br#"
+        global assert, result
+        local function collect(...values)
+            assert(values.n == 3 and values[1] == 7 and values[2] == nil and values[3] == 35)
+            return values[1] + values[3]
+        end
+        result = collect(7, nil, 35)
+        assert(result == 42)
+    "#,
+    )])
+    .unwrap();
+}
+
+#[test]
 fn real_lua_nested_imports_cache_and_preload_keep_require_semantics() {
     run(&[
         (
             "app/main.lua",
             br#"
-            assert(_VERSION == "Lua 5.4")
+            assert(_VERSION == "Lua 5.4" or _VERSION == "Lua 5.5")
             local first, origin = require("outer")
             assert(first.answer == 42)
             assert(origin == "glue://lua.fixture/app/outer.lua")
@@ -142,6 +169,58 @@ fn loadfile_and_dofile_use_verified_archive_source_and_preserve_results() {
         ),
         ("app/environment.lua", b"return value"),
         ("app/results.lua", b"return 42, 'value', false"),
+    ])
+    .unwrap();
+}
+
+#[test]
+fn load_and_loadfile_preserve_omitted_nil_table_and_non_table_environments() {
+    run(&[
+        (
+            "app/main.lua",
+            br#"
+            assert(load("return _ENV")() == _G)
+            assert(load("return _ENV", nil, nil)() == _G)
+            assert(loadfile("app/environment.lua")() == _G)
+            assert(loadfile("app/environment.lua", nil)() == _G)
+
+            assert(load("return _ENV", "=nil-env", "t", nil)() == nil)
+            assert(loadfile("app/environment.lua", "t", nil)() == nil)
+
+            local environment = { value = 19 }
+            assert(load("return _ENV", "=table-env", "t", environment)() == environment)
+            assert(loadfile("app/environment.lua", "t", environment)() == environment)
+            assert(load("return value", "=table-env", "t", environment)() == 19)
+
+            for _, value in ipairs({42, false, "raw environment", function() return 7 end}) do
+                assert(load("return _ENV", "=raw-env", "t", value)() == value)
+                assert(loadfile("app/environment.lua", "t", value)() == value)
+            end
+        "#,
+        ),
+        ("app/environment.lua", b"return _ENV"),
+    ])
+    .unwrap();
+}
+
+#[test]
+fn explicit_nil_environment_errors_keep_virtual_archive_origins() {
+    run(&[
+        (
+            "app/main.lua",
+            br#"
+            assert(loadfile("app/global.lua")() == 1)
+            local isolated = assert(loadfile("app/global.lua", "t", nil))
+            local ok, message = pcall(isolated)
+            assert(not ok and message:find("glue://lua.fixture/app/global.lua", 1, true))
+            local chunk, syntax = loadfile("app/broken.lua", "t", nil)
+            assert(chunk == nil and syntax:find("glue://lua.fixture/app/broken.lua", 1, true))
+            local loaded, dynamic_syntax = load("local = invalid", "=dynamic-nil-env", "t", nil)
+            assert(loaded == nil and dynamic_syntax:find("dynamic-nil-env", 1, true))
+        "#,
+        ),
+        ("app/global.lua", b"return math.abs(-1)"),
+        ("app/broken.lua", b"local = invalid"),
     ])
     .unwrap();
 }

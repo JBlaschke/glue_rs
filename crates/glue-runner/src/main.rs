@@ -24,7 +24,7 @@ Usage:
   glue doctor [APP.glue]
   glue run APP.glue
 
-Linked Lua 5.4.9 can run source and resources from an explicitly selected archive.
+A linked Lua 5.4 or 5.5 build can run source and resources from a matching archive.
 Native modules, host/archived runtimes, other languages and standalone executables
 remain pending. The resource fixture is packaging-only; see fixtures/lua-linked.
 Existing build outputs are never overwritten.
@@ -226,6 +226,10 @@ fn execute(command: Command) -> Result<ExitCode> {
                 std::env::consts::ARCH,
             );
             println!(
+                "Linked Lua: {} (int64, float64)",
+                glue_runtime_lua::profile::LUA_RELEASE,
+            );
+            println!(
                 "Available: archive packaging, inspection, verification, read-only resources, linked Lua source profile"
             );
             println!(
@@ -235,7 +239,10 @@ fn execute(command: Command) -> Result<ExitCode> {
                 let archive = open(&path)?;
                 println!("Validated metadata for {}", archive.manifest().app_id);
                 match glue_runtime_lua::profile::validate(archive.manifest()) {
-                    Ok(entry) => println!("Ready: linked Lua 5.4.9 source profile, entry {entry}"),
+                    Ok(entry) => println!(
+                        "Ready: linked Lua {} source profile, entry {entry}",
+                        glue_runtime_lua::profile::LUA_RELEASE,
+                    ),
                     Err(glue_runtime_lua::profile::CapabilityError::Unsupported(reason)) => {
                         execution_unavailable(archive.manifest());
                         eprintln!("glue: {reason}");

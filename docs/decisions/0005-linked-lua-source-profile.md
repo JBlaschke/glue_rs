@@ -1,8 +1,8 @@
 # Explicit linked Lua source profile
 
-Status: experimental implementation, 8 October 2026. macOS arm64 CLI validation
-and 111 workspace Rust tests/Clippy pass. Current Linux execution/trace evidence
-is pending. G0/G1/G2 remain open.
+Status: experimental Lua 5.4 baseline `03303d7`, 8 October 2026. macOS arm64 CLI
+validation and 111 workspace Rust tests/Clippy passed; Linux execution/trace
+evidence was pending at this baseline. G0/G1/G2 remain open.
 
 ## Acquisition contract
 
@@ -30,11 +30,10 @@ artifact hash. Evidence must retain the actual toolchain, build inputs and
 binary hashes separately. Source-pin hashes also remain distinct from archive
 resource hashes.
 
-Lua 5.5.1 is planned next on its own feature branch. The pinned source crate also
-contains that release. The intended build selection is mutually exclusive
-`lua54` (default) or `lua55`, with exact ABI/source/build identities per compiled
-launcher. No version substitution or simultaneous runtime acquisition is part
-of this source-only slice; multi-runtime providers and workers remain later work.
+The [follow-up decision](0006-versioned-linked-lua-profiles.md) adds Lua 5.5.1
+from the same pinned source crate through mutually exclusive compiled profiles.
+No version substitution or simultaneous runtime acquisition is part of this
+source-only slice; multi-runtime providers and workers remain later work.
 
 Before execution, the CLI validates the exact source/build/ABI declaration and
 the selected OS/architecture/ABI against the running host. The initial platforms
@@ -72,7 +71,7 @@ that the stricter design condition has been met.
 The [arm64 fixtures](../../fixtures/lua-linked/README.md) cover nested imports,
 cache semantics, virtual origins and an asset. The macOS arm64 fixture was built
 through the CLI, passed `doctor` and printed the expected result. Linux trace
-evidence will be recorded after validation. Neither these fixtures nor the older native
+evidence remains separately recorded after validation. Neither these fixtures nor the older native
 probe close G1's four-OS requirements or G2's native-Lua acceptance criterion.
 Mixed execution, Python/Node providers, approved external dependencies and
 signed deployment remain open.

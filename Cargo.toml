@@ -17,12 +17,12 @@ zip = { version = "=8.6.0", default-features = false, features = ["deflate-flate
 flate2 = { version = "=1.1.10", default-features = false, features = ["rust_backend"] }
 crc32fast = "=1.5.0"
 libc = "=0.2.190"
-mlua = { version = "=0.12.2", default-features = false, features = ["lua54", "vendored"] }
+mlua = { version = "=0.12.2", default-features = false, features = ["vendored"] }
 lua-src = "=551.0.2"
 glue-format = { path = "crates/glue-format" }
 glue-resources = { path = "crates/glue-resources" }
 glue-pack = { path = "crates/glue-pack" }
-glue-runtime-lua = { path = "crates/glue-runtime-lua" }
+glue-runtime-lua = { path = "crates/glue-runtime-lua", default-features = false }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

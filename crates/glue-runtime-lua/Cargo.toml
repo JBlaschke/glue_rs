@@ -5,6 +5,11 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
+[features]
+default = ["lua54"]
+lua54 = ["mlua/lua54"]
+lua55 = ["mlua/lua55"]
+
 [dependencies]
 glue-format.workspace = true
 glue-resources.workspace = true

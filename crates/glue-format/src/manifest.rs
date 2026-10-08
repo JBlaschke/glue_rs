@@ -391,7 +391,7 @@ impl Manifest {
                     source.validate()?;
                     let RuntimeAbi::Lua { version, .. } = &runtime.abi else {
                         return invalid(
-                            "the initial linked provider supports only official Lua 5.4",
+                            "the linked provider supports only official Lua 5.4 or 5.5",
                         );
                     };
                     if *provider != BundledProvider::LuaSource {
@@ -622,12 +622,12 @@ impl RuntimeAbi {
                 number,
             } => {
                 if version.major != 5
-                    || version.minor != 4
+                    || !matches!(version.minor, 4 | 5)
                     || *integer_bits != 64
                     || *number != LuaNumber::Float64
                 {
                     return invalid(
-                        "initial Lua contract requires official Lua 5.4 with 64-bit integers and float64 numbers",
+                        "Lua contract requires official Lua 5.4 or 5.5 with 64-bit integers and float64 numbers",
                     );
                 }
             }

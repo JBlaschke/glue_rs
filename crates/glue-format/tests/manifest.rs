@@ -640,14 +640,19 @@ fn capability_declarations_and_cycles_are_metadata_not_loader_success() {
 }
 
 fn linked_manifest() -> Manifest {
+    linked_manifest_with_version(4, 8)
+}
+
+fn linked_manifest_with_version(minor: u16, patch: u16) -> Manifest {
+    let release = format!("5.{minor}.{patch}");
     let mut m = manifest();
     let mut runtime = m.runtimes.remove("python").unwrap();
-    runtime.build_id = "linked-lua-5.4.8-fixture".to_owned();
+    runtime.build_id = format!("linked-lua-{release}-fixture");
     runtime.abi = RuntimeAbi::Lua {
         version: RuntimeVersion {
             major: 5,
-            minor: 4,
-            patch: 8,
+            minor,
+            patch,
         },
         integer_bits: 64,
         number: LuaNumber::Float64,
@@ -655,9 +660,9 @@ fn linked_manifest() -> Manifest {
     runtime.provisioning = Provisioning::Linked {
         provider: BundledProvider::LuaSource,
         source: SourcePin {
-            release: "5.4.8".to_owned(),
+            release: release.clone(),
             revision: None,
-            artifact: "https://www.lua.org/ftp/lua-5.4.8.tar.gz".to_owned(),
+            artifact: format!("https://www.lua.org/ftp/lua-{release}.tar.gz"),
             sha256: digest(b"synthetic Lua source artifact"),
             variant: "static-int64-float64".to_owned(),
         },
@@ -687,6 +692,62 @@ fn linked_lua_round_trips_without_runtime_library_or_stdlib_resources() {
     assert_eq!(spec["mode"], "linked");
     assert!(spec.get("runtime_library").is_none());
     assert!(spec.get("stdlib").is_none());
+}
+
+#[test]
+fn linked_lua55_round_trips_and_preserves_its_exact_release() {
+    let m = linked_manifest_with_version(5, 1);
+    let bytes = m.to_json().unwrap();
+    let decoded = Manifest::from_json(&bytes).unwrap();
+    assert_eq!(decoded, m);
+    assert!(matches!(
+        decoded.runtimes["lua"].abi,
+        RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor: 5,
+                patch: 1,
+            },
+            integer_bits: 64,
+            number: LuaNumber::Float64,
+        }
+    ));
+    let Provisioning::Linked { source, .. } = &decoded.runtimes["lua"].provisioning else {
+        unreachable!()
+    };
+    assert_eq!(source.release, "5.5.1");
+    for release in ["5.4.9", "5.5", "5.5.0", "5.5.01"] {
+        let mut invalid = m.clone();
+        let Provisioning::Linked { source, .. } =
+            &mut invalid.runtimes.get_mut("lua").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        source.release = release.to_owned();
+        assert!(invalid.validate().is_err(), "{release}");
+    }
+}
+
+#[test]
+fn lua55_requires_fixed_numeric_abi_and_unknown_minor_is_rejected() {
+    for (integer_bits, number) in [(32, LuaNumber::Float64), (64, LuaNumber::Float32)] {
+        let mut m = linked_manifest_with_version(5, 1);
+        let RuntimeAbi::Lua {
+            integer_bits: selected_integer,
+            number: selected_number,
+            ..
+        } = &mut m.runtimes.get_mut("lua").unwrap().abi
+        else {
+            unreachable!()
+        };
+        *selected_integer = integer_bits;
+        *selected_number = number;
+        assert!(m.validate().is_err(), "{integer_bits}/{number:?}");
+    }
+    // The source release matches this unsupported ABI, so the version check
+    // itself must reject it rather than relying on a mismatched source pin.
+    let unknown = linked_manifest_with_version(6, 1);
+    assert!(unknown.validate().is_err());
 }
 
 #[test]

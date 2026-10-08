@@ -338,12 +338,16 @@ mod linked_lua {
     }
 
     fn manifest() -> Manifest {
-        let name = if cfg!(target_os = "macos") {
-            "manifest.macos-arm64.json"
-        } else {
-            "manifest.linux-arm64.json"
-        };
-        Manifest::from_json(&fs::read(fixture().join(name)).unwrap()).unwrap()
+        Manifest::from_json(&fs::read(fixture().join(manifest_name())).unwrap()).unwrap()
+    }
+
+    fn manifest_name() -> &'static str {
+        match (cfg!(feature = "lua55"), cfg!(target_os = "macos")) {
+            (false, true) => "manifest.macos-arm64.json",
+            (false, false) => "manifest.linux-arm64.json",
+            (true, true) => "manifest.lua55.macos-arm64.json",
+            (true, false) => "manifest.lua55.linux-arm64.json",
+        }
     }
 
     fn contents() -> BTreeMap<String, Vec<u8>> {
@@ -372,16 +376,11 @@ mod linked_lua {
     #[test]
     fn builds_and_runs_relocated_lua_archive_without_host_module_fallback() {
         let temp = TestDir::new();
-        let name = if cfg!(target_os = "macos") {
-            "manifest.macos-arm64.json"
-        } else {
-            "manifest.linux-arm64.json"
-        };
         let output = temp.0.join("original.glue");
         let result = temp.run(&[
             arg("build"),
             arg("--manifest"),
-            fixture().join(name).as_os_str(),
+            fixture().join(manifest_name()).as_os_str(),
             arg("--root"),
             fixture().join("input").as_os_str(),
             arg("--output"),
@@ -400,7 +399,10 @@ mod linked_lua {
 
         let doctor = temp.run(&[arg("doctor"), path.as_os_str()]);
         assert_status(&doctor, 0);
-        assert!(diagnostic(&doctor).contains("Ready: linked Lua 5.4.9"));
+        assert!(diagnostic(&doctor).contains(&format!(
+            "Ready: linked Lua {}",
+            glue_runtime_lua::profile::LUA_RELEASE,
+        )));
         let run = Command::new(env!("CARGO_BIN_EXE_glue"))
             .args([arg("run"), path.as_os_str()])
             .env("LUA_PATH", temp.0.join("?.lua"))
@@ -412,7 +414,11 @@ mod linked_lua {
         assert_status(&run, 0);
         assert_eq!(
             run.stdout,
-            b"Lua 5.4 answer=42 asset=Hello from archived resources!\n"
+            format!(
+                "{} answer=42 asset=Hello from archived resources!\n",
+                glue_runtime_lua::profile::LUA_VERSION
+            )
+            .as_bytes()
         );
         assert!(run.stderr.is_empty());
         assert_eq!(tree_snapshot(&temp.0), before);
@@ -503,5 +509,22 @@ mod linked_lua {
         assert_status(&result, 1);
         assert!(result.stdout.is_empty());
         assert!(!diagnostic(&result).contains("CORRUPT MODULE EXECUTED"));
+    }
+
+    #[test]
+    fn rejects_the_other_lua_version_without_substitution() {
+        let temp = TestDir::new();
+        let name = match (cfg!(feature = "lua55"), cfg!(target_os = "macos")) {
+            (true, true) => "manifest.macos-arm64.json",
+            (true, false) => "manifest.linux-arm64.json",
+            (false, true) => "manifest.lua55.macos-arm64.json",
+            (false, false) => "manifest.lua55.linux-arm64.json",
+        };
+        let other = Manifest::from_json(&fs::read(fixture().join(name)).unwrap()).unwrap();
+        let path = archive(&temp, &other, &contents());
+        let result = temp.run(&[arg("run"), path.as_os_str()]);
+        assert_status(&result, 1);
+        assert!(result.stdout.is_empty());
+        assert!(diagnostic(&result).contains("invalid linked Lua acquisition"));
     }
 }

@@ -10,6 +10,11 @@
 
 pub mod profile;
 
+#[cfg(all(feature = "lua54", feature = "lua55"))]
+compile_error!("select exactly one linked Lua profile: lua54 or lua55");
+#[cfg(not(any(feature = "lua54", feature = "lua55")))]
+compile_error!("select a linked Lua profile: lua54 or lua55");
+
 use glue_format::{Compression, ResourcePath};
 use glue_resources::{EntryKind, Metadata, ResourceError, Resources};
 use mlua::{Function, Lua, LuaOptions, MultiValue, StdLib, Table, Value, chunk::ChunkMode};
@@ -45,7 +50,7 @@ pub fn execute<R: Read + Seek + 'static>(
     install_loading(&lua, Rc::clone(&resources))?;
     install_assets(&lua, Rc::clone(&resources))?;
     let (bytes, origin) = read_verified(&resources, entry_point)?;
-    compile(&lua, &bytes, &origin, None)?.call(())
+    compile(&lua, &bytes, &origin)?.call(())
 }
 
 fn install_imports<R: Read + Seek + 'static>(
@@ -95,7 +100,7 @@ fn install_imports<R: Read + Seek + 'static>(
         let loader = lua.create_function(move |lua, arguments: MultiValue| {
             let (bytes, origin) = read_verified(&loader_resources, &path)?;
             // The resource borrow ended before compilation or any Lua call.
-            compile(lua, &bytes, &origin, None)?.call::<MultiValue>(arguments)
+            compile(lua, &bytes, &origin)?.call::<MultiValue>(arguments)
         })?;
         Ok(MultiValue::from_vec(vec![
             Value::Function(loader),
@@ -140,22 +145,34 @@ fn install_loading<R: Read + Seek + 'static>(
     lua: &Lua,
     resources: SharedResources<R>,
 ) -> mlua::Result<()> {
+    // Retain the original source compiler, never the host-file loader. Its
+    // protected Lua call preserves explicit nil/non-table _ENV values and
+    // distinguishes an omitted environment from an explicitly supplied nil.
+    let original_load: Function = lua.globals().get("load")?;
+    let file_load = original_load.clone();
     let file_resources = Rc::clone(&resources);
-    let loadfile = lua.create_function(
-        move |lua, (path, mode, environment): (Option<String>, Option<String>, Option<Table>)| {
-            let loaded = (|| {
-                source_mode(mode.as_deref())?;
-                let path = path.ok_or_else(|| {
-                    mlua::Error::runtime(
-                        "loadfile requires an archive resource key; stdin is unsupported",
-                    )
-                })?;
-                let (bytes, origin) = read_verified(&file_resources, &path)?;
-                compile(lua, &bytes, &origin, environment)
-            })();
-            loading_result(lua, loaded)
-        },
-    )?;
+    let loadfile = lua.create_function(move |lua, mut arguments: MultiValue| {
+        let path: Option<String> = lua.unpack(arguments.pop_front().unwrap_or(Value::Nil))?;
+        let mode: Option<String> = lua.unpack(arguments.pop_front().unwrap_or(Value::Nil))?;
+        let environment = arguments.pop_front();
+        let loaded = (|| {
+            source_mode(mode.as_deref())?;
+            let path = path.ok_or_else(|| {
+                mlua::Error::runtime(
+                    "loadfile requires an archive resource key; stdin is unsupported",
+                )
+            })?;
+            let (bytes, origin) = read_verified(&file_resources, &path)?;
+            load_text(
+                lua,
+                &file_load,
+                lua.create_string(bytes.as_ref())?,
+                format!("@{origin}"),
+                environment,
+            )
+        })();
+        loading_result(lua, loaded)
+    })?;
     lua.globals().raw_set("loadfile", loadfile)?;
     lua.globals().raw_set(
         "dofile",
@@ -166,41 +183,53 @@ fn install_loading<R: Read + Seek + 'static>(
                 )
             })?;
             let (bytes, origin) = read_verified(&resources, &path)?;
-            compile(lua, &bytes, &origin, None)?.call::<MultiValue>(())
+            compile(lua, &bytes, &origin)?.call::<MultiValue>(())
         })?,
     )?;
     lua.globals().raw_set(
         "load",
-        lua.create_function(
-            |lua,
-             (source, name, mode, environment): (
-                Value,
-                Option<String>,
-                Option<String>,
-                Option<Table>,
-            )| {
-                let loaded = (|| {
-                    source_mode(mode.as_deref())?;
-                    let Value::String(source) = source else {
-                        return Err(mlua::Error::runtime(
-                            "load accepts a source string only; reader functions are unsupported",
-                        ));
-                    };
-                    let source_bytes = source.as_bytes();
-                    let mut chunk = lua
-                        .load(source_bytes.as_ref())
-                        .set_name(name.unwrap_or_else(|| "=(load)".to_owned()))
-                        .set_mode(ChunkMode::Text);
-                    if let Some(environment) = environment {
-                        chunk = chunk.set_environment(environment);
-                    }
-                    chunk.into_function()
-                })();
-                loading_result(lua, loaded)
-            },
-        )?,
+        lua.create_function(move |lua, mut arguments: MultiValue| {
+            let source = arguments.pop_front().unwrap_or(Value::Nil);
+            let name: Option<String> = lua.unpack(arguments.pop_front().unwrap_or(Value::Nil))?;
+            let mode: Option<String> = lua.unpack(arguments.pop_front().unwrap_or(Value::Nil))?;
+            let environment = arguments.pop_front();
+            let loaded = (|| {
+                source_mode(mode.as_deref())?;
+                let Value::String(source) = source else {
+                    return Err(mlua::Error::runtime(
+                        "load accepts a source string only; reader functions are unsupported",
+                    ));
+                };
+                load_text(
+                    lua,
+                    &original_load,
+                    source,
+                    name.unwrap_or_else(|| "=(load)".to_owned()),
+                    environment,
+                )
+            })();
+            loading_result(lua, loaded)
+        })?,
     )?;
     Ok(())
+}
+
+fn load_text(
+    lua: &Lua,
+    original_load: &Function,
+    source: mlua::LuaString,
+    name: String,
+    environment: Option<Value>,
+) -> mlua::Result<MultiValue> {
+    let mut arguments = MultiValue::from_vec(vec![
+        Value::String(source),
+        Value::String(lua.create_string(name)?),
+        Value::String(lua.create_string("t")?),
+    ]);
+    if let Some(environment) = environment {
+        arguments.push_back(environment);
+    }
+    original_load.call(arguments)
 }
 
 fn install_assets<R: Read + Seek + 'static>(
@@ -290,20 +319,11 @@ fn source_mode(mode: Option<&str>) -> mlua::Result<()> {
     Ok(())
 }
 
-fn compile(
-    lua: &Lua,
-    bytes: &[u8],
-    origin: &str,
-    environment: Option<Table>,
-) -> mlua::Result<Function> {
-    let mut chunk = lua
-        .load(bytes)
+fn compile(lua: &Lua, bytes: &[u8], origin: &str) -> mlua::Result<Function> {
+    lua.load(bytes)
         .set_name(format!("@{origin}"))
-        .set_mode(ChunkMode::Text);
-    if let Some(environment) = environment {
-        chunk = chunk.set_environment(environment);
-    }
-    chunk.into_function()
+        .set_mode(ChunkMode::Text)
+        .into_function()
 }
 
 fn read_verified<R: Read + Seek>(
@@ -337,9 +357,9 @@ fn resource_origin(app_id: &str, path: &str) -> String {
     origin
 }
 
-fn loading_result(lua: &Lua, loaded: mlua::Result<Function>) -> mlua::Result<MultiValue> {
+fn loading_result(lua: &Lua, loaded: mlua::Result<MultiValue>) -> mlua::Result<MultiValue> {
     match loaded {
-        Ok(function) => Ok(MultiValue::from_vec(vec![Value::Function(function)])),
+        Ok(result) => Ok(result),
         Err(error) => Ok(MultiValue::from_vec(vec![
             Value::Nil,
             Value::String(lua.create_string(error.to_string())?),
