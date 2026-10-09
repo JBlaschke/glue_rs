@@ -1,0 +1,6 @@
+Mac logs were supplied by the task owner for the same source code committed as ee7c9d329e7e3eeea529660308620ea5adf479c3.
+Only documentation edits followed the clean code commit. The logs do not themselves capture Git status or the compiler identity; this context is the task owner's confirmation.
+The compiler record rustc-verified.txt was collected at evidence-bundle creation from the actual pinned 1.88.0 toolchain with host aarch64-apple-darwin.
+Debug workspace test totals: lua54=142, lua55=143.
+Optimized glue-runtime-lua test totals: lua54=50, lua55=51.
+Both workspace/all-targets Clippy runs used -D warnings and completed successfully, as reported by the task owner.

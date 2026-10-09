@@ -1,0 +1,13 @@
+{
+  "Id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "Digest": "sha256:c3aa290549c5ba0e63aec9de61fc10b6e4bd59e89c0c3f72bb270dd426eedeba",
+  "RepoTags": [
+    "localhost/glue-linux-probe:rust-1.88.0"
+  ],
+  "RepoDigests": [
+    "localhost/glue-linux-probe@sha256:c3aa290549c5ba0e63aec9de61fc10b6e4bd59e89c0c3f72bb270dd426eedeba"
+  ],
+  "Created": "2026-10-08T19:41:37.840326257Z",
+  "Architecture": "arm64",
+  "Os": "linux"
+}

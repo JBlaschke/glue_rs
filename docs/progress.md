@@ -12,7 +12,7 @@ Further implementation continues on separate feature branches.
 | A6 linked Lua 5.4 source slice | `codex/a6-lua-linked-execution` / `03303d7` | Experimental implementation | macOS arm64 CLI fixture builds, reports readiness and prints the expected result; 111 Rust tests and workspace Clippy pass; Linux execution/trace evidence pending at this baseline |
 | A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
 | A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
-| A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` (from merged `db2c271`) | Experimental implementation | macOS arm64: 142/143 Rust tests for `lua54`/`lua55`; Clippy clean for both; 50/51 optimized boundary tests; allocation/panic/reentry/shutdown cleanup regressions; fresh Linux captures pending |
+| A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
 
 ## Gate status
 
@@ -89,6 +89,17 @@ commands, source/fixture/artifact identities, all build-provenance instances,
 feature trees, test/Clippy logs and raw traces. These debug source-only
 observations remain separate from the native probe and do not establish the
 declared minimum kernel/glibc versions or other platforms/architectures.
+
+The C-owned source adapter was captured from clean implementation `ee7c9d3` on
+2026-10-09 using the same pinned Linux image and observed arm64 environment.
+Both workspace profiles pass 142/143 Rust tests and all-target Clippy on macOS
+and GNU Linux; the optimized macOS boundary suites pass 50/51 tests. Both new
+relocated, read-only Linux fixtures produce exactly 55 stdout bytes, empty stderr,
+exit 0 and pass the full trace checker. The
+[boundary evidence](evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
+retains the fresh source/artifact identities, all provenance records, raw traces
+and Mac/Linux test logs. The strict C-only error boundary is implemented for
+this source profile; native and platform/release acceptance remain pending.
 
 ## Next critical-path assignments
 

@@ -1,0 +1,7 @@
+clean_source=ee7c9d329e7e3eeea529660308620ea5adf479c3
+source_hashes_verified=51
+fixture_hashes_verified=true
+workspace_tests_passed=142
+stdout_exact=55_bytes
+execution_and_trace_status=0
+feature_graph=lua-src_without_ucid_or_mlua

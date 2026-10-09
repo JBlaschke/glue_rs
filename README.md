@@ -112,14 +112,17 @@ operations return 0; input and argument errors return 1.
 ## Development and evidence
 
 The C boundary workspace passes 142 Rust tests with `lua54` and 143 with
-`lua55` on macOS arm64, with all-target Clippy clean for both. Optimized
-boundary tests also pass 50/51 tests. The new tests cover real allocation failures, callback
-panic containment, owned-buffer cleanup, nested garbage-collector requests,
-shutdown finalizers and upstream error semantics. Fresh Linux captures for
-this adapter are pending. The historical
-[v1 Linux records](docs/evidence/linux-arm64-lua-2026-10-08/README.md) retain
-source/artifact hashes, commands, build provenance and full traces. The earlier
-native observation remains separate evidence.
+`lua55` on macOS and GNU Linux arm64, with all-target Clippy clean for both.
+Optimized macOS boundary tests also pass 50/51 tests. The new tests cover real
+allocation failures, callback panic containment, owned-buffer cleanup, nested
+garbage-collector requests,
+shutdown finalizers and upstream error semantics. Both relocated Linux
+fixtures exit 0 with exact output and passing full no-extraction trace checks
+from clean implementation `ee7c9d3`. The
+[C boundary evidence](docs/evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
+retains source/artifact hashes, commands, build provenance and full traces.
+Historical [v1 records](docs/evidence/linux-arm64-lua-2026-10-08/README.md) and
+the earlier native observation remain separate evidence.
 
 ```sh
 cargo test --workspace --locked

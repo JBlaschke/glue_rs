@@ -1,0 +1,1 @@
+Trace checks passed: Lua 5.4, exact stdout, relocated archive reads, no payload/file mutations, memfds or shared mappings, completed zero exit

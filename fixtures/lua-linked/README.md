@@ -23,8 +23,11 @@ These declared minimums are checked at execution time; running on a newer host
 does not establish compatibility at every minimum version. The fixtures do not
 supply x86_64, Windows, FreeBSD, signed deployment or native-module evidence.
 Both macOS arm64 CLI profiles pass with the new C boundary, including
-opposite-version rejection. The workspaces pass 142/143 Rust tests for
-`lua54`/`lua55`. Fresh Linux captures are pending. Historical debug v1
+opposite-version rejection. The macOS/Linux workspaces pass 142/143 Rust tests for
+`lua54`/`lua55` and all-target Clippy. Both relocated Linux fixtures pass exact
+output and full no-extraction trace checks from clean `ee7c9d3`. See the
+[C boundary evidence](../../docs/evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md).
+Historical debug v1
 captures used kernel 7.1.4, glibc 2.36 and 4 KiB pages and did not validate
 every declared minimum.
 See the [v1 evidence](../../docs/evidence/linux-arm64-lua-2026-10-08/README.md).

@@ -1,0 +1,79 @@
+{
+  "schema_version": 0,
+  "app_id": "linked-lua-demo",
+  "entrypoint": "main",
+  "targets": {
+    "linux-arm64-linked": {
+      "os": "linux",
+      "arch": "aarch64",
+      "minimum_os_version": "6.1",
+      "abi": {
+        "family": "glibc",
+        "minimum_version": "2.36"
+      },
+      "page_sizes": [
+        4096
+      ],
+      "cpu_features": []
+    }
+  },
+  "resources": {
+    "app/lib/answer.lua": {
+      "size": 90,
+      "sha256": "786bb264659fe380d512f0f8a06566bf31a7939214b2f1ff00022a93deca46f5",
+      "compression": "deflate"
+    },
+    "app/lib/number.lua": {
+      "size": 10,
+      "sha256": "80714b84ea9a7433474f24cc6779a052fb8e662996ec7d508eb8562d80e09e08",
+      "compression": "deflate"
+    },
+    "app/main.lua": {
+      "size": 356,
+      "sha256": "1f841379d897d3fd9a3046b5b4be6f7e6ed2315f1f4ac25051bf73c8012d43c1",
+      "compression": "deflate"
+    },
+    "assets/message.txt": {
+      "size": 31,
+      "sha256": "aa6d0b5ccf70836b7b813686a1767daab7653416640369a7c6bc09a5d7f766cb",
+      "compression": "stored"
+    }
+  },
+  "runtimes": {
+    "lua": {
+      "target": "linux-arm64-linked",
+      "build_id": "glue-lua55-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64",
+      "abi": {
+        "language": "lua",
+        "version": {
+          "major": 5,
+          "minor": 5,
+          "patch": 1
+        },
+        "integer_bits": 64,
+        "number": "float64"
+      },
+      "provisioning": {
+        "mode": "linked",
+        "provider": "lua_source",
+        "source": {
+          "release": "5.5.1",
+          "revision": null,
+          "artifact": "https://static.crates.io/crates/lua-src/lua-src-551.0.2.crate",
+          "sha256": "d400ffef0e3d4d29287092bdc5a276d0bf468b2c69709d5bab0d469312d9f947",
+          "variant": "lua55-static-int64-float64"
+        }
+      },
+      "required_features": []
+    }
+  },
+  "components": {
+    "main": {
+      "runtime": "lua",
+      "entry_point": "app/main.lua",
+      "native_modules": []
+    }
+  },
+  "native_modules": {},
+  "host_imports": {}
+}

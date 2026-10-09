@@ -1,0 +1,145 @@
+3527  execve("/build-target/debug/glue", ["/build-target/debug/glue", "run", "/build-target/relocated Lua fixture/app.glue"], 0xffffd8c887a0 /* 12 vars */) = 0
+3527  brk(NULL)                         = 0xaaaae212d000
+3527  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffab528000
+3527  faccessat(AT_FDCWD</build-target/relocated Lua fixture>, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3</etc/ld.so.cache>
+3527  newfstatat(3</etc/ld.so.cache>, "", {st_mode=S_IFREG|0644, st_size=6999, ...}, AT_EMPTY_PATH) = 0
+3527  mmap(NULL, 6999, PROT_READ, MAP_PRIVATE, 3</etc/ld.so.cache>, 0) = 0xffffab526000
+3527  close(3</etc/ld.so.cache>)        = 0
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libm.so.6>
+3527  read(3</usr/lib/aarch64-linux-gnu/libm.so.6>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\230\1\t\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\33\0\32\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0X\376\7\0\0\0\0\0X\376\7\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0x\375\10\0\0\0\0\0x\375\10\0\0\0\0\0x\375\10\0\0\0\0\0\354\2\0\0\0\0\0\0\370\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\210\375\10\0\0\0\0\0\210\375\10\0\0\0\0\0\210\375\10\0\0\0\0\0\0\2\0\0\0\0\0\0\0\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+3527  newfstatat(3</usr/lib/aarch64-linux-gnu/libm.so.6>, "", {st_mode=S_IFREG|0644, st_size=591960, ...}, AT_EMPTY_PATH) = 0
+3527  mmap(NULL, 655472, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffab451000
+3527  mmap(0xffffab460000, 589936, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libm.so.6>, 0) = 0xffffab460000
+3527  munmap(0xffffab451000, 61440)     = 0
+3527  munmap(0xffffab4f1000, 112)       = 0
+3527  mprotect(0xffffab4e0000, 61440, PROT_NONE) = 0
+3527  mmap(0xffffab4ef000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libm.so.6>, 0x8f000) = 0xffffab4ef000
+3527  close(3</usr/lib/aarch64-linux-gnu/libm.so.6>) = 0
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/lib/aarch64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>
+3527  read(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\310\2\2\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0h2\1\0\0\0\0\0h2\1\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\270\375\1\0\0\0\0\0\270\375\2\0\0\0\0\0\270\375\2\0\0\0\0\0\350\3\0\0\0\0\0\0\20\5\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\310\375\1\0\0\0\0\0\310\375\2\0\0\0\0\0\310\375\2\0\0\0\0\0\360\1\0\0\0\0\0\0\360\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+3527  newfstatat(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "", {st_mode=S_IFREG|0644, st_size=133448, ...}, AT_EMPTY_PATH) = 0
+3527  mmap(NULL, 262856, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffab41f000
+3527  mmap(0xffffab420000, 197320, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0) = 0xffffab420000
+3527  munmap(0xffffab41f000, 4096)      = 0
+3527  munmap(0xffffab451000, 58056)     = 0
+3527  mprotect(0xffffab434000, 110592, PROT_NONE) = 0
+3527  mmap(0xffffab44f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0x1f000) = 0xffffab44f000
+3527  close(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>) = 0
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libc.so.6>
+3527  read(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0000y\2\0\0\0\0\0@\0\0\0\0\0\0\0\20#\31\0\0\0\0\0\0\0\0\0@\08\0\n\0@\0?\0>\0\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0000\2\0\0\0\0\0\0000\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\3\0\0\0\4\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\33\0\0\0\0\0\0\0\33\0\0\0\0\0\0\0\10\0\0\0\0\0\0\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\244d\30\0\0\0\0\0\244d\30\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\300\315\30\0\0\0\0\0\300\315\31\0\0\0\0\0"..., 832) = 832
+3527  newfstatat(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "", {st_mode=S_IFREG|0755, st_size=1651408, ...}, AT_EMPTY_PATH) = 0
+3527  mmap(NULL, 1826912, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffab261000
+3527  mmap(0xffffab270000, 1761376, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xffffab270000
+3527  munmap(0xffffab261000, 61440)     = 0
+3527  munmap(0xffffab41f000, 96)        = 0
+3527  mprotect(0xffffab3f7000, 86016, PROT_NONE) = 0
+3527  mmap(0xffffab40c000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0x18c000) = 0xffffab40c000
+3527  mmap(0xffffab412000, 49248, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffffab412000
+3527  close(3</usr/lib/aarch64-linux-gnu/libc.so.6>) = 0
+3527  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffab524000
+3527  set_tid_address(0xffffab5240f0)   = 3527
+3527  set_robust_list(0xffffab524100, 24) = 0
+3527  rseq(0xffffab524740, 0x20, 0, 0xd428bc00) = 0
+3527  mprotect(0xffffab40c000, 16384, PROT_READ) = 0
+3527  mprotect(0xffffab44f000, 4096, PROT_READ) = 0
+3527  mprotect(0xffffab4ef000, 4096, PROT_READ) = 0
+3527  mprotect(0xaaaabb658000, 98304, PROT_READ) = 0
+3527  mprotect(0xffffab530000, 8192, PROT_READ) = 0
+3527  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+3527  munmap(0xffffab526000, 6999)      = 0
+3527  ppoll([{fd=0</dev/null<char 1:3>>, events=0}, {fd=1</evidence/lua.stdout.txt>, events=0}, {fd=2</evidence/lua.stderr.txt>, events=0}], 3, {tv_sec=0, tv_nsec=0}, NULL, 0) = 0 (Timeout)
+3527  rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+3527  getrandom("\xa9\x45\x50\x0b\xdb\xc5\xb2\x21", 8, GRND_NONBLOCK) = 8
+3527  brk(NULL)                         = 0xaaaae212d000
+3527  brk(0xaaaae214e000)               = 0xaaaae214e000
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/proc/self/maps", O_RDONLY|O_CLOEXEC) = 3</proc/3527/maps>
+3527  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+3527  newfstatat(3</proc/3527/maps>, "", {st_mode=S_IFREG|0444, st_size=0, ...}, AT_EMPTY_PATH) = 0
+3527  read(3</proc/3527/maps>, "aaaabb330000-aaaabb650000 r-xp 00000000 00:4f 1563                       /build-target/debug/glue\naaaabb658000-aaaabb670000 r--p 00328000 00:4f 1563                       /build-target/debug/glue\naaaabb670000-aaaabb671000 rw-p 00340000 00:4f 1563          "..., 1024) = 1024
+3527  read(3</proc/3527/maps>, "4696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffffab44f000-ffffab450000 r--p 0001f000 00:3c 34696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffffab450000-ffffab451000 rw-p 00020000 00:3c 34696261                   /u"..., 1024) = 1024
+3527  read(3</proc/3527/maps>, "    [vvar]\nffffab52e000-ffffab530000 r-xp 00000000 00:00 0                          [vdso]\nffffab530000-ffffab532000 r--p 0002e000 00:3c 34696221                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1\nffffab532000-ffffab534000 rw-p 00030000 00:"..., 1024) = 416
+3527  close(3</proc/3527/maps>)         = 0
+3527  sched_getaffinity(3527, 32, [0 1 2 3]) = 8
+3527  rt_sigaction(SIGSEGV, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+3527  sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+3527  mmap(NULL, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xffffab51f000
+3527  mprotect(0xffffab51f000, 4096, PROT_NONE) = 0
+3527  sigaltstack({ss_sp=0xffffab520000, ss_flags=0, ss_size=16384}, NULL) = 0
+3527  rt_sigaction(SIGSEGV, {sa_handler=0xaaaabb5822d0, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+3527  rt_sigaction(SIGBUS, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+3527  rt_sigaction(SIGBUS, {sa_handler=0xaaaabb5822d0, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+3527  openat(AT_FDCWD</build-target/relocated Lua fixture>, "/build-target/relocated Lua fixture/app.glue", O_RDONLY|O_CLOEXEC) = 3</build-target/relocated Lua fixture/app.glue>
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 0, SEEK_END) = 2474
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 0, SEEK_SET) = 0
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "GLUERS00\0\0\0\0\0\0\0\0\265\5\0\0\0\0\0\0\265\3\0\0\0\0\0\0\372\354\324\250dH%{;\263pD\316I\6Qx3\177:B\335&\306\325yz\216\t\271)\v", 64) = 64
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "{\"app_id\":\"linked-lua-demo\",\"components\":{\"main\":{\"entry_point\":\"app/main.lua\",\"native_modules\":[],\"runtime\":\"lua\"}},\"entrypoint\":\"main\",\"host_imports\":{},\"native_modules\":{},\"resources\":{\"app/lib/answer.lua\":{\"compression\":\"deflate\",\"sha256\":\"786bb264659f"..., 1461) = 1461
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2452, SEEK_SET) = 2452
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\5\6\0\0\0\0\4\0\4\0J\1\0\0U\2\0\0\0\0", 22) = 22
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2432, SEEK_SET) = 2432
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0\37\0\0\0\0\0\0\0\37\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2122, SEEK_SET) = 2122
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\1\2-\3-\0\0\0\10\0\0\0!\0\362iIR\377\377\377\377\377\377\377\377\22\0\24\0\0\0\0\0\0\0\0\0\244\201\0\0\0\0", 46) = 46
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2168, SEEK_SET) = 2168
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/lib/answer.lua", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2186, SEEK_SET) = 2186
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0Z\0\0\0\0\0\0\0M\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2206, SEEK_SET) = 2206
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\1\2-\3-\0\0\0\10\0\0\0!\0g#\2335\377\377\377\377\377\377\377\377\22\0\24\0\0\0\0\0\0\0\0\0\244\201\221\0\0\0", 46) = 46
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2252, SEEK_SET) = 2252
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/lib/number.lua", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2270, SEEK_SET) = 2270
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0\n\0\0\0\0\0\0\0\f\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2290, SEEK_SET) = 2290
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\1\2-\3-\0\0\0\10\0\0\0!\0\2423\265!\377\377\377\377\377\377\377\377\f\0\24\0\0\0\0\0\0\0\0\0\244\201\341\0\0\0", 46) = 46
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2336, SEEK_SET) = 2336
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/main.lua", 12) = 12
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2348, SEEK_SET) = 2348
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0d\1\0\0\0\0\0\0\323\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2368, SEEK_SET) = 2368
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\36jId\377\377\377\377\377\377\377\377\22\0\24\0\0\0\0\0\0\0\0\0\244\201\362\1\0\0", 46) = 46
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2414, SEEK_SET) = 2414
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "assets/message.txt", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2432, SEEK_SET) = 2432
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0\37\0\0\0\0\0\0\0\37\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1525, SEEK_SET) = 1525
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\3\4-\0\0\0\10\0\0\0!\0\362iIR\377\377\377\377\377\377\377\377\22\0\24\0", 30) = 30
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1555, SEEK_SET) = 1555
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/lib/answer.lua", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1573, SEEK_SET) = 1573
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0Z\0\0\0\0\0\0\0M\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1670, SEEK_SET) = 1670
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\3\4-\0\0\0\10\0\0\0!\0g#\2335\377\377\377\377\377\377\377\377\22\0\24\0", 30) = 30
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1700, SEEK_SET) = 1700
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/lib/number.lua", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1718, SEEK_SET) = 1718
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0\n\0\0\0\0\0\0\0\f\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1750, SEEK_SET) = 1750
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\3\4-\0\0\0\10\0\0\0!\0\2423\265!\377\377\377\377\377\377\377\377\f\0\24\0", 30) = 30
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1780, SEEK_SET) = 1780
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "app/main.lua", 12) = 12
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1792, SEEK_SET) = 1792
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0d\1\0\0\0\0\0\0\323\0\0\0\0\0\0\0", 20) = 20
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2023, SEEK_SET) = 2023
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\36jId\377\377\377\377\377\377\377\377\22\0\24\0", 30) = 30
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2053, SEEK_SET) = 2053
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "assets/message.txt", 18) = 18
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2071, SEEK_SET) = 2071
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "\1\0\20\0\37\0\0\0\0\0\0\0\37\0\0\0\0\0\0\0", 20) = 20
+3527  uname({sysname="Linux", nodename="b8768d76a299", ...}) = 0
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1812, SEEK_SET) = 1812
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "u\220\301J\3060\20\204\357\377S,\301B\n\245\275\v9z\360\242\240\340I\220\255Yc mjv\243>\276K\23\361\344)$\231\371fvS~\305\4[\3665\321\4\271\304\20wpP\350\243\306B\326\244\270\316\270\363\27\0253^\220\231\212\330\246\6\367\217l\2\323\337a\253,*\252L \357\4)\243'\337\323\376x\277\251\16B\2524\267\2535x\34\213r\227\306\235S\305\223\335\323\273\351LX\t>c\221\212I\241\251MD\314\30\264dc\26B\257D\315\23^\372\337,\337b\306\353\300u\265\346y\2772\nW\377Q\342.\226E\2170\277\345\262\241X30\264\32n\360pb\334\300jxy\272yx\274\275\277\233\372P}\tV\213\366\224q\274\374\0", 211) = 211
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1593, SEEK_SET) = 1593
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "-\214\301\n\200 \20\5\357~\305\303\223\22t\355\324\307\250m \330J\233K\207\350\337\203\364:3L\251)\24\260\36\221\4+\204N\315B\316\226\34\347N\2557BM\205\361 \360u\377\335\256\234Z\256\354<\206\34\213\t\v\2107\274\346\3", 77) = 77
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 1738, SEEK_SET) = 1738
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "+J-)-\312S06\345\2\0", 12) = 12
+3527  lseek(3</build-target/relocated Lua fixture/app.glue>, 2091, SEEK_SET) = 2091
+3527  read(3</build-target/relocated Lua fixture/app.glue>, "Hello from archived resources!\n", 31) = 31
+3527  newfstatat(1</evidence/lua.stdout.txt>, "", {st_mode=S_IFREG|0644, st_size=0, ...}, AT_EMPTY_PATH) = 0
+3527  write(1</evidence/lua.stdout.txt>, "Lua 5.5 answer=42 asset=Hello from archived resources!\n", 55) = 55
+3527  fcntl(3</build-target/relocated Lua fixture/app.glue>, F_GETFD) = 0x1 (flags FD_CLOEXEC)
+3527  close(3</build-target/relocated Lua fixture/app.glue>) = 0
+3527  sigaltstack({ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=16384}, NULL) = 0
+3527  munmap(0xffffab51f000, 20480)     = 0
+3527  exit_group(0)                     = ?
+3527  +++ exited with 0 +++

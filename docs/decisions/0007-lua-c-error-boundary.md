@@ -1,9 +1,11 @@
 # C-owned Lua execution boundary
 
 Status: implemented on `codex/a6-lua-c-boundary`, from merged `main`
-`db2c271`. macOS arm64 workspace validation passes 142/143 tests for
-`lua54`/`lua55`, with workspace Clippy clean for both. Optimized macOS
-boundary tests pass 50/51 tests. Fresh Linux captures are pending.
+`db2c271`. Clean implementation `ee7c9d3` passes 142/143 workspace tests for
+`lua54`/`lua55` on macOS and GNU Linux arm64, with workspace Clippy clean for
+both. Optimized macOS boundary tests pass 50/51 tests. Both relocated Linux
+fixtures pass exact output and full syscall trace checks.
+[Retained evidence](../evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md).
 
 The linked Lua source adapter must meet PLAN.md's literal requirement that
 Lua errors never jump across Rust frames. The pinned `mlua` implementation

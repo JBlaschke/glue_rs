@@ -1,0 +1,252 @@
+    Blocking waiting for file lock on build directory
+   Compiling glue-format v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-format)
+   Compiling glue-pack v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pack)
+   Compiling glue-linux-memfd-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/linux-memfd)
+   Compiling glue-resources v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-resources)
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+   Compiling glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.48s
+     Running unittests src/lib.rs (target/debug/deps/glue_format-ddd27d7099e36770)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/archive.rs (target/debug/deps/archive-9c2aa18297389dea)
+
+running 20 tests
+test locator_rejects_corruption_overflow_truncation_and_trailing_bytes ... ok
+test deflate_output_is_bounded_by_declared_member_size ... ok
+test corrupted_stored_bytes_fail_crc_before_becoming_visible ... ok
+test standard_zip32_member_is_supported ... ok
+test duplicate_raw_entries_reject_even_when_zip_library_would_collapse_them ... ok
+test crc_consistent_tampering_still_fails_manifest_hash ... ok
+test full_member_ranges_reject_overlap_and_offsets_into_metadata ... ok
+test configured_limits_reject_before_payload_read_or_allocation ... ok
+test compressed_member_cost_is_bounded_before_decoding ... ok
+test deflate_rejects_truncation_and_trailing_compressed_junk ... ok
+test local_header_disagreement_is_rejected ... ok
+test canonical_manifest_and_resource_inventory_are_required ... ok
+test writer_refuses_wrong_resources_and_nonempty_destination ... ok
+test reads_handle_fragmented_sources_and_do_not_decode_payload_at_open ... ok
+test zip64_footer_is_supported_without_giant_allocations ... ok
+test zip_paths_reject_traversal_case_and_file_directory_aliases ... ok
+test footer_bounds_and_counts_are_strict ... ok
+test unsupported_zip_features_are_rejected ... ok
+test undeclared_payload_and_empty_member_crc_are_rejected ... ok
+test stored_deflate_zip64_roundtrip_is_deterministic_and_lazy ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/manifest.rs (target/debug/deps/manifest-bcb635516467631b)
+
+running 27 tests
+test digest_uses_sha256_payload_identity ... ok
+test collisions_include_implicit_directories_and_file_directory_conflicts ... ok
+test duplicate_json_keys_reject_at_every_depth_and_after_escape_decoding ... ok
+test capability_declarations_and_cycles_are_metadata_not_loader_success ... ok
+test freebsd_requires_a_bundled_producer_distinct_from_pbs ... ok
+test host_provider_requires_explicit_absolute_target_paths ... ok
+test explicit_host_and_archived_lua_specs_do_not_turn_into_linked_specs ... ok
+test hashes_and_all_resource_references_are_validated ... ok
+test linked_lua55_round_trips_and_preserves_its_exact_release ... ok
+test linked_lua_requires_exact_source_release_and_valid_source_pin ... ok
+test linked_lua_rejects_discovery_fallback_and_archived_runtime_fields ... ok
+test declared_host_modules_cannot_mix_runtime_identities ... ok
+test canonical_json_round_trip_is_deterministic ... ok
+test linked_lua_round_trips_without_runtime_library_or_stdlib_resources ... ok
+test linked_lua_requires_official_provider_and_fixed_numeric_abi ... ok
+test lua55_requires_fixed_numeric_abi_and_unknown_minor_is_rejected ... ok
+test lua_and_node_abi_contracts_round_trip_and_require_pins ... ok
+test neutral_native_modules_cannot_hide_runtime_bindings ... ok
+test missing_misclassified_and_duplicate_dependencies_reject ... ok
+test resource_paths_reject_traversal_devices_and_ambiguous_names ... ok
+test target_profiles_reject_inconsistent_abi_and_unbounded_assumptions ... ok
+test json_limits_trailing_data_and_unknown_schema_reject ... ok
+test python_gil_debug_and_provider_mismatch_reject ... ok
+test source_pins_reject_moving_aliases_missing_identity_and_invalid_hashes ... ok
+test target_slices_cannot_be_crossed_by_dependency_or_component_edges ... ok
+test unknown_fields_and_values_reject_in_nested_contracts ... ok
+test windows_host_paths_do_not_depend_on_build_host_path_semantics ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/path_limits.rs (target/debug/deps/path_limits-93493e970f527217)
+
+running 4 tests
+test depth_64_is_accepted_and_65_rejects_without_prefix_expansion ... ok
+test shared_prefixes_do_not_consume_the_metadata_budget_repeatedly ... ok
+test both_stored_prefix_strings_count_toward_the_metadata_byte_budget ... ok
+test implicit_directories_count_toward_the_node_budget ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.35s
+
+     Running unittests src/main.rs (target/debug/deps/glue_linux_memfd_probe-fd54264af4bf5c8a)
+
+running 4 tests
+test tests::narrow_header_preflight_checks_class_endianness_type_and_machine ... ok
+test tests::scaffold_manifest_validates_without_claiming_runtime_acquisition ... ok
+test tests::program_headers_reject_ranges_and_unsupported_mapping_shapes ... ok
+test tests::matching_archive_hashes_do_not_let_corrupted_or_truncated_elf_pass_preflight ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/glue_pack-136e33090f5ff715)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/pack.rs (target/debug/deps/pack-68ec08a62a88a8d8)
+
+running 13 tests
+test input_manifest_remains_valid_and_unmodified ... ok
+test missing_empty_wrong_root_and_nonregular_resources_fail ... ok
+test declared_input_budget_is_checked_before_opening_any_resource ... ok
+test manifest_resource_paths_cannot_escape_root ... ok
+test existing_destination_is_preserved ... ok
+test manifest_limit_rejects_oversized_input_before_json_decoding ... ok
+test input_manifest_and_archive_limits_fail_before_publication ... ok
+test invalid_manifest_duplicate_keys_and_schema_fail_before_publication ... ok
+test explicit_inventory_builds_deterministically_and_reports_identities ... ok
+test archive_survives_relocation_with_spaces_and_unicode ... ok
+test output_symlinks_and_root_symlinks_are_not_followed ... ok
+test resource_and_directory_symlinks_are_rejected_before_output_creation ... ok
+test incorrect_input_hash_and_size_fail_before_output_creation ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/lib.rs (target/debug/deps/glue_resources-82eec70a9ecab425)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/resources.rs (target/debug/deps/resources-9191a63752c2aba1)
+
+running 12 tests
+test empty_resources_never_enter_a_cache_with_a_positive_budget ... ok
+test active_streams_keep_verified_bytes_after_eviction_and_archive_drop ... ok
+test streams_seek_safely_and_use_virtual_origins ... ok
+test stream_origins_percent_encode_special_path_characters ... ok
+test lru_evicts_the_least_recently_read_resource_within_the_byte_budget ... ok
+test stat_and_list_show_only_sorted_immediate_children ... ok
+test read_at_obeys_offsets_short_reads_eof_and_empty_buffers ... ok
+test unknown_paths_directories_and_noncanonical_aliases_have_explicit_errors ... ok
+test corrupt_resources_never_publish_bytes_or_evict_valid_cache_entries ... ok
+test compressed_payloads_are_cached_by_decoded_size ... ok
+test zero_budget_disables_caching_and_oversized_reads_preserve_cached_files ... ok
+test cache_entry_limit_evicts_tiny_resources_before_the_byte_budget_is_full ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+
+     Running unittests src/main.rs (target/debug/deps/glue-55fac5f62b676627)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/cli.rs (target/debug/deps/cli-8245468f3e0e479a)
+
+running 12 tests
+test linked_lua::corrupt_import_is_verified_before_its_body_runs ... ok
+test build_preserves_existing_outputs_and_rejects_incorrect_declared_hashes ... ok
+test linked_lua::rejects_the_other_lua_version_without_substitution ... ok
+test explain_size_reports_payload_totals_and_container_overhead ... ok
+test linked_lua::lua_errors_report_virtual_archive_origins ... ok
+test linked_lua::builds_and_runs_relocated_lua_archive_without_host_module_fallback ... ok
+test help_and_version_succeed_without_an_archive ... ok
+test corrupt_payload_verification_and_cat_fail_without_stdout_data ... ok
+test doctor_run_and_standalone_build_report_unavailable_execution_without_artifacts ... ok
+test malformed_archives_unknown_commands_and_invalid_flags_report_errors ... ok
+test builds_are_deterministic_and_relocated_archives_remain_readable ... ok
+test linked_lua::refuses_runtime_identity_and_target_mismatches_before_execution ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+
+     Running unittests src/lib.rs (target/debug/deps/glue_runtime_lua-9de8d627cc8df3b9)
+
+running 31 tests
+test bridge::tests::state_and_initialization_allocation_failures_return_normally ... ok
+test bridge::tests::shutdown_reply_oom_releases_the_rust_buffer ... ok
+test bridge::tests::panic_during_shutdown_is_reported ... ok
+test bridge::tests::nested_gc_requests_keep_both_owned_reply_descriptors_live ... ok
+test bridge::tests::callback_panics_are_sticky_even_if_lua_catches_them ... ok
+test bridge::tests::c_decoder_depth_boundary_matches_the_rust_encoder ... ok
+test bridge::tests::panic_payload_destructors_never_run_inside_the_ffi_callback ... ok
+test bridge::tests::finalizer_callbacks_keep_context_and_replies_alive ... ok
+test profile::tests::build_abi_and_every_source_pin_field_are_exact ... ok
+test bridge::tests::callback_errors_and_non_string_lua_errors_are_protected ... ok
+test bridge::tests::c_decoder_preserves_signed_edges_binary_strings_and_table_keys ... ok
+test profile::tests::exact_source_profile_accepts_selected_entry_and_additional_lua_resources ... ok
+test profile::tests::prerequisite_version_comparison_uses_numeric_components_and_zero_padding ... ok
+test profile::tests::host_and_archived_lua_do_not_fall_back_to_linked_lua ... ok
+test profile::tests::another_minor_source_or_build_never_substitutes_for_the_compiled_profile ... ok
+test profile::tests::exact_profile_accepts_the_observed_host ... ok
+test profile::tests::previous_rust_thunk_adapter_identity_requires_rebuilding_archives ... ok
+test profile::tests::malformed_selected_references_are_invalid ... ok
+test profile::tests::native_modules_imports_and_features_are_pending ... ok
+test profile::tests::python_and_node_are_explicitly_unsupported ... ok
+test profile::tests::unobserved_targets_and_cpu_requirements_are_unsupported ... ok
+test wire::tests::bridge_replies_transfer_owned_bytes_and_release_every_status ... ok
+test wire::tests::byte_budget_includes_framing_and_length_arithmetic_is_checked ... ok
+test profile::tests::workers_mixed_runtimes_and_multiple_targets_are_unsupported ... ok
+test wire::tests::depth_limit_counts_top_level_values_as_depth_one ... ok
+test wire::tests::nested_tables_preserve_key_value_order_and_integer_edges ... ok
+test wire::tests::invalid_table_keys_and_too_many_results_fail_without_a_partial_reply ... ok
+test profile::tests::target_os_arch_abi_and_prerequisite_floors_must_match ... ok
+test wire::tests::primitive_tags_and_binary_strings_match_the_wire_contract ... ok
+test bridge::tests::reply_allocation_failures_release_owned_bytes ... ok
+test bridge::tests::malformed_reply_is_released_before_error_propagation ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adapter.rs (target/debug/deps/adapter-cfdd81239d91c049)
+
+running 19 tests
+test archive_source_resolution_supports_init_and_prefers_direct_file ... ok
+test explicit_nil_environment_errors_keep_virtual_archive_origins ... ok
+test assets_are_binary_and_metadata_and_origins_are_virtual ... ok
+test lua_error_values_keep_upstream_profile_semantics ... ok
+test real_lua_nested_imports_cache_and_preload_keep_require_semantics ... ok
+test present_host_source_cannot_supply_a_missing_archive_import ... ok
+test hash_mismatch_stops_entry_and_import_before_their_source_executes ... ok
+test interpreter_matches_the_compiled_profile ... ok
+test loadfile_and_dofile_use_verified_archive_source_and_preserve_results ... ok
+test archive_paths_and_module_names_reject_traversal_and_aliases ... ok
+test load_and_loadfile_preserve_omitted_nil_table_and_non_table_environments ... ok
+test bytecode_is_rejected_on_entry_import_loadfile_dofile_and_load ... ok
+test no_resource_cache_budget_is_needed_for_recursive_imports ... ok
+test require_keeps_upstream_nil_false_and_numeric_name_semantics ... ok
+test archive_requests_work_from_coroutines_and_resource_errors_are_catchable ... ok
+test resources_remain_alive_for_lua_shutdown_finalizers ... ok
+test resource_keys_keep_escaped_origins_and_reject_unicode_invalid_utf8_and_nul ... ok
+test unsupported_filesystem_and_native_surfaces_are_unavailable ... ok
+test runtime_and_syntax_errors_name_virtual_sources ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests glue_format
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests glue_pack
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests glue_resources
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests glue_runtime_lua
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
