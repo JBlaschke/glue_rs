@@ -638,3 +638,280 @@ fn capability_declarations_and_cycles_are_metadata_not_loader_success() {
     // format validator proves references, never that constructors can safely run.
     m.validate().unwrap();
 }
+
+fn linked_manifest() -> Manifest {
+    linked_manifest_with_version(4, 8)
+}
+
+fn linked_manifest_with_version(minor: u16, patch: u16) -> Manifest {
+    let release = format!("5.{minor}.{patch}");
+    let mut m = manifest();
+    let mut runtime = m.runtimes.remove("python").unwrap();
+    runtime.build_id = format!("linked-lua-{release}-fixture");
+    runtime.abi = RuntimeAbi::Lua {
+        version: RuntimeVersion {
+            major: 5,
+            minor,
+            patch,
+        },
+        integer_bits: 64,
+        number: LuaNumber::Float64,
+    };
+    runtime.provisioning = Provisioning::Linked {
+        provider: BundledProvider::LuaSource,
+        source: SourcePin {
+            release: release.clone(),
+            revision: None,
+            artifact: format!("https://www.lua.org/ftp/lua-{release}.tar.gz"),
+            sha256: digest(b"synthetic Lua source artifact"),
+            variant: "static-int64-float64".to_owned(),
+        },
+    };
+    m.runtimes.insert("lua".to_owned(), runtime);
+    m.components.get_mut("main").unwrap().runtime = "lua".to_owned();
+    let native = m.native_modules.get_mut("math").unwrap();
+    native.runtime = Some("lua".to_owned());
+    for dependency in &mut native.dependencies {
+        if let DependencySpec::Runtime { runtime } = dependency {
+            *runtime = "lua".to_owned();
+        }
+    }
+    m.resources.remove("runtime/libpython.dylib");
+    m.resources.remove("runtime/stdlib.pack");
+    m
+}
+
+#[test]
+fn linked_lua_round_trips_without_runtime_library_or_stdlib_resources() {
+    let m = linked_manifest();
+    m.validate().unwrap();
+    let bytes = m.to_json().unwrap();
+    assert_eq!(m, Manifest::from_json(&bytes).unwrap());
+    let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let spec = &json["runtimes"]["lua"]["provisioning"];
+    assert_eq!(spec["mode"], "linked");
+    assert!(spec.get("runtime_library").is_none());
+    assert!(spec.get("stdlib").is_none());
+}
+
+#[test]
+fn linked_lua55_round_trips_and_preserves_its_exact_release() {
+    let m = linked_manifest_with_version(5, 1);
+    let bytes = m.to_json().unwrap();
+    let decoded = Manifest::from_json(&bytes).unwrap();
+    assert_eq!(decoded, m);
+    assert!(matches!(
+        decoded.runtimes["lua"].abi,
+        RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor: 5,
+                patch: 1,
+            },
+            integer_bits: 64,
+            number: LuaNumber::Float64,
+        }
+    ));
+    let Provisioning::Linked { source, .. } = &decoded.runtimes["lua"].provisioning else {
+        unreachable!()
+    };
+    assert_eq!(source.release, "5.5.1");
+    for release in ["5.4.9", "5.5", "5.5.0", "5.5.01"] {
+        let mut invalid = m.clone();
+        let Provisioning::Linked { source, .. } =
+            &mut invalid.runtimes.get_mut("lua").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        source.release = release.to_owned();
+        assert!(invalid.validate().is_err(), "{release}");
+    }
+}
+
+#[test]
+fn lua55_requires_fixed_numeric_abi_and_unknown_minor_is_rejected() {
+    for (integer_bits, number) in [(32, LuaNumber::Float64), (64, LuaNumber::Float32)] {
+        let mut m = linked_manifest_with_version(5, 1);
+        let RuntimeAbi::Lua {
+            integer_bits: selected_integer,
+            number: selected_number,
+            ..
+        } = &mut m.runtimes.get_mut("lua").unwrap().abi
+        else {
+            unreachable!()
+        };
+        *selected_integer = integer_bits;
+        *selected_number = number;
+        assert!(m.validate().is_err(), "{integer_bits}/{number:?}");
+    }
+    // The source release matches this unsupported ABI, so the version check
+    // itself must reject it rather than relying on a mismatched source pin.
+    let unknown = linked_manifest_with_version(6, 1);
+    assert!(unknown.validate().is_err());
+}
+
+#[test]
+fn linked_lua_rejects_discovery_fallback_and_archived_runtime_fields() {
+    let original = serde_json::to_value(linked_manifest()).unwrap();
+    for field in ["runtime_library", "stdlib", "discovery", "fallback"] {
+        let mut json = original.clone();
+        json["runtimes"]["lua"]["provisioning"][field] = "unrequested-provider".into();
+        assert!(
+            Manifest::from_json(&serde_json::to_vec(&json).unwrap()).is_err(),
+            "{field}"
+        );
+    }
+}
+
+#[test]
+fn linked_lua_requires_official_provider_and_fixed_numeric_abi() {
+    for provider in [
+        BundledProvider::PythonBuildStandalone,
+        BundledProvider::CpythonSource,
+        BundledProvider::NodeSource,
+        BundledProvider::Custom,
+    ] {
+        let mut m = linked_manifest();
+        let Provisioning::Linked {
+            provider: selected, ..
+        } = &mut m.runtimes.get_mut("lua").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        *selected = provider;
+        assert!(m.validate().is_err(), "{provider:?}");
+    }
+    for abi in [
+        RuntimeAbi::Python {
+            version: RuntimeVersion {
+                major: 3,
+                minor: 13,
+                patch: 8,
+            },
+            gil: GilMode::Conventional,
+            debug: false,
+        },
+        RuntimeAbi::Node {
+            version: RuntimeVersion {
+                major: 26,
+                minor: 9,
+                patch: 0,
+            },
+            node_api: 10,
+            addon_abi: 145,
+            bridge_revision: "fixture-bridge-revision".to_owned(),
+        },
+        RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor: 4,
+                patch: 8,
+            },
+            integer_bits: 32,
+            number: LuaNumber::Float64,
+        },
+        RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor: 4,
+                patch: 8,
+            },
+            integer_bits: 64,
+            number: LuaNumber::Float32,
+        },
+        RuntimeAbi::Lua {
+            version: RuntimeVersion {
+                major: 5,
+                minor: 3,
+                patch: 8,
+            },
+            integer_bits: 64,
+            number: LuaNumber::Float64,
+        },
+    ] {
+        let mut m = linked_manifest();
+        m.runtimes.get_mut("lua").unwrap().abi = abi;
+        assert!(m.validate().is_err());
+    }
+}
+
+#[test]
+fn linked_lua_requires_exact_source_release_and_valid_source_pin() {
+    for release in ["5.4.7", "5.4", "5.4.08", "lua-5.4.8", "latest"] {
+        let mut m = linked_manifest();
+        let Provisioning::Linked { source, .. } =
+            &mut m.runtimes.get_mut("lua").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        source.release = release.to_owned();
+        assert!(m.validate().is_err(), "{release}");
+    }
+    for field in ["release", "artifact", "variant", "sha256", "revision"] {
+        let mut m = linked_manifest();
+        let Provisioning::Linked { source, .. } =
+            &mut m.runtimes.get_mut("lua").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        match field {
+            "release" => source.release.clear(),
+            "artifact" => source.artifact.clear(),
+            "variant" => source.variant.clear(),
+            "sha256" => source.sha256.clear(),
+            "revision" => source.revision = Some(String::new()),
+            _ => unreachable!(),
+        }
+        assert!(m.validate().is_err(), "{field}");
+    }
+    let mut m = linked_manifest();
+    let RuntimeAbi::Lua { version, .. } = &mut m.runtimes.get_mut("lua").unwrap().abi else {
+        unreachable!()
+    };
+    version.patch = 7;
+    assert!(m.validate().is_err());
+}
+
+#[test]
+fn explicit_host_and_archived_lua_specs_do_not_turn_into_linked_specs() {
+    let mut m = linked_manifest();
+    m.runtimes.get_mut("lua").unwrap().provisioning = Provisioning::Host {
+        runtime_library: "/opt/lua/liblua.so".to_owned(),
+        stdlib: "/opt/lua/stdlib".to_owned(),
+        discovery: HostDiscovery::ExplicitPaths,
+    };
+    let decoded = Manifest::from_json(&m.to_json().unwrap()).unwrap();
+    assert!(matches!(
+        decoded.runtimes["lua"].provisioning,
+        Provisioning::Host { .. }
+    ));
+    let Provisioning::Linked { source, .. } = linked_manifest()
+        .runtimes
+        .remove("lua")
+        .unwrap()
+        .provisioning
+    else {
+        unreachable!()
+    };
+    m.runtimes.get_mut("lua").unwrap().provisioning = Provisioning::Bundled {
+        provider: BundledProvider::LuaSource,
+        source,
+        runtime_library: "runtime/liblua.so".to_owned(),
+        stdlib: "runtime/lua-stdlib.pack".to_owned(),
+    };
+    // A linked runtime in the launcher cannot satisfy missing archived references.
+    assert!(m.validate().is_err());
+    m.resources.insert(
+        "runtime/liblua.so".to_owned(),
+        resource(b"synthetic archived Lua image"),
+    );
+    m.resources.insert(
+        "runtime/lua-stdlib.pack".to_owned(),
+        resource(b"synthetic archived Lua stdlib"),
+    );
+    let decoded = Manifest::from_json(&m.to_json().unwrap()).unwrap();
+    assert!(matches!(
+        decoded.runtimes["lua"].provisioning,
+        Provisioning::Bundled { .. }
+    ));
+}

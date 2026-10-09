@@ -153,6 +153,13 @@ pub enum Provisioning {
         stdlib: String,
         discovery: HostDiscovery,
     },
+    /// A runtime bundled into the launcher at build time. Acquisition must match
+    /// its compiled target/build/ABI/source descriptor; it is never a fallback
+    /// for an explicitly selected archived or host runtime.
+    Linked {
+        provider: BundledProvider,
+        source: SourcePin,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -380,6 +387,28 @@ impl Manifest {
                         return invalid("host runtime library and stdlib must be distinct paths");
                     }
                 }
+                Provisioning::Linked { provider, source } => {
+                    source.validate()?;
+                    let RuntimeAbi::Lua { version, .. } = &runtime.abi else {
+                        return invalid(
+                            "the linked provider supports only official Lua 5.4 or 5.5",
+                        );
+                    };
+                    if *provider != BundledProvider::LuaSource {
+                        return invalid("the initial linked Lua provider requires lua_source");
+                    }
+                    // RuntimeAbi::validate already enforces the fixed numeric
+                    // configuration. Unlike PBS release dates, a linked Lua
+                    // source release must identify this exact ABI patch version.
+                    let expected_release =
+                        format!("{}.{}.{}", version.major, version.minor, version.patch);
+                    if source.release != expected_release {
+                        return invalid(format!(
+                            "linked Lua source release {:?} differs from exact ABI release {expected_release:?}",
+                            source.release
+                        ));
+                    }
+                }
             }
         }
         for (id, component) in &self.components {
@@ -593,12 +622,12 @@ impl RuntimeAbi {
                 number,
             } => {
                 if version.major != 5
-                    || version.minor != 4
+                    || !matches!(version.minor, 4 | 5)
                     || *integer_bits != 64
                     || *number != LuaNumber::Float64
                 {
                     return invalid(
-                        "initial Lua contract requires official Lua 5.4 with 64-bit integers and float64 numbers",
+                        "Lua contract requires official Lua 5.4 or 5.5 with 64-bit integers and float64 numbers",
                     );
                 }
             }

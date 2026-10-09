@@ -9,15 +9,33 @@ the baseline until reviewed.
 | A4 archive/resource foundation | `codex/a4-archive-resources` / `c4b307f` (stacked on A0) | Implemented | 56 tests on macOS and Linux arm64; deterministic ZIP64, corrupt/unsupported input rejection and bounded resources |
 | Packaging/inspection CLI scaffold | `codex/packaging-cli` / `4581386` (stacked on A4) | Implemented | 76 tests on macOS and Linux arm64; explicit-inventory builder and read-only CLI commands; format/Clippy clean |
 | A3 Linux memfd fixture | `codex/a3-linux-memfd-probe` / `447a339` (stacked on CLI) | Controlled spike | 80 Rust tests on macOS/Linux arm64, 15 trace-policy tests; Clippy clean on both; native ordinary-loader comparison and full syscall checks pass |
+| A6 linked Lua 5.4 source slice | `codex/a6-lua-linked-execution` / `03303d7` | Experimental implementation | macOS arm64 CLI fixture builds, reports readiness and prints the expected result; 111 Rust tests and workspace Clippy pass; Linux execution/trace evidence pending at this baseline |
+| A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
+| A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
 
 ## Gate status
 
-G0 and G1 are open. The Linux memfd spike is separate from the product runner.
-No general native backend, runtime bootstrap, approved system-library profile,
-signed deployment probe or four-platform execution evidence exists yet.
-The archive and manifest are version 0. Candidate runtime sources are recorded
-in `docs/decisions/0001-foundation-contract.md`; exact release pins are pending
-the platform experiments. Later gates remain pending.
+G0, G1 and G2 are open. Linked official Lua 5.4.9 and 5.5.1 are explicit,
+version-specific source-only profiles; this is partial A6/G2 work, not native-Lua
+or four-OS acceptance.
+The Linux memfd spike remains separate from the product runner. General native
+backends, archived/host runtime bootstraps, Python/Node execution, workers,
+approved system-library profiles and signed deployment remain pending.
+The archive and manifest are version 0. Lua is pinned to `mlua` 0.12.2 and
+`lua-src` 551.0.2 with int64/float64 configuration; other runtime release pins
+still depend on platform experiments. The logical Lua build ID is not a compiler
+configuration or artifact hash. See [the base profile decision](decisions/0005-linked-lua-source-profile.md)
+and [version selection](decisions/0006-versioned-linked-lua-profiles.md).
+
+The profile branch added mutually exclusive compiled `lua54` (default) and
+`lua55` profiles with exact manifest identities. Supporting both versions through
+separate launchers does not provide simultaneous multi-runtime acquisition or
+worker execution.
+
+The maintained `mlua` API protects Lua calls and catches callback panics, but
+upstream Lua longjmp may cross its Drop-free Rust protected-call thunk. This
+does not satisfy PLAN.md's literal C-only/no-Rust-frame boundary. A shim or an
+explicitly accepted boundary contract remains a release requirement.
 
 ## Local test environments
 
@@ -41,10 +59,39 @@ The synthetic resource fixture produces 1,469 archive bytes for 57 uncompressed
 resource bytes, with SHA-256
 `e2fa199105c8cffde55ec2dd403f27d3e1dc334c399aa334afba133c64be7d85`.
 It is a packaging/resource fixture and contains no actual Lua runtime.
+Its selected `host` provider still returns status 2; the linked runtime is never
+used as a fallback. Separate [linked fixtures](../fixtures/lua-linked/README.md)
+declare the exact source/build/ABI and macOS arm64 or GNU Linux arm64 target.
+At the Lua 5.4 baseline, the macOS arm64 fixture was built through the CLI, reported ready through
+`doctor`, and printed its expected nested-import/asset result. The complete
+workspace passed 111 Rust tests and Clippy with warnings denied on this host.
+The final validation branch passed 118 Rust tests with `lua54` and 119 with
+`lua55` on macOS and GNU Linux arm64, and all-target Clippy with warnings denied
+for both. Lua 5.5 built
+through the CLI, reported ready for 5.5.1, and printed the expected `Lua 5.5`
+result. Its fixture archive SHA-256 is
+`4c0d21b1e8b2bec3bd146280958f0ddf958c03f7177451eb2049b9e3570a0094`.
+Opposite-version archives return 1 without executing source; 27 Python
+trace-policy tests pass.
+
+The final Linux captures used clean commit `8b6eb1f` on
+`codex/a6-lua-linux-validation`, stacked on source profiles `cb88d7d`. Both
+relocated Lua fixtures exited 0 with exactly the expected stdout and empty
+stderr, and passed full `strace` checks. The observed arm64 cell used Linux
+`7.1.4-200.fc44.aarch64`, glibc `2.36-9+deb12u10`, Rust 1.88.0, GCC 12.2.0,
+strace 6.1 and 4 KiB pages. Direct Podman commands were used because the
+sandboxed wrapper could not access its socket. The
+[retained evidence](evidence/linux-arm64-lua-2026-10-08/README.md) contains
+commands, source/fixture/artifact identities, all build-provenance instances,
+feature trees, test/Clippy logs and raw traces. These debug source-only
+observations remain separate from the native probe and do not establish the
+declared minimum kernel/glibc versions or other platforms/architectures.
 
 ## Next critical-path assignments
 
-Run A1 (signed macOS arm64 mapping), A2 (Windows PE), and A3 (Linux/FreeBSD ELF)
-with actual runtime startup, extending the initial Linux memfd fixture. Establish
-the FreeBSD bundled Python/Node producer and inspect pinned PBS artifacts. Publish capability
-evidence before implementing broad native coordination or language adapters.
+Resolve the linked-source error-boundary contract before release and extend
+platform/release evidence. Continue A1 (signed macOS arm64
+mapping), A2 (Windows PE) and A3 (Linux/FreeBSD ELF) with actual runtime startup.
+Establish the FreeBSD bundled Python/Node producer and inspect pinned PBS
+artifacts. G2 also requires a real native Lua module; the source-only slice and
+the separate memfd fixture do not meet that acceptance criterion together.

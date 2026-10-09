@@ -4,19 +4,78 @@ A Rust packager and launcher under development for Python, Node.js and Lua apps
 in a read-only archive. The runtime contract forbids payload extraction and
 silent runtime-provider fallback. See [PLAN.md](PLAN.md) for the full design.
 
-The current implementation packages explicit resources, validates the manifest
-and ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
-resource tree with bounded memory caching. **Product language execution, general
-native loading, workers and standalone executables are not implemented yet.** The archive and
-manifest are experimental version 0; G0/G1 are still open. A separate Linux
-fixture probes archived shared-library loading through sealed memfds; this
-mechanism is not integrated into `glue run`.
+The current implementation packages explicit resources, validates manifest and
+ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
+resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
+5.5.1 source profiles** run archive scripts and resources on matching macOS or GNU
+Linux targets. General native loading, host/archived runtime acquisition,
+Python/Node execution, workers and standalone executables remain pending.
+The archive and manifest are experimental version 0; G0/G1/G2 remain open.
+A separate Linux fixture probes archived shared-library loading through sealed
+memfds; that mechanism is not integrated into `glue run`.
+
+## Try linked Lua
+
+Use Rust 1.88.0 through Rustup. If Homebrew shadows Rustup, put `$HOME/.cargo/bin`
+first in PATH. These commands select the macOS arm64 fixture; on GNU Linux arm64,
+use `fixtures/lua-linked/manifest.linux-arm64.json` instead. The target's OS,
+architecture, ABI, minimum versions and page size must match the running host.
+
+```sh
+cargo build --locked -p glue-runner
+target/debug/glue build --manifest fixtures/lua-linked/manifest.macos-arm64.json \
+  --root fixtures/lua-linked/input --output target/linked-lua-demo.glue
+target/debug/glue doctor target/linked-lua-demo.glue
+target/debug/glue run target/linked-lua-demo.glue
+```
+
+The fixture performs nested archive imports, checks `require` caching and virtual
+origins, reads an asset, and prints
+`Lua 5.4 answer=42 asset=Hello from archived resources!`. Existing build outputs
+are preserved; choose a new output name when rebuilding.
+
+Lua 5.4 is the default compiled profile. To select Lua 5.5 explicitly, use its
+matching manifest and a separate build directory. On GNU Linux arm64, substitute
+`manifest.lua55.linux-arm64.json` below:
+
+```sh
+cargo build --locked -p glue-runner --no-default-features --features lua55 \
+  --target-dir target/lua55
+target/lua55/debug/glue build --manifest fixtures/lua-linked/manifest.lua55.macos-arm64.json \
+  --root fixtures/lua-linked/input --output target/linked-lua55-demo.glue
+target/lua55/debug/glue doctor target/linked-lua55-demo.glue
+target/lua55/debug/glue run target/linked-lua55-demo.glue
+```
+
+The 5.5 fixture prints the same result with a `Lua 5.5` prefix. `lua54` and `lua55`
+are mutually exclusive build features. Each compiled launcher accepts only its
+own exact source/build/ABI identity; another Lua version is rejected. Supporting
+both versions through separate launchers does not provide simultaneous runtimes
+in one launcher/archive; those providers and workers remain later work.
+
+Provisioning must explicitly select `linked` / `lua_source`, the compiled Lua
+release's exact source pin and build profile, and int64/float64 ABI. No installed Lua is required.
+`require` searches `app/?.lua` and `app/?/init.lua`; `loadfile` and `dofile` read
+canonical archive keys. Every consumed resource is fully verified before use.
+`glue.read`, `glue.stat`, `glue.list` and `glue.origin` expose read-only assets.
+Bytecode, `io`, `os`, `debug`, native loading, declared host imports and multiple
+components/runtimes/targets are unsupported in this initial profile. These are
+experimental compatibility restrictions, not a sandbox or the final host-I/O
+policy. See the [fixture](fixtures/lua-linked/README.md) and
+[base profile decision](docs/decisions/0005-linked-lua-source-profile.md) and
+[version selection](docs/decisions/0006-versioned-linked-lua-profiles.md).
+
+The adapter uses the maintained `mlua` safe API to catch callback panics and
+protect Lua calls. Upstream Lua longjmp may still cross a Drop-free Rust
+protected-call thunk. **PLAN.md's literal C-only, no-Rust-frame boundary is not
+satisfied**; a shim or explicitly accepted boundary contract is needed before
+release.
 
 ## Try the resource fixture
 
-Use Rust 1.88.0 through Rustup. If Homebrew shadows Rustup, put `$HOME/.cargo/bin`
-first in PATH. The fixture declares a fictional host Lua library and tests only
-packaging and resources.
+This older fixture declares a fictional `host` Lua library and tests packaging
+and resources. It remains unsupported for execution; linked Lua is never
+silently substituted for its selected provider.
 
 ```sh
 cargo build --locked -p glue-runner
@@ -42,12 +101,25 @@ An output write failure may leave a partial file and returns an error.
 materialize a resource as a filesystem file. These hashes detect corruption;
 they do not authenticate an archive's author.
 
-`run`, `doctor APP.glue` and `build --standalone` return status 2 because execution
-or standalone packaging is unavailable. `doctor APP.glue` validates metadata and
-reports pending capabilities; it does not validate a declared host runtime.
-Errors in input/arguments return status 1; successful core operations return 0.
+`run` and `doctor APP.glue` return 0 for a matching linked profile, 2 for an
+unsupported provider/capability, and 1 for malformed input or mismatched
+source/build/ABI/host prerequisites. `doctor` checks metadata and acquisition
+readiness without executing scripts or verifying every resource; use `verify`
+for a complete content check. The original host resource fixture still returns
+2. `build --standalone` remains unavailable with status 2. Successful core
+operations return 0; input and argument errors return 1.
 
 ## Development and evidence
+
+The current macOS and GNU Linux arm64 workspaces pass 118 Rust tests with `lua54`
+and 119 with `lua55`, with all-target Clippy clean for both. Both CLI fixtures
+run, and the opposite minor-version archive is rejected before execution. The
+27 Python trace-policy tests pass. Both relocated Linux fixtures exit 0 with
+exact output and pass full syscall trace checks from clean source `8b6eb1f` on
+`codex/a6-lua-linux-validation`, stacked on profiles `cb88d7d`.
+The [retained Linux records](docs/evidence/linux-arm64-lua-2026-10-08/README.md)
+include source/artifact hashes, commands, build provenance and raw traces.
+The earlier native observation remains separate evidence.
 
 ```sh
 cargo test --workspace --locked
@@ -56,6 +128,9 @@ cargo clippy --workspace --all-targets --locked -- -D warnings
 sh scripts/test-linux.sh
 python3 -m unittest discover -s scripts -p 'test_linux_memfd_trace.py'
 sh scripts/run-linux-memfd.sh
+python3 -m unittest discover -s scripts -p 'test_linux_lua_trace.py'
+sh scripts/run-linux-lua.sh lua54
+sh scripts/run-linux-lua.sh lua55
 ```
 
 The Linux script vendors dependencies already present in the build machine's
@@ -77,8 +152,18 @@ Build tools and Podman are development dependencies only. See the
 [probe decision](docs/decisions/0004-linux-memfd-probe.md) for its narrow scope
 and the remaining platform/runtime experiments.
 
+The Lua harness reuses that local test image and records separate profile runs,
+including relocated CLI execution, binary/source identities and a complete
+syscall trace. Its checker admits only the fixture's exact output diagnostic
+and read-only runtime operations. The final capture used direct Podman commands
+because the sandboxed wrapper could not access the Podman socket. This is
+debug/O0 fixture evidence on Linux arm64 kernel 7.1.4, glibc 2.36 and 4 KiB
+pages. It is not a sandbox or proof about arbitrary Lua programs, the declared
+kernel 6.1 minimum, release/performance behavior or other architectures.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md), [progress](docs/progress.md),
 [container contract](docs/decisions/0002-experimental-container.md) and
 [fixture protocol](docs/fixtures.md). Implementation steps use stacked feature
-branches. Native loaders and real runtime bootstraps require the next platform
-experiments before a runnable language profile can be advertised.
+branches. The linked source slice does not establish native Lua, mixed apps,
+archived/host Python or Node startup, signed macOS deployment, or four-OS
+compatibility. Their feasibility and release gates remain open.

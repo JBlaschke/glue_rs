@@ -323,3 +323,208 @@ fn help_and_version_succeed_without_an_archive() {
     assert!(diagnostic(&version).contains(env!("CARGO_PKG_VERSION")));
     assert!(tree_snapshot(&temp.0).is_empty());
 }
+
+// The checked-in execution fixtures have observed arm64 Darwin/GNU Linux targets.
+#[cfg(all(
+    target_arch = "aarch64",
+    any(target_os = "macos", all(target_os = "linux", target_env = "gnu"))
+))]
+mod linked_lua {
+    use super::*;
+    use glue_format::{Compression, ResourceSpec, digest, write_archive};
+
+    fn fixture() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/lua-linked")
+    }
+
+    fn manifest() -> Manifest {
+        Manifest::from_json(&fs::read(fixture().join(manifest_name())).unwrap()).unwrap()
+    }
+
+    fn manifest_name() -> &'static str {
+        match (cfg!(feature = "lua55"), cfg!(target_os = "macos")) {
+            (false, true) => "manifest.macos-arm64.json",
+            (false, false) => "manifest.linux-arm64.json",
+            (true, true) => "manifest.lua55.macos-arm64.json",
+            (true, false) => "manifest.lua55.linux-arm64.json",
+        }
+    }
+
+    fn contents() -> BTreeMap<String, Vec<u8>> {
+        manifest()
+            .resources
+            .keys()
+            .map(|key| {
+                (
+                    key.clone(),
+                    fs::read(fixture().join("input").join(key)).unwrap(),
+                )
+            })
+            .collect()
+    }
+
+    fn archive(
+        temp: &TestDir,
+        manifest: &Manifest,
+        contents: &BTreeMap<String, Vec<u8>>,
+    ) -> PathBuf {
+        let path = temp.0.join("linked archive.glue");
+        write_archive(File::create(&path).unwrap(), manifest, contents).unwrap();
+        path
+    }
+
+    #[test]
+    fn builds_and_runs_relocated_lua_archive_without_host_module_fallback() {
+        let temp = TestDir::new();
+        let output = temp.0.join("original.glue");
+        let result = temp.run(&[
+            arg("build"),
+            arg("--manifest"),
+            fixture().join(manifest_name()).as_os_str(),
+            arg("--root"),
+            fixture().join("input").as_os_str(),
+            arg("--output"),
+            output.as_os_str(),
+        ]);
+        assert_status(&result, 0);
+
+        let relocated = temp.0.join("relocated ü");
+        fs::create_dir(&relocated).unwrap();
+        let path = relocated.join("renamed app.glue");
+        fs::rename(output, &path).unwrap();
+        let host = temp.0.join("lib");
+        fs::create_dir(&host).unwrap();
+        fs::write(host.join("answer.lua"), b"error('HOST MODULE EXECUTED')").unwrap();
+        let before = tree_snapshot(&temp.0);
+
+        let doctor = temp.run(&[arg("doctor"), path.as_os_str()]);
+        assert_status(&doctor, 0);
+        assert!(diagnostic(&doctor).contains(&format!(
+            "Ready: linked Lua {}",
+            glue_runtime_lua::profile::LUA_RELEASE,
+        )));
+        let run = Command::new(env!("CARGO_BIN_EXE_glue"))
+            .args([arg("run"), path.as_os_str()])
+            .env("LUA_PATH", temp.0.join("?.lua"))
+            .env("LUA_CPATH", temp.0.join("?.so"))
+            .current_dir(&temp.0)
+            .stdin(Stdio::null())
+            .output()
+            .unwrap();
+        assert_status(&run, 0);
+        assert_eq!(
+            run.stdout,
+            format!(
+                "{} answer=42 asset=Hello from archived resources!\n",
+                glue_runtime_lua::profile::LUA_VERSION
+            )
+            .as_bytes()
+        );
+        assert!(run.stderr.is_empty());
+        assert_eq!(tree_snapshot(&temp.0), before);
+    }
+
+    #[test]
+    fn refuses_runtime_identity_and_target_mismatches_before_execution() {
+        for mismatch in ["build", "source", "target"] {
+            let temp = TestDir::new();
+            let mut manifest = manifest();
+            let runtime = manifest.runtimes.values_mut().next().unwrap();
+            match mismatch {
+                "build" => runtime.build_id = "wrong-build".to_owned(),
+                "source" => {
+                    let glue_format::Provisioning::Linked { source, .. } =
+                        &mut runtime.provisioning
+                    else {
+                        panic!()
+                    };
+                    source.sha256 = "0".repeat(64);
+                }
+                "target" => {
+                    manifest.targets.values_mut().next().unwrap().arch =
+                        glue_format::Architecture::X86_64
+                }
+                _ => unreachable!(),
+            }
+            let path = archive(&temp, &manifest, &contents());
+            for command in ["doctor", "run"] {
+                let result = temp.run(&[arg(command), path.as_os_str()]);
+                assert_status(&result, 1);
+                assert!(!diagnostic(&result).contains("answer=42"));
+                assert!(diagnostic(&result).contains("invalid linked Lua acquisition"));
+            }
+        }
+    }
+
+    #[test]
+    fn lua_errors_report_virtual_archive_origins() {
+        for source in [
+            b"local = invalid syntax".as_slice(),
+            b"error('APP FAILED')".as_slice(),
+        ] {
+            let temp = TestDir::new();
+            let mut manifest = manifest();
+            let mut contents = contents();
+            contents.insert("app/main.lua".to_owned(), source.to_vec());
+            manifest.resources.insert(
+                "app/main.lua".to_owned(),
+                ResourceSpec {
+                    size: source.len() as u64,
+                    sha256: digest(source),
+                    compression: Compression::Stored,
+                },
+            );
+            let path = archive(&temp, &manifest, &contents);
+            let result = temp.run(&[arg("run"), path.as_os_str()]);
+            assert_status(&result, 1);
+            assert!(result.stdout.is_empty());
+            assert!(diagnostic(&result).contains("glue://linked-lua-demo/app/main.lua"));
+        }
+    }
+
+    #[test]
+    fn corrupt_import_is_verified_before_its_body_runs() {
+        let temp = TestDir::new();
+        let mut manifest = manifest();
+        let mut contents = contents();
+        let source = b"error('CORRUPT MODULE EXECUTED')";
+        contents.insert("app/lib/answer.lua".to_owned(), source.to_vec());
+        manifest.resources.insert(
+            "app/lib/answer.lua".to_owned(),
+            ResourceSpec {
+                size: source.len() as u64,
+                sha256: digest(source),
+                compression: Compression::Stored,
+            },
+        );
+        let path = archive(&temp, &manifest, &contents);
+        let mut bytes = fs::read(&path).unwrap();
+        let start = bytes
+            .windows(source.len())
+            .position(|bytes| bytes == source)
+            .unwrap();
+        bytes[start] ^= 1;
+        fs::write(&path, bytes).unwrap();
+        let result = temp.run(&[arg("run"), path.as_os_str()]);
+        assert_status(&result, 1);
+        assert!(result.stdout.is_empty());
+        assert!(!diagnostic(&result).contains("CORRUPT MODULE EXECUTED"));
+    }
+
+    #[test]
+    fn rejects_the_other_lua_version_without_substitution() {
+        let temp = TestDir::new();
+        let name = match (cfg!(feature = "lua55"), cfg!(target_os = "macos")) {
+            (true, true) => "manifest.macos-arm64.json",
+            (true, false) => "manifest.linux-arm64.json",
+            (false, true) => "manifest.lua55.macos-arm64.json",
+            (false, false) => "manifest.lua55.linux-arm64.json",
+        };
+        let other = Manifest::from_json(&fs::read(fixture().join(name)).unwrap()).unwrap();
+        let path = archive(&temp, &other, &contents());
+        let result = temp.run(&[arg("run"), path.as_os_str()]);
+        assert_status(&result, 1);
+        assert!(result.stdout.is_empty());
+        assert!(diagnostic(&result).contains("invalid linked Lua acquisition"));
+    }
+}

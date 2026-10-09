@@ -1,4 +1,4 @@
-//! Packaging and read-only inspection entry points for the experimental core.
+//! Packaging, inspection and explicit linked Lua execution entry points.
 
 use glue_format::{Archive, Manifest, Provisioning, RuntimeAbi, digest};
 use glue_resources::Resources;
@@ -24,8 +24,9 @@ Usage:
   glue doctor [APP.glue]
   glue run APP.glue
 
-Only packaging and read-only resources are implemented. Runtime execution and
-standalone executables require the platform feasibility gates in PLAN.md.
+A linked Lua 5.4 or 5.5 build can run source and resources from a matching archive.
+Native modules, host/archived runtimes, other languages and standalone executables
+remain pending. The resource fixture is packaging-only; see fixtures/lua-linked.
 Existing build outputs are never overwritten.
 ";
 
@@ -224,21 +225,45 @@ fn execute(command: Command) -> Result<ExitCode> {
                 std::env::consts::OS,
                 std::env::consts::ARCH,
             );
-            println!("Available: archive packaging, inspection, verification, read-only resources");
             println!(
-                "Pending: native backends, Python/Node/Lua adapters, workers, standalone signing"
+                "Linked Lua: {} (int64, float64)",
+                glue_runtime_lua::profile::LUA_RELEASE,
+            );
+            println!(
+                "Available: archive packaging, inspection, verification, read-only resources, linked Lua source profile"
+            );
+            println!(
+                "Pending: native backends, host/archived runtime providers, Python/Node adapters, workers, standalone signing"
             );
             if let Some(path) = path {
                 let archive = open(&path)?;
                 println!("Validated metadata for {}", archive.manifest().app_id);
-                execution_unavailable(archive.manifest());
-                return Ok(ExitCode::from(2));
+                match glue_runtime_lua::profile::validate(archive.manifest()) {
+                    Ok(entry) => println!(
+                        "Ready: linked Lua {} source profile, entry {entry}",
+                        glue_runtime_lua::profile::LUA_RELEASE,
+                    ),
+                    Err(glue_runtime_lua::profile::CapabilityError::Unsupported(reason)) => {
+                        execution_unavailable(archive.manifest());
+                        eprintln!("glue: {reason}");
+                        return Ok(ExitCode::from(2));
+                    }
+                    Err(error) => return Err(error.into()),
+                }
             }
         }
         Command::Run(path) => {
             let archive = open(&path)?;
-            execution_unavailable(archive.manifest());
-            return Ok(ExitCode::from(2));
+            let entry = match glue_runtime_lua::profile::validate(archive.manifest()) {
+                Ok(entry) => entry,
+                Err(glue_runtime_lua::profile::CapabilityError::Unsupported(reason)) => {
+                    execution_unavailable(archive.manifest());
+                    eprintln!("glue: {reason}");
+                    return Ok(ExitCode::from(2));
+                }
+                Err(error) => return Err(error.into()),
+            };
+            glue_runtime_lua::execute(Resources::with_default_cache(archive), &entry)?;
         }
     }
     Ok(ExitCode::SUCCESS)
@@ -267,6 +292,12 @@ fn inspect(archive: &Archive<File>) -> Result<()> {
     }
     for (id, runtime) in &manifest.runtimes {
         let provisioning = match &runtime.provisioning {
+            Provisioning::Linked { provider, source } => {
+                format!(
+                    "linked {provider:?} {} ({})",
+                    source.release, source.variant
+                )
+            }
             Provisioning::Bundled { provider, .. } => format!("bundled {provider:?}"),
             Provisioning::Host {
                 runtime_library,
@@ -286,7 +317,7 @@ fn inspect(archive: &Archive<File>) -> Result<()> {
         println!("Host import {id}: {import:?}");
     }
     println!("Payload verification: use glue verify");
-    println!("Execution support: unavailable (G1 pending)");
+    println!("Execution support: use glue doctor to check the selected runtime and target");
     Ok(())
 }
 
@@ -306,7 +337,7 @@ fn execution_unavailable(manifest: &Manifest) {
     let component = &manifest.components[&manifest.entrypoint];
     let runtime = &manifest.runtimes[&component.runtime];
     eprintln!(
-        "glue: execution is unavailable for {} ({}); runtime adapters and native backends require G1 feasibility evidence",
+        "glue: execution is unavailable for {} ({}); the selected provider or execution profile is unsupported. See fixtures/lua-linked for the linked Lua source profile",
         manifest.app_id,
         runtime_name(&runtime.abi),
     );
