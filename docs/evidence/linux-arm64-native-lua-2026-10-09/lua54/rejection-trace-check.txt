@@ -1,0 +1,1 @@
+Trace checks passed: 6 exact ELF rejection diagnostic(s), empty stdout, exact case-specific statuses 1/2, no memfd or payload mutations

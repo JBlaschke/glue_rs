@@ -100,7 +100,8 @@ sh scripts/run-linux-native-lua.sh lua55
 ```
 
 See the [native fixture](fixtures/native/lua-linux/README.md) and
-[profile decision](docs/decisions/0008-linux-native-lua-closure.md). This narrow
+[profile decision](docs/decisions/0008-linux-native-lua-closure.md). Both Lua
+versions have retained [execution and rejection evidence](docs/evidence/linux-arm64-native-lua-2026-10-09/README.md). This narrow
 vertical slice does not establish general native compatibility or four-OS gates.
 
 ## Try the resource fixture
@@ -143,18 +144,20 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The C boundary workspace passes 142 Rust tests with `lua54` and 143 with
-`lua55` on macOS and GNU Linux arm64, with all-target Clippy clean for both.
-Optimized macOS boundary tests also pass 50/51 tests. The new tests cover real
-allocation failures, callback panic containment, owned-buffer cleanup, nested
-garbage-collector requests,
-shutdown finalizers and upstream error semantics. Both relocated Linux
-fixtures exit 0 with exact output and passing full no-extraction trace checks
-from clean implementation `ee7c9d3`. The
-[C boundary evidence](docs/evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
-retains source/artifact hashes, commands, build provenance and full traces.
-Historical [v1 records](docs/evidence/linux-arm64-lua-2026-10-08/README.md) and
-the earlier native observation remain separate evidence.
+The source-profile workspace passes 181/182 Rust tests for `lua54`/`lua55` on
+macOS and GNU Linux arm64. With `linux-native`, GNU Linux workspaces pass
+178/179 tests and Mac workspaces pass 177/178 portable and C-boundary tests.
+All profiles pass all-target Clippy with warnings denied on both systems;
+optimized Mac native boundary suites pass 53/54 tests. Tests cover allocation
+failures, callback panic containment, buffer cleanup, GC/finalizers, native
+initializer/function errors, bounded ELF parsing and closure rejection.
+Both native Linux fixtures match ordinary loading and pass complete sealed
+memfd/no-extraction trace checks; all twelve rejection traces pass before any
+memfd attempt. The [native evidence](docs/evidence/linux-arm64-native-lua-2026-10-09/README.md)
+retains source/artifact hashes, commands, provenance and full traces from clean
+`fb61e5e`. The earlier [C boundary](docs/evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md),
+[v1](docs/evidence/linux-arm64-lua-2026-10-08/README.md) and native probe records
+remain separate historical evidence.
 
 ```sh
 cargo test --workspace --locked
@@ -167,6 +170,7 @@ python3 -m unittest discover -s scripts -p 'test_linux_lua_trace.py'
 sh scripts/run-linux-lua.sh lua54
 sh scripts/run-linux-lua.sh lua55
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_trace.py'
+python3 -m unittest discover -s scripts -p 'test_linux_native_lua_rejections.py'
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55
 ```

@@ -1,7 +1,9 @@
 # Explicit Linux native Lua closure
 
-Status: implementation on `codex/a6-linux-native-lua`, from merged `main`
-`7853282`. Execution evidence will follow implementation.
+Status: experimental implementation on `codex/a6-linux-native-lua`, from merged
+`main` `7853282`. Both Lua versions have controlled GNU Linux arm64 execution
+and rejection evidence from clean `fb61e5e`; see the
+[retained records](../evidence/linux-arm64-native-lua-2026-10-09/README.md).
 
 Add an opt-in `linux-native` Cargo feature alongside either `lua54` or `lua55`.
 The default source-only profiles and their v2 identities remain available.

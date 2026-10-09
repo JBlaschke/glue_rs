@@ -1,0 +1,10 @@
+0000000000007c64 T luaL_checkversion_
+0000000000005a68 T luaL_error
+000000000002a91c T lua_createtable
+000000000002a2b0 T lua_getglobal
+0000000000029c48 T lua_pushcclosure
+00000000000296dc T lua_pushinteger
+000000000002b09c T lua_setfield
+000000000002aec8 T lua_setglobal
+0000000000028368 T lua_settop
+00000000000290ec T lua_tointegerx

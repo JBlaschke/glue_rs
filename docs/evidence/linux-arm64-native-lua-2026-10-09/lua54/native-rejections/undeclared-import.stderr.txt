@@ -1,0 +1,1 @@
+glue: invalid native Lua closure: native_probe: undeclared undefined symbol "glue_forbidden_constructor"

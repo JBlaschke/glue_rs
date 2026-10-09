@@ -13,7 +13,7 @@ Further implementation continues on separate feature branches.
 | A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
 | A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
 | A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
-| A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` (from merged `7853282`) | Experimental implementation; final evidence capture pending | Portable ELF/closure tests, C-only initializer/function error and OOM tests; GNU Linux arm64 5.4/5.5 trial fixtures match ordinary loading and pass complete two-memfd/no-payload-write trace checks |
+| A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` / `3a24833`, fixture cleanup `fb61e5e` (from merged `7853282`) | Experimental implementation; controlled observation | Mac/Linux source workspaces: 181/182 tests; GNU Linux native workspaces: 178/179; 37 portable native tests and 54 Python policy tests; Clippy clean for all profiles; both Lua versions match ordinary loading and pass complete two-memfd/no-payload-write traces; twelve ELF rejection traces pass before any memfd attempt |
 
 ## Gate status
 
@@ -101,7 +101,23 @@ exit 0 and pass the full trace checker. The
 [boundary evidence](evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
 retains the fresh source/artifact identities, all provenance records, raw traces
 and Mac/Linux test logs. The strict C-only error boundary is implemented for
-this source profile; native and platform/release acceptance remain pending.
+this source profile; general native and platform/release acceptance remain pending.
+
+The native Lua closure was captured from clean `fb61e5e` on 2026-10-09 using
+the same immutable image and observed GNU Linux arm64 environment. Both source
+workspace profiles pass 181/182 tests on Mac and Linux; native-feature profiles
+pass 178/179 on GNU Linux and 177/178 on Mac, where the loader is unsupported.
+All four profiles pass all-target Clippy with warnings denied on both systems.
+Optimized Mac native C-boundary suites pass 53/54 tests. Both relocated native
+fixtures match ordinary loading of the same compiled Lua core, exit 0 with
+exact output and empty stderr, and pass full traces proving two completely
+sealed memfds before loading and no payload filesystem mutation. All six
+adversarial ELF cases per version reject with exact diagnostics and statuses
+before any memfd attempt. The
+[native evidence](evidence/linux-arm64-native-lua-2026-10-09/README.md)
+retains all fourteen traces, source/artifact hashes, build provenance and
+Mac/Linux validation logs. This completes the controlled Linux native Lua
+slice, with the platform, release and general compatibility gates still open.
 
 ## Next critical-path assignments
 

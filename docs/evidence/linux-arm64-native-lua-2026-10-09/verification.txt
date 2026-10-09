@@ -1,0 +1,5 @@
+Clean implementation: fb61e5e22a4c3edc4e8a8c58af1f229c051d1a1a
+Captured on 2026-10-09; Podman containers exited 0.
+lua54: 80 source hash records match clean Git blobs; 7 archives/four resources each verified in memory; exact exports/baseline/errors/statuses checked; every retained record byte-identical.
+lua55: 80 source hash records match clean Git blobs; 7 archives/four resources each verified in memory; exact exports/baseline/errors/statuses checked; every retained record byte-identical.
+Whole success/rejection archive hashes and every compiled fixture input hash also match the retained in-memory ZIP members.

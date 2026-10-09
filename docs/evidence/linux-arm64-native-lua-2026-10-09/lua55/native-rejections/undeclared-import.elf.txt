@@ -1,0 +1,171 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          67568 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         7
+  Size of section headers:           64 (bytes)
+  Number of section headers:         23
+  Section header string table index: 22
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000cdc 0x000cdc R E 0x10000
+  LOAD           0x00fda0 0x000000000001fda0 0x000000000001fda0 0x000264 0x000270 RW  0x10000
+  DYNAMIC        0x00fdb0 0x000000000001fdb0 0x000000000001fdb0 0x0001c0 0x0001c0 RW  0x8
+  NOTE           0x0001c8 0x00000000000001c8 0x00000000000001c8 0x000024 0x000024 R   0x4
+  GNU_EH_FRAME   0x000be4 0x0000000000000be4 0x0000000000000be4 0x000034 0x000034 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x00fda0 0x000000000001fda0 0x000000000001fda0 0x000260 0x000260 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.build-id .hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .plt .text .rodata .eh_frame_hdr .eh_frame 
+   01     .init_array .dynamic .got .data .bss 
+   02     .dynamic 
+   03     .note.gnu.build-id 
+   04     .eh_frame_hdr 
+   05     
+   06     .init_array .dynamic .got 
+
+Dynamic section at offset 0xfdb0 contains 24 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libglue_lua_dep.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000e (SONAME)             Library soname: [libglue_lua_native.so]
+ 0x0000000000000019 (INIT_ARRAY)         0x1fda0
+ 0x000000000000001b (INIT_ARRAYSZ)       16 (bytes)
+ 0x0000000000000004 (HASH)               0x1f0
+ 0x0000000000000005 (STRTAB)             0x400
+ 0x0000000000000006 (SYMTAB)             0x250
+ 0x000000000000000a (STRSZ)              294 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x1ff70
+ 0x0000000000000002 (PLTRELSZ)           312 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x5b8
+ 0x0000000000000007 (RELA)               0x570
+ 0x0000000000000008 (RELASZ)             72 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0x550
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x526
+ 0x000000006ffffff9 (RELACOUNT)          2
+ 0x0000000000000000 (NULL)               0x0
+
+Relocation section '.rela.dyn' at offset 0x570 contains 3 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000001fda0  0000000000000403 R_AARCH64_RELATIVE                        7e0
+000000000001fda8  0000000000000403 R_AARCH64_RELATIVE                        800
+000000000001fff8  0000000800000401 R_AARCH64_GLOB_DAT     0000000000020000 glue_native_data + 0
+
+Relocation section '.rela.plt' at offset 0x5b8 contains 13 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000001ff88  0000000300000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_settop + 0
+000000000001ff90  0000000400000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_pushcclosure + 0
+000000000001ff98  0000000500000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_tointegerx + 0
+000000000001ffa0  0000000600000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_createtable + 0
+000000000001ffa8  0000000700000402 R_AARCH64_JUMP_SLOT    0000000000000000 getpid@GLIBC_2.17 + 0
+000000000001ffb0  0000000a00000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_setfield + 0
+000000000001ffb8  0000000b00000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_pushinteger + 0
+000000000001ffc0  0000000c00000402 R_AARCH64_JUMP_SLOT    0000000000000000 glue_lua_dep + 0
+000000000001ffc8  0000000d00000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_setglobal + 0
+000000000001ffd0  0000000e00000402 R_AARCH64_JUMP_SLOT    0000000000000000 lua_getglobal + 0
+000000000001ffd8  0000000f00000402 R_AARCH64_JUMP_SLOT    0000000000000000 glue_forbidden_constructor + 0
+000000000001ffe0  0000001000000402 R_AARCH64_JUMP_SLOT    0000000000000000 luaL_checkversion_ + 0
+000000000001ffe8  0000001100000402 R_AARCH64_JUMP_SLOT    0000000000000000 luaL_error + 0
+
+Symbol table '.dynsym' contains 18 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000000007e0     0 SECTION LOCAL  DEFAULT   10 .text
+     2: 0000000000020000     0 SECTION LOCAL  DEFAULT   17 .data
+     3: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_settop
+     4: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_pushcclosure
+     5: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_tointegerx
+     6: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_createtable
+     7: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND getpid@GLIBC_2.17 (2)
+     8: 0000000000020000     4 OBJECT  GLOBAL DEFAULT   17 glue_native_data
+     9: 0000000000000890   572 FUNC    GLOBAL DEFAULT   10 luaopen_native_probe
+    10: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_setfield
+    11: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_pushinteger
+    12: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND glue_lua_dep
+    13: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_setglobal
+    14: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_getglobal
+    15: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND glue_forbidden_constructor
+    16: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND luaL_checkversion_
+    17: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND luaL_error
+
+Symbol table '.symtab' contains 58 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000000001c8     0 SECTION LOCAL  DEFAULT    1 .note.gnu.build-id
+     2: 00000000000001f0     0 SECTION LOCAL  DEFAULT    2 .hash
+     3: 0000000000000250     0 SECTION LOCAL  DEFAULT    3 .dynsym
+     4: 0000000000000400     0 SECTION LOCAL  DEFAULT    4 .dynstr
+     5: 0000000000000526     0 SECTION LOCAL  DEFAULT    5 .gnu.version
+     6: 0000000000000550     0 SECTION LOCAL  DEFAULT    6 .gnu.version_r
+     7: 0000000000000570     0 SECTION LOCAL  DEFAULT    7 .rela.dyn
+     8: 00000000000005b8     0 SECTION LOCAL  DEFAULT    8 .rela.plt
+     9: 00000000000006f0     0 SECTION LOCAL  DEFAULT    9 .plt
+    10: 00000000000007e0     0 SECTION LOCAL  DEFAULT   10 .text
+    11: 0000000000000ad0     0 SECTION LOCAL  DEFAULT   11 .rodata
+    12: 0000000000000be4     0 SECTION LOCAL  DEFAULT   12 .eh_frame_hdr
+    13: 0000000000000c18     0 SECTION LOCAL  DEFAULT   13 .eh_frame
+    14: 000000000001fda0     0 SECTION LOCAL  DEFAULT   14 .init_array
+    15: 000000000001fdb0     0 SECTION LOCAL  DEFAULT   15 .dynamic
+    16: 000000000001ff70     0 SECTION LOCAL  DEFAULT   16 .got
+    17: 0000000000020000     0 SECTION LOCAL  DEFAULT   17 .data
+    18: 0000000000020004     0 SECTION LOCAL  DEFAULT   18 .bss
+    19: 0000000000000000     0 SECTION LOCAL  DEFAULT   19 .comment
+    20: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS module.c
+    21: 0000000000000ad0     0 NOTYPE  LOCAL  DEFAULT   11 $d
+    22: 0000000000000810     0 NOTYPE  LOCAL  DEFAULT   10 $x
+    23: 0000000000000810    12 FUNC    LOCAL  DEFAULT   10 fail
+    24: 0000000000000820   104 FUNC    LOCAL  DEFAULT   10 answer
+    25: 00000000000007e0     0 NOTYPE  LOCAL  DEFAULT   10 $x
+    26: 00000000000007e0    20 FUNC    LOCAL  DEFAULT   10 initialize_library
+    27: 000000000001fda0     0 NOTYPE  LOCAL  DEFAULT   14 $d
+    28: 0000000000020000     0 NOTYPE  LOCAL  DEFAULT   17 $d
+    29: 0000000000020004     0 NOTYPE  LOCAL  DEFAULT   18 $d
+    30: 0000000000020004     4 OBJECT  LOCAL  DEFAULT   18 constructors
+    31: 0000000000020008     4 OBJECT  LOCAL  DEFAULT   18 initializers
+    32: 0000000000000c2c     0 NOTYPE  LOCAL  DEFAULT   13 $d
+    33: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS forbidden-constructor.c
+    34: 0000000000000800     0 NOTYPE  LOCAL  DEFAULT   10 $x
+    35: 0000000000000800     4 FUNC    LOCAL  DEFAULT   10 forbidden_constructor
+    36: 000000000001fda8     0 NOTYPE  LOCAL  DEFAULT   14 $d
+    37: 0000000000000cc8     0 NOTYPE  LOCAL  DEFAULT   13 $d
+    38: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS 
+    39: 000000000001fdb0     0 OBJECT  LOCAL  DEFAULT  ABS _DYNAMIC
+    40: 0000000000000be4     0 NOTYPE  LOCAL  DEFAULT   12 __GNU_EH_FRAME_HDR
+    41: 000000000001fff0     0 OBJECT  LOCAL  DEFAULT  ABS _GLOBAL_OFFSET_TABLE_
+    42: 00000000000006f0     0 NOTYPE  LOCAL  DEFAULT    9 $x
+    43: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_settop
+    44: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_pushcclosure
+    45: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_tointegerx
+    46: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_createtable
+    47: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND getpid@GLIBC_2.17
+    48: 0000000000020000     4 OBJECT  GLOBAL DEFAULT   17 glue_native_data
+    49: 0000000000000890   572 FUNC    GLOBAL DEFAULT   10 luaopen_native_probe
+    50: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_setfield
+    51: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_pushinteger
+    52: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND glue_lua_dep
+    53: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_setglobal
+    54: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND lua_getglobal
+    55: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND glue_forbidden_constructor
+    56: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND luaL_checkversion_
+    57: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND luaL_error

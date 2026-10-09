@@ -1,0 +1,15 @@
+Command: python3 scripts/check-linux-native-lua-trace.py docs/evidence/linux-arm64-native-lua-2026-10-09/lua54/native-lua.trace.txt --lua-version 5.4
+Trace checks passed: exact native Lua output/PID, two sealed private memfd images, no payload file mutations
+Exit status: 0
+
+Command: python3 scripts/check-linux-native-lua-rejections.py docs/evidence/linux-arm64-native-lua-2026-10-09/lua54/native-rejections
+Trace checks passed: 6 exact ELF rejection diagnostic(s), empty stdout, exact case-specific statuses 1/2, no memfd or payload mutations
+Exit status: 0
+
+Command: python3 scripts/check-linux-native-lua-trace.py docs/evidence/linux-arm64-native-lua-2026-10-09/lua55/native-lua.trace.txt --lua-version 5.5
+Trace checks passed: exact native Lua output/PID, two sealed private memfd images, no payload file mutations
+Exit status: 0
+
+Command: python3 scripts/check-linux-native-lua-rejections.py docs/evidence/linux-arm64-native-lua-2026-10-09/lua55/native-rejections
+Trace checks passed: 6 exact ELF rejection diagnostic(s), empty stdout, exact case-specific statuses 1/2, no memfd or payload mutations
+Exit status: 0

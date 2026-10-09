@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/executable-stack.glue: 4 resources, 139562 archive bytes, 137758 uncompressed bytes
+Archive SHA-256: 95974e6584f8c0fc30284544fc3c880d245498bd1a50070d7c151f479d7d80f0

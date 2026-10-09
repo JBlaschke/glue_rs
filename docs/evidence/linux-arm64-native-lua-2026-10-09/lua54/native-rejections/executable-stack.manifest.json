@@ -1,0 +1,49 @@
+{
+  "schema_version": 0,
+  "app_id": "native-lua-demo",
+  "entrypoint": "main",
+  "targets": {
+    "linux-arm64-linked": {
+      "os": "linux", "arch": "aarch64", "minimum_os_version": "6.3",
+      "abi": {"family": "glibc", "minimum_version": "2.36"},
+      "page_sizes": [4096], "cpu_features": []
+    }
+  },
+  "resources": {
+    "app/main.lua": {"size": 1752, "sha256": "4853b8ab944cf3a05c9f3e9ba4d134f3baa8fd96d023e06409c523816ab2bc97", "compression": "deflate"},
+    "assets/message.txt": {"size": 22, "sha256": "e8a972f5f90bc7fd7b59aaf07f48bd26bc0f2db583e9bc19547a8e702cfad495", "compression": "stored"},
+    "native/libglue_lua_dep.so": {"size": 67136, "sha256": "94382ba0861b7eb33529468e3d05e571efc0a7e7fea2458f53f0a0d9a6ec3093", "compression": "stored"},
+    "native/libglue_lua_native.so": {"size": 68848, "sha256": "6b76c9a4bee1f4dc023cbeac966d8d0e1038ab4ea98a54dfcfdec0929721badb", "compression": "stored"}
+  },
+  "runtimes": {
+    "lua": {
+      "target": "linux-arm64-linked",
+      "build_id": "glue-lua54-native-linux-v1/c-boundary-1/lua-src-551.0.2/int64-float64",
+      "abi": {"language": "lua", "version": {"major": 5, "minor": 4, "patch": 9}, "integer_bits": 64, "number": "float64"},
+      "provisioning": {
+        "mode": "linked", "provider": "lua_source",
+        "source": {
+          "release": "5.4.9", "revision": null,
+          "artifact": "https://static.crates.io/crates/lua-src/lua-src-551.0.2.crate",
+          "sha256": "d400ffef0e3d4d29287092bdc5a276d0bf468b2c69709d5bab0d469312d9f947",
+          "variant": "lua54-static-int64-float64"
+        }
+      },
+      "required_features": []
+    }
+  },
+  "components": {"main": {"runtime": "lua", "entry_point": "app/main.lua", "native_modules": ["native_probe"]}},
+  "native_modules": {
+    "glue_lua_dep": {
+      "target": "linux-arm64-linked", "resource": "native/libglue_lua_dep.so", "format": "elf",
+      "namespace": "linked-lua", "runtime": null, "dependencies": [], "required_features": ["function_exports"]
+    },
+    "native_probe": {
+      "target": "linux-arm64-linked", "resource": "native/libglue_lua_native.so", "format": "elf",
+      "namespace": "linked-lua", "runtime": "lua",
+      "dependencies": [{"class": "archived_module", "module": "glue_lua_dep"}, {"class": "runtime", "runtime": "lua"}, {"class": "operating_system", "import": "libc"}],
+      "required_features": ["function_exports", "data_exports", "constructors", "symbol_versions", "runtime_aliases"]
+    }
+  },
+  "host_imports": {"libc": {"class": "operating_system", "target": "linux-arm64-linked", "library": "libc.so.6", "symbols": ["getpid"]}}
+}
