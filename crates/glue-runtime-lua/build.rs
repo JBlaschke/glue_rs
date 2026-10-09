@@ -10,6 +10,8 @@ const OVERRIDE_ROOTS: &[&str] = &["CC", "CXX", "CFLAGS", "CXXFLAGS", "CPPFLAGS"]
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=c/bridge.c");
+    println!("cargo:rerun-if-changed=c/bridge.h");
     let (release, compatibility) = match (
         env::var_os("CARGO_FEATURE_LUA54").is_some(),
         env::var_os("CARGO_FEATURE_LUA55").is_some(),
@@ -55,9 +57,9 @@ fn main() {
     );
 
     let mut provenance = String::from(
-        "glue linked Lua build provenance v1\n\
+        "glue linked Lua build provenance v2\n\
          This is local build evidence, not a complete artifact fingerprint.\n\
-         bindings=mlua-0.12.2/mlua-sys-0.13.0\n\
+         boundary=glue-c-boundary-1\n\
          source_numeric_defaults=int64/float64\n\
          compiler_override_policy=nonempty CC/CXX/CFLAGS/CXXFLAGS/CPPFLAGS variants rejected\n\
          optional_ucid_feature=absence must be audited in Cargo feature graph\n",
@@ -86,6 +88,11 @@ fn main() {
         cfg!(debug_assertions)
     )
     .expect("writing to a String cannot fail");
+    writeln!(
+        provenance,
+        "boundary_explicit_config=C11 when supported; warnings as errors; c/bridge.c"
+    )
+    .expect("writing to a String cannot fail");
     writeln!(provenance, "default_cc_path={:?}", compiler.path())
         .expect("writing to a String cannot fail");
     writeln!(provenance, "default_cc_args={:?}", compiler.args())
@@ -109,6 +116,28 @@ fn main() {
         "cargo:rustc-env=GLUE_LUA_BUILD_PROVENANCE_PATH={}",
         path.display()
     );
+
+    let version = if release == "5.4.9" {
+        lua_src::Lua54
+    } else {
+        lua_src::Lua55
+    };
+    let artifacts = lua_src::Build::new().build(version);
+    cc::Build::new()
+        .include(artifacts.include_dir())
+        .include("c")
+        .file("c/bridge.c")
+        .flag_if_supported("-std=c11")
+        .warnings(true)
+        .warnings_into_errors(true)
+        .compile("glue_lua_boundary");
+    artifacts.print_cargo_metadata();
+    if target.contains("linux") || target.ends_with("bsd") {
+        println!("cargo:rustc-link-lib=m");
+    }
+    if target.contains("linux") {
+        println!("cargo:rustc-link-lib=dl");
+    }
 }
 
 fn required_env(name: &str) -> String {

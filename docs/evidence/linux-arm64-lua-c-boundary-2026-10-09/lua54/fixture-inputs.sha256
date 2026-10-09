@@ -1,0 +1,5 @@
+b527cbb58fff4378249f3993f9cc840af5f2574ad11d925aaddc057a693e1f25  fixtures/lua-linked/manifest.linux-arm64.json
+1f841379d897d3fd9a3046b5b4be6f7e6ed2315f1f4ac25051bf73c8012d43c1  fixtures/lua-linked/input/app/main.lua
+786bb264659fe380d512f0f8a06566bf31a7939214b2f1ff00022a93deca46f5  fixtures/lua-linked/input/app/lib/answer.lua
+80714b84ea9a7433474f24cc6779a052fb8e662996ec7d508eb8562d80e09e08  fixtures/lua-linked/input/app/lib/number.lua
+aa6d0b5ccf70836b7b813686a1767daab7653416640369a7c6bc09a5d7f766cb  fixtures/lua-linked/input/assets/message.txt

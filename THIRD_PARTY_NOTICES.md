@@ -1,7 +1,7 @@
 # Third-party notices: linked Lua profile
 
-These notices cover the Lua source and bindings used by the initial linked
-execution profile, plus the Lua source builder. This is a component notice
+These notices cover the Lua source used by the linked execution profile,
+plus the Lua source builder and historical bindings. This is a component notice
 record; it does not replace a complete release dependency inventory.
 
 The pinned source is `lua-src 551.0.2` (crate SHA-256
@@ -67,6 +67,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 ## mlua 0.12.2, mlua-sys 0.13.0, and inherited rlua code
+
+Historical notice for the v1 adapter. These crates are no longer dependencies
+of the v2 C boundary; the notice is retained for earlier commits and artifacts.
 
 The following notice is reproduced from `mlua-0.12.2/LICENSE`.
 `mlua-sys 0.13.0` identifies its license as MIT and belongs to the same

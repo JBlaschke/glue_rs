@@ -47,3 +47,7 @@ longjmp may still cross a Drop-free Rust protected-call thunk. PLAN.md's literal
 C-only/no-Rust-frame boundary remains unmet; a shim or explicitly accepted
 boundary contract is required before release. Separate source profiles do not
 close G0/G1/G2, native-Lua, mixed execution, signing or four-OS gates.
+
+The source adapter boundary and logical build identities are superseded by
+[decision 0007](0007-lua-c-error-boundary.md). The records above describe the
+validated v1 implementation and its historical evidence.

@@ -41,7 +41,7 @@
   "runtimes": {
     "lua": {
       "target": "macos-arm64-linked",
-      "build_id": "glue-lua55-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64",
+      "build_id": "glue-lua55-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64",
       "abi": {
         "language": "lua",
         "version": {

@@ -1,0 +1,13 @@
+lua54: 34 copied text records byte-identical; 51 source hashes and 5 fixture hashes matched Git ee7c9d329e7e3eeea529660308620ea5adf479c3; captured manifest matched Git; retained local app.glue hash matched artifacts.sha256; clean status/empty diff; debug tests=142; Clippy completed; execution/trace/harness status=0; exact stdout=55 bytes; empty stderr.
+lua55: 34 copied text records byte-identical; 51 source hashes and 5 fixture hashes matched Git ee7c9d329e7e3eeea529660308620ea5adf479c3; captured manifest matched Git; retained local app.glue hash matched artifacts.sha256; clean status/empty diff; debug tests=143; Clippy completed; execution/trace/harness status=0; exact stdout=55 bytes; empty stderr.
+macos/c-boundary-macos-lua54-tests.txt: byte-identical to root validation log; 142 passed; SHA256=7f49c40e1141214883bba7cad3c5a65c489b6dd9ec026a59434b13ec127cec1b.
+macos/c-boundary-macos-lua54-clippy.txt: byte-identical to root validation log; Clippy completed; SHA256=3b787dfe6227937f00b80f0a93d987d49fb374b12ae9aca36852ff1440210ffe.
+macos/c-boundary-macos-lua54-release-tests.txt: byte-identical to root validation log; 50 passed; SHA256=b9cce76b093e0ac94d3ba3073faa668b06eb8e0719be8ac831fba7d9dec18920.
+macos/c-boundary-macos-lua55-tests.txt: byte-identical to root validation log; 143 passed; SHA256=06318b033851237cab108021796798559305ef5f85f3f845e3d893a239a681b4.
+macos/c-boundary-macos-lua55-clippy.txt: byte-identical to root validation log; Clippy completed; SHA256=6a9d78234d9fa8c215b3a31b3be3017b2691c6894dc95f9632c3149168e9e301.
+macos/c-boundary-macos-lua55-release-tests.txt: byte-identical to root validation log; 51 passed; SHA256=7929fe0a88cf1b38dab085d549993d18ab043a2c3a8bc2011ab512de5d0c3753.
+image-summary.json: selected seven fields from the fresh root image-inspect record; image Id matches both captures.
+image.Dockerfile: byte-identical to Git ee7c9d329e7e3eeea529660308620ea5adf479c3:fixtures/native/linux-memfd/Dockerfile.
+Both retained raw traces were rerun through scripts/check-linux-lua-trace.py with the corresponding --lua-version; both returned status 0. Each trace has one exact stdout write.
+All logged test-result records show zero failures; README relative links resolve; feature graphs select neither mlua nor ucid.
+At bundle creation, git diff --name-only ee7c9d329e7e3eeea529660308620ea5adf479c3 contained only README.md, docs/decisions/0007-lua-c-error-boundary.md, docs/progress.md and fixtures/lua-linked/README.md.

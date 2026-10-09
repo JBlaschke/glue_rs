@@ -1,0 +1,7 @@
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+    Checking glue-format v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-format)
+    Checking glue-pack v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pack)
+    Checking glue-linux-memfd-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/linux-memfd)
+    Checking glue-resources v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-resources)
+    Checking glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.59s

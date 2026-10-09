@@ -24,9 +24,9 @@ architecture, ABI, minimum versions and page size must match the running host.
 ```sh
 cargo build --locked -p glue-runner
 target/debug/glue build --manifest fixtures/lua-linked/manifest.macos-arm64.json \
-  --root fixtures/lua-linked/input --output target/linked-lua-demo.glue
-target/debug/glue doctor target/linked-lua-demo.glue
-target/debug/glue run target/linked-lua-demo.glue
+  --root fixtures/lua-linked/input --output target/linked-lua-v2-demo.glue
+target/debug/glue doctor target/linked-lua-v2-demo.glue
+target/debug/glue run target/linked-lua-v2-demo.glue
 ```
 
 The fixture performs nested archive imports, checks `require` caching and virtual
@@ -42,9 +42,9 @@ matching manifest and a separate build directory. On GNU Linux arm64, substitute
 cargo build --locked -p glue-runner --no-default-features --features lua55 \
   --target-dir target/lua55
 target/lua55/debug/glue build --manifest fixtures/lua-linked/manifest.lua55.macos-arm64.json \
-  --root fixtures/lua-linked/input --output target/linked-lua55-demo.glue
-target/lua55/debug/glue doctor target/linked-lua55-demo.glue
-target/lua55/debug/glue run target/linked-lua55-demo.glue
+  --root fixtures/lua-linked/input --output target/linked-lua55-v2-demo.glue
+target/lua55/debug/glue doctor target/linked-lua55-v2-demo.glue
+target/lua55/debug/glue run target/linked-lua55-v2-demo.glue
 ```
 
 The 5.5 fixture prints the same result with a `Lua 5.5` prefix. `lua54` and `lua55`
@@ -65,11 +65,11 @@ policy. See the [fixture](fixtures/lua-linked/README.md) and
 [base profile decision](docs/decisions/0005-linked-lua-source-profile.md) and
 [version selection](docs/decisions/0006-versioned-linked-lua-profiles.md).
 
-The adapter uses the maintained `mlua` safe API to catch callback panics and
-protect Lua calls. Upstream Lua longjmp may still cross a Drop-free Rust
-protected-call thunk. **PLAN.md's literal C-only, no-Rust-frame boundary is not
-satisfied**; a shim or explicitly accepted boundary contract is needed before
-release.
+The adapter uses a private C boundary for Lua execution and errors. C owns the
+Lua state and allocator; Rust archive callbacks return data before C calls Lua
+APIs or raises errors. Protected result construction releases callback replies
+even on allocation failure. See [the boundary decision](docs/decisions/0007-lua-c-error-boundary.md).
+The changed adapter has a v2 build identity; rebuild archives created with v1.
 
 ## Try the resource fixture
 
@@ -111,15 +111,18 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The current macOS and GNU Linux arm64 workspaces pass 118 Rust tests with `lua54`
-and 119 with `lua55`, with all-target Clippy clean for both. Both CLI fixtures
-run, and the opposite minor-version archive is rejected before execution. The
-27 Python trace-policy tests pass. Both relocated Linux fixtures exit 0 with
-exact output and pass full syscall trace checks from clean source `8b6eb1f` on
-`codex/a6-lua-linux-validation`, stacked on profiles `cb88d7d`.
-The [retained Linux records](docs/evidence/linux-arm64-lua-2026-10-08/README.md)
-include source/artifact hashes, commands, build provenance and raw traces.
-The earlier native observation remains separate evidence.
+The C boundary workspace passes 142 Rust tests with `lua54` and 143 with
+`lua55` on macOS and GNU Linux arm64, with all-target Clippy clean for both.
+Optimized macOS boundary tests also pass 50/51 tests. The new tests cover real
+allocation failures, callback panic containment, owned-buffer cleanup, nested
+garbage-collector requests,
+shutdown finalizers and upstream error semantics. Both relocated Linux
+fixtures exit 0 with exact output and passing full no-extraction trace checks
+from clean implementation `ee7c9d3`. The
+[C boundary evidence](docs/evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
+retains source/artifact hashes, commands, build provenance and full traces.
+Historical [v1 records](docs/evidence/linux-arm64-lua-2026-10-08/README.md) and
+the earlier native observation remain separate evidence.
 
 ```sh
 cargo test --workspace --locked

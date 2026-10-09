@@ -1,7 +1,7 @@
 # Implementation progress
 
-The baseline is `8d474be` (`PLAN.md`). Feature work is stacked; `main` remains at
-the baseline until reviewed.
+The earlier feature work and evidence were merged into `main` at `db2c271`.
+Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
 | --- | --- | --- | --- |
@@ -12,6 +12,7 @@ the baseline until reviewed.
 | A6 linked Lua 5.4 source slice | `codex/a6-lua-linked-execution` / `03303d7` | Experimental implementation | macOS arm64 CLI fixture builds, reports readiness and prints the expected result; 111 Rust tests and workspace Clippy pass; Linux execution/trace evidence pending at this baseline |
 | A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
 | A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
+| A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
 
 ## Gate status
 
@@ -21,8 +22,8 @@ or four-OS acceptance.
 The Linux memfd spike remains separate from the product runner. General native
 backends, archived/host runtime bootstraps, Python/Node execution, workers,
 approved system-library profiles and signed deployment remain pending.
-The archive and manifest are version 0. Lua is pinned to `mlua` 0.12.2 and
-`lua-src` 551.0.2 with int64/float64 configuration; other runtime release pins
+The archive and manifest are version 0. Lua is pinned to `lua-src` 551.0.2
+with int64/float64 configuration; other runtime release pins
 still depend on platform experiments. The logical Lua build ID is not a compiler
 configuration or artifact hash. See [the base profile decision](decisions/0005-linked-lua-source-profile.md)
 and [version selection](decisions/0006-versioned-linked-lua-profiles.md).
@@ -32,10 +33,12 @@ The profile branch added mutually exclusive compiled `lua54` (default) and
 separate launchers does not provide simultaneous multi-runtime acquisition or
 worker execution.
 
-The maintained `mlua` API protects Lua calls and catches callback panics, but
-upstream Lua longjmp may cross its Drop-free Rust protected-call thunk. This
-does not satisfy PLAN.md's literal C-only/no-Rust-frame boundary. A shim or an
-explicitly accepted boundary contract remains a release requirement.
+The new C boundary replaces `mlua` in the source adapter. C owns the Lua state,
+allocator, protected execution and result construction. Rust only serves archive
+requests and catches callback panics; it never receives a Lua state. Replies are
+released before C propagates an error, including allocation failures. Logical build
+IDs now select source-v2/c-boundary-1, so v1 archives require rebuilding.
+See [the boundary decision](decisions/0007-lua-c-error-boundary.md).
 
 ## Local test environments
 
@@ -87,10 +90,21 @@ feature trees, test/Clippy logs and raw traces. These debug source-only
 observations remain separate from the native probe and do not establish the
 declared minimum kernel/glibc versions or other platforms/architectures.
 
+The C-owned source adapter was captured from clean implementation `ee7c9d3` on
+2026-10-09 using the same pinned Linux image and observed arm64 environment.
+Both workspace profiles pass 142/143 Rust tests and all-target Clippy on macOS
+and GNU Linux; the optimized macOS boundary suites pass 50/51 tests. Both new
+relocated, read-only Linux fixtures produce exactly 55 stdout bytes, empty stderr,
+exit 0 and pass the full trace checker. The
+[boundary evidence](evidence/linux-arm64-lua-c-boundary-2026-10-09/README.md)
+retains the fresh source/artifact identities, all provenance records, raw traces
+and Mac/Linux test logs. The strict C-only error boundary is implemented for
+this source profile; native and platform/release acceptance remain pending.
+
 ## Next critical-path assignments
 
-Resolve the linked-source error-boundary contract before release and extend
-platform/release evidence. Continue A1 (signed macOS arm64
+Integrate a validated native Lua dependency closure on Linux through the C
+boundary, then extend platform/release evidence. Continue A1 (signed macOS arm64
 mapping), A2 (Windows PE) and A3 (Linux/FreeBSD ELF) with actual runtime startup.
 Establish the FreeBSD bundled Python/Node producer and inspect pinned PBS
 artifacts. G2 also requires a real native Lua module; the source-only slice and

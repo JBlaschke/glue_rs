@@ -16,9 +16,9 @@ mod platform;
 // The crate's feature guards require exactly one selected profile. Defining the
 // default constants when lua55 is absent keeps invalid-feature diagnostics clear.
 #[cfg(not(feature = "lua55"))]
-pub const BUILD_ID: &str = "glue-lua54-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64";
+pub const BUILD_ID: &str = "glue-lua54-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64";
 #[cfg(feature = "lua55")]
-pub const BUILD_ID: &str = "glue-lua55-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64";
+pub const BUILD_ID: &str = "glue-lua55-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64";
 
 #[cfg(not(feature = "lua55"))]
 pub const LUA_RELEASE: &str = "5.4.9";
@@ -418,7 +418,8 @@ mod tests {
         let host = linux_host();
         let (minor, patch) = if LUA_MINOR == 4 { (5, 1) } else { (4, 9) };
         let release = format!("5.{minor}.{patch}");
-        let build = format!("glue-lua5{minor}-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64");
+        let build =
+            format!("glue-lua5{minor}-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64");
         let mut other_source = source_pin();
         other_source.release = release;
         other_source.variant = format!("lua5{minor}-static-int64-float64");
@@ -453,6 +454,16 @@ mod tests {
             }
             is_invalid(validate_on(&manifest, &host));
         }
+    }
+
+    #[test]
+    fn previous_rust_thunk_adapter_identity_requires_rebuilding_archives() {
+        let host = linux_host();
+        let mut manifest = fixture(&host);
+        manifest.runtimes.get_mut("lua").unwrap().build_id =
+            format!("glue-lua5{LUA_MINOR}-source-v1/mlua-0.12.2/lua-src-551.0.2/int64-float64");
+        manifest.validate().unwrap();
+        is_invalid(validate_on(&manifest, &host));
     }
 
     #[test]
