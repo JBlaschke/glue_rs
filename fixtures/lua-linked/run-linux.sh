@@ -25,7 +25,7 @@ cargo test --workspace --locked --offline --quiet "$@" \
 cargo clippy --workspace --locked --offline --all-targets "$@" -- -D warnings \
     > /evidence/workspace-clippy.txt 2>&1
 find /workspace/crates /workspace/spikes /workspace/fixtures/lua-linked /workspace/scripts \
-    -type f \( -name '*.rs' -o -name '*.toml' -o -name '*.c' -o -name '*.lua' \
+    -type f \( -name '*.rs' -o -name '*.toml' -o -name '*.c' -o -name '*.h' -o -name '*.lua' \
     -o -name '*.json' -o -name '*.txt' -o -name '*.sh' -o -name '*.py' \) \
     -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > /evidence/source.sha256
 sha256sum Cargo.toml Cargo.lock rust-toolchain.toml \
@@ -68,7 +68,7 @@ cc --version >> /evidence/environment.txt
 dpkg-query -W libc6 gcc strace >> /evidence/environment.txt
 printf 'page_size=' >> /evidence/environment.txt
 getconf PAGESIZE >> /evidence/environment.txt
-printf 'runtime_profile=%s mlua=0.12.2 lua-src=551.0.2 Lua=%s int64-float64\n' "$lua_profile" "$lua_version" \
+printf 'runtime_profile=%s c-boundary=1 lua-src=551.0.2 Lua=%s int64-float64\n' "$lua_profile" "$lua_version" \
     >> /evidence/environment.txt
 
 unset LD_LIBRARY_PATH LD_PRELOAD LD_AUDIT LUA_PATH LUA_PATH_5_4 LUA_PATH_5_5 LUA_CPATH LUA_CPATH_5_4 LUA_CPATH_5_5

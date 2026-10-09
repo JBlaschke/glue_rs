@@ -7,22 +7,21 @@ license.workspace = true
 
 [features]
 default = ["lua54"]
-lua54 = ["mlua/lua54"]
-lua55 = ["mlua/lua55"]
+lua54 = []
+lua55 = []
 
 [dependencies]
 glue-format.workspace = true
 glue-resources.workspace = true
-mlua.workspace = true
 libc.workspace = true
 thiserror.workspace = true
 
-# Match mlua-sys's vendored source crate exactly rather than a moving range.
+# Exact upstream source crate shared by both compiled profiles.
 [build-dependencies]
 lua-src.workspace = true
 cc = "=1.6.0"
 
-# Unsafe code is restricted to the platform prerequisite query module.
+# Unsafe code is restricted to platform queries and the private C bridge.
 [lints.rust]
 unsafe_code = "deny"
 

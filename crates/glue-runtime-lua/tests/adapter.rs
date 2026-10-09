@@ -3,9 +3,12 @@ use glue_resources::Resources;
 use glue_runtime_lua::execute;
 use std::{
     collections::BTreeMap,
-    io::Cursor,
+    io::{self, Cursor, Read, Seek, SeekFrom},
     path::PathBuf,
-    sync::atomic::{AtomicU64, Ordering},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, AtomicU64, Ordering},
+    },
 };
 
 fn fixture(files: &[(&str, &[u8])]) -> (Manifest, Vec<u8>) {
@@ -39,7 +42,7 @@ fn resources(bytes: Vec<u8>) -> Resources<Cursor<Vec<u8>>> {
     Resources::with_default_cache(Archive::open(Cursor::new(bytes)).unwrap())
 }
 
-fn run(files: &[(&str, &[u8])]) -> mlua::Result<()> {
+fn run(files: &[(&str, &[u8])]) -> Result<(), glue_runtime_lua::ExecutionError> {
     execute(resources(fixture(files).1), "app/main.lua")
 }
 
@@ -147,6 +150,45 @@ fn assets_are_binary_and_metadata_and_origins_are_virtual() {
         "#),
         ("assets/a b%#x.bin", b"a\0b\xff"),
     ]).unwrap();
+}
+
+#[test]
+fn resource_keys_keep_escaped_origins_and_reject_unicode_invalid_utf8_and_nul() {
+    let source = r#"
+        local key = "assets/a b%#x.bin"
+        assert(glue.read(key) == "asset bytes")
+        assert(glue.origin(key) == "glue://lua.fixture/assets/a%20b%25%23x.bin")
+        assert(glue.stat(key).size == 11)
+        assert(glue.list("assets")[1].path == key)
+        local chunk, message = loadfile("app/a b%#x.lua")
+        assert(type(chunk) == "function" and message == nil and chunk() == 42)
+        assert(dofile("app/a b%#x.lua") == 42)
+        local ok, diagnostic = pcall(dofile, "app/a b%#error.lua")
+        assert(not ok)
+        assert(diagnostic:find("glue://lua.fixture/app/a%20b%25%23error.lua", 1, true))
+        -- Lua strings/source names support UTF-8; schema-zero archive identities
+        -- deliberately remain ASCII until their Unicode contract is chosen.
+        assert(load("return '雪'", "=über source")() == "雪")
+        local dynamic = assert(load("error('failure')", "=雪 dynamic"))
+        local ok, message = pcall(dynamic)
+        assert(not ok and message:find("雪 dynamic", 1, true))
+        for _, key in ipairs({ "assets/雪", "assets/" .. string.char(255), "assets/a b%#x.bin\0alias" }) do
+            assert(not pcall(glue.read, key))
+            assert(not pcall(glue.origin, key))
+            assert(not pcall(glue.stat, key))
+            assert(not pcall(glue.list, key))
+            local ok, chunk = pcall(loadfile, key)
+            assert(not ok or chunk == nil)
+        end
+        assert(not pcall(require, "über"))
+    "#;
+    run(&[
+        ("app/main.lua", source.as_bytes()),
+        ("app/a b%#x.lua", b"return 42"),
+        ("app/a b%#error.lua", b"error('source failure')"),
+        ("assets/a b%#x.bin", b"asset bytes"),
+    ])
+    .unwrap();
 }
 
 #[test]
@@ -397,6 +439,130 @@ fn no_resource_cache_budget_is_needed_for_recursive_imports() {
         "app/main.lua",
     )
     .unwrap();
+}
+
+#[test]
+fn require_keeps_upstream_nil_false_and_numeric_name_semantics() {
+    run(&[(
+        "app/main.lua",
+        br#"
+        local loads = 0
+        package.preload.empty = function() loads = loads + 1 end
+        local first, origin = require("empty")
+        assert(first == true and origin == ":preload:")
+        local second, cached_origin = require("empty")
+        assert(second == true and cached_origin == nil and loads == 1)
+        package.preload.again = function() loads = loads + 1; return false end
+        assert(require("again") == false and require("again") == false and loads == 3)
+        package.preload["42"] = function(name) assert(name == "42"); return 42 end
+        assert(require(42) == 42)
+    "#,
+    )])
+    .unwrap();
+}
+
+#[test]
+fn archive_requests_work_from_coroutines_and_resource_errors_are_catchable() {
+    run(&[
+        (
+            "app/main.lua",
+            br#"
+            local worker = coroutine.create(function()
+                local answer = require("worker") + #glue.read("assets/bytes")
+                coroutine.yield(answer)
+                local ok, message = pcall(glue.read, "assets/missing")
+                assert(not ok and message:find("resource does not exist", 1, true))
+                assert(glue.stat("assets/bytes").size == 2)
+                return glue.read("assets/bytes")
+            end)
+            local ok, answer = coroutine.resume(worker)
+            assert(ok and answer == 42 and coroutine.status(worker) == "suspended")
+            local resumed, bytes = coroutine.resume(worker)
+            assert(resumed and bytes == "ok" and coroutine.status(worker) == "dead")
+        "#,
+        ),
+        ("app/worker.lua", b"return 40"),
+        ("assets/bytes", b"ok"),
+    ])
+    .unwrap();
+}
+
+#[test]
+fn lua_error_values_keep_upstream_profile_semantics() {
+    run(&[(
+        "app/main.lua",
+        br#"
+        local marker = {}
+        for _, value in ipairs({ marker, false, 42, "message" }) do
+            local ok, observed = pcall(function() error(value) end)
+            assert(not ok)
+            if type(value) == "string" then
+                assert(observed:find(value, 1, true))
+            else
+                assert(observed == value)
+            end
+        end
+        local ok, observed = pcall(function() error(nil) end)
+        assert(not ok)
+        if _VERSION == "Lua 5.5" then
+            assert(observed == "<no error object>")
+        else
+            assert(observed == nil)
+        end
+    "#,
+    )])
+    .unwrap();
+}
+
+#[test]
+fn resources_remain_alive_for_lua_shutdown_finalizers() {
+    let source = br#"
+        finalizer = setmetatable({}, {
+            __gc = function()
+                assert(glue.read("assets/shutdown") == "shutdown resource")
+            end
+        })
+    "#;
+    let asset = b"shutdown resource";
+    let (_, bytes) = fixture(&[("app/main.lua", source), ("assets/shutdown", asset)]);
+    let armed = Arc::new(AtomicBool::new(false));
+    let read_bytes = Arc::new(AtomicU64::new(0));
+    let reader = CountedReader {
+        source: Cursor::new(bytes),
+        armed: Arc::clone(&armed),
+        read_bytes: Arc::clone(&read_bytes),
+    };
+    let archive = Archive::open(reader).unwrap();
+    armed.store(true, Ordering::Relaxed);
+    execute(Resources::new(archive, 0), "app/main.lua").unwrap();
+    // The entry never reads this asset. Its verified read can only occur from
+    // __gc during lua_close, after the entry's protected call has returned.
+    assert_eq!(
+        read_bytes.load(Ordering::Relaxed),
+        (source.len() + asset.len()) as u64
+    );
+}
+
+struct CountedReader {
+    source: Cursor<Vec<u8>>,
+    armed: Arc<AtomicBool>,
+    read_bytes: Arc<AtomicU64>,
+}
+
+impl Read for CountedReader {
+    fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
+        let size = self.source.read(buffer)?;
+        if self.armed.load(Ordering::Relaxed) {
+            self.read_bytes.fetch_add(size as u64, Ordering::Relaxed);
+        }
+        Ok(size)
+    }
+}
+
+impl Seek for CountedReader {
+    fn seek(&mut self, position: SeekFrom) -> io::Result<u64> {
+        self.source.seek(position)
+    }
 }
 
 struct TempDirectory(PathBuf);
