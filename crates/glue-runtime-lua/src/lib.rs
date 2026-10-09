@@ -4,9 +4,9 @@
 //! `require` searches only `app/?.lua` and `app/?/init.lua`; `loadfile` and
 //! `dofile` accept canonical archive keys. `load` accepts source strings only.
 //! These restrictions are an initial compatibility profile, not a sandbox or
-//! the final policy for applications' ordinary host I/O. Native loading is not
-//! implemented here. The caller must validate runtime provisioning and target
-//! compatibility before execution.
+//! the final policy for applications' ordinary host I/O. The optional
+//! `linux-native` profile eagerly loads a verified native closure before Lua
+//! starts. The caller must validate provisioning and target compatibility.
 
 pub mod profile;
 
@@ -26,8 +26,34 @@ use wire::{OwnedReply, Value};
 
 /// An archive/resource or protected Lua execution error.
 #[derive(Debug, thiserror::Error)]
-#[error("{0}")]
-pub struct ExecutionError(String);
+#[error("{message}")]
+pub struct ExecutionError {
+    message: String,
+    unsupported: bool,
+}
+
+impl ExecutionError {
+    /// Whether an unavailable capability, rather than a failed execution, was
+    /// encountered. CLI callers preserve the existing unsupported status 2.
+    pub fn is_unsupported(&self) -> bool {
+        self.unsupported
+    }
+
+    fn failed(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+            unsupported: false,
+        }
+    }
+
+    #[cfg(feature = "linux-native")]
+    fn native(error: glue_native::NativeError) -> Self {
+        Self {
+            unsupported: matches!(error, glue_native::NativeError::Unsupported(_)),
+            message: error.to_string(),
+        }
+    }
+}
 
 /// Execute one verified archive source chunk in the restricted linked profile.
 ///
@@ -38,14 +64,32 @@ pub fn execute<R: Read + Seek>(
     mut resources: Resources<R>,
     entry_point: &str,
 ) -> Result<(), ExecutionError> {
-    ResourcePath::new(entry_point).map_err(|error| ExecutionError(error.to_string()))?;
+    ResourcePath::new(entry_point).map_err(|error| ExecutionError::failed(error.to_string()))?;
     let bytes = resources
         .read(entry_point)
-        .map_err(|error| ExecutionError(error.to_string()))?;
+        .map_err(|error| ExecutionError::failed(error.to_string()))?;
     let app_id = &resources.manifest().app_id;
     let origin = resource_origin(app_id, entry_point);
     let package_path = format!("glue://{app_id}/app/?.lua;glue://{app_id}/app/?/init.lua");
-    let mut context = Context { resources };
+    #[cfg(feature = "linux-native")]
+    let native = if resources.manifest().native_modules.is_empty() {
+        None
+    } else {
+        let exports = include_str!("../native-exports.txt")
+            .lines()
+            .map(str::to_owned)
+            .collect();
+        Some(
+            glue_native::NativePlan::prepare(&mut resources, &exports)
+                .and_then(glue_native::NativePlan::load)
+                .map_err(ExecutionError::native)?,
+        )
+    };
+    let mut context = Context {
+        resources,
+        #[cfg(feature = "linux-native")]
+        native,
+    };
     bridge::execute(
         move |operation, key| match context.request(operation, key) {
             Ok(values) => OwnedReply::success(&values).into_reply(),
@@ -56,13 +100,15 @@ pub fn execute<R: Read + Seek>(
         &bytes,
         &origin,
     )
-    .map_err(ExecutionError)
+    .map_err(ExecutionError::failed)
 }
 
 // Archive work runs synchronously without a Lua state or Lua API. All borrows
 // and Rust temporaries end before the C trampoline constructs Lua values.
 struct Context<R: Read + Seek> {
     resources: Resources<R>,
+    #[cfg(feature = "linux-native")]
+    native: Option<glue_native::NativeManager>,
 }
 
 impl<R: Read + Seek> Context<R> {
@@ -127,6 +173,42 @@ impl<R: Read + Seek> Context<R> {
                         candidates[0], candidates[1]
                     )),
                 ])
+            }
+            #[cfg(feature = "linux-native")]
+            7 => {
+                module_candidates(key)?;
+                match self
+                    .native
+                    .as_ref()
+                    .and_then(|manager| manager.by_name(key))
+                {
+                    Some((resource, initializer)) => Ok(vec![
+                        Value::NativeFunction(initializer),
+                        self.origin(resource),
+                    ]),
+                    None => Ok(vec![
+                        Value::Nil,
+                        string(format!("\n\tno declared native module {key:?}")),
+                    ]),
+                }
+            }
+            #[cfg(feature = "linux-native")]
+            8 | 9 => {
+                ResourcePath::new(key).map_err(|error| error.to_string())?;
+                match self
+                    .native
+                    .as_ref()
+                    .and_then(|manager| manager.by_resource(key))
+                {
+                    Some((symbol, _)) if operation == 9 => Ok(vec![string(symbol)]),
+                    Some((_, initializer)) => {
+                        Ok(vec![Value::NativeFunction(initializer), self.origin(key)])
+                    }
+                    None => Ok(vec![
+                        Value::Nil,
+                        string("resource is not a declared native Lua root"),
+                    ]),
+                }
             }
             _ => Err("invalid archive operation".to_owned()),
         }

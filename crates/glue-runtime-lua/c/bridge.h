@@ -45,4 +45,10 @@ void glue_lua_run(void *ctx, glue_lua_request request,
                   const glue_lua_options *options,
                   glue_lua_result *result);
 
+#ifdef GLUE_LUA_NATIVE
+/* Private test fixture: return a C initializer address without invoking it.
+   This does not construct a production manager lease or expose lua_State. */
+uint64_t glue_lua_test_initializer(unsigned variant);
+#endif
+
 #endif

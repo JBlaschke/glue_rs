@@ -25,6 +25,9 @@ pub(crate) enum Value {
     String(Vec<u8>),
     /// Ordered key/value pairs. Only integer and string keys are accepted.
     Table(Vec<(Value, Value)>),
+    /// Approved manager token; its native image remains pinned past Lua close.
+    #[cfg(feature = "linux-native")]
+    NativeFunction(glue_native::NativeInitializer),
 }
 
 impl Value {
@@ -96,6 +99,13 @@ fn value_length(value: &Value, depth: usize, byte_limit: usize) -> Result<usize,
             }
             Ok(length)
         }
+        #[cfg(feature = "linux-native")]
+        Value::NativeFunction(initializer) => {
+            if initializer.address() == 0 {
+                return Err("native initializer address must not be null".to_owned());
+            }
+            checked_length(0, 9, byte_limit)
+        }
     }
 }
 
@@ -127,6 +137,11 @@ fn write_value(bytes: &mut Vec<u8>, value: &Value) {
                 write_value(bytes, key);
                 write_value(bytes, value);
             }
+        }
+        #[cfg(feature = "linux-native")]
+        Value::NativeFunction(initializer) => {
+            bytes.push(5);
+            bytes.extend_from_slice(&initializer.address().to_le_bytes());
         }
     }
 }

@@ -1,6 +1,6 @@
 -- Only Lua and C call Lua APIs. Rust supplies verified resource replies through
 -- request; the C trampoline raises a reply error after the Rust call returns.
-local request, package_path = ...
+local request, package_path, native_enabled = ...
 local original_require, original_load = require, load
 local raise, protected_call = error, pcall
 local value_type, value_string, argument_count = type, tostring, select
@@ -8,6 +8,7 @@ local valid_utf8 = utf8.len
 
 local READ, ORIGIN, STAT, LIST = 1, 2, 3, 4
 local VALIDATE_MODULE, RESOLVE_MODULE = 5, 6
+local NATIVE_MODULE, NATIVE_RESOURCE, NATIVE_INITIALIZER = 7, 8, 9
 
 local function string_argument(value, optional, label)
     local kind = value_type(value)
@@ -68,6 +69,36 @@ package.cpath = ""
 package.searchpath = nil
 package.loadlib = function()
     raise("native Lua loading is unsupported by the linked source profile", 2)
+end
+if native_enabled then
+    -- The manager has already verified and loaded the complete closure before
+    -- this Lua state exists. Requests only obtain retained C function leases;
+    -- no constructor or Lua API runs during the Rust resource callback.
+    package.searchers[3] = function(name)
+        name = string_argument(name, false, "archive module name")
+        request(VALIDATE_MODULE, name)
+        local loader, origin = request(NATIVE_MODULE, name)
+        if loader == nil then
+            return origin
+        end
+        return loader, origin
+    end
+    package.loadlib = function(path, initializer)
+        path = string_argument(path, false, "native resource key")
+        initializer = string_argument(initializer, false, "native initializer")
+        local expected, diagnostic = request(NATIVE_INITIALIZER, path)
+        if expected == nil then
+            raise(diagnostic, 2)
+        end
+        if initializer ~= expected then
+            raise("package.loadlib requires the exact declared initializer " .. expected, 2)
+        end
+        local loader, origin = request(NATIVE_RESOURCE, path)
+        if loader == nil then
+            raise(origin, 2)
+        end
+        return loader
+    end
 end
 
 require = function(name)

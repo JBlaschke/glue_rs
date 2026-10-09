@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `db2c271`.
+The earlier feature work and evidence were merged into `main` at `7853282`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -13,13 +13,15 @@ Further implementation continues on separate feature branches.
 | A6 Lua 5.5 compiled profile | `codex/a6-lua55-profile` / `cb88d7d` (stacked on `03303d7`) | Experimental implementation | Separate exact Lua 5.4.9/5.5.1 compiled profiles; macOS arm64 CLI execution and opposite-version rejection pass |
 | A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
 | A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
+| A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` (from merged `7853282`) | Experimental implementation; final evidence capture pending | Portable ELF/closure tests, C-only initializer/function error and OOM tests; GNU Linux arm64 5.4/5.5 trial fixtures match ordinary loading and pass complete two-memfd/no-payload-write trace checks |
 
 ## Gate status
 
-G0, G1 and G2 are open. Linked official Lua 5.4.9 and 5.5.1 are explicit,
-version-specific source-only profiles; this is partial A6/G2 work, not native-Lua
-or four-OS acceptance.
-The Linux memfd spike remains separate from the product runner. General native
+G0, G1 and G2 are open. Linked official Lua 5.4.9 and 5.5.1 have explicit,
+version-specific source-only profiles and optional GNU Linux arm64 native
+profiles. This is partial A5/A6/G2 work; four-OS acceptance remains open.
+The original Linux memfd spike remains a separate historical observation.
+The product now integrates a controlled native Lua closure. General native
 backends, archived/host runtime bootstraps, Python/Node execution, workers,
 approved system-library profiles and signed deployment remain pending.
 The archive and manifest are version 0. Lua is pinned to `lua-src` 551.0.2
@@ -103,9 +105,10 @@ this source profile; native and platform/release acceptance remain pending.
 
 ## Next critical-path assignments
 
-Integrate a validated native Lua dependency closure on Linux through the C
-boundary, then extend platform/release evidence. Continue A1 (signed macOS arm64
+Extend native platform/release evidence beyond the controlled Linux Lua closure.
+Continue A1 (signed macOS arm64
 mapping), A2 (Windows PE) and A3 (Linux/FreeBSD ELF) with actual runtime startup.
 Establish the FreeBSD bundled Python/Node producer and inspect pinned PBS
-artifacts. G2 also requires a real native Lua module; the source-only slice and
-the separate memfd fixture do not meet that acceptance criterion together.
+artifacts. The Linux native Lua vertical slice exercises the G2 fixture on its
+observed cell; it does not establish the four-platform prerequisite or general
+package compatibility.

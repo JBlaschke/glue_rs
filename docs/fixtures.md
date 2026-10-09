@@ -14,6 +14,15 @@ TLS on existing/new/library-created threads, callbacks, weak/versioned symbols,
 unwind registration and runtime aliases. A trivial function call proves only that
 fixture's declared ABI profile.
 
+The integrated [Linux native Lua fixture](../fixtures/native/lua-linux/README.md)
+uses the exact linked 5.4.9/5.5.1 core, one archived dependency and a versioned
+libc `getpid` import. It checks constructor/data observations, selected-state
+identity, real C-function caching and initializer/function errors, and routes
+`package.loadlib` through the same retained initializer. All images are sealed
+before the first constructor; ordinary loading and archive loading agree.
+Portable adversarial tests validate closure metadata without running code;
+actual GNU negative captures must reject before any memfd creation/loading.
+
 Python startup must use actual stock PBS and compatible host libraries, import
 `encodings`, `math` and `_ssl`, and prove library/stdlib identity. FreeBSD needs
 its own bundled producer. Node and Lua fixtures must use the actual runtimes;

@@ -11,8 +11,8 @@ resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
 Linux targets. General native loading, host/archived runtime acquisition,
 Python/Node execution, workers and standalone executables remain pending.
 The archive and manifest are experimental version 0; G0/G1/G2 remain open.
-A separate Linux fixture probes archived shared-library loading through sealed
-memfds; that mechanism is not integrated into `glue run`.
+An opt-in GNU Linux arm64 profile also runs a controlled native Lua closure
+through sealed executable memfds in `glue run`.
 
 ## Try linked Lua
 
@@ -70,6 +70,38 @@ Lua state and allocator; Rust archive callbacks return data before C calls Lua
 APIs or raises errors. Protected result construction releases callback replies
 even on allocation failure. See [the boundary decision](docs/decisions/0007-lua-c-error-boundary.md).
 The changed adapter has a v2 build identity; rebuild archives created with v1.
+
+## Native Lua on GNU Linux arm64
+
+The optional `linux-native` feature supplies a separate native-v1 build identity
+for either Lua version. It requires GNU Linux AArch64, 4 KiB pages, executable
+memfd support/policy, one linked runtime and a collision-free namespace. It
+accepts a bounded ELF subset and explicitly declared dependencies; its reviewed
+OS import is `getpid` from `libc.so.6`. It validates every native image and hash
+before running constructors, then loads dependencies locally before creating
+the Lua state. Rust callbacks return cached C initializers; C owns Lua invocation
+and error handling. Handles stay pinned until process exit.
+
+`require` searches archive source first, then declared native roots. A root's
+module ID determines its `luaopen_` name, and its resource basename must match
+its SONAME. `package.loadlib` accepts that canonical archive key and exact
+initializer. Native code must obey the C/Lua ABI and contain foreign exceptions;
+it is trusted code. TLS, IFUNC, general unwind/constructor reentry, host native
+modules, nested loading and other OS/architecture profiles remain pending.
+Default source-only builds retain their v2 identities.
+
+The reproducible fixture uses the pinned local Podman probe image, compares
+ordinary disk loading against the same compiled Lua core, removes the compiled
+inputs, relocates the read-only archive and checks the complete syscall trace:
+
+```sh
+sh scripts/run-linux-native-lua.sh lua54
+sh scripts/run-linux-native-lua.sh lua55
+```
+
+See the [native fixture](fixtures/native/lua-linux/README.md) and
+[profile decision](docs/decisions/0008-linux-native-lua-closure.md). This narrow
+vertical slice does not establish general native compatibility or four-OS gates.
 
 ## Try the resource fixture
 
@@ -134,6 +166,9 @@ sh scripts/run-linux-memfd.sh
 python3 -m unittest discover -s scripts -p 'test_linux_lua_trace.py'
 sh scripts/run-linux-lua.sh lua54
 sh scripts/run-linux-lua.sh lua55
+python3 -m unittest discover -s scripts -p 'test_linux_native_lua_trace.py'
+sh scripts/run-linux-native-lua.sh lua54
+sh scripts/run-linux-native-lua.sh lua55
 ```
 
 The Linux script vendors dependencies already present in the build machine's
@@ -167,6 +202,6 @@ kernel 6.1 minimum, release/performance behavior or other architectures.
 See [CONTRIBUTING.md](CONTRIBUTING.md), [progress](docs/progress.md),
 [container contract](docs/decisions/0002-experimental-container.md) and
 [fixture protocol](docs/fixtures.md). Implementation steps use stacked feature
-branches. The linked source slice does not establish native Lua, mixed apps,
+branches. The controlled Linux native slice does not establish mixed apps,
 archived/host Python or Node startup, signed macOS deployment, or four-OS
 compatibility. Their feasibility and release gates remain open.

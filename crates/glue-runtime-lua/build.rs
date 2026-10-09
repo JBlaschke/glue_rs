@@ -12,6 +12,7 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=c/bridge.c");
     println!("cargo:rerun-if-changed=c/bridge.h");
+    println!("cargo:rerun-if-changed=native-exports.txt");
     let (release, compatibility) = match (
         env::var_os("CARGO_FEATURE_LUA54").is_some(),
         env::var_os("CARGO_FEATURE_LUA55").is_some(),
@@ -66,6 +67,20 @@ fn main() {
     );
     writeln!(provenance, "source=lua-src-551.0.2/lua-{release}")
         .expect("writing to a String cannot fail");
+    writeln!(
+        provenance,
+        "linux_native_feature={}",
+        env::var_os("CARGO_FEATURE_LINUX_NATIVE").is_some()
+    )
+    .expect("writing to a String cannot fail");
+    if env::var_os("CARGO_FEATURE_LINUX_NATIVE").is_some() {
+        writeln!(
+            provenance,
+            "native_export_allowlist={:?}",
+            include_str!("native-exports.txt")
+        )
+        .expect("writing to a String cannot fail");
+    }
     for name in [
         "TARGET",
         "HOST",
@@ -123,7 +138,11 @@ fn main() {
         lua_src::Lua55
     };
     let artifacts = lua_src::Build::new().build(version);
-    cc::Build::new()
+    let mut boundary = cc::Build::new();
+    if env::var_os("CARGO_FEATURE_LINUX_NATIVE").is_some() {
+        boundary.define("GLUE_LUA_NATIVE", None);
+    }
+    boundary
         .include(artifacts.include_dir())
         .include("c")
         .file("c/bridge.c")
