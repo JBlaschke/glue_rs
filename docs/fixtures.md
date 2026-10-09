@@ -23,6 +23,14 @@ before the first constructor; ordinary loading and archive loading agree.
 Portable adversarial tests validate closure metadata without running code;
 actual GNU negative captures must reject before any memfd creation/loading.
 
+The [macOS arm64 fixture](../fixtures/native/macos-macho/README.md) compares
+ordinary dyld loading with a separate signed anonymous-mapping probe. Its
+allow-jit/hardened-runtime launcher checks real function/data exports, one
+archived dependency, libSystem `getpid` and a constructor. It never acquires
+the schema's Lua scaffold. Complete tracing and Developer ID distribution
+remain separate acceptance requirements; an unavailable tracer is recorded as
+unavailable, not a no-extraction result.
+
 Python startup must use actual stock PBS and compatible host libraries, import
 `encodings`, `math` and `_ssl`, and prove library/stdlib identity. FreeBSD needs
 its own bundled producer. Node and Lua fixtures must use the actual runtimes;

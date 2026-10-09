@@ -121,6 +121,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-macos-macho-probe"
+version = "0.1.0"
+dependencies = [
+ "glue-format",
+ "libc",
+]
+
+[[package]]
 name = "glue-native"
 version = "0.1.0"
 dependencies = [

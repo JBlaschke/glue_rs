@@ -104,6 +104,24 @@ See the [native fixture](fixtures/native/lua-linux/README.md) and
 versions have retained [execution and rejection evidence](docs/evidence/linux-arm64-native-lua-2026-10-09/README.md). This narrow
 vertical slice does not establish general native compatibility or four-OS gates.
 
+## Signed macOS mapping probe
+
+The separate A1 spike tests a bounded arm64 Mach-O subset with two archived
+images, a real OS import and a constructor. It uses an ad-hoc signed hardened
+runtime and the `allow-jit` entitlement. It does not acquire a language runtime
+or enable native macOS execution in `glue run`.
+
+```sh
+cargo build --locked -p glue-runner -p glue-macos-macho-probe
+sh fixtures/native/macos-macho/run.sh \
+  "$PWD/target/debug/glue" "$PWD/target/debug/glue-macos-macho-probe" \
+  "$PWD/target/evidence/macos-macho/capture-1"
+```
+
+Use a fresh capture directory. See the [fixture](fixtures/native/macos-macho/README.md)
+and [mapping decision](docs/decisions/0009-signed-macos-macho-probe.md).
+Full write tracing and Developer ID distribution evidence remain open.
+
 ## Try the resource fixture
 
 This older fixture declares a fictional `host` Lua library and tests packaging
@@ -144,11 +162,11 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 181/182 Rust tests for `lua54`/`lua55` on
-macOS and GNU Linux arm64. With `linux-native`, GNU Linux workspaces pass
-178/179 tests and Mac workspaces pass 177/178 portable and C-boundary tests.
-All profiles pass all-target Clippy with warnings denied on both systems;
-optimized Mac native boundary suites pass 53/54 tests. Tests cover allocation
+The source-profile workspace passes 212/213 Rust tests for `lua54`/`lua55` on
+macOS and GNU Linux arm64, including 31 portable Mach-O parser tests. Both
+profiles pass all-target Clippy with warnings denied on both systems. The
+earlier native Linux validation covers both optional native profiles and
+53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
 initializer/function errors, bounded ELF parsing and closure rejection.
 Both native Linux fixtures match ordinary loading and pass complete sealed

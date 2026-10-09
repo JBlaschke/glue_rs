@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `7853282`.
+The earlier feature work and evidence were merged into `main` at `a596305`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -14,6 +14,7 @@ Further implementation continues on separate feature branches.
 | A6 linked Lua Linux validation | `codex/a6-lua-linux-validation` / `8b6eb1f` (stacked on `cb88d7d`; evidence bundle follows) | Controlled observation | macOS/Linux arm64: 118/119 Rust tests for `lua54`/`lua55`, all-target Clippy clean for both; both relocated Linux profiles exit 0 with exact output and full trace checks; 27 Python policy tests pass |
 | A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
 | A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` / `3a24833`, fixture cleanup `fb61e5e` (from merged `7853282`) | Experimental implementation; controlled observation | Mac/Linux source workspaces: 181/182 tests; GNU Linux native workspaces: 178/179; 37 portable native tests and 54 Python policy tests; Clippy clean for all profiles; both Lua versions match ordinary loading and pass complete two-memfd/no-payload-write traces; twelve ELF rejection traces pass before any memfd attempt |
+| A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` (from merged `a596305`) | Feasibility implementation; final capture pending | 31 portable parser tests; 212/213 source workspace tests for Lua 5.4/5.5; ad-hoc hardened-runtime/allow-jit launcher maps two anonymous images and matches ordinary loading; seven native rejections, signing and memory-policy controls; full trace and distribution signing remain open |
 
 ## Gate status
 
@@ -122,8 +123,9 @@ slice, with the platform, release and general compatibility gates still open.
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
-Continue A1 (signed macOS arm64
-mapping), A2 (Windows PE) and A3 (Linux/FreeBSD ELF) with actual runtime startup.
+Complete A1 independent tracing and distribution-signing evidence, then extend
+the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
+and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer and inspect pinned PBS
 artifacts. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
