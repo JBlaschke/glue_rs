@@ -98,5 +98,7 @@ C
     test ! -s "$evidence.stdout.txt"
     cmp "$evidence.expected.stderr.txt" "$evidence.stderr.txt"
 done
-# Build-time inputs and archives stay in ephemeral /build-target until the
-# container exits. The host checks every retained full trace after this script.
+# Remove every variant's compiled payload inputs before the successful relocated
+# run. Archives and text records remain for independent host verification.
+rm -r /build-target/native-rejections-input
+test ! -e /build-target/native-rejections-input
