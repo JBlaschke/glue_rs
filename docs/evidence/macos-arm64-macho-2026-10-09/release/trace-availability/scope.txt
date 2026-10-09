@@ -1,0 +1,2 @@
+Commands were run without sudo and without changing security settings.
+No directory listing or loader event log substitutes for a complete filesystem trace.

@@ -1,0 +1,4 @@
+Command: cargo clippy --workspace --all-targets --locked --offline --no-default-features --features lua54 -- -D warnings
+    Checking glue-macos-macho-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/macos-macho)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.74s
+Exit status: 0

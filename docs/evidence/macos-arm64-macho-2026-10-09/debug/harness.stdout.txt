@@ -1,0 +1,6 @@
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0
+PASS exact output and ordinary-loader comparison (PID normalized)
+PASS held output identifies vmmap target PID
+PASS exact ordinary/mapped outputs, seven rejection diagnostics, two signing controls, memory-policy control and held target PID
+Scope: these results do not constitute a complete filesystem trace
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0

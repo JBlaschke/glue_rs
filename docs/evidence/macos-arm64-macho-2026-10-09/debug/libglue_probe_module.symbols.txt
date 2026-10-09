@@ -1,0 +1,8 @@
+0000000000008004 (__DATA,__bss) non-external _constructor_count
+                 (undefined) external _getpid (from libSystem)
+0000000000000534 (__TEXT,__text) external _glue_answer
+0000000000000554 (__TEXT,__text) external _glue_probe_constructor_count
+0000000000008000 (__DATA,__data) external _glue_probe_data
+                 (undefined) external _glue_probe_dep (from libglue_probe_dep)
+0000000000000560 (__TEXT,__text) external _glue_probe_pid
+0000000000000520 (__TEXT,__text) non-external _initialize_probe

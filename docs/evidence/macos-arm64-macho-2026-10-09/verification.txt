@@ -1,0 +1,4 @@
+Clean implementation: 346b2f0136b15abad6cd2818c1bcc217071309f1
+Captured on 2026-10-09; debug and release harnesses exited 0.
+debug: 65 source hashes match clean Git blobs; 8 archives/three resources each verified in memory; retained executable/archive identities and compiled-image hashes checked; exact result checker passed; every copied record byte-identical.
+release: 65 source hashes match clean Git blobs; 8 archives/three resources each verified in memory; retained executable/archive identities and compiled-image hashes checked; exact result checker passed; every copied record byte-identical.

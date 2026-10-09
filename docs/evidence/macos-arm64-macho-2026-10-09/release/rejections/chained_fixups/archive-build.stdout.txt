@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/rejections/chained_fixups/app.glue: 3 resources, 87571 archive bytes, 85081 uncompressed bytes
+Archive SHA-256: a4f1afd0e7a599b4ac3ee4379fe522376a2027ec96ad9e480d0aa9905871385b

@@ -1,0 +1,1 @@
+PASS ad-hoc hardened-runtime signature; only allow-jit entitlement

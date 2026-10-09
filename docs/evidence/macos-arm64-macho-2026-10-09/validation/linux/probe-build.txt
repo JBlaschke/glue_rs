@@ -1,0 +1,6 @@
+   Compiling libc v0.2.190
+   Compiling cpufeatures v0.3.1
+   Compiling sha2 v0.11.0
+   Compiling glue-format v0.1.0 (/workspace/crates/glue-format)
+   Compiling glue-macos-macho-probe v0.1.0 (/workspace/spikes/macos-macho)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.80s

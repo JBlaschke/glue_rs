@@ -1,0 +1,1 @@
+Executable=/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/signing-controls/debugger-control/glue-macos-macho-probe

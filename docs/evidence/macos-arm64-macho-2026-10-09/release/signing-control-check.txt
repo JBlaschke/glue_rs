@@ -1,0 +1,2 @@
+PASS actual ad-hoc hardened-runtime signing controls and rejection statuses
+PASS exact signing-control diagnostics, statuses and recorded entitlements

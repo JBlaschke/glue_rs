@@ -1,0 +1,2 @@
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/signing-controls/no-jit/glue-macos-macho-probe: valid on disk
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/signing-controls/no-jit/glue-macos-macho-probe: satisfies its Designated Requirement

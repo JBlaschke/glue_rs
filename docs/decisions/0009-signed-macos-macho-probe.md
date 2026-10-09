@@ -1,7 +1,9 @@
 # Signed macOS arm64 mapping probe
 
 Status: A1 feasibility implementation on `codex/a1-macos-macho-probe`, from
-merged `main` `a596305`. Final clean-source capture follows implementation.
+merged `main` `a596305`. Debug and optimized signed captures from clean
+implementation `346b2f0` pass the controlled fixture; see the
+[retained evidence](../evidence/macos-arm64-macho-2026-10-09/README.md).
 
 Add a separate `glue-macos-macho-probe` workspace executable, rather than a
 product native capability. It packages and validates the exact two-image

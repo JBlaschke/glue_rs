@@ -1,0 +1,24 @@
+Executable=/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/memory-policy/memory-policy
+Identifier=memory-policy-555549442e9d688e10db34df83c51b978eab6247
+Format=Mach-O thin (arm64)
+CodeDirectory v=20500 size=471 flags=0x10002(adhoc,runtime) hashes=3+7 location=embedded
+VersionPlatform=1
+VersionMin=851968
+VersionSDK=1769472
+Hash type=sha256 size=32
+CandidateCDHash sha256=70e3bbade1a117a50518afcfc4f805fd4ff31a53
+CandidateCDHashFull sha256=70e3bbade1a117a50518afcfc4f805fd4ff31a53b359e6f323edd792909143b5
+Hash choices=sha256
+CMSDigest=70e3bbade1a117a50518afcfc4f805fd4ff31a53b359e6f323edd792909143b5
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=16384
+CDHash=70e3bbade1a117a50518afcfc4f805fd4ff31a53
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Runtime Version=27.0.0
+Sealed Resources=none
+Internal requirements count=0 size=12

@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/rejections/undeclared_dependency/app.glue: 3 resources, 105339 archive bytes, 102849 uncompressed bytes
+Archive SHA-256: 7f62e8fd7c4211235e2e5be3cf5f1baf3a7d1a7a4308275841c084495e4f0984

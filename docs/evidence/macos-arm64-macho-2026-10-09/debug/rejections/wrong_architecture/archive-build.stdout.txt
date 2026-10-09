@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/rejections/wrong_architecture/app.glue: 3 resources, 105339 archive bytes, 102849 uncompressed bytes
+Archive SHA-256: dd4fef11435510edb6e6304b6a9b2ae7ed30280afe9434e01de30ee2c1475c7a

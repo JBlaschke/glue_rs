@@ -120,6 +120,7 @@ sh fixtures/native/macos-macho/run.sh \
 
 Use a fresh capture directory. See the [fixture](fixtures/native/macos-macho/README.md)
 and [mapping decision](docs/decisions/0009-signed-macos-macho-probe.md).
+Both debug and optimized signed runs have [retained evidence](docs/evidence/macos-arm64-macho-2026-10-09/README.md).
 Full write tracing and Developer ID distribution evidence remain open.
 
 ## Try the resource fixture

@@ -1,0 +1,2 @@
+PASS exact ordinary/mapped outputs, seven rejection diagnostics, two signing controls, memory-policy control and held target PID
+Scope: these results do not constitute a complete filesystem trace

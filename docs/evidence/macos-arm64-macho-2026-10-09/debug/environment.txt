@@ -1,0 +1,18 @@
+ProductName:		macOS
+ProductVersion:		26.7
+BuildVersion:		25G229
+Darwin EIT-L40L6G4L23 25.6.0 Darwin Kernel Version 25.6.0: Tue Aug 18 17:48:46 PDT 2026; root:xnu-12377.161.15.700.19~2/RELEASE_ARM64_T6041 arm64
+page_size=16384
+Apple clang version 21.0.0 (clang-2100.3.34.2)
+Target: arm64-apple-darwin25.6.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+@(#)PROGRAM:ld PROJECT:ld-27037.1
+BUILD 21:17:51 Aug 25 2026
+configured to support archs: armv6 armv7 armv7s arm64 arm64e arm64_32 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em armv8m.main armv8.1m.main
+LTO support using: LLVM version 21.0.0 (static support for 30, runtime is 30)
+TAPI support using: Apple TAPI version 21.0.0 (tapi-2100.3.8.1)
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+27.0
+rustc 1.88.0 (6b00bc388 2025-06-23)
+clippy 0.1.88 (6b00bc3880 2025-06-23)

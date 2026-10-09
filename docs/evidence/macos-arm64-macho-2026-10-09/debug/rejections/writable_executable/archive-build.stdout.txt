@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/rejections/writable_executable/app.glue: 3 resources, 105339 archive bytes, 102849 uncompressed bytes
+Archive SHA-256: 5ddc86852f89161062abfb21a64e3be10d7c41be0784f89144bfd92c8c34443b

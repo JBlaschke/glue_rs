@@ -1,0 +1,3 @@
+Command: cargo clippy --workspace --all-targets --locked --offline --no-default-features --features lua55 -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+Exit status: 0
