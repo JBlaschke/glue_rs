@@ -1,0 +1,1 @@
+probe failed: fixture images must declare macOS 13.0 exactly

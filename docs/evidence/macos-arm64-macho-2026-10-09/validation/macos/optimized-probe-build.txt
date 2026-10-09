@@ -1,0 +1,4 @@
+Command: cargo build --release --locked --offline -p glue-macos-macho-probe
+   Compiling glue-macos-macho-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/macos-macho)
+    Finished `release` profile [optimized] target(s) in 2.09s
+Exit status: 0

@@ -1,0 +1,4 @@
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/build-input/native/libglue_probe_module.dylib:
+	@loader_path/libglue_probe_module.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@loader_path/libglue_probe_dep.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)

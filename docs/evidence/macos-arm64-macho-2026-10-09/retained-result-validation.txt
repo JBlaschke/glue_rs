@@ -1,0 +1,9 @@
+Command: python3 fixtures/native/macos-macho/check-results.py docs/evidence/macos-arm64-macho-2026-10-09/debug
+PASS exact ordinary/mapped outputs, seven rejection diagnostics, two signing controls, memory-policy control and held target PID
+Scope: these results do not constitute a complete filesystem trace
+Exit status: 0
+
+Command: python3 fixtures/native/macos-macho/check-results.py docs/evidence/macos-arm64-macho-2026-10-09/release
+PASS exact ordinary/mapped outputs, seven rejection diagnostics, two signing controls, memory-policy control and held target PID
+Scope: these results do not constitute a complete filesystem trace
+Exit status: 0

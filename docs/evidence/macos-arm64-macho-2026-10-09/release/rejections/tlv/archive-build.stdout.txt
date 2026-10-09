@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/rejections/tlv/app.glue: 3 resources, 70771 archive bytes, 68281 uncompressed bytes
+Archive SHA-256: 1925c72a029f9ac5b6cef92fe46db7c1e87efd5f2ea467b31aad37c40831ec96

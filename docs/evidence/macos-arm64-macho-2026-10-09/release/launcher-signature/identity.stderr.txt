@@ -1,0 +1,24 @@
+Executable=/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/relocated inputs/glue-macos-macho-probe
+Identifier=glue-macos-macho-probe-5555494456aaf53f82a03fba978eb7592e50ccf7
+Format=Mach-O thin (arm64)
+CodeDirectory v=20500 size=3328 flags=0x10002(adhoc,runtime) hashes=92+7 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1769472
+Hash type=sha256 size=32
+CandidateCDHash sha256=6b4bda3412454c57df5b26c2433cd5067213b709
+CandidateCDHashFull sha256=6b4bda3412454c57df5b26c2433cd5067213b70931f65a1e612e3ad18140c625
+Hash choices=sha256
+CMSDigest=6b4bda3412454c57df5b26c2433cd5067213b70931f65a1e612e3ad18140c625
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=1114112
+Executable Segment flags=0x1
+Page size=16384
+CDHash=6b4bda3412454c57df5b26c2433cd5067213b709
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Runtime Version=27.0.0
+Sealed Resources=none
+Internal requirements count=0 size=12

@@ -1,0 +1,7 @@
+[
+  "sh",
+  "fixtures/native/macos-macho/run.sh",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/release/glue-macos-macho-probe",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0"
+]

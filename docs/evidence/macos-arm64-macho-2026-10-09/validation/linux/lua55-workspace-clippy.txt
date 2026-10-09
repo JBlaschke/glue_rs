@@ -1,0 +1,3 @@
+   Compiling glue-runner v0.1.0 (/workspace/crates/glue-runner)
+   Compiling glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.95s

@@ -1,0 +1,43 @@
+/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-debug-346b2f0/build-input/native/libglue_probe_module.dylib [arm64]:
+    -inits:
+        0x00000520  _initialize_probe
+    -exports:
+        offset      symbol
+        0x00000534  _glue_answer
+        0x00000554  _glue_probe_constructor_count
+        0x00008000  _glue_probe_data
+        0x00000560  _glue_probe_pid
+    -imports:
+      _getpid  (from libSystem)
+      _glue_probe_dep  (from libglue_probe_dep)
+    -fixups:
+        segment         section          address             type   target
+        __DATA_CONST    __mod_init_func  0x00004000         rebase  0x00000520
+        __DATA_CONST    __got            0x00004008           bind  libglue_probe_dep/_glue_probe_dep
+        __DATA_CONST    __got            0x00004010           bind  libSystem/_getpid
+    -opcodes:
+        rebase opcodes:
+          0x0000 REBASE_OPCODE_SET_TYPE_IMM(1)
+          0x0001 REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(1, 0x00000000)
+          0x0003 REBASE_OPCODE_DO_REBASE_IMM_TIMES(1)
+          0x0004 REBASE_OPCODE_DONE()
+        bind opcodes:
+          0x0000 BIND_OPCODE_SET_DYLIB_ORDINAL_IMM(1)
+          0x0001 BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM(0x00, _glue_probe_dep)
+          0x0012 BIND_OPCODE_SET_TYPE_IMM(1)
+          0x0013 BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(0x01, 0x00000008)
+          0x0015 BIND_OPCODE_DO_BIND()
+          0x0016 BIND_OPCODE_SET_DYLIB_ORDINAL_IMM(2)
+          0x0017 BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM(0x00, _getpid)
+          0x0020 BIND_OPCODE_DO_BIND()
+          0x0021 BIND_OPCODE_DONE()
+        lazy bind opcodes:
+          0x0000 BIND_OPCODE_SET_DYLIB_ORDINAL_IMM(1)
+          0x0001 BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM(0x00, _glue_probe_dep)
+          0x0012 BIND_OPCODE_SET_TYPE_IMM(1)
+          0x0013 BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(0x01, 0x00000008)
+          0x0015 BIND_OPCODE_DO_BIND()
+          0x0016 BIND_OPCODE_SET_DYLIB_ORDINAL_IMM(2)
+          0x0017 BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM(0x00, _getpid)
+          0x0020 BIND_OPCODE_DO_BIND()
+          0x0021 BIND_OPCODE_DONE()

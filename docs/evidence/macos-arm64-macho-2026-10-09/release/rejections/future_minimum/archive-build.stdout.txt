@@ -1,0 +1,2 @@
+Built /Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/rejections/future_minimum/app.glue: 3 resources, 105339 archive bytes, 102849 uncompressed bytes
+Archive SHA-256: 93c6bc79add132118c5b2d1415477e0a5ee1e952ae9d95193cea07ecc05ae024

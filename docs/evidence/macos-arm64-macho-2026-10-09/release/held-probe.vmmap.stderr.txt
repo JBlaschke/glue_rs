@@ -1,0 +1,2 @@
+vmmap[24796]: vmmap cannot examine process 24794 (glue-macos-macho-probe) for unknown reasons, even though it appears to exist; try running with `sudo`.
+vmmap[24796]: [fatal] mach port for process 0 not valid

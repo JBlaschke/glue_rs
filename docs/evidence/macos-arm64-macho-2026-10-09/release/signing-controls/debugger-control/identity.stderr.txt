@@ -1,0 +1,24 @@
+Executable=/Users/johannes.blaschke/Developer/glue_rs/target/evidence/macos-macho/final-release-346b2f0/signing-controls/debugger-control/glue-macos-macho-probe
+Identifier=glue-macos-macho-probe-5555494456aaf53f82a03fba978eb7592e50ccf7
+Format=Mach-O thin (arm64)
+CodeDirectory v=20500 size=3328 flags=0x10002(adhoc,runtime) hashes=92+7 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1769472
+Hash type=sha256 size=32
+CandidateCDHash sha256=a37c699215a20e3544192397425dbd81995b6c37
+CandidateCDHashFull sha256=a37c699215a20e3544192397425dbd81995b6c373257b406855b1be86dc48f6e
+Hash choices=sha256
+CMSDigest=a37c699215a20e3544192397425dbd81995b6c373257b406855b1be86dc48f6e
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=1114112
+Executable Segment flags=0x1
+Page size=16384
+CDHash=a37c699215a20e3544192397425dbd81995b6c37
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Runtime Version=27.0.0
+Sealed Resources=none
+Internal requirements count=0 size=12

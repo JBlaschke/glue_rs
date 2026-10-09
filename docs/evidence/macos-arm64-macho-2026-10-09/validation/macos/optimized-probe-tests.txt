@@ -1,0 +1,41 @@
+Command: cargo test --release --locked --offline -p glue-macos-macho-probe
+   Compiling glue-macos-macho-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/macos-macho)
+    Finished `release` profile [optimized] target(s) in 1.75s
+     Running unittests src/main.rs (target/release/deps/glue_macos_macho_probe-e113fd849f01a3d5)
+
+running 31 tests
+test macho::tests::rejects_all_truncations_without_panicking ... ok
+test macho::tests::accepts_bounded_classic_c_image_without_authenticating_signature ... ok
+test macho::tests::rejects_cyclic_overlapping_or_out_of_range_export_trie ... ok
+test macho::tests::rejects_hidden_export_trie_bytes_and_export_symbol_disagreement ... ok
+test macho::tests::rejects_bad_symbol_partition_strings_and_indirect_index ... ok
+test macho::tests::rejects_ctor_targets_outside_text_and_missing_rebase ... ok
+test macho::tests::rejects_lazy_and_weak_fixup_streams ... ok
+test macho::tests::rejects_nonnull_imports_and_unterminated_import_names ... ok
+test macho::tests::rejects_malformed_and_oversized_load_command_metadata ... ok
+test macho::tests::rejects_nonzero_bss_and_missing_or_nonterminal_signature_metadata ... ok
+test macho::tests::rejects_overlapping_and_out_of_image_linkedit_ranges ... ok
+test macho::tests::rejects_rebase_count_expansion_and_nonzero_tail ... ok
+test macho::tests::rejects_chained_fixups_and_runtime_registration_commands ... ok
+test macho::tests::rejects_duplicate_and_overlapping_fixup_writes ... ok
+test macho::tests::rejects_overlapping_or_non_16k_segments ... ok
+test macho::tests::rejects_oversized_names_tables_and_invalid_minimum_versions ... ok
+test macho::tests::rejects_special_ordinals_weak_symbols_and_threaded_bindings ... ok
+test macho::tests::rejects_symbol_table_import_mismatch_and_weak_descriptor ... ok
+test macho::tests::rejects_text_fixups_and_misaligned_pointer_slots ... ok
+test macho::tests::rejects_text_header_overlap_and_section_overlap ... ok
+test macho::tests::rejects_tls_objc_unwind_and_modern_initializer_sections ... ok
+test macho::tests::rejects_unknown_or_weak_header_flags ... ok
+test macho::tests::rejects_weak_tls_reexport_and_resolver_exports ... ok
+test macho::tests::rejects_writable_executable_and_extra_maximum_protections ... ok
+test macho::tests::rejects_wrong_architecture_subtype_and_file_type ... ok
+test macho::tests::rejects_wrong_rebase_type_or_out_of_image_target ... ok
+test macho::tests::uleb_and_sleb_are_bounded_and_canonical ... ok
+test macho::tests::validates_inert_function_start_and_data_in_code_metadata ... ok
+test macho::tests::validates_supported_binding_address_addend_and_repeat_forms ... ok
+test macho::tests::validates_supported_rebase_address_and_repeat_forms ... ok
+test macho::tests::single_byte_metadata_mutations_never_panic ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Exit status: 0

@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-native", "spikes/linux-memfd"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-native", "spikes/linux-memfd", "spikes/macos-macho"]
 resolver = "3"
 
 [workspace.package]

@@ -1,0 +1,6 @@
+{
+  "code_directory_flags_are_not_process_csops_flags": true,
+  "disallowed_process_bits": "0x10000004 (CS_DEBUGGED | CS_GET_TASK_ALLOW)",
+  "required_process_bits": "0x00010001 (CS_VALID | CS_RUNTIME)",
+  "source": "spikes/macos-macho/src/macos.rs csops CS_OPS_STATUS guard"
+}
