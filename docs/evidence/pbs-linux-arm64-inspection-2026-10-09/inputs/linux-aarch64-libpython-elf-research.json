@@ -1,0 +1,840 @@
+{
+  "builtin_modules": [
+    {
+      "function_address": 6025720,
+      "name": "array",
+      "slot_address": 19347192
+    },
+    {
+      "function_address": 2496436,
+      "name": "_asyncio",
+      "slot_address": 19347208
+    },
+    {
+      "function_address": 6059632,
+      "name": "_bisect",
+      "slot_address": 19347224
+    },
+    {
+      "function_address": 2526708,
+      "name": "_contextvars",
+      "slot_address": 19347240
+    },
+    {
+      "function_address": 2526936,
+      "name": "_csv",
+      "slot_address": 19347256
+    },
+    {
+      "function_address": 6064940,
+      "name": "_heapq",
+      "slot_address": 19347272
+    },
+    {
+      "function_address": 6069924,
+      "name": "_json",
+      "slot_address": 19347288
+    },
+    {
+      "function_address": 2544968,
+      "name": "_lsprof",
+      "slot_address": 19347304
+    },
+    {
+      "function_address": 6095964,
+      "name": "_opcode",
+      "slot_address": 19347320
+    },
+    {
+      "function_address": 6100176,
+      "name": "_pickle",
+      "slot_address": 19347336
+    },
+    {
+      "function_address": 2559872,
+      "name": "_queue",
+      "slot_address": 19347352
+    },
+    {
+      "function_address": 6140444,
+      "name": "_random",
+      "slot_address": 19347368
+    },
+    {
+      "function_address": 6142924,
+      "name": "_struct",
+      "slot_address": 19347384
+    },
+    {
+      "function_address": 2567324,
+      "name": "_interpreters",
+      "slot_address": 19347400
+    },
+    {
+      "function_address": 2576416,
+      "name": "_interpchannels",
+      "slot_address": 19347416
+    },
+    {
+      "function_address": 2595640,
+      "name": "_interpqueues",
+      "slot_address": 19347432
+    },
+    {
+      "function_address": 2607748,
+      "name": "_zoneinfo",
+      "slot_address": 19347448
+    },
+    {
+      "function_address": 6165944,
+      "name": "math",
+      "slot_address": 19347464
+    },
+    {
+      "function_address": 2625948,
+      "name": "cmath",
+      "slot_address": 19347480
+    },
+    {
+      "function_address": 2628032,
+      "name": "_statistics",
+      "slot_address": 19347496
+    },
+    {
+      "function_address": 6213948,
+      "name": "_datetime",
+      "slot_address": 19347512
+    },
+    {
+      "function_address": 6280296,
+      "name": "_decimal",
+      "slot_address": 19347528
+    },
+    {
+      "function_address": 6389540,
+      "name": "binascii",
+      "slot_address": 19347544
+    },
+    {
+      "function_address": 6403196,
+      "name": "_bz2",
+      "slot_address": 19347560
+    },
+    {
+      "function_address": 6411888,
+      "name": "_lzma",
+      "slot_address": 19347576
+    },
+    {
+      "function_address": 6427840,
+      "name": "zlib",
+      "slot_address": 19347592
+    },
+    {
+      "function_address": 2682000,
+      "name": "readline",
+      "slot_address": 19347608
+    },
+    {
+      "function_address": 2691484,
+      "name": "_md5",
+      "slot_address": 19347624
+    },
+    {
+      "function_address": 2693032,
+      "name": "_sha1",
+      "slot_address": 19347640
+    },
+    {
+      "function_address": 2693904,
+      "name": "_sha2",
+      "slot_address": 19347656
+    },
+    {
+      "function_address": 2695636,
+      "name": "_sha3",
+      "slot_address": 19347672
+    },
+    {
+      "function_address": 2697388,
+      "name": "_blake2",
+      "slot_address": 19347688
+    },
+    {
+      "function_address": 2699580,
+      "name": "pyexpat",
+      "slot_address": 19347704
+    },
+    {
+      "function_address": 2713956,
+      "name": "_elementtree",
+      "slot_address": 19347720
+    },
+    {
+      "function_address": 2721688,
+      "name": "_codecs_cn",
+      "slot_address": 19347736
+    },
+    {
+      "function_address": 2723660,
+      "name": "_codecs_hk",
+      "slot_address": 19347752
+    },
+    {
+      "function_address": 2725824,
+      "name": "_codecs_iso2022",
+      "slot_address": 19347768
+    },
+    {
+      "function_address": 2732652,
+      "name": "_codecs_jp",
+      "slot_address": 19347784
+    },
+    {
+      "function_address": 2733876,
+      "name": "_codecs_kr",
+      "slot_address": 19347800
+    },
+    {
+      "function_address": 2735716,
+      "name": "_codecs_tw",
+      "slot_address": 19347816
+    },
+    {
+      "function_address": 2737496,
+      "name": "_multibytecodec",
+      "slot_address": 19347832
+    },
+    {
+      "function_address": 2743888,
+      "name": "unicodedata",
+      "slot_address": 19347848
+    },
+    {
+      "function_address": 6599564,
+      "name": "fcntl",
+      "slot_address": 19347864
+    },
+    {
+      "function_address": 2755908,
+      "name": "grp",
+      "slot_address": 19347880
+    },
+    {
+      "function_address": 2758644,
+      "name": "mmap",
+      "slot_address": 19347896
+    },
+    {
+      "function_address": 6607480,
+      "name": "_posixsubprocess",
+      "slot_address": 19347912
+    },
+    {
+      "function_address": 6615192,
+      "name": "resource",
+      "slot_address": 19347928
+    },
+    {
+      "function_address": 6626156,
+      "name": "select",
+      "slot_address": 19347944
+    },
+    {
+      "function_address": 6627416,
+      "name": "_socket",
+      "slot_address": 19347960
+    },
+    {
+      "function_address": 2808872,
+      "name": "syslog",
+      "slot_address": 19347976
+    },
+    {
+      "function_address": 6637948,
+      "name": "termios",
+      "slot_address": 19347992
+    },
+    {
+      "function_address": 2816736,
+      "name": "_posixshmem",
+      "slot_address": 19348008
+    },
+    {
+      "function_address": 2817648,
+      "name": "_multiprocessing",
+      "slot_address": 19348024
+    },
+    {
+      "function_address": 2826948,
+      "name": "_ctypes",
+      "slot_address": 19348040
+    },
+    {
+      "function_address": 6661072,
+      "name": "_curses",
+      "slot_address": 19348056
+    },
+    {
+      "function_address": 2933056,
+      "name": "_curses_panel",
+      "slot_address": 19348072
+    },
+    {
+      "function_address": 2945828,
+      "name": "_sqlite3",
+      "slot_address": 19348088
+    },
+    {
+      "function_address": 2953560,
+      "name": "_ssl",
+      "slot_address": 19348104
+    },
+    {
+      "function_address": 3004964,
+      "name": "_hashlib",
+      "slot_address": 19348120
+    },
+    {
+      "function_address": 3011256,
+      "name": "_uuid",
+      "slot_address": 19348136
+    },
+    {
+      "function_address": 3011556,
+      "name": "xxsubtype",
+      "slot_address": 19348152
+    },
+    {
+      "function_address": 3012720,
+      "name": "_xxtestfuzz",
+      "slot_address": 19348168
+    },
+    {
+      "function_address": 3019984,
+      "name": "_testinternalcapi",
+      "slot_address": 19348184
+    },
+    {
+      "function_address": 6751812,
+      "name": "atexit",
+      "slot_address": 19348200
+    },
+    {
+      "function_address": 6752396,
+      "name": "faulthandler",
+      "slot_address": 19348216
+    },
+    {
+      "function_address": 6759328,
+      "name": "posix",
+      "slot_address": 19348232
+    },
+    {
+      "function_address": 6813004,
+      "name": "_signal",
+      "slot_address": 19348248
+    },
+    {
+      "function_address": 3124580,
+      "name": "_tracemalloc",
+      "slot_address": 19348264
+    },
+    {
+      "function_address": 3125012,
+      "name": "_suggestions",
+      "slot_address": 19348280
+    },
+    {
+      "function_address": 6820612,
+      "name": "_codecs",
+      "slot_address": 19348296
+    },
+    {
+      "function_address": 6836500,
+      "name": "_collections",
+      "slot_address": 19348312
+    },
+    {
+      "function_address": 6848116,
+      "name": "errno",
+      "slot_address": 19348328
+    },
+    {
+      "function_address": 6882308,
+      "name": "_io",
+      "slot_address": 19348344
+    },
+    {
+      "function_address": 6961236,
+      "name": "itertools",
+      "slot_address": 19348360
+    },
+    {
+      "function_address": 7011528,
+      "name": "_sre",
+      "slot_address": 19348376
+    },
+    {
+      "function_address": 3181444,
+      "name": "_sysconfig",
+      "slot_address": 19348392
+    },
+    {
+      "function_address": 7058008,
+      "name": "_thread",
+      "slot_address": 19348408
+    },
+    {
+      "function_address": 7073568,
+      "name": "time",
+      "slot_address": 19348424
+    },
+    {
+      "function_address": 7084312,
+      "name": "_typing",
+      "slot_address": 19348440
+    },
+    {
+      "function_address": 7084700,
+      "name": "_weakref",
+      "slot_address": 19348456
+    },
+    {
+      "function_address": 7085576,
+      "name": "_abc",
+      "slot_address": 19348472
+    },
+    {
+      "function_address": 7095920,
+      "name": "_functools",
+      "slot_address": 19348488
+    },
+    {
+      "function_address": 7110348,
+      "name": "_locale",
+      "slot_address": 19348504
+    },
+    {
+      "function_address": 7113244,
+      "name": "_operator",
+      "slot_address": 19348520
+    },
+    {
+      "function_address": 7123964,
+      "name": "_stat",
+      "slot_address": 19348536
+    },
+    {
+      "function_address": 3206236,
+      "name": "_symtable",
+      "slot_address": 19348552
+    },
+    {
+      "function_address": 3207700,
+      "name": "pwd",
+      "slot_address": 19348568
+    },
+    {
+      "function_address": 5872280,
+      "name": "marshal",
+      "slot_address": 19348584
+    },
+    {
+      "function_address": 5821736,
+      "name": "_imp",
+      "slot_address": 19348600
+    },
+    {
+      "function_address": 5575068,
+      "name": "_ast",
+      "slot_address": 19348616
+    },
+    {
+      "function_address": 5674832,
+      "name": "_tokenize",
+      "slot_address": 19348632
+    },
+    {
+      "function_address": 0,
+      "name": "builtins",
+      "slot_address": 19348648
+    },
+    {
+      "function_address": 0,
+      "name": "sys",
+      "slot_address": 19348664
+    },
+    {
+      "function_address": 6024472,
+      "name": "gc",
+      "slot_address": 19348680
+    },
+    {
+      "function_address": 5541036,
+      "name": "_warnings",
+      "slot_address": 19348696
+    },
+    {
+      "function_address": 5520952,
+      "name": "_string",
+      "slot_address": 19348712
+    }
+  ],
+  "dynamic_tags": [
+    {
+      "tag": 1,
+      "value": 41693
+    },
+    {
+      "tag": 1,
+      "value": 41703
+    },
+    {
+      "tag": 1,
+      "value": 41719
+    },
+    {
+      "tag": 1,
+      "value": 41730
+    },
+    {
+      "tag": 1,
+      "value": 41741
+    },
+    {
+      "tag": 1,
+      "value": 41754
+    },
+    {
+      "tag": 1,
+      "value": 41764
+    },
+    {
+      "tag": 14,
+      "value": 41786
+    },
+    {
+      "tag": 12,
+      "value": 1567440
+    },
+    {
+      "tag": 13,
+      "value": 12335688
+    },
+    {
+      "tag": 25,
+      "value": 18196688
+    },
+    {
+      "tag": 27,
+      "value": 40
+    },
+    {
+      "tag": 26,
+      "value": 18196728
+    },
+    {
+      "tag": 28,
+      "value": 8
+    },
+    {
+      "tag": 1879047925,
+      "value": 552
+    },
+    {
+      "tag": 5,
+      "value": 70272
+    },
+    {
+      "tag": 6,
+      "value": 13776
+    },
+    {
+      "tag": 10,
+      "value": 41818
+    },
+    {
+      "tag": 11,
+      "value": 24
+    },
+    {
+      "tag": 3,
+      "value": 19184872
+    },
+    {
+      "tag": 2,
+      "value": 31896
+    },
+    {
+      "tag": 20,
+      "value": 7
+    },
+    {
+      "tag": 23,
+      "value": 1535544
+    },
+    {
+      "tag": 7,
+      "value": 117024
+    },
+    {
+      "tag": 8,
+      "value": 1418520
+    },
+    {
+      "tag": 9,
+      "value": 24
+    },
+    {
+      "tag": 24,
+      "value": 0
+    },
+    {
+      "tag": 1879048187,
+      "value": 1
+    },
+    {
+      "tag": 1879048190,
+      "value": 116800
+    },
+    {
+      "tag": 1879048191,
+      "value": 7
+    },
+    {
+      "tag": 1879048176,
+      "value": 112090
+    },
+    {
+      "tag": 1879048185,
+      "value": 53446
+    }
+  ],
+  "elf_class": 2,
+  "elf_data": 1,
+  "elf_machine": 183,
+  "elf_type": 3,
+  "image_sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+  "image_size": 73563968,
+  "inittab_source_sha256": "ffe060463ae66b1a5d2a9d3f72fa67083ee44cbe7705cf7ab4cc83950e2d6018",
+  "inittab_symbol": {
+    "info": 1,
+    "name": "_PyImport_Inittab",
+    "other": 0,
+    "section": 23,
+    "size": 1552,
+    "value": 19347192
+  },
+  "needed": [
+    "libm.so.6",
+    "libpthread.so.0",
+    "librt.so.1",
+    "libdl.so.2",
+    "libutil.so.1",
+    "libc.so.6",
+    "ld-linux-aarch64.so.1"
+  ],
+  "program_headers": [
+    {
+      "alignment": 65536,
+      "file_size": 18153048,
+      "flags": 5,
+      "memory_size": 18153048,
+      "offset": 0,
+      "type": 1,
+      "vaddr": 0
+    },
+    {
+      "alignment": 65536,
+      "file_size": 1690064,
+      "flags": 6,
+      "memory_size": 2227144,
+      "offset": 18196680,
+      "type": 1,
+      "vaddr": 18196680
+    },
+    {
+      "alignment": 8,
+      "file_size": 592,
+      "flags": 6,
+      "memory_size": 592,
+      "offset": 19184280,
+      "type": 2,
+      "vaddr": 19184280
+    },
+    {
+      "alignment": 4,
+      "file_size": 36,
+      "flags": 4,
+      "memory_size": 36,
+      "offset": 512,
+      "type": 4,
+      "vaddr": 512
+    },
+    {
+      "alignment": 8,
+      "file_size": 8,
+      "flags": 4,
+      "memory_size": 32,
+      "offset": 18196680,
+      "type": 7,
+      "vaddr": 18196680
+    },
+    {
+      "alignment": 4,
+      "file_size": 232276,
+      "flags": 4,
+      "memory_size": 232276,
+      "offset": 16310852,
+      "type": 1685382480,
+      "vaddr": 16310852
+    },
+    {
+      "alignment": 16,
+      "file_size": 0,
+      "flags": 6,
+      "memory_size": 0,
+      "offset": 0,
+      "type": 1685382481,
+      "vaddr": 0
+    },
+    {
+      "alignment": 1,
+      "file_size": 1005368,
+      "flags": 4,
+      "memory_size": 1005368,
+      "offset": 18196680,
+      "type": 1685382482,
+      "vaddr": 18196680
+    }
+  ],
+  "relocation_type_counts": {
+    "1025": 345,
+    "1026": 1325,
+    "1027": 53446,
+    "1031": 4,
+    "257": 5314
+  },
+  "rpath": null,
+  "runpath": null,
+  "selected_dynamic_exports": {
+    "PyConfig_InitIsolatedConfig": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 80,
+      "value": 2284708
+    },
+    "PyConfig_SetString": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 244,
+      "value": 5832172
+    },
+    "PyImport_AppendInittab": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 76,
+      "value": 2276620
+    },
+    "PyImport_Inittab": {
+      "info": 17,
+      "other": 0,
+      "section": 23,
+      "size": 8,
+      "value": 19321808
+    },
+    "PyInit__hashlib": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 120,
+      "value": 3004964
+    },
+    "PyInit__ssl": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 120,
+      "value": 2953560
+    },
+    "PyInit_math": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 120,
+      "value": 6165944
+    },
+    "PyRun_SimpleStringFlags": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 156,
+      "value": 2438868
+    },
+    "Py_FinalizeEx": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 16,
+      "value": 2418240
+    },
+    "Py_InitializeFromConfig": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 3160,
+      "value": 5886784
+    },
+    "Py_PreInitialize": {
+      "info": 18,
+      "other": 0,
+      "section": 11,
+      "size": 28,
+      "value": 2415124
+    },
+    "_PyImport_Inittab": {}
+  },
+  "soname": "libpython3.13.so.1.0",
+  "source_artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+  "symbol_version_requirements": [
+    {
+      "flags": 0,
+      "library": "libutil.so.1",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "ld-linux-aarch64.so.1",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "libdl.so.2",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "librt.so.1",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "libpthread.so.0",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "libm.so.6",
+      "version": "GLIBC_2.17"
+    },
+    {
+      "flags": 0,
+      "library": "libc.so.6",
+      "version": "GLIBC_2.17"
+    }
+  ]
+}

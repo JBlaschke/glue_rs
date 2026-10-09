@@ -1,0 +1,5 @@
+PASS: Mac/Linux complete report bytes match; full-only report matches full subset.
+PASS: All full6574/install4526 entries match independent Python tar inventories for path/type/mode/size/hash/link targets.
+PASS: Metadata identity matches the original PYTHON.json and inventory.
+PASS: Reproduced libpython ELF/inittab file research matches every retained JSON field.
+PASS: Retained complete gzip trace passes strict checker; original raw trace size/hash retained.

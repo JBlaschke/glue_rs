@@ -135,7 +135,8 @@ uv dependency; it emits deterministic JSON to stdout.
 See [the input fixture and command](fixtures/python-pbs/README.md) and
 [inspection decision](docs/decisions/0010-pinned-pbs-inspection.md).
 This is build-time provider work. Python execution and conversion into runnable
-glue archives remain pending.
+glue archives remain pending. [Retained evidence](docs/evidence/pbs-linux-arm64-inspection-2026-10-09/README.md)
+includes identical Mac/Linux reports and the complete Linux inspector trace.
 
 ## Try the resource fixture
 

@@ -1,0 +1,1 @@
+Trace checks passed: complete pinned input reads, exact stdout byte total, no payload mappings, mutation attempts or extra processes, completed zero exit

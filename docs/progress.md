@@ -15,7 +15,7 @@ Further implementation continues on separate feature branches.
 | A6 C-owned Lua error boundary | `codex/a6-lua-c-boundary` / `ee7c9d3` (from merged `db2c271`) | Experimental implementation | macOS/Linux arm64: 142/143 Rust tests for `lua54`/`lua55`, Clippy clean for both; 50/51 optimized macOS boundary tests; both relocated Linux fixtures pass exact output and full no-extraction trace checks |
 | A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` / `3a24833`, fixture cleanup `fb61e5e` (from merged `7853282`) | Experimental implementation; controlled observation | Mac/Linux source workspaces: 181/182 tests; GNU Linux native workspaces: 178/179; 37 portable native tests and 54 Python policy tests; Clippy clean for all profiles; both Lua versions match ordinary loading and pass complete two-memfd/no-payload-write traces; twelve ELF rejection traces pass before any memfd attempt |
 | A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` / `346b2f0` (from merged `a596305`) | Controlled signed observation; acceptance evidence incomplete | 31 portable/optimized parser tests; 212/213 source workspace tests for Lua 5.4/5.5 and Clippy on Mac/Linux; ad-hoc hardened-runtime/allow-jit debug and optimized launchers match ordinary loading; fourteen native rejections, four signing controls and two memory-policy controls pass; full trace and distribution signing remain open |
-| A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` (from merged `1425d6d`) | Experimental build-time inspection | 56 Rust inspection tests and 17 new trace-policy tests; independent full/install-only pins, complete hashed inventories and exact reviewed projection; final clean capture follows |
+| A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
 
 ## Gate status
 
@@ -134,6 +134,22 @@ retains source/artifact identities, signatures, inspections and tool denials.
 This is a native-only fixture with an unacquired Lua scaffold. Full independent
 filesystem/VM tracing is unavailable under current rights and no Developer ID
 identity is available; A1 release acceptance and G0/G1 remain open.
+
+The PBS inspector was captured from clean `886a415` on 2026-10-09. It pins stock
+conventional-GIL CPython 3.13.16 / PBS `20261009` for GNU Linux arm64 and verifies
+full and unstripped install-only inputs without extraction. All 6,574 full and
+4,526 retained install-only member identities agree with independent inventories;
+Mac/Linux optimized reports are byte-identical. Both source workspaces pass
+268/269 tests and Clippy; both optimized inspector suites pass 56 tests and
+all 71 Python policy tests pass. The complete Linux inspector trace passes
+read-only input, no-payload-mapping/no-mutation and sole-process checks.
+[The evidence](evidence/pbs-linux-arm64-inspection-2026-10-09/README.md) retains
+pins, upstream records, complete compressed reports/trace, source/artifact
+identities, candidate metadata, independent file research and validation logs.
+The actual libpython registers `math`/`_ssl` in its file table, but its size and
+ABS64/TLSDESC relocations exceed the current Lua loader profile. This is A7/A10
+build-time input work; no Python runtime has been acquired or executed and
+G0/G1 remain open. See [the decision](decisions/0010-pinned-pbs-inspection.md).
 
 ## Next critical-path assignments
 

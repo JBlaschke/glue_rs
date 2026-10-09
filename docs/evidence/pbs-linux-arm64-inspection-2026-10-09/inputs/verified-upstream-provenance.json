@@ -1,0 +1,46 @@
+{
+  "assets": [
+    {
+      "browser_download_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+      "created_at": "2026-10-09T16:36:12Z",
+      "digest": "sha256:397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+      "id": 625539557,
+      "name": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+      "size": 57626877,
+      "updated_at": "2026-10-09T16:36:15Z"
+    },
+    {
+      "browser_download_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-pgo%2Blto-full.tar.zst",
+      "created_at": "2026-10-09T16:36:12Z",
+      "digest": "sha256:8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+      "id": 625539564,
+      "name": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+      "size": 95632430,
+      "updated_at": "2026-10-09T16:36:17Z"
+    }
+  ],
+  "primary_sources": {
+    "checksum_manifest": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/SHA256SUMS",
+    "distribution_format": "https://github.com/astral-sh/python-build-standalone/blob/ccc07c40c2731bfb459c119f2388f65a5a470de6/docs/distributions.rst",
+    "release": "https://github.com/astral-sh/python-build-standalone/releases/tag/20261009",
+    "release_api": "https://api.github.com/repos/astral-sh/python-build-standalone/releases/tags/20261009",
+    "release_projection": "https://github.com/astral-sh/python-build-standalone/blob/ccc07c40c2731bfb459c119f2388f65a5a470de6/src/release.rs#L456-L565",
+    "runtime_requirements": "https://github.com/astral-sh/python-build-standalone/blob/ccc07c40c2731bfb459c119f2388f65a5a470de6/docs/running.rst",
+    "tag_api": "https://api.github.com/repos/astral-sh/python-build-standalone/git/ref/tags/20261009"
+  },
+  "release": "20261009",
+  "release_id": 408110548,
+  "release_published_at": "2026-10-09T16:38:31Z",
+  "saved_record_sha256": {
+    "github-release-20261009.json": "da8f09b6fad5388100f345161ba9bb9278a1fbd9c4efef939840bb3cd1dbbab9",
+    "github-tag-20261009.json": "da0c8e12f8a65e3e3ddabcd166660d6386f5b4c00d13adffa670b7319a79fbbb",
+    "linux-aarch64-PYTHON.json": "2be93f8346d647c46a9c5133cddb403d757a564ce1ec4039239ce9008fd763dc",
+    "linux-aarch64-inittab-source.c": "ffe060463ae66b1a5d2a9d3f72fa67083ee44cbe7705cf7ab4cc83950e2d6018",
+    "linux-aarch64-libpython-elf-research.json": "20c8f2572eecac33cc090cc5fa6ec601041eec643fdd02851f35a6277ca798ab",
+    "upstream-SHA256SUMS": "ec040718b168f32a9ffa1ae05eb763f6d21def1110407adb63cf0821acd9c323",
+    "upstream-distributions.rst": "7947dd0d3c3f0b5f1d0a45bdd6be8510b380214ac3b998b2c2eda4341092438f",
+    "upstream-release.rs": "bdf313fe28add14cf5fe80b0995bf0c834da539482a71266235d9fa6f70dfbb9",
+    "upstream-running.rst": "8ba017aea359b8760f88dd76121d5f91c64653baae7200dea503f6ffd4eb55df"
+  },
+  "source_commit": "ccc07c40c2731bfb459c119f2388f65a5a470de6"
+}

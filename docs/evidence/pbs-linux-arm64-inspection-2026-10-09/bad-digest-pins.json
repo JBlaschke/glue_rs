@@ -1,0 +1,20 @@
+{
+  "schema_version": 0,
+  "release": "20261009",
+  "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+  "python_version": "3.13.16",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "build_options": "pgo+lto",
+  "full": {
+    "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "size": 95632430,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-pgo%2Blto-full.tar.zst"
+  },
+  "install_only": {
+    "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+    "sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+    "size": 57626877,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz"
+  }
+}

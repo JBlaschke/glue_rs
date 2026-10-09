@@ -1,0 +1,16 @@
+{
+  "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz": {
+    "member_count": 4526,
+    "regular_byte_total": 182155939,
+    "sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+    "size": 57626877,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz"
+  },
+  "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst": {
+    "member_count": 6574,
+    "regular_byte_total": 395119171,
+    "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+    "size": 95632430,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-pgo%2Blto-full.tar.zst"
+  }
+}
