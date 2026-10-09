@@ -1,0 +1,10 @@
+luaL_checkversion_
+luaL_error
+lua_createtable
+lua_getglobal
+lua_pushcclosure
+lua_pushinteger
+lua_setfield
+lua_setglobal
+lua_settop
+lua_tointegerx

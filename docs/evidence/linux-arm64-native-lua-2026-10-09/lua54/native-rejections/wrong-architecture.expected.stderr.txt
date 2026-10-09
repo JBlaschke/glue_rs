@@ -1,0 +1,1 @@
+glue: native Lua closure is unsupported: native_probe: require ET_DYN AArch64

@@ -326,6 +326,7 @@ fn help_and_version_succeed_without_an_archive() {
 
 // The checked-in execution fixtures have observed arm64 Darwin/GNU Linux targets.
 #[cfg(all(
+    not(feature = "linux-native"),
     target_arch = "aarch64",
     any(target_os = "macos", all(target_os = "linux", target_env = "gnu"))
 ))]

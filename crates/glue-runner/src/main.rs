@@ -263,7 +263,15 @@ fn execute(command: Command) -> Result<ExitCode> {
                 }
                 Err(error) => return Err(error.into()),
             };
-            glue_runtime_lua::execute(Resources::with_default_cache(archive), &entry)?;
+            if let Err(error) =
+                glue_runtime_lua::execute(Resources::with_default_cache(archive), &entry)
+            {
+                if error.is_unsupported() {
+                    eprintln!("glue: {error}");
+                    return Ok(ExitCode::from(2));
+                }
+                return Err(error.into());
+            }
         }
     }
     Ok(ExitCode::SUCCESS)

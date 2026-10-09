@@ -1,0 +1,4 @@
+94382ba0861b7eb33529468e3d05e571efc0a7e7fea2458f53f0a0d9a6ec3093  /build-target/native-rejections-input/undeclared-import/native/libglue_lua_dep.so
+5daaf84173f5543ede35c30bdde44399c373a7d036a0b705be35eca5313bac9a  /build-target/native-rejections-input/undeclared-import/native/libglue_lua_native.so
+4853b8ab944cf3a05c9f3e9ba4d134f3baa8fd96d023e06409c523816ab2bc97  /build-target/native-rejections-input/undeclared-import/app/main.lua
+e8a972f5f90bc7fd7b59aaf07f48bd26bc0f2db583e9bc19547a8e702cfad495  /build-target/native-rejections-input/undeclared-import/assets/message.txt

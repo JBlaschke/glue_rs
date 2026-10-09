@@ -9,12 +9,14 @@ license.workspace = true
 default = ["lua54"]
 lua54 = []
 lua55 = []
+linux-native = ["dep:glue-native"]
 
 [dependencies]
 glue-format.workspace = true
 glue-resources.workspace = true
 libc.workspace = true
 thiserror.workspace = true
+glue-native = { workspace = true, optional = true }
 
 # Exact upstream source crate shared by both compiled profiles.
 [build-dependencies]

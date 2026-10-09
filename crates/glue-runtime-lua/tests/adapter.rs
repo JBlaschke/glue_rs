@@ -333,6 +333,7 @@ fn bytecode_is_rejected_on_entry_import_loadfile_dofile_and_load() {
 }
 
 #[test]
+#[cfg(not(feature = "linux-native"))]
 fn unsupported_filesystem_and_native_surfaces_are_unavailable() {
     run(&[("app/main.lua", br#"
         assert(io == nil and os == nil and debug == nil)
@@ -346,6 +347,24 @@ fn unsupported_filesystem_and_native_surfaces_are_unavailable() {
         assert(not pcall(require, "io"))
         assert(not pcall(require, "os"))
     "#)]).unwrap();
+}
+
+#[cfg(feature = "linux-native")]
+#[test]
+fn native_profile_searches_only_declared_roots_and_keeps_archive_io() {
+    run(&[(
+        "app/main.lua",
+        br#"
+        assert(io == nil and os == nil and debug == nil)
+        assert(#package.searchers == 3 and package.searchpath == nil and package.cpath == "")
+        assert(not pcall(package.loadlib, "/host/library.so", "luaopen_example"))
+        local loaded, message = pcall(package.loadlib, "native/libmissing.so", "luaopen_missing")
+        assert(not loaded and message:find("declared", 1, true))
+        assert(not pcall(require, "missing"))
+        assert(loadfile("/etc/passwd") == nil)
+    "#,
+    )])
+    .unwrap();
 }
 
 #[test]

@@ -121,6 +121,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-native"
+version = "0.1.0"
+dependencies = [
+ "glue-format",
+ "glue-resources",
+ "libc",
+ "thiserror",
+]
+
+[[package]]
 name = "glue-pack"
 version = "0.1.0"
 dependencies = [
@@ -155,6 +165,7 @@ version = "0.1.0"
 dependencies = [
  "cc",
  "glue-format",
+ "glue-native",
  "glue-resources",
  "libc",
  "lua-src",

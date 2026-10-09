@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/wrong-architecture.glue: 4 resources, 139562 archive bytes, 137758 uncompressed bytes
+Archive SHA-256: 9973aa2f391a66196c6ef9d1665a8ad6c28310e31803446a806fd6e2e79ff348

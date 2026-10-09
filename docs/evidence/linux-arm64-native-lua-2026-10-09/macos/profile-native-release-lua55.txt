@@ -1,0 +1,75 @@
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+   Compiling glue-native v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-native)
+    Finished `release` profile [optimized] target(s) in 6.89s
+     Running unittests src/lib.rs (target/release/deps/glue_runtime_lua-cfef0a4f1c298992)
+
+running 34 tests
+test bridge::tests::bootstrap_gets_the_compiled_native_capability ... ok
+test bridge::tests::finalizer_callbacks_keep_context_and_replies_alive ... ok
+test bridge::tests::callback_errors_and_non_string_lua_errors_are_protected ... ok
+test bridge::tests::callback_panics_are_sticky_even_if_lua_catches_them ... ok
+test bridge::tests::c_decoder_preserves_signed_edges_binary_strings_and_table_keys ... ok
+test bridge::tests::native_c_initializer_and_functions_run_after_reply_release ... ok
+test bridge::tests::nested_gc_requests_keep_both_owned_reply_descriptors_live ... ok
+test bridge::tests::native_c_initializer_oom_has_no_live_rust_reply ... ok
+test bridge::tests::native_function_marshalling_oom_releases_the_owned_reply ... ok
+test bridge::tests::c_decoder_depth_boundary_matches_the_rust_encoder ... ok
+test bridge::tests::panic_during_shutdown_is_reported ... ok
+test bridge::tests::native_c_initializer_and_function_errors_return_normally ... ok
+test bridge::tests::state_and_initialization_allocation_failures_return_normally ... ok
+test bridge::tests::panic_payload_destructors_never_run_inside_the_ffi_callback ... ok
+test bridge::tests::shutdown_reply_oom_releases_the_rust_buffer ... ok
+test bridge::tests::malformed_reply_is_released_before_error_propagation ... ok
+test profile::tests::prerequisite_version_comparison_uses_numeric_components_and_zero_padding ... ok
+test bridge::tests::reply_allocation_failures_release_owned_bytes ... ok
+test profile::tests::build_abi_and_every_source_pin_field_are_exact ... ok
+test profile::tests::another_minor_source_or_build_never_substitutes_for_the_compiled_profile ... ok
+test profile::tests::python_and_node_are_explicitly_unsupported ... ok
+test profile::tests::exact_source_profile_accepts_selected_entry_and_additional_lua_resources ... ok
+test profile::tests::previous_rust_thunk_adapter_identity_requires_rebuilding_archives ... ok
+test profile::tests::malformed_selected_references_are_invalid ... ok
+test profile::tests::host_and_archived_lua_do_not_fall_back_to_linked_lua ... ok
+test profile::tests::workers_mixed_runtimes_and_multiple_targets_are_unsupported ... ok
+test wire::tests::bridge_replies_transfer_owned_bytes_and_release_every_status ... ok
+test profile::tests::native_profile_is_distinct_and_rejects_unobserved_target_features ... ok
+test profile::tests::unobserved_targets_and_cpu_requirements_are_unsupported ... ok
+test wire::tests::byte_budget_includes_framing_and_length_arithmetic_is_checked ... ok
+test wire::tests::depth_limit_counts_top_level_values_as_depth_one ... ok
+test wire::tests::invalid_table_keys_and_too_many_results_fail_without_a_partial_reply ... ok
+test wire::tests::nested_tables_preserve_key_value_order_and_integer_edges ... ok
+test wire::tests::primitive_tags_and_binary_strings_match_the_wire_contract ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adapter.rs (target/release/deps/adapter-2561408e0de44264)
+
+running 20 tests
+test interpreter_matches_the_compiled_profile ... ok
+test assets_are_binary_and_metadata_and_origins_are_virtual ... ok
+test archive_requests_work_from_coroutines_and_resource_errors_are_catchable ... ok
+test load_and_loadfile_preserve_omitted_nil_table_and_non_table_environments ... ok
+test archive_paths_and_module_names_reject_traversal_and_aliases ... ok
+test hash_mismatch_stops_entry_and_import_before_their_source_executes ... ok
+test native_profile_searches_only_declared_roots_and_keeps_archive_io ... ok
+test lua55_named_vararg_tables_and_global_declarations_execute ... ok
+test loadfile_and_dofile_use_verified_archive_source_and_preserve_results ... ok
+test no_resource_cache_budget_is_needed_for_recursive_imports ... ok
+test explicit_nil_environment_errors_keep_virtual_archive_origins ... ok
+test require_keeps_upstream_nil_false_and_numeric_name_semantics ... ok
+test lua_error_values_keep_upstream_profile_semantics ... ok
+test real_lua_nested_imports_cache_and_preload_keep_require_semantics ... ok
+test resources_remain_alive_for_lua_shutdown_finalizers ... ok
+test bytecode_is_rejected_on_entry_import_loadfile_dofile_and_load ... ok
+test resource_keys_keep_escaped_origins_and_reject_unicode_invalid_utf8_and_nul ... ok
+test present_host_source_cannot_supply_a_missing_archive_import ... ok
+test archive_source_resolution_supports_init_and_prefers_direct_file ... ok
+test runtime_and_syntax_errors_name_virtual_sources ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests glue_runtime_lua
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

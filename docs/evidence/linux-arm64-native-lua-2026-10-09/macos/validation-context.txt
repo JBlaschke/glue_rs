@@ -1,0 +1,5 @@
+Source tree: fb61e5e22a4c3edc4e8a8c58af1f229c051d1a1a; tests on macOS 26.7 (25G229), arm64, actual Rust/Clippy 1.88.0.
+Source workspace: 181/182 tests; native-feature workspace: 177/178 (one GNU observed-host test is absent on Mac).
+Source/runtime and native/runtime debug suites: 52/53 and 53/54. Native optimized runtime: 53/54.
+All four workspace/profile all-target Clippy checks use -D warnings; no Mac native loader execution is claimed.
+Mac logs were captured from the implementation tree before the cleanup-only fb61e5e commit. Git comparison confirms the only changed file is reject-linux.sh; all Rust/C/header/Lua source and manifests used by these tests are identical.

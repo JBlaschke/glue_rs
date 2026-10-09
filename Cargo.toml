@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "spikes/linux-memfd"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-native", "spikes/linux-memfd"]
 resolver = "3"
 
 [workspace.package]
@@ -22,6 +22,7 @@ glue-format = { path = "crates/glue-format" }
 glue-resources = { path = "crates/glue-resources" }
 glue-pack = { path = "crates/glue-pack" }
 glue-runtime-lua = { path = "crates/glue-runtime-lua", default-features = false }
+glue-native = { path = "crates/glue-native" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

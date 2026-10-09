@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/undeclared-import.glue: 4 resources, 139754 archive bytes, 137950 uncompressed bytes
+Archive SHA-256: 91f971eb7204b24f8b8e8165857d3383612a19e7bd3dd8599664956b415a6a18

@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/undeclared-needed.glue: 4 resources, 139562 archive bytes, 137758 uncompressed bytes
+Archive SHA-256: e1da5a462e7fc9a520d7b0eb86000d1cde4081b02ffb9f57947063487920c41f

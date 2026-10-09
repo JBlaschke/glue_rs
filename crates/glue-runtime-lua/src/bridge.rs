@@ -115,6 +115,9 @@ unsafe extern "C" {
         options: *const Options,
         result: *mut RunResult,
     );
+
+    #[cfg(all(test, feature = "linux-native"))]
+    fn glue_lua_test_initializer(variant: std::ffi::c_uint) -> u64;
 }
 
 unsafe extern "C" fn request<F: FnMut(u32, &[u8]) -> Reply>(
@@ -477,6 +480,8 @@ mod tests {
             vec![0, 0, 0, 0, 0],                               // Trailing bytes.
             vec![1, 0, 0, 0, 4, 255, 255, 255, 255],           // Impossible table count.
             vec![1, 0, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Nil table key.
+            vec![1, 0, 0, 0, 5], // Truncated native address (or unsupported tag).
+            vec![1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0], // Null native address.
         ] {
             let (outcome, stats) = run(
                 |_, _| Reply::owned(0, bytes.clone()),
@@ -555,6 +560,181 @@ mod tests {
                 .unwrap_err()
                 .contains("invalid archive callback reply")
         );
+        assert_released(&stats);
+    }
+
+    #[test]
+    fn bootstrap_gets_the_compiled_native_capability() {
+        let bootstrap: &[u8] = if cfg!(feature = "linux-native") {
+            b"local request,path,native=...; assert(type(request)=='function' and path=='paths' and native==true)"
+        } else {
+            b"local request,path,native=...; assert(type(request)=='function' and path=='paths' and native==false)"
+        };
+        let (outcome, stats) = execute_inner(
+            |_, _| bytes_reply(),
+            bootstrap,
+            "paths",
+            b"",
+            "glue://test/entry.lua",
+            &Options::default(),
+        );
+        assert!(outcome.is_ok(), "{outcome:?}");
+        assert_released(&stats);
+    }
+
+    #[cfg(not(feature = "linux-native"))]
+    #[test]
+    fn source_only_decoder_rejects_nonnull_native_function_tags() {
+        let mut bytes = 1_u32.to_le_bytes().to_vec();
+        bytes.push(5);
+        bytes.extend_from_slice(&1_u64.to_le_bytes());
+        let (outcome, stats) = run(
+            move |_, _| Reply::owned(0, bytes.clone()),
+            b"request(1,'x')",
+            &Options::default(),
+        );
+        assert!(
+            outcome
+                .unwrap_err()
+                .contains("invalid archive callback reply")
+        );
+        assert_released(&stats);
+    }
+
+    #[cfg(feature = "linux-native")]
+    fn fixture_initializer_reply(variant: u32, trailing_string: bool) -> Reply {
+        // SAFETY: the getter does not touch Lua or invoke the initializer. It
+        // returns an address of a static C function whose code is process-live.
+        // Production addresses come exclusively from native manager tokens.
+        let address = unsafe { glue_lua_test_initializer(variant) };
+        assert_ne!(address, 0);
+        let mut bytes = (if trailing_string { 2_u32 } else { 1_u32 })
+            .to_le_bytes()
+            .to_vec();
+        bytes.push(5);
+        bytes.extend_from_slice(&address.to_le_bytes());
+        if trailing_string {
+            bytes.push(3);
+            bytes.extend_from_slice(&8192_u32.to_le_bytes());
+            bytes.extend_from_slice(&vec![b'x'; 8192]);
+        }
+        Reply::owned(0, bytes)
+    }
+
+    #[cfg(feature = "linux-native")]
+    fn run_native_fixture(
+        variant: u32,
+        entry: &[u8],
+        options: &Options,
+    ) -> (Result<(), String>, RunResult) {
+        execute_inner(
+            move |operation, key| match operation {
+                1 => {
+                    assert_eq!(key, b"bridge.fixture");
+                    fixture_initializer_reply(variant, false)
+                }
+                2 => {
+                    assert_eq!(key, b"asset");
+                    // The native initializer reply has already been released
+                    // before Lua invokes the returned C function.
+                    assert_eq!(owned_reply_count(), 0);
+                    OwnedReply::success(&[Value::string(b"native asset")]).into_reply()
+                }
+                _ => panic!("unexpected fixture operation"),
+            },
+            br#"
+                local req,path,native=...
+                assert(native)
+                request=req
+                package.searchers={function(name)
+                    return request(1,name),'glue://test/native/module.so'
+                end}
+            "#,
+            "",
+            entry,
+            "glue://test/entry.lua",
+            options,
+        )
+    }
+
+    #[cfg(feature = "linux-native")]
+    #[test]
+    fn native_c_initializer_and_functions_run_after_reply_release() {
+        let (outcome, stats) = run_native_fixture(
+            0,
+            br#"
+            local module, origin = require('bridge.fixture')
+            assert(origin == 'glue://test/native/module.so')
+            assert(module.value == 42 and module.answer() == 42)
+            assert(module.read() == 'native asset')
+            assert(require('bridge.fixture') == module)
+            local ok, message = pcall(module.fail)
+            assert(not ok and message:find('native fixture function error', 1, true))
+        "#,
+            &Options::default(),
+        );
+        assert!(outcome.is_ok(), "{outcome:?}");
+        assert_eq!(
+            stats.callbacks, 2,
+            "require must cache the initializer result"
+        );
+        assert_released(&stats);
+    }
+
+    #[cfg(feature = "linux-native")]
+    #[test]
+    fn native_c_initializer_and_function_errors_return_normally() {
+        for (variant, source, expected) in [
+            (
+                1,
+                b"require('bridge.fixture')".as_slice(),
+                "native fixture initializer error",
+            ),
+            (
+                0,
+                b"require('bridge.fixture').fail()".as_slice(),
+                "native fixture function error",
+            ),
+        ] {
+            let (outcome, stats) = run_native_fixture(variant, source, &Options::default());
+            assert!(outcome.unwrap_err().contains(expected));
+            assert_eq!(stats.callbacks, 1);
+            assert_released(&stats);
+        }
+    }
+
+    #[cfg(feature = "linux-native")]
+    #[test]
+    fn native_c_initializer_oom_has_no_live_rust_reply() {
+        let (outcome, stats) = run_native_fixture(
+            0,
+            b"require('bridge.fixture')",
+            &Options {
+                fail_after_reply_allocations: 0,
+                ..Options::default()
+            },
+        );
+        assert!(outcome.is_err(), "native table allocation must fail");
+        assert_eq!(stats.callbacks, 1);
+        assert_released(&stats);
+    }
+
+    #[cfg(feature = "linux-native")]
+    #[test]
+    fn native_function_marshalling_oom_releases_the_owned_reply() {
+        let (outcome, stats) = run(
+            |_, _| fixture_initializer_reply(0, true),
+            b"request(1,'x')",
+            &Options {
+                fail_after_reply_allocations: 0,
+                ..Options::default()
+            },
+        );
+        assert!(
+            outcome.is_err(),
+            "string after native function must allocate"
+        );
+        assert_eq!(stats.callbacks, 1);
         assert_released(&stats);
     }
 }

@@ -1,0 +1,2 @@
+Built /build-target/package-origin/app.glue: 4 resources, 139562 archive bytes, 137758 uncompressed bytes
+Archive SHA-256: e58f06e98e869f90f2bd2022716f5e24f317d4520e1e28ae7287df34fa20b9be

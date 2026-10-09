@@ -15,10 +15,14 @@ mod platform;
 
 // The crate's feature guards require exactly one selected profile. Defining the
 // default constants when lua55 is absent keeps invalid-feature diagnostics clear.
-#[cfg(not(feature = "lua55"))]
+#[cfg(all(not(feature = "lua55"), not(feature = "linux-native")))]
 pub const BUILD_ID: &str = "glue-lua54-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64";
-#[cfg(feature = "lua55")]
+#[cfg(all(feature = "lua55", not(feature = "linux-native")))]
 pub const BUILD_ID: &str = "glue-lua55-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64";
+#[cfg(all(not(feature = "lua55"), feature = "linux-native"))]
+pub const BUILD_ID: &str = "glue-lua54-native-linux-v1/c-boundary-1/lua-src-551.0.2/int64-float64";
+#[cfg(all(feature = "lua55", feature = "linux-native"))]
+pub const BUILD_ID: &str = "glue-lua55-native-linux-v1/c-boundary-1/lua-src-551.0.2/int64-float64";
 
 #[cfg(not(feature = "lua55"))]
 pub const LUA_RELEASE: &str = "5.4.9";
@@ -128,17 +132,25 @@ fn validate_declaration(manifest: &Manifest) -> Result<String, CapabilityError> 
     manifest
         .validate()
         .map_err(|error| invalid(error.to_string()))?;
+    #[cfg(not(feature = "linux-native"))]
     if !manifest.native_modules.is_empty() || !component.native_modules.is_empty() {
         return Err(unsupported("native Lua modules are pending"));
     }
+    #[cfg(not(feature = "linux-native"))]
     if !runtime.required_features.is_empty() {
         return Err(unsupported(
             "native loader feature requirements are pending",
         ));
     }
+    #[cfg(not(feature = "linux-native"))]
     if !manifest.host_imports.is_empty() {
         return Err(unsupported("declared host imports are pending"));
     }
+    #[cfg(feature = "linux-native")]
+    glue_native::validate_manifest(manifest).map_err(|error| match error {
+        glue_native::NativeError::Unsupported(message) => unsupported(message),
+        error => invalid(error.to_string()),
+    })?;
     Ok(component.entry_point.clone())
 }
 
@@ -228,17 +240,27 @@ fn unsupported(message: impl Into<String>) -> CapabilityError {
 mod tests {
     use super::*;
     use glue_format::{
-        Architecture, ComponentSpec, Compression, GilMode, HostDiscovery, HostImportSpec,
-        LoaderFeature, NativeFormat, NativeModuleSpec, ResourceSpec, RuntimeSpec, TargetProfile,
-        digest,
+        Architecture, ComponentSpec, Compression, GilMode, HostDiscovery, LoaderFeature,
+        ResourceSpec, RuntimeSpec, TargetProfile, digest,
     };
+    #[cfg(not(feature = "linux-native"))]
+    use glue_format::{HostImportSpec, NativeFormat, NativeModuleSpec};
     use std::collections::{BTreeMap, BTreeSet};
 
     fn linux_host() -> platform::Host {
         platform::Host {
             os: OperatingSystem::Linux,
-            arch: Architecture::X86_64,
-            os_version: "6.1.0".to_owned(),
+            arch: if cfg!(feature = "linux-native") {
+                Architecture::Aarch64
+            } else {
+                Architecture::X86_64
+            },
+            os_version: if cfg!(feature = "linux-native") {
+                "6.3.0"
+            } else {
+                "6.1.0"
+            }
+            .to_owned(),
             glibc_version: Some("2.36".to_owned()),
             page_size: 4096,
         }
@@ -341,7 +363,18 @@ mod tests {
         assert_eq!(validate_on(&manifest, &host).unwrap(), "app/main.lua");
     }
 
-    #[cfg(any(target_os = "macos", all(target_os = "linux", target_env = "gnu")))]
+    #[cfg(any(
+        all(
+            not(feature = "linux-native"),
+            any(target_os = "macos", all(target_os = "linux", target_env = "gnu"))
+        ),
+        all(
+            feature = "linux-native",
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "aarch64"
+        )
+    ))]
     #[test]
     fn exact_profile_accepts_the_observed_host() {
         let host = platform::observe().unwrap();
@@ -527,6 +560,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(not(feature = "linux-native"))]
     fn native_modules_imports_and_features_are_pending() {
         let host = linux_host();
         let mut manifest = fixture(&host);
@@ -570,6 +604,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(not(feature = "linux-native"))]
     fn target_os_arch_abi_and_prerequisite_floors_must_match() {
         let host = linux_host();
         for field in ["os", "arch", "abi", "os_floor", "libc_floor", "page"] {
@@ -598,6 +633,40 @@ mod tests {
             manifest.validate().unwrap();
             is_invalid(validate_on(&manifest, &host));
         }
+    }
+
+    #[cfg(feature = "linux-native")]
+    #[test]
+    fn native_profile_is_distinct_and_rejects_unobserved_target_features() {
+        let host = linux_host();
+        assert!(BUILD_ID.contains("native-linux-v1"));
+        let mut manifest = fixture(&host);
+        manifest.runtimes.get_mut("lua").unwrap().build_id =
+            format!("glue-lua5{LUA_MINOR}-source-v2/c-boundary-1/lua-src-551.0.2/int64-float64");
+        is_invalid(validate_on(&manifest, &host));
+        let mut manifest = fixture(&host);
+        manifest.targets.get_mut("current").unwrap().arch = Architecture::X86_64;
+        is_unsupported(validate_on(&manifest, &host));
+        let mut manifest = fixture(&host);
+        manifest
+            .runtimes
+            .get_mut("lua")
+            .unwrap()
+            .required_features
+            .insert(LoaderFeature::Tls);
+        is_unsupported(validate_on(&manifest, &host));
+        let mut manifest = fixture(&host);
+        manifest
+            .targets
+            .get_mut("current")
+            .unwrap()
+            .minimum_os_version = "6.2".to_owned();
+        is_invalid(validate_on(&manifest, &host));
+        let mut manifest = fixture(&host);
+        manifest.targets.get_mut("current").unwrap().abi = TargetAbi::Glibc {
+            minimum_version: "2.37".to_owned(),
+        };
+        is_invalid(validate_on(&manifest, &host));
     }
 
     #[test]

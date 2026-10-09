@@ -9,6 +9,7 @@ license.workspace = true
 default = ["lua54"]
 lua54 = ["glue-runtime-lua/lua54"]
 lua55 = ["glue-runtime-lua/lua55"]
+linux-native = ["glue-runtime-lua/linux-native"]
 
 [[bin]]
 name = "glue"

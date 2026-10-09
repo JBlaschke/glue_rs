@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/soname-mismatch.glue: 4 resources, 139562 archive bytes, 137758 uncompressed bytes
+Archive SHA-256: 4e205f86f5231a6e9e925837020f2a76e3ad66d6c87bb33ffd7f85a9b0f179a7

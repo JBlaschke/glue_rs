@@ -1,0 +1,2 @@
+Built /build-target/native-rejections/wrong-initializer.glue: 4 resources, 139554 archive bytes, 137750 uncompressed bytes
+Archive SHA-256: 76d1fb88ef7d27b1f633ebe0e991ababed7b00399595be0c0aa681e90436159b

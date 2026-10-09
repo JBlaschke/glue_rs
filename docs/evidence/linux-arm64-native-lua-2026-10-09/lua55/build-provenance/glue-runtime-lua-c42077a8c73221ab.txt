@@ -1,0 +1,24 @@
+glue linked Lua build provenance v2
+This is local build evidence, not a complete artifact fingerprint.
+boundary=glue-c-boundary-1
+source_numeric_defaults=int64/float64
+compiler_override_policy=nonempty CC/CXX/CFLAGS/CXXFLAGS/CPPFLAGS variants rejected
+optional_ucid_feature=absence must be audited in Cargo feature graph
+source=lua-src-551.0.2/lua-5.5.1
+linux_native_feature=false
+TARGET=Some("aarch64-unknown-linux-gnu")
+HOST=Some("aarch64-unknown-linux-gnu")
+PROFILE=Some("debug")
+OPT_LEVEL=Some("0")
+DEBUG=Some("true")
+RUSTC=Some("/usr/local/rustup/toolchains/1.88.0-aarch64-unknown-linux-gnu/bin/rustc")
+RUSTFLAGS=None
+CARGO_ENCODED_RUSTFLAGS=Some("")
+MACOSX_DEPLOYMENT_TARGET=None
+SDKROOT=None
+build_script_debug_assertions=true
+boundary_explicit_config=C11 when supported; warnings as errors; c/bridge.c
+default_cc_path="cc"
+default_cc_args=["-O0", "-ffunction-sections", "-fdata-sections", "-fPIC", "-g", "-gdwarf-4", "-fno-omit-frame-pointer", "-mno-omit-leaf-frame-pointer", "-Wall", "-Wextra"]
+default_cc_version="cc (Debian 12.2.0-14+deb12u1) 12.2.0\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+lua_src_explicit_config=no compatibility define; target LUA_USE_*; debug LUA_USE_APICHECK; conditional -fno-common; C source files

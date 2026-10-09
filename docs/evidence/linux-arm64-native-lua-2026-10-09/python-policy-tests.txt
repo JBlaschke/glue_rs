@@ -1,0 +1,7 @@
+Command: python3 -m unittest discover -s scripts -p test_linux_*.py
+......................................................
+----------------------------------------------------------------------
+Ran 54 tests in 0.268s
+
+OK
+Exit status: 0

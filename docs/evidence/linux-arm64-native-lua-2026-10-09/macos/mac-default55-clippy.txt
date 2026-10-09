@@ -1,0 +1,4 @@
+    Checking glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+    Checking glue-native v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-native)
+    Checking glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.78s

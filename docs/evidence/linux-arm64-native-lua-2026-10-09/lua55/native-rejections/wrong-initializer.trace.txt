@@ -1,0 +1,151 @@
+5709  execve("/build-target/debug/glue", ["/build-target/debug/glue", "run", "/build-target/native-rejections/wrong-initializer.glue"], 0xffffebcebba0 /* 11 vars */) = 0
+5709  brk(NULL)                         = 0xaaaade750000
+5709  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8aaf9000
+5709  faccessat(AT_FDCWD</workspace>, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+5709  openat(AT_FDCWD</workspace>, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3</etc/ld.so.cache>
+5709  newfstatat(3</etc/ld.so.cache>, "", {st_mode=S_IFREG|0644, st_size=6999, ...}, AT_EMPTY_PATH) = 0
+5709  mmap(NULL, 6999, PROT_READ, MAP_PRIVATE, 3</etc/ld.so.cache>, 0) = 0xffff8aaf7000
+5709  close(3</etc/ld.so.cache>)        = 0
+5709  openat(AT_FDCWD</workspace>, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libm.so.6>
+5709  read(3</usr/lib/aarch64-linux-gnu/libm.so.6>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\230\1\t\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\33\0\32\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0X\376\7\0\0\0\0\0X\376\7\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0x\375\10\0\0\0\0\0x\375\10\0\0\0\0\0x\375\10\0\0\0\0\0\354\2\0\0\0\0\0\0\370\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\210\375\10\0\0\0\0\0\210\375\10\0\0\0\0\0\210\375\10\0\0\0\0\0\0\2\0\0\0\0\0\0\0\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+5709  newfstatat(3</usr/lib/aarch64-linux-gnu/libm.so.6>, "", {st_mode=S_IFREG|0644, st_size=591960, ...}, AT_EMPTY_PATH) = 0
+5709  mmap(NULL, 655472, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8aa22000
+5709  mmap(0xffff8aa30000, 589936, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libm.so.6>, 0) = 0xffff8aa30000
+5709  munmap(0xffff8aa22000, 57344)     = 0
+5709  munmap(0xffff8aac1000, 4208)      = 0
+5709  mprotect(0xffff8aab0000, 61440, PROT_NONE) = 0
+5709  mmap(0xffff8aabf000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libm.so.6>, 0x8f000) = 0xffff8aabf000
+5709  close(3</usr/lib/aarch64-linux-gnu/libm.so.6>) = 0
+5709  openat(AT_FDCWD</workspace>, "/lib/aarch64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>
+5709  read(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\310\2\2\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\32\0\31\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0h2\1\0\0\0\0\0h2\1\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\270\375\1\0\0\0\0\0\270\375\2\0\0\0\0\0\270\375\2\0\0\0\0\0\350\3\0\0\0\0\0\0\20\5\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\310\375\1\0\0\0\0\0\310\375\2\0\0\0\0\0\310\375\2\0\0\0\0\0\360\1\0\0\0\0\0\0\360\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 832) = 832
+5709  newfstatat(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, "", {st_mode=S_IFREG|0644, st_size=133448, ...}, AT_EMPTY_PATH) = 0
+5709  mmap(NULL, 262856, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8a9ef000
+5709  mmap(0xffff8a9f0000, 197320, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0) = 0xffff8a9f0000
+5709  munmap(0xffff8a9ef000, 4096)      = 0
+5709  munmap(0xffff8aa21000, 58056)     = 0
+5709  mprotect(0xffff8aa04000, 110592, PROT_NONE) = 0
+5709  mmap(0xffff8aa1f000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>, 0x1f000) = 0xffff8aa1f000
+5709  close(3</usr/lib/aarch64-linux-gnu/libgcc_s.so.1>) = 0
+5709  openat(AT_FDCWD</workspace>, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libc.so.6>
+5709  read(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0000y\2\0\0\0\0\0@\0\0\0\0\0\0\0\20#\31\0\0\0\0\0\0\0\0\0@\08\0\n\0@\0?\0>\0\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0000\2\0\0\0\0\0\0000\2\0\0\0\0\0\0\10\0\0\0\0\0\0\0\3\0\0\0\4\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\210\202\25\0\0\0\0\0\33\0\0\0\0\0\0\0\33\0\0\0\0\0\0\0\10\0\0\0\0\0\0\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\244d\30\0\0\0\0\0\244d\30\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\300\315\30\0\0\0\0\0\300\315\31\0\0\0\0\0"..., 832) = 832
+5709  newfstatat(3</usr/lib/aarch64-linux-gnu/libc.so.6>, "", {st_mode=S_IFREG|0755, st_size=1651408, ...}, AT_EMPTY_PATH) = 0
+5709  mmap(NULL, 1826912, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8a831000
+5709  mmap(0xffff8a840000, 1761376, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xffff8a840000
+5709  munmap(0xffff8a831000, 61440)     = 0
+5709  munmap(0xffff8a9ef000, 96)        = 0
+5709  mprotect(0xffff8a9c7000, 86016, PROT_NONE) = 0
+5709  mmap(0xffff8a9dc000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0x18c000) = 0xffff8a9dc000
+5709  mmap(0xffff8a9e2000, 49248, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffff8a9e2000
+5709  close(3</usr/lib/aarch64-linux-gnu/libc.so.6>) = 0
+5709  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffff8aaf5000
+5709  set_tid_address(0xffff8aaf50f0)   = 5709
+5709  set_robust_list(0xffff8aaf5100, 24) = 0
+5709  rseq(0xffff8aaf5740, 0x20, 0, 0xd428bc00) = 0
+5709  mprotect(0xffff8a9dc000, 16384, PROT_READ) = 0
+5709  mprotect(0xffff8aa1f000, 4096, PROT_READ) = 0
+5709  mprotect(0xffff8aabf000, 4096, PROT_READ) = 0
+5709  mprotect(0xaaaad3275000, 110592, PROT_READ) = 0
+5709  mprotect(0xffff8ab01000, 8192, PROT_READ) = 0
+5709  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+5709  munmap(0xffff8aaf7000, 6999)      = 0
+5709  ppoll([{fd=0</dev/null<char 1:3>>, events=0}, {fd=1</evidence/native-rejections/wrong-initializer.stdout.txt>, events=0}, {fd=2</evidence/native-rejections/wrong-initializer.stderr.txt>, events=0}], 3, {tv_sec=0, tv_nsec=0}, NULL, 0) = 0 (Timeout)
+5709  rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTART}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+5709  getrandom("\x09\x58\x8a\x3b\xc8\x13\x4b\x6a", 8, GRND_NONBLOCK) = 8
+5709  brk(NULL)                         = 0xaaaade750000
+5709  brk(0xaaaade771000)               = 0xaaaade771000
+5709  openat(AT_FDCWD</workspace>, "/proc/self/maps", O_RDONLY|O_CLOEXEC) = 3</proc/5709/maps>
+5709  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+5709  newfstatat(3</proc/5709/maps>, "", {st_mode=S_IFREG|0444, st_size=0, ...}, AT_EMPTY_PATH) = 0
+5709  read(3</proc/5709/maps>, "aaaad2e50000-aaaad3264000 r-xp 00000000 00:50 4399                       /build-target/debug/glue\naaaad3275000-aaaad3290000 r--p 00415000 00:50 4399                       /build-target/debug/glue\naaaad3290000-aaaad3291000 rw-p 00430000 00:50 4399          "..., 1024) = 1024
+5709  read(3</proc/5709/maps>, "4696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffff8aa1f000-ffff8aa20000 r--p 0001f000 00:3c 34696261                   /usr/lib/aarch64-linux-gnu/libgcc_s.so.1\nffff8aa20000-ffff8aa21000 rw-p 00020000 00:3c 34696261                   /u"..., 1024) = 1024
+5709  read(3</proc/5709/maps>, "    [vvar]\nffff8aaff000-ffff8ab01000 r-xp 00000000 00:00 0                          [vdso]\nffff8ab01000-ffff8ab03000 r--p 0002e000 00:3c 34696221                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1\nffff8ab03000-ffff8ab05000 rw-p 00030000 00:"..., 1024) = 416
+5709  close(3</proc/5709/maps>)         = 0
+5709  sched_getaffinity(5709, 32, [0 1 2 3]) = 8
+5709  rt_sigaction(SIGSEGV, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+5709  sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+5709  mmap(NULL, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xffff8aaf0000
+5709  mprotect(0xffff8aaf0000, 4096, PROT_NONE) = 0
+5709  sigaltstack({ss_sp=0xffff8aaf1000, ss_flags=0, ss_size=16384}, NULL) = 0
+5709  rt_sigaction(SIGSEGV, {sa_handler=0xaaaad316d3c0, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+5709  rt_sigaction(SIGBUS, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+5709  rt_sigaction(SIGBUS, {sa_handler=0xaaaad316d3c0, sa_mask=[], sa_flags=SA_ONSTACK|SA_SIGINFO}, NULL, 8) = 0
+5709  openat(AT_FDCWD</workspace>, "/build-target/native-rejections/wrong-initializer.glue", O_RDONLY|O_CLOEXEC) = 3</build-target/native-rejections/wrong-initializer.glue>
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 0, SEEK_END) = 139554
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 0, SEEK_SET) = 0
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "GLUERS00\0\0\0\0\0\0\0\0\244\10\0\0\0\0\0\0>\30\2\0\0\0\0\0\"C\241\221\205~\324p\234\312)\234\264\16\306\353\6\26\4[\213\1O\275{\4\251\24I\205\2729", 64) = 64
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "{\"app_id\":\"native-lua-demo\",\"components\":{\"main\":{\"entry_point\":\"app/main.lua\",\"native_modules\":[\"native_probe\"],\"runtime\":\"lua\"}},\"entrypoint\":\"main\",\"host_imports\":{\"libc\":{\"class\":\"operating_system\",\"library\":\"libc.so.6\",\"symbols\":[\"getpid\"],\"target\":\"l"..., 2212) = 2212
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139532, SEEK_SET) = 139532
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\5\6\0\0\0\0\4\0\4\0[\1\0\0\315\26\2\0\0\0", 22) = 22
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139512, SEEK_SET) = 139512
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\350\f\1\0\0\0\0\0\350\f\1\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139185, SEEK_SET) = 139185
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\1\2-\3-\0\0\0\10\0\0\0!\0\22\321\246\365\377\377\377\377\377\377\377\377\f\0\24\0\0\0\0\0\0\0\0\0\244\201\0\0\0\0", 46) = 46
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139231, SEEK_SET) = 139231
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "app/main.lua", 12) = 12
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139243, SEEK_SET) = 139243
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\330\6\0\0\0\0\0\0t\2\0\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139263, SEEK_SET) = 139263
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\26D\1X\377\377\377\377\377\377\377\377\22\0\24\0\0\0\0\0\0\0\0\0\244\201\262\2\0\0", 46) = 46
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139309, SEEK_SET) = 139309
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "assets/message.txt", 18) = 18
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139327, SEEK_SET) = 139327
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\26\0\0\0\0\0\0\0\26\0\0\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139347, SEEK_SET) = 139347
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\367\300fW\377\377\377\377\377\377\377\377\31\0\24\0\0\0\0\0\0\0\0\0\244\201\f\3\0\0", 46) = 46
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139393, SEEK_SET) = 139393
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "native/libglue_lua_dep.so", 25) = 25
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139418, SEEK_SET) = 139418
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0@\6\1\0\0\0\0\0@\6\1\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139438, SEEK_SET) = 139438
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\1\2-\3-\0\0\0\0\0\0\0!\0\243\34\354\333\377\377\377\377\377\377\377\377\34\0\24\0\0\0\0\0\0\0\0\0\244\201\227\t\1\0", 46) = 46
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139484, SEEK_SET) = 139484
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "native/libglue_lua_native.so", 28) = 28
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 139512, SEEK_SET) = 139512
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\350\f\1\0\0\0\0\0\350\f\1\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2276, SEEK_SET) = 2276
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\3\4-\0\0\0\10\0\0\0!\0\22\321\246\365\377\377\377\377\377\377\377\377\f\0\24\0", 30) = 30
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2306, SEEK_SET) = 2306
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "app/main.lua", 12) = 12
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2318, SEEK_SET) = 2318
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\330\6\0\0\0\0\0\0t\2\0\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2966, SEEK_SET) = 2966
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\26D\1X\377\377\377\377\377\377\377\377\22\0\24\0", 30) = 30
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2996, SEEK_SET) = 2996
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "assets/message.txt", 18) = 18
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 3014, SEEK_SET) = 3014
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\26\0\0\0\0\0\0\0\26\0\0\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 3056, SEEK_SET) = 3056
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\367\300fW\377\377\377\377\377\377\377\377\31\0\24\0", 30) = 30
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 3086, SEEK_SET) = 3086
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "native/libglue_lua_dep.so", 25) = 25
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 3111, SEEK_SET) = 3111
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0@\6\1\0\0\0\0\0@\6\1\0\0\0\0\0", 20) = 20
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 70267, SEEK_SET) = 70267
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "PK\3\4-\0\0\0\0\0\0\0!\0\243\34\354\333\377\377\377\377\377\377\377\377\34\0\24\0", 30) = 30
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 70297, SEEK_SET) = 70297
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "native/libglue_lua_native.so", 28) = 28
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 70325, SEEK_SET) = 70325
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\1\0\20\0\350\f\1\0\0\0\0\0\350\f\1\0\0\0\0\0", 20) = 20
+5709  uname({sysname="Linux", nodename="bc1de60df0dd", ...}) = 0
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 2338, SEEK_SET) = 2338
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\235T\301n\3330\f\275\373+\10\235\222\301u\2226A\201\0\336m\207\1\303\6l\300N\5\f\305\242S\241\216\344Ir\327n\330\277\217\264\345\304M\0234[.\201I\352\351=\362Q\225~\n\255\303\302#*\310aq}\223T1\244\215\16\5:g\35%\346ImKY\203\221A?b\n\326\351\2556\224p\370\243\325\16'\242\317\24\215\263\33\24\323Dz\217.L\206\272\34&\3\356Fz\254\265A\220F\201X7\16k+\325Z\20&\210m\335\342z6\353\301\256\352V^)\334\331\370=\253\365\206\v\n\212\27}(\363VL\367\267\305\2304\376'\272\311\224\257]^w\367\304\214\222Ar\364v\34,\255\361\301\265e\260\316srq\214\307\235\320\262\326\2770\26\214O7Z\301{\230\37\237y\244ZmMa\332]\247\276\370\376\341\353\267\217_>\363\207\370\324JXeK\321\341\254\346K\226\276\232\257"..., 628) = 628
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 3131, SEEK_SET) = 3131
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\300\2\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\16\0\r\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\250\2\0\0\0\0\0\0\250\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\0\377\0\0\0\0\0\0\0\377\1\0\0\0\0\0\0\377\1\0\0\0\0\0\0\1\0\0\0\0\0\0\0\1\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\0\377\0\0\0\0\0\0\0\377\1\0\0\0\0\0\0\377\1\0\0\0\0\0\340\0\0\0\0\0\0\0\340\0\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 32768) = 32768
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 32768) = 32768
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "GCC: (Debian 12.2.0-14+deb12u1) 12.2.0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\1\0\310\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\2\0\360\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\3\0\10\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\4\08\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\5\0`\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\6\0h\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\7\0\200\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\10\0\0\377\1\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 1600) = 1600
+5709  brk(0xaaaade79e000)               = 0xaaaade79e000
+5709  lseek(3</build-target/native-rejections/wrong-initializer.glue>, 70345, SEEK_SET) = 70345
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0(\7\1\0\0\0\0\0\0\0\0\0@\08\0\7\0@\0\27\0\26\0\1\0\0\0\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0,\f\0\0\0\0\0\0,\f\0\0\0\0\0\0\0\0\1\0\0\0\0\0\1\0\0\0\6\0\0\0\260\375\0\0\0\0\0\0\260\375\1\0\0\0\0\0\260\375\1\0\0\0\0\0T\2\0\0\0\0\0\0`\2\0\0\0\0\0\0\0\0\1\0\0\0\0\0\2\0\0\0\6\0\0\0\270\375\0\0\0\0\0\0\270\375\1\0\0\0\0\0\270\375\1\0\0\0\0\0\300\1\0\0\0\0\0\0\300\1\0\0\0\0\0\0\10\0\0\0\0\0\0\0\4\0\0\0\4\0\0\0\310\1\0\0\0\0\0\0\310\1\0\0\0\0\0\0"..., 32768) = 32768
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 32768) = 32768
+5709  read(3</build-target/native-rejections/wrong-initializer.glue>, "\7\0\0\0GCC: (Debian 12.2.0-14+deb12u1) 12.2.0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\1\0\310\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\2\0\360\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\3\0H\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\4\0\340\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\5\0\344\4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\6\0\10\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\7\0(\5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\10\0X\5\0\0\0\0\0\0"..., 3304) = 3304
+5709  brk(0xaaaade7c0000)               = 0xaaaade7c0000
+5709  fcntl(3</build-target/native-rejections/wrong-initializer.glue>, F_GETFD) = 0x1 (flags FD_CLOEXEC)
+5709  close(3</build-target/native-rejections/wrong-initializer.glue>) = 0
+5709  brk(0xaaaade77f000)               = 0xaaaade77f000
+5709  write(2</evidence/native-rejections/wrong-initializer.stderr.txt>, "glue: ", 6) = 6
+5709  write(2</evidence/native-rejections/wrong-initializer.stderr.txt>, "invalid native Lua closure: native_probe: payload defines Lua runtime symbol luaopen_other", 90) = 90
+5709  write(2</evidence/native-rejections/wrong-initializer.stderr.txt>, "\n", 1) = 1
+5709  sigaltstack({ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=16384}, NULL) = 0
+5709  munmap(0xffff8aaf0000, 20480)     = 0
+5709  exit_group(1)                     = ?
+5709  +++ exited with 1 +++

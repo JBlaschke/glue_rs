@@ -20,6 +20,10 @@ _Static_assert(sizeof(lua_Number) == 8, "Lua number ABI must be float64");
 _Static_assert((lua_Integer)-1 < 0, "Lua integer ABI must be signed");
 _Static_assert(LUA_INT_TYPE == LUA_INT_LONGLONG, "Lua integer type must be long long");
 _Static_assert(LUA_FLOAT_TYPE == LUA_FLOAT_DOUBLE, "Lua number type must be double");
+#ifdef GLUE_LUA_NATIVE
+_Static_assert(sizeof(uintptr_t) == sizeof(uint64_t), "Native profile requires 64-bit pointers");
+_Static_assert(sizeof(lua_CFunction) == sizeof(uintptr_t), "Native function pointer representation");
+#endif
 
 #define GLUE_MAX_KEY 4096u
 #define GLUE_MAX_RESULTS 16u
@@ -106,6 +110,16 @@ static uint32_t read_u32(lua_State *L, reply_context *reply) {
         | ((uint32_t)data[2] << 16) | ((uint32_t)data[3] << 24);
 }
 
+static uint64_t read_u64(lua_State *L, reply_context *reply) {
+    const unsigned char *data;
+    uint64_t bits = 0;
+    unsigned i;
+    read_bytes(L, reply, 8, &data);
+    for (i = 0; i < 8; i++)
+        bits |= (uint64_t)data[i] << (8 * i);
+    return bits;
+}
+
 static int push_value(lua_State *L, reply_context *reply, unsigned depth,
                        int is_key) {
     const unsigned char *data;
@@ -128,17 +142,29 @@ static int push_value(lua_State *L, reply_context *reply, unsigned depth,
         lua_pushboolean(L, data[0]);
         break;
     case 2: {
-        uint64_t bits = 0;
+        uint64_t bits = read_u64(L, reply);
         int64_t integer;
-        unsigned i;
-        read_bytes(L, reply, 8, &data);
-        for (i = 0; i < 8; i++)
-            bits |= (uint64_t)data[i] << (8 * i);
         /* Bit copy avoids implementation-defined unsigned-to-signed casts. */
         memcpy(&integer, &bits, sizeof(integer));
         lua_pushinteger(L, (lua_Integer)integer);
         break;
     }
+#ifdef GLUE_LUA_NATIVE
+    case 5: {
+        uint64_t bits = read_u64(L, reply);
+        uintptr_t address;
+        lua_CFunction initializer;
+        if (bits == 0)
+            invalid_reply(L);
+        /* This private reply comes only from the preloaded manager's validated
+           initializer lease. Bits alone cannot establish an arbitrary address
+           is callable. The native profile pins all image handles past close. */
+        address = (uintptr_t)bits;
+        memcpy(&initializer, &address, sizeof(initializer));
+        lua_pushcfunction(L, initializer);
+        break;
+    }
+#endif
     case 3: {
         size_t len = read_u32(L, reply);
         read_bytes(L, reply, len, &data);
@@ -275,7 +301,12 @@ static int initialize_and_run(lua_State *L) {
     lua_pushlightuserdata(L, run);
     lua_pushcclosure(L, archive_request, 1);
     lua_pushlstring(L, (const char *)run->package_path, run->package_path_len);
-    lua_call(L, 2, 0);
+#ifdef GLUE_LUA_NATIVE
+    lua_pushboolean(L, 1);
+#else
+    lua_pushboolean(L, 0);
+#endif
+    lua_call(L, 3, 0);
     status = luaL_loadbufferx(L, (const char *)run->entry, run->entry_len,
                               run->origin, "t");
     if (status != LUA_OK)
@@ -354,3 +385,55 @@ void glue_lua_run(void *ctx, glue_lua_request request,
         copy_message(result, "archive callback panicked", 25);
     }
 }
+
+#ifdef GLUE_LUA_NATIVE
+/* Static C fixtures exercise the same Lua ABI as a loaded initializer. They
+   are reachable only by this private test getter, never by archive lookup. */
+static int fixture_answer(lua_State *L) {
+    lua_pushinteger(L, 42);
+    return 1;
+}
+
+static int fixture_function_error(lua_State *L) {
+    return luaL_error(L, "native fixture function error");
+}
+
+static int fixture_read(lua_State *L) {
+    int base = lua_gettop(L);
+    lua_getglobal(L, "request");
+    lua_pushinteger(L, 2);
+    lua_pushliteral(L, "asset");
+    lua_call(L, 2, LUA_MULTRET);
+    return lua_gettop(L) - base;
+}
+
+static int fixture_initializer(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+    const char *origin = luaL_checkstring(L, 2);
+    if (strcmp(name, "bridge.fixture") != 0
+        || strcmp(origin, "glue://test/native/module.so") != 0)
+        return luaL_error(L, "native fixture loader arguments differ");
+    lua_newtable(L);
+    lua_pushinteger(L, 42);
+    lua_setfield(L, -2, "value");
+    lua_pushcfunction(L, fixture_answer);
+    lua_setfield(L, -2, "answer");
+    lua_pushcfunction(L, fixture_function_error);
+    lua_setfield(L, -2, "fail");
+    lua_pushcfunction(L, fixture_read);
+    lua_setfield(L, -2, "read");
+    return 1;
+}
+
+static int fixture_initializer_error(lua_State *L) {
+    return luaL_error(L, "native fixture initializer error");
+}
+
+uint64_t glue_lua_test_initializer(unsigned variant) {
+    lua_CFunction initializer = variant == 0
+        ? fixture_initializer : fixture_initializer_error;
+    uintptr_t address;
+    memcpy(&address, &initializer, sizeof(address));
+    return (uint64_t)address;
+}
+#endif
