@@ -154,6 +154,9 @@ exact library with its installed stdlib through explicit host paths. It verifies
 the library and six startup sources, rejects startup bytecode caches and uses
 the installed encodings package without our frozen bundle. Product host
 discovery and Python execution remain pending.
+The [clean host capture](docs/evidence/pbs-linux-arm64-host-python-2026-10-10/README.md)
+passes all eight host traces and four frozen-bootstrap regression traces from
+the same implementation commit.
 
 ## Try the resource fixture
 

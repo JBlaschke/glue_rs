@@ -17,7 +17,7 @@ Further implementation continues on separate feature branches.
 | A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` / `346b2f0` (from merged `a596305`) | Controlled signed observation; acceptance evidence incomplete | 31 portable/optimized parser tests; 212/213 source workspace tests for Lua 5.4/5.5 and Clippy on Mac/Linux; ad-hoc hardened-runtime/allow-jit debug and optimized launchers match ordinary loading; fourteen native rejections, four signing controls and two memory-policy controls pass; full trace and distribution signing remain open |
 | A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
 | A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` / `30a1526` (from merged `8b56f7c`; evidence bundle follows) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in release tests; 89 Python policy tests; unchanged stock libpython starts with frozen encodings and built-in math/_ssl; baseline output agrees and all four complete traces pass |
-| A7 explicit host Python startup | `codex/a7-linux-host-python` (from merged `06b92ea`) | Experimental host fixture; controlled GNU Linux arm64 observation | Mac/Linux: 308/309 source workspace tests and Clippy; 32 portable bootstrap/host tests and 34 GNU opt-in release tests; 112 Python policy tests; declared host library and startup sources verify before loading; all eight host traces pass, including six pre-init rejections and an app error |
+| A7 explicit host Python startup | `codex/a7-linux-host-python` / `a50ae86` (from merged `06b92ea`; evidence bundle follows) | Experimental host fixture; controlled GNU Linux arm64 observation | Mac/Linux: 308/309 source workspace tests and Clippy; 32 portable bootstrap/host tests and 34 GNU opt-in release tests; 112 Python policy tests; all eight clean host traces and four frozen-bootstrap regression traces pass |
 
 ## Gate status
 
@@ -31,7 +31,7 @@ approved system-library profiles and signed deployment remain pending.
 The archive and manifest are version 0. Lua is pinned to `lua-src` 551.0.2
 with int64/float64 configuration. Stock conventional-GIL CPython 3.13.16 / PBS
 `20261009` full and unstripped install-only inputs are pinned for the GNU Linux
-arm64 inspection and separate frozen-startup experiment; other runtime pins and Python execution profiles still
+arm64 inspection and separate frozen/installed-host startup experiments; other runtime pins and Python execution profiles still
 depend on platform experiments. The logical Lua build ID is not a compiler
 configuration or artifact hash. See [the base profile decision](decisions/0005-linked-lua-source-profile.md)
 and [version selection](decisions/0006-versioned-linked-lua-profiles.md).
@@ -184,6 +184,14 @@ shared app proves version/ABI mode, isolation, UTF-8 and installed encodings wit
 built-in math/_ssl. Product host discovery, application imports and native
 extension integration remain open. See
 [the host startup decision](decisions/0012-explicit-host-python-startup.md).
+
+The clean optimized host capture from `a50ae86` passes all eight complete traces,
+including six prerequisite rejections before Python loading and a controlled
+application error. The 2,741-byte successful archive contains only the app.
+The same clean source also passes four fresh frozen-bootstrap regression traces.
+The [host evidence](evidence/pbs-linux-arm64-host-python-2026-10-10/README.md)
+retains both captures, installed input/archive identities, commands, C provenance,
+test logs and independently replayed compressed traces.
 
 ## Next critical-path assignments
 

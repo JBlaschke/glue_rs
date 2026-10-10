@@ -63,3 +63,7 @@ fallback and extra processes fail even if the kernel rejected the operation.
 The library's stock frozen internal modules remain stock CPython behavior.
 General app imports, resources, installed extension loading, arbitrary host
 Python distributions, other versions and other operating systems remain open.
+
+The [clean observed capture](../../docs/evidence/pbs-linux-arm64-host-python-2026-10-10/README.md)
+retains all eight host traces and a separate four-trace frozen-bootstrap regression,
+with source/artifact identities, validation logs and replay instructions.

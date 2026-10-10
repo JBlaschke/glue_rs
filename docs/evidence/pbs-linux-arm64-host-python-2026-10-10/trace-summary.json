@@ -1,0 +1,82 @@
+{
+  "success": {
+    "raw_bytes": 834358,
+    "raw_sha256": "57abdd25b1c48ae30cfff6d2f7e771866cd3f7cde19cf38c381ac33d2e05b4d1",
+    "gzip_bytes": 154487,
+    "gzip_sha256": "39d963e796b1e65d896beb2f082aa17481880d1f20cfc7f78c4248d9faecd5c1",
+    "records": 1718,
+    "pids": [
+      8
+    ]
+  },
+  "wrong-library": {
+    "raw_bytes": 783063,
+    "raw_sha256": "f677a0d1ddf5441a3bef7164517561ec6b579e8c92c6c1b84210d0710fa1ca08",
+    "gzip_bytes": 149732,
+    "gzip_sha256": "88b95f3407d13a7e8fe0f32d50bb291736d19808223df5e439f73488675abddf",
+    "records": 1298,
+    "pids": [
+      12
+    ]
+  },
+  "wrong-stdlib": {
+    "raw_bytes": 796622,
+    "raw_sha256": "a355006ccb2efed89ea5800239307dd31590c4929953c1dd0401ec9ae9291ea3",
+    "gzip_bytes": 150755,
+    "gzip_sha256": "7dc930d46395b2c5003e1a84e8943c07d46e1eacb831e35b30c13ae9baaee1ae",
+    "records": 1373,
+    "pids": [
+      16
+    ]
+  },
+  "missing-encodings": {
+    "raw_bytes": 801344,
+    "raw_sha256": "62449b1e1b3ebb3992064de8f33b35771c1986c85ab8f9286cf85a84072a83a2",
+    "gzip_bytes": 150687,
+    "gzip_sha256": "70c6c83f0bd037f09636b6182813fc4d9aadd02a79088ffd0736cff4c2dc37d5",
+    "records": 1365,
+    "pids": [
+      20
+    ]
+  },
+  "symlink-stdlib": {
+    "raw_bytes": 14677,
+    "raw_sha256": "aa2ead3067150ca4322e14a16eba048456fbdc51e1f7dcf927e795e546b6f863",
+    "gzip_bytes": 2836,
+    "gzip_sha256": "a7bf653445b4a9e074243b281178de9aa7899263e9e2c73368d7479ebf6d1cb6",
+    "records": 112,
+    "pids": [
+      24
+    ]
+  },
+  "missing-library": {
+    "raw_bytes": 25702,
+    "raw_sha256": "661531b0abf6fa8c099bf6703a91e239a2deec179d647f59b50dec7923b92aa3",
+    "gzip_bytes": 3159,
+    "gzip_sha256": "0f21b8269f14f1cf192e0acb34670cf086a8956846a4cfb538397c234511861e",
+    "records": 169,
+    "pids": [
+      28
+    ]
+  },
+  "cached-bytecode": {
+    "raw_bytes": 21867,
+    "raw_sha256": "2c604c9752af8d282ec8edaab6184e3443f77f928aff9101dac6d8419cdd7d81",
+    "gzip_bytes": 3044,
+    "gzip_sha256": "246c9590df79258168c133197201f3066d33f7b1387bab6940d003f3488149b5",
+    "records": 148,
+    "pids": [
+      32
+    ]
+  },
+  "app-error": {
+    "raw_bytes": 834665,
+    "raw_sha256": "a44bbafa000598172d2189c31e2a2e7144764257b16df5267550f2309839822f",
+    "gzip_bytes": 154573,
+    "gzip_sha256": "312420a509f7ebf9c7592db18d69d03e766b21b45ec469383d29ad1d7bebea7d",
+    "records": 1721,
+    "pids": [
+      36
+    ]
+  }
+}

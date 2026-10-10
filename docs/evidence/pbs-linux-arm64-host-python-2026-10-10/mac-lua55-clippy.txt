@@ -1,0 +1,2 @@
+    Checking glue-python-bootstrap-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/python-bootstrap)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
