@@ -123,6 +123,21 @@ and [mapping decision](docs/decisions/0009-signed-macos-macho-probe.md).
 Both debug and optimized signed runs have [retained evidence](docs/evidence/macos-arm64-macho-2026-10-09/README.md).
 Full write tracing and Developer ID distribution evidence remain open.
 
+## Inspect pinned Python inputs
+
+`glue-pbs-inspect` reads pinned stock Python Build Standalone full and unstripped
+install-only inputs without extracting them. It hashes the complete inventory,
+checks shared-runtime/startup metadata and verifies the exact upstream
+install-only projection. The initial fixture pins CPython 3.13.16 / PBS
+`20261009` for GNU Linux arm64. The tool runs on Mac or Linux with no Python or
+uv dependency; it emits deterministic JSON to stdout.
+
+See [the input fixture and command](fixtures/python-pbs/README.md) and
+[inspection decision](docs/decisions/0010-pinned-pbs-inspection.md).
+This is build-time provider work. Python execution and conversion into runnable
+glue archives remain pending. [Retained evidence](docs/evidence/pbs-linux-arm64-inspection-2026-10-09/README.md)
+includes identical Mac/Linux reports and the complete Linux inspector trace.
+
 ## Try the resource fixture
 
 This older fixture declares a fictional `host` Lua library and tests packaging
@@ -163,8 +178,8 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 212/213 Rust tests for `lua54`/`lua55` on
-macOS and GNU Linux arm64, including 31 portable Mach-O parser tests. Both
+The source-profile workspace passes 268/269 Rust tests for `lua54`/`lua55` on
+macOS and GNU Linux arm64, including 31 portable Mach-O parser tests and 56 PBS inspection tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
@@ -190,6 +205,7 @@ sh scripts/run-linux-lua.sh lua54
 sh scripts/run-linux-lua.sh lua55
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_rejections.py'
+python3 -m unittest discover -s scripts -p 'test_linux_pbs_trace.py'
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55
 ```

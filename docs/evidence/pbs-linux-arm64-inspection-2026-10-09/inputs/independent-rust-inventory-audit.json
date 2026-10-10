@@ -1,0 +1,48 @@
+{
+  "audit_scope": "Independent Python inventory comparison; no runtime execution or loader compatibility claim.",
+  "bootstrap_observed": false,
+  "input_sha256": {
+    "linux-aarch64-PYTHON.json": "2be93f8346d647c46a9c5133cddb403d757a564ce1ec4039239ce9008fd763dc",
+    "linux-aarch64-full-inventory.json": "2479ce7b92c0ce7ce08c5693e7d5e18cb38d808e481ae7c846095e59ffa52a3b",
+    "linux-aarch64-install_only-inventory.json": "f0961a7f3f38c8df8c3477e3656242165e076be4503d1f71afb838682f02eb5e",
+    "rust-inspection.json": "03d417402bae7556432dc43b3a407c7f5579e06b5bd72c0b6c5debf4ab554f8b",
+    "validation/linux/inspection.json": "03d417402bae7556432dc43b3a407c7f5579e06b5bd72c0b6c5debf4ab554f8b"
+  },
+  "inventories": {
+    "full": {
+      "entries": 6574,
+      "matched_fields": [
+        "canonical_path",
+        "kind",
+        "size",
+        "mode",
+        "sha256",
+        "raw_link_target"
+      ]
+    },
+    "install_only": {
+      "entries": 4526,
+      "matched_fields": [
+        "canonical_path",
+        "kind",
+        "size",
+        "mode",
+        "sha256",
+        "raw_link_target"
+      ]
+    }
+  },
+  "mac_linux_parsed_reports_equal": true,
+  "metadata": {
+    "bytes": 127144,
+    "matches_report_and_entry": true,
+    "sha256": "2be93f8346d647c46a9c5133cddb403d757a564ce1ec4039239ce9008fd763dc"
+  },
+  "omission_counts": {
+    "libpython_static_archive": 2,
+    "outside_install": 393,
+    "stdlib_test_package": 1645,
+    "test_extension": 8
+  },
+  "schema_version": 0
+}

@@ -1,0 +1,169 @@
+{
+  "build_options": "pgo+lto",
+  "core_links": [
+    {
+      "dynamic_library": null,
+      "framework": false,
+      "name": "pthread",
+      "static_library": null,
+      "system": true
+    },
+    {
+      "dynamic_library": null,
+      "framework": false,
+      "name": "dl",
+      "static_library": null,
+      "system": true
+    },
+    {
+      "dynamic_library": null,
+      "framework": false,
+      "name": "util",
+      "static_library": null,
+      "system": true
+    }
+  ],
+  "crt_features": [
+    "glibc-dynamic",
+    "glibc-max-symbol-version:2.17)"
+  ],
+  "debug": false,
+  "encodings_resources": [
+    {
+      "path": "python/install/lib/python3.13/codecs.py",
+      "resolved_path": "python/install/lib/python3.13/codecs.py",
+      "sha256": "2f278497548b8313580b247a1097a0a304e5087a355ebb11a92ec685fa9e63ff",
+      "size": 36978
+    },
+    {
+      "path": "python/install/lib/python3.13/encodings/__init__.py",
+      "resolved_path": "python/install/lib/python3.13/encodings/__init__.py",
+      "sha256": "3a8c3b489e90381552e06171f4a03e4097b77a675795974e9b0d10338729003e",
+      "size": 6020
+    },
+    {
+      "path": "python/install/lib/python3.13/encodings/aliases.py",
+      "resolved_path": "python/install/lib/python3.13/encodings/aliases.py",
+      "sha256": "368bf46e530f71d2defa1e2ff305f7d887584898e624cd36c75413fa23d5b333",
+      "size": 16011
+    },
+    {
+      "path": "python/install/lib/python3.13/encodings/ascii.py",
+      "resolved_path": "python/install/lib/python3.13/encodings/ascii.py",
+      "sha256": "578aa1173f7cc60dad2895071287fe6182bd14787b3fbf47a6c7983dfe3675e3",
+      "size": 1248
+    },
+    {
+      "path": "python/install/lib/python3.13/encodings/latin_1.py",
+      "resolved_path": "python/install/lib/python3.13/encodings/latin_1.py",
+      "sha256": "b75503e532a27c636477396c855209ff5f3036536d2a4bede0a576c89382b60c",
+      "size": 1264
+    },
+    {
+      "path": "python/install/lib/python3.13/encodings/utf_8.py",
+      "resolved_path": "python/install/lib/python3.13/encodings/utf_8.py",
+      "sha256": "ba0cac060269583523ca9506473a755203037c57d466a11aa89a30a5f6756f3d",
+      "size": 1005
+    }
+  ],
+  "gil": "conventional",
+  "inittab_object": {
+    "path": "python/build/Modules/config.o",
+    "resolved_path": "python/build/Modules/config.o",
+    "sha256": "9541fb0d05f398f0f2fa894741b4d7162d39ce5072276324303de684cbf2b458",
+    "size": 29624
+  },
+  "inittab_source": {
+    "path": "python/build/Modules/config.c",
+    "resolved_path": "python/build/Modules/config.c",
+    "sha256": "ffe060463ae66b1a5d2a9d3f72fa67083ee44cbe7705cf7ab4cc83950e2d6018",
+    "size": 8346
+  },
+  "libpython_link_mode": "shared",
+  "math": {
+    "in_core": false,
+    "init_fn": "PyInit_math",
+    "linkage": "static_objects_declared",
+    "links": [
+      {
+        "dynamic_library": null,
+        "framework": false,
+        "name": "m",
+        "static_library": null,
+        "system": true
+      }
+    ],
+    "name": "math",
+    "objects": [
+      {
+        "path": "python/build/Modules/mathmodule.o",
+        "resolved_path": "python/build/Modules/mathmodule.o",
+        "sha256": "400925f38e4ab7d02ac15e894ef0bd731f35b8aff562566311ec948ac37e8e54",
+        "size": 452960
+      }
+    ],
+    "registration_observed": false,
+    "required": false,
+    "shared_library": null,
+    "static_library": null,
+    "variant": "default"
+  },
+  "metadata_version": "8",
+  "path": "python/PYTHON.json",
+  "python_version": "3.13.16",
+  "runtime_library": {
+    "path": "python/install/lib/libpython3.13.so.1.0",
+    "resolved_path": "python/install/lib/libpython3.13.so.1.0",
+    "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+    "size": 73563968
+  },
+  "sha256": "2be93f8346d647c46a9c5133cddb403d757a564ce1ec4039239ce9008fd763dc",
+  "size": 127144,
+  "ssl": {
+    "in_core": false,
+    "init_fn": "PyInit__ssl",
+    "linkage": "static_objects_declared",
+    "links": [
+      {
+        "dynamic_library": null,
+        "framework": false,
+        "name": "crypto",
+        "static_library": {
+          "path": "python/build/lib/libcrypto.a",
+          "resolved_path": "python/build/lib/libcrypto.a",
+          "sha256": "d130bf6f8403bb8c56d8dfb1c9dd9c5f1596adb33fc972b3beb54e1b6a496a4d",
+          "size": 11600476
+        },
+        "system": false
+      },
+      {
+        "dynamic_library": null,
+        "framework": false,
+        "name": "ssl",
+        "static_library": {
+          "path": "python/build/lib/libssl.a",
+          "resolved_path": "python/build/lib/libssl.a",
+          "sha256": "84544e04bbf77798714cfaab53fdf0c88b0c4d89d223315ed1b879d3297bd98e",
+          "size": 2102730
+        },
+        "system": false
+      }
+    ],
+    "name": "_ssl",
+    "objects": [
+      {
+        "path": "python/build/Modules/_ssl.o",
+        "resolved_path": "python/build/Modules/_ssl.o",
+        "sha256": "6d33ca7775221a69f2789ac5eec2537d8884d06ba12fd6b2706f16308b04a9b8",
+        "size": 886280
+      }
+    ],
+    "registration_observed": false,
+    "required": false,
+    "shared_library": null,
+    "static_library": null,
+    "variant": "default"
+  },
+  "stdlib": "python/install/lib/python3.13",
+  "target_triple": "aarch64-unknown-linux-gnu"
+}

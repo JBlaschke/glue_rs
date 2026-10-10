@@ -1,0 +1,27 @@
+{
+  "bootstrap_observed": false,
+  "full_entries": 6574,
+  "full_only_matches": true,
+  "install_only_entries": 4526,
+  "loader_compatibility_validated": false,
+  "mac_linux_reports_byte_identical": true,
+  "omission_counts": {
+    "libpython_static_archive": 2,
+    "outside_install": 393,
+    "stdlib_test_package": 1645,
+    "test_extension": 8
+  },
+  "optimized_pbs_tests": 56,
+  "python_policy_tests": 71,
+  "report_bytes": 3368785,
+  "report_sha256": "03d417402bae7556432dc43b3a407c7f5579e06b5bd72c0b6c5debf4ab554f8b",
+  "source_clean": true,
+  "source_commit": "886a415e20d5186c76e20738a8cb852103769bfe",
+  "trace_bytes": 17829852,
+  "trace_records": 21996,
+  "trace_sha256": "9c23c43e28b32e665d44a00f6622be4f7654ea0582b109c51e4a22305eb1c4a7",
+  "workspace_tests": {
+    "lua54": 268,
+    "lua55": 269
+  }
+}

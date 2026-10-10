@@ -1,0 +1,2 @@
+   Compiling glue-pbs v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pbs)
+    Finished `release` profile [optimized] target(s) in 1.19s
