@@ -1,0 +1,1 @@
+Verified and materialized stock producer plus matching headers; target compiler has not executed

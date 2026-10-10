@@ -1,0 +1,25 @@
+glue stock PBS Python bootstrap boundary provenance v1
+This is local build evidence, not a complete artifact fingerprint.
+boundary=glue-python-bootstrap-c-boundary-3
+api_revision=3
+python_api_export_count=28
+source=CPython 3.13.16 / PBS 20261009 / conventional GIL / non-debug
+TARGET="aarch64-unknown-linux-gnu"
+pbs_bootstrap_feature=true
+boundary_compiled=true
+HOST=Some("aarch64-unknown-linux-gnu")
+PROFILE=Some("release")
+OPT_LEVEL=Some("3")
+DEBUG=Some("false")
+RUSTC=Some("rustc")
+RUSTFLAGS=None
+CARGO_ENCODED_RUSTFLAGS=Some("")
+full_artifact_sha256=8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca
+header_pin_sha256=e7a2b671368610b58c571f421253deaf67ac91fb0be793d7b0755ced749f0abf
+verified_installed_header_count=264
+verified_installed_header_bytes=1830329
+default_cc_path="cc"
+default_cc_args=["-O3", "-ffunction-sections", "-fdata-sections", "-fPIC", "-Wall", "-Wextra"]
+default_cc_version="cc (Debian 12.2.0-14+deb12u1) 12.2.0\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+compiler_override_policy=nonempty CC/CXX/CFLAGS/CXXFLAGS/CPPFLAGS variants rejected
+boundary_config=C11; warnings as errors; copied verified headers; no libpython link

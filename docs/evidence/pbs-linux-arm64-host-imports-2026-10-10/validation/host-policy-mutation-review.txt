@@ -1,0 +1,43 @@
+Independent clean host archive-import hostile trace review
+Source commit: 9aababab78156f84628128060b64f51906bde5fe
+Source clean: true
+Checker SHA256: 4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813
+Capture: target/python-host-imports-final-capture
+Retained corrupt offset: 6235
+BASELINE PASS success: archive 13932 bytes; trace SHA256 48a33d0f31edb43e4868fb8caae0d63233f2c24390c547905fd4467f35ac432f
+BASELINE PASS wrong-library: archive 13960 bytes; trace SHA256 d2cbab3fc5ea84e58164440a79939ae3fb45226276d63d9c0ed7aa67552d17e1
+BASELINE PASS wrong-import-source: archive 13972 bytes; trace SHA256 36db5149492789acaa942af617b0a5cf3d36fe419d814845f577abd09aca3faa
+BASELINE PASS missing-import-source: archive 13976 bytes; trace SHA256 c1044f663ce32100b4afab5399692d852c5b555401939697eea1abdfbc21237b
+BASELINE PASS cached-import-bytecode: archive 13978 bytes; trace SHA256 361773701790e569f0f26e1efa739cd0c883ce674b989fbb06aa67cf4638480d
+BASELINE PASS app-error: archive 13932 bytes; trace SHA256 1c40725d2b7ff004122babe6717a3179cd8557e4290f21bbf2be1a1edf0c2efc
+BASELINE PASS corrupt-source: archive 13932 bytes; trace SHA256 5362ff92eb43e7cade7028a7385ef7cf0a3e8f2bfd580206fe643de83d781193
+REJECT publication before admission: line 2: app diagnostics must follow verified image mappings and complete installed source imports
+REJECT missing nested cache prerequisite: line 2008: host file hashing must follow its complete cache absence checks
+REJECT cache before retained ancestors: line 338: cache prerequisite requires verified retained no-follow ancestor directories
+REJECT missing supplemental hash read: line 2249: host verification EOF must follow every pinned file byte
+REJECT missing supplemental rewind: line 3988: host library alias load precedes complete pinned input verification
+REJECT wrong library alias: line 3989: host library alias load precedes complete pinned input verification
+REJECT duplicate library alias: line 3990: host library alias load precedes complete pinned input verification
+REJECT missing alias closure: line 3999: open did not return a distinct approved annotated descriptor
+REJECT installed source before alias closure: line 3999: isolated imports must read only selected source files or directories
+REJECT bytecode metadata before verification: line 338: installed import metadata probe precedes selected image readiness
+REJECT failed package lure: line 5172: unapproved OS, Python-source or filesystem read path
+REJECT failed namespace lure: line 5172: unapproved OS, Python-source or filesystem read path
+REJECT failed standalone lure: line 5172: unapproved OS, Python-source or filesystem read path
+REJECT failed URI fallback: line 5172: unapproved OS, Python-source or filesystem read path
+REJECT failed mutation: line 5172: unapproved syscall unlink
+REJECT failed bundled fallback: line 5172: installed Python must not create a memfd or fall back to bundled loading
+REJECT extra PID: line 4066: unexpected additional process or thread
+REJECT MAP_FIXED return mismatch: line 3993: host image mapping must be one verified private stock segment
+REJECT retained source closed before app completes: line 5172: verified host file and ancestor descriptors must outlive app execution
+REJECT wrong-library premature diagnostic: line 338: validation diagnostic must follow exact failed prerequisites and closed descriptors
+REJECT wrong-import-source premature diagnostic: line 338: validation diagnostic must follow exact failed prerequisites and closed descriptors
+REJECT missing-import-source premature diagnostic: line 338: validation diagnostic must follow exact failed prerequisites and closed descriptors
+REJECT cached-import-bytecode premature diagnostic: line 338: validation diagnostic must follow exact failed prerequisites and closed descriptors
+REJECT corrupt read short: line 289: selected corrupt source read differs from its retained stored payload
+REJECT corrupt payload changed: line 289: selected corrupt source read differs from its retained stored payload
+REJECT corrupt archive left open: line 290: validation diagnostic must follow exact failed prerequisites and closed descriptors
+REJECT remap source outside tracked backing: line 4302: anonymous remap must match the observed installed-source parser allocation sequence
+REJECT remap fixed flags: line 4302: anonymous remap must match the observed installed-source parser allocation sequence
+REJECT duplicate parser remap: line 4303: anonymous remap must match the observed installed-source parser allocation sequence
+Result: 7 clean baseline replays pass; 29/29 hostile mutants rejected.

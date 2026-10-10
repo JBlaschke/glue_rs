@@ -1,0 +1,105 @@
+   Compiling zmij v1.0.23
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_json v1.0.149
+   Compiling typenum v1.20.1
+   Compiling serde_core v1.0.228
+   Compiling hybrid-array v0.4.15
+   Compiling cfg-if v1.0.5
+   Compiling syn v2.0.119
+   Compiling libc v0.2.190
+   Compiling crc32fast v1.5.0
+   Compiling simd-adler32 v0.3.10
+   Compiling adler2 v2.0.1
+   Compiling miniz_oxide v0.9.1
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling const-oid v0.10.2
+   Compiling serde v1.0.228
+   Compiling memchr v2.8.3
+   Compiling digest v0.11.3
+   Compiling cpufeatures v0.3.1
+   Compiling serde_derive v1.0.228
+   Compiling flate2 v1.1.10
+   Compiling itoa v1.0.18
+   Compiling thiserror v2.0.18
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.2
+   Compiling indexmap v2.14.2
+   Compiling sha2 v0.11.0
+   Compiling thiserror-impl v2.0.18
+   Compiling shlex v2.0.1
+   Compiling typed-path v0.12.3
+   Compiling find-msvc-tools v0.1.14
+   Compiling cc v1.6.0
+   Compiling zip v8.6.0
+   Compiling twox-hash v2.1.5
+   Compiling ruzstd v0.9.0
+   Compiling glue-python-bootstrap-probe v0.1.0 (/workspace/spikes/python-bootstrap)
+   Compiling glue-format v0.1.0 (/workspace/crates/glue-format)
+   Compiling glue-pbs v0.1.0 (/workspace/crates/glue-pbs)
+   Compiling glue-resources v0.1.0 (/workspace/crates/glue-resources)
+    Finished `release` profile [optimized] target(s) in 14.93s
+     Running unittests src/main.rs (/build-target/release/deps/glue_python_bootstrap_probe-d6c69fcf176746fe)
+
+running 56 tests
+test bundle::tests::accepts_pinned_contract_and_roundtrips_serialization ... ok
+test bundle::tests::checks_inspected_pin_metadata_runtime_and_executable_identities ... ok
+test bundle::tests::bounds_and_validates_app_source ... ok
+test bundle::tests::checks_inspected_source_member_hashes_sizes_and_types ... ok
+test bundle::tests::rejects_duplicate_json_keys_at_every_contract_level ... ok
+test bundle::tests::rejects_invalid_hex_and_payload_hashes ... ok
+test bundle::tests::rejects_json_tail_and_deep_recursion ... ok
+test bundle::tests::rejects_unknown_fields_at_every_contract_level ... ok
+test bundle::tests::rejects_wrong_schema_and_every_producer_identity ... ok
+test bundle::tests::requires_exact_sorted_sources_and_package_flags ... ok
+test host::tests::accepts_only_absent_startup_cache_paths ... ok
+test host::tests::bounds_expanded_paths_not_only_the_prefix ... ok
+test host::tests::bounds_supplemental_count_total_and_expanded_host_paths ... ok
+test host::tests::checks_supplemental_directory_ancestors_before_cache_queries ... ok
+test host::tests::prefix_resolves_only_the_fixed_profile ... ok
+test host::tests::rejects_changed_supplemental_source_size_and_hash ... ok
+test host::tests::rejects_directory_and_file_startup_caches ... ok
+test host::tests::rejects_each_startup_cache_before_opening_the_library ... ok
+test host::tests::rejects_every_nested_cache_before_supplemental_source_access ... ok
+test host::tests::rejects_file_and_directory_symlinks ... ok
+test host::tests::rejects_missing_files_and_directories_used_as_files ... ok
+test host::tests::rejects_path_normalization_and_escape_forms ... ok
+test host::tests::rejects_regular_file_as_directory_ancestor ... ok
+test host::tests::rejects_short_long_and_hash_mismatched_files ... ok
+test host::tests::rejects_startup_cache_lookup_errors_other_than_enoent ... ok
+test host::tests::rejects_startup_cache_symlinks_even_when_dangling ... ok
+test host::tests::rejects_supplemental_metadata_before_host_access ... ok
+test host::tests::rejects_supplemental_startup_duplicates_and_path_aliases ... ok
+test host::tests::rejects_supplemental_source_and_cache_symlinks ... ok
+test host::tests::revalidates_mutated_config_fields_before_filesystem_access ... ok
+test host::tests::streams_verified_file_and_returns_rewound_handle ... ok
+test host::tests::verifies_nested_supplemental_source_and_retains_rewound_descriptor ... ok
+test host_import_profile::tests::rejects_provider_identity_inventory_and_path_drift ... ok
+test host_import_profile::tests::host_archive_contains_only_exact_shared_app_and_importer ... ok
+test host_import_profile::tests::rejects_runtime_stdlib_bridge_shadows_and_extra_archive_roots ... ok
+test import_profile::tests::exact_source_inventory_and_profile_admission ... ok
+test imports::tests::enforces_per_file_and_collection_bounds_before_callbacks ... ok
+test imports::tests::immutable_resource_protocol_returns_bytes_metadata_and_sorted_children ... ok
+test imports::tests::rejects_ambiguous_and_overlapping_import_roots ... ok
+test imports::tests::rejects_malformed_aliases_escaping_paths_and_unknown_operations ... ok
+test imports::tests::resolves_source_packages_namespaces_and_reserved_missing_descendants ... ok
+test linux::tests::c_copies_and_releases_archive_callback_buffers_before_python_calls ... ok
+test linux::tests::c_owns_frozen_records_and_error_buffers ... ok
+test linux::tests::c_owns_host_paths_and_rejects_invalid_configuration ... ok
+test linux::tests::resource_callback_contains_panics_and_transfers_binary_or_error_buffers ... ok
+test linux::tests::resource_callback_never_drops_a_panicking_panic_payload ... ok
+test tests::explicit_host_profile_contains_only_the_shared_app ... ok
+test tests::host_profile_rejects_mixed_installation_and_normalized_paths ... ok
+test bundle::tests::bounds_json_marshal_and_combined_payloads ... ok
+test tests::host_profile_rejects_provider_identity_and_app_drift ... ok
+test tests::incorrect_runtime_rejected ... ok
+test tests::manifest_rejects_provider_target_and_runtime_drift ... ok
+test tests::missing_archive_rejected_portably ... ok
+test tests::profile_round_trip ... ok
+test import_profile::tests::rejects_missing_extra_and_oversized_resources ... ok
+test import_profile::tests::rejects_source_hash_compression_and_provider_drift ... ok
+
+test result: ok. 56 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+

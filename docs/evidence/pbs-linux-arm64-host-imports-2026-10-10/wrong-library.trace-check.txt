@@ -1,0 +1,1 @@
+Trace checks passed: complete archive reads, pinned installed inputs before private library mappings or exact pre-init rejection, bounded isolated source imports, exact diagnostics and exit, no mutation, bundled fallback or extra process

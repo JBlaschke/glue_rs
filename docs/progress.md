@@ -228,6 +228,22 @@ module/namespace lures exercise fallback blocking. The unchanged C API revision 
 and shared invocation retain all owners through finalization. See
 [the host archive-import decision](decisions/0014-host-python-archive-imports.md).
 
+The clean optimized host-import capture from `9aababa` passes all seven complete
+traces and agrees with ordinary loading. Its 13,932-byte archive contains only
+18 app/helper/resource entries. All 69 installed sources are verified before
+loading; Python subsequently reopens 67 for this workload. Corrupt archive
+source rejects before host lookup; altered/missing supplemental sources and a
+nested cache reject before Python mapping. The same clean implementation passes
+three bundled-import, four frozen-startup and eight installed-host startup
+regressions. All 22 retained compressed traces independently replay, and 29
+hostile actual-trace mutations reject. Mac/Linux source assemblies pass 327/328
+tests and Clippy for Lua 5.4/5.5; every fresh GNU opt-in build passes 56 tests and
+Clippy. All 161 Python policy tests and both 16-test importer protocol cells pass.
+The [host-import evidence](evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
+retains exact source/artifact/input identities, manifests, C provenance,
+commands, validation logs and complete traces. Product Python integration,
+native extension initialization and general diagnostic consumers remain open.
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.

@@ -1,0 +1,3 @@
+Immutable image 62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe; network none; read-only root and producer; /control tmpfs rw,size=1m
+/producer/bin/python3.13 -I -S -B /validation/bytecode-read-control.py
+/producer/bin/python3.13 -I -S -B -c 'import sys; assert sys.dont_write_bytecode; sys.path.insert(0,"/control"); import contextlib'

@@ -1,0 +1,15 @@
+
+812c3a5e426d0e6f-bridge.o:
+                 U __aarch64_swp4_acq_rel
+                 U calloc
+                 U free
+                 U malloc
+                 U memchr
+                 U memcmp
+                 U memcpy
+                 U memset
+                 U snprintf
+                 U strcmp
+                 U strlen
+                 U strncmp
+                 U wcscmp

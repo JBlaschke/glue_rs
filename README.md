@@ -176,6 +176,9 @@ only app/helper/assets; the host owns the stdlib. It verifies the library,
 packages and namespaces block filesystem fallback, while installed
 `importlib.resources` reads the archive's streams. Product integration and native
 extension initialization are the next A7 steps.
+The [clean host-import capture](docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
+passes seven host-import traces plus fifteen bundled-import/startup regressions
+from the same implementation commit.
 
 ## Try the resource fixture
 

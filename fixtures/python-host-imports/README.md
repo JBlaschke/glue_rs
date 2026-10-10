@@ -61,6 +61,11 @@ reject at index admission. [Runtime names](runtime-names.json) tie the built-in
 and frozen inventories to the exact stock library; stdlib roots come from the
 independent complete source inventory.
 
+The [clean capture](../../docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
+retains all seven host-import traces and fifteen bundled/startup regressions
+from implementation `9aababa`, with source/input identities, exact manifests,
+build provenance, validation logs and independently replayed compressed traces.
+
 Product Python execution/discovery, native extension initialization, arbitrary
 packages, general diagnostic source consumers and other versions/platforms
 remain open. See [the decision](../../docs/decisions/0014-host-python-archive-imports.md).

@@ -1,0 +1,32 @@
+{
+  "app-error": {
+    "raw_bytes": 6351560,
+    "raw_sha256": "61c8ee748934ca98fede0c9d26644565d1ee6726d40c2dde01bce69c660972a8",
+    "gzip_bytes": 1248928,
+    "gzip_sha256": "7496881d8401fa33b43d02fc350e263c24790d6592dd7f053257b47a96be5368",
+    "records": 33518,
+    "pids": [
+      12
+    ]
+  },
+  "corrupt-source": {
+    "raw_bytes": 4819855,
+    "raw_sha256": "4e7861470c742c118fe56b35e8d5ba6e732030ca5719b4fd3c66ad98e61ea3e8",
+    "gzip_bytes": 527622,
+    "gzip_sha256": "e078333c8c914eb78e1b81051aa13c533392155f5e196eaf595fe03082c601c9",
+    "records": 28700,
+    "pids": [
+      16
+    ]
+  },
+  "success": {
+    "raw_bytes": 6351078,
+    "raw_sha256": "dbecac08456103c8d1af4ed4b86b4b03242bc6b2260af131b369acdca1d5f987",
+    "gzip_bytes": 1248831,
+    "gzip_sha256": "7a3dd80fda7ab0f7ce318a4f692390af762c96f18a3c474617cff0d728a85406",
+    "records": 33512,
+    "pids": [
+      8
+    ]
+  }
+}
