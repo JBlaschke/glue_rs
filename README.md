@@ -158,6 +158,17 @@ The [clean host capture](docs/evidence/pbs-linux-arm64-host-python-2026-10-10/RE
 passes all eight host traces and four frozen-bootstrap regression traces from
 the same implementation commit.
 
+The [archive source/resource fixture](fixtures/python-imports/README.md) extends
+the bundled startup experiment with Rust-owned source resolution and actual
+`importlib.resources` streams. It exercises modules, packages, one-portion
+namespaces, virtual origins, import caching/reload, source encoding and binary/text
+assets. Materializing resource helpers reject before temporary-file attempts.
+This remains a controlled bundled adapter; product and host-provider integration
+and native Python extensions remain pending.
+The [clean import capture](docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
+passes all three import traces and twelve earlier startup regression traces from
+the same implementation commit.
+
 ## Try the resource fixture
 
 This older fixture declares a fictional `host` Lua library and tests packaging
@@ -198,12 +209,13 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 308/309 Rust tests for `lua54`/`lua55` on
+The source-profile workspace passes 316/317 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
-and 32 Python bootstrap/host bundle/profile tests. Both
+and 40 Python bootstrap/host/import bundle/profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
-GNU opt-in bootstrap/host fixture passes 34 release tests and Clippy; all 112
-Python trace-policy tests pass, including 23 host startup checks. The
+GNU opt-in Python fixture passes 45 release tests and Clippy; all 141
+Python trace-policy tests pass, including 29 archive-import checks. The importer
+also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
@@ -231,6 +243,8 @@ python3 -m unittest discover -s scripts -p 'test_linux_native_lua_rejections.py'
 python3 -m unittest discover -s scripts -p 'test_linux_pbs_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_bootstrap_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_host_trace.py'
+python3 -m unittest discover -s scripts -p 'test_linux_python_import_trace.py'
+python3 fixtures/python-imports/test_importer.py
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55
 ```

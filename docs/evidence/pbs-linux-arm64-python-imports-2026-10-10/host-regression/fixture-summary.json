@@ -1,0 +1,69 @@
+{
+  "source_commit": "94da8de499cf860f7d06fb9fec2b51eae46d0132",
+  "source_clean": true,
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "launcher": {
+    "file": "glue-python-bootstrap-probe",
+    "size": 2854992,
+    "sha256": "0f69f92f90de178f57c04574daa215942b55499e72685f18591a6bc294b7a3b4"
+  },
+  "archives": {
+    "success": {
+      "file": "success.glue",
+      "size": 2741,
+      "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18"
+    },
+    "wrong-library": {
+      "file": "wrong-library.glue",
+      "size": 2769,
+      "sha256": "a60fc7df7a3116b14bfa0a3436bb177b0f5755c9261b7dfd3dfd31ebcaac9b37"
+    },
+    "wrong-stdlib": {
+      "file": "wrong-stdlib.glue",
+      "size": 2767,
+      "sha256": "a321b1b099b3fbc924c4a646d1b9854417c9c84e7ddb9e384b9a8b785fca4968"
+    },
+    "missing-encodings": {
+      "file": "missing-encodings.glue",
+      "size": 2777,
+      "sha256": "3fed3406a05d2c43a79c4561d341ecb499f09783f865ecc039238e1ff5ec386f"
+    },
+    "symlink-stdlib": {
+      "file": "symlink-stdlib.glue",
+      "size": 2771,
+      "sha256": "dfc6da3209d2f011281645e0b5aeb7ec3cd74d8457c235e71f42ac0a300cab0f"
+    },
+    "missing-library": {
+      "file": "missing-library.glue",
+      "size": 2773,
+      "sha256": "731d6cb68d7ea75229cf0c3e297466b6c1b6e5105e1721b590bc21d9e54dc406"
+    },
+    "cached-bytecode": {
+      "file": "cached-bytecode.glue",
+      "size": 2773,
+      "sha256": "ca0791efba245e03d99f755112abff7362fca88dd02007838705f2228fbfdbc4"
+    },
+    "app-error": {
+      "file": "success.glue",
+      "size": 2741,
+      "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18"
+    }
+  },
+  "frozen_bundle": {
+    "file": "freeze-bundle.json",
+    "size": 139523,
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+  },
+  "stdout_bytes": 111,
+  "statuses": {
+    "success": 0,
+    "wrong-library": 1,
+    "wrong-stdlib": 1,
+    "missing-encodings": 1,
+    "symlink-stdlib": 1,
+    "missing-library": 1,
+    "cached-bytecode": 1,
+    "app-error": 1
+  }
+}

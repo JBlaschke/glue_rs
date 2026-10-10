@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `06b92ea`.
+The earlier feature work and evidence were merged into `main` at `29b3f76`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -18,6 +18,7 @@ Further implementation continues on separate feature branches.
 | A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
 | A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` / `30a1526` (from merged `8b56f7c`; evidence bundle follows) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in release tests; 89 Python policy tests; unchanged stock libpython starts with frozen encodings and built-in math/_ssl; baseline output agrees and all four complete traces pass |
 | A7 explicit host Python startup | `codex/a7-linux-host-python` / `a50ae86` (from merged `06b92ea`; evidence bundle follows) | Experimental host fixture; controlled GNU Linux arm64 observation | Mac/Linux: 308/309 source workspace tests and Clippy; 32 portable bootstrap/host tests and 34 GNU opt-in release tests; 112 Python policy tests; all eight clean host traces and four frozen-bootstrap regression traces pass |
+| A7 Python archive source/resources | `codex/a7-python-archive-imports` / `94da8de` (from merged `29b3f76`; evidence bundle follows) | Experimental bundled source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux: 316/317 source workspace tests and Clippy; 40 portable Python tests and 45 GNU opt-in release tests; 141 Python policy tests and 16 importer protocol tests; all three clean import traces plus four frozen/eight installed-host startup regressions pass |
 
 ## Gate status
 
@@ -193,6 +194,30 @@ The [host evidence](evidence/pbs-linux-arm64-host-python-2026-10-10/README.md)
 retains both captures, installed input/archive identities, commands, C provenance,
 test logs and independently replayed compressed traces.
 
+The archive source/resource fixture extends bundled frozen startup with a
+Rust-owned immutable source index and a small C request boundary. The unchanged
+stock runtime imports modules, packages and one-portion namespaces from source,
+with virtual origins and normal import-cache/reload/failure behavior. Actual
+`importlib.resources` supplies read-only streams; archive Traversables reject
+`as_file` and legacy `path` before temporary-file attempts. All 2,174 pinned
+stdlib `.py` members are retained as a source-only projection, without claiming
+complete stdlib/package compatibility. This remains a controlled bundled adapter;
+host-provider archive imports and product integration still need evidence. See
+[the source/resource decision](decisions/0013-python-archive-source-resources.md).
+
+The clean optimized capture from `94da8de` matches ordinary loading and passes
+all three complete import traces after removing producer/stdlib/library/headers.
+Its 83,092,207-byte archive declares 2,194 resources. Syntax errors retain virtual
+origins without compiler diagnostic source lookups in the observed UTF-8 cell;
+an `atexit` callback reads resources during finalization. Corrupt stored source
+rejects before memfd creation. The same implementation also passes four fresh
+frozen and eight installed-host startup regression traces. The
+[import evidence](evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
+retains all fifteen independently replayed compressed traces, exact manifests,
+input/source/artifact identities, C provenance and validation logs. Host-provider
+archive imports, general diagnostic source consumers and product integration
+remain pending.
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -200,9 +225,9 @@ Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
-stock PBS frozen-startup experiment to the product archive importer, resources,
-native extension bridge and product host-Python integration, extending the
-controlled installed-stdlib startup fixture. Extend complete runtime traces beyond the controlled arm64
+stock PBS startup and source/resource experiments to product provider/adapter
+integration, host-provider archive imports and the native extension-init bridge.
+Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
 package compatibility.

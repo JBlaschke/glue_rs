@@ -1,0 +1,2 @@
+rustc 1.88.0 (6b00bc388 2025-06-23)
+Linux 7.1.4-200.fc44.aarch64 #1 SMP PREEMPT_DYNAMIC Sat Jul 18 19:16:11 UTC 2026 aarch64 GNU/Linux

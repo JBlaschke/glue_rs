@@ -10,7 +10,7 @@ use std::{
 };
 
 static ATTEMPTED: AtomicBool = AtomicBool::new(false);
-const NAMES: [&str; 21] = [
+const NAMES: [&str; 28] = [
     "Py_GetVersion",
     "Py_IsInitialized",
     "PyPreConfig_InitIsolatedConfig",
@@ -32,6 +32,13 @@ const NAMES: [&str; 21] = [
     "Py_FinalizeEx",
     "PyImport_FrozenModules",
     "PyWideStringList_Append",
+    "PyModule_New",
+    "PyCFunction_NewEx",
+    "PyImport_GetModuleDict",
+    "PyDict_SetItemString",
+    "PyBytes_FromStringAndSize",
+    "PyErr_SetString",
+    "PyExc_RuntimeError",
 ];
 const OS_LIBRARIES: [&str; 9] = [
     "libc.so.6",
@@ -49,7 +56,7 @@ const OS_LIBRARIES: [&str; 9] = [
 struct Api {
     abi_revision: u32,
     reserved: u32,
-    symbols: [*mut libc::c_void; 21],
+    symbols: [*mut libc::c_void; 28],
 }
 #[repr(C)]
 struct FrozenRecord {
@@ -63,10 +70,16 @@ struct BridgeResult {
     error: *mut libc::c_char,
     error_len: usize,
 }
+#[repr(C)]
+struct ResourceReply {
+    data: *mut u8,
+    len: usize,
+}
 const _: () = {
-    assert!(std::mem::size_of::<Api>() == 176);
+    assert!(std::mem::size_of::<Api>() == 232);
     assert!(std::mem::size_of::<FrozenRecord>() == 24);
     assert!(std::mem::size_of::<BridgeResult>() == 16);
+    assert!(std::mem::size_of::<ResourceReply>() == 16);
 };
 unsafe extern "C" {
     fn glue_python_run(
@@ -86,10 +99,32 @@ unsafe extern "C" {
         app_len: usize,
         result: *mut BridgeResult,
     ) -> libc::c_int;
+    fn glue_python_run_archive(
+        api: *const Api,
+        records: *const FrozenRecord,
+        count: usize,
+        prefix: *const libc::c_char,
+        stdlib: *const libc::c_char,
+        request: unsafe extern "C" fn(
+            *mut libc::c_void,
+            *const u8,
+            usize,
+            *mut ResourceReply,
+        ) -> libc::c_int,
+        release: unsafe extern "C" fn(*mut libc::c_void, *mut u8, usize),
+        context: *mut libc::c_void,
+        bootstrap: *const u8,
+        bootstrap_len: usize,
+        app: *const u8,
+        app_len: usize,
+        result: *mut BridgeResult,
+    ) -> libc::c_int;
     #[cfg(test)]
     fn glue_python_boundary_test_ownership() -> libc::c_int;
     #[cfg(test)]
     fn glue_python_boundary_test_host_paths() -> libc::c_int;
+    #[cfg(test)]
+    fn glue_python_boundary_test_archive_callbacks() -> libc::c_int;
 }
 
 fn preflight() -> Result<(), String> {
@@ -132,7 +167,13 @@ pub(super) fn run(
     negative: Option<&str>,
 ) -> Result<(), String> {
     preflight()?;
-    let file = if let Some(path) = baseline {
+    let file = runtime_file(&payload.library, baseline)?;
+    let api = load_api(file)?;
+    invoke_frozen(&api, &mut payload, negative)
+}
+
+fn runtime_file(library: &[u8], baseline: Option<&Path>) -> Result<File, String> {
+    if let Some(path) = baseline {
         let mut file = File::open(path).map_err(|e| e.to_string())?;
         let mut bytes = Vec::new();
         (&mut file)
@@ -140,7 +181,7 @@ pub(super) fn run(
             .read_to_end(&mut bytes)
             .map_err(|e| e.to_string())?;
         check_library(&bytes)?;
-        file
+        Ok(file)
     } else {
         let name = CString::new("glue-python-libpython3.13.so.1.0").unwrap();
         // SAFETY: terminated name and explicit Linux executable memfd flags.
@@ -158,8 +199,7 @@ pub(super) fn run(
         }
         // SAFETY: new descriptor is exclusively owned by this File.
         let mut file = unsafe { File::from_raw_fd(fd) };
-        file.write_all(&payload.library)
-            .map_err(|e| e.to_string())?;
+        file.write_all(library).map_err(|e| e.to_string())?;
         let seals =
             libc::F_SEAL_WRITE | libc::F_SEAL_GROW | libc::F_SEAL_SHRINK | libc::F_SEAL_SEAL;
         // SAFETY: live memfd, integer seal mask, no writable mapping exists.
@@ -168,10 +208,8 @@ pub(super) fn run(
         {
             return Err("required four memfd seals unavailable; no fallback".into());
         }
-        file
-    };
-    let api = load_api(file)?;
-    invoke_frozen(&api, &mut payload, negative)
+        Ok(file)
+    }
 }
 
 fn load_api(file: File) -> Result<Api, String> {
@@ -201,9 +239,9 @@ fn load_api(file: File) -> Result<Api, String> {
     // SAFETY: live loader-owned link_map prefix.
     let base = unsafe { (*link).address };
     let mut api = Api {
-        abi_revision: 2,
+        abi_revision: 3,
         reserved: 0,
-        symbols: [std::ptr::null_mut(); 21],
+        symbols: [std::ptr::null_mut(); 28],
     };
     for (slot, name) in api.symbols.iter_mut().zip(NAMES) {
         let key = CString::new(name).unwrap();
@@ -314,6 +352,120 @@ pub(super) fn run_host(mut payload: HostPayload, negative: bool) -> Result<(), S
     finish_result(status, result, negative)
 }
 
+pub(super) fn run_imports(
+    mut payload: import_profile::Payload,
+    baseline: Option<&Path>,
+    negative: bool,
+) -> Result<(), String> {
+    preflight()?;
+    let api = load_api(runtime_file(&payload.library, baseline)?)?;
+    let mut names = Vec::new();
+    let mut codes = Vec::new();
+    for module in &payload.bundle.modules {
+        names.push(CString::new(module.name.as_str()).map_err(|_| "frozen name contains NUL")?);
+        codes.push(module.decode_hex()?);
+    }
+    let records: Vec<_> = payload
+        .bundle
+        .modules
+        .iter()
+        .zip(&names)
+        .zip(&codes)
+        .map(|((module, name), code)| FrozenRecord {
+            name: name.as_ptr(),
+            code: code.as_ptr(),
+            size: code.len() as i32,
+            is_package: i32::from(module.is_package),
+        })
+        .collect();
+    if negative {
+        payload
+            .app
+            .extend_from_slice(b"\nraise RuntimeError('intentional Python archive app error')\n");
+    }
+    let mut result = BridgeResult {
+        error: std::ptr::null_mut(),
+        error_len: 0,
+    };
+    // SAFETY: all records, source and immutable resource context outlive this
+    // synchronous call and finalization. C owns every Python API/object. Rust
+    // callbacks catch panics and return buffers before C calls Python again.
+    let status = unsafe {
+        glue_python_run_archive(
+            &api,
+            records.as_ptr(),
+            records.len(),
+            std::ptr::null(),
+            std::ptr::null(),
+            resource_request,
+            resource_release,
+            (&mut payload.index as *mut imports::Index).cast(),
+            payload.bootstrap.as_ptr(),
+            payload.bootstrap.len(),
+            payload.app.as_ptr(),
+            payload.app.len(),
+            &mut result,
+        )
+    };
+    finish_result(status, result, negative)
+}
+
+fn callback_outcome(action: impl FnOnce() -> Result<Vec<u8>, String>) -> (libc::c_int, Vec<u8>) {
+    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(action)) {
+        Ok(Ok(bytes)) => (0, bytes),
+        Ok(Err(error)) => (1, error.chars().take(4096).collect::<String>().into_bytes()),
+        Err(payload) => {
+            // An arbitrary panic payload can panic again in Drop. Leak it on
+            // this exceptional path so its destructor cannot unwind into C.
+            std::mem::forget(payload);
+            (1, b"archive resource callback panicked".to_vec())
+        }
+    }
+}
+
+unsafe extern "C" fn resource_request(
+    context: *mut libc::c_void,
+    request: *const u8,
+    request_len: usize,
+    reply: *mut ResourceReply,
+) -> libc::c_int {
+    if context.is_null()
+        || reply.is_null()
+        || request_len > 4096
+        || (request.is_null() && request_len != 0)
+    {
+        return 1;
+    }
+    // SAFETY: C supplies the live borrowed Index, bounded request slice and
+    // fresh writable reply. Empty requests avoid constructing a NULL slice.
+    let (status, bytes) = callback_outcome(|| {
+        let index = unsafe { &*context.cast::<imports::Index>() };
+        let request = if request_len == 0 {
+            &[]
+        } else {
+            unsafe { std::slice::from_raw_parts(request, request_len) }
+        };
+        index.request(request)
+    });
+    let bytes = bytes.into_boxed_slice();
+    let len = bytes.len();
+    let data = Box::into_raw(bytes).cast::<u8>();
+    // SAFETY: C owns this transferred allocation and releases it exactly once
+    // with the same pointer/length, including empty allocations and errors.
+    unsafe {
+        reply.write(ResourceReply { data, len });
+    }
+    status
+}
+
+unsafe extern "C" fn resource_release(_: *mut libc::c_void, data: *mut u8, len: usize) {
+    if !data.is_null() {
+        // SAFETY: same owned Box<[u8]> allocation transferred by our request;
+        // C copies the data first and releases once, before any Python call.
+        drop(unsafe { Box::from_raw(std::ptr::slice_from_raw_parts_mut(data, len)) });
+    }
+}
+
 fn finish_result(
     status: libc::c_int,
     mut result: BridgeResult,
@@ -420,5 +572,74 @@ mod tests {
     fn c_owns_host_paths_and_rejects_invalid_configuration() {
         // SAFETY: C-only validation/ownership self-test; no Python calls.
         assert_eq!(unsafe { super::glue_python_boundary_test_host_paths() }, 0);
+    }
+    #[test]
+    fn c_copies_and_releases_archive_callback_buffers_before_python_calls() {
+        // SAFETY: C-only callback ownership/control selftest; no Python calls.
+        assert_eq!(
+            unsafe { super::glue_python_boundary_test_archive_callbacks() },
+            0
+        );
+    }
+    #[test]
+    fn resource_callback_contains_panics_and_transfers_binary_or_error_buffers() {
+        use super::*;
+        let (status, bytes) = callback_outcome(|| panic!("intentional callback panic"));
+        assert_eq!(status, 1);
+        assert_eq!(bytes, b"archive resource callback panicked");
+        let mut index = imports::Index::new(
+            "fixture",
+            BTreeMap::from([("app/python/data.bin".into(), vec![0, 255])]),
+        )
+        .unwrap();
+        for (request, expected_status) in [
+            (b"read\tapp/python/data.bin".as_slice(), 0),
+            (b"read\tapp/python/../data.bin".as_slice(), 1),
+        ] {
+            let mut reply = ResourceReply {
+                data: std::ptr::null_mut(),
+                len: 0,
+            };
+            // SAFETY: live local context/request/reply; exactly one matching free.
+            let status = unsafe {
+                resource_request(
+                    (&mut index as *mut imports::Index).cast(),
+                    request.as_ptr(),
+                    request.len(),
+                    &mut reply,
+                )
+            };
+            assert_eq!(status, expected_status);
+            assert!(!reply.data.is_null());
+            if status == 0 {
+                assert_eq!(
+                    unsafe { std::slice::from_raw_parts(reply.data, reply.len) },
+                    [0, 255]
+                );
+            }
+            unsafe { resource_release(std::ptr::null_mut(), reply.data, reply.len) };
+        }
+    }
+
+    #[test]
+    fn resource_callback_never_drops_a_panicking_panic_payload() {
+        use std::sync::{
+            Arc,
+            atomic::{AtomicUsize, Ordering},
+        };
+        struct DropPanic(Arc<AtomicUsize>);
+        impl Drop for DropPanic {
+            fn drop(&mut self) {
+                self.0.fetch_add(1, Ordering::SeqCst);
+                panic!("panic payload destructor");
+            }
+        }
+        let drops = Arc::new(AtomicUsize::new(0));
+        let (status, bytes) = super::callback_outcome(|| {
+            std::panic::panic_any(DropPanic(Arc::clone(&drops)));
+        });
+        assert_eq!(status, 1);
+        assert_eq!(bytes, b"archive resource callback panicked");
+        assert_eq!(drops.load(Ordering::SeqCst), 0);
     }
 }
