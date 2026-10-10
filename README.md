@@ -134,9 +134,17 @@ uv dependency; it emits deterministic JSON to stdout.
 
 See [the input fixture and command](fixtures/python-pbs/README.md) and
 [inspection decision](docs/decisions/0010-pinned-pbs-inspection.md).
-This is build-time provider work. Python execution and conversion into runnable
-glue archives remain pending. [Retained evidence](docs/evidence/pbs-linux-arm64-inspection-2026-10-09/README.md)
+This is build-time provider work. [Retained evidence](docs/evidence/pbs-linux-arm64-inspection-2026-10-09/README.md)
 includes identical Mac/Linux reports and the complete Linux inspector trace.
+
+The separate `glue-python-bootstrap-probe` prepares a bounded archive from that
+exact library and startup bytecode compiled by the matching stock interpreter.
+Its opt-in `pbs-bootstrap` feature uses public CPython APIs and a C-owned boundary
+on GNU Linux arm64; other targets reject execution before opening the archive.
+The [bootstrap fixture](fixtures/python-bootstrap/README.md) and
+[decision](docs/decisions/0011-stock-pbs-frozen-bootstrap.md) describe its frozen
+startup subset, exact runtime profile and trace protocol. Product Python and host
+providers, general imports and native extensions remain pending.
 
 ## Try the resource fixture
 
@@ -178,8 +186,9 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 268/269 Rust tests for `lua54`/`lua55` on
-macOS and GNU Linux arm64, including 31 portable Mach-O parser tests and 56 PBS inspection tests. Both
+The source-profile workspace passes 291/292 Rust tests for `lua54`/`lua55` on
+macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
+and 15 Python bootstrap bundle/profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
@@ -206,6 +215,7 @@ sh scripts/run-linux-lua.sh lua55
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_rejections.py'
 python3 -m unittest discover -s scripts -p 'test_linux_pbs_trace.py'
+python3 -m unittest discover -s scripts -p 'test_linux_python_bootstrap_trace.py'
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55
 ```

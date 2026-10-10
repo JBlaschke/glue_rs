@@ -40,6 +40,52 @@ pub struct InstallReport {
     pub pairing: projection::PairReport,
 }
 
+#[derive(Debug)]
+pub struct SelectedInspection {
+    pub inspection: Inspection,
+    /// Selected exact regular-file payloads, after complete artifact validation.
+    pub files: BTreeMap<String, Vec<u8>>,
+}
+
+/// Inspect the pinned full PBS artifact and retain selected regular-file bytes
+/// in bounded memory. Selection never follows aliases or writes host files.
+/// The compressed pin, complete tar inventory and stock metadata all validate
+/// before any selected payload is returned to the caller.
+pub fn inspect_full_selected<R: Read + Seek>(
+    pins: &Pins,
+    full_input: &mut R,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+) -> Result<SelectedInspection, String> {
+    pins.validate()?;
+    let selected = compression::inspect_selected(
+        full_input,
+        &pins.full,
+        compression::Compression::Zstd,
+        &Limits::default(),
+        selection,
+        max_selected_bytes,
+    )?;
+    let metadata = metadata::inspect_metadata(
+        &selected.inventory,
+        &pins.python_version,
+        &pins.target_triple,
+        &pins.build_options,
+    )?;
+    Ok(SelectedInspection {
+        inspection: Inspection {
+            schema_version: 0,
+            pins: pins.clone(),
+            full: artifact_report(pins.full.clone(), selected.inventory),
+            metadata,
+            install_only: None,
+            bootstrap_observed: false,
+            loader_compatibility_validated: false,
+        },
+        files: selected.files,
+    })
+}
+
 /// Inspect already downloaded inputs. No downloads, filesystem output, runtime
 /// acquisition, Python execution or manifest conversion take place here.
 pub fn inspect<R: Read + Seek>(

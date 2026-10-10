@@ -159,6 +159,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-python-bootstrap-probe"
+version = "0.1.0"
+dependencies = [
+ "cc",
+ "glue-format",
+ "glue-pbs",
+ "glue-resources",
+ "libc",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "glue-resources"
 version = "0.1.0"
 dependencies = [

@@ -36,6 +36,14 @@ Python startup must use actual stock PBS and compatible host libraries, import
 its own bundled producer. Node and Lua fixtures must use the actual runtimes;
 synthetic workers prove protocol behavior only.
 
+The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
+the inspected GNU Linux arm64 library. It compiles pinned startup sources with
+the matching stock producer at build time, removes that installation and its
+headers, then executes a relocated read-only archive under full syscall tracing.
+It compares the exact same library/bundle/app under ordinary loading and tests
+missing encodings, corrupt marshal bytes and application errors. The comparison
+is separate from the planned host provider using an installed standard library.
+
 Parser/resource fixtures may be synthetic and run on the development host. They
 must cover deterministic output, stored/deflate and ZIP64 members, path/case
 collisions, undeclared payloads, symlinks, encryption, unknown schema fields,

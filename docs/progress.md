@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `1425d6d`.
+The earlier feature work and evidence were merged into `main` at `8b56f7c`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -16,6 +16,7 @@ Further implementation continues on separate feature branches.
 | A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` / `3a24833`, fixture cleanup `fb61e5e` (from merged `7853282`) | Experimental implementation; controlled observation | Mac/Linux source workspaces: 181/182 tests; GNU Linux native workspaces: 178/179; 37 portable native tests and 54 Python policy tests; Clippy clean for all profiles; both Lua versions match ordinary loading and pass complete two-memfd/no-payload-write traces; twelve ELF rejection traces pass before any memfd attempt |
 | A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` / `346b2f0` (from merged `a596305`) | Controlled signed observation; acceptance evidence incomplete | 31 portable/optimized parser tests; 212/213 source workspace tests for Lua 5.4/5.5 and Clippy on Mac/Linux; ad-hoc hardened-runtime/allow-jit debug and optimized launchers match ordinary loading; fourteen native rejections, four signing controls and two memory-policy controls pass; full trace and distribution signing remain open |
 | A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
+| A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` (from merged `8b56f7c`) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in tests; unchanged stock libpython starts with frozen encodings and imports built-in math/_ssl; ordinary loading and memfd output agree |
 
 ## Gate status
 
@@ -24,12 +25,12 @@ version-specific source-only profiles and optional GNU Linux arm64 native
 profiles. This is partial A5/A6/G2 work; four-OS acceptance remains open.
 The original Linux memfd spike remains a separate historical observation.
 The product now integrates a controlled native Lua closure. General native
-backends, archived/host runtime bootstraps, Python/Node execution, workers,
+backends, product archived/host runtime providers, Python/Node adapters, workers,
 approved system-library profiles and signed deployment remain pending.
 The archive and manifest are version 0. Lua is pinned to `lua-src` 551.0.2
 with int64/float64 configuration. Stock conventional-GIL CPython 3.13.16 / PBS
 `20261009` full and unstripped install-only inputs are pinned for the GNU Linux
-arm64 inspection cell; other runtime pins and Python execution profiles still
+arm64 inspection and separate frozen-startup experiment; other runtime pins and Python execution profiles still
 depend on platform experiments. The logical Lua build ID is not a compiler
 configuration or artifact hash. See [the base profile decision](decisions/0005-linked-lua-source-profile.md)
 and [version selection](decisions/0006-versioned-linked-lua-profiles.md).
@@ -148,8 +149,19 @@ pins, upstream records, complete compressed reports/trace, source/artifact
 identities, candidate metadata, independent file research and validation logs.
 The actual libpython registers `math`/`_ssl` in its file table, but its size and
 ABS64/TLSDESC relocations exceed the current Lua loader profile. This is A7/A10
-build-time input work; no Python runtime has been acquired or executed and
+build-time input work; that inspection did not acquire or execute Python and
 G0/G1 remain open. See [the decision](decisions/0010-pinned-pbs-inspection.md).
+
+The separate stock PBS bootstrap uses the exact unchanged shared library and
+public `PyImport_FrozenModules` before isolated public-API initialization. Six
+pinned startup sources are compiled by the matching stock producer at build time;
+the C bridge owns configuration, Python references, error buffers and finalization.
+Actual GNU Linux arm64 execution imports frozen `encodings` and built-in `math`
+and `_ssl`, returns 42, and agrees with ordinary loading of the same library and
+bundle. This is a startup subset, rather than a complete Python stdlib/importer
+or a host provider. The generic Lua loader limits remain unchanged; the probe
+admits one exact larger stock runtime image through the system loader and sealed
+memfd. See [the bootstrap decision](decisions/0011-stock-pbs-frozen-bootstrap.md).
 
 ## Next critical-path assignments
 
@@ -158,8 +170,9 @@ Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
-stock PBS inputs to isolated public-API startup with archived encodings, no
-on-disk Python home and actual `math`/`_ssl` imports, then compatible host-Python
-startup and full execution traces. The Linux native Lua vertical slice exercises the G2 fixture on its
+stock PBS frozen-startup experiment to the product archive importer, resources,
+native extension bridge and compatible host-Python startup with its matching
+installed stdlib. Extend complete runtime traces beyond the controlled arm64
+cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
 package compatibility.

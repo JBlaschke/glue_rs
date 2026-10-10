@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-native", "crates/glue-pbs", "spikes/linux-memfd", "spikes/macos-macho"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-native", "crates/glue-pbs", "spikes/linux-memfd", "spikes/macos-macho", "spikes/python-bootstrap"]
 resolver = "3"
 
 [workspace.package]
