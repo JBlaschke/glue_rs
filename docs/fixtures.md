@@ -53,6 +53,16 @@ startup bytecode must reject before runtime mapping. A read-only installation
 and complete trace establish this controlled startup subset; product host
 discovery and general stdlib/package compatibility remain separate work.
 
+The [archive Python source/resource fixture](../fixtures/python-imports/README.md)
+extends stock bundled startup with source modules, packages, single-archive
+namespace portions and actual `importlib.resources`. Rust verifies all app,
+stdlib sources and assets into bounded immutable memory before Python loading;
+the C callback bridge transfers bytes without exposing Python objects to Rust.
+Virtual origins, import caching/reload, encoding cookies, failure cleanup and
+seekable binary/text streams are exercised. Materialization helpers must reject
+before temporary-file attempts, and corrupt source must reject before any memfd.
+Installed-host archive imports and native extensions remain separate evidence.
+
 Parser/resource fixtures may be synthetic and run on the development host. They
 must cover deterministic output, stored/deflate and ZIP64 members, path/case
 collisions, undeclared payloads, symlinks, encryption, unknown schema fields,
