@@ -12,3 +12,10 @@ docs/evidence/pbs-linux-arm64-host-python-2026-10-10/launcher.elf.txt whitespace
 docs/evidence/pbs-linux-arm64-host-python-2026-10-10/frozen-regression/*-tests.txt whitespace=-blank-at-eof
 docs/evidence/pbs-linux-arm64-host-python-2026-10-10/frozen-regression/vendor.stderr.txt whitespace=-blank-at-eof
 docs/evidence/pbs-linux-arm64-host-python-2026-10-10/frozen-regression/launcher.elf.txt whitespace=-blank-at-eol
+# Preserve the archive-import and both startup-regression tool captures.
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/**/vendor.stderr.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/vendor.stderr.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/**/*-tests.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/*-tests.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/**/launcher.elf.txt whitespace=-blank-at-eol
+docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/launcher.elf.txt whitespace=-blank-at-eol

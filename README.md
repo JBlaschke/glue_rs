@@ -165,6 +165,9 @@ namespaces, virtual origins, import caching/reload, source encoding and binary/t
 assets. Materializing resource helpers reject before temporary-file attempts.
 This remains a controlled bundled adapter; product and host-provider integration
 and native Python extensions remain pending.
+The [clean import capture](docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
+passes all three import traces and twelve earlier startup regression traces from
+the same implementation commit.
 
 ## Try the resource fixture
 

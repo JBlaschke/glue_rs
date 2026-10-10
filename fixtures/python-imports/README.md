@@ -45,6 +45,9 @@ read-only/offline container runs the relocated launcher/archive unprivileged,
 without workspace access and with unavailable temporary/home paths. Three full
 traces cover success, application error and corrupt source. Mutation attempts,
 filesystem source fallback and extra processes fail the strict trace policy.
+The [clean capture](../../docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
+retains all three traces and twelve frozen/installed-host startup regressions
+from implementation `94da8de`, with independently replayed compressed traces.
 
 The successful output is 100 bytes:
 

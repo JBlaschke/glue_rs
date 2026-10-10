@@ -1,0 +1,1162 @@
+{
+  "build_time_materialization": true,
+  "bundle": {
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+    "size": 139523
+  },
+  "command": [
+    "/build-target/producer/bin/python3.13",
+    "-I",
+    "-S",
+    "-B",
+    "/build-target/producer/freeze-compiler.py",
+    "/build-target/producer/freeze-input.json",
+    "/build-target/producer/freeze-provenance.json",
+    "/build-target/freeze-bundle.json",
+    "/evidence/freeze-provenance.json"
+  ],
+  "compiler": {
+    "executable": "/build-target/producer/bin/python3.13",
+    "flags": {
+      "dont_write_bytecode": 1,
+      "isolated": 1,
+      "no_site": 1
+    },
+    "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
+    "version": "3.13.16 (main, Oct  9 2026, 15:21:42) [Clang 22.1.3 ]"
+  },
+  "full_selected_resources": {
+    "python/PYTHON.json": {
+      "sha256": "2be93f8346d647c46a9c5133cddb403d757a564ce1ec4039239ce9008fd763dc",
+      "size": 127144
+    },
+    "python/install/bin/python3.13": {
+      "sha256": "1abe8738dd82558ba7884a0dd00bb8e9561ad0b85a3ddd3d755999c2dd878d45",
+      "size": 73325136
+    },
+    "python/install/lib/libpython3.13.so.1.0": {
+      "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+      "size": 73563968
+    },
+    "python/install/lib/python3.13/codecs.py": {
+      "sha256": "2f278497548b8313580b247a1097a0a304e5087a355ebb11a92ec685fa9e63ff",
+      "size": 36978
+    },
+    "python/install/lib/python3.13/encodings/__init__.py": {
+      "sha256": "3a8c3b489e90381552e06171f4a03e4097b77a675795974e9b0d10338729003e",
+      "size": 6020
+    },
+    "python/install/lib/python3.13/encodings/aliases.py": {
+      "sha256": "368bf46e530f71d2defa1e2ff305f7d887584898e624cd36c75413fa23d5b333",
+      "size": 16011
+    },
+    "python/install/lib/python3.13/encodings/ascii.py": {
+      "sha256": "578aa1173f7cc60dad2895071287fe6182bd14787b3fbf47a6c7983dfe3675e3",
+      "size": 1248
+    },
+    "python/install/lib/python3.13/encodings/latin_1.py": {
+      "sha256": "b75503e532a27c636477396c855209ff5f3036536d2a4bede0a576c89382b60c",
+      "size": 1264
+    },
+    "python/install/lib/python3.13/encodings/utf_8.py": {
+      "sha256": "ba0cac060269583523ca9506473a755203037c57d466a11aa89a30a5f6756f3d",
+      "size": 1005
+    }
+  },
+  "installed_headers": {
+    "Python.h": {
+      "sha256": "0660af70363eeea689133b9ee0dc3b0cf3e4afc62eed177354d8f9b725fbc86a",
+      "size": 4038
+    },
+    "abstract.h": {
+      "sha256": "725d6bffd92957476a3bb9de6fe4b3861fa0316a6cf2777566097a6522a253eb",
+      "size": 32754
+    },
+    "bltinmodule.h": {
+      "sha256": "1b5101b4b85409fd910032713906800bbb83580503036469c2a60ac8e80b8f72",
+      "size": 264
+    },
+    "boolobject.h": {
+      "sha256": "fcca8a73a56eb135eac526b76726c6ce716e7cd2beb929ede8eb0a7faf445574",
+      "size": 1605
+    },
+    "bytearrayobject.h": {
+      "sha256": "0e93963caf43a057fb293ae5183d1b8bb45c9f57926ce8308f67a0f452843e85",
+      "size": 1466
+    },
+    "bytesobject.h": {
+      "sha256": "e37bc9a92c8fd317c136677bb7cd92aac6418048fac38b85805d7a216306a985",
+      "size": 2569
+    },
+    "ceval.h": {
+      "sha256": "6b4a3660e8dd8022e873605a5d43e5f73e8d784510436733d00196dd088c991b",
+      "size": 5119
+    },
+    "codecs.h": {
+      "sha256": "32fa312b843da47ef06f3aa53837c1ba652bd1ee05d1a9fa3a5e621ecd76719b",
+      "size": 5435
+    },
+    "compile.h": {
+      "sha256": "1f10c818b29007e6a4446505a1140dd77ca6618ad81e87b502f4e22f4b274406",
+      "size": 448
+    },
+    "complexobject.h": {
+      "sha256": "9356805a24503256cd8914d7b7700357e01f471c211f9241c81981d89d6c3af8",
+      "size": 728
+    },
+    "cpython/abstract.h": {
+      "sha256": "5bf1468331186270d92d2d775990c5ddcae4f123e47663d03506b97d980b70d6",
+      "size": 3399
+    },
+    "cpython/bytearrayobject.h": {
+      "sha256": "ae5e099856657f3b8606701df312866eaa88992f6cfd9f8567456e1588efceb1",
+      "size": 1163
+    },
+    "cpython/bytesobject.h": {
+      "sha256": "02efac180bdf1a8e36ea296c65d9aa5d160e5605c81fa70b868f0f94e3253598",
+      "size": 1180
+    },
+    "cpython/cellobject.h": {
+      "sha256": "844f06178bbce2e9377a46ccc80e2aae85a73750932576a6cc4de934cc508cea",
+      "size": 1076
+    },
+    "cpython/ceval.h": {
+      "sha256": "8a93e7ae59e8c431ebcc862149e36686eec036b7c1b45a930d427fde8758c686",
+      "size": 1115
+    },
+    "cpython/classobject.h": {
+      "sha256": "b38a0ecdebeae2a4d28dfe8a5f2833f676d38be9561ca4bdfdf5087bbe2f9332",
+      "size": 2245
+    },
+    "cpython/code.h": {
+      "sha256": "03645d7216c119b0ff5a73653e714068b8c6c28799273d0dd502d64c66dd8c04",
+      "size": 15207
+    },
+    "cpython/compile.h": {
+      "sha256": "ccb8432f58f5670c488fd349abc8189c037805fc4f3271a03a74378e881cb4ca",
+      "size": 2121
+    },
+    "cpython/complexobject.h": {
+      "sha256": "9f8e31d4fda040a5b67f3670848a92ff4700a8414e15d0b73862d222361623c7",
+      "size": 909
+    },
+    "cpython/context.h": {
+      "sha256": "6ddfc492855d6a670378b734d42fe64f569cdce4cb3b86ff967237e818cccb17",
+      "size": 1837
+    },
+    "cpython/critical_section.h": {
+      "sha256": "2c035f9e7eab0157fd6ed37a6536c8560ef7ef60d8b806f6fa4561f93bc3d6f6",
+      "size": 5588
+    },
+    "cpython/descrobject.h": {
+      "sha256": "33d044229aa3e69e82e1371a890613d40cc2e1937a14205f4f845b02301c8f62",
+      "size": 1593
+    },
+    "cpython/dictobject.h": {
+      "sha256": "d434837d508de617876bb73f742d08b837f0ef61e9e0b04b4914625397fab50f",
+      "size": 3870
+    },
+    "cpython/fileobject.h": {
+      "sha256": "3a2d87d6f21f0a87fd054cf128571cf8130316c13384bd93e1da3ce4dd4b3c12",
+      "size": 652
+    },
+    "cpython/fileutils.h": {
+      "sha256": "d7a2f703c6fba2efabd0b1cc916ad36074363a27a000987cfad17e21f04d44f1",
+      "size": 232
+    },
+    "cpython/floatobject.h": {
+      "sha256": "f1c53f5b87f221db66004b836aa2fc9462aa46c2fbe46b417a8ddc803ce2f585",
+      "size": 900
+    },
+    "cpython/frameobject.h": {
+      "sha256": "40e0e69e1c8ab950a51aed209853b534c4f75d7c10c1859edb78197c15aa888b",
+      "size": 1199
+    },
+    "cpython/funcobject.h": {
+      "sha256": "7e90d0fec8bbd3f11939e1e1d09bfbb850e6392a921be1bb2eb38186f9952cdb",
+      "size": 7049
+    },
+    "cpython/genobject.h": {
+      "sha256": "fb89a96efe3daa673f805c623e88bf608e11fe38d7bfaeafd6d9aaf28778a58c",
+      "size": 2997
+    },
+    "cpython/import.h": {
+      "sha256": "e6f475fdc74ed7728ae87a7114992b582bc05ff6465264d3f2bce813926e630d",
+      "size": 725
+    },
+    "cpython/initconfig.h": {
+      "sha256": "ecccd0c893d606516d8c8cbdc5a20bb7aa0c3d97fd0ccbcdedbd4a1183c58e2b",
+      "size": 8197
+    },
+    "cpython/listobject.h": {
+      "sha256": "01db083043a33e64b99e8d8ac7da1862042a0e56e2899b5856662e2080faffe9",
+      "size": 1801
+    },
+    "cpython/lock.h": {
+      "sha256": "27408ec76cebcc941c749368486f2656a05611692985134b016e8fcb3a983425",
+      "size": 1763
+    },
+    "cpython/longintrepr.h": {
+      "sha256": "4dc914b88a9bbe9cfc979f3981b02b0152a0e9b918b7b27f8ffdc143fb1b3da6",
+      "size": 5119
+    },
+    "cpython/longobject.h": {
+      "sha256": "398c2ab0426aff2f5dc405146be68d96e6ca937986b9fe0cfe501f0b057e5e61",
+      "size": 5583
+    },
+    "cpython/memoryobject.h": {
+      "sha256": "f7984c0fee804ff6f70e4218b3c693b799c8482874dd92d506acdf9c113e3a3f",
+      "size": 2223
+    },
+    "cpython/methodobject.h": {
+      "sha256": "5beb9f3b68ac72efe403a1b0a3fbbb14a5606a49a2840b9c7e9ff243d82d79b9",
+      "size": 2276
+    },
+    "cpython/modsupport.h": {
+      "sha256": "0ca27ea32fd952c75f854e814e19838b8dcd8ecfa4c9fb722c231b1859f78c56",
+      "size": 1042
+    },
+    "cpython/monitoring.h": {
+      "sha256": "2557ad16fbe2dd9282d8f6f37e54bb6cbdafa7f06c663dc080d27f63a5c41a92",
+      "size": 7704
+    },
+    "cpython/object.h": {
+      "sha256": "3b25e43a3aeda9cb135651087ade2be9f6d57e1f9b7863c6f664da2d5915a78b",
+      "size": 19461
+    },
+    "cpython/objimpl.h": {
+      "sha256": "65989e3d07c1323bc6e86ba99f274ee43780e86e2c126ca402cdad7ce45171fb",
+      "size": 3820
+    },
+    "cpython/odictobject.h": {
+      "sha256": "97dc6296e890463fc6994247e885df65cd4024dc1b05facfdc984c37d646b919",
+      "size": 1311
+    },
+    "cpython/picklebufobject.h": {
+      "sha256": "7040fb48462296c903f2f0d24d2b54e0de63cf7512dcf8d3048a0cadf7d94fd0",
+      "size": 848
+    },
+    "cpython/pthread_stubs.h": {
+      "sha256": "dab4ddf0c97e83db30ace3e6da33fabfeae9545083a820ef0b0df7af8ebc3792",
+      "size": 3926
+    },
+    "cpython/pyatomic.h": {
+      "sha256": "a0cd171ffcd17a084d6fd8ff99c88fea23b2df02f0694e60538f3d9cf38dd61e",
+      "size": 16514
+    },
+    "cpython/pyatomic_gcc.h": {
+      "sha256": "0ec0442b62988adbb5892d51323b5c5a58040cf1cf5f86eb5f9ebef40df27298",
+      "size": 19131
+    },
+    "cpython/pyatomic_msc.h": {
+      "sha256": "ce3338a66b1eeacf2ada7591b0f1ae06525a568bae57734a763146c1d5d163f6",
+      "size": 29241
+    },
+    "cpython/pyatomic_std.h": {
+      "sha256": "9cf702bd920de5324862cd93217dc9a09224b138f09c32af17a22bd485c3840b",
+      "size": 24336
+    },
+    "cpython/pyctype.h": {
+      "sha256": "10b5ccbc210fd2832e9c34849a3952e8db75f0016add89188358b1da6a8f3dbb",
+      "size": 1387
+    },
+    "cpython/pydebug.h": {
+      "sha256": "83d72e867b4fc9ac87efdfcb41c3d30ec20fa239fe6a74d1b85aa92e1f8d9506",
+      "size": 1413
+    },
+    "cpython/pyerrors.h": {
+      "sha256": "19f2ef22ec6eb87ba2a491749d3f49b44941d61ed3e1a731d1adad99813f4178",
+      "size": 2932
+    },
+    "cpython/pyfpe.h": {
+      "sha256": "ea7bfa7d891a0b5372d8b40a57d1b466b7824296e5c3f8d50b1a7cde084429b7",
+      "size": 444
+    },
+    "cpython/pyframe.h": {
+      "sha256": "979fc9fe787ff02ea0da6ba68e34da26b04e4a7252c39e189c10ad207c346bea",
+      "size": 1947
+    },
+    "cpython/pyhash.h": {
+      "sha256": "6887779f8d5b19def285e74f3ebd5cb03fccec16d3a99c1f45ad51f50b6f71f1",
+      "size": 1382
+    },
+    "cpython/pylifecycle.h": {
+      "sha256": "bb1c3610aeb5ac18e5d993aa5ca33a87fe2db9f991329249ac160c5453d6f4ca",
+      "size": 2817
+    },
+    "cpython/pymem.h": {
+      "sha256": "a27c048ec9c90733fba0e2703b095e0c51f631b03a2c5aa8370c1494a0b9a5c0",
+      "size": 2843
+    },
+    "cpython/pystate.h": {
+      "sha256": "f2786d0e3a2c2d00f72055a45c1a536f9ad1c744873714d3896a9856d0442fcf",
+      "size": 9509
+    },
+    "cpython/pystats.h": {
+      "sha256": "7e957b6b24c0ab2a3a1a8ffd5bbdb7710f4355af957db2e889b0350dd1177f1d",
+      "size": 5434
+    },
+    "cpython/pythonrun.h": {
+      "sha256": "16b97268e635a0c5183724e3cec2167e02dbcecdcd86b178f830684fccc7e98d",
+      "size": 4464
+    },
+    "cpython/pythread.h": {
+      "sha256": "9d79295df4a87c7188ed3b71f855c031210e3b44ec1a0680a87458e94849bf3d",
+      "size": 1510
+    },
+    "cpython/pytime.h": {
+      "sha256": "ea9fafdbcb2d02700baea293c493358a85624d2332e40c3434a4efa8f72e178e",
+      "size": 707
+    },
+    "cpython/setobject.h": {
+      "sha256": "de9eeb690b95abe93a56100de500aabfb0c26f47ec5aef1c405aac7e969f5ed4",
+      "size": 2046
+    },
+    "cpython/sysmodule.h": {
+      "sha256": "25dbb294cb56fb0fde59c388a590115dc3838aa2340bbc7c58b1c3c6cc70a581",
+      "size": 775
+    },
+    "cpython/traceback.h": {
+      "sha256": "77c4e3146cf4f5336ffe8aca752c47c98946d142e40a166a06eddaf07a0727b0",
+      "size": 282
+    },
+    "cpython/tracemalloc.h": {
+      "sha256": "791f9cdf15900584f67661bf08a4a74d4c504e6e948c9b495fc54fff4e718524",
+      "size": 823
+    },
+    "cpython/tupleobject.h": {
+      "sha256": "e9bb20373432a7c98666f838d34d329ff6f2937593b458d4ba81c329332ef875",
+      "size": 1329
+    },
+    "cpython/unicodeobject.h": {
+      "sha256": "7600f114e51a53f1173e3ce1ea4676a668ab884a3106f081bae21a48b92b0104",
+      "size": 25074
+    },
+    "cpython/warnings.h": {
+      "sha256": "b758a2e42b0c497ea811464f579603d14fc30b50bd6ebe064d8d2a7df7e2bd76",
+      "size": 564
+    },
+    "cpython/weakrefobject.h": {
+      "sha256": "b658ae32a001a39eb48d84c8e6fda1102cd51fae8b3a951655856149bc1c79cc",
+      "size": 2249
+    },
+    "critical_section.h": {
+      "sha256": "c2b223fb4ab987c1d669ffdb45de7da6d63a644e5bd2eaf9f6713db2e4e292d4",
+      "size": 314
+    },
+    "datetime.h": {
+      "sha256": "f3d8192cada0f490a67233e615e5974f062501b2876147118ddb042ee4a7f988",
+      "size": 9769
+    },
+    "descrobject.h": {
+      "sha256": "2956a488f4c4c61341e361dac949cfa4a217e0fbd0097892513b02363c9570a7",
+      "size": 3080
+    },
+    "dictobject.h": {
+      "sha256": "072e9a2aee29dad9b4b0046b85a683d60739029d98e1a5c868da75a6d628882a",
+      "size": 4381
+    },
+    "dynamic_annotations.h": {
+      "sha256": "32fa1b365ec3cfd5f319d6f15afa132162852fd08ec02ad32552772d8eab9309",
+      "size": 22489
+    },
+    "enumobject.h": {
+      "sha256": "2244fe250db9995068fe74dce0e23fd70c12b03fd94751d98b773be8f64896b6",
+      "size": 253
+    },
+    "errcode.h": {
+      "sha256": "d72ac5e39293c150af665c79650078d34109b22332457a58e86038fc9d3fad7a",
+      "size": 1974
+    },
+    "exports.h": {
+      "sha256": "c6bcfb34a9a38ea9f9a2ddcde934bc00b3f3e7703e137b5ad744d8d274d02b46",
+      "size": 4595
+    },
+    "fileobject.h": {
+      "sha256": "efb38beb60297833fc080b9055d1d9ec5cc48db941a401baec6679b443ce3742",
+      "size": 1357
+    },
+    "fileutils.h": {
+      "sha256": "a8d3c7efff2ffa31946d9df74ade99abb5c937f49cc34f4c48c294e1a4b59264",
+      "size": 1419
+    },
+    "floatobject.h": {
+      "sha256": "50d23b4026d270e543d2dd52059bb409569218bf6c3c219dbe836077ee0ca868",
+      "size": 1532
+    },
+    "frameobject.h": {
+      "sha256": "969cd93065ce79b81bbc67a65d31b742e23f30bf79d6e44a306963d552ed0c35",
+      "size": 336
+    },
+    "genericaliasobject.h": {
+      "sha256": "0e53a0b18c114be68eccea9ffd1dd577e204b1f0ada4d3aedc8e7ee0c80fc7f8",
+      "size": 334
+    },
+    "import.h": {
+      "sha256": "00b7cb4d6e7f0055e25beabcea7bee576ff991bd83b4ffbb36912201cc0d9342",
+      "size": 3235
+    },
+    "internal/mimalloc/mimalloc.h": {
+      "sha256": "7c4e2fc555724fe674efbb2cfe64344fafa86f8c43d22e48263c33dd07ac7d81",
+      "size": 36071
+    },
+    "internal/mimalloc/mimalloc/atomic.h": {
+      "sha256": "b16c4bc7a92bcfd768993e183ade07892ef726fea0fe3951a836735249dc1ba2",
+      "size": 16798
+    },
+    "internal/mimalloc/mimalloc/internal.h": {
+      "sha256": "c7c44e1c33f5b74bd634d55715966bd3c2df68d3286f5b86fdae8607dde94acc",
+      "size": 36855
+    },
+    "internal/mimalloc/mimalloc/prim.h": {
+      "sha256": "d259075820e9074911f241338913f5756b729a1ff26eea5f5291b70ad60cba3f",
+      "size": 14437
+    },
+    "internal/mimalloc/mimalloc/track.h": {
+      "sha256": "073061d3b0e94549b3c59b82c0bfaf9d32871409217d203ccbcaf7dc01daaf6b",
+      "size": 5453
+    },
+    "internal/mimalloc/mimalloc/types.h": {
+      "sha256": "cdd80b9d60402450e7ba521d091c1e3973f1421891f817918ad30180751d7b2f",
+      "size": 29886
+    },
+    "internal/pycore_abstract.h": {
+      "sha256": "7b280a0f8507aff9c43079357fa6dee5e9736404d7aaa38368bb144213cd9a07",
+      "size": 1915
+    },
+    "internal/pycore_asdl.h": {
+      "sha256": "b29dace0f84849c4a24bc3745523a36911cd192bad7ec6fb48aba8facff51d3e",
+      "size": 3035
+    },
+    "internal/pycore_ast.h": {
+      "sha256": "64dc6396defbcf7fb7377aa4975dd5d46448c0ac04119235874383f7bdedd8d0",
+      "size": 31520
+    },
+    "internal/pycore_ast_state.h": {
+      "sha256": "d5e067c59449d11db9d9ecd7c6e523ff82431e357dc5bb3a292f4a6b2f416089",
+      "size": 6779
+    },
+    "internal/pycore_atexit.h": {
+      "sha256": "b87eb28bf1ccec97b38183275950a7aff54d94ef212043f9442a4b23e85a305a",
+      "size": 1433
+    },
+    "internal/pycore_backoff.h": {
+      "sha256": "848fbf317990e8ffb6208518e1f101b3e782e38c6d36c5e05ff82004d99d7cbf",
+      "size": 3980
+    },
+    "internal/pycore_bitutils.h": {
+      "sha256": "22888efeefa369d2b23687abe8972554ff51ba0dae2312c41a72802abf4110ad",
+      "size": 6026
+    },
+    "internal/pycore_blocks_output_buffer.h": {
+      "sha256": "d81cc86d0fdb68b7fa6934302ada9c400314d8ebff6d9aac570de62667a080ce",
+      "size": 8772
+    },
+    "internal/pycore_brc.h": {
+      "sha256": "1797357559939de2df93552e8a08fbcd6ede8ddfcd471f084c24d9d8fe96ed1f",
+      "size": 2102
+    },
+    "internal/pycore_bytes_methods.h": {
+      "sha256": "fc5ebf18efb79c5ca56accf725a476801a3285ef5078954292444ff6077f3b22",
+      "size": 3933
+    },
+    "internal/pycore_bytesobject.h": {
+      "sha256": "e5a83d1a2dc128702d36f36da570fbf5d9001cd9ddd74a1b7154aeb1ded632b4",
+      "size": 5099
+    },
+    "internal/pycore_call.h": {
+      "sha256": "1687dcf15feec00e4e3d0e2c0495dac770dbc4e6ad7d519fd53c60571a98ea42",
+      "size": 6135
+    },
+    "internal/pycore_capsule.h": {
+      "sha256": "38e5994687ba663929ccd79d10ad79d3cd58a742220fedcf1508a4d8453d8aed",
+      "size": 397
+    },
+    "internal/pycore_cell.h": {
+      "sha256": "b67f3ada24c63966a5edd9240e45027454a7e1d7482724477aca5899cf18c03b",
+      "size": 1057
+    },
+    "internal/pycore_ceval.h": {
+      "sha256": "a460bea14adbb3d0255ae9cfb68f5ac55e6e6b179f27116bcd5b877450a4d3e4",
+      "size": 11384
+    },
+    "internal/pycore_ceval_state.h": {
+      "sha256": "a314b60709a1b2eca3550662f8fe09985ac24aba53e5415af4b02ca930d1e011",
+      "size": 4036
+    },
+    "internal/pycore_code.h": {
+      "sha256": "bd236b4cb3f81c46ef4a3dcb7f2eefd3811994999e11aeb14b253e2cdede19b8",
+      "size": 20260
+    },
+    "internal/pycore_codecs.h": {
+      "sha256": "28b3194f7e130ef9171e8a78e578be33f6b33051a6657326e125d137a018453b",
+      "size": 2465
+    },
+    "internal/pycore_compile.h": {
+      "sha256": "726ee37ad973d739544c355423b9f67d73360761a582b09059f30c1f05a6ddf8",
+      "size": 3750
+    },
+    "internal/pycore_complexobject.h": {
+      "sha256": "b20264af2e7179ef9e94b9e58a46872eab99e31d9aeb0869067904c9d216104e",
+      "size": 588
+    },
+    "internal/pycore_condvar.h": {
+      "sha256": "690de8e1c1d3bcc4af0663ed59e50cffb4d507461be0c5a9dde54b39a61e163e",
+      "size": 2704
+    },
+    "internal/pycore_context.h": {
+      "sha256": "1f6ed1071e2d7871364d832f38d92e568d0e009f4984c217bc0e4f88c47749dd",
+      "size": 1182
+    },
+    "internal/pycore_critical_section.h": {
+      "sha256": "fbbbfa4be1874772ad7571adcca08e95bb1d1230f9e06cee5d5e0aa080b36c31",
+      "size": 7968
+    },
+    "internal/pycore_crossinterp.h": {
+      "sha256": "28f106b1fd9f5facc1667f193a662ebb40b532e932f7ba57c222a268dc46a6dc",
+      "size": 12128
+    },
+    "internal/pycore_descrobject.h": {
+      "sha256": "7ff394c3a00c8c965005354a36eaee28d0b16ac7b6fda9e1993a6dbe8981a916",
+      "size": 543
+    },
+    "internal/pycore_dict.h": {
+      "sha256": "51bf8383340c31d630ffbb6f5eb3c4ef4b01acc133faeacc15c578f10e57c66a",
+      "size": 12264
+    },
+    "internal/pycore_dict_state.h": {
+      "sha256": "62c24d39ef836bb5761073113d8c7469c295ac2e197285ac6107cb25add5676f",
+      "size": 732
+    },
+    "internal/pycore_dtoa.h": {
+      "sha256": "3ba6dc1862a926438d2b8a739e95a15053eed63ac0ddd546f432f773ebab38fe",
+      "size": 1727
+    },
+    "internal/pycore_emscripten_signal.h": {
+      "sha256": "05a445310ffa58aa0080b1726f5c539d86ab06acd323b86aa29262693466bc54",
+      "size": 685
+    },
+    "internal/pycore_emscripten_trampoline.h": {
+      "sha256": "293ba7a26430b895823aad9f6709dc53db9e9b55a8e5acd90618ea479bceb2ba",
+      "size": 3180
+    },
+    "internal/pycore_exceptions.h": {
+      "sha256": "9cef2c4bf9f903b27942e690580d270456211ca7ba2e992d86006bc70c29d3df",
+      "size": 900
+    },
+    "internal/pycore_faulthandler.h": {
+      "sha256": "825adb7b5cc2087353e54f3d3a21024e8e402e3f5faf03d8c11e7f3dafba72ad",
+      "size": 2245
+    },
+    "internal/pycore_fileutils.h": {
+      "sha256": "f83a582d670fb5adef4359981263338ec91dd9c22a8480f371fe58d93f7d2145",
+      "size": 9468
+    },
+    "internal/pycore_fileutils_windows.h": {
+      "sha256": "2ce33652ff0a955037aeacfcfa771b6acdcec0fe08d30c2a0ba07c82a6bb11f1",
+      "size": 2713
+    },
+    "internal/pycore_floatobject.h": {
+      "sha256": "ab7ae1ece54567b3bf3dede9226c0639bae4eda6500877944aaded8731232191",
+      "size": 1495
+    },
+    "internal/pycore_flowgraph.h": {
+      "sha256": "db160b84acf8f1206fdb9e232ddc28e6483537c41613da9fab35843b06c7912c",
+      "size": 1489
+    },
+    "internal/pycore_format.h": {
+      "sha256": "253cc77e6d11ba20d297813e064650fa965b3653f150bd85f805b94db5f3a98d",
+      "size": 480
+    },
+    "internal/pycore_frame.h": {
+      "sha256": "5b8efd3c52babdad85d7b72cd95c1cabf7699c0ecaf0a0d12d53edbeb83649c3",
+      "size": 12365
+    },
+    "internal/pycore_freelist.h": {
+      "sha256": "04fa2e8b6daa183a71d6f4465d4ff3a563ab3d73c3914d5488a5fcefdcd57b0b",
+      "size": 4810
+    },
+    "internal/pycore_function.h": {
+      "sha256": "a4b1d63230a49322c7791837b9d07f2c36f1c2f28a98999e4ca830275c90d859",
+      "size": 1538
+    },
+    "internal/pycore_gc.h": {
+      "sha256": "ef970112a2bd7837a9fbc9c41a98bd9ea8865f041e6f97a066f5ceed0910dcce",
+      "size": 12967
+    },
+    "internal/pycore_genobject.h": {
+      "sha256": "f3204fea5bdb7985a7787f251642a602fcc6b0186eea268106916626adb2b15c",
+      "size": 859
+    },
+    "internal/pycore_getopt.h": {
+      "sha256": "e93393067b66b557b0300e05c10ee904d4be54cadfb214c5328a9225ad199452",
+      "size": 490
+    },
+    "internal/pycore_gil.h": {
+      "sha256": "22a51842d9136ec3dca283177e65c39e908077d411266f37a7f78ea2d2047133",
+      "size": 2196
+    },
+    "internal/pycore_global_objects.h": {
+      "sha256": "b7dab83e3676a4fe8086e5f2ac2bc26cd05f85534bdf9387ed7e3dbe480ac7de",
+      "size": 3090
+    },
+    "internal/pycore_global_objects_fini_generated.h": {
+      "sha256": "a60925fc8702a85d2023c6a73f02b19485e565f899e7336abe526e678793762c",
+      "size": 117804
+    },
+    "internal/pycore_global_strings.h": {
+      "sha256": "46484946f10cba8b1d282f9e0ea39276add8a30fc4ff81058f242368e36c5013",
+      "size": 26706
+    },
+    "internal/pycore_hamt.h": {
+      "sha256": "074b31c2f5701cac43d8dc3e4ede40b2befc6dddfcaa2862cfc8f76234c30ae8",
+      "size": 3742
+    },
+    "internal/pycore_hashtable.h": {
+      "sha256": "de9710ac2798c93b5713798896602caa3f1139dd6a36db6f4a3dac0ffce2a0e7",
+      "size": 4361
+    },
+    "internal/pycore_identifier.h": {
+      "sha256": "87b0d371ea229f9ae45c0c8f32f426ecccb87d8e010985dba279554467f828f8",
+      "size": 515
+    },
+    "internal/pycore_import.h": {
+      "sha256": "3a625cef967da0b404e25c4380973cc18fb56eff063829528438719f3f9b47c1",
+      "size": 7731
+    },
+    "internal/pycore_importdl.h": {
+      "sha256": "bf9bbab1dfb18632d84b3c9a94536aeb69bfab12b0e2b47830ec82f1c862789e",
+      "size": 4055
+    },
+    "internal/pycore_initconfig.h": {
+      "sha256": "1e4437226a5b08c72a960f24fae497e43f0ef35b0e0140b0a58df6e2dbeba681",
+      "size": 6375
+    },
+    "internal/pycore_instruction_sequence.h": {
+      "sha256": "f89c2cb5e4d23cc93872b3388f6c842e8af4a8ceeb8bb46e84a150c207117a39",
+      "size": 2161
+    },
+    "internal/pycore_instruments.h": {
+      "sha256": "4382de0d8437883e291eeb030e8cb6e13b0f209b7ddf3a914ac2d1a216462ad2",
+      "size": 2331
+    },
+    "internal/pycore_interp.h": {
+      "sha256": "2da9f632b2cced2325d17c5e74ff6f38eebd1a2a7da08484eb3fe0926ae2b55b",
+      "size": 15073
+    },
+    "internal/pycore_intrinsics.h": {
+      "sha256": "1c80e4646530d3d76bb66bc9f37530672f21dda4b9404a1f37ffb4ac25b53dab",
+      "size": 1756
+    },
+    "internal/pycore_jit.h": {
+      "sha256": "7b0ef663df90f9b61331b5403e3b70c16fe6b54dd9ae16f821956fa1cccfb5a9",
+      "size": 527
+    },
+    "internal/pycore_list.h": {
+      "sha256": "a220c3fb7dfddf0ceeeaa1849788536981fab23a6f146697135ea859f064f3d8",
+      "size": 1859
+    },
+    "internal/pycore_llist.h": {
+      "sha256": "44c2f322146d09be908b19160a6e91b4b9b0d2264482a5cb70f24e28c706ba6d",
+      "size": 2420
+    },
+    "internal/pycore_lock.h": {
+      "sha256": "932b1e3d909f2a2bc6ed18b294e297790f26c4b290d50a53a1cd4baa23ce2106",
+      "size": 8538
+    },
+    "internal/pycore_long.h": {
+      "sha256": "3e113703c96659d5bf7f397d01b7ff5544a573b4e8831a5be7db7f981c999f05",
+      "size": 10702
+    },
+    "internal/pycore_memoryobject.h": {
+      "sha256": "aa01742b5c4ed39870c9b1592632a1967722337ffebd465e696a190a41a39da6",
+      "size": 427
+    },
+    "internal/pycore_mimalloc.h": {
+      "sha256": "22dddb17cf4bcd34949b44eeabf93ca8bfb435b9d5aa0da1b2f212ef5d0e3cae",
+      "size": 1637
+    },
+    "internal/pycore_modsupport.h": {
+      "sha256": "aa6659915dc031b909216135e687daebe48698c25a1e51e25473f577168ca73a",
+      "size": 3351
+    },
+    "internal/pycore_moduleobject.h": {
+      "sha256": "e9a89401dfe07a9d557068e1ecb1d7dddd6b8d61f4067538c22a5870cba28b12",
+      "size": 1572
+    },
+    "internal/pycore_namespace.h": {
+      "sha256": "f5c0a70835bb27fccf838cb44331068c3792e1536927f9055b25d29f391e8100",
+      "size": 435
+    },
+    "internal/pycore_object.h": {
+      "sha256": "c5ffa3d3e43ffdb8360733eaee692cb9b9177e29bb33c5ab0b0eae2a9083c2f4",
+      "size": 27981
+    },
+    "internal/pycore_object_alloc.h": {
+      "sha256": "0e6c8e1f751f8a5b3236ce8991be727688f54bbb28c547cde721d6caf884eaa9",
+      "size": 2176
+    },
+    "internal/pycore_object_stack.h": {
+      "sha256": "1c79c831bba6073bc4b27bdf276b48c425051486c8287888b62c189620df3dff",
+      "size": 2384
+    },
+    "internal/pycore_object_state.h": {
+      "sha256": "1d7e48df791c38f16c5968a7e31c0a4b29c2584f9d5a74453c5723c010a6773c",
+      "size": 942
+    },
+    "internal/pycore_obmalloc.h": {
+      "sha256": "cea9c3058208409c24464d06caad24e804502efba07d6c020adda4e9b00352bc",
+      "size": 27418
+    },
+    "internal/pycore_obmalloc_init.h": {
+      "sha256": "f366f43db42c6ffc83c577471abf5ee86e7b45152b68c30e790f658d96365da6",
+      "size": 1935
+    },
+    "internal/pycore_opcode_metadata.h": {
+      "sha256": "d2c33fe54ba2416e5badcfc95a940dd1be0be09e27f21756f7009ba630776cce",
+      "size": 84874
+    },
+    "internal/pycore_opcode_utils.h": {
+      "sha256": "35ab2c39a3af117574a43cd46b9334c9bbd763069cb7c7b73ce24fa156db3553",
+      "size": 2122
+    },
+    "internal/pycore_optimizer.h": {
+      "sha256": "e0a0338824bd6366c02624ba6b29329605d86a01c1b1de891b342ac1be561274",
+      "size": 8303
+    },
+    "internal/pycore_parking_lot.h": {
+      "sha256": "0fe81f0cc38137be9fdaf5d7f2a6388ed5950622547a68a61b9a16ebe5de0d32",
+      "size": 3351
+    },
+    "internal/pycore_parser.h": {
+      "sha256": "c4e65eb9c19656617ae34b8f4c270df28a91ac0b21db0522a4955a3518116389",
+      "size": 2089
+    },
+    "internal/pycore_pathconfig.h": {
+      "sha256": "2a0abe4fa70d962f7892268c9bf152ca216693e3bd1d67f6390c49eecf7a1d30",
+      "size": 658
+    },
+    "internal/pycore_pyarena.h": {
+      "sha256": "8dec8d01aba6deb373d2d9ace50eec2bafc6a374faeaf865930371e8cc779bb3",
+      "size": 2862
+    },
+    "internal/pycore_pyatomic_ft_wrappers.h": {
+      "sha256": "4924b0ac06f490dac9c50fc4fc91e019960f0621ec4c0cc51b0de3cf2336f3af",
+      "size": 8056
+    },
+    "internal/pycore_pybuffer.h": {
+      "sha256": "13b283b1f74547acb651269824a74afa5609e3810f0c4df24e3c3b2dd86675e1",
+      "size": 510
+    },
+    "internal/pycore_pyerrors.h": {
+      "sha256": "dfe7cc1e099c2c0f6b3d708b0753f0d336844b52517f461106d7dbcca0af62a3",
+      "size": 4960
+    },
+    "internal/pycore_pyhash.h": {
+      "sha256": "634568f4621a1093dc2b78d96bc64f42042929c7f8b661ecc9358fc072c97c37",
+      "size": 2911
+    },
+    "internal/pycore_pylifecycle.h": {
+      "sha256": "4207ed597dfb7e67628a7eb72418a07d6632a5f3a2dfe21e9456358daa716470",
+      "size": 4294
+    },
+    "internal/pycore_pymath.h": {
+      "sha256": "219b7572878b72ed9ee77a55b66479ae24837bd4381dcdae617304e515023aea",
+      "size": 8600
+    },
+    "internal/pycore_pymem.h": {
+      "sha256": "f4994ac3e88080b4b37b3c3e5afefe44d64384d832b592bf446d5fd253e4eec3",
+      "size": 5366
+    },
+    "internal/pycore_pymem_init.h": {
+      "sha256": "4ae10b0219f344489a26529af382313877ca6868e6789480b08d85f09b6dd0ac",
+      "size": 3520
+    },
+    "internal/pycore_pystate.h": {
+      "sha256": "10ca4c722ea98e0e97a8518cdd03017240595f9b6dc7660970e6f8f79a037794",
+      "size": 9964
+    },
+    "internal/pycore_pystats.h": {
+      "sha256": "113c35a2e6fa63e7d86a2855747cc78098d14f488b34ebf32cb1f2c64bffbcbe",
+      "size": 420
+    },
+    "internal/pycore_pythonrun.h": {
+      "sha256": "9ee1aa515f9994f1384efbdd3d4aacf1c9471ea031192d9dd5f799e74bada042",
+      "size": 832
+    },
+    "internal/pycore_pythread.h": {
+      "sha256": "cf77bb5d64c82e91a9db4b47ed20f6122c65ddeb1b0f92725adf10c30b361652",
+      "size": 6090
+    },
+    "internal/pycore_qsbr.h": {
+      "sha256": "fb644dfbe2ef15a407f17d265a572637e22817d04ed773cf7a8160accb779a76",
+      "size": 5524
+    },
+    "internal/pycore_range.h": {
+      "sha256": "824c5023a85a9c1c2dd50fecf442d12c7b2966e0e71a2d291f6f17f7fd8c29bc",
+      "size": 346
+    },
+    "internal/pycore_runtime.h": {
+      "sha256": "57d14e298552196af799dbc40b2ae7cbafae1401376ad92f951e8b88ae37cd43",
+      "size": 13165
+    },
+    "internal/pycore_runtime_init.h": {
+      "sha256": "231a4bd4b7d12c23497cd896df7b1190e4a6a7c9a8e1884490eb05b8ba4b4f48",
+      "size": 13045
+    },
+    "internal/pycore_runtime_init_generated.h": {
+      "sha256": "4a5807429e804ded40b925ce8eea81d522573c1f09a536b2b440685ab96b2335",
+      "size": 46820
+    },
+    "internal/pycore_semaphore.h": {
+      "sha256": "3d23f5af351f7b90d4123322eb29390a79df61cf3be055ba1ab6fe99c902766c",
+      "size": 1731
+    },
+    "internal/pycore_setobject.h": {
+      "sha256": "4bd757533b6df23d95b7aac61b66a99b468e1e53d899339b548b3aa1aecc26b3",
+      "size": 951
+    },
+    "internal/pycore_signal.h": {
+      "sha256": "041dcd91514f60d35e085f2748512e3d0260eea0518d8e3c833fe6a08608f33b",
+      "size": 2931
+    },
+    "internal/pycore_sliceobject.h": {
+      "sha256": "9f8d742a301f670d4ad00ffc7a346fee9cfb27e668cffe5d4c1e0f2374e96e3f",
+      "size": 369
+    },
+    "internal/pycore_stackref.h": {
+      "sha256": "0fb688365c7f5199aab7bba233b1bd1c43a378c39d3aaa214af1f4ce132c9770",
+      "size": 5186
+    },
+    "internal/pycore_strhex.h": {
+      "sha256": "dfa41f1a6954e18e030b6e17d61b2ad8ad54bb4e7eb9726cbfcf59a979436e13",
+      "size": 1013
+    },
+    "internal/pycore_structseq.h": {
+      "sha256": "25688c8033e1aafaff08126fcb0ba9c7da5e30b49c85047c4e224f8a026d8377",
+      "size": 963
+    },
+    "internal/pycore_symtable.h": {
+      "sha256": "db4bac0b2ea2c6e13bf5d5f4b0f91685c3f10db003ab568418b740305db4639f",
+      "size": 8671
+    },
+    "internal/pycore_sysmodule.h": {
+      "sha256": "4e7020e63ae60fe5776442acbce42b93c4bf7525a687fa7fe334bc9bf1eb94d7",
+      "size": 1177
+    },
+    "internal/pycore_time.h": {
+      "sha256": "fb3be916a92c3055ea346e599a63c3e81bc1e46a1fddd4736b06f09b3567862d",
+      "size": 11794
+    },
+    "internal/pycore_token.h": {
+      "sha256": "87efdf8b87d8a8494939bbaff70e0134215a731cc5457d06d405eafada6fb5a5",
+      "size": 3001
+    },
+    "internal/pycore_traceback.h": {
+      "sha256": "6cb8f89d7bd074627034ec39484f5835dc8d39efe195e3fbcb3f0bf43e57568f",
+      "size": 3629
+    },
+    "internal/pycore_tracemalloc.h": {
+      "sha256": "b70c3b455d2e634f94e5a62ee1be64f88f4f964e897e472dd40f555851aa0aa6",
+      "size": 4533
+    },
+    "internal/pycore_tstate.h": {
+      "sha256": "b4ab6c2f46eb1bb7db5b418c782850b8ac6398542fcaad2bedb4928f69797727",
+      "size": 1354
+    },
+    "internal/pycore_tuple.h": {
+      "sha256": "8f6394f84ab6eb2b4740e7e7a15e91ef05e9ee5cde9c73e76d4f61847b6b66c4",
+      "size": 820
+    },
+    "internal/pycore_typeobject.h": {
+      "sha256": "a2e4c6db7ec6e66f5677c27619dccb61c7f99ff9d2d36907e51c3072b00d7231",
+      "size": 8877
+    },
+    "internal/pycore_typevarobject.h": {
+      "sha256": "6bfaf3e54f7c5f53dd17d83e2384d3b630eac12d0fd014a718eefcce3fe956ae",
+      "size": 924
+    },
+    "internal/pycore_ucnhash.h": {
+      "sha256": "4e61018a9052a35db8aa7e775d08e64a24eb7f6a9484cd32587ebd1c87c33d0d",
+      "size": 958
+    },
+    "internal/pycore_unicodeobject.h": {
+      "sha256": "3faacaae4e1d55db7f408124c44f876bac5cba69d59ef414068911470d68b49b",
+      "size": 13270
+    },
+    "internal/pycore_unicodeobject_generated.h": {
+      "sha256": "60ef7560752de34dc6adbd7c38450f3f26a7e9bf4a7bf24bd763759ba3cfd08a",
+      "size": 132140
+    },
+    "internal/pycore_unionobject.h": {
+      "sha256": "8e52e7836d0ccf9ff52f3fa48685ed7230b5cbbb77a563f1c61bf032e6aaf360",
+      "size": 742
+    },
+    "internal/pycore_uop_ids.h": {
+      "sha256": "9a2c5612e0ef0c5f7b2dfbd7bf38ab609523ef28f5e7148393397e7e83821458",
+      "size": 10306
+    },
+    "internal/pycore_uop_metadata.h": {
+      "sha256": "92fdf92a0241feca429070567bc16351d792ff9c6d207efed3369dd85defa784",
+      "size": 39648
+    },
+    "internal/pycore_warnings.h": {
+      "sha256": "38d453fe9c93267464026648fa5a60532d41b3bf23c1b445bf146609b86f3377",
+      "size": 840
+    },
+    "internal/pycore_weakref.h": {
+      "sha256": "555e1b5ca414e0935dca8f1aaffb3248547dca4ac82e7df5731e0773cb1f2693",
+      "size": 3889
+    },
+    "intrcheck.h": {
+      "sha256": "183ae11868134ae814fe3573ccb9bead1979e4621d593d329a41e9c7d88c52fe",
+      "size": 535
+    },
+    "iterobject.h": {
+      "sha256": "f3c85f5be9f42892850cb5ac3318105db1c4a247ffca7d5eed940288894416c9",
+      "size": 525
+    },
+    "listobject.h": {
+      "sha256": "c71a1640948e376bab4e6ca2319aa20381ada60b1e31bf901dfe2e7ad157f043",
+      "size": 1918
+    },
+    "lock.h": {
+      "sha256": "6521bb77dcf73ce3fd634a51b76389599e1beb2ac798a096a8062932f26b9984",
+      "size": 242
+    },
+    "longobject.h": {
+      "sha256": "f884d7f6d4403908e12bf0b7c68a69cbd3f25da323dede4dedb27edc89687d8c",
+      "size": 3893
+    },
+    "marshal.h": {
+      "sha256": "d7f5760ef6496776cee99aca5491789f6ab261a78b156b5758538ea15e1827e5",
+      "size": 827
+    },
+    "memoryobject.h": {
+      "sha256": "efb734845a1366d77f6351cbb954c08681d4acfe6a53e41e82dd45fa881e0090",
+      "size": 1081
+    },
+    "methodobject.h": {
+      "sha256": "8977b9c434d144eec178d230610b0090d5ef3c3c5681833a0457fd1b8b734026",
+      "size": 5340
+    },
+    "modsupport.h": {
+      "sha256": "edd955c6f21f5d5a61a95d08772b1a197172f61dcc41fc5b98024bc9c696b065",
+      "size": 5636
+    },
+    "moduleobject.h": {
+      "sha256": "22293594f99694a131af7593b6d5db15c587ebca54672fc36fe54294a29fe81e",
+      "size": 3679
+    },
+    "monitoring.h": {
+      "sha256": "3a24d21fd89c93f6d739beb93bea118e94e973f37e34eebb284d7d4c6fc3871c",
+      "size": 331
+    },
+    "object.h": {
+      "sha256": "8e9deae73c87d404205a50f4735e51d975514ab515ff02b638553bc03cde0f02",
+      "size": 47876
+    },
+    "objimpl.h": {
+      "sha256": "df98be98c62ce5363d59d087363ebadd71088c333df072ca49fd00016f5a5384",
+      "size": 8380
+    },
+    "opcode.h": {
+      "sha256": "3d637ade602d5fe1d22d3b85ebfb205688b8e1680c1780fb6a396f82aded9b71",
+      "size": 1539
+    },
+    "opcode_ids.h": {
+      "sha256": "e30e7b48f764be2bf4530a931ea5a120d4d91d1427a31c5979206a98fa672ca1",
+      "size": 11845
+    },
+    "osdefs.h": {
+      "sha256": "5b1de1c314448fc27f0c6b2acfef060506dccf926faa88a9a7d77d27b7d54cc3",
+      "size": 848
+    },
+    "osmodule.h": {
+      "sha256": "c013935b48f48ca8ce249a4d482c55e3fb6f1cfe786c5a32a57969bb74a779d9",
+      "size": 291
+    },
+    "patchlevel.h": {
+      "sha256": "fe193cc6d1c016cf6baaf60c4e7d26a4fdb8eb85d5d4e9c883de5b2808cea4ca",
+      "size": 1301
+    },
+    "py_curses.h": {
+      "sha256": "9ff462ccb8a90bdeaaad4362a2e2e875687a6f41b86ba715da8c0593ff864002",
+      "size": 3759
+    },
+    "pyatomic.h": {
+      "sha256": "6b90d21219d5a30fbd98560d2104fe42b07b645450dafc1704b52f47f125f1e5",
+      "size": 257
+    },
+    "pybuffer.h": {
+      "sha256": "c95edd830772e922f60f976ac0d98470b48a443ba198b0866a4096003c0740a4",
+      "size": 5282
+    },
+    "pycapsule.h": {
+      "sha256": "2205c7567f8472b55a6a829544f6c5d27083221050eecc6a64036709d0858cfc",
+      "size": 1726
+    },
+    "pyconfig.h": {
+      "sha256": "878e6937db7d7a1cba68ae068ca1ebe5bfc6d40748e5f9889fa263a81bc6b9dd",
+      "size": 59344
+    },
+    "pydtrace.h": {
+      "sha256": "7ac591e56e12936a32e3b0b85dae803f8f00bdc91abe01799ca2e4ce69548555",
+      "size": 2404
+    },
+    "pyerrors.h": {
+      "sha256": "d7947aded270de2b45a9cdfa2e3d523d46655f0d8edad3ce69d405e0d9f51d1f",
+      "size": 12968
+    },
+    "pyexpat.h": {
+      "sha256": "d3564a35c027eb7a0e4ddbf8659769bf4be61b0c39666c79c555249fa8b0d099",
+      "size": 3295
+    },
+    "pyframe.h": {
+      "sha256": "58513e7017805ee5c49a329a552f72a6be6d88ce2bcfa344f5130582fa75ecb6",
+      "size": 551
+    },
+    "pyhash.h": {
+      "sha256": "d4f266b6e36fd4364b7945994f9d2046206e8ec660e37e557f7d1d79a9806a94",
+      "size": 1656
+    },
+    "pylifecycle.h": {
+      "sha256": "2a05239b2e57efefe32fad328c5f567a4712db4ce8610c9d39ba0df25ce51cdb",
+      "size": 2412
+    },
+    "pymacconfig.h": {
+      "sha256": "5ff2d69456b1787ae4ec286b787553868586a08888180fa789df8765c16ab424",
+      "size": 2497
+    },
+    "pymacro.h": {
+      "sha256": "584006167853a7727d4e73d84ecba9d7e640bb1b751c283e80587236b8200e04",
+      "size": 7699
+    },
+    "pymath.h": {
+      "sha256": "eeea8396e1acd271ba83a568ba572ead47493e492ce998756fe1256bf917b3f9",
+      "size": 1688
+    },
+    "pymem.h": {
+      "sha256": "0befb603e8866a0ffbb76674b47e02b08ab23ed20feb6d098e163338d18170e6",
+      "size": 4438
+    },
+    "pyport.h": {
+      "sha256": "443c79ce1c94f7cc98e53fd8ee7d1adb3732d827d5933b61f9fab1a2428f5f6d",
+      "size": 20294
+    },
+    "pystate.h": {
+      "sha256": "61828936a0125ed7a714656667374a12897d891e2d4ff5680131892776c6a75d",
+      "size": 4634
+    },
+    "pystats.h": {
+      "sha256": "56b68bb1d9d528d3a6e3987fe1384ff695a502b2021f2f2c1c81b62889d45a25",
+      "size": 596
+    },
+    "pystrcmp.h": {
+      "sha256": "f401d8338fb6ecf5f12768ee95cd09c262f880b2ee522ca344b890dbdcde4c88",
+      "size": 436
+    },
+    "pystrtod.h": {
+      "sha256": "149e766acebff1a90933d53bccb62e12d128d82a40b5c156b81b1847cc9a7a3a",
+      "size": 1247
+    },
+    "pythonrun.h": {
+      "sha256": "4749ef95e910632a1d04b912c4f1d615c9d10567cbaf52a2ab2c68c7c3a38d94",
+      "size": 1313
+    },
+    "pythread.h": {
+      "sha256": "d73aed0d780a4d486f6499e770f1e99aa7bfcbe7ed7b973368dd0e43a016cfd7",
+      "size": 4884
+    },
+    "pytypedefs.h": {
+      "sha256": "26d09a78c44998e8c0a74ed2d14e5346e4b922892eb79288049b7ac5b6a1e751",
+      "size": 851
+    },
+    "rangeobject.h": {
+      "sha256": "36547ab5862e82b09cbed7b786a4cfc86af1dec5a3778c50825bb266c9a6aec9",
+      "size": 630
+    },
+    "setobject.h": {
+      "sha256": "7ff1b984647598b19ff593b0fa40d44cf5d7bc37d386dd9fac059e560f4a31ca",
+      "size": 1557
+    },
+    "sliceobject.h": {
+      "sha256": "c98fc4aad428ba54ad2c8aaa95230e4b0f7ac85cce996448b04b9c3d7fee14ab",
+      "size": 2662
+    },
+    "structmember.h": {
+      "sha256": "9d4c39dee96e228f60cc8a6960b9e7049875ddbee15541a75629c07777916342",
+      "size": 1645
+    },
+    "structseq.h": {
+      "sha256": "a59f666cd0c6a2f9f15930fa09ae0bbe6952c22e8d16fc3eae9b2daa5e997d18",
+      "size": 1308
+    },
+    "sysmodule.h": {
+      "sha256": "097128c9795b5dd7952ab51ee3098ff8d377210325eeb052264003bc710d3bb0",
+      "size": 1251
+    },
+    "traceback.h": {
+      "sha256": "ea59d511687f7f8643c7b8b0996e26f2c92bcc954639c6f98d08f6564b61d06d",
+      "size": 585
+    },
+    "tupleobject.h": {
+      "sha256": "d8de8d64e4b5c466c3bdd04f5664f0eba64a9198b30b5a29409d74a5b5f1def7",
+      "size": 1615
+    },
+    "typeslots.h": {
+      "sha256": "77fe4a71f5e5974c40fd3485d3c9aeb8b7ccf33969cd26feb58c64eda5f86f1d",
+      "size": 2342
+    },
+    "unicodeobject.h": {
+      "sha256": "55c5cc24f0882eec2addc14ccb5e0e49af40787d4bd64c607c9682ff2e48f2ea",
+      "size": 35421
+    },
+    "warnings.h": {
+      "sha256": "18fde34b12247460de805fc259ea7f14305fce4779d244c0a7bdc7c73b8f6b51",
+      "size": 1129
+    },
+    "weakrefobject.h": {
+      "sha256": "3d0163335ea4391775c7456306bd9ff2d10bd8b3e4889ad8374e753f2a4b8d7c",
+      "size": 1391
+    }
+  },
+  "pins": {
+    "build_options": "pgo+lto",
+    "full": {
+      "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+      "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+      "size": 95632430,
+      "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-pgo%2Blto-full.tar.zst"
+    },
+    "install_only": {
+      "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+      "sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+      "size": 57626877,
+      "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz"
+    },
+    "python_version": "3.13.16",
+    "release": "20261009",
+    "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+    "schema_version": 0,
+    "target_triple": "aarch64-unknown-linux-gnu"
+  },
+  "producer_selection": [
+    "bin/python3.13",
+    "lib/libpython3.13.so.1.0",
+    "lib/libpython3.13.so",
+    "lib/python3.13/**"
+  ],
+  "provision_command": [
+    "fixtures/python-bootstrap/freeze.py",
+    "target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+    "target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-imports-host-regression-build/producer",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-imports-host-regression-build/include/python3.13",
+    "/build-target/freeze-bundle.json",
+    "--provenance",
+    "/evidence/freeze-provenance.json",
+    "--provision-only"
+  ],
+  "schema_version": 0
+}

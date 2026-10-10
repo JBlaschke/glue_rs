@@ -1,0 +1,57 @@
+{
+  "source_commit": "94da8de499cf860f7d06fb9fec2b51eae46d0132",
+  "source_clean": true,
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "launcher": {
+    "file": "glue-python-bootstrap-probe",
+    "size": 2854992,
+    "sha256": "0f69f92f90de178f57c04574daa215942b55499e72685f18591a6bc294b7a3b4"
+  },
+  "archives": {
+    "success": {
+      "file": "app.glue",
+      "size": 83092207,
+      "sha256": "6116aa873b97c38a19c3d6ee2384c2cd32bca952e02a2fd2df613ea6ee788283"
+    },
+    "app-error": {
+      "file": "app.glue",
+      "size": 83092207,
+      "sha256": "6116aa873b97c38a19c3d6ee2384c2cd32bca952e02a2fd2df613ea6ee788283"
+    },
+    "corrupt-source": {
+      "file": "corrupt-source.glue",
+      "size": 83092207,
+      "sha256": "1bfaa4cecf608e1b8d6943ba55c23292a70509c2cd9520cbe3fdd30cf1e4f418"
+    }
+  },
+  "frozen_bundle": {
+    "file": "freeze-bundle.json",
+    "size": 139523,
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+  },
+  "stdout_bytes": 100,
+  "statuses": {
+    "success": 0,
+    "app-error": 1,
+    "corrupt-source": 1
+  },
+  "corrupt_source": {
+    "key": "app/python/glue_demo/__init__.py",
+    "data_offset": 341164,
+    "size": 104,
+    "original_sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+    "corrupt_sha256": "d8f9185a8c89ef3c93e4d8c580f5fbcaaacf30bc781ef3657d0479baee647b0a",
+    "only_changed_archive_byte": 341164
+  },
+  "source_projection": {
+    "files": 2174,
+    "uncompressed_bytes": 39158056,
+    "inventory": {
+      "file": "stdlib-pins.json",
+      "size": 326131,
+      "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8"
+    }
+  },
+  "resource_count": 2194
+}
