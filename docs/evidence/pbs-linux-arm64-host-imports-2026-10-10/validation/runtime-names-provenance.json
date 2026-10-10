@@ -1,0 +1,13 @@
+{
+  "schema_version": 0,
+  "library_sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+  "builtin_inventory_source": "docs/evidence/pbs-linux-arm64-inspection-2026-10-09/inputs/linux-aarch64-libpython-elf-research.json",
+  "builtin_inventory_sha256": "20c8f2572eecac33cc090cc5fa6ec601041eec643fdd02851f35a6277ca798ab",
+  "builtin_names": 96,
+  "frozen_names": 29,
+  "frozen_query": "/producer/bin/python3.13 -I -S -B -c 'import _imp,json; print(json.dumps(sorted(_imp._frozen_module_names())))'",
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "producer_bind": "target/python-bootstrap-development/producer -> /producer (read-only)",
+  "network": "none",
+  "image_root": "read-only"
+}

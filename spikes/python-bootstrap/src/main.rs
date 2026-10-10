@@ -3,6 +3,7 @@
 
 mod bundle;
 mod host;
+mod host_import_profile;
 mod import_profile;
 #[cfg_attr(
     not(all(
@@ -435,6 +436,14 @@ fn main() {
         )
     } else if mode == "corrupt-imports" && args.len() == 4 {
         import_profile::corrupt(Path::new(&args[2]), Path::new(&args[3]))
+    } else if mode == "prepare-host-imports" && args.len() == 5 {
+        host_import_profile::prepare(
+            Path::new(&args[2]),
+            args[3].to_str().unwrap_or(""),
+            Path::new(&args[4]),
+        )
+    } else if mode == "corrupt-host-imports" && args.len() == 4 {
+        host_import_profile::corrupt(Path::new(&args[2]), Path::new(&args[3]))
     } else if matches!(
         mode,
         "run"
@@ -445,10 +454,12 @@ fn main() {
             | "run-imports"
             | "baseline-imports"
             | "run-imports-negative"
+            | "run-host-imports"
+            | "run-host-imports-negative"
     ) {
         execute(mode, &args)
     } else {
-        Err("usage: glue-python-bootstrap-probe prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error".into())
+        Err("usage: glue-python-bootstrap-probe prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | prepare-host-imports FULL PREFIX OUTPUT | corrupt-host-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error | run-host-imports ARCHIVE | run-host-imports-negative ARCHIVE app-error".into())
     };
     if let Err(error) = result {
         eprintln!("glue-python-bootstrap-probe: {error}");
@@ -463,6 +474,13 @@ fn main() {
     target_env = "gnu"
 ))]
 fn execute(mode: &str, args: &[std::ffi::OsString]) -> Result<(), String> {
+    if matches!(mode, "run-host-imports" | "run-host-imports-negative") {
+        let negative = mode == "run-host-imports-negative";
+        if args.len() != if negative { 4 } else { 3 } || (negative && args[3] != "app-error") {
+            return Err("wrong host archive import fixture arguments".into());
+        }
+        return linux::run_host_imports(host_import_profile::read(Path::new(&args[2]))?, negative);
+    }
     if matches!(
         mode,
         "run-imports" | "baseline-imports" | "run-imports-negative"

@@ -2,9 +2,10 @@
 use super::*;
 use std::io::{Seek, SeekFrom, Write};
 
-const IMPORTER: &str = "python/archive-importer.py";
+pub(super) const IMPORTER: &str = "python/archive-importer.py";
 const BOOTSTRAP: &[u8] = include_bytes!("../../../fixtures/python-imports/bootstrap.py");
-const SOURCE_PINS: &[u8] = include_bytes!("../../../fixtures/python-imports/stdlib-pins.json");
+pub(super) const SOURCE_PINS: &[u8] =
+    include_bytes!("../../../fixtures/python-imports/stdlib-pins.json");
 pub(super) const CORRUPT_SOURCE: &str = "app/python/glue_demo/__init__.py";
 const SOURCE_PREFIX: &str = "python/install/lib/python3.13/";
 const APP_ID: &str = "stock-pbs-archive-imports";
@@ -40,6 +41,12 @@ fn fixture_files() -> BTreeMap<String, Vec<u8>> {
     .into_iter()
     .map(|(key, bytes)| (key.into(), bytes.to_vec()))
     .collect()
+}
+
+pub(super) fn app_resources() -> BTreeMap<String, Vec<u8>> {
+    let mut resources = fixture_files();
+    resources.insert(IMPORTER.into(), BOOTSTRAP.to_vec());
+    resources
 }
 
 fn source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
@@ -78,10 +85,7 @@ fn source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
 
 fn fixed_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
     let mut specs = source_specs()?;
-    for (key, bytes) in fixture_files()
-        .into_iter()
-        .chain([(IMPORTER.into(), BOOTSTRAP.to_vec())])
-    {
+    for (key, bytes) in app_resources() {
         specs.insert(
             key.clone(),
             ResourceSpec {

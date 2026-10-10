@@ -143,8 +143,8 @@ Its opt-in `pbs-bootstrap` feature uses public CPython APIs and a C-owned bounda
 on GNU Linux arm64; other targets reject execution before opening the archive.
 The [bootstrap fixture](fixtures/python-bootstrap/README.md) and
 [decision](docs/decisions/0011-stock-pbs-frozen-bootstrap.md) describe its frozen
-startup subset, exact runtime profile and trace protocol. Product Python and host
-providers, general imports and native extensions remain pending.
+startup subset, exact runtime profile and trace protocol. Product Python
+providers and native extensions remain pending.
 The [clean bootstrap capture](docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/README.md)
 matches ordinary loading and passes all four complete syscall checks after the
 producer installation and headers are removed.
@@ -163,11 +163,22 @@ the bundled startup experiment with Rust-owned source resolution and actual
 `importlib.resources` streams. It exercises modules, packages, one-portion
 namespaces, virtual origins, import caching/reload, source encoding and binary/text
 assets. Materializing resource helpers reject before temporary-file attempts.
-This remains a controlled bundled adapter; product and host-provider integration
-and native Python extensions remain pending.
+This remains a controlled bundled adapter; product integration and native Python
+extensions remain pending.
 The [clean import capture](docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
 passes all three import traces and twelve earlier startup regression traces from
 the same implementation commit.
+
+The [host archive-import fixture](fixtures/python-host-imports/README.md) uses
+the same app/importer with explicit installed paths. Its 18-entry archive holds
+only app/helper/assets; the host owns the stdlib. It verifies the library,
+69 reviewed sources and absence of relevant caches before loading. Archive-owned
+packages and namespaces block filesystem fallback, while installed
+`importlib.resources` reads the archive's streams. Product integration and native
+extension initialization are the next A7 steps.
+The [clean host-import capture](docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
+passes seven host-import traces plus fifteen bundled-import/startup regressions
+from the same implementation commit.
 
 ## Try the resource fixture
 
@@ -209,12 +220,13 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 316/317 Rust tests for `lua54`/`lua55` on
+The source-profile workspace passes 327/328 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
-and 40 Python bootstrap/host/import bundle/profile tests. Both
+and 51 Python bootstrap/host/import bundle/profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
-GNU opt-in Python fixture passes 45 release tests and Clippy; all 141
-Python trace-policy tests pass, including 29 archive-import checks. The importer
+GNU opt-in Python fixture passes 56 release tests and Clippy; all 161
+Python trace-policy tests pass, including 29 bundled-import and 20 host-import
+checks. The importer
 also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
@@ -244,6 +256,7 @@ python3 -m unittest discover -s scripts -p 'test_linux_pbs_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_bootstrap_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_host_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_import_trace.py'
+python3 -m unittest discover -s scripts -p 'test_linux_python_host_import_trace.py'
 python3 fixtures/python-imports/test_importer.py
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55

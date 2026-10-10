@@ -19,3 +19,10 @@ docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/**/*-tests.txt whitespac
 docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/*-tests.txt whitespace=-blank-at-eof
 docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/**/launcher.elf.txt whitespace=-blank-at-eol
 docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/launcher.elf.txt whitespace=-blank-at-eol
+# Preserve the host-import and three regression tool captures byte-for-byte.
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/**/vendor.stderr.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/vendor.stderr.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/**/*-tests.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/*-tests.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/**/launcher.elf.txt whitespace=-blank-at-eol
+docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/launcher.elf.txt whitespace=-blank-at-eol

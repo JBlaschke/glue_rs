@@ -95,6 +95,25 @@ impl Index {
         format!("glue://{}/{encoded}", self.app_id)
     }
 
+    /// A host provider retains its own runtime/stdlib module identities. Reject
+    /// app names that would shadow them before Python's finder precedence can
+    /// silently hide either declaration.
+    pub(super) fn reject_external_collisions(
+        &self,
+        names: &BTreeSet<String>,
+    ) -> Result<(), String> {
+        if names
+            .iter()
+            .any(|name| !module_name(name) || name.contains('.'))
+        {
+            return Err("invalid external Python top-level module identity".into());
+        }
+        if let Some(name) = self.owners.keys().find(|name| names.contains(*name)) {
+            return Err(format!("archive app shadows host runtime module: {name}"));
+        }
+        Ok(())
+    }
+
     fn resolve(&self, name: &str) -> Result<Vec<u8>, String> {
         if !module_name(name) || name.len() > 255 {
             return Err("invalid archive Python module name".into());

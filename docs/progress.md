@@ -218,6 +218,32 @@ input/source/artifact identities, C provenance and validation logs. Host-provide
 archive imports, general diagnostic source consumers and product integration
 remain pending.
 
+The next A7 implementation, on `codex/a7-host-python-archive-imports` from merged
+`f99bb51`, shares the source/resource adapter with an explicit installed host
+runtime. Its exact 18-resource archive holds only application/helper/assets;
+the host owns the stdlib. Six startup plus 63 supplemental sources are pinned,
+and all relevant bytecode caches must be absent before loading. Reserved names
+cover stock built-ins, frozen aliases, bridge modules and stdlib roots. Host
+module/namespace lures exercise fallback blocking. The unchanged C API revision 3
+and shared invocation retain all owners through finalization. See
+[the host archive-import decision](decisions/0014-host-python-archive-imports.md).
+
+The clean optimized host-import capture from `9aababa` passes all seven complete
+traces and agrees with ordinary loading. Its 13,932-byte archive contains only
+18 app/helper/resource entries. All 69 installed sources are verified before
+loading; Python subsequently reopens 67 for this workload. Corrupt archive
+source rejects before host lookup; altered/missing supplemental sources and a
+nested cache reject before Python mapping. The same clean implementation passes
+three bundled-import, four frozen-startup and eight installed-host startup
+regressions. All 22 retained compressed traces independently replay, and 29
+hostile actual-trace mutations reject. Mac/Linux source assemblies pass 327/328
+tests and Clippy for Lua 5.4/5.5; every fresh GNU opt-in build passes 56 tests and
+Clippy. All 161 Python policy tests and both 16-test importer protocol cells pass.
+The [host-import evidence](evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
+retains exact source/artifact/input identities, manifests, C provenance,
+commands, validation logs and complete traces. Product Python integration,
+native extension initialization and general diagnostic consumers remain open.
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -226,7 +252,8 @@ the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
 stock PBS startup and source/resource experiments to product provider/adapter
-integration, host-provider archive imports and the native extension-init bridge.
+integration and the native extension-init bridge, preserving both providers'
+archive source/resource behavior.
 Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
