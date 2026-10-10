@@ -61,4 +61,5 @@ attempts even when they fail. Captured diagnostics are also checked separately.
 
 This fixture contains only startup stdlib code. General imports, resources,
 extension loading and other platforms remain open. See
-[the bootstrap decision](../../docs/decisions/0011-stock-pbs-frozen-bootstrap.md).
+[the bootstrap decision](../../docs/decisions/0011-stock-pbs-frozen-bootstrap.md)
+and the [clean optimized capture](../../docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/README.md).

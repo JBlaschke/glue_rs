@@ -145,6 +145,9 @@ The [bootstrap fixture](fixtures/python-bootstrap/README.md) and
 [decision](docs/decisions/0011-stock-pbs-frozen-bootstrap.md) describe its frozen
 startup subset, exact runtime profile and trace protocol. Product Python and host
 providers, general imports and native extensions remain pending.
+The [clean bootstrap capture](docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/README.md)
+matches ordinary loading and passes all four complete syscall checks after the
+producer installation and headers are removed.
 
 ## Try the resource fixture
 
@@ -190,6 +193,8 @@ The source-profile workspace passes 291/292 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
 and 15 Python bootstrap bundle/profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
+GNU opt-in bootstrap passes 16 release tests and Clippy; all 89 Python
+trace-policy tests pass, including 18 bootstrap checks. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native

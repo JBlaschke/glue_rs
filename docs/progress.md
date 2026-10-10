@@ -16,7 +16,7 @@ Further implementation continues on separate feature branches.
 | A5/A6 Linux native Lua closure | `codex/a6-linux-native-lua` / `3a24833`, fixture cleanup `fb61e5e` (from merged `7853282`) | Experimental implementation; controlled observation | Mac/Linux source workspaces: 181/182 tests; GNU Linux native workspaces: 178/179; 37 portable native tests and 54 Python policy tests; Clippy clean for all profiles; both Lua versions match ordinary loading and pass complete two-memfd/no-payload-write traces; twelve ELF rejection traces pass before any memfd attempt |
 | A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` / `346b2f0` (from merged `a596305`) | Controlled signed observation; acceptance evidence incomplete | 31 portable/optimized parser tests; 212/213 source workspace tests for Lua 5.4/5.5 and Clippy on Mac/Linux; ad-hoc hardened-runtime/allow-jit debug and optimized launchers match ordinary loading; fourteen native rejections, four signing controls and two memory-policy controls pass; full trace and distribution signing remain open |
 | A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
-| A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` (from merged `8b56f7c`) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in tests; unchanged stock libpython starts with frozen encodings and imports built-in math/_ssl; ordinary loading and memfd output agree |
+| A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` / `30a1526` (from merged `8b56f7c`; evidence bundle follows) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in release tests; 89 Python policy tests; unchanged stock libpython starts with frozen encodings and built-in math/_ssl; baseline output agrees and all four complete traces pass |
 
 ## Gate status
 
@@ -161,7 +161,16 @@ and `_ssl`, returns 42, and agrees with ordinary loading of the same library and
 bundle. This is a startup subset, rather than a complete Python stdlib/importer
 or a host provider. The generic Lua loader limits remain unchanged; the probe
 admits one exact larger stock runtime image through the system loader and sealed
-memfd. See [the bootstrap decision](decisions/0011-stock-pbs-frozen-bootstrap.md).
+memfd. The clean optimized capture from `30a1526` on 2026-10-10 passes success,
+missing-encodings, corrupt-bytecode and app-error traces after removing the stock
+producer/stdlib/headers. The unprivileged runtime container has read-only inputs,
+no workspace mount and unavailable temporary paths. All four complete traces
+prove archive byte coverage, one fully sealed private image, exact diagnostics
+and exits, and no payload filesystem mutation or extra process. The
+[bootstrap evidence](evidence/pbs-linux-arm64-bootstrap-2026-10-10/README.md)
+retains the compiled bundle, commands, source/artifact/provenance identities,
+complete compressed traces, controls and validation logs. See
+[the bootstrap decision](decisions/0011-stock-pbs-frozen-bootstrap.md).
 
 ## Next critical-path assignments
 

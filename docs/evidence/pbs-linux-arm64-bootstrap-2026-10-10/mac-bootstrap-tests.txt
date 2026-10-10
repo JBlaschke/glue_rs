@@ -1,0 +1,23 @@
+   Compiling glue-python-bootstrap-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/python-bootstrap)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.49s
+     Running unittests src/main.rs (target/debug/deps/glue_python_bootstrap_probe-0b9d6b8e12a15ad9)
+
+running 15 tests
+test tests::incorrect_runtime_rejected ... ok
+test bundle::tests::rejects_duplicate_json_keys_at_every_contract_level ... ok
+test bundle::tests::checks_inspected_source_member_hashes_sizes_and_types ... ok
+test bundle::tests::accepts_pinned_contract_and_roundtrips_serialization ... ok
+test bundle::tests::checks_inspected_pin_metadata_runtime_and_executable_identities ... ok
+test bundle::tests::rejects_invalid_hex_and_payload_hashes ... ok
+test bundle::tests::rejects_json_tail_and_deep_recursion ... ok
+test tests::missing_archive_rejected_portably ... ok
+test tests::manifest_rejects_provider_target_and_runtime_drift ... ok
+test bundle::tests::requires_exact_sorted_sources_and_package_flags ... ok
+test tests::profile_round_trip ... ok
+test bundle::tests::rejects_unknown_fields_at_every_contract_level ... ok
+test bundle::tests::rejects_wrong_schema_and_every_producer_identity ... ok
+test bundle::tests::bounds_and_validates_app_source ... ok
+test bundle::tests::bounds_json_marshal_and_combined_payloads ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+

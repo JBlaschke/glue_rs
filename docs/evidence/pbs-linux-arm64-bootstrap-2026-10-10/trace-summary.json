@@ -1,0 +1,34 @@
+[
+  {
+    "mode": "app-error",
+    "records": 2492,
+    "raw_bytes": 1506816,
+    "raw_sha256": "a5382a059601856f6be64d3a3237a5c626d26854aa8011e7d4e3deb8b688ba88",
+    "gzip_bytes": 287393,
+    "gzip_sha256": "237ee4170997dc18b968a32c3deee8c3b2d566ce7ab783cc4ab70f7ae81fd110"
+  },
+  {
+    "mode": "bad-bytecode",
+    "records": 2594,
+    "raw_bytes": 1513261,
+    "raw_sha256": "300d7a3efb7a12c753ad8743739d5973fbfd46c4dea28ace43eb6fd29f869bd4",
+    "gzip_bytes": 287588,
+    "gzip_sha256": "1905c040d21648907bbec43d8728047552d3a5b364879e92177703c436bcb7e3"
+  },
+  {
+    "mode": "missing-encodings",
+    "records": 2594,
+    "raw_bytes": 1513911,
+    "raw_sha256": "de6d677435c7bab8222babf464571a87915cd3a759122d53de1564d450dcf914",
+    "gzip_bytes": 287586,
+    "gzip_sha256": "045bec8502d7d44ba949ffe169ff37455a3a3dabf5427dd8f851bdd5a0e53097"
+  },
+  {
+    "mode": "success",
+    "records": 2489,
+    "raw_bytes": 1506504,
+    "raw_sha256": "51170ec1568e92dd09ee673264e709e5a1fa0d3e1dabed8bdc8211d007966c29",
+    "gzip_bytes": 287337,
+    "gzip_sha256": "032dd833f9163c998a79b4ec29ca567bd5b7c8b05be857d9c4d34c5c5e5d2b38"
+  }
+]
