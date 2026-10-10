@@ -218,6 +218,16 @@ input/source/artifact identities, C provenance and validation logs. Host-provide
 archive imports, general diagnostic source consumers and product integration
 remain pending.
 
+The next A7 implementation, on `codex/a7-host-python-archive-imports` from merged
+`f99bb51`, shares the source/resource adapter with an explicit installed host
+runtime. Its exact 18-resource archive holds only application/helper/assets;
+the host owns the stdlib. Six startup plus 63 supplemental sources are pinned,
+and all relevant bytecode caches must be absent before loading. Reserved names
+cover stock built-ins, frozen aliases, bridge modules and stdlib roots. Host
+module/namespace lures exercise fallback blocking. The unchanged C API revision 3
+and shared invocation retain all owners through finalization. See
+[the host archive-import decision](decisions/0014-host-python-archive-imports.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -226,7 +236,8 @@ the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
 stock PBS startup and source/resource experiments to product provider/adapter
-integration, host-provider archive imports and the native extension-init bridge.
+integration and the native extension-init bridge, preserving both providers'
+archive source/resource behavior.
 Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general

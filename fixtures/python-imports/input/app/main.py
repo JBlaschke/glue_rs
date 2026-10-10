@@ -29,12 +29,33 @@ def raises(exception, function, contains=None):
 
 
 assert sys.version_info[:3] == (3, 13, 16)
+assert sys.implementation.name == "cpython"
+assert sys.implementation.cache_tag == "cpython-313"
 assert sys.flags.isolated == sys.flags.ignore_environment == 1
 assert sys.flags.no_site == sys.flags.no_user_site == sys.flags.dont_write_bytecode == 1
 assert sys.flags.utf8_mode == 1
-assert sys.path == []
+assert sys.getfilesystemencoding() == "utf-8"
+assert sys.getfilesystemencodeerrors() == "surrogateescape"
+assert sys.stdout.encoding == sys.stderr.encoding == "utf-8"
+assert sys.stdout.errors == "strict"
+assert sys.stderr.errors == "backslashreplace"
+assert sys.base_prefix == sys.prefix == sys.exec_prefix == sys.base_exec_prefix
+assert sys.executable == sys._base_executable == "/__glue_archive__/launcher"
 assert "site" not in sys.modules
-assert encodings.__spec__.origin == "frozen"
+if sys.path == []:
+    assert sys.prefix == "/__glue_archive__/python"
+    assert encodings.__spec__.origin == "frozen"
+    assert resources.__spec__.origin.startswith("glue://")
+    assert resources.__spec__.origin.endswith("/stdlib/importlib/resources/__init__.py")
+    assert resources.__loader__.__class__.__name__ == "_ArchiveLoader"
+else:
+    assert sys.path == [sys.base_prefix + "/lib/python3.13"]
+    assert encodings.__spec__.origin == sys.path[0] + "/encodings/__init__.py"
+    assert encodings.__file__ == encodings.__spec__.origin
+    assert encodings.__loader__.__class__.__name__ == "SourceFileLoader"
+    assert resources.__spec__.origin == sys.path[0] + "/importlib/resources/__init__.py"
+    assert resources.__loader__.__class__.__name__ == "SourceFileLoader"
+assert resources.__file__ == resources.__spec__.origin
 assert math.__spec__.origin == _ssl.__spec__.origin == "built-in"
 assert sys._is_gil_enabled()
 assert math.isqrt(1764) == glue_demo.package_answer == answer_module.answer == 42

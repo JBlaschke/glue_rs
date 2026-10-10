@@ -1,9 +1,10 @@
 //! Explicit host layout for the same pinned stock PBS bootstrap fixture.
 //!
-//! This checks the library and six startup source files and requires their
-//! bytecode cache directories to be absent. It does not certify the rest of the
-//! installed standard library or provide runtime discovery.
-//! Python subsequently opens startup sources by path, so the experiment must
+//! The base policy checks the library and six startup source files; archive
+//! imports add a bounded reviewed source subset. Their bytecode cache
+//! directories must be absent. This does not certify the complete installed
+//! standard library or provide runtime discovery.
+//! Python subsequently opens source files by path, so the experiment must
 //! keep the installation immutable (the harness uses a read-only mount).
 
 #![cfg_attr(
@@ -17,11 +18,13 @@
 )]
 
 use super::bundle::{MODULE_SPECS, RUNTIME_LIBRARY_SHA256};
+use glue_format::{Compression, ResourceSpec, validate_resource_paths};
 use sha2::{Digest, Sha256};
 use std::{
+    collections::{BTreeMap, BTreeSet},
     fs::{self, File, Metadata, OpenOptions},
     io::{Read, Seek, SeekFrom},
-    path::{Component, Path},
+    path::{Component, Path, PathBuf},
 };
 
 pub(super) const MAX_PATH_BYTES: usize = 4096;
@@ -29,6 +32,8 @@ const LIBRARY_SUFFIX: &str = "/lib/libpython3.13.so.1.0";
 const STDLIB_SUFFIX: &str = "/lib/python3.13";
 const SOURCE_PREFIX: &str = "install/lib/python3.13/";
 const LIBRARY_SIZE: u64 = 73_563_968;
+const MAX_IMPORT_SOURCES: usize = 128;
+const MAX_IMPORT_SOURCE_BYTES: u64 = 4 * 1024 * 1024;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) struct Config {
@@ -45,6 +50,11 @@ pub(super) struct VerifiedHost {
     pub library: File,
     _sources: Vec<File>,
     _directories: Vec<File>,
+}
+
+struct ImportSources<'a> {
+    files: Vec<(PathBuf, &'a ResourceSpec)>,
+    caches: BTreeSet<PathBuf>,
 }
 
 impl Config {
@@ -105,6 +115,104 @@ impl Config {
             _directories: directories,
         })
     }
+
+    /// Extend the startup policy with reviewed source pins, relative to the
+    /// installed stdlib. Stored means raw host source bytes, not archive data.
+    /// All metadata is validated before any host access. The six startup pins
+    /// are excluded here; their existing verification order stays unchanged.
+    pub(super) fn verify_imports(
+        &self,
+        pins: &BTreeMap<String, ResourceSpec>,
+    ) -> Result<VerifiedHost, String> {
+        let imports = self.import_sources(pins)?;
+        let mut verified = self.verify()?;
+        let (sources, directories) = verify_import_sources(&imports)?;
+        verified._sources.extend(sources);
+        verified._directories.extend(directories);
+        Ok(verified)
+    }
+
+    fn import_sources<'a>(
+        &self,
+        pins: &'a BTreeMap<String, ResourceSpec>,
+    ) -> Result<ImportSources<'a>, String> {
+        if Self::parse(&self.prefix)? != *self {
+            return Err("host configuration differs from the fixed installation layout".into());
+        }
+        if pins.len() > MAX_IMPORT_SOURCES {
+            return Err("host supplemental source count exceeds 128".into());
+        }
+        let startup: Vec<_> = MODULE_SPECS
+            .iter()
+            .map(|spec| spec.source_path.strip_prefix(SOURCE_PREFIX).unwrap())
+            .collect();
+        if pins.keys().any(|key| startup.contains(&key.as_str())) {
+            return Err("host supplemental sources duplicate a startup source".into());
+        }
+        // Include startup identities so supplemental files cannot introduce a
+        // case alias or file/directory conflict with the already pinned subset.
+        validate_resource_paths(
+            startup
+                .iter()
+                .copied()
+                .chain(pins.keys().map(String::as_str)),
+        )
+        .map_err(|error| format!("invalid host supplemental source path: {error}"))?;
+        let stdlib = Path::new(&self.stdlib);
+        let mut files = Vec::with_capacity(pins.len());
+        let mut caches = BTreeSet::new();
+        let mut total = 0u64;
+        for (relative, spec) in pins {
+            if !relative.ends_with(".py")
+                || spec.compression != Compression::Stored
+                || spec.sha256.len() != 64
+                || !spec
+                    .sha256
+                    .bytes()
+                    .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+            {
+                return Err("invalid host supplemental source metadata".into());
+            }
+            total = total
+                .checked_add(spec.size)
+                .ok_or("host supplemental source byte count overflow")?;
+            if total > MAX_IMPORT_SOURCE_BYTES {
+                return Err("host supplemental source bytes exceed 4 MiB".into());
+            }
+            let source = stdlib.join(relative);
+            validate_path(source.to_str().ok_or("host source path must be ASCII")?)?;
+            let mut directory = source.parent().ok_or("host source has no parent")?;
+            while directory != stdlib {
+                let cache = directory.join("__pycache__");
+                validate_path(cache.to_str().ok_or("host cache path must be ASCII")?)?;
+                caches.insert(cache);
+                directory = directory.parent().ok_or("host source escaped stdlib")?;
+            }
+            files.push((source, spec));
+        }
+        // verify() checks these two locations before any startup file hashing.
+        caches.remove(&stdlib.join("encodings/__pycache__"));
+        Ok(ImportSources { files, caches })
+    }
+}
+
+fn verify_import_sources(imports: &ImportSources<'_>) -> Result<(Vec<File>, Vec<File>), String> {
+    let mut directories = Vec::new();
+    // Guard every cache lookup with retained no-follow directory descriptors.
+    // Complete cache prerequisites before hashing any supplemental source.
+    for cache in &imports.caches {
+        directories.append(&mut open_directories(
+            cache.parent().ok_or("host cache has no parent")?,
+        )?);
+        require_cache_absent(cache)?;
+    }
+    let mut files = Vec::with_capacity(imports.files.len());
+    for (path, spec) in &imports.files {
+        let (file, mut source_directories) = verified_file(path, spec.size, &spec.sha256)?;
+        files.push(file);
+        directories.append(&mut source_directories);
+    }
+    Ok((files, directories))
 }
 
 fn require_cache_absent(path: &Path) -> Result<(), String> {
@@ -318,12 +426,266 @@ mod tests {
             fs::write(&path, bytes).unwrap();
             path
         }
+
+        fn host_source(&self, relative: &str, bytes: &[u8]) -> PathBuf {
+            let path = self.0.join("lib/python3.13").join(relative);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(&path, bytes).unwrap();
+            path
+        }
+
+        fn config(&self) -> Config {
+            Config::parse(self.0.to_str().unwrap()).unwrap()
+        }
     }
 
     impl Drop for Fixture {
         fn drop(&mut self) {
             fs::remove_dir_all(&self.0).unwrap();
         }
+    }
+
+    fn import_pin(bytes: &[u8]) -> ResourceSpec {
+        ResourceSpec {
+            size: bytes.len() as u64,
+            sha256: glue_format::digest(bytes),
+            compression: Compression::Stored,
+        }
+    }
+
+    fn import_pins(relative: &str, bytes: &[u8]) -> BTreeMap<String, ResourceSpec> {
+        BTreeMap::from([(relative.into(), import_pin(bytes))])
+    }
+
+    #[test]
+    fn rejects_supplemental_metadata_before_host_access() {
+        let config = Config::parse("/absent-host-import-prefix").unwrap();
+        for relative in [
+            "../escape.py",
+            "/absolute.py",
+            "nested//source.py",
+            "nested/./source.py",
+            "nested\\source.py",
+            "source.pyc",
+            "source.PY",
+            "NUL.py",
+            "sourcé.py",
+            "source\0.py",
+        ] {
+            let error = config
+                .verify_imports(&import_pins(relative, b"source"))
+                .unwrap_err();
+            assert!(
+                error.starts_with("invalid host supplemental source"),
+                "unexpected error for {relative:?}: {error}"
+            );
+        }
+        for change in 0..4 {
+            let mut pins = import_pins("source.py", b"source");
+            let spec = pins.get_mut("source.py").unwrap();
+            match change {
+                0 => spec.compression = Compression::Deflate,
+                1 => spec.sha256 = "f".repeat(63),
+                2 => spec.sha256 = "F".repeat(64),
+                _ => spec.sha256 = "g".repeat(64),
+            }
+            assert_eq!(
+                config.verify_imports(&pins).unwrap_err(),
+                "invalid host supplemental source metadata"
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_supplemental_startup_duplicates_and_path_aliases() {
+        let config = Config::parse("/absent-host-import-prefix").unwrap();
+        for spec in MODULE_SPECS {
+            let relative = spec.source_path.strip_prefix(SOURCE_PREFIX).unwrap();
+            assert_eq!(
+                config
+                    .verify_imports(&import_pins(relative, b"source"))
+                    .unwrap_err(),
+                "host supplemental sources duplicate a startup source"
+            );
+        }
+        for pins in [
+            import_pins("ENCODINGS/another.py", b"source"),
+            import_pins("codecs.py/another.py", b"source"),
+            BTreeMap::from([
+                ("nested/source.py".into(), import_pin(b"source")),
+                ("Nested/another.py".into(), import_pin(b"another")),
+            ]),
+            BTreeMap::from([
+                ("source.py".into(), import_pin(b"source")),
+                ("source.py/another.py".into(), import_pin(b"another")),
+            ]),
+        ] {
+            assert!(
+                config
+                    .verify_imports(&pins)
+                    .unwrap_err()
+                    .starts_with("invalid host supplemental source path")
+            );
+        }
+    }
+
+    #[test]
+    fn bounds_supplemental_count_total_and_expanded_host_paths() {
+        let config = Config::parse("/absent-host-import-prefix").unwrap();
+        let mut pins: BTreeMap<_, _> = (0..MAX_IMPORT_SOURCES)
+            .map(|index| (format!("source_{index}.py"), import_pin(b"")))
+            .collect();
+        assert!(config.import_sources(&pins).is_ok());
+        pins.insert("one_more.py".into(), import_pin(b""));
+        assert_eq!(
+            config.verify_imports(&pins).unwrap_err(),
+            "host supplemental source count exceeds 128"
+        );
+        let mut pins = import_pins("source.py", b"");
+        pins.get_mut("source.py").unwrap().size = MAX_IMPORT_SOURCE_BYTES;
+        assert!(config.import_sources(&pins).is_ok());
+        pins.insert("one_more.py".into(), import_pin(b"x"));
+        assert_eq!(
+            config.verify_imports(&pins).unwrap_err(),
+            "host supplemental source bytes exceed 4 MiB"
+        );
+        pins.remove("one_more.py");
+        pins.get_mut("source.py").unwrap().size = u64::MAX;
+        assert_eq!(
+            config.verify_imports(&pins).unwrap_err(),
+            "host supplemental source bytes exceed 4 MiB"
+        );
+        let prefix = format!("/{}", "a".repeat(MAX_PATH_BYTES - LIBRARY_SUFFIX.len() - 1));
+        let config = Config::parse(&prefix).unwrap();
+        let relative = format!("{}.py", "b".repeat(200));
+        assert!(
+            config
+                .verify_imports(&import_pins(&relative, b""))
+                .unwrap_err()
+                .starts_with("host paths must be canonical")
+        );
+        // The source can fit while its longer __pycache__ sibling does not.
+        assert!(config.stdlib.len() + "/d/a.py".len() <= MAX_PATH_BYTES);
+        assert!(
+            config
+                .verify_imports(&import_pins("d/a.py", b""))
+                .unwrap_err()
+                .starts_with("host paths must be canonical")
+        );
+    }
+
+    #[test]
+    fn verifies_nested_supplemental_source_and_retains_rewound_descriptor() {
+        let fixture = Fixture::new();
+        let bytes = b"reviewed installed source\n";
+        fixture.host_source("importlib/resources/_common.py", bytes);
+        let pins = import_pins("importlib/resources/_common.py", bytes);
+        let config = fixture.config();
+        let imports = config.import_sources(&pins).unwrap();
+        assert_eq!(
+            imports.caches,
+            BTreeSet::from([
+                fixture.0.join("lib/python3.13/importlib/__pycache__"),
+                fixture
+                    .0
+                    .join("lib/python3.13/importlib/resources/__pycache__"),
+            ])
+        );
+        let (mut files, directories) = verify_import_sources(&imports).unwrap();
+        assert!(!directories.is_empty());
+        let mut actual = Vec::new();
+        files[0].read_to_end(&mut actual).unwrap();
+        assert_eq!(actual, bytes);
+    }
+
+    #[test]
+    fn rejects_changed_supplemental_source_size_and_hash() {
+        let fixture = Fixture::new();
+        fixture.host_source("nested/source.py", b"bad source");
+        let config = fixture.config();
+        for bytes in [b"different size".as_slice(), b"pin source".as_slice()] {
+            let pins = import_pins("nested/source.py", bytes);
+            let imports = config.import_sources(&pins).unwrap();
+            let error = verify_import_sources(&imports).unwrap_err();
+            assert!(error.contains(if bytes.len() == b"bad source".len() {
+                "identity mismatch"
+            } else {
+                "size mismatch"
+            }));
+        }
+    }
+
+    #[test]
+    fn rejects_every_nested_cache_before_supplemental_source_access() {
+        for relative in ["importlib/__pycache__", "importlib/resources/__pycache__"] {
+            let fixture = Fixture::new();
+            let stdlib = fixture.0.join("lib/python3.13");
+            fs::create_dir_all(stdlib.join("importlib/resources")).unwrap();
+            let cache = stdlib.join(relative);
+            fs::create_dir(&cache).unwrap();
+            let pins = import_pins("importlib/resources/absent.py", b"source");
+            let config = fixture.config();
+            let imports = config.import_sources(&pins).unwrap();
+            assert_eq!(
+                verify_import_sources(&imports).unwrap_err(),
+                format!(
+                    "host startup bytecode cache is unsupported: {}",
+                    cache.display()
+                )
+            );
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn rejects_supplemental_source_and_cache_symlinks() {
+        use std::os::unix::fs::symlink;
+        let fixture = Fixture::new();
+        let path = fixture.host_source("nested/source.py", b"source");
+        let original = fixture.file("original.py", b"source");
+        fs::remove_file(&path).unwrap();
+        symlink(&original, &path).unwrap();
+        let pins = import_pins("nested/source.py", b"source");
+        let config = fixture.config();
+        let imports = config.import_sources(&pins).unwrap();
+        assert!(
+            verify_import_sources(&imports)
+                .unwrap_err()
+                .contains("without symlinks")
+        );
+        fs::remove_file(&path).unwrap();
+        fs::write(&path, b"source").unwrap();
+        let cache = path.parent().unwrap().join("__pycache__");
+        symlink(fixture.0.join("absent-cache-target"), &cache).unwrap();
+        assert_eq!(
+            verify_import_sources(&imports).unwrap_err(),
+            format!(
+                "host startup bytecode cache is unsupported: {}",
+                cache.display()
+            )
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn checks_supplemental_directory_ancestors_before_cache_queries() {
+        use std::os::unix::fs::symlink;
+        let fixture = Fixture::new();
+        let source = fixture.host_source("original/source.py", b"source");
+        fs::create_dir(source.parent().unwrap().join("__pycache__")).unwrap();
+        let alias = fixture.0.join("lib/python3.13/alias");
+        symlink(source.parent().unwrap(), &alias).unwrap();
+        let pins = import_pins("alias/source.py", b"source");
+        let config = fixture.config();
+        let imports = config.import_sources(&pins).unwrap();
+        let error = verify_import_sources(&imports).unwrap_err();
+        assert_eq!(
+            error,
+            format!(
+                "host path {} must be a directory without symlinks",
+                alias.display()
+            )
+        );
     }
 
     #[test]

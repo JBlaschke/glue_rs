@@ -378,6 +378,62 @@ pub(super) fn run_imports(
             is_package: i32::from(module.is_package),
         })
         .collect();
+    invoke_archive(
+        &api,
+        ArchiveStartup::Frozen(&records),
+        ArchiveApplication {
+            app: &mut payload.app,
+            bootstrap: &payload.bootstrap,
+            index: &mut payload.index,
+        },
+        negative,
+    )
+}
+
+pub(super) fn run_host_imports(
+    mut payload: host_import_profile::Payload,
+    negative: bool,
+) -> Result<(), String> {
+    preflight()?;
+    let verified = payload
+        .config
+        .verify_imports(&host_import_profile::source_specs()?)?;
+    let prefix =
+        CString::new(verified.config.prefix.as_str()).map_err(|_| "host prefix contains NUL")?;
+    let stdlib =
+        CString::new(verified.config.stdlib.as_str()).map_err(|_| "host stdlib contains NUL")?;
+    // Partially moving the library pins it in load_api. The remaining verified
+    // source/directory owners stay in this caller scope through finalization.
+    let api = load_api(verified.library)?;
+    invoke_archive(
+        &api,
+        ArchiveStartup::Host(&prefix, &stdlib),
+        ArchiveApplication {
+            app: &mut payload.app,
+            bootstrap: &payload.bootstrap,
+            index: &mut payload.index,
+        },
+        negative,
+    )
+}
+
+enum ArchiveStartup<'a> {
+    Frozen(&'a [FrozenRecord]),
+    Host(&'a CStr, &'a CStr),
+}
+
+struct ArchiveApplication<'a> {
+    app: &'a mut Vec<u8>,
+    bootstrap: &'a [u8],
+    index: &'a mut imports::Index,
+}
+
+fn invoke_archive(
+    api: &Api,
+    startup: ArchiveStartup<'_>,
+    payload: ArchiveApplication<'_>,
+    negative: bool,
+) -> Result<(), String> {
     if negative {
         payload
             .app
@@ -387,19 +443,30 @@ pub(super) fn run_imports(
         error: std::ptr::null_mut(),
         error_len: 0,
     };
+    let (records, count, prefix, stdlib) = match startup {
+        ArchiveStartup::Frozen(records) => (
+            records.as_ptr(),
+            records.len(),
+            std::ptr::null(),
+            std::ptr::null(),
+        ),
+        ArchiveStartup::Host(prefix, stdlib) => {
+            (std::ptr::null(), 0, prefix.as_ptr(), stdlib.as_ptr())
+        }
+    };
     // SAFETY: all records, source and immutable resource context outlive this
     // synchronous call and finalization. C owns every Python API/object. Rust
     // callbacks catch panics and return buffers before C calls Python again.
     let status = unsafe {
         glue_python_run_archive(
-            &api,
-            records.as_ptr(),
-            records.len(),
-            std::ptr::null(),
-            std::ptr::null(),
+            api,
+            records,
+            count,
+            prefix,
+            stdlib,
             resource_request,
             resource_release,
-            (&mut payload.index as *mut imports::Index).cast(),
+            (payload.index as *mut imports::Index).cast(),
             payload.bootstrap.as_ptr(),
             payload.bootstrap.len(),
             payload.app.as_ptr(),

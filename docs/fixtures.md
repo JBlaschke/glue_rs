@@ -61,7 +61,13 @@ the C callback bridge transfers bytes without exposing Python objects to Rust.
 Virtual origins, import caching/reload, encoding cookies, failure cleanup and
 seekable binary/text streams are exercised. Materialization helpers must reject
 before temporary-file attempts, and corrupt source must reject before any memfd.
-Installed-host archive imports and native extensions remain separate evidence.
+The [installed-host archive-import fixture](../fixtures/python-host-imports/README.md)
+uses the same app/importer, with stdlib imports owned by the host. Its archive
+has only 18 app/helper/asset entries. All 69 reviewed installed sources and
+12 cache locations are verified before loading; invalid supplemental sources
+and nested caches reject before initialization. Host module/namespace lures must
+remain unused. Native extension initialization and product integration remain
+subsequent work.
 
 Parser/resource fixtures may be synthetic and run on the development host. They
 must cover deterministic output, stored/deflate and ZIP64 members, path/case
