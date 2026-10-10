@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #if PY_VERSION_HEX != 0x030d10f0
 #error "The bootstrap boundary requires the pinned CPython 3.13.16 headers"
@@ -23,12 +24,13 @@
 
 _Static_assert(sizeof(void *) == 8 && sizeof(int) == 4,
                "The bootstrap boundary requires the selected 64-bit ABI");
-_Static_assert(sizeof(GluePythonApi) == 168 &&
+_Static_assert(sizeof(GluePythonApi) == 176 &&
                    offsetof(GluePythonApi, Py_GetVersion) == 8 &&
                    offsetof(GluePythonApi, PyImport_FrozenModules) == 160 &&
+                   offsetof(GluePythonApi, PyWideStringList_Append) == 168 &&
                    sizeof(GlueFrozenRecord) == 24 &&
                    sizeof(GluePythonResult) == 16,
-               "Python bridge ABI revision 1 must match the Rust layout");
+               "Python bridge ABI revision 2 must match the Rust layout");
 _Static_assert(sizeof(struct _frozen) == 24 &&
                    offsetof(struct _frozen, is_package) == 20,
                "The pinned public frozen descriptor has four fields");
@@ -39,6 +41,7 @@ _Static_assert(sizeof(struct _frozen) == 24 &&
 #define MAX_TOTAL_CODE (64u * 1024u * 1024u)
 #define MAX_APP (256u * 1024u)
 #define MAX_ERROR (16u * 1024u)
+#define MAX_HOST_PATH 4096u
 #define CALL(api, name) ((__typeof__(&name))((api)->name))
 
 static atomic_int attempted = 0;
@@ -48,6 +51,11 @@ typedef struct FrozenOwner {
     size_t original_count;
     size_t custom_count;
 } FrozenOwner;
+
+typedef struct HostPaths {
+    wchar_t *prefix;
+    wchar_t *stdlib;
+} HostPaths;
 
 static size_t bounded_length(const char *text, size_t maximum) {
     size_t length = 0;
@@ -88,7 +96,7 @@ void glue_python_result_free(GluePythonResult *result) {
 }
 
 static int valid_api(const GluePythonApi *api) {
-    return api != NULL && api->abi_revision == 1 && api->reserved == 0 &&
+    return api != NULL && api->abi_revision == 2 && api->reserved == 0 &&
            api->Py_GetVersion && api->Py_IsInitialized &&
            api->PyPreConfig_InitIsolatedConfig && api->Py_PreInitialize &&
            api->PyConfig_InitIsolatedConfig && api->PyConfig_SetString &&
@@ -98,7 +106,65 @@ static int valid_api(const GluePythonApi *api) {
            api->PyRun_StringFlags && api->Py_DecRef &&
            api->PyErr_GetRaisedException && api->PyObject_Str &&
            api->PyUnicode_AsUTF8AndSize && api->PyErr_Clear &&
-           api->Py_FinalizeEx && api->PyImport_FrozenModules;
+           api->Py_FinalizeEx && api->PyImport_FrozenModules &&
+           api->PyWideStringList_Append;
+}
+
+/* ASCII is a deliberately narrow fixture boundary, independent of locale or
+ * Python's allocator/preinitialization state. Spaces are accepted so the
+ * installed fixture can exercise explicit paths containing spaces. */
+static int host_path(const char *path, size_t *length) {
+    *length = bounded_length(path, MAX_HOST_PATH + 1);
+    if (*length <= 1 || *length > MAX_HOST_PATH || path[0] != '/') {
+        return 0;
+    }
+    size_t component = 1;
+    for (size_t index = 1; index <= *length; index++) {
+        unsigned char character = (unsigned char)path[index];
+        if (character == '/' || character == '\0') {
+            size_t count = index - component;
+            if (count == 0 ||
+                (count == 1 && path[component] == '.') ||
+                (count == 2 && path[component] == '.' && path[component + 1] == '.')) {
+                return 0;
+            }
+            component = index + 1;
+        } else if (character < 0x20 || character > 0x7e || character == '\\') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static void free_host_paths(HostPaths *paths) {
+    free(paths->prefix);
+    free(paths->stdlib);
+    paths->prefix = NULL;
+    paths->stdlib = NULL;
+}
+
+static int make_host_paths(const char *prefix, const char *stdlib,
+                           HostPaths *paths, GluePythonResult *result) {
+    size_t prefix_length = 0;
+    size_t stdlib_length = 0;
+    if (!host_path(prefix, &prefix_length) || !host_path(stdlib, &stdlib_length) ||
+        stdlib_length <= prefix_length ||
+        memcmp(prefix, stdlib, prefix_length) != 0 || stdlib[prefix_length] != '/') {
+        return fail(result, "invalid explicit host Python paths");
+    }
+    paths->prefix = malloc((prefix_length + 1) * sizeof(*paths->prefix));
+    paths->stdlib = malloc((stdlib_length + 1) * sizeof(*paths->stdlib));
+    if (paths->prefix == NULL || paths->stdlib == NULL) {
+        free_host_paths(paths);
+        return fail(result, "cannot copy explicit host Python paths");
+    }
+    for (size_t index = 0; index <= prefix_length; index++) {
+        paths->prefix[index] = (wchar_t)(unsigned char)prefix[index];
+    }
+    for (size_t index = 0; index <= stdlib_length; index++) {
+        paths->stdlib[index] = (wchar_t)(unsigned char)stdlib[index];
+    }
+    return 0;
 }
 
 static int status_error(const GluePythonApi *api, PyStatus status,
@@ -241,9 +307,10 @@ static int make_frozen(const struct _frozen *original,
     return 0;
 }
 
-int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
-                    size_t count, const unsigned char *app_source,
-                    size_t app_len, GluePythonResult *result) {
+static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
+                       size_t count, const HostPaths *host,
+                       const unsigned char *app_source, size_t app_len,
+                       GluePythonResult *result) {
     if (result == NULL) {
         return 1;
     }
@@ -270,8 +337,14 @@ int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
     const struct _frozen **frozen_address = api->PyImport_FrozenModules;
     const struct _frozen *original = *frozen_address;
     FrozenOwner owner = {0};
-    if (make_frozen(original, records, count, &owner, result)) {
-        return 1;
+    if (host != NULL) {
+        if (original != NULL && original[0].name != NULL) {
+            return fail(result, "host Python requires an empty public frozen table");
+        }
+    } else {
+        if (make_frozen(original, records, count, &owner, result)) {
+            return 1;
+        }
     }
     char *source = malloc(app_len + 1);
     if (source == NULL) {
@@ -280,7 +353,9 @@ int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
     }
     memcpy(source, app_source, app_len);
     source[app_len] = '\0';
-    *frozen_address = owner.table;
+    if (host == NULL) {
+        *frozen_address = owner.table;
+    }
 
     int failed = 0;
     int config_ready = 0;
@@ -326,12 +401,12 @@ int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
         }                                                                        \
     } while (0)
     SET(program_name, L"glue-python-bootstrap");
-    SET(home, L"/__glue_archive__/python");
-    SET(prefix, L"/__glue_archive__/python");
-    SET(base_prefix, L"/__glue_archive__/python");
-    SET(exec_prefix, L"/__glue_archive__/python");
-    SET(base_exec_prefix, L"/__glue_archive__/python");
-    SET(stdlib_dir, L"/__glue_archive__/python/stdlib");
+    SET(home, host != NULL ? host->prefix : L"/__glue_archive__/python");
+    SET(prefix, host != NULL ? host->prefix : L"/__glue_archive__/python");
+    SET(base_prefix, host != NULL ? host->prefix : L"/__glue_archive__/python");
+    SET(exec_prefix, host != NULL ? host->prefix : L"/__glue_archive__/python");
+    SET(base_exec_prefix, host != NULL ? host->prefix : L"/__glue_archive__/python");
+    SET(stdlib_dir, host != NULL ? host->stdlib : L"/__glue_archive__/python/stdlib");
     SET(executable, L"/__glue_archive__/launcher");
     SET(base_executable, L"/__glue_archive__/launcher");
     SET(filesystem_encoding, L"utf-8");
@@ -339,6 +414,19 @@ int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
     SET(stdio_encoding, L"utf-8");
     SET(stdio_errors, L"strict");
 #undef SET
+
+    if (host != NULL) {
+        if (config.module_search_paths.length != 0 ||
+            config.module_search_paths.items != NULL) {
+            failed = fail(result, "host Python requires an initially empty search path");
+            goto cleanup;
+        }
+        if (status_error(api, CALL(api, PyWideStringList_Append)(
+                                  &config.module_search_paths, config.stdlib_dir), result)) {
+            failed = 1;
+            goto cleanup;
+        }
+    }
 
     initialization_attempted = 1;
     if (status_error(api, CALL(api, Py_InitializeFromConfig)(&config), result)) {
@@ -377,16 +465,40 @@ cleanup:
         }
     }
     int still_initialized = CALL(api, Py_IsInitialized)();
-    if (!still_initialized) {
+    if (host == NULL && !still_initialized) {
         *frozen_address = original;
     }
     /* A failed initialization can leave a partially initialized runtime even
      * when Py_IsInitialized() is false. Keep our C-owned bytes alive until
      * process exit in that case; this boundary never retries initialization. */
-    if (!initialization_attempted || (initialized && !still_initialized)) {
+    if (host == NULL &&
+        (!initialization_attempted || (initialized && !still_initialized))) {
         free_frozen(&owner);
     }
     free(source);
+    return failed;
+}
+
+int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
+                    size_t count, const unsigned char *app_source,
+                    size_t app_len, GluePythonResult *result) {
+    return run_python(api, records, count, NULL, app_source, app_len, result);
+}
+
+int glue_python_run_host(const GluePythonApi *api, const char *prefix,
+                         const char *stdlib, const unsigned char *app_source,
+                         size_t app_len, GluePythonResult *result) {
+    if (result == NULL) {
+        return 1;
+    }
+    result->error = NULL;
+    result->error_len = 0;
+    HostPaths paths = {0};
+    if (make_host_paths(prefix, stdlib, &paths, result)) {
+        return 1;
+    }
+    int failed = run_python(api, NULL, 0, &paths, app_source, app_len, result);
+    free_host_paths(&paths);
     return failed;
 }
 
@@ -440,6 +552,77 @@ int glue_python_boundary_test_ownership(void) {
     failed = 0;
 done:
     free_frozen(&owner);
+    glue_python_result_free(&result);
+    return failed;
+}
+
+int glue_python_boundary_test_host_paths(void) {
+    char prefix[] = "/installed Python";
+    char stdlib[] = "/installed Python/lib/python3.13";
+    HostPaths paths = {0};
+    GluePythonResult result = {0};
+    int failed = 1;
+    if (make_host_paths(prefix, stdlib, &paths, &result)) {
+        goto done;
+    }
+    prefix[1] = 'x';
+    stdlib[1] = 'x';
+    if (wcscmp(paths.prefix, L"/installed Python") != 0 ||
+        wcscmp(paths.stdlib, L"/installed Python/lib/python3.13") != 0) {
+        goto done;
+    }
+    free_host_paths(&paths);
+    free_host_paths(&paths);
+    if (paths.prefix != NULL || paths.stdlib != NULL) {
+        goto done;
+    }
+    const char *invalid[] = {
+        NULL, "", "/", "relative", "//host", "/host/", "/host/./lib",
+        "/host/../lib", "/host//lib", "/host\\lib", "/host\nlib",
+        "/host\177", "/host\200"
+    };
+    for (size_t index = 0; index < sizeof(invalid) / sizeof(*invalid); index++) {
+        size_t length = 0;
+        if (host_path(invalid[index], &length)) {
+            goto done;
+        }
+    }
+    char bounded[MAX_HOST_PATH + 2];
+    memset(bounded, 'x', sizeof(bounded));
+    bounded[0] = '/';
+    bounded[MAX_HOST_PATH] = '\0';
+    size_t length = 0;
+    if (!host_path(bounded, &length) || length != MAX_HOST_PATH) {
+        goto done;
+    }
+    bounded[MAX_HOST_PATH] = 'x';
+    bounded[MAX_HOST_PATH + 1] = '\0';
+    if (host_path(bounded, &length)) {
+        goto done;
+    }
+    const char *mismatched[] = {"/host", "/host-other/lib", "/elsewhere/lib"};
+    for (size_t index = 0; index < sizeof(mismatched) / sizeof(*mismatched); index++) {
+        if (!make_host_paths("/host", mismatched[index], &paths, &result) ||
+            paths.prefix != NULL || paths.stdlib != NULL ||
+            result.error == NULL || result.error_len == 0) {
+            goto done;
+        }
+        glue_python_result_free(&result);
+    }
+    /* Reject invalid ABI tables before any Python call. The valid host paths
+     * are copied and released even on this configuration-validation failure. */
+    GluePythonApi api = {0};
+    api.abi_revision = 1;
+    static const unsigned char source[] = "pass";
+    if (!glue_python_run_host(&api, "/host", "/host/lib/python3.13", source,
+                              sizeof(source) - 1, &result) ||
+        result.error == NULL ||
+        strcmp(result.error, "invalid Python boundary API table") != 0) {
+        goto done;
+    }
+    failed = 0;
+done:
+    free_host_paths(&paths);
     glue_python_result_free(&result);
     return failed;
 }

@@ -44,6 +44,15 @@ It compares the exact same library/bundle/app under ordinary loading and tests
 missing encodings, corrupt marshal bytes and application errors. The comparison
 is separate from the planned host provider using an installed standard library.
 
+The separate [installed host fixture](../fixtures/python-host/README.md) uses
+the shared app and exact same library with declared installed stdlib paths.
+Its archive contains only the app. It verifies the library and six startup
+sources, rejects startup caches, and initializes without our custom frozen
+modules. Missing/mismatched libraries or sources, symlinked stdlib and cached
+startup bytecode must reject before runtime mapping. A read-only installation
+and complete trace establish this controlled startup subset; product host
+discovery and general stdlib/package compatibility remain separate work.
+
 Parser/resource fixtures may be synthetic and run on the development host. They
 must cover deterministic output, stored/deflate and ZIP64 members, path/case
 collisions, undeclared payloads, symlinks, encryption, unknown schema fields,

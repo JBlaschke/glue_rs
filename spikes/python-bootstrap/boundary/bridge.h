@@ -4,8 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* Revision 1: every address belongs to the one selected, pinned runtime.
- * The last address is the exported public data symbol, not its current value.
+/* Revision 2: every address belongs to the one selected, pinned runtime.
+ * PyImport_FrozenModules is the exported public data symbol, not its value.
  * No Python object, PyConfig or PyStatus crosses this boundary. */
 typedef struct GluePythonApi {
     uint32_t abi_revision;
@@ -30,6 +30,7 @@ typedef struct GluePythonApi {
     void *PyErr_Clear;
     void *Py_FinalizeEx;
     void *PyImport_FrozenModules;
+    void *PyWideStringList_Append;
 } GluePythonApi;
 
 typedef struct GlueFrozenRecord {
@@ -54,9 +55,21 @@ typedef struct GluePythonResult {
 int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
                     size_t count, const unsigned char *app_source,
                     size_t app_len, GluePythonResult *result);
+
+/* The host fixture uses the same ownership/thread/one-attempt rules. Prefix
+ * and stdlib are borrowed, NUL-terminated canonical absolute ASCII paths, at
+ * most 4096 bytes each. The stdlib must be below prefix. C copies and widens
+ * them without locale-dependent decoding. No custom frozen table is installed;
+ * a pre-existing nonempty public PyImport_FrozenModules table is rejected.
+ * Rust must validate and retain the exact installed runtime and stdlib before
+ * calling this function; it does not discover installations or verify files. */
+int glue_python_run_host(const GluePythonApi *api, const char *prefix,
+                         const char *stdlib, const unsigned char *app_source,
+                         size_t app_len, GluePythonResult *result);
 void glue_python_result_free(GluePythonResult *result);
 
 /* Ownership/validation test: no interpreter initialization or Python calls. */
 int glue_python_boundary_test_ownership(void);
+int glue_python_boundary_test_host_paths(void);
 
 #endif
