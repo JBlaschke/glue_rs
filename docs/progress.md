@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `8b56f7c`.
+The earlier feature work and evidence were merged into `main` at `06b92ea`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -17,6 +17,7 @@ Further implementation continues on separate feature branches.
 | A1 signed macOS arm64 Mach-O probe | `codex/a1-macos-macho-probe` / `346b2f0` (from merged `a596305`) | Controlled signed observation; acceptance evidence incomplete | 31 portable/optimized parser tests; 212/213 source workspace tests for Lua 5.4/5.5 and Clippy on Mac/Linux; ad-hoc hardened-runtime/allow-jit debug and optimized launchers match ordinary loading; fourteen native rejections, four signing controls and two memory-policy controls pass; full trace and distribution signing remain open |
 | A7/A10 pinned stock PBS inputs | `codex/a7-pbs-artifact-inspection` / `886a415` (from merged `1425d6d`) | Experimental build-time inspection; controlled observation | Mac/Linux: 268/269 source workspace tests, Clippy, 56 optimized inspector tests; 71 Python policy tests; byte-identical inventories of independently pinned stock PBS inputs and exact 4,526-entry install-only projection; full inspector trace passes |
 | A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` / `30a1526` (from merged `8b56f7c`; evidence bundle follows) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in release tests; 89 Python policy tests; unchanged stock libpython starts with frozen encodings and built-in math/_ssl; baseline output agrees and all four complete traces pass |
+| A7 explicit host Python startup | `codex/a7-linux-host-python` (from merged `06b92ea`) | Experimental host fixture; controlled GNU Linux arm64 observation | Mac/Linux: 308/309 source workspace tests and Clippy; 32 portable bootstrap/host tests and 34 GNU opt-in release tests; 112 Python policy tests; declared host library and startup sources verify before loading; all eight host traces pass, including six pre-init rejections and an app error |
 
 ## Gate status
 
@@ -172,6 +173,18 @@ retains the compiled bundle, commands, source/artifact/provenance identities,
 complete compressed traces, controls and validation logs. See
 [the bootstrap decision](decisions/0011-stock-pbs-frozen-bootstrap.md).
 
+The explicit host startup fixture selects that exact stock library with its own
+installed stdlib, and the archive contains only the shared app. Rust verifies
+the library and all six startup sources before loading and rejects symlinks,
+missing/altered inputs and existing startup bytecode caches. C uses the installed
+prefixes and one stdlib search path without inserting a custom frozen table.
+The library/stdlib mount is immutable and read-only; the verified source subset
+does not certify arbitrary mutable installations or the complete stdlib. The
+shared app proves version/ABI mode, isolation, UTF-8 and installed encodings with
+built-in math/_ssl. Product host discovery, application imports and native
+extension integration remain open. See
+[the host startup decision](decisions/0012-explicit-host-python-startup.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -180,8 +193,8 @@ the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
 stock PBS frozen-startup experiment to the product archive importer, resources,
-native extension bridge and compatible host-Python startup with its matching
-installed stdlib. Extend complete runtime traces beyond the controlled arm64
+native extension bridge and product host-Python integration, extending the
+controlled installed-stdlib startup fixture. Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
 package compatibility.

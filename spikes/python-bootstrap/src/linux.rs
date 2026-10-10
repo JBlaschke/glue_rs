@@ -10,7 +10,7 @@ use std::{
 };
 
 static ATTEMPTED: AtomicBool = AtomicBool::new(false);
-const NAMES: [&str; 20] = [
+const NAMES: [&str; 21] = [
     "Py_GetVersion",
     "Py_IsInitialized",
     "PyPreConfig_InitIsolatedConfig",
@@ -31,6 +31,7 @@ const NAMES: [&str; 20] = [
     "PyErr_Clear",
     "Py_FinalizeEx",
     "PyImport_FrozenModules",
+    "PyWideStringList_Append",
 ];
 const OS_LIBRARIES: [&str; 9] = [
     "libc.so.6",
@@ -48,7 +49,7 @@ const OS_LIBRARIES: [&str; 9] = [
 struct Api {
     abi_revision: u32,
     reserved: u32,
-    symbols: [*mut libc::c_void; 20],
+    symbols: [*mut libc::c_void; 21],
 }
 #[repr(C)]
 struct FrozenRecord {
@@ -63,7 +64,7 @@ struct BridgeResult {
     error_len: usize,
 }
 const _: () = {
-    assert!(std::mem::size_of::<Api>() == 168);
+    assert!(std::mem::size_of::<Api>() == 176);
     assert!(std::mem::size_of::<FrozenRecord>() == 24);
     assert!(std::mem::size_of::<BridgeResult>() == 16);
 };
@@ -77,15 +78,21 @@ unsafe extern "C" {
         result: *mut BridgeResult,
     ) -> libc::c_int;
     fn glue_python_result_free(result: *mut BridgeResult);
+    fn glue_python_run_host(
+        api: *const Api,
+        prefix: *const libc::c_char,
+        stdlib: *const libc::c_char,
+        app: *const u8,
+        app_len: usize,
+        result: *mut BridgeResult,
+    ) -> libc::c_int;
     #[cfg(test)]
     fn glue_python_boundary_test_ownership() -> libc::c_int;
+    #[cfg(test)]
+    fn glue_python_boundary_test_host_paths() -> libc::c_int;
 }
 
-pub(super) fn run(
-    mut payload: Payload,
-    baseline: Option<&Path>,
-    negative: Option<&str>,
-) -> Result<(), String> {
+fn preflight() -> Result<(), String> {
     for name in [
         "LD_PRELOAD",
         "LD_AUDIT",
@@ -116,6 +123,15 @@ pub(super) fn run(
             return Err(format!("pre-existing Python API export {name}"));
         }
     }
+    Ok(())
+}
+
+pub(super) fn run(
+    mut payload: Payload,
+    baseline: Option<&Path>,
+    negative: Option<&str>,
+) -> Result<(), String> {
+    preflight()?;
     let file = if let Some(path) = baseline {
         let mut file = File::open(path).map_err(|e| e.to_string())?;
         let mut bytes = Vec::new();
@@ -154,6 +170,11 @@ pub(super) fn run(
         }
         file
     };
+    let api = load_api(file)?;
+    invoke_frozen(&api, &mut payload, negative)
+}
+
+fn load_api(file: File) -> Result<Api, String> {
     let path = CString::new(format!("/proc/self/fd/{}", file.as_raw_fd())).unwrap();
     // SAFETY: exact pinned stock image, immutable sealed fd (or read-only pinned
     // comparison input); trusted native code. Eager system-loader relocation.
@@ -180,9 +201,9 @@ pub(super) fn run(
     // SAFETY: live loader-owned link_map prefix.
     let base = unsafe { (*link).address };
     let mut api = Api {
-        abi_revision: 1,
+        abi_revision: 2,
         reserved: 0,
-        symbols: [std::ptr::null_mut(); 20],
+        symbols: [std::ptr::null_mut(); 21],
     };
     for (slot, name) in api.symbols.iter_mut().zip(NAMES) {
         let key = CString::new(name).unwrap();
@@ -202,6 +223,10 @@ pub(super) fn run(
         *slot = address;
     }
     check_images(Some(base))?;
+    Ok(api)
+}
+
+fn invoke_frozen(api: &Api, payload: &mut Payload, negative: Option<&str>) -> Result<(), String> {
     let mut names = Vec::new();
     let mut codes = Vec::new();
     let mut packages = Vec::new();
@@ -244,7 +269,7 @@ pub(super) fn run(
     // C owns PyConfig, PyObjects, table copies and all finalization.
     let status = unsafe {
         glue_python_run(
-            &api,
+            api,
             records.as_ptr(),
             records.len(),
             payload.app.as_ptr(),
@@ -252,6 +277,48 @@ pub(super) fn run(
             &mut result,
         )
     };
+    finish_result(status, result, negative.is_some())
+}
+
+pub(super) fn run_host(mut payload: HostPayload, negative: bool) -> Result<(), String> {
+    preflight()?;
+    let verified = payload.config.verify()?;
+    let prefix =
+        CString::new(verified.config.prefix.as_str()).map_err(|_| "host prefix contains NUL")?;
+    let stdlib =
+        CString::new(verified.config.stdlib.as_str()).map_err(|_| "host stdlib contains NUL")?;
+    // The remaining verified source/directory descriptors stay owned until the
+    // end of this scope; load_api pins the selected library descriptor/handle.
+    let api = load_api(verified.library)?;
+    if negative {
+        payload
+            .app
+            .extend_from_slice(b"\nraise RuntimeError('intentional Python host app error')\n");
+    }
+    let mut result = BridgeResult {
+        error: std::ptr::null_mut(),
+        error_len: 0,
+    };
+    // SAFETY: canonical bounded ASCII paths and verified source remain live for
+    // the synchronous C-owned host initialization, execution and finalization.
+    let status = unsafe {
+        glue_python_run_host(
+            &api,
+            prefix.as_ptr(),
+            stdlib.as_ptr(),
+            payload.app.as_ptr(),
+            payload.app.len(),
+            &mut result,
+        )
+    };
+    finish_result(status, result, negative)
+}
+
+fn finish_result(
+    status: libc::c_int,
+    mut result: BridgeResult,
+    negative: bool,
+) -> Result<(), String> {
     let error = if !result.error.is_null() && result.error_len <= 16 * 1024 {
         // SAFETY: bridge contract owns a live error_len-byte buffer until free.
         String::from_utf8_lossy(unsafe {
@@ -266,7 +333,7 @@ pub(super) fn run(
     if status != 0 {
         return Err(error);
     }
-    if negative.is_some() {
+    if negative {
         return Err("negative bootstrap fixture unexpectedly succeeded".into());
     }
     Ok(())
@@ -347,5 +414,11 @@ mod tests {
         // SAFETY: C-only ownership self-test does not initialize Python or
         // invoke dynamic API addresses; all allocations are local and released.
         assert_eq!(unsafe { super::glue_python_boundary_test_ownership() }, 0);
+    }
+
+    #[test]
+    fn c_owns_host_paths_and_rejects_invalid_configuration() {
+        // SAFETY: C-only validation/ownership self-test; no Python calls.
+        assert_eq!(unsafe { super::glue_python_boundary_test_host_paths() }, 0);
     }
 }

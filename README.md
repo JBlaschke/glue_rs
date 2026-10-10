@@ -149,6 +149,12 @@ The [clean bootstrap capture](docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10
 matches ordinary loading and passes all four complete syscall checks after the
 producer installation and headers are removed.
 
+The separate [host startup fixture](fixtures/python-host/README.md) selects that
+exact library with its installed stdlib through explicit host paths. It verifies
+the library and six startup sources, rejects startup bytecode caches and uses
+the installed encodings package without our frozen bundle. Product host
+discovery and Python execution remain pending.
+
 ## Try the resource fixture
 
 This older fixture declares a fictional `host` Lua library and tests packaging
@@ -189,12 +195,12 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 291/292 Rust tests for `lua54`/`lua55` on
+The source-profile workspace passes 308/309 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
-and 15 Python bootstrap bundle/profile tests. Both
+and 32 Python bootstrap/host bundle/profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
-GNU opt-in bootstrap passes 16 release tests and Clippy; all 89 Python
-trace-policy tests pass, including 18 bootstrap checks. The
+GNU opt-in bootstrap/host fixture passes 34 release tests and Clippy; all 112
+Python trace-policy tests pass, including 23 host startup checks. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
@@ -221,6 +227,7 @@ python3 -m unittest discover -s scripts -p 'test_linux_native_lua_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_native_lua_rejections.py'
 python3 -m unittest discover -s scripts -p 'test_linux_pbs_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_bootstrap_trace.py'
+python3 -m unittest discover -s scripts -p 'test_linux_python_host_trace.py'
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55
 ```
