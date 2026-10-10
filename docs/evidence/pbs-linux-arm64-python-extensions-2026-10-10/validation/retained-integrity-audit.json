@@ -1,0 +1,571 @@
+{
+  "capture_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+  "capture_profiles": [
+    "bundled-import-regression",
+    "frozen-regression",
+    "host-import-regression",
+    "host-startup-regression",
+    "."
+  ],
+  "capture_summary_matches_all_five_fixture_summaries": true,
+  "findings": [],
+  "independent_mutant_reconstruction": {
+    "all_mutants_rejected_with_recorded_reasons": true,
+    "baseline_count": 11,
+    "baseline_hashes_match": true,
+    "checker_and_five_parent_hashes_match_capture_commit": true,
+    "findings": [],
+    "mutant_count": 37,
+    "mutant_hashes_match": true,
+    "reviewer": "/root/python_import_design",
+    "script_and_metadata_hashes_match": true
+  },
+  "manifest_count": 7,
+  "native_images": {
+    "glue_native_exec_error.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2068,
+          "flags": 5,
+          "memsz": 2068,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 728,
+          "flags": 6,
+          "memsz": 744,
+          "offset": 65088,
+          "vaddr": 130624
+        }
+      ],
+      "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+      "size": 68672
+    },
+    "glue_native_init_error.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 1688,
+          "flags": 5,
+          "memsz": 1688,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 640,
+          "flags": 6,
+          "memsz": 648,
+          "offset": 65096,
+          "vaddr": 130632
+        }
+      ],
+      "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+      "size": 68400
+    },
+    "glue_native_multi.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2064,
+          "flags": 5,
+          "memsz": 2064,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 752,
+          "flags": 6,
+          "memsz": 760,
+          "offset": 65096,
+          "vaddr": 130632
+        }
+      ],
+      "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+      "size": 68640
+    },
+    "glue_native_single.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2036,
+          "flags": 5,
+          "memsz": 2036,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 688,
+          "flags": 6,
+          "memsz": 696,
+          "offset": 65080,
+          "vaddr": 130616
+        }
+      ],
+      "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+      "size": 68536
+    },
+    "libglue_python_dependency.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 712,
+          "flags": 5,
+          "memsz": 712,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 256,
+          "flags": 6,
+          "memsz": 256,
+          "offset": 65280,
+          "vaddr": 130816
+        }
+      ],
+      "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+      "size": 67152
+    }
+  },
+  "native_total_bytes": 341400,
+  "schema_version": 0,
+  "source_identity_count": 210,
+  "trace_count": 33,
+  "trace_results": [
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-import-regression/app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 1248901,
+      "gzip_sha256": "24cf7e125534c496d368a733b39f3882324076a26daf332a6480351d4a1b0a4f",
+      "pids": [
+        12
+      ],
+      "raw_bytes": 6351516,
+      "raw_sha256": "38721b51ec869822371901142b18fc284fd37da3beea9ba5cf118a428cf89e31",
+      "records": 33517
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-import-regression/corrupt-source.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 527609,
+      "gzip_sha256": "2843f86e81e0e77c82d4390ade4edbba6b9c0ac7f496dc22f66d71562384f315",
+      "pids": [
+        16
+      ],
+      "raw_bytes": 4819855,
+      "raw_sha256": "c140cf06bf6fc53f24aade4e347039ab27e2c38050c5288db81310cfcc90b1a5",
+      "records": 28700
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-import-regression/success.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 1248843,
+      "gzip_sha256": "53d261366577b84560e9f445db755400c219afb6611153d0934c87adfa3cfe27",
+      "pids": [
+        8
+      ],
+      "raw_bytes": 6351078,
+      "raw_sha256": "6898a144acb191557d539c9398837c4243b96b187d99dfdb00e6b59e1fc11d23",
+      "records": 33512
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "frozen-regression/app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 287396,
+      "gzip_sha256": "90dc4b98781c6eaa1e36b409ee0b6538ac9a4c96ceecf562af1136eceb096c84",
+      "pids": [
+        20
+      ],
+      "raw_bytes": 1506855,
+      "raw_sha256": "c86b090b24b02e5f6f08cff0654f29c9e0bdfe36c5be2820e312ba91711e7d29",
+      "records": 2493
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "frozen-regression/bad-bytecode.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 287587,
+      "gzip_sha256": "474a22cb2940767d859251835a1ff4f0a92360fe72f061868e7c8e7d13e6e737",
+      "pids": [
+        16
+      ],
+      "raw_bytes": 1513243,
+      "raw_sha256": "d0701bdaef712427d604ac521dd7fc56feb68baec344314fee89525b2e79e21e",
+      "records": 2594
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "frozen-regression/missing-encodings.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 287596,
+      "gzip_sha256": "c6783b7464f5181085af0a6d76a23d13eccaafa08eb30c1bd6a6d96e2bdd1cec",
+      "pids": [
+        12
+      ],
+      "raw_bytes": 1513893,
+      "raw_sha256": "5a60f65d838bdc7d8721648969376ee47b095573f5cf11031789598edea93f73",
+      "records": 2594
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "frozen-regression/success.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 287334,
+      "gzip_sha256": "87c8abe1410068addfc6cf1a27a39dfb57ecf53f8f2da02b7ac4b3dc4184ad19",
+      "pids": [
+        8
+      ],
+      "raw_bytes": 1506543,
+      "raw_sha256": "b5711054de11492238054bfde3fcd5bc599e17c78a1e9f06ae5c756a68c8ad6a",
+      "records": 2490
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 196927,
+      "gzip_sha256": "3cd74e8f0a72256a88134d563b58374aa1df136ee4172c3d649364a4e66da5e9",
+      "pids": [
+        28
+      ],
+      "raw_bytes": 1566991,
+      "raw_sha256": "97170d379b9602425a788dca8a41bf91661e42f604bea39654d9ed40e3fdd806",
+      "records": 5717
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/cached-import-bytecode.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 156842,
+      "gzip_sha256": "f5840c755036d51b488982e613ec653e102460068740accb47a0a7971fa6a869",
+      "pids": [
+        24
+      ],
+      "raw_bytes": 923586,
+      "raw_sha256": "3215081a87e193a3b10b788b3e76a80f57df09d7ab55abcf1c93d93703a3d36b",
+      "records": 1955
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/corrupt-source.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 4523,
+      "gzip_sha256": "562400f780bf6c348e6ee503979ec9e702c83a41907005ea6b4915376c4b0b99",
+      "pids": [
+        32
+      ],
+      "raw_bytes": 37493,
+      "raw_sha256": "1872375576197724a1bc9076011865753f75157a2e76d41dfc74dd3449532c6f",
+      "records": 297
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/missing-import-source.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 160605,
+      "gzip_sha256": "b33e2d5695f968c055a94a66a5949ad4edda6e1ff82a1e9b19ad6962db2fbaa8",
+      "pids": [
+        20
+      ],
+      "raw_bytes": 1020058,
+      "raw_sha256": "e8de23ecc936b20034cccb1d8f55d1689c14928dddfb974fb87172efd047a139",
+      "records": 2426
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/success.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 196835,
+      "gzip_sha256": "db4d82913138f6214d2c2653b55720dbd82a8bca7acaa720732c196d0fbfb5e5",
+      "pids": [
+        8
+      ],
+      "raw_bytes": 1566822,
+      "raw_sha256": "6eaf2d0a3429ab4a109c61ee4b75a50477276df12db00ca3cd8069deb6f583f0",
+      "records": 5716
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/wrong-import-source.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 160684,
+      "gzip_sha256": "c6602e94e7cb87a55421ddb1c558838cfa970fb9e69f485eb7eddcb276002b6b",
+      "pids": [
+        16
+      ],
+      "raw_bytes": 1017373,
+      "raw_sha256": "42eec290f813edb657190b062605936471445a4685496de372b960b242ae827c",
+      "records": 2433
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-import-regression/wrong-library.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 153678,
+      "gzip_sha256": "34db2e39d194f7dbe7bef8d9c45832e09cc54c9f02c753e65f6080b2da6062e4",
+      "pids": [
+        12
+      ],
+      "raw_bytes": 824901,
+      "raw_sha256": "578d591600c205241a7ef4076398287b5acb672064c010fc1280f364209fec24",
+      "records": 1553
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 154559,
+      "gzip_sha256": "d3c1f74d9bdf117f49deaaa37006794e3c3681ba89db6c6ce2d5b614a1dc62e9",
+      "pids": [
+        36
+      ],
+      "raw_bytes": 834665,
+      "raw_sha256": "bcddc7371c1e3ee97f179f362a174c00bdb5e93ed5cc020c28b54eca7111eed7",
+      "records": 1721
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/cached-bytecode.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 3028,
+      "gzip_sha256": "85140b548503e1efbf6c79673f4f336ce2f03d214e8b9ea578e32cde282a0d1d",
+      "pids": [
+        32
+      ],
+      "raw_bytes": 21823,
+      "raw_sha256": "52c5ff882202b09a7cbd7a5a186542f122441e1d5507cabf363fc53f63602ec4",
+      "records": 147
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/missing-encodings.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 150691,
+      "gzip_sha256": "2388c0f354524065958be60c6c3d2808f11bd28a786b7f722bb86d0affce864e",
+      "pids": [
+        20
+      ],
+      "raw_bytes": 801388,
+      "raw_sha256": "3263fc47b1d44fc41e8d74a22819c0d1d2f37ac2078b6505cd7f37f504e54767",
+      "records": 1366
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/missing-library.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 3155,
+      "gzip_sha256": "133197fe6a863f293951f35fb5e33a22e0f2a45dd62a0c93291242f1586d5009",
+      "pids": [
+        28
+      ],
+      "raw_bytes": 25702,
+      "raw_sha256": "773f514e2607dc62dc3c52555f8d8a0ce47e813bc552ea8e38073beb22891808",
+      "records": 169
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/success.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 154488,
+      "gzip_sha256": "c3b17fe56bac467c69cd441a346ee335c026581fe7a265fd9cb0a9acdea7d6cb",
+      "pids": [
+        8
+      ],
+      "raw_bytes": 834358,
+      "raw_sha256": "38c597f5bbeca9f31265809cdcc46267b6a1a640bfd2a7436b5167a81989a629",
+      "records": 1718
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/symlink-stdlib.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 2830,
+      "gzip_sha256": "3fcbef2760aea7064050fa60b98881835dfa8613e4e9a7428cda9a60ee3306cc",
+      "pids": [
+        24
+      ],
+      "raw_bytes": 14677,
+      "raw_sha256": "73b4a0b8ae0fb94332a332b8ffc2f0ed125aefd91526b981a4878183a15ea3dd",
+      "records": 112
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/wrong-library.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 149737,
+      "gzip_sha256": "66aaa71e5d4d729e7770f3920e55e8c94267a09a170c490bdec4bb7573cffc78",
+      "pids": [
+        12
+      ],
+      "raw_bytes": 783063,
+      "raw_sha256": "80bc5fe2403e1ed9bf6ff4a3e517a1c3fbca6c50ab1af37b20b45d901dfd1946",
+      "records": 1298
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-startup-regression/wrong-stdlib.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 150754,
+      "gzip_sha256": "dbb94cc5d16f181cdbc44d996d57a048cf1d6fe67d2fb68f3bf91378524ad13f",
+      "pids": [
+        16
+      ],
+      "raw_bytes": 796622,
+      "raw_sha256": "eefbbf97aabaeb934a766218ebe1241840eb92a830730c7971d4a51496c2fb49",
+      "records": 1373
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-archived-app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 1257875,
+      "gzip_sha256": "4c4043b05f8e5c4384b59929d5fe7e2a98a46b923e9baaff796ef191b142dcc3",
+      "pids": [
+        24
+      ],
+      "raw_bytes": 6913501,
+      "raw_sha256": "3572d0eb6b8092464808f4a7ed1b6dcf767c9f8b11b8b2ea6156d02ad1bd0292",
+      "records": 33695
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-archived.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 1257728,
+      "gzip_sha256": "e24e05b237642fd77f3e6f943a476e8ef5027d66b107aba3ba1b78f7e6322dce",
+      "pids": [
+        8
+      ],
+      "raw_bytes": 6912379,
+      "raw_sha256": "67613dbb191ff260844e10db52f3c83d11b198970b404e4d0a47135d45f07703",
+      "records": 33681
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-host-app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 1259090,
+      "gzip_sha256": "7a070306532617e9c3bba9864a0373b55ba195536fe20440a8d5f57933c68f7a",
+      "pids": [
+        28
+      ],
+      "raw_bytes": 6820788,
+      "raw_sha256": "bd99daab500579ca8207b9c517e6191b931ad2d0d31d5e2b97a57dfc09646b7a",
+      "records": 33798
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "bundled-host.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 1259013,
+      "gzip_sha256": "95bd119f21dcd5396a22bf2c89ff66ac7113714ca479a1690430d31c7193b769",
+      "pids": [
+        12
+      ],
+      "raw_bytes": 6820493,
+      "raw_sha256": "214ce49c134fde5d2e0b7d501abc44e9a7c80cdf8012c29bc82e438d20b73ced",
+      "records": 33798
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "corrupt-native.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 245478,
+      "gzip_sha256": "6b667f31e2208d2b8fb6f99127343fe4cb245ae23150f93d973cc8d4996132bb",
+      "pids": [
+        40
+      ],
+      "raw_bytes": 3422054,
+      "raw_sha256": "8611e862c0d379c8c4e30b496e2c773452eb854690a0370859cd228a732ae241",
+      "records": 26563
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-archived-app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 199483,
+      "gzip_sha256": "196382be167b866fbe7077bec44f2a965b314fac30f9c3b33c3d74fb75b8e990",
+      "pids": [
+        32
+      ],
+      "raw_bytes": 1601217,
+      "raw_sha256": "aad2ab46dab8cb46ac687768009d5bdbea84878d6a7f3d8f976f014afebe93db",
+      "records": 5886
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-archived.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 199253,
+      "gzip_sha256": "4dbc853660670d2b681505bbb19f8f931b0d7fb48afd62fb43e2bea097116949",
+      "pids": [
+        16
+      ],
+      "raw_bytes": 1600150,
+      "raw_sha256": "362a8bfdb7afe7f2ced3446a139743a47312214d09fe96340cafdf5425e82292",
+      "records": 5873
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-host-app-error.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 200810,
+      "gzip_sha256": "8f8d2b7179d4f358f893900940bb0ebcba78e10cb7d3425390ea35ba2c3d79c1",
+      "pids": [
+        36
+      ],
+      "raw_bytes": 1639950,
+      "raw_sha256": "5b111baf2801947bcabda8550507478ada3c86e29515d515cd331e8e7dd59c6c",
+      "records": 5992
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "host-host.trace.txt.gz",
+      "fixture_exit": 0,
+      "gzip_bytes": 200691,
+      "gzip_sha256": "f8ac29ce7901dc60f0ae374b05a435073b484a520157a7968f1c2dc4a4e81496",
+      "pids": [
+        20
+      ],
+      "raw_bytes": 1639607,
+      "raw_sha256": "3766c2270ab3f981d5e3cf43b62dcc9551138451032875c3f9ccb06d68933b14",
+      "records": 5991
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "missing-host-image.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 1253147,
+      "gzip_sha256": "98093a3556c2651b3b412cb77cdc60b058d6b735bbe25bea252ce627a96c3abf",
+      "pids": [
+        44
+      ],
+      "raw_bytes": 6929061,
+      "raw_sha256": "33c1413d0e445977392bd63d783e59831eca748232166717ec4f8d3f0fd1e166",
+      "records": 33361
+    },
+    {
+      "compressed_replay_status": 0,
+      "file": "wrong-host-image.trace.txt.gz",
+      "fixture_exit": 1,
+      "gzip_bytes": 1253508,
+      "gzip_sha256": "d43f28fe4ce7247fa1638664244ac64b9615d08d1a5ff0ad5dea1c531923da0b",
+      "pids": [
+        48
+      ],
+      "raw_bytes": 6879051,
+      "raw_sha256": "03f39825c38ee9accb3243fc95e23e80b2083fafa5b68e0e87c801e8db71f411",
+      "records": 33413
+    }
+  ]
+}

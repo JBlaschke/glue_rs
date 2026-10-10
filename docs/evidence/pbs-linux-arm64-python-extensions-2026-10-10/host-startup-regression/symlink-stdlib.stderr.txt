@@ -1,0 +1,1 @@
+glue-python-bootstrap-probe: host path /build-target/host Python symlink-stdlib/lib/python3.13 must be a directory without symlinks

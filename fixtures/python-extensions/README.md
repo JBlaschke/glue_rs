@@ -81,13 +81,19 @@ registration attempt, including partial registration failure.
 The runtime harness removes producer executables, headers and Cargo/native
 build intermediates. A separate unprivileged, offline, read-only cell runs
 without the workspace, with unavailable temporary paths and poisoned Python
-environment variables. Its planned complete traces cover the four successful
+environment variables. Its complete traces cover the four successful
 cells, their four matching app-error runs, `corrupt-native` (the first stored
 dependency byte), `missing-host-image` (the explicit dependency), and
 `wrong-host-image` (a same-size altered single-phase image). Invalid images must
 reject before Python initialization; archived corruption must reject before
-runtime mapping or host lookup. Clean retained evidence and final validation
-counts are pending.
+runtime mapping or host lookup. The [clean capture](../../docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/README.md)
+from implementation `b784c99` passes all eleven cases and twenty-two prior
+Python regressions. It retains complete compressed traces, exact native ELF
+files, manifests, metadata, provenance and replay results. Mac/Linux workspace
+checks pass 338/339 tests for Lua 5.4/5.5 and Clippy; portable Python tests pass
+59 checks and the GNU opt-in fixture passes 65 release tests and Clippy. All 191
+trace-policy tests (30 native registration checks) and both 16-test importer
+protocol runs pass. Independent replay rejects all 37 hostile trace edits.
 
 Product Python execution/discovery, arbitrary wheels/extensions, mutable host
 installations, subinterpreters, general extension-file metadata, unloading and

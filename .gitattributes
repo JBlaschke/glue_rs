@@ -33,3 +33,4 @@ docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/**/*-tests.txt whites
 docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/*-tests.txt whitespace=-blank-at-eof
 docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/**/*.elf.txt whitespace=-blank-at-eol
 docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/*.elf.txt whitespace=-blank-at-eol
+docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/native-build/compiler.txt whitespace=-blank-at-eof

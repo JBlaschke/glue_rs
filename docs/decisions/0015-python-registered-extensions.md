@@ -101,9 +101,14 @@ The multi-phase fixture uses default creation. Custom creation slots and explici
 
 The fixture compares these semantics with an independent stock-runtime public
 registration driver, then exercises all four provider cells, matching app-error
-runs, archived native corruption, and wrong/missing explicit host images. Clean
-retained runtime evidence and final validation counts are pending. Earlier
-source/import and startup evidence remains separately scoped.
+runs, archived native corruption, and wrong/missing explicit host images. The
+[clean native evidence](../evidence/pbs-linux-arm64-python-extensions-2026-10-10/README.md)
+from `b784c99` passes eleven native cases and twenty-two earlier Python
+regressions. It retains exact native artifacts, manifests, complete compressed
+traces and source/input/build identities. The GNU fixture passes 65 release
+tests and Clippy; all 191 trace-policy tests pass on Mac and the matching stock
+Linux interpreter, and independent replay rejects all 37 hostile trace edits.
+Earlier source/import and startup evidence remains separately scoped.
 
 G0/G1/G2 remain open. Product Python execution/acquisition, arbitrary wheels or
 extensions, general dynamic-file-loader metadata, mutable installations,

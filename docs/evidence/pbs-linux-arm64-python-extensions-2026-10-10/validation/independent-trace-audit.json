@@ -1,0 +1,842 @@
+{
+  "audit_script_sha256": "8026bc4889bc9ece03007de13c731f39c16350d591a3e6a720af05af83e0c10f",
+  "baselines": [
+    {
+      "admission": [
+        341133,
+        83212512
+      ],
+      "archive_bytes": 83438354,
+      "corrupt_native_offset": null,
+      "mode": "bundled-archived",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "e24e05b237642fd77f3e6f943a476e8ef5027d66b107aba3ba1b78f7e6322dce",
+      "trace": "bundled-archived.trace.txt.gz",
+      "trace_sha256": "67613dbb191ff260844e10db52f3c83d11b198970b404e4d0a47135d45f07703"
+    },
+    {
+      "admission": [
+        339898,
+        82869473
+      ],
+      "archive_bytes": 83094831,
+      "corrupt_native_offset": null,
+      "mode": "bundled-host",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "95bd119f21dcd5396a22bf2c89ff66ac7113714ca479a1690430d31c7193b769",
+      "trace": "bundled-host.trace.txt.gz",
+      "trace_sha256": "214ce49c134fde5d2e0b7d501abc44e9a7c80cdf8012c29bc82e438d20b73ced"
+    },
+    {
+      "admission": [
+        5912,
+        357536
+      ],
+      "archive_bytes": 359787,
+      "corrupt_native_offset": null,
+      "mode": "host-archived",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "4dbc853660670d2b681505bbb19f8f931b0d7fb48afd62fb43e2bea097116949",
+      "trace": "host-archived.trace.txt.gz",
+      "trace_sha256": "362a8bfdb7afe7f2ced3446a139743a47312214d09fe96340cafdf5425e82292"
+    },
+    {
+      "admission": [
+        4677,
+        14497
+      ],
+      "archive_bytes": 16264,
+      "corrupt_native_offset": null,
+      "mode": "host-host",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "f8ac29ce7901dc60f0ae374b05a435073b484a520157a7968f1c2dc4a4e81496",
+      "trace": "host-host.trace.txt.gz",
+      "trace_sha256": "3766c2270ab3f981d5e3cf43b62dcc9551138451032875c3f9ccb06d68933b14"
+    },
+    {
+      "admission": [
+        341133,
+        83212512
+      ],
+      "archive_bytes": 83438354,
+      "corrupt_native_offset": null,
+      "mode": "bundled-archived-app-error",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "4c4043b05f8e5c4384b59929d5fe7e2a98a46b923e9baaff796ef191b142dcc3",
+      "trace": "bundled-archived-app-error.trace.txt.gz",
+      "trace_sha256": "3572d0eb6b8092464808f4a7ed1b6dcf767c9f8b11b8b2ea6156d02ad1bd0292"
+    },
+    {
+      "admission": [
+        339898,
+        82869473
+      ],
+      "archive_bytes": 83094831,
+      "corrupt_native_offset": null,
+      "mode": "bundled-host-app-error",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "7a070306532617e9c3bba9864a0373b55ba195536fe20440a8d5f57933c68f7a",
+      "trace": "bundled-host-app-error.trace.txt.gz",
+      "trace_sha256": "bd99daab500579ca8207b9c517e6191b931ad2d0d31d5e2b97a57dfc09646b7a"
+    },
+    {
+      "admission": [
+        5912,
+        357536
+      ],
+      "archive_bytes": 359787,
+      "corrupt_native_offset": null,
+      "mode": "host-archived-app-error",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "196382be167b866fbe7077bec44f2a965b314fac30f9c3b33c3d74fb75b8e990",
+      "trace": "host-archived-app-error.trace.txt.gz",
+      "trace_sha256": "aad2ab46dab8cb46ac687768009d5bdbea84878d6a7f3d8f976f014afebe93db"
+    },
+    {
+      "admission": [
+        4677,
+        14497
+      ],
+      "archive_bytes": 16264,
+      "corrupt_native_offset": null,
+      "mode": "host-host-app-error",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "8f8d2b7179d4f358f893900940bb0ebcba78e10cb7d3425390ea35ba2c3d79c1",
+      "trace": "host-host-app-error.trace.txt.gz",
+      "trace_sha256": "5b111baf2801947bcabda8550507478ada3c86e29515d515cd331e8e7dd59c6c"
+    },
+    {
+      "admission": [
+        341133,
+        83212512
+      ],
+      "archive_bytes": 83438354,
+      "corrupt_native_offset": 621546,
+      "mode": "corrupt-native",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "6b667f31e2208d2b8fb6f99127343fe4cb245ae23150f93d973cc8d4996132bb",
+      "trace": "corrupt-native.trace.txt.gz",
+      "trace_sha256": "8611e862c0d379c8c4e30b496e2c773452eb854690a0370859cd228a732ae241"
+    },
+    {
+      "admission": [
+        339993,
+        82869568
+      ],
+      "archive_bytes": 83094926,
+      "corrupt_native_offset": null,
+      "mode": "missing-host-image",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "98093a3556c2651b3b412cb77cdc60b058d6b735bbe25bea252ce627a96c3abf",
+      "trace": "missing-host-image.trace.txt.gz",
+      "trace_sha256": "33c1413d0e445977392bd63d783e59831eca748232166717ec4f8d3f0fd1e166"
+    },
+    {
+      "admission": [
+        339983,
+        82869558
+      ],
+      "archive_bytes": 83094916,
+      "corrupt_native_offset": null,
+      "mode": "wrong-host-image",
+      "reason": null,
+      "status": "accepted",
+      "stored_trace_sha256": "d43f28fe4ce7247fa1638664244ac64b9615d08d1a5ff0ad5dea1c531923da0b",
+      "trace": "wrong-host-image.trace.txt.gz",
+      "trace_sha256": "03f39825c38ee9accb3243fc95e23e80b2083fafa5b68e0e87c801e8db71f411"
+    }
+  ],
+  "capture_source_revision": "b784c99897774adef8fea39e08f33404de51a5b2",
+  "capture_source_status": "",
+  "checker": "scripts/check-linux-python-extension-trace.py",
+  "checker_changed_during_audit": false,
+  "checker_sha256": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+  "created_utc": "2026-10-10T18:15:45.548940+00:00",
+  "mutants": [
+    {
+      "edits": [
+        {
+          "after": "20    mmap(0xffffa4770000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xffffa4770000\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "a85ef8e130c0d5387ea87571b694f3cbea7a082e26f935b5ff3eadcc4bed29c8",
+      "name": "native_fixed_anonymous_replacement",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa4770000\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "7e41d1e88872074bc415ea039956f8392e245bc1e0e0add4c0268ddfd39122a3",
+      "name": "native_null_mapping_result_collision",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mprotect(0xffffa4772000, 4096, PROT_READ|PROT_WRITE) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "5f732b82b905552b11523b849b6e6c9343b3456cc731f9826f3d97f674ca6264",
+      "name": "native_guard_permissions_changed",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    munmap(0xffffa4770000, 4096) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "6b452d3a1128e6d2ec82e0c7e94bf3a29467221f10de1dc5b54b558378e094b0",
+      "name": "native_mapped_pages_unmapped",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    munmap(0xffffa4902000, 4096) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "fec7b9d1a800054d5f0662b81b692d59bee108381fcba8f736bdc22e9034afb3",
+      "name": "selected_runtime_unmapped",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mprotect(0xffffa4902000, 4096, PROT_READ|PROT_WRITE) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "14a7db1cd2a09a5ddbcc04209a3dab7d2c0e0f651a23089d458c6aa09b045c31",
+      "name": "selected_runtime_rx_made_writable",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa4902000\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "12dc975310726fa74d92d9beff7456269c95ddc24e05259f47a360085aabb585",
+      "name": "selected_runtime_null_result_collision",
+      "reason": "TraceError: line 5431: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    clone3({}, 64) = -1 ENOSYS (Function not implemented)\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "f8ffd6df222db20b79f43a5e84ff348f5282905cc7b673868fed5aa6d3320eea",
+      "name": "unknown_failed_process_creation",
+      "reason": "TraceError: line 5431: unapproved syscall clone3",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    openat(AT_FDCWD</build-target/runtime-empty>, \"glue://stock-pbs-registered-extensions/app/missing.py\", O_RDONLY) = -1 ENOENT (No such file or directory)\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "a01e64ade819e84231309f2ba81a47b58ac34cb9ec0217e24b3e70ab40a397ae",
+      "name": "failed_virtual_source_fallback",
+      "reason": "TraceError: line 5431: unapproved OS, Python-source or filesystem read path",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    openat(AT_FDCWD</build-target/runtime-empty>, \"/tmp/native.so\", O_WRONLY|O_CREAT, 0600) = -1 EACCES (Permission denied)\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "ec296974067500a78f31c7860590aada938593906de9bfe058278bf6c936070b",
+      "name": "failed_materialization_attempt",
+      "reason": "TraceError: line 5431: unexpected syscall arity",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    write(1</evidence/host-host.stdout.txt>, \"\", 0) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "9095ce697494b4755ac6bb32d2e45e519eda704913e6e388d3e28a0507f44116",
+      "name": "empty_diagnostic_write",
+      "reason": "TraceError: line 5431: diagnostic write count differs from complete bytes",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    execve(\"/build-target/relocated Python extensions/glue-python-bootstrap-probe\", [\"/build-target/relocated Python extensions/glue-python-bootstrap-probe\", \"run-imports\", \"/build-target/relocated Python extensions/host-host.glue\"], 0xffffccb96030 /* 18 vars */) = 0\n",
+          "before": "20    execve(\"/build-target/relocated Python extensions/glue-python-bootstrap-probe\", [\"/build-target/relocated Python extensions/glue-python-bootstrap-probe\", \"run-extensions\", \"/build-target/relocated Python extensions/host-host.glue\"], 0xffffccb96030 /* 18 vars */) = 0\n",
+          "index": 0,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "5214751750c4e4d59cdf3f3557b192bb37b1ffc6d2837251ccceb86cfcaad81e",
+      "name": "wrong_exec_command",
+      "reason": "TraceError: line 1: execve differs from the exact registered extension command",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    write(1</evidence/other.stdout.txt>, \"PASS Python=3.13.16 imports=archive packages=archive namespaces=archive resources=streams answer=42\\n\", 100) = 100\n",
+          "before": "20    write(1</evidence/host-host.stdout.txt>, \"PASS Python=3.13.16 imports=archive packages=archive namespaces=archive resources=streams answer=42\\n\", 100) = 100\n",
+          "index": 5430,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "e886610defe5bfb1029e8c6c656c62680e0442142739f4a5b79474a9ed11c050",
+      "name": "wrong_stdout_identity",
+      "reason": "TraceError: line 5431: inherited evidence stream identity differs from this matrix cell",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    read(6</build-target/host Python extensions/libglue_python_dependency.so>, \"\", 0) = 0\n",
+          "before": "20    read(6</build-target/host Python extensions/libglue_python_dependency.so>, \"\", 1) = 0\n",
+          "index": 357,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "fc8a251fc6f90bb27e24d81be9fb3b915af3a3effcfd1e4c7069ab197bc3fe59",
+      "name": "zero_count_false_eof",
+      "reason": "TraceError: line 358: unparsed native input read",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0444, stx_size=671520, ...}) = 0\n",
+          "before": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0444, stx_size=67152, ...}) = 0\n",
+          "index": 349,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "7014f3a2c809e6b1d27734c95c15d39b459519191975be3afb4a6d33e8c46ec2",
+      "name": "native_size_prefix_confusion",
+      "reason": "TraceError: line 350: native metadata differs from exact regular-image/directory structure and size",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFLNK|0444, stx_size=67152, ...}) = 0\n",
+          "before": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0444, stx_size=67152, ...}) = 0\n",
+          "index": 349,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "f9663eff517b770887ef9147ff45601fc67b560d0cb096bca65e53bfefb056f5",
+      "name": "native_symlink_kind",
+      "reason": "TraceError: line 350: native metadata differs from exact regular-image/directory structure and size",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|0, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0444, stx_size=67152, ...}) = 0\n",
+          "before": "20    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions/libglue_python_dependency.so\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0444, stx_size=67152, ...}) = 0\n",
+          "index": 349,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "253cbcb0a9ca749eabe8817155f30320297b812b6437f71bffe3c1c53e673cb1",
+      "name": "native_path_missing_nofollow",
+      "reason": "TraceError: line 350: native host metadata must reject symbolic links",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mmap(0xffffa4770000, 131073, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 563</build-target/host Python extensions/libglue_python_dependency.so>, 0) = 0xffffa4770000\n",
+          "before": "20    mmap(0xffffa4770000, 131072, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 563</build-target/host Python extensions/libglue_python_dependency.so>, 0) = 0xffffa4770000\n",
+          "index": 4268,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "603b6fb503e1fa054dad3da12ed58ca5b0484e848710455eaf56b58a9db214fd",
+      "name": "native_wrong_segment_length",
+      "reason": "TraceError: line 4269: native mapping requires exact immutable private segment and fixed-address result",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mmap(0xffffa4770000, 131072, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 563</build-target/host Python extensions/libglue_python_dependency.so>, 0) = 0xffffa4771000\n",
+          "before": "20    mmap(0xffffa4770000, 131072, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 563</build-target/host Python extensions/libglue_python_dependency.so>, 0) = 0xffffa4770000\n",
+          "index": 4268,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "2dfd4651df64ab278579a5ec369302ca3e98c6fbc642b35ac7e630b65780c2b9",
+      "name": "native_fixed_result_differs",
+      "reason": "TraceError: line 4269: native mapping requires exact immutable private segment and fixed-address result",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mprotect(0xffffa478f000, 4096, PROT_READ) = 0\n",
+          "index": 4273,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "90d5fe38e2c88ce88eca50f82e7ec4c479b0fdc55d6ca3df1aa476a2a6d160cc",
+      "name": "duplicate_native_relro",
+      "reason": "TraceError: line 4275: native RELRO must seal the exact once-only mapped data page",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "20    mprotect(0xffffa4771000, 122880, PROT_NONE) = 0\n",
+          "index": 4270,
+          "op": "delete"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "1ca788a4ce887bf8a6db0d4f15913b9fee5e9a515b43b694449539f7ac999898",
+      "name": "missing_native_gap_guard",
+      "reason": "TraceError: line 4271: native segment address/order differs from its owned reservation",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mmap(NULL, 196848, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa4770000\n",
+          "before": "20    mmap(NULL, 196848, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xffffa473f000\n",
+          "index": 4277,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "3e32c1abdd1ccbf724586ec90e54b5f1494d358f303f3a0d988736350ad2b1ab",
+      "name": "native_reservation_overlaps_first_image",
+      "reason": "TraceError: line 4278: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    mremap(0xffffa438e000, 139264, 155648, MREMAP_MAYMOVE) = 0xffffa4770000\n",
+          "before": "20    mremap(0xffffa438e000, 139264, 155648, MREMAP_MAYMOVE) = 0xffffa4268000\n",
+          "index": 4559,
+          "op": "replace"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "a356e4c8190b59d9e83304b3fef9e751de8d1955e49dfcb3223889395952548b",
+      "name": "moved_buffer_destination_overlaps_native",
+      "reason": "TraceError: line 4560: memory result overlaps a retained native or selected runtime image",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    close(6</build-target/host Python extensions/libglue_python_dependency.so>) = 0\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "244656392dfd50389bd9081f4b02de251d2ce24fbaba2847e6545b02744bcc29",
+      "name": "early_native_source_close",
+      "reason": "TraceError: line 5431: native image lifetime ended before process termination",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "20    openat(AT_FDCWD</build-target/runtime-empty>, \"/proc/self/maps\", O_RDONLY|O_CLOEXEC) = 6</proc/20/maps>\n",
+          "index": 5430,
+          "op": "insert"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "4da5ba7e1af4d1498fb6de1513f861f20a77a5212914ba1faaa90473dc7a8253",
+      "name": "delegated_reader_fd_collides_native",
+      "reason": "TraceError: line 5431: runtime descriptor allocation collides with a retained native owner",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "20    statx(7</>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 378,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(8</build-target>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 382,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(9</build-target/host Python extensions>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=224, ...}) = 0\n",
+          "index": 386,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(11</>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 417,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(12</build-target>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 421,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(13</build-target/host Python extensions>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=224, ...}) = 0\n",
+          "index": 425,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(15</>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 456,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(16</build-target>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 460,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(17</build-target/host Python extensions>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=224, ...}) = 0\n",
+          "index": 464,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(19</>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 495,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(20</build-target>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 499,
+          "op": "delete"
+        },
+        {
+          "before": "20    statx(21</build-target/host Python extensions>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=224, ...}) = 0\n",
+          "index": 503,
+          "op": "delete"
+        }
+      ],
+      "mode": "host-host",
+      "mutant_sha256": "bafb014a99b264eb95bf618ef5e2308fcad99c76897fca378a09730af8cb331e",
+      "name": "fresh_ancestor_fd_metadata_omitted",
+      "reason": "TraceError: line 387: native input lacks retained no-follow directory ancestors",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "16    fcntl(543</memfd:glue-python-native-libglue_python_dependency.so>(deleted), F_GET_SEALS) = 0xf (seals F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE)\n",
+          "index": 4148,
+          "op": "delete"
+        }
+      ],
+      "mode": "host-archived",
+      "mutant_sha256": "0ac487fba4bd8c7a58e2d81f010545c87b74f304f714c0f3313720a3c34096c1",
+      "name": "native_seal_verification_omitted",
+      "reason": "TraceError: line 4165: native loader alias precedes full verification, sealing or selected runtime",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "16    fcntl(543</memfd:glue-python-native-libglue_python_dependency.so>(deleted), F_ADD_SEALS, F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE) = 0\n",
+          "index": 4147,
+          "op": "delete"
+        }
+      ],
+      "mode": "host-archived",
+      "mutant_sha256": "7d41045b97132fb0aadace697b7124e34b02c05eb800c32b274700078e1525ed",
+      "name": "native_seal_installation_omitted",
+      "reason": "TraceError: line 4148: native seal operation is missing, duplicated or out of order",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "36    write(1</evidence/host-host-app-error.stdout.txt>, \"GLUE_PYTHON_EXTENSIONS_PASS single=42 multi=44 retry=2 dependency=42\\n\", 69) = 69\n",
+          "index": 5429,
+          "op": "delete"
+        }
+      ],
+      "mode": "host-host-app-error",
+      "mutant_sha256": "49224fecab6671430a7f77a7b641923fecd354b41b4d8b41be8f8db931824c54",
+      "name": "app_error_before_native_pass",
+      "reason": "TraceError: line 5431: verified host file and ancestor descriptors must outlive app execution",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 33335,
+          "op": "delete"
+        },
+        {
+          "before": "44    openat(AT_FDCWD</build-target/runtime-empty>, \"/\", O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 3</>\n",
+          "index": 33336,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(3</>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 33337,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0555, stx_size=83, ...}) = 0\n",
+          "index": 33338,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 33339,
+          "op": "delete"
+        },
+        {
+          "before": "44    openat(AT_FDCWD</build-target/runtime-empty>, \"/build-target\", O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4</build-target>\n",
+          "index": 33340,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(4</build-target>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 33341,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0755, stx_size=320, ...}) = 0\n",
+          "index": 33342,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions missing-host-image\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=192, ...}) = 0\n",
+          "index": 33343,
+          "op": "delete"
+        },
+        {
+          "before": "44    openat(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions missing-host-image\", O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5</build-target/host Python extensions missing-host-image>\n",
+          "index": 33344,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(5</build-target/host Python extensions missing-host-image>, \"\", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=192, ...}) = 0\n",
+          "index": 33345,
+          "op": "delete"
+        },
+        {
+          "before": "44    statx(AT_FDCWD</build-target/runtime-empty>, \"/build-target/host Python extensions missing-host-image\", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0555, stx_size=192, ...}) = 0\n",
+          "index": 33346,
+          "op": "delete"
+        },
+        {
+          "before": "44    close(3</>)                       = 0\n",
+          "index": 33348,
+          "op": "delete"
+        },
+        {
+          "before": "44    close(4</build-target>)           = 0\n",
+          "index": 33349,
+          "op": "delete"
+        },
+        {
+          "before": "44    close(5</build-target/host Python extensions missing-host-image>) = 0\n",
+          "index": 33350,
+          "op": "delete"
+        }
+      ],
+      "mode": "missing-host-image",
+      "mutant_sha256": "756798f57e49e62b815b2834c01ce44fef58978c01e39174e2948ea6b6d04ceb",
+      "name": "missing_image_without_ancestor_admission",
+      "reason": "TraceError: line 33336: native input lacks retained no-follow directory ancestors",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "44    write(0</evidence/missing-host-image.stderr.txt>, \"glue-python-bootstrap-probe: \", 29) = 29\n",
+          "before": "44    write(2</evidence/missing-host-image.stderr.txt>, \"glue-python-bootstrap-probe: \", 29) = 29\n",
+          "index": 33354,
+          "op": "replace"
+        }
+      ],
+      "mode": "missing-host-image",
+      "mutant_sha256": "0b93da2014529172c9d0edbe05c7b9401d047bdf160abd36442f6a5147d327a4",
+      "name": "negative_wrong_stream_number",
+      "reason": "TraceError: line 33355: extension diagnostic precedes complete native/runtime admission",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "44    write(2</evidence/other.stderr.txt>, \"glue-python-bootstrap-probe: \", 29) = 29\n",
+          "before": "44    write(2</evidence/missing-host-image.stderr.txt>, \"glue-python-bootstrap-probe: \", 29) = 29\n",
+          "index": 33354,
+          "op": "replace"
+        }
+      ],
+      "mode": "missing-host-image",
+      "mutant_sha256": "067c887f205223f38a5f42b06eb61513396040ef64d347788a103ef7487f5346",
+      "name": "negative_wrong_stderr_identity",
+      "reason": "TraceError: line 33355: inherited evidence stream identity differs from this matrix cell",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "44    openat(AT_FDCWD</build-target/runtime-empty>, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 9</etc/ld.so.cache>\n",
+          "index": 33355,
+          "op": "insert"
+        }
+      ],
+      "mode": "missing-host-image",
+      "mutant_sha256": "a8d6e6ae8aa6a39fd7c95418aa3b92db4509a9d7c9e8ee831e10ff013c9ce09f",
+      "name": "negative_acquisition_after_diagnostic",
+      "reason": "TraceError: line 33356: input acquisition or mapping after validation rejection diagnostic",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "after": "40    read(3</build-target/relocated Python extensions/corrupt-native.glue>, \"\\177ELF\\2\\1\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\267\\0\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0@\\0\\0\\0\\0\\0\\0\\0\\320\\2\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0@\\08\\0\\7\\0@\\0\\16\\0\\r\\0\\1\\0\\0\\0\\5\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\310\\2\\0\\0\\0\\0\\0\\0\\310\\2\\0\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\1\\0\\0\\0\\6\\0\\0\\0\\0\\377\\0\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\2\\0\\0\\0\\6\\0\\0\\0\\0\\377\\0\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\340\\0\\0\\0\\0\\0\\0\\0\\340\\0\\0\\0\\0\\0\\0\\0\\10\\0\\0\\0\\0\\0\\0\\0\\4\\0\\0\\0\\4\\0\\0\\0\\310\\1\\0\\0\\0\\0\\0\\0\\310\\1\\0\\0\\0\\0\\0\\0\"..., 32768) = 32768\n",
+          "before": "40    read(3</build-target/relocated Python extensions/corrupt-native.glue>, \"~ELF\\2\\1\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\267\\0\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0@\\0\\0\\0\\0\\0\\0\\0\\320\\2\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0@\\08\\0\\7\\0@\\0\\16\\0\\r\\0\\1\\0\\0\\0\\5\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\310\\2\\0\\0\\0\\0\\0\\0\\310\\2\\0\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\1\\0\\0\\0\\6\\0\\0\\0\\0\\377\\0\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\0\\0\\0\\1\\0\\0\\0\\0\\0\\2\\0\\0\\0\\6\\0\\0\\0\\0\\377\\0\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\377\\1\\0\\0\\0\\0\\0\\340\\0\\0\\0\\0\\0\\0\\0\\340\\0\\0\\0\\0\\0\\0\\0\\10\\0\\0\\0\\0\\0\\0\\0\\4\\0\\0\\0\\4\\0\\0\\0\\310\\1\\0\\0\\0\\0\\0\\0\\310\\1\\0\\0\\0\\0\\0\\0\"..., 32768) = 32768\n",
+          "index": 26552,
+          "op": "replace"
+        }
+      ],
+      "mode": "corrupt-native",
+      "mutant_sha256": "f10d511d85a385ecf0d4beb071b4d02962796c33dae0c145352f2b3a8e9f6884",
+      "name": "corrupt_selected_payload_marker_missing",
+      "reason": "TraceError: line 26557: extension diagnostic precedes complete native/runtime admission",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "40    read(3</build-target/relocated Python extensions/corrupt-native.glue>, \"GCC: (Debian 12.2.0-14+deb12u1) 12.2.0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\1\\0\\310\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\2\\0\\360\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\3\\0\\10\\2\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\4\\08\\2\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\5\\0\\200\\2\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\6\\0\\210\\2\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\7\\0\\240\\2\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\3\\0\\10\\0\\0\\377\\1\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\"..., 1616) = 1616\n",
+          "index": 26554,
+          "op": "delete"
+        }
+      ],
+      "mode": "corrupt-native",
+      "mutant_sha256": "02cd3d3de567a82acbddf0b06d5cbcccea27922d21efac28ecaaac9111162fca",
+      "name": "corrupt_selected_payload_truncated",
+      "reason": "TraceError: line 26556: extension diagnostic precedes complete native/runtime admission",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "40    read(3</build-target/relocated Python extensions/corrupt-native.glue>, \"{\\\"app_id\\\":\\\"stock-pbs-registered-extensions\\\",\\\"components\\\":{\\\"main\\\":{\\\"entry_point\\\":\\\"app/main.py\\\",\\\"native_modules\\\":[\\\"glue_native_exec_error.so\\\",\\\"glue_native_init_error.so\\\",\\\"glue_native_multi.so\\\",\\\"glue_native_single.so\\\"],\\\"runtime\\\":\\\"python\\\"}},\\\"entrypoint\\\":\\\"main\\\"\"..., 341133) = 341133\n",
+          "index": 65,
+          "op": "delete"
+        }
+      ],
+      "mode": "corrupt-native",
+      "mutant_sha256": "1c8aa3421fe47111b8b0801337e2adcb9f1fdca4a9252193d14d948c9b0fefa0",
+      "name": "corrupt_manifest_coverage_omitted",
+      "reason": "TraceError: line 26556: extension diagnostic precedes complete native/runtime admission",
+      "status": "rejected"
+    },
+    {
+      "edits": [
+        {
+          "before": "40    read(3</build-target/relocated Python extensions/corrupt-native.glue>, \"PK\\1\\2-\\3-\\0\\0\\0\\10\\0\\0\\0!\\0\\262\\16\\372\\355\\377\\377\\377\\377\\377\\377\\377\\377\\v\\0\\24\\0\\0\\0\\0\\0\\0\\0\\0\\0\\244\\201\\0\\0\\0\\0\", 46) = 46\n",
+          "index": 99,
+          "op": "delete"
+        }
+      ],
+      "mode": "corrupt-native",
+      "mutant_sha256": "43472bbb975f5737e7473b8e3b11b14aa33e6c37e6c258bf1b5063eb51548979",
+      "name": "corrupt_zip_directory_coverage_omitted",
+      "reason": "TraceError: line 26556: extension diagnostic precedes complete native/runtime admission",
+      "status": "rejected"
+    }
+  ],
+  "native_metadata_sha256": "dede6d5da8fea742d9479511485c9658ec737fce0c29a3bb693046441a0a6e56",
+  "parent_policy_sha256": {
+    "scripts/check-linux-memfd-trace.py": "5d3c1cf2ed7b908ce42c99f7f3bd50a0a3445a84acd61678421117b325ef2815",
+    "scripts/check-linux-pbs-trace.py": "4c847ff9e9afc5b6ee5909d708aed73dba1604d64ac67ed7c10bf887a968009b",
+    "scripts/check-linux-python-bootstrap-trace.py": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+    "scripts/check-linux-python-host-import-trace.py": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+    "scripts/check-linux-python-import-trace.py": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed"
+  },
+  "schema_version": 0,
+  "scope": "Independent complete captured-trace and retained-metadata replay plus hostile trace edits; no new runtime executions.",
+  "source_and_capture_match": true,
+  "source_revision": "b784c99897774adef8fea39e08f33404de51a5b2",
+  "source_status": "",
+  "summary": {
+    "baselines_accepted": 11,
+    "baselines_total": 11,
+    "mutants_rejected": 37,
+    "mutants_total": 37
+  }
+}

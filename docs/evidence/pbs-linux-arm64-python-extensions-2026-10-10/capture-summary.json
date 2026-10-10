@@ -1,0 +1,390 @@
+{
+  "extensions": {
+    "source_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+    "source_clean": true,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "launcher": {
+      "file": "glue-python-bootstrap-probe",
+      "size": 3520088,
+      "sha256": "29de143a54d6a2f41ce2324d92f52edc12b0f33773a283f81d2b8dc95a145c36"
+    },
+    "archives": {
+      "bundled-archived": {
+        "file": "bundled-archived.glue",
+        "size": 83438354,
+        "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97"
+      },
+      "bundled-host": {
+        "file": "bundled-host.glue",
+        "size": 83094831,
+        "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5"
+      },
+      "host-archived": {
+        "file": "host-archived.glue",
+        "size": 359787,
+        "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00"
+      },
+      "host-host": {
+        "file": "host-host.glue",
+        "size": 16264,
+        "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4"
+      },
+      "bundled-archived-app-error": {
+        "file": "bundled-archived.glue",
+        "size": 83438354,
+        "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97"
+      },
+      "bundled-host-app-error": {
+        "file": "bundled-host.glue",
+        "size": 83094831,
+        "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5"
+      },
+      "host-archived-app-error": {
+        "file": "host-archived.glue",
+        "size": 359787,
+        "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00"
+      },
+      "host-host-app-error": {
+        "file": "host-host.glue",
+        "size": 16264,
+        "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4"
+      },
+      "corrupt-native": {
+        "file": "corrupt-native.glue",
+        "size": 83438354,
+        "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2"
+      },
+      "missing-host-image": {
+        "file": "missing-host-image.glue",
+        "size": 83094926,
+        "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8"
+      },
+      "wrong-host-image": {
+        "file": "wrong-host-image.glue",
+        "size": 83094916,
+        "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046"
+      }
+    },
+    "images": {
+      "glue_native_exec_error.so": {
+        "file": "glue_native_exec_error.so",
+        "size": 68672,
+        "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+      },
+      "glue_native_init_error.so": {
+        "file": "glue_native_init_error.so",
+        "size": 68400,
+        "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+      },
+      "glue_native_multi.so": {
+        "file": "glue_native_multi.so",
+        "size": 68640,
+        "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+      },
+      "glue_native_single.so": {
+        "file": "glue_native_single.so",
+        "size": 68536,
+        "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+      },
+      "libglue_python_dependency.so": {
+        "file": "libglue_python_dependency.so",
+        "size": 67152,
+        "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+      }
+    },
+    "stdout_bytes": 169,
+    "baseline_stdout_bytes": 69,
+    "statuses": {
+      "bundled-archived": 0,
+      "bundled-host": 0,
+      "host-archived": 0,
+      "host-host": 0,
+      "bundled-archived-app-error": 1,
+      "bundled-host-app-error": 1,
+      "host-archived-app-error": 1,
+      "host-host-app-error": 1,
+      "corrupt-native": 1,
+      "missing-host-image": 1,
+      "wrong-host-image": 1
+    },
+    "corrupt_native": {
+      "key": "native/libglue_python_dependency.so",
+      "data_offset": 621546,
+      "size": 67152,
+      "original_sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+      "corrupt_sha256": "ce1b5a0a2bd6ba1237baefcb25b482ebeb23a742856171750cb6d6fbaac0a117",
+      "only_changed_archive_byte": 621546
+    }
+  },
+  "hostimports": {
+    "source_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+    "source_clean": true,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "launcher": {
+      "file": "glue-python-bootstrap-probe",
+      "size": 3520088,
+      "sha256": "29de143a54d6a2f41ce2324d92f52edc12b0f33773a283f81d2b8dc95a145c36"
+    },
+    "archives": {
+      "success": {
+        "file": "success.glue",
+        "size": 13932,
+        "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682"
+      },
+      "app-error": {
+        "file": "success.glue",
+        "size": 13932,
+        "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682"
+      },
+      "corrupt-source": {
+        "file": "corrupt-source.glue",
+        "size": 13932,
+        "sha256": "3ef231cbfa97bbdf50b1e38b5aa693824478ff15d74d3d5ed0b7596774b1024e"
+      },
+      "wrong-library": {
+        "file": "wrong-library.glue",
+        "size": 13960,
+        "sha256": "f644ad233f99f3c39fb7ff7b0a98f65a02fc67e3bf07bc16e14760ea13f9d2e7"
+      },
+      "wrong-import-source": {
+        "file": "wrong-import-source.glue",
+        "size": 13972,
+        "sha256": "9633057d3156ad88c5770f0b839d57897d028ca50abf88d854ca2e0cef2c5597"
+      },
+      "missing-import-source": {
+        "file": "missing-import-source.glue",
+        "size": 13976,
+        "sha256": "1c5253a146ae12a2ddb62cae2e7fb3a487b432225abb19c488d9b40f093f2e42"
+      },
+      "cached-import-bytecode": {
+        "file": "cached-import-bytecode.glue",
+        "size": 13978,
+        "sha256": "db05acc23bfef5b719ee1a018c8c71086ff35fa9e0715153d11a9115bbe0eca0"
+      }
+    },
+    "frozen_bundle": {
+      "file": "freeze-bundle.json",
+      "size": 139523,
+      "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+    },
+    "stdout_bytes": 100,
+    "statuses": {
+      "success": 0,
+      "app-error": 1,
+      "corrupt-source": 1,
+      "wrong-library": 1,
+      "wrong-import-source": 1,
+      "missing-import-source": 1,
+      "cached-import-bytecode": 1
+    },
+    "corrupt_source": {
+      "key": "app/python/glue_demo/__init__.py",
+      "data_offset": 6235,
+      "size": 104,
+      "original_sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+      "corrupt_sha256": "d8f9185a8c89ef3c93e4d8c580f5fbcaaacf30bc781ef3657d0479baee647b0a",
+      "only_changed_archive_byte": 6235
+    },
+    "source_projection": {
+      "files": 0,
+      "uncompressed_bytes": 0,
+      "inventory": {
+        "file": "stdlib-pins.json",
+        "size": 326131,
+        "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8"
+      }
+    },
+    "resource_count": 18,
+    "host_sources": {
+      "startup_files": 6,
+      "supplemental_files": 63,
+      "total_files": 69,
+      "total_bytes": 1434587,
+      "supplemental_bytes": 1372061,
+      "supplemental_pins": {
+        "file": "stdlib-import-pins.json",
+        "size": 10668,
+        "sha256": "3f73bcdba6bdca48bca36e070e82b54b94d6ae80772c1ed83a4a36ba3cd66b1b"
+      },
+      "runtime_names": {
+        "file": "runtime-names.json",
+        "size": 2410,
+        "sha256": "daa8daae25ac462e1489e1a14a6d9fc8ce8091791d3294656d6814b2e55d42ac"
+      },
+      "cache_locations": 12
+    }
+  },
+  "imports": {
+    "source_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+    "source_clean": true,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "launcher": {
+      "file": "glue-python-bootstrap-probe",
+      "size": 3520088,
+      "sha256": "29de143a54d6a2f41ce2324d92f52edc12b0f33773a283f81d2b8dc95a145c36"
+    },
+    "archives": {
+      "success": {
+        "file": "app.glue",
+        "size": 83092494,
+        "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520"
+      },
+      "app-error": {
+        "file": "app.glue",
+        "size": 83092494,
+        "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520"
+      },
+      "corrupt-source": {
+        "file": "corrupt-source.glue",
+        "size": 83092494,
+        "sha256": "da8b417cd2059fd7137bca38f7f367ee6292d1c911d247adb75bb0f10f8665d8"
+      }
+    },
+    "frozen_bundle": {
+      "file": "freeze-bundle.json",
+      "size": 139523,
+      "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+    },
+    "stdout_bytes": 100,
+    "statuses": {
+      "success": 0,
+      "app-error": 1,
+      "corrupt-source": 1
+    },
+    "corrupt_source": {
+      "key": "app/python/glue_demo/__init__.py",
+      "data_offset": 341451,
+      "size": 104,
+      "original_sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+      "corrupt_sha256": "d8f9185a8c89ef3c93e4d8c580f5fbcaaacf30bc781ef3657d0479baee647b0a",
+      "only_changed_archive_byte": 341451
+    },
+    "source_projection": {
+      "files": 2174,
+      "uncompressed_bytes": 39158056,
+      "inventory": {
+        "file": "stdlib-pins.json",
+        "size": 326131,
+        "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8"
+      }
+    },
+    "resource_count": 2194
+  },
+  "frozen": {
+    "source_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+    "source_clean": true,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "launcher": {
+      "file": "glue-python-bootstrap-probe",
+      "size": 3520088,
+      "sha256": "29de143a54d6a2f41ce2324d92f52edc12b0f33773a283f81d2b8dc95a145c36"
+    },
+    "archives": {
+      "success": {
+        "file": "app.glue",
+        "size": 73707094,
+        "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+      },
+      "missing-encodings": {
+        "file": "app.glue",
+        "size": 73707094,
+        "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+      },
+      "bad-bytecode": {
+        "file": "app.glue",
+        "size": 73707094,
+        "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+      },
+      "app-error": {
+        "file": "app.glue",
+        "size": 73707094,
+        "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+      }
+    },
+    "frozen_bundle": {
+      "file": "freeze-bundle.json",
+      "size": 139523,
+      "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+    },
+    "stdout_bytes": 108,
+    "statuses": {
+      "success": 0,
+      "missing-encodings": 1,
+      "bad-bytecode": 1,
+      "app-error": 1
+    }
+  },
+  "host": {
+    "source_commit": "b784c99897774adef8fea39e08f33404de51a5b2",
+    "source_clean": true,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "launcher": {
+      "file": "glue-python-bootstrap-probe",
+      "size": 3520088,
+      "sha256": "29de143a54d6a2f41ce2324d92f52edc12b0f33773a283f81d2b8dc95a145c36"
+    },
+    "archives": {
+      "success": {
+        "file": "success.glue",
+        "size": 2741,
+        "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18"
+      },
+      "wrong-library": {
+        "file": "wrong-library.glue",
+        "size": 2769,
+        "sha256": "a60fc7df7a3116b14bfa0a3436bb177b0f5755c9261b7dfd3dfd31ebcaac9b37"
+      },
+      "wrong-stdlib": {
+        "file": "wrong-stdlib.glue",
+        "size": 2767,
+        "sha256": "a321b1b099b3fbc924c4a646d1b9854417c9c84e7ddb9e384b9a8b785fca4968"
+      },
+      "missing-encodings": {
+        "file": "missing-encodings.glue",
+        "size": 2777,
+        "sha256": "3fed3406a05d2c43a79c4561d341ecb499f09783f865ecc039238e1ff5ec386f"
+      },
+      "symlink-stdlib": {
+        "file": "symlink-stdlib.glue",
+        "size": 2771,
+        "sha256": "dfc6da3209d2f011281645e0b5aeb7ec3cd74d8457c235e71f42ac0a300cab0f"
+      },
+      "missing-library": {
+        "file": "missing-library.glue",
+        "size": 2773,
+        "sha256": "731d6cb68d7ea75229cf0c3e297466b6c1b6e5105e1721b590bc21d9e54dc406"
+      },
+      "cached-bytecode": {
+        "file": "cached-bytecode.glue",
+        "size": 2773,
+        "sha256": "ca0791efba245e03d99f755112abff7362fca88dd02007838705f2228fbfdbc4"
+      },
+      "app-error": {
+        "file": "success.glue",
+        "size": 2741,
+        "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18"
+      }
+    },
+    "frozen_bundle": {
+      "file": "freeze-bundle.json",
+      "size": 139523,
+      "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+    },
+    "stdout_bytes": 111,
+    "statuses": {
+      "success": 0,
+      "wrong-library": 1,
+      "wrong-stdlib": 1,
+      "missing-encodings": 1,
+      "symlink-stdlib": 1,
+      "missing-library": 1,
+      "cached-bytecode": 1,
+      "app-error": 1
+    }
+  }
+}

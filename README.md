@@ -187,6 +187,9 @@ Runtime and native providers vary independently across bundled/explicit-host and
 archived/explicit-host inputs. This controlled GNU Linux arm64 profile exercises
 cache/reload/removal, initialization/execution errors and retry, and finalization
 callbacks. General extension-file loading and product Python execution remain open.
+The [clean native capture](docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/README.md)
+passes eleven matrix/control traces and twenty-two earlier Python regressions
+from implementation `b784c99`, with all 37 hostile trace edits rejected.
 
 ## Try the resource fixture
 
@@ -234,7 +237,7 @@ and 59 Python bootstrap/host/import/native profile tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
 GNU opt-in Python fixture passes 65 release tests and Clippy; all 191
 trace-policy tests pass, including 29 bundled-import, 20 host-import and 30
-registered-native checks. The importer
+native registration checks. The importer
 also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation

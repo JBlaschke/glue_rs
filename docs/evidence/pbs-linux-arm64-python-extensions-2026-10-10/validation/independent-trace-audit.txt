@@ -1,0 +1,1 @@
+{"output": "target/python-extensions-checks/independent-trace-audit.json", "summary": {"baselines_accepted": 11, "baselines_total": 11, "mutants_rejected": 37, "mutants_total": 37}, "source_and_capture_match": true, "checker_changed_during_audit": false, "accepted_mutants": []}
