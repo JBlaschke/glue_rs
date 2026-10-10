@@ -229,7 +229,7 @@ fn require_cache_absent(path: &Path) -> Result<(), String> {
     }
 }
 
-fn validate_path(path: &str) -> Result<(), String> {
+pub(super) fn validate_path(path: &str) -> Result<(), String> {
     if path.is_empty()
         || path.len() > MAX_PATH_BYTES
         || !path.is_ascii()
@@ -338,13 +338,40 @@ fn same_file(left: &Metadata, right: &Metadata) -> bool {
     }
 }
 
-fn verified_file(
+pub(super) fn verified_file(
     path: &Path,
     expected_size: u64,
     expected_sha256: &str,
 ) -> Result<(File, Vec<File>), String> {
     let directories = open_directories(path.parent().ok_or("host file has no parent")?)?;
-    let mut file = open_checked(path, false)?;
+    let file = open_checked(path, false)?;
+    verify_opened_file(path, file, directories, expected_size, expected_sha256)
+}
+
+pub(super) fn verified_bounded_file(
+    path: &Path,
+    maximum: u64,
+    expected_sha256: &str,
+) -> Result<(File, Vec<File>), String> {
+    let directories = open_directories(path.parent().ok_or("host file has no parent")?)?;
+    let file = open_checked(path, false)?;
+    let size = file.metadata().map_err(|e| e.to_string())?.len();
+    if size == 0 || size > maximum {
+        return Err(format!(
+            "host image size exceeds its bound: {}",
+            path.display()
+        ));
+    }
+    verify_opened_file(path, file, directories, size, expected_sha256)
+}
+
+fn verify_opened_file(
+    path: &Path,
+    mut file: File,
+    directories: Vec<File>,
+    expected_size: u64,
+    expected_sha256: &str,
+) -> Result<(File, Vec<File>), String> {
     if file
         .metadata()
         .map_err(|error| format!("inspect host file {}: {error}", path.display()))?
@@ -455,6 +482,35 @@ mod tests {
 
     fn import_pins(relative: &str, bytes: &[u8]) -> BTreeMap<String, ResourceSpec> {
         BTreeMap::from([(relative.into(), import_pin(bytes))])
+    }
+
+    #[test]
+    fn bounded_native_files_check_identity_bounds_and_return_rewound_owners() {
+        let fixture = Fixture::new();
+        let bytes = b"native image snapshot";
+        let path = fixture.file("image.so", bytes);
+        let hash = glue_format::digest(bytes);
+        let (mut file, parents) = verified_bounded_file(&path, bytes.len() as u64, &hash).unwrap();
+        assert!(!parents.is_empty());
+        let mut actual = Vec::new();
+        file.read_to_end(&mut actual).unwrap();
+        assert_eq!(actual, bytes);
+        assert!(verified_bounded_file(&path, bytes.len() as u64 - 1, &hash).is_err());
+        assert!(
+            verified_bounded_file(&path, bytes.len() as u64, &glue_format::digest(b"other"))
+                .is_err()
+        );
+        let empty = fixture.file("empty.so", b"");
+        assert!(verified_bounded_file(&empty, 100, &glue_format::digest(b"")).is_err());
+        #[cfg(unix)]
+        {
+            let alias = fixture.0.join("alias.so");
+            std::os::unix::fs::symlink(&path, &alias).unwrap();
+            assert!(verified_bounded_file(&alias, 100, &hash).is_err());
+            let directory = fixture.0.join("alias-dir");
+            std::os::unix::fs::symlink(&fixture.0, &directory).unwrap();
+            assert!(verified_bounded_file(&directory.join("image.so"), 100, &hash).is_err());
+        }
     }
 
     #[test]

@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `29b3f76`.
+The earlier feature work and evidence were merged into `main` at `a50b654`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -19,6 +19,9 @@ Further implementation continues on separate feature branches.
 | A7 stock PBS frozen startup | `codex/a7-linux-pbs-bootstrap` / `30a1526` (from merged `8b56f7c`; evidence bundle follows) | Experimental bootstrap fixture; controlled GNU Linux arm64 observation | Mac/Linux: 291/292 source workspace tests and Clippy; 64 inspector tests, 15 portable bundle/profile tests and 16 GNU opt-in release tests; 89 Python policy tests; unchanged stock libpython starts with frozen encodings and built-in math/_ssl; baseline output agrees and all four complete traces pass |
 | A7 explicit host Python startup | `codex/a7-linux-host-python` / `a50ae86` (from merged `06b92ea`; evidence bundle follows) | Experimental host fixture; controlled GNU Linux arm64 observation | Mac/Linux: 308/309 source workspace tests and Clippy; 32 portable bootstrap/host tests and 34 GNU opt-in release tests; 112 Python policy tests; all eight clean host traces and four frozen-bootstrap regression traces pass |
 | A7 Python archive source/resources | `codex/a7-python-archive-imports` / `94da8de` (from merged `29b3f76`; evidence bundle follows) | Experimental bundled source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux: 316/317 source workspace tests and Clippy; 40 portable Python tests and 45 GNU opt-in release tests; 141 Python policy tests and 16 importer protocol tests; all three clean import traces plus four frozen/eight installed-host startup regressions pass |
+
+| A7 host Python archive source/resources | `codex/a7-host-python-archive-imports` / `9aababa` (from merged `f99bb51`; evidence bundle follows) | Experimental host source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux 327/328 workspace tests, Clippy, 51 portable/56 GNU Python tests; 161 trace-policy and 16 importer protocol tests; seven host-import and fifteen prior regression traces pass |
+| A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` (from merged `a50b654`) | Experimental registered-initializer profile; runtime evidence pending | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; portable and GNU native admission/ownership checks; four provider cells and clean full trace captures are being validated |
 
 ## Gate status
 
@@ -244,6 +247,20 @@ retains exact source/artifact/input identities, manifests, C provenance,
 commands, validation logs and complete traces. Product Python integration,
 native extension initialization and general diagnostic consumers remain open.
 
+The next A7 slice, on `codex/a7-python-extension-init-bridge` from merged
+`a50b654`, registers reviewed `PyInit_*` addresses through public
+`PyImport_AppendInittab` before initialization. Stock `BuiltinImporter` owns
+single-phase (`m_size=-1`) and multi-phase protocols, cache/reload/removal and
+failure cleanup. Runtime and native providers vary independently over four
+bundled/explicit-host and archived/explicit-host cells. The runtime stays
+`RTLD_LOCAL`; every function/data relocation and initializer address is checked
+against its admitted image owner before Python starts. C boundary API4 has 29
+public exports/240 bytes and pins copied registration names through process exit.
+The source/resource conformance app and its finalization callback are reused.
+See [the registered initializer decision](decisions/0015-python-registered-extensions.md).
+Clean retained evidence is pending; this profile does not implement generic
+extension-file discovery or close the platform/product gates.
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -252,7 +269,7 @@ the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
 Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
 stock PBS startup and source/resource experiments to product provider/adapter
-integration and the native extension-init bridge, preserving both providers'
+integration and broader native extension loading, preserving both providers'
 archive source/resource behavior.
 Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its

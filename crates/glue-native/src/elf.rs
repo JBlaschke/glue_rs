@@ -329,6 +329,21 @@ pub fn inspect(
     expected_soname: &str,
     allowed_undefined: &BTreeSet<String>,
 ) -> Result<ElfFacts> {
+    inspect_with_data_imports(bytes, expected_soname, allowed_undefined, &BTreeSet::new())
+}
+
+/// Inspect with an explicit subset of the admitted imports permitted to bind
+/// exported data storage. Data imports must be global undefined OBJECT symbols
+/// and use ordinary GLOB_DAT relocations; the legacy inspector admits none.
+pub fn inspect_with_data_imports(
+    bytes: &[u8],
+    expected_soname: &str,
+    allowed_undefined: &BTreeSet<String>,
+    allowed_data_imports: &BTreeSet<String>,
+) -> Result<ElfFacts> {
+    if !allowed_data_imports.is_subset(allowed_undefined) {
+        return invalid("data import policy must be a subset of allowed imports");
+    }
     if bytes.len() > MAX_ELF_BYTES {
         return unsupported("image exceeds the fixture byte limit");
     }
@@ -700,8 +715,18 @@ pub fn inspect(
             if !compiler_hook && !allowed_undefined.contains(&name) {
                 return invalid(format!("undeclared undefined symbol {name:?}"));
             }
-            if binding == SymbolBinding::Local || kind == SymbolKind::Object {
+            if binding == SymbolBinding::Local
+                || (kind == SymbolKind::Object && !allowed_data_imports.contains(&name))
+            {
                 return unsupported("local/object undefined import");
+            }
+            if kind == SymbolKind::Object && binding != SymbolBinding::Global {
+                return unsupported(
+                    "object undefined import requires an explicit global data declaration",
+                );
+            }
+            if allowed_data_imports.contains(&name) && kind != SymbolKind::Object {
+                return invalid("declared data import is not an undefined OBJECT symbol");
             }
         }
         dynamic_symbols.push(DynamicSymbol {
@@ -749,6 +774,23 @@ pub fn inspect(
         )?;
     } else if tags.contains_key(&DT_PLTREL) {
         return invalid("DT_PLTREL without a PLT relocation table");
+    }
+    for name in allowed_data_imports {
+        let symbol = dynamic_symbols
+            .iter()
+            .find(|symbol| !symbol.defined && symbol.name == *name)
+            .ok_or_else(|| {
+                ElfError::Invalid(format!("declared data import {name:?} is not undefined"))
+            })?;
+        if !relocations.iter().any(|relocation| {
+            relocation.symbol_index == symbol.index
+                && relocation.kind == 1025
+                && relocation.table == RelocationTable::Rela
+        }) {
+            return invalid(format!(
+                "data import {name:?} has no ordinary GLOB_DAT relocation"
+            ));
+        }
     }
     if let Some(&count) = tags.get(&DT_RELACOUNT) {
         let rela: Vec<_> = relocations
@@ -1557,6 +1599,95 @@ pub(crate) mod tests {
         fixture.bytes[SYMBOLS + 72 + 4] = 0x10;
         assert!(
             matches!(inspect(&fixture.bytes, SONAME, &BTreeSet::new()), Err(ElfError::Invalid(message)) if message.contains("undeclared undefined symbol"))
+        );
+    }
+
+    fn object_import_fixture() -> Fixture {
+        let mut fixture = Fixture::new();
+        fixture.symbol_mut(3)[4] = 0x11;
+        put64(&mut fixture.bytes, RELA + 24 + 8, (3u64 << 32) | 1025);
+        // Keep the function-only PLT table independent of the imported data.
+        put64(&mut fixture.bytes, PLT + 8, (1u64 << 32) | 1026);
+        fixture
+    }
+
+    #[test]
+    fn data_imports_require_opt_in_and_preserve_the_legacy_profile() {
+        let fixture = object_import_fixture();
+        let imports = BTreeSet::from(["getpid".into()]);
+        assert!(inspect(&fixture.bytes, SONAME, &imports).is_err());
+        let facts = inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap();
+        let symbol = facts.symbol("getpid").unwrap();
+        assert!(!symbol.defined);
+        assert_eq!(symbol.kind, SymbolKind::Object);
+        assert_eq!(symbol.binding, SymbolBinding::Global);
+        assert!(facts.relocations.iter().any(|relocation| {
+            relocation.symbol_index == symbol.index
+                && relocation.kind == 1025
+                && relocation.table == RelocationTable::Rela
+        }));
+        let error = inspect_with_data_imports(&fixture.bytes, SONAME, &BTreeSet::new(), &imports)
+            .unwrap_err();
+        assert!(error.to_string().contains("subset"));
+    }
+
+    #[test]
+    fn data_policy_requires_present_global_undefined_object_symbols() {
+        for name in ["data", "helper"] {
+            let imports = BTreeSet::from(["getpid".into(), name.into()]);
+            let error = inspect_with_data_imports(
+                &Fixture::new().bytes,
+                SONAME,
+                &imports,
+                &BTreeSet::from([name.into()]),
+            )
+            .unwrap_err();
+            assert!(error.to_string().contains("not undefined"));
+        }
+        let imports = BTreeSet::from(["getpid".into()]);
+        for info in [0x12, 0x10, 0x21] {
+            let mut fixture = object_import_fixture();
+            fixture.symbol_mut(3)[4] = info;
+            let error =
+                inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap_err();
+            assert!(
+                error.to_string().contains("OBJECT symbol")
+                    || error.to_string().contains("global data declaration"),
+                "{error}"
+            );
+        }
+    }
+
+    #[test]
+    fn data_imports_require_observable_glob_dat_and_cannot_enter_the_plt() {
+        let imports = BTreeSet::from(["getpid".into()]);
+        let mut fixture = object_import_fixture();
+        put64(&mut fixture.bytes, RELA + 24 + 8, (2u64 << 32) | 1025);
+        let error =
+            inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap_err();
+        assert!(error.to_string().contains("no ordinary GLOB_DAT"));
+        let mut fixture = object_import_fixture();
+        put64(&mut fixture.bytes, PLT + 8, (3u64 << 32) | 1026);
+        let error =
+            inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("PLT relocation references an object")
+        );
+        let mut fixture = object_import_fixture();
+        put64(&mut fixture.bytes, RELA + 24 + 8, (3u64 << 32) | 1026);
+        let error =
+            inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap_err();
+        assert!(error.to_string().contains("relocation-kind mismatch"));
+        let mut fixture = object_import_fixture();
+        put64(&mut fixture.bytes, RELA + 24 + 16, 8);
+        let error =
+            inspect_with_data_imports(&fixture.bytes, SONAME, &imports, &imports).unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("nonzero named-relocation addend")
         );
     }
 

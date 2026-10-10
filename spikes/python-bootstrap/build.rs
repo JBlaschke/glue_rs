@@ -22,9 +22,9 @@ fn main() {
     let mut provenance = format!(
         "glue stock PBS Python bootstrap boundary provenance v1\n\
          This is local build evidence, not a complete artifact fingerprint.\n\
-         boundary=glue-python-bootstrap-c-boundary-3\n\
-         api_revision=3\n\
-         python_api_export_count=28\n\
+         boundary=glue-python-bootstrap-c-boundary-4\n\
+         api_revision=4\n\
+         python_api_export_count=29\n\
          source=CPython 3.13.16 / PBS 20261009 / conventional GIL / non-debug\n\
          TARGET={target:?}\npbs_bootstrap_feature={enabled}\n\
          boundary_compiled={}\n",
