@@ -1,11 +1,14 @@
 use crate::{
-    archive::{Inventory, Limits, read_inventory},
+    archive::{Inventory, Limits, SelectedInventory, read_selected},
     pins::{ArtifactPin, MAX_COMPRESSED_BYTES},
 };
 use flate2::bufread::GzDecoder;
 use ruzstd::decoding::StreamingDecoder;
 use sha2::{Digest, Sha256};
-use std::io::{self, BufReader, Read, Seek, SeekFrom};
+use std::{
+    collections::BTreeSet,
+    io::{self, BufReader, Read, Seek, SeekFrom},
+};
 
 #[derive(Clone, Copy)]
 pub(crate) enum Compression {
@@ -21,6 +24,19 @@ pub(crate) fn inspect<R: Read + Seek>(
     compression: Compression,
     limits: &Limits,
 ) -> Result<Inventory, String> {
+    Ok(inspect_selected(input, pin, compression, limits, &BTreeSet::new(), 0)?.inventory)
+}
+
+/// Apply the same whole-artifact pin and compression validation while retaining
+/// only explicitly selected regular members in bounded memory.
+pub(crate) fn inspect_selected<R: Read + Seek>(
+    input: &mut R,
+    pin: &ArtifactPin,
+    compression: Compression,
+    limits: &Limits,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+) -> Result<SelectedInventory, String> {
     if pin.size == 0 || pin.size > MAX_COMPRESSED_BYTES {
         return Err("compressed PBS size exceeds the bound".into());
     }
@@ -45,7 +61,7 @@ pub(crate) fn inspect<R: Read + Seek>(
             if declared_size > limits.max_tar_bytes {
                 return Err("PBS zstd expanded size exceeds the bound".into());
             }
-            let inventory = read_inventory(&mut decoder, limits)?;
+            let inventory = read_selected(&mut decoder, limits, selection, max_selected_bytes)?;
             if !decoder.decoder.is_finished()
                 || decoder
                     .decoder
@@ -53,7 +69,7 @@ pub(crate) fn inspect<R: Read + Seek>(
                     .is_some_and(|expected| {
                         Some(expected) != decoder.decoder.get_calculated_checksum()
                     })
-                || (declared_size != 0 && declared_size != inventory.decompressed_bytes)
+                || (declared_size != 0 && declared_size != inventory.inventory.decompressed_bytes)
             {
                 return Err("PBS zstd checksum, size or frame completion mismatch".into());
             }
@@ -61,7 +77,7 @@ pub(crate) fn inspect<R: Read + Seek>(
         }
         Compression::Gzip => {
             let mut decoder = GzDecoder::new(source);
-            let inventory = read_inventory(&mut decoder, limits)?;
+            let inventory = read_selected(&mut decoder, limits, selection, max_selected_bytes)?;
             (inventory, decoder.into_inner())
         }
     };
@@ -183,6 +199,98 @@ mod tests {
             .unwrap();
             assert_eq!(value.entries["python/a"].size, 1);
             assert_eq!(value.decompressed_bytes, 2048);
+        }
+    }
+
+    #[test]
+    fn selected_files_are_returned_only_from_verified_single_frames() {
+        let original = tar();
+        let selection = BTreeSet::from(["python/a".into()]);
+        for (bytes, compression) in [
+            (gzip(&original), Compression::Gzip),
+            (
+                ruzstd::encoding::compress_to_vec(
+                    original.as_slice(),
+                    ruzstd::encoding::CompressionLevel::Fastest,
+                ),
+                Compression::Zstd,
+            ),
+        ] {
+            let selected = inspect_selected(
+                &mut Cursor::new(&bytes),
+                &pin(&bytes),
+                compression,
+                &Limits::default(),
+                &selection,
+                1,
+            )
+            .unwrap();
+            assert_eq!(selected.files["python/a"], b"a");
+            let inventory = inspect(
+                &mut Cursor::new(&bytes),
+                &pin(&bytes),
+                compression,
+                &Limits::default(),
+            )
+            .unwrap();
+            assert_eq!(selected.inventory, inventory);
+            let mut wrong_pin = pin(&bytes);
+            wrong_pin.sha256 = "0".repeat(64);
+            assert!(
+                inspect_selected(
+                    &mut Cursor::new(&bytes),
+                    &wrong_pin,
+                    compression,
+                    &Limits::default(),
+                    &selection,
+                    1
+                )
+                .unwrap_err()
+                .contains("SHA-256")
+            );
+            let mut tailed = bytes.clone();
+            tailed.push(0);
+            assert!(
+                inspect_selected(
+                    &mut Cursor::new(&tailed),
+                    &pin(&tailed),
+                    compression,
+                    &Limits::default(),
+                    &selection,
+                    1
+                )
+                .unwrap_err()
+                .contains("trailing")
+            );
+        }
+    }
+
+    #[test]
+    fn selected_files_are_rejected_on_compression_trailer_corruption() {
+        let original = tar();
+        let selection = BTreeSet::from(["python/a".into()]);
+        let mut gzip = gzip(&original);
+        let size = gzip.len();
+        gzip[size - 8] ^= 1;
+        let mut zstd = ruzstd::encoding::compress_to_vec(
+            original.as_slice(),
+            ruzstd::encoding::CompressionLevel::Fastest,
+        );
+        assert_ne!(zstd[4] & 4, 0);
+        let size = zstd.len();
+        zstd[size - 1] ^= 1;
+        for (bytes, compression) in [(gzip, Compression::Gzip), (zstd, Compression::Zstd)] {
+            assert!(
+                inspect_selected(
+                    &mut Cursor::new(&bytes),
+                    &pin(&bytes),
+                    compression,
+                    &Limits::default(),
+                    &selection,
+                    1
+                )
+                .is_err()
+            );
         }
     }
 
@@ -351,11 +459,13 @@ mod tests {
             seeks: 0,
         };
         assert!(
-            inspect(
+            inspect_selected(
                 &mut input,
                 &pin(&bytes),
                 Compression::Gzip,
-                &Limits::default()
+                &Limits::default(),
+                &BTreeSet::from(["python/a".into()]),
+                1,
             )
             .unwrap_err()
             .contains("SHA-256")

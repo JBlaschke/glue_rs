@@ -16,6 +16,9 @@ const MAX_PATH_BYTES: usize = 4096;
 const MAX_PATH_COMPONENTS: usize = 128;
 const MAX_LINK_DEPTH: usize = 128;
 
+/// Maximum combined payload size retained by selective inventory readers.
+pub const MAX_SELECTED_BYTES: u64 = 128 * 1024 * 1024;
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Limits {
     pub max_entries: usize,
@@ -56,7 +59,7 @@ pub struct Entry {
     pub resolved_target: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Inventory {
     pub entries: BTreeMap<String, Entry>,
     pub metadata: Option<Vec<u8>>,
@@ -65,9 +68,37 @@ pub struct Inventory {
     pub binary_prefixes: BTreeMap<String, Vec<u8>>,
 }
 
+#[derive(Debug)]
+pub struct SelectedInventory {
+    pub inventory: Inventory,
+    /// Exact regular-file payloads keyed by their canonical archive names.
+    pub files: BTreeMap<String, Vec<u8>>,
+}
+
 /// Inventory a decompressed stock PBS tar stream. Every payload is consumed and
 /// hashed; only `python/PYTHON.json` and small binary prefixes are retained.
 pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, String> {
+    Ok(read_selected(reader, limits, &BTreeSet::new(), 0)?.inventory)
+}
+
+/// Retain selected regular files while validating and hashing the entire tar.
+/// Selection never follows symlinks or hardlinks and never consults host paths.
+/// Bytes are returned only after all members, links and end padding validate.
+pub fn read_selected<R: Read>(
+    reader: R,
+    limits: &Limits,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+) -> Result<SelectedInventory, String> {
+    if max_selected_bytes > MAX_SELECTED_BYTES {
+        return Err("selected PBS payload bound exceeds 128 MiB".into());
+    }
+    if selection.len() > limits.max_entries {
+        return Err("selected PBS member count exceeds the header count limit".into());
+    }
+    for path in selection {
+        member_path(path, false)?;
+    }
     let mut reader = BoundedReader {
         reader,
         consumed: 0,
@@ -83,6 +114,8 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
     let mut pending = Extensions::default();
     let mut headers = 0usize;
     let mut total = 0u64;
+    let mut selected_bytes = 0u64;
+    let mut files = BTreeMap::new();
 
     loop {
         let mut header = [0u8; BLOCK_BYTES];
@@ -98,7 +131,10 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
             reader.finish_padding()?;
             inventory.decompressed_bytes = reader.consumed;
             resolve_links(&mut inventory.entries, &links)?;
-            return Ok(inventory);
+            if let Some(missing) = selection.iter().find(|path| !files.contains_key(*path)) {
+                return Err(format!("selected PBS regular file {missing:?} is absent"));
+            }
+            return Ok(SelectedInventory { inventory, files });
         }
 
         headers = headers.checked_add(1).ok_or("tar header count overflow")?;
@@ -157,6 +193,12 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
         };
         let path = member_path(&raw_path, kind == EntryKind::Directory)?;
         validate_insertion(&inventory.entries, &path, kind)?;
+        let capture_selected = selection.contains(&path);
+        if capture_selected && kind != EntryKind::RegularFile {
+            return Err(format!(
+                "selected PBS member {path:?} is not a regular file"
+            ));
+        }
         let mut entry = Entry {
             kind,
             size,
@@ -186,6 +228,24 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
         pending = Extensions::default();
 
         if kind == EntryKind::RegularFile {
+            let mut selected = if capture_selected {
+                selected_bytes = selected_bytes
+                    .checked_add(size)
+                    .ok_or("selected PBS payload size overflow")?;
+                if selected_bytes > max_selected_bytes {
+                    return Err("selected PBS payloads exceed their combined size bound".into());
+                }
+                let mut selected = Vec::new();
+                selected
+                    .try_reserve_exact(
+                        usize::try_from(size)
+                            .map_err(|_| "selected PBS member cannot fit in memory")?,
+                    )
+                    .map_err(|error| format!("reserve selected PBS member: {error}"))?;
+                Some(selected)
+            } else {
+                None
+            };
             let capture_metadata = path == "python/PYTHON.json";
             if capture_metadata && size > limits.max_metadata_bytes {
                 return Err("PYTHON.json exceeds the metadata size limit".into());
@@ -208,6 +268,9 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
                 if let Some(metadata) = metadata.as_mut() {
                     metadata.extend_from_slice(&buffer[..count]);
                 }
+                if let Some(selected) = selected.as_mut() {
+                    selected.extend_from_slice(&buffer[..count]);
+                }
                 remaining -= count as u64;
             }
             let mut digest = String::with_capacity(64);
@@ -220,6 +283,9 @@ pub fn read_inventory<R: Read>(reader: R, limits: &Limits) -> Result<Inventory, 
             }
             if capture_metadata {
                 inventory.metadata = metadata;
+            }
+            if let Some(selected) = selected {
+                files.insert(path.clone(), selected);
             }
         }
         reader.padding(size)?;
@@ -786,6 +852,201 @@ mod tests {
             binary[..64]
         );
         assert_eq!(inventory.entries.keys().next().unwrap(), "python");
+    }
+
+    #[test]
+    fn selected_payloads_preserve_the_complete_inventory() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/PYTHON.json", b'0', b"{}", "");
+        append(&mut bytes, "python/runtime", b'0', b"\x7fELFlibrary", "");
+        append(&mut bytes, "python/source.py", b'0', b"source", "");
+        append(&mut bytes, "python/empty", b'0', b"", "");
+        let bytes = finish(bytes);
+        let selection = ["python/runtime", "python/empty"].map(str::to_owned).into();
+        let selected = read_selected(bytes.as_slice(), &Limits::default(), &selection, 11).unwrap();
+        assert_eq!(selected.inventory, read(&bytes).unwrap());
+        assert_eq!(selected.files.len(), 2);
+        assert_eq!(selected.files["python/runtime"], b"\x7fELFlibrary");
+        assert!(selected.files["python/empty"].is_empty());
+        assert!(!selected.files.contains_key("python/source.py"));
+        assert!(!selected.files.contains_key("python/PYTHON.json"));
+        let empty =
+            read_selected(bytes.as_slice(), &Limits::default(), &BTreeSet::new(), 0).unwrap();
+        assert!(empty.files.is_empty());
+        assert_eq!(empty.inventory, selected.inventory);
+    }
+
+    #[test]
+    fn selection_captures_metadata_only_when_explicitly_requested() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/PYTHON.json", b'0', b"{}", "");
+        let selected = read_selected(
+            finish(bytes).as_slice(),
+            &Limits::default(),
+            &BTreeSet::from(["python/PYTHON.json".into()]),
+            2,
+        )
+        .unwrap();
+        assert_eq!(selected.files["python/PYTHON.json"], b"{}");
+        assert_eq!(
+            selected.inventory.metadata.as_deref(),
+            Some(b"{}".as_slice())
+        );
+    }
+
+    #[test]
+    fn selection_rejects_absent_members_directories_and_file_aliases() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/directory/", b'5', b"", "");
+        append(&mut bytes, "python/file", b'0', b"payload", "");
+        append(&mut bytes, "python/symlink", b'2', b"", "file");
+        append(&mut bytes, "python/hardlink", b'1', b"", "python/file");
+        let bytes = finish(bytes);
+        for path in ["python/directory", "python/symlink", "python/hardlink"] {
+            let error = read_selected(
+                bytes.as_slice(),
+                &Limits::default(),
+                &BTreeSet::from([path.into()]),
+                128,
+            )
+            .unwrap_err();
+            assert!(error.contains("not a regular file"), "{error}");
+        }
+        assert!(
+            read_selected(
+                bytes.as_slice(),
+                &Limits::default(),
+                &BTreeSet::from(["python/missing".into()]),
+                128
+            )
+            .unwrap_err()
+            .contains("absent")
+        );
+        assert_eq!(
+            read_selected(
+                bytes.as_slice(),
+                &Limits::default(),
+                &BTreeSet::from(["python/file".into()]),
+                7
+            )
+            .unwrap()
+            .files["python/file"],
+            b"payload"
+        );
+    }
+
+    #[test]
+    fn selection_requires_canonical_regular_file_names() {
+        let bytes = finish(Vec::new());
+        for path in [
+            "python",
+            "python/file/",
+            "/python/file",
+            "python/../file",
+            "python/./file",
+            "python\\file",
+        ] {
+            assert!(
+                read_selected(
+                    bytes.as_slice(),
+                    &Limits::default(),
+                    &BTreeSet::from([path.into()]),
+                    128
+                )
+                .is_err(),
+                "accepted {path:?}"
+            );
+        }
+        let limits = Limits {
+            max_entries: 0,
+            ..Limits::default()
+        };
+        assert!(
+            read_selected(
+                bytes.as_slice(),
+                &limits,
+                &BTreeSet::from(["python/file".into()]),
+                128
+            )
+            .unwrap_err()
+            .contains("member count")
+        );
+    }
+
+    #[test]
+    fn selected_size_bounds_apply_before_payload_allocation_or_reading() {
+        let bytes = header(b"python/file", b'0', 10, b"");
+        let selection = BTreeSet::from(["python/file".into()]);
+        assert!(
+            read_selected(bytes.as_slice(), &Limits::default(), &selection, 9)
+                .unwrap_err()
+                .contains("combined size bound")
+        );
+        let limits = Limits {
+            max_member_bytes: 9,
+            ..Limits::default()
+        };
+        assert!(
+            read_selected(bytes.as_slice(), &limits, &selection, 10)
+                .unwrap_err()
+                .contains("member exceeds")
+        );
+        assert!(
+            read_selected(
+                [0u8; 1024].as_slice(),
+                &Limits::default(),
+                &BTreeSet::new(),
+                MAX_SELECTED_BYTES + 1
+            )
+            .unwrap_err()
+            .contains("128 MiB")
+        );
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/a", b'0', b"abc", "");
+        append(&mut bytes, "python/b", b'0', b"abc", "");
+        assert!(
+            read_selected(
+                finish(bytes).as_slice(),
+                &Limits::default(),
+                &BTreeSet::from(["python/a".into(), "python/b".into()]),
+                5
+            )
+            .unwrap_err()
+            .contains("combined size bound")
+        );
+    }
+
+    #[test]
+    fn selected_payloads_are_not_returned_before_the_rest_of_tar_validates() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/file", b'0', b"payload", "");
+        let mut bad_header = header(b"python/unselected", b'0', 0, b"");
+        bad_header[0] ^= 1;
+        bytes.extend_from_slice(&bad_header);
+        assert!(
+            read_selected(
+                finish(bytes).as_slice(),
+                &Limits::default(),
+                &BTreeSet::from(["python/file".into()]),
+                7
+            )
+            .unwrap_err()
+            .contains("checksum")
+        );
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/file", b'0', b"payload", "");
+        let mut bytes = finish(bytes);
+        bytes.extend_from_slice(&header(b"python/hidden", b'0', 0, b""));
+        assert!(
+            read_selected(
+                bytes.as_slice(),
+                &Limits::default(),
+                &BTreeSet::from(["python/file".into()]),
+                7
+            )
+            .unwrap_err()
+            .contains("follows")
+        );
     }
 
     #[test]

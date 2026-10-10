@@ -1,0 +1,35 @@
+{
+  "source_commit": "30a152624f6f10ecf78cf7688800208a93b3d375",
+  "source_clean": true,
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "artifacts": [
+    {
+      "role": "launcher",
+      "size": 2211760,
+      "sha256": "f9d0989cd796ff8646b452abc2f7a71fcfd042011e65b9ec6930ee42d6bff796"
+    },
+    {
+      "role": "archive",
+      "size": 73705762,
+      "sha256": "8b053ffce2bb07a3fa4e68bd9fb1659fe30808d76c1b307f653a2441a577aad4"
+    },
+    {
+      "role": "frozen_bundle",
+      "size": 138635,
+      "sha256": "fabac46c75f9a0a7e2e705cf269a8b212fdead5ab657e2572ee26d079696c5d0"
+    }
+  ],
+  "runtime_library": {
+    "size": 73563968,
+    "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219"
+  },
+  "stdout_bytes": 108,
+  "statuses": {
+    "baseline": 0,
+    "success": 0,
+    "missing-encodings": 1,
+    "bad-bytecode": 1,
+    "app-error": 1
+  }
+}

@@ -1,3 +1,7 @@
 # Preserve Cargo's captured final separator in the evidence log.
 docs/evidence/**/workspace-tests.txt whitespace=-blank-at-eof
 docs/evidence/**/macos/*-tests.txt whitespace=-blank-at-eof
+# Keep the stock PBS capture logs byte-identical to their tool output.
+docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/*-tests.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/vendor.stderr.txt whitespace=-blank-at-eof
+docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/launcher.elf.txt whitespace=-blank-at-eol

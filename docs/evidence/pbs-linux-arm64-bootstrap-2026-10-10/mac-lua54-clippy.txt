@@ -1,0 +1,12 @@
+    Blocking waiting for file lock on build directory
+   Compiling glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+    Checking glue-pbs v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pbs)
+    Checking glue-format v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-format)
+    Checking glue-pack v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pack)
+    Checking glue-linux-memfd-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/linux-memfd)
+    Checking glue-macos-macho-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/macos-macho)
+    Checking glue-native v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-native)
+   Compiling glue-python-bootstrap-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/python-bootstrap)
+    Checking glue-resources v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-resources)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.57s

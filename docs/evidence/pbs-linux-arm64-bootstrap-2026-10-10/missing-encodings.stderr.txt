@@ -1,0 +1,22 @@
+Python path configuration:
+  PYTHONHOME = '/__glue_archive__/python'
+  PYTHONPATH = (not set)
+  program name = 'glue-python-bootstrap'
+  isolated = 1
+  environment = 0
+  user site = 0
+  safe_path = 1
+  import site = 0
+  is in build tree = 0
+  stdlib dir = '/__glue_archive__/python/stdlib'
+  sys.path[0] = (not set)
+  sys._base_executable = '/__glue_archive__/launcher'
+  sys.base_prefix = '/__glue_archive__/python'
+  sys.base_exec_prefix = '/__glue_archive__/python'
+  sys.platlibdir = 'lib'
+  sys.executable = '/__glue_archive__/launcher'
+  sys.prefix = '/__glue_archive__/python'
+  sys.exec_prefix = '/__glue_archive__/python'
+  sys.path = [
+  ]
+glue-python-bootstrap-probe: Failed to import encodings module
