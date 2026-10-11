@@ -22,11 +22,11 @@ if test "${1:-}" = --build; then
         /evidence/freeze-provenance.json > /evidence/freeze.stdout.txt 2> /evidence/freeze.stderr.txt
     test ! -s /evidence/freeze.stderr.txt
     cp /build-target/freeze-bundle.json /evidence/freeze-bundle.json
-    cargo test --locked --offline --release -p glue-python-bootstrap-probe --features pbs-bootstrap \
+    cargo test --locked --offline --release -p glue-runtime-python -p glue-python-bootstrap-probe --features pbs-bootstrap \
         > /evidence/bootstrap-tests.txt 2>&1
-    cargo clippy --locked --offline --release --all-targets -p glue-python-bootstrap-probe \
+    cargo clippy --locked --offline --release --all-targets -p glue-runtime-python -p glue-python-bootstrap-probe \
         --features pbs-bootstrap -- -D warnings > /evidence/bootstrap-clippy.txt 2>&1
-    cargo build --locked --offline --release -p glue-python-bootstrap-probe --features pbs-bootstrap \
+    cargo build --locked --offline --release -p glue-runtime-python -p glue-python-bootstrap-probe --features pbs-bootstrap \
         > /evidence/bootstrap-build.txt 2>&1
     mkdir "$relocated" /build-target/runtime-empty
     /build-target/release/glue-python-bootstrap-probe prepare \
@@ -53,7 +53,7 @@ if test "${1:-}" = --build; then
     readelf -d --dyn-syms "$relocated/glue-python-bootstrap-probe" > /evidence/launcher.elf.txt
     cp /workspace/fixtures/python-bootstrap/run-linux.sh /build-target/runtime-commands.sh
     mkdir /evidence/build-provenance
-    for record in /build-target/release/build/glue-python-bootstrap-probe-*/out/python-bootstrap-provenance.txt; do
+    for record in /build-target/release/build/glue-runtime-python-*/out/python-bootstrap-provenance.txt; do
         test -f "$record"
         cp "$record" "/evidence/build-provenance/$(basename "$(dirname "$(dirname "$record")")").txt"
         nm -u "$(dirname "$record")/libglue_python_bootstrap_boundary.a" \

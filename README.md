@@ -9,10 +9,13 @@ ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
 resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
 5.5.1 source profiles** run archive scripts and resources on matching macOS or GNU
 Linux targets. General native loading, host/archived runtime acquisition,
-Python/Node execution, workers and standalone executables remain pending.
+general Python/Node compatibility, workers and standalone executables remain pending.
 The archive and manifest are experimental version 0; G0/G1/G2 remain open.
 An opt-in GNU Linux arm64 profile also runs a controlled native Lua closure
-through sealed executable memfds in `glue run`.
+through sealed executable memfds in `glue run`. The optional `python-pbs` build
+also routes the exact controlled PBS source/resource and registered-native profiles
+through `glue doctor` and `glue run`; it requires GNU Linux arm64 and verified
+CPython 3.13.16 headers at build time.
 
 ## Try linked Lua
 
@@ -186,10 +189,42 @@ must bind to that runtime or the declared private dependency before registration
 Runtime and native providers vary independently across bundled/explicit-host and
 archived/explicit-host inputs. This controlled GNU Linux arm64 profile exercises
 cache/reload/removal, initialization/execution errors and retry, and finalization
-callbacks. General extension-file loading and product Python execution remain open.
+callbacks. General extension-file loading remains open. The controlled registry is now
+shared with the launcher through `glue-runtime-python`; the earlier probe
+remains a thin experimental fixture CLI.
 The [clean native capture](docs/evidence/pbs-linux-arm64-python-extensions-2026-10-10/README.md)
 passes eleven matrix/control traces and twenty-two earlier Python regressions
 from implementation `b784c99`, with all 37 hostile trace edits rejected.
+
+## Run the controlled Python profiles
+
+The launcher feature is `python-pbs`; the shared executor's build feature is
+`pbs-bootstrap`. The registry admits the two exact bundled/explicit-host
+source/resource manifests and the registered-native declaration profile with
+four independent runtime/native provider combinations. It does not admit
+arbitrary Python apps, installations or wheels. Native hashes identify declared
+images; admission still requires the reviewed ELF/import/initializer contract.
+
+```sh
+# GNU Linux arm64, using the independently verified pinned header tree:
+GLUE_PYTHON_INCLUDE_DIR=/absolute/path/to/include/python3.13 \
+  cargo build --locked -p glue-runner --features python-pbs
+target/debug/glue doctor /absolute/path/to/controlled-profile.glue
+target/debug/glue run /absolute/path/to/controlled-profile.glue
+# On macOS, build and exercise the pinned Linux cell through Podman:
+sh fixtures/python-runner/run-linux.sh
+```
+
+`doctor` validates the exact declarations and checks compiled target, kernel,
+GNU libc and page size without starting Python or inspecting host providers.
+`run` verifies archive payloads and host prerequisites before loading. The
+opened archive transfers directly to the shared executor, with the selected
+profile's original size limits rechecked before reads. The C bridge owns one
+synchronous interpreter lifecycle; loaded images remain pinned until exit.
+Default builds report Python execution as disabled, while inspection and
+verification accept the pinned runtime's 80 MiB member bound. See the
+[runner fixture](fixtures/python-runner/README.md) and
+[integration decision](docs/decisions/0016-controlled-python-runner.md).
 
 ## Try the resource fixture
 
@@ -221,7 +256,7 @@ An output write failure may leave a partial file and returns an error.
 materialize a resource as a filesystem file. These hashes detect corruption;
 they do not authenticate an archive's author.
 
-`run` and `doctor APP.glue` return 0 for a matching linked profile, 2 for an
+`run` and `doctor APP.glue` return 0 for an admitted, ready profile, 2 for an
 unsupported provider/capability, and 1 for malformed input or mismatched
 source/build/ABI/host prerequisites. `doctor` checks metadata and acquisition
 readiness without executing scripts or verifying every resource; use `verify`
@@ -307,5 +342,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [progress](docs/progress.md),
 [container contract](docs/decisions/0002-experimental-container.md) and
 [fixture protocol](docs/fixtures.md). Implementation steps use stacked feature
 branches. The controlled Linux native slice does not establish mixed apps,
-archived/host Python or Node startup, signed macOS deployment, or four-OS
+general Python/Node compatibility, signed macOS deployment, or four-OS
 compatibility. Their feasibility and release gates remain open.

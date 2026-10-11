@@ -12,7 +12,8 @@
         feature = "pbs-bootstrap",
         target_os = "linux",
         target_arch = "aarch64",
-        target_env = "gnu"
+        target_env = "gnu",
+        glue_python_boundary
     )),
     allow(dead_code)
 )]

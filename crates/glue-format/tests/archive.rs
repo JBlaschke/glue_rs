@@ -337,6 +337,113 @@ fn compressed_member_cost_is_bounded_before_decoding() {
 }
 
 #[test]
+fn selected_limits_recheck_actual_layout_without_reading_or_seeking() {
+    use std::{cell::Cell, rc::Rc};
+    struct MetadataOnly {
+        source: Cursor<Vec<u8>>,
+        sealed: Rc<Cell<bool>>,
+    }
+    impl Read for MetadataOnly {
+        fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
+            assert!(!self.sealed.get(), "policy check must not read the source");
+            self.source.read(bytes)
+        }
+    }
+    impl Seek for MetadataOnly {
+        fn seek(&mut self, position: SeekFrom) -> std::io::Result<u64> {
+            assert!(!self.sealed.get(), "policy check must not seek the source");
+            self.source.seek(position)
+        }
+    }
+    for compression in [Compression::Stored, Compression::Deflate] {
+        let bytes = archive_bytes(compression, true);
+        let archive_len = bytes.len() as u64;
+        let manifest_len = number64(&bytes, 16);
+        let central_len = number32(&bytes, bytes.len() - 10) as u64;
+        let sealed = Rc::new(Cell::new(false));
+        let archive = Archive::open(MetadataOnly {
+            source: Cursor::new(bytes),
+            sealed: sealed.clone(),
+        })
+        .unwrap();
+        sealed.set(true);
+        let entry_len = archive.entries().values().map(|e| e.size).max().unwrap();
+        let compressed_len = archive
+            .entries()
+            .values()
+            .map(|e| e.compressed_size)
+            .max()
+            .unwrap();
+        let total = archive.entries().values().map(|e| e.size).sum::<u64>();
+        let exact = ArchiveLimits {
+            max_archive_bytes: archive_len,
+            max_manifest_bytes: manifest_len,
+            max_central_directory_bytes: central_len,
+            max_entries: 3,
+            max_entry_bytes: entry_len,
+            max_compressed_entry_bytes: compressed_len,
+            max_total_uncompressed_bytes: total,
+        };
+        archive.check_limits(exact).unwrap();
+        for (policy, label) in [
+            (
+                ArchiveLimits {
+                    max_archive_bytes: archive_len - 1,
+                    ..exact
+                },
+                "archive bytes",
+            ),
+            (
+                ArchiveLimits {
+                    max_manifest_bytes: manifest_len - 1,
+                    ..exact
+                },
+                "manifest bytes",
+            ),
+            (
+                ArchiveLimits {
+                    max_central_directory_bytes: central_len - 1,
+                    ..exact
+                },
+                "central directory bytes",
+            ),
+            (
+                ArchiveLimits {
+                    max_entries: 2,
+                    ..exact
+                },
+                "entry count",
+            ),
+            (
+                ArchiveLimits {
+                    max_entry_bytes: entry_len - 1,
+                    ..exact
+                },
+                "resource bytes",
+            ),
+            (
+                ArchiveLimits {
+                    max_compressed_entry_bytes: compressed_len - 1,
+                    ..exact
+                },
+                "compressed resource bytes",
+            ),
+            (
+                ArchiveLimits {
+                    max_total_uncompressed_bytes: total - 1,
+                    ..exact
+                },
+                "total resource bytes",
+            ),
+        ] {
+            assert!(
+                matches!(archive.check_limits(policy), Err(ArchiveError::Limit { limit, .. }) if limit == label)
+            );
+        }
+    }
+}
+
+#[test]
 fn duplicate_raw_entries_reject_even_when_zip_library_would_collapse_them() {
     let mut bytes = archive_bytes(Compression::Stored, false);
     let cd = central_start(&bytes);

@@ -7,25 +7,10 @@ license.workspace = true
 
 [features]
 default = []
-pbs-bootstrap = []
+pbs-bootstrap = ["glue-runtime-python/pbs-bootstrap"]
 
 [dependencies]
-glue-pbs = { path = "../../crates/glue-pbs" }
-glue-format.workspace = true
-glue-native.workspace = true
-glue-resources.workspace = true
-libc.workspace = true
-sha2.workspace = true
-serde.workspace = true
-serde_json.workspace = true
+glue-runtime-python.workspace = true
 
-[build-dependencies]
-cc = "=1.6.0"
-serde_json.workspace = true
-sha2.workspace = true
-
-[lints.rust]
-unsafe_code = "deny"
-
-[lints.clippy]
-all = "warn"
+[lints]
+workspace = true

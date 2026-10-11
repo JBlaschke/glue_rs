@@ -86,6 +86,9 @@ pub struct Archive<R> {
     manifest: Manifest,
     entries: BTreeMap<String, ArchiveEntry>,
     payload_offset: u64,
+    source_len: u64,
+    manifest_len: u64,
+    central_directory_len: u64,
     limits: ArchiveLimits,
 }
 
@@ -145,7 +148,8 @@ impl<R: Read + Seek> Archive<R> {
                 limits.max_total_uncompressed_bytes,
             )?;
         }
-        let entries = preflight(&mut source, payload_offset, payload_len, limits)?;
+        let (entries, central_directory_len) =
+            preflight(&mut source, payload_offset, payload_len, limits)?;
         if entries.len() != manifest.resources.len() {
             return invalid("manifest and payload have different resource counts");
         }
@@ -162,6 +166,9 @@ impl<R: Read + Seek> Archive<R> {
             manifest,
             entries,
             payload_offset,
+            source_len,
+            manifest_len,
+            central_directory_len,
             limits,
         })
     }
@@ -172,6 +179,41 @@ impl<R: Read + Seek> Archive<R> {
 
     pub fn entries(&self) -> &BTreeMap<String, ArchiveEntry> {
         &self.entries
+    }
+
+    /// Recheck a selected execution policy against the actual opened layout.
+    /// This performs no I/O or payload decoding and retains the opening policy
+    /// for subsequent reads. Callers can admit metadata broadly, then enforce a
+    /// narrower profile before reading any resource from the same source.
+    pub fn check_limits(&self, limits: ArchiveLimits) -> Result<(), ArchiveError> {
+        limit("archive bytes", self.source_len, limits.max_archive_bytes)?;
+        limit(
+            "manifest bytes",
+            self.manifest_len,
+            limits.max_manifest_bytes,
+        )?;
+        limit("entry count", self.entries.len() as u64, limits.max_entries)?;
+        limit(
+            "central directory bytes",
+            self.central_directory_len,
+            limits.max_central_directory_bytes,
+        )?;
+        let mut total = 0;
+        for entry in self.entries.values() {
+            limit("resource bytes", entry.size, limits.max_entry_bytes)?;
+            limit(
+                "compressed resource bytes",
+                entry.compressed_size,
+                limits.max_compressed_entry_bytes,
+            )?;
+            total = add(total, entry.size)?;
+            limit(
+                "total resource bytes",
+                total,
+                limits.max_total_uncompressed_bytes,
+            )?;
+        }
+        Ok(())
     }
 
     /// Publish bytes only after exact length, CRC32 and manifest SHA-256 checks.
@@ -364,7 +406,7 @@ fn preflight<R: Read + Seek>(
     base: u64,
     length: u64,
     limits: ArchiveLimits,
-) -> Result<BTreeMap<String, ArchiveEntry>, ArchiveError> {
+) -> Result<(BTreeMap<String, ArchiveEntry>, u64), ArchiveError> {
     if length < 22 {
         return invalid("truncated ZIP footer");
     }
@@ -589,7 +631,7 @@ fn preflight<R: Read + Seek>(
     if end != cd_offset {
         return invalid("payload contains unindexed bytes");
     }
-    Ok(entries)
+    Ok((entries, cd_size))
 }
 
 fn zip64_values(

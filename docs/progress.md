@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `a50b654`.
+The earlier feature work and evidence were merged into `main` at `f92ac34`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -21,6 +21,7 @@ Further implementation continues on separate feature branches.
 | A7 Python archive source/resources | `codex/a7-python-archive-imports` / `94da8de` (from merged `29b3f76`; evidence bundle follows) | Experimental bundled source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux: 316/317 source workspace tests and Clippy; 40 portable Python tests and 45 GNU opt-in release tests; 141 Python policy tests and 16 importer protocol tests; all three clean import traces plus four frozen/eight installed-host startup regressions pass |
 | A7 host Python archive source/resources | `codex/a7-host-python-archive-imports` / `9aababa` (from merged `f99bb51`; evidence bundle follows) | Experimental host source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux 327/328 workspace tests, Clippy, 51 portable/56 GNU Python tests; 161 trace-policy and 16 importer protocol tests; seven host-import and fifteen prior regression traces pass |
 | A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` / `b784c99` (from merged `a50b654`; evidence bundle follows) | Experimental registered-initializer profile; controlled GNU Linux arm64 observation | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; 59 portable/65 GNU Python tests; 191 policy and 16 importer protocol tests; all eleven native and twenty-two prior regression traces pass; 37 hostile trace edits reject |
+| A7 controlled Python product route | `codex/a7-python-runner-profile` (from merged `f92ac34`) | Experimental launcher integration | Shared runtime crate, exact controlled registry, optional `python-pbs` CLI dispatch, one-open ownership and original profile limits; clean-source validation/evidence follows |
 
 ## Gate status
 
@@ -29,7 +30,7 @@ version-specific source-only profiles and optional GNU Linux arm64 native
 profiles. This is partial A5/A6/G2 work; four-OS acceptance remains open.
 The original Linux memfd spike remains a separate historical observation.
 The product now integrates a controlled native Lua closure. General native
-backends, product archived/host runtime providers, Python/Node adapters, workers,
+backends, general runtime/package compatibility, Node adapters, workers,
 approved system-library profiles and signed deployment remain pending.
 The archive and manifest are version 0. Lua is pinned to `lua-src` 551.0.2
 with int64/float64 configuration. Stock conventional-GIL CPython 3.13.16 / PBS
@@ -264,16 +265,29 @@ identities, commands and validation logs. All 37 independent hostile trace edits
 reject. This profile does not implement generic extension-file discovery or
 close the platform/product gates.
 
+The controlled Python route moves the existing provider/import/registration
+mechanisms into `glue-runtime-python`, with the historical preparer/probe as a
+thin experimental wrapper. `glue run` dispatches by the selected component ABI
+and transfers the same opened archive into the opaque, synchronous executor.
+Python remains optional through `python-pbs`; the build verifies the matching
+stock headers only on the exact supported GNU Linux arm64 target. `doctor`
+checks admitted declarations and build/target readiness; execution checks the
+selected archive bounds, content and explicit host prerequisites. Default Lua
+execution retains its original 64 MiB member bound while inspection can admit
+the pinned 73,563,968-byte Python runtime. See
+[the integration decision](decisions/0016-controlled-python-runner.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
 Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
-Establish the FreeBSD bundled Python/Node producer. Continue from the inspected
-stock PBS startup and source/resource experiments to product provider/adapter
-integration and broader native extension loading, preserving both providers'
-archive source/resource behavior.
+Establish the FreeBSD bundled Python/Node producer. Broaden the controlled Python
+registry into general application and host-stdlib admission, extend native
+loading beyond registered initializers, and preserve both providers' archive
+source/resource behavior. Add version selection only after each candidate has
+its own verified producer, headers, runtime ABI and conformance evidence.
 Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general

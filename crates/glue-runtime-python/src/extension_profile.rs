@@ -5,7 +5,8 @@
         feature = "pbs-bootstrap",
         target_os = "linux",
         target_arch = "aarch64",
-        target_env = "gnu"
+        target_env = "gnu",
+        glue_python_boundary
     )),
     allow(dead_code)
 )]
@@ -55,7 +56,7 @@ fn app_spec() -> ResourceSpec {
         compression: Compression::Deflate,
     }
 }
-fn limits() -> ArchiveLimits {
+pub(super) fn limits() -> ArchiveLimits {
     import_profile::limits()
 }
 
@@ -184,7 +185,7 @@ fn overlay(
     Ok(result)
 }
 
-fn admit(actual: &Manifest) -> Result<(Option<host::Config>, Option<String>), String> {
+pub(super) fn admit(actual: &Manifest) -> Result<(Option<host::Config>, Option<String>), String> {
     let (base, config) = base_manifest(actual)?;
     let mut specs = BTreeMap::new();
     let mut directory: Option<String> = None;
@@ -457,9 +458,13 @@ pub(super) struct Payload {
 }
 
 pub(super) fn read(path: &Path) -> Result<Payload, String> {
-    let mut archive =
-        Archive::open_with_limits(File::open(path).map_err(|e| e.to_string())?, limits())
-            .map_err(|e| e.to_string())?;
+    let archive = Archive::open_with_limits(File::open(path).map_err(|e| e.to_string())?, limits())
+        .map_err(|e| e.to_string())?;
+    read_archive(archive)
+}
+
+pub(super) fn read_archive(mut archive: Archive<File>) -> Result<Payload, String> {
+    archive.check_limits(limits()).map_err(|e| e.to_string())?;
     let manifest = archive.manifest().clone();
     let (config, directory) = admit(&manifest)?;
     // Verify the complete archive before retaining host files or mapping code.
@@ -642,6 +647,10 @@ mod tests {
                 let m = overlay(&base, &specs(), native.then_some("/native images")).unwrap();
                 let decoded = Manifest::from_json(&m.to_json().unwrap()).unwrap();
                 let (config, directory) = admit(&decoded).unwrap();
+                assert_eq!(
+                    crate::profile::validate(&decoded).unwrap().kind,
+                    crate::profile::Kind::RegisteredExtensions
+                );
                 assert_eq!(config.is_some(), host);
                 assert_eq!(directory.is_some(), native);
                 assert_eq!(base_manifest(&decoded).unwrap().0, base);

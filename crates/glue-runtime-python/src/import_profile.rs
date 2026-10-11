@@ -246,7 +246,8 @@ pub(super) fn admit(m: &Manifest) -> Result<(), String> {
         feature = "pbs-bootstrap",
         target_os = "linux",
         target_arch = "aarch64",
-        target_env = "gnu"
+        target_env = "gnu",
+        glue_python_boundary
     )),
     allow(dead_code)
 )]
@@ -263,14 +264,19 @@ pub(super) struct Payload {
         feature = "pbs-bootstrap",
         target_os = "linux",
         target_arch = "aarch64",
-        target_env = "gnu"
+        target_env = "gnu",
+        glue_python_boundary
     )),
     allow(dead_code)
 )]
 pub(super) fn read(path: &Path) -> Result<Payload, String> {
-    let mut archive =
-        Archive::open_with_limits(File::open(path).map_err(|e| e.to_string())?, limits())
-            .map_err(|e| e.to_string())?;
+    let archive = Archive::open_with_limits(File::open(path).map_err(|e| e.to_string())?, limits())
+        .map_err(|e| e.to_string())?;
+    read_archive(archive)
+}
+
+pub(super) fn read_archive(mut archive: Archive<File>) -> Result<Payload, String> {
+    archive.check_limits(limits()).map_err(|e| e.to_string())?;
     admit(archive.manifest())?;
     let library = archive.read_resource(LIBRARY).map_err(|e| e.to_string())?;
     check_library(&library)?;
@@ -350,6 +356,10 @@ mod tests {
         assert_eq!(specs.values().map(|s| s.size).sum::<u64>(), 39_158_056);
         let m = profile();
         admit(&m).unwrap();
+        assert_eq!(
+            crate::profile::validate(&m).unwrap().kind,
+            crate::profile::Kind::BundledImports
+        );
         assert!(admit_manifest(&m).is_err());
         assert!(admit_host_manifest(&m).is_err());
         let mut files: BTreeMap<_, _> = specs.keys().map(|key| (key.clone(), Vec::new())).collect();

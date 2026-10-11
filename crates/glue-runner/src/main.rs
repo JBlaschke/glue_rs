@@ -1,6 +1,6 @@
-//! Packaging, inspection and explicit linked Lua execution entry points.
+//! Packaging, inspection and explicit runtime profile execution entry points.
 
-use glue_format::{Archive, Manifest, Provisioning, RuntimeAbi, digest};
+use glue_format::{Archive, ArchiveLimits, Manifest, Provisioning, RuntimeAbi, digest};
 use glue_resources::Resources;
 use std::{
     error::Error,
@@ -25,8 +25,9 @@ Usage:
   glue run APP.glue
 
 A linked Lua 5.4 or 5.5 build can run source and resources from a matching archive.
-Native modules, host/archived runtimes, other languages and standalone executables
-remain pending. The resource fixture is packaging-only; see fixtures/lua-linked.
+Optional builds also support controlled Linux native Lua and exact PBS Python
+profiles. General Python/Node applications and standalone executables remain
+pending. See fixtures/lua-linked and fixtures/python-runner for admitted profiles.
 Existing build outputs are never overwritten.
 ";
 
@@ -51,6 +52,67 @@ enum Command {
     ExplainSize(PathBuf),
     Doctor(Option<PathBuf>),
     Run(PathBuf),
+}
+
+enum Selection {
+    Lua(String),
+    #[cfg(feature = "python-pbs")]
+    Python(glue_runtime_python::profile::ControlledProfile),
+}
+
+enum SelectionError {
+    Unsupported(String),
+    Invalid(Box<dyn Error>),
+}
+
+fn select(manifest: &Manifest) -> std::result::Result<Selection, SelectionError> {
+    // Schema validation has already established these references. Dispatch
+    // solely by the selected component's declared ABI, without provider retry.
+    let runtime = &manifest.runtimes[&manifest.components[&manifest.entrypoint].runtime];
+    match runtime.abi {
+        RuntimeAbi::Lua { .. } => glue_runtime_lua::profile::validate(manifest)
+            .map(Selection::Lua)
+            .map_err(|error| match error {
+                glue_runtime_lua::profile::CapabilityError::Unsupported(reason) => {
+                    SelectionError::Unsupported(reason)
+                }
+                error => SelectionError::Invalid(error.into()),
+            }),
+        RuntimeAbi::Python { .. } => {
+            #[cfg(feature = "python-pbs")]
+            {
+                glue_runtime_python::profile::validate(manifest)
+                    .map(Selection::Python)
+                    .map_err(|error| {
+                        if error.is_unsupported() {
+                            SelectionError::Unsupported(error.to_string())
+                        } else {
+                            SelectionError::Invalid(error.into())
+                        }
+                    })
+            }
+            #[cfg(not(feature = "python-pbs"))]
+            {
+                Err(SelectionError::Unsupported(
+                    "Python execution requires a build with --features python-pbs".to_owned(),
+                ))
+            }
+        }
+        RuntimeAbi::Node { .. } => Err(SelectionError::Unsupported(
+            "the Node runtime adapter is unavailable".to_owned(),
+        )),
+    }
+}
+
+fn execution_result(result: Result<()>, unsupported: bool) -> Result<ExitCode> {
+    match result {
+        Ok(()) => Ok(ExitCode::SUCCESS),
+        Err(error) if unsupported => {
+            eprintln!("glue: {error}");
+            Ok(ExitCode::from(2))
+        }
+        Err(error) => Err(error),
+    }
 }
 
 fn main() -> ExitCode {
@@ -233,44 +295,78 @@ fn execute(command: Command) -> Result<ExitCode> {
                 "Available: archive packaging, inspection, verification, read-only resources, linked Lua source profile"
             );
             println!(
-                "Pending: native backends, host/archived runtime providers, Python/Node adapters, workers, standalone signing"
+                "Pending: general runtime/package compatibility, Node adapters, workers, standalone signing"
+            );
+            #[cfg(feature = "python-pbs")]
+            println!(
+                "Python: controlled CPython 3.13.16 / PBS 20261009 profiles; GNU Linux arm64 execution only"
+            );
+            #[cfg(not(feature = "python-pbs"))]
+            println!(
+                "Python: disabled; build with --features python-pbs for controlled PBS profiles"
             );
             if let Some(path) = path {
                 let archive = open(&path)?;
                 println!("Validated metadata for {}", archive.manifest().app_id);
-                match glue_runtime_lua::profile::validate(archive.manifest()) {
-                    Ok(entry) => println!(
-                        "Ready: linked Lua {} source profile, entry {entry}",
-                        glue_runtime_lua::profile::LUA_RELEASE,
-                    ),
-                    Err(glue_runtime_lua::profile::CapabilityError::Unsupported(reason)) => {
+                match select(archive.manifest()) {
+                    Ok(Selection::Lua(entry)) => {
+                        archive.check_limits(ArchiveLimits::default())?;
+                        println!(
+                            "Ready: linked Lua {} source profile, entry {entry}",
+                            glue_runtime_lua::profile::LUA_RELEASE,
+                        );
+                    }
+                    #[cfg(feature = "python-pbs")]
+                    Ok(Selection::Python(selected)) => {
+                        if let Err(error) = glue_runtime_python::profile::readiness(&selected) {
+                            let unsupported = error.is_unsupported();
+                            return execution_result(Err(error.into()), unsupported);
+                        }
+                        println!(
+                            "Ready: {} build/target prerequisites, CPython 3.13.16 / PBS 20261009",
+                            selected.name()
+                        );
+                        println!(
+                            "Run checks profile archive limits, contents and explicit host prerequisites before loading Python"
+                        );
+                    }
+                    Err(SelectionError::Unsupported(reason)) => {
                         execution_unavailable(archive.manifest());
                         eprintln!("glue: {reason}");
                         return Ok(ExitCode::from(2));
                     }
-                    Err(error) => return Err(error.into()),
+                    Err(SelectionError::Invalid(error)) => return Err(error),
                 }
             }
         }
         Command::Run(path) => {
             let archive = open(&path)?;
-            let entry = match glue_runtime_lua::profile::validate(archive.manifest()) {
-                Ok(entry) => entry,
-                Err(glue_runtime_lua::profile::CapabilityError::Unsupported(reason)) => {
+            let selected = match select(archive.manifest()) {
+                Ok(selected) => selected,
+                Err(SelectionError::Unsupported(reason)) => {
                     execution_unavailable(archive.manifest());
                     eprintln!("glue: {reason}");
                     return Ok(ExitCode::from(2));
                 }
-                Err(error) => return Err(error.into()),
+                Err(SelectionError::Invalid(error)) => return Err(error),
             };
-            if let Err(error) =
-                glue_runtime_lua::execute(Resources::with_default_cache(archive), &entry)
-            {
-                if error.is_unsupported() {
-                    eprintln!("glue: {error}");
-                    return Ok(ExitCode::from(2));
+            match selected {
+                Selection::Lua(entry) => {
+                    archive.check_limits(ArchiveLimits::default())?;
+                    if let Err(error) =
+                        glue_runtime_lua::execute(Resources::with_default_cache(archive), &entry)
+                    {
+                        let unsupported = error.is_unsupported();
+                        return execution_result(Err(error.into()), unsupported);
+                    }
                 }
-                return Err(error.into());
+                #[cfg(feature = "python-pbs")]
+                Selection::Python(selected) => {
+                    if let Err(error) = glue_runtime_python::execute(archive, selected) {
+                        let unsupported = error.is_unsupported();
+                        return execution_result(Err(error.into()), unsupported);
+                    }
+                }
             }
         }
     }
@@ -280,7 +376,16 @@ fn execute(command: Command) -> Result<ExitCode> {
 fn open(path: &Path) -> Result<Archive<File>> {
     let file = File::open(path)
         .map_err(|error| format!("cannot open archive {}: {error}", path.display()))?;
-    Ok(Archive::open(file)?)
+    Ok(Archive::open_with_limits(file, inspection_limits())?)
+}
+
+fn inspection_limits() -> ArchiveLimits {
+    // The stock pinned libpython is 73,563,968 bytes. Inspection must work even
+    // when Python execution is disabled; each executor enforces its own policy.
+    ArchiveLimits {
+        max_entry_bytes: 80 * 1024 * 1024,
+        ..ArchiveLimits::default()
+    }
 }
 
 fn inspect(archive: &Archive<File>) -> Result<()> {
@@ -345,7 +450,7 @@ fn execution_unavailable(manifest: &Manifest) {
     let component = &manifest.components[&manifest.entrypoint];
     let runtime = &manifest.runtimes[&component.runtime];
     eprintln!(
-        "glue: execution is unavailable for {} ({}); the selected provider or execution profile is unsupported. See fixtures/lua-linked for the linked Lua source profile",
+        "glue: execution is unavailable for {} ({}); the selected provider or execution profile is unsupported. Use glue doctor to check compiled capabilities",
         manifest.app_id,
         runtime_name(&runtime.abi),
     );
@@ -354,7 +459,7 @@ fn execution_unavailable(manifest: &Manifest) {
 fn explain_size(path: &Path) -> Result<()> {
     let file = File::open(path)?;
     let archive_bytes = file.metadata()?.len();
-    let archive = Archive::open(file)?;
+    let archive = Archive::open_with_limits(file, inspection_limits())?;
     let compressed = archive
         .entries()
         .values()
