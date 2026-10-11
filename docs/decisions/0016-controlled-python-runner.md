@@ -106,3 +106,10 @@ verification, wheels, extension discovery, custom creation/free conformance,
 version selection, subinterpreters, free-threaded/debug ABIs, workers, mutable
 host installations and other targets require further implementation and
 evidence. This extraction and controlled CLI route do not close those gates.
+
+The [clean GNU Linux arm64 capture](../evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+from implementation `32a9562` passes all nine actual product invocations and 33
+historical probe regressions. All 42 retained compressed traces independently
+replay. Exact CLI controls and 185 hostile actual-trace edits verify the product
+wrapper's command, diagnostics, readiness ordering and unchanged acquisition
+policies. These observations preserve the controlled scope above.

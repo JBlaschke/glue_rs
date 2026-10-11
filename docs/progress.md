@@ -21,7 +21,7 @@ Further implementation continues on separate feature branches.
 | A7 Python archive source/resources | `codex/a7-python-archive-imports` / `94da8de` (from merged `29b3f76`; evidence bundle follows) | Experimental bundled source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux: 316/317 source workspace tests and Clippy; 40 portable Python tests and 45 GNU opt-in release tests; 141 Python policy tests and 16 importer protocol tests; all three clean import traces plus four frozen/eight installed-host startup regressions pass |
 | A7 host Python archive source/resources | `codex/a7-host-python-archive-imports` / `9aababa` (from merged `f99bb51`; evidence bundle follows) | Experimental host source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux 327/328 workspace tests, Clippy, 51 portable/56 GNU Python tests; 161 trace-policy and 16 importer protocol tests; seven host-import and fifteen prior regression traces pass |
 | A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` / `b784c99` (from merged `a50b654`; evidence bundle follows) | Experimental registered-initializer profile; controlled GNU Linux arm64 observation | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; 59 portable/65 GNU Python tests; 191 policy and 16 importer protocol tests; all eleven native and twenty-two prior regression traces pass; 37 hostile trace edits reject |
-| A7 controlled Python product route | `codex/a7-python-runner-profile` (from merged `f92ac34`) | Experimental launcher integration | Shared runtime crate, exact controlled registry, optional `python-pbs` CLI dispatch, one-open ownership and original profile limits; clean-source validation/evidence follows |
+| A7 controlled Python product route | `codex/a7-python-runner-profile` / `32a9562` (from merged `f92ac34`; evidence bundle follows) | Experimental launcher integration; controlled GNU Linux arm64 observation | Mac/Linux 350/351 workspace tests and Clippy; 68 portable/73 GNU Python tests, 14 GNU runner CLI tests, 209 policy and 16 importer tests; all nine product and 33 earlier traces pass; 30 CLI controls match and 185 hostile trace edits reject |
 
 ## Gate status
 
@@ -244,8 +244,9 @@ tests and Clippy for Lua 5.4/5.5; every fresh GNU opt-in build passes 56 tests a
 Clippy. All 161 Python policy tests and both 16-test importer protocol cells pass.
 The [host-import evidence](evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
 retains exact source/artifact/input identities, manifests, C provenance,
-commands, validation logs and complete traces. Product Python integration,
-native extension initialization and general diagnostic consumers remain open.
+commands, validation logs and complete traces. At that checkpoint, product
+Python integration, native extension initialization and general diagnostic
+consumers remained open.
 
 The registered native A7 slice, implemented as `b784c99` on
 `codex/a7-python-extension-init-bridge` from merged `a50b654`, registers reviewed `PyInit_*` addresses through public
@@ -276,6 +277,14 @@ selected archive bounds, content and explicit host prerequisites. Default Lua
 execution retains its original 64 MiB member bound while inspection can admit
 the pinned 73,563,968-byte Python runtime. See
 [the integration decision](decisions/0016-controlled-python-runner.md).
+The [clean runner evidence](evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+retains all nine actual product traces and 33 earlier regression traces from
+`32a9562`. Every compressed trace replays, all 30 CLI controls match exact
+archive contents/statuses, and an independent audit rejects all 185 hostile
+actual-trace edits. Mac/Linux source profiles pass 350/351 tests and Clippy;
+Mac Python-enabled workspace checks also pass, while GNU execution remains
+opt-in and limited to the controlled registry. General application/host-stdlib
+admission, runtime version selection and other platforms remain later steps.
 
 ## Next critical-path assignments
 

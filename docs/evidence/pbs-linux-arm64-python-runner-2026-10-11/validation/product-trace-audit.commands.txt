@@ -1,0 +1,1 @@
+"/usr/local/bin/python3" "target/python-runner-trace-audit.py" "--capture" "target/python-runner-final-capture" "--build" "target/python-runner-final-build" "--require-clean-capture" "--output" "target/python-runner-checks/product-trace-audit.json"

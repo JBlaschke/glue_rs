@@ -1,0 +1,6 @@
+                 U PyErr_SetString
+                 U PyExc_RuntimeError
+                 U PyLong_FromLong
+                 U PyModuleDef_Init
+                 U PyModule_GetState
+                 U glue_python_dependency_answer

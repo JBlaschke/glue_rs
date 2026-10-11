@@ -71,3 +71,10 @@ The `corrupt-native` replay also requires `--corrupt-native-offset` from retaine
 metadata. Live captures use `--archive-file` and compare the complete archive
 identity and manifest against that metadata. Historical probe commands and
 their separate evidence remain regression controls.
+
+The [clean capture](../../docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+from implementation `32a9562` retains all nine product traces and 33 earlier
+regressions. Every gzip trace independently replays; all 30 CLI controls match
+exact expected results, and all 185 hostile actual-trace edits reject. The
+metadata also pins each readiness query's exact archive read count, cursor and
+read-range digest, independently derived from its canonical archive layout.

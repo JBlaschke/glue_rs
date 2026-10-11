@@ -1,0 +1,1211 @@
+{
+  "baseline_count": 9,
+  "baselines": [
+    {
+      "archive_sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+      "mode": "bundled-imports",
+      "passed": true,
+      "records": 33514,
+      "trace_sha256": "1000f07dfb17bdaa52028157d12e3ae76e30236bea301f2461ff12b6db25d1aa"
+    },
+    {
+      "archive_sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682",
+      "mode": "host-imports",
+      "passed": true,
+      "records": 5714,
+      "trace_sha256": "8e937d7f78f8244d68c37c41770682340c5f7629724439aa9477d4ea891e407e"
+    },
+    {
+      "archive_sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+      "mode": "bundled-archived",
+      "passed": true,
+      "records": 33685,
+      "trace_sha256": "43c2ee493e6c5f8c7310513eb8eddc741d637bd2635033fce5ac0927de206a93"
+    },
+    {
+      "archive_sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+      "mode": "bundled-host",
+      "passed": true,
+      "records": 33799,
+      "trace_sha256": "64b39c499e50167c8eb8a34152cc660ddc826488815ba71c4f2f81ee2cc67079"
+    },
+    {
+      "archive_sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+      "mode": "host-archived",
+      "passed": true,
+      "records": 5880,
+      "trace_sha256": "ddbcf791f2b1bc2072fb512b737b440073e99509be825a6ae75c79bbbc730e0b"
+    },
+    {
+      "archive_sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+      "mode": "host-host",
+      "passed": true,
+      "records": 5989,
+      "trace_sha256": "6d37bd7d9c8cdf9fbe6840cbfd7e85dfb2506729bf915818615940f8f16b0dfb"
+    },
+    {
+      "archive_sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+      "mode": "corrupt-native",
+      "passed": true,
+      "records": 26583,
+      "trace_sha256": "53b081e4f41e981420b58c66017f026870a6eccbb4077d7923e716e6336a7ac6"
+    },
+    {
+      "archive_sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+      "mode": "missing-host-image",
+      "passed": true,
+      "records": 33378,
+      "trace_sha256": "2f96cc00f4c90962691e183021c9b489dbf657b5c82dffe62047dad08a9150e8"
+    },
+    {
+      "archive_sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+      "mode": "wrong-host-image",
+      "passed": true,
+      "records": 33430,
+      "trace_sha256": "262b7a3fd27902d9c303ed46f9f2e29771adc2bfc8a415932bc8ee5046941bda"
+    }
+  ],
+  "build": "/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-final-build",
+  "capture": "/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-final-capture",
+  "capture_branch": "codex/a7-python-runner-profile",
+  "capture_revision": "32a9562c6e0e60da458e874d29c0e1bd17af098b",
+  "capture_source_status": "",
+  "checker_sha256": {
+    "check-linux-python-bootstrap-trace.py": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+    "check-linux-python-extension-trace.py": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+    "check-linux-python-host-import-trace.py": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+    "check-linux-python-host-trace.py": "499a3ca1eed789837cf56a73574115913d9c7d3bd8d081ce2a26974bc3b497fe",
+    "check-linux-python-import-trace.py": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed",
+    "check-linux-python-runner-trace.py": "3374d5d7da7ee28704ae03ae10b897a0e4aa3442020eb67eb8fa29f91b111635"
+  },
+  "command": [
+    "target/python-runner-trace-audit.py",
+    "--capture",
+    "target/python-runner-final-capture",
+    "--build",
+    "target/python-runner-final-build",
+    "--require-clean-capture",
+    "--output",
+    "target/python-runner-checks/product-trace-audit.json"
+  ],
+  "elapsed_seconds": 59.902,
+  "mutation_count": 185,
+  "mutations": [
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-imports",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-imports",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "bundled-imports",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26449: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-imports",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26456: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-imports",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26437: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-imports",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26455: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "bundled-imports",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 33508: product diagnostic uses another descriptor or evidence stream",
+      "mode": "bundled-imports",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 33508: product diagnostic bytes differ from this exact fixture",
+      "mode": "bundled-imports",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26448: unexpected additional process or thread",
+      "mode": "bundled-imports",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-imports",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-imports",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "host-imports",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 298: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-imports",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 299: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-imports",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 296: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-imports",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 299: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "host-imports",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 5170: product diagnostic uses another descriptor or evidence stream",
+      "mode": "host-imports",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 5170: product diagnostic bytes differ from this exact fixture",
+      "mode": "host-imports",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 297: unexpected additional process or thread",
+      "mode": "host-imports",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-archived",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-archived",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "bundled-archived",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26514: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-archived",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26523: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-archived",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26497: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-archived",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26523: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "bundled-archived",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 33676: product diagnostic uses another descriptor or evidence stream",
+      "mode": "bundled-archived",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 33676: product diagnostic bytes differ from this exact fixture",
+      "mode": "bundled-archived",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26513: unexpected additional process or thread",
+      "mode": "bundled-archived",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-host",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "bundled-host",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "bundled-host",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26453: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-host",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-host",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26436: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "bundled-host",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "bundled-host",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 33775: product diagnostic uses another descriptor or evidence stream",
+      "mode": "bundled-host",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 33775: product diagnostic bytes differ from this exact fixture",
+      "mode": "bundled-host",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26452: unexpected additional process or thread",
+      "mode": "bundled-host",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-archived",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-archived",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "host-archived",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 373: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-archived",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 375: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-archived",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 356: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-archived",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 375: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "host-archived",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 5335: product diagnostic uses another descriptor or evidence stream",
+      "mode": "host-archived",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 5335: product diagnostic bytes differ from this exact fixture",
+      "mode": "host-archived",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 372: unexpected additional process or thread",
+      "mode": "host-archived",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-host",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "host-host",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "host-host",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 313: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-host",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 315: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-host",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 296: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "host-host",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 315: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "host-host",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 5429: product diagnostic uses another descriptor or evidence stream",
+      "mode": "host-host",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 5429: product diagnostic bytes differ from this exact fixture",
+      "mode": "host-host",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 312: unexpected additional process or thread",
+      "mode": "host-host",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "corrupt-native",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "corrupt-native",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "corrupt-native",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26514: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "corrupt-native",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26523: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "corrupt-native",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26497: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "corrupt-native",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26523: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "corrupt-native",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 26577: product diagnostic uses another descriptor or evidence stream",
+      "mode": "corrupt-native",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 26577: product diagnostic bytes differ from this exact fixture",
+      "mode": "corrupt-native",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26513: unexpected additional process or thread",
+      "mode": "corrupt-native",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "missing-host-image",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "missing-host-image",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "missing-host-image",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26453: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "missing-host-image",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "missing-host-image",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26436: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "missing-host-image",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "missing-host-image",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 33372: product diagnostic uses another descriptor or evidence stream",
+      "mode": "missing-host-image",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 33372: product diagnostic bytes differ from this exact fixture",
+      "mode": "missing-host-image",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26452: unexpected additional process or thread",
+      "mode": "missing-host-image",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "wrong-host-image",
+      "mutation": "command selects another executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact glue run command",
+      "mode": "wrong-host-image",
+      "mutation": "command appends an extra run argument",
+      "rejected": true
+    },
+    {
+      "error": "product target readiness query is missing",
+      "mode": "wrong-host-image",
+      "mutation": "readiness query omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26453: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "wrong-host-image",
+      "mutation": "readiness query repeated",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "wrong-host-image",
+      "mutation": "readiness after first payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26436: uname differs from the sole bounded pre-payload product readiness query",
+      "mode": "wrong-host-image",
+      "mutation": "readiness before final metadata read",
+      "rejected": true
+    },
+    {
+      "error": "line 26462: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "wrong-host-image",
+      "mutation": "archive owner closed before payload closure",
+      "rejected": true
+    },
+    {
+      "error": "line 33424: product diagnostic uses another descriptor or evidence stream",
+      "mode": "wrong-host-image",
+      "mutation": "publication into sibling evidence stream",
+      "rejected": true
+    },
+    {
+      "error": "line 33424: product diagnostic bytes differ from this exact fixture",
+      "mode": "wrong-host-image",
+      "mutation": "publication payload changed with consistent count",
+      "rejected": true
+    },
+    {
+      "error": "line 26452: unexpected additional process or thread",
+      "mode": "wrong-host-image",
+      "mutation": "extra PID on consumed readiness query",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unexpected openat argument count",
+      "mode": "bundled-imports",
+      "mutation": "failed named temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unexpected openat argument count",
+      "mode": "bundled-imports",
+      "mutation": "failed unnamed temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unapproved syscall unlink",
+      "mode": "bundled-imports",
+      "mutation": "failed resource file removal",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unapproved syscall clone3",
+      "mode": "bundled-imports",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-imports",
+      "mutation": "failed URI source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-imports",
+      "mutation": "failed relocated source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33513: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-imports",
+      "mutation": "failed host shared-library fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unexpected openat argument count",
+      "mode": "host-imports",
+      "mutation": "failed named temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unexpected openat argument count",
+      "mode": "host-imports",
+      "mutation": "failed unnamed temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unapproved syscall unlink",
+      "mode": "host-imports",
+      "mutation": "failed resource file removal",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unapproved syscall clone3",
+      "mode": "host-imports",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-imports",
+      "mutation": "failed URI source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-imports",
+      "mutation": "failed relocated source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5713: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-imports",
+      "mutation": "failed host shared-library fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unexpected syscall arity",
+      "mode": "bundled-archived",
+      "mutation": "failed named temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unexpected syscall arity",
+      "mode": "bundled-archived",
+      "mutation": "failed unnamed temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unapproved syscall unlink",
+      "mode": "bundled-archived",
+      "mutation": "failed resource file removal",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unapproved syscall clone3",
+      "mode": "bundled-archived",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-archived",
+      "mutation": "failed URI source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-archived",
+      "mutation": "failed relocated source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33684: unapproved OS, Python-source or filesystem read path",
+      "mode": "bundled-archived",
+      "mutation": "failed host shared-library fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unexpected syscall arity",
+      "mode": "host-host",
+      "mutation": "failed named temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unexpected syscall arity",
+      "mode": "host-host",
+      "mutation": "failed unnamed temporary materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unapproved syscall unlink",
+      "mode": "host-host",
+      "mutation": "failed resource file removal",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unapproved syscall clone3",
+      "mode": "host-host",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-host",
+      "mutation": "failed URI source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-host",
+      "mutation": "failed relocated source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 5988: unapproved OS, Python-source or filesystem read path",
+      "mode": "host-host",
+      "mutation": "failed host shared-library fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33439: seals must be requested then successfully verified as 0xf",
+      "mode": "bundled-archived",
+      "mutation": "runtime F_ADD_SEALS proof omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 33440: libpython alias load precedes verified sealing",
+      "mode": "bundled-archived",
+      "mutation": "runtime F_GET_SEALS proof omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 33440: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "bundled-archived",
+      "mutation": "runtime map before seal proof",
+      "rejected": true
+    },
+    {
+      "error": "line 33445: stock image mapping must match a once-only sealed private segment",
+      "mode": "bundled-archived",
+      "mutation": "runtime writable executable map",
+      "rejected": true
+    },
+    {
+      "error": "line 33676: memory result overlaps a retained native or selected runtime image",
+      "mode": "bundled-archived",
+      "mutation": "runtime unmapped before application publication/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33508: native seal operation is missing, duplicated or out of order",
+      "mode": "bundled-archived",
+      "mutation": "native dependency F_ADD_SEALS proof omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 33525: native loader alias precedes full verification, sealing or selected runtime",
+      "mode": "bundled-archived",
+      "mutation": "native dependency F_GET_SEALS proof omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 33509: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "bundled-archived",
+      "mutation": "native dependency map before seal proof",
+      "rejected": true
+    },
+    {
+      "error": "line 33530: native mapping requires exact immutable private segment and fixed-address result",
+      "mode": "bundled-archived",
+      "mutation": "native dependency writable executable map",
+      "rejected": true
+    },
+    {
+      "error": "line 33676: memory result overlaps a retained native or selected runtime image",
+      "mode": "bundled-archived",
+      "mutation": "native dependency unmapped before application publication/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33530: memory result overlaps a retained native or selected runtime image",
+      "mode": "bundled-archived",
+      "mutation": "native map substituted ordinary host image",
+      "rejected": true
+    },
+    {
+      "error": "line 26577: product diagnostic bytes differ from this exact fixture",
+      "mode": "corrupt-native",
+      "mutation": "negative diagnostic uses historical prefix",
+      "rejected": true
+    },
+    {
+      "error": "line 26513: extension diagnostic precedes complete native/runtime admission",
+      "mode": "corrupt-native",
+      "mutation": "negative publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33372: product diagnostic bytes differ from this exact fixture",
+      "mode": "missing-host-image",
+      "mutation": "negative diagnostic uses historical prefix",
+      "rejected": true
+    },
+    {
+      "error": "line 26452: extension diagnostic precedes complete native/runtime admission",
+      "mode": "missing-host-image",
+      "mutation": "negative publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33424: product diagnostic bytes differ from this exact fixture",
+      "mode": "wrong-host-image",
+      "mutation": "negative diagnostic uses historical prefix",
+      "rejected": true
+    },
+    {
+      "error": "line 26452: extension diagnostic precedes complete native/runtime admission",
+      "mode": "wrong-host-image",
+      "mutation": "negative publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-imports",
+      "mutation": "canonical false archive digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-imports",
+      "mutation": "canonical false manifest digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-imports",
+      "mutation": "false manifest size",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-imports",
+      "mutation": "false ZIP directory offset",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-imports",
+      "mutation": "false readiness byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-imports",
+      "mutation": "false readiness cursor",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-imports",
+      "mutation": "canonical false readiness range digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness lacks exact bounded metadata admission facts",
+      "mode": "bundled-imports",
+      "mutation": "readiness bool substituted for byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-imports",
+      "mutation": "canonical false archive digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-imports",
+      "mutation": "canonical false manifest digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-imports",
+      "mutation": "false manifest size",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-imports",
+      "mutation": "false ZIP directory offset",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-imports",
+      "mutation": "false readiness byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-imports",
+      "mutation": "false readiness cursor",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-imports",
+      "mutation": "canonical false readiness range digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness lacks exact bounded metadata admission facts",
+      "mode": "host-imports",
+      "mutation": "readiness bool substituted for byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-archived",
+      "mutation": "canonical false archive digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-archived",
+      "mutation": "canonical false manifest digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-archived",
+      "mutation": "false manifest size",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "bundled-archived",
+      "mutation": "false ZIP directory offset",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-archived",
+      "mutation": "false readiness byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-archived",
+      "mutation": "false readiness cursor",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "bundled-archived",
+      "mutation": "canonical false readiness range digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness lacks exact bounded metadata admission facts",
+      "mode": "bundled-archived",
+      "mutation": "readiness bool substituted for byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-host",
+      "mutation": "canonical false archive digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-host",
+      "mutation": "canonical false manifest digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-host",
+      "mutation": "false manifest size",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "host-host",
+      "mutation": "false ZIP directory offset",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-host",
+      "mutation": "false readiness byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-host",
+      "mutation": "false readiness cursor",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "host-host",
+      "mutation": "canonical false readiness range digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness lacks exact bounded metadata admission facts",
+      "mode": "host-host",
+      "mutation": "readiness bool substituted for byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "corrupt-native",
+      "mutation": "canonical false archive digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "corrupt-native",
+      "mutation": "canonical false manifest digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "corrupt-native",
+      "mutation": "false manifest size",
+      "rejected": true
+    },
+    {
+      "error": "retained product archive identity differs from actual input",
+      "mode": "corrupt-native",
+      "mutation": "false ZIP directory offset",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "corrupt-native",
+      "mutation": "false readiness byte count",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "corrupt-native",
+      "mutation": "false readiness cursor",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness metadata differs from actual ZIP layout",
+      "mode": "corrupt-native",
+      "mutation": "canonical false readiness range digest",
+      "rejected": true
+    },
+    {
+      "error": "retained product readiness lacks exact bounded metadata admission facts",
+      "mode": "corrupt-native",
+      "mutation": "readiness bool substituted for byte count",
+      "rejected": true
+    },
+    {
+      "error": "native manifest declaration differs from pinned image/path",
+      "mode": "bundled-archived",
+      "mutation": "declared image hash",
+      "rejected": true
+    },
+    {
+      "error": "retained archive size/provider/declaration inventory differs from cell",
+      "mode": "bundled-archived",
+      "mutation": "declared provider",
+      "rejected": true
+    },
+    {
+      "error": "retained native image identity differs",
+      "mode": "bundled-archived",
+      "mutation": "native PT_LOAD permissions",
+      "rejected": true
+    },
+    {
+      "error": "native manifest declaration differs from pinned image/path",
+      "mode": "bundled-archived",
+      "mutation": "native declaration path/size",
+      "rejected": true
+    },
+    {
+      "error": "native manifest declaration differs from pinned image/path",
+      "mode": "host-host",
+      "mutation": "declared image hash",
+      "rejected": true
+    },
+    {
+      "error": "retained archive size/provider/declaration inventory differs from cell",
+      "mode": "host-host",
+      "mutation": "declared provider",
+      "rejected": true
+    },
+    {
+      "error": "retained native image identity differs",
+      "mode": "host-host",
+      "mutation": "native PT_LOAD permissions",
+      "rejected": true
+    },
+    {
+      "error": "native manifest declaration differs from pinned image/path",
+      "mode": "host-host",
+      "mutation": "native declaration path/size",
+      "rejected": true
+    },
+    {
+      "error": "retained product stdout/stderr differs from exact fixture output",
+      "mode": "bundled-imports",
+      "mutation": "retained output file appends extra byte",
+      "rejected": true
+    },
+    {
+      "error": "retained product stdout/stderr differs from exact fixture output",
+      "mode": "wrong-host-image",
+      "mutation": "retained error file changes prefix",
+      "rejected": true
+    }
+  ],
+  "passed": true,
+  "rejected_count": 185,
+  "repository_revision": "32a9562c6e0e60da458e874d29c0e1bd17af098b",
+  "repository_source_status": "",
+  "schema_version": 0,
+  "script_sha256": "661c83787b524ec049e9803708e7c8c05c3e21c74672a30f4666c7c4248f55bd"
+}

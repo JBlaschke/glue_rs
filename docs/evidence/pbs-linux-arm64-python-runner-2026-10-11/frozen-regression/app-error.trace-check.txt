@@ -1,0 +1,1 @@
+Trace checks passed: complete archive reads, one sealed private stock image, exact diagnostics and expected exit, no filesystem mutation, source fallback or extra process

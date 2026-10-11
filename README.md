@@ -146,8 +146,8 @@ Its opt-in `pbs-bootstrap` feature uses public CPython APIs and a C-owned bounda
 on GNU Linux arm64; other targets reject execution before opening the archive.
 The [bootstrap fixture](fixtures/python-bootstrap/README.md) and
 [decision](docs/decisions/0011-stock-pbs-frozen-bootstrap.md) describe its frozen
-startup subset, exact runtime profile and trace protocol. Product Python
-providers and native extensions remain pending.
+startup subset, exact runtime profile and trace protocol. This checkpoint
+established the frozen-startup mechanism.
 The [clean bootstrap capture](docs/evidence/pbs-linux-arm64-bootstrap-2026-10-10/README.md)
 matches ordinary loading and passes all four complete syscall checks after the
 producer installation and headers are removed.
@@ -155,8 +155,8 @@ producer installation and headers are removed.
 The separate [host startup fixture](fixtures/python-host/README.md) selects that
 exact library with its installed stdlib through explicit host paths. It verifies
 the library and six startup sources, rejects startup bytecode caches and uses
-the installed encodings package without our frozen bundle. Product host
-discovery and Python execution remain pending.
+the installed encodings package without our frozen bundle. General host
+discovery remains pending.
 The [clean host capture](docs/evidence/pbs-linux-arm64-host-python-2026-10-10/README.md)
 passes all eight host traces and four frozen-bootstrap regression traces from
 the same implementation commit.
@@ -166,8 +166,7 @@ the bundled startup experiment with Rust-owned source resolution and actual
 `importlib.resources` streams. It exercises modules, packages, one-portion
 namespaces, virtual origins, import caching/reload, source encoding and binary/text
 assets. Materializing resource helpers reject before temporary-file attempts.
-This remains a controlled bundled adapter; product integration and native Python
-extensions remain pending.
+This checkpoint established the controlled bundled source/resource adapter.
 The [clean import capture](docs/evidence/pbs-linux-arm64-python-imports-2026-10-10/README.md)
 passes all three import traces and twelve earlier startup regression traces from
 the same implementation commit.
@@ -177,7 +176,8 @@ the same app/importer with explicit installed paths. Its 18-entry archive holds
 only app/helper/assets; the host owns the stdlib. It verifies the library,
 69 reviewed sources and absence of relevant caches before loading. Archive-owned
 packages and namespaces block filesystem fallback, while installed
-`importlib.resources` reads the archive's streams. Product provider integration remains a later A7 step.
+`importlib.resources` reads the archive's streams. Controlled product integration
+is described below.
 The [clean host-import capture](docs/evidence/pbs-linux-arm64-host-imports-2026-10-10/README.md)
 passes seven host-import traces plus fifteen bundled-import/startup regressions
 from the same implementation commit.
@@ -256,24 +256,30 @@ An output write failure may leave a partial file and returns an error.
 materialize a resource as a filesystem file. These hashes detect corruption;
 they do not authenticate an archive's author.
 
-`run` and `doctor APP.glue` return 0 for an admitted, ready profile, 2 for an
-unsupported provider/capability, and 1 for malformed input or mismatched
-source/build/ABI/host prerequisites. `doctor` checks metadata and acquisition
-readiness without executing scripts or verifying every resource; use `verify`
+`run` and `doctor APP.glue` return 0 for an admitted, ready profile, 2 for
+unavailable providers or execution capabilities, and 1 for invalid declarations,
+integrity errors or failed execution. `doctor` checks metadata and build/target
+prerequisites without executing scripts or verifying every resource; use `verify`
 for a complete content check. The original host resource fixture still returns
 2. `build --standalone` remains unavailable with status 2. Successful core
 operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 338/339 Rust tests for `lua54`/`lua55` on
+The source-profile workspace passes 350/351 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
-and 59 Python bootstrap/host/import/native profile tests. Both
+and 68 portable Python bootstrap/host/import/native/profile-readiness tests. Both
 profiles pass all-target Clippy with warnings denied on both systems. The
-GNU opt-in Python fixture passes 65 release tests and Clippy; all 191
+GNU opt-in shared Python runtime/probe passes 73 release tests and Clippy; all 209
 trace-policy tests pass, including 29 bundled-import, 20 host-import and 30
-native registration checks. The importer
+native registration checks and 18 product-route checks. The importer
 also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
+controlled Python product capture passes nine real `glue run` traces and all
+33 earlier Python regressions from clean `32a9562`; all 42 compressed traces
+independently replay. Its 30 CLI controls match expected results, and all 185
+hostile trace mutations reject.
+The [retained runner evidence](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+records source/artifact identities, commands, controls and complete traces. The
 earlier native Linux validation covers both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
@@ -305,6 +311,7 @@ python3 -m unittest discover -s scripts -p 'test_linux_python_import_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_host_import_trace.py'
 python3 -m unittest discover -s scripts -p 'test_linux_python_extension_trace.py'
 sh fixtures/python-extensions/run-linux.sh
+sh fixtures/python-runner/run-linux.sh
 python3 fixtures/python-imports/test_importer.py
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55

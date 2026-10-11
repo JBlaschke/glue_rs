@@ -1,0 +1,13 @@
+Linux 7.1.4-200.fc44.aarch64 #1 SMP PREEMPT_DYNAMIC Sat Jul 18 19:16:11 UTC 2026 aarch64 GNU/Linux
+rustc 1.88.0 (6b00bc388 2025-06-23)
+clippy 0.1.88 (6b00bc3880 2025-06-23)
+cc (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+gcc	4:12.2.0-3
+libc6:arm64	2.36-9+deb12u10
+strace	6.1-0.1
+page_size=4096
+vm.memfd_noexec=0
