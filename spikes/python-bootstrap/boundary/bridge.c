@@ -25,7 +25,7 @@
 
 _Static_assert(sizeof(void *) == 8 && sizeof(int) == 4,
                "The bootstrap boundary requires the selected 64-bit ABI");
-_Static_assert(sizeof(GluePythonApi) == 232 &&
+_Static_assert(sizeof(GluePythonApi) == 240 &&
                    offsetof(GluePythonApi, Py_GetVersion) == 8 &&
                    offsetof(GluePythonApi, PyImport_FrozenModules) == 160 &&
                    offsetof(GluePythonApi, PyWideStringList_Append) == 168 &&
@@ -36,11 +36,16 @@ _Static_assert(sizeof(GluePythonApi) == 232 &&
                    offsetof(GluePythonApi, PyBytes_FromStringAndSize) == 208 &&
                    offsetof(GluePythonApi, PyErr_SetString) == 216 &&
                    offsetof(GluePythonApi, PyExc_RuntimeError) == 224 &&
+                   offsetof(GluePythonApi, PyImport_AppendInittab) == 232 &&
                    sizeof(GlueFrozenRecord) == 24 &&
+                   sizeof(GlueExtensionRecord) == 16 &&
+                   offsetof(GlueExtensionRecord, initializer) == 8 &&
                    sizeof(GluePythonResult) == 16 &&
                    sizeof(GlueResourceReply) == 16 &&
                    offsetof(GlueResourceReply, len) == 8,
-               "Python bridge ABI revision 3 must match the Rust layout");
+               "Python bridge ABI revision 4 must match the Rust layout");
+_Static_assert(sizeof(PyObject *(*)(void)) == sizeof(void *),
+               "The selected ABI has pointer-width native initializers");
 _Static_assert(sizeof(struct _frozen) == 24 &&
                    offsetof(struct _frozen, is_package) == 20,
                "The pinned public frozen descriptor has four fields");
@@ -54,6 +59,7 @@ _Static_assert(sizeof(struct _frozen) == 24 &&
 #define MAX_HOST_PATH 4096u
 #define MAX_REQUEST 4096u
 #define MAX_BOOTSTRAP (256u * 1024u)
+#define MAX_EXTENSIONS 8u
 #define CALL(api, name) ((__typeof__(&name))((api)->name))
 
 static atomic_int attempted = 0;
@@ -68,6 +74,12 @@ typedef struct HostPaths {
     wchar_t *prefix;
     wchar_t *stdlib;
 } HostPaths;
+
+typedef struct ExtensionOwner {
+    GlueExtensionRecord records[MAX_EXTENSIONS];
+    size_t count;
+    int published;
+} ExtensionOwner;
 
 typedef struct ArchiveBridge {
     GlueResourceRequest request;
@@ -129,7 +141,7 @@ void glue_python_result_free(GluePythonResult *result) {
 }
 
 static int valid_api(const GluePythonApi *api) {
-    return api != NULL && api->abi_revision == 3 && api->reserved == 0 &&
+    return api != NULL && api->abi_revision == 4 && api->reserved == 0 &&
            api->Py_GetVersion && api->Py_IsInitialized &&
            api->PyPreConfig_InitIsolatedConfig && api->Py_PreInitialize &&
            api->PyConfig_InitIsolatedConfig && api->PyConfig_SetString &&
@@ -143,7 +155,8 @@ static int valid_api(const GluePythonApi *api) {
            api->PyWideStringList_Append && api->PyModule_New &&
            api->PyCFunction_NewEx && api->PyImport_GetModuleDict &&
            api->PyDict_SetItemString && api->PyBytes_FromStringAndSize &&
-           api->PyErr_SetString && api->PyExc_RuntimeError;
+           api->PyErr_SetString && api->PyExc_RuntimeError &&
+           api->PyImport_AppendInittab;
 }
 
 static int valid_archive(const ArchiveBridge *bridge) {
@@ -410,6 +423,79 @@ static int module_name(const char *name) {
     return !initial;
 }
 
+static int valid_extensions(const GlueExtensionRecord *records, size_t count) {
+    if (count > MAX_EXTENSIONS || (records == NULL) != (count == 0)) {
+        return 0;
+    }
+    static const char prefix[] = "glue_native_";
+    for (size_t index = 0; index < count; index++) {
+        const GlueExtensionRecord *record = &records[index];
+        if (record->initializer == NULL || !module_name(record->name) ||
+            strlen(record->name) <= sizeof(prefix) - 1 ||
+            strncmp(record->name, prefix, sizeof(prefix) - 1) != 0 ||
+            strchr(record->name, '.') != NULL) {
+            return 0;
+        }
+        for (size_t earlier = 0; earlier < index; earlier++) {
+            if (strcmp(record->name, records[earlier].name) == 0) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+static void free_extensions(ExtensionOwner *owner) {
+    /* AppendInittab retains the name pointers. Registration can succeed for
+     * some records before another fails, so all names are deliberately pinned
+     * from the first append attempt through process exit. */
+    if (!owner->published) {
+        for (size_t index = 0; index < owner->count; index++) {
+            free((void *)owner->records[index].name);
+        }
+        memset(owner, 0, sizeof(*owner));
+    }
+}
+
+static int make_extensions(const GlueExtensionRecord *records, size_t count,
+                           ExtensionOwner *owner, GluePythonResult *result) {
+    if (!valid_extensions(records, count)) {
+        return fail(result, "invalid Python extension registrations");
+    }
+    for (size_t index = 0; index < count; index++) {
+        size_t length = strlen(records[index].name);
+        char *name = malloc(length + 1);
+        if (name == NULL) {
+            free_extensions(owner);
+            return fail(result, "cannot copy Python extension names");
+        }
+        memcpy(name, records[index].name, length + 1);
+        owner->records[index].name = name;
+        owner->records[index].initializer = records[index].initializer;
+        owner->count++;
+    }
+    return 0;
+}
+
+static int register_extensions(const GluePythonApi *api, ExtensionOwner *owner,
+                               GluePythonResult *result) {
+    if (owner->count != 0) {
+        owner->published = 1;
+    }
+    for (size_t index = 0; index < owner->count; index++) {
+        const GlueExtensionRecord *record = &owner->records[index];
+        /* Rust validates address ownership and pins the native code. Only C
+         * supplies the selected public API with the Python initializer type;
+         * stock import machinery invokes it after interpreter initialization. */
+        PyObject *(*initializer)(void) =
+            (PyObject *(*)(void))record->initializer;
+        if (CALL(api, PyImport_AppendInittab)(record->name, initializer) != 0) {
+            return fail(result, "cannot register Python extension initializer");
+        }
+    }
+    return 0;
+}
+
 static void free_frozen(FrozenOwner *owner) {
     if (owner->table != NULL) {
         for (size_t index = 0; index < owner->custom_count; index++) {
@@ -494,6 +580,8 @@ static int make_frozen(const struct _frozen *original,
 static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
                        size_t count, const HostPaths *host,
                        const ArchiveBridge *archive,
+                       const GlueExtensionRecord *extensions,
+                       size_t extension_count,
                        const unsigned char *bootstrap_source,
                        size_t bootstrap_len,
                        const unsigned char *app_source, size_t app_len,
@@ -508,6 +596,9 @@ static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
     }
     if (!valid_source(app_source, app_len, MAX_APP)) {
         return fail(result, "invalid Python application source");
+    }
+    if (!valid_extensions(extensions, extension_count)) {
+        return fail(result, "invalid Python extension registrations");
     }
     if (archive != NULL &&
         (!valid_archive(archive) ||
@@ -538,8 +629,24 @@ static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
             return 1;
         }
     }
+    ExtensionOwner native = {0};
+    if (make_extensions(extensions, extension_count, &native, result)) {
+        free_frozen(&owner);
+        return 1;
+    }
+    for (size_t index = 0; index < native.count; index++) {
+        for (size_t frozen = 0;
+             frozen < owner.original_count + owner.custom_count; frozen++) {
+            if (strcmp(native.records[index].name, owner.table[frozen].name) == 0) {
+                free_extensions(&native);
+                free_frozen(&owner);
+                return fail(result, "Python extension conflicts with a frozen module");
+            }
+        }
+    }
     char *source = malloc(app_len + 1);
     if (source == NULL) {
+        free_extensions(&native);
         free_frozen(&owner);
         return fail(result, "cannot allocate Python application source");
     }
@@ -549,6 +656,7 @@ static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
     if (archive != NULL) {
         bootstrap = malloc(bootstrap_len + 1);
         if (bootstrap == NULL) {
+            free_extensions(&native);
             free(source);
             free_frozen(&owner);
             return fail(result, "cannot allocate Python archive importer source");
@@ -631,6 +739,10 @@ static int run_python(const GluePythonApi *api, const GlueFrozenRecord *records,
         }
     }
 
+    if (register_extensions(api, &native, result)) {
+        failed = 1;
+        goto cleanup;
+    }
     initialization_attempted = 1;
     if (status_error(api, CALL(api, Py_InitializeFromConfig)(&config), result)) {
         failed = 1;
@@ -719,13 +831,14 @@ cleanup:
     }
     free(source);
     free(bootstrap);
+    free_extensions(&native);
     return failed;
 }
 
 int glue_python_run(const GluePythonApi *api, const GlueFrozenRecord *records,
                     size_t count, const unsigned char *app_source,
                     size_t app_len, GluePythonResult *result) {
-    return run_python(api, records, count, NULL, NULL, NULL, 0,
+    return run_python(api, records, count, NULL, NULL, NULL, 0, NULL, 0,
                       app_source, app_len, result);
 }
 
@@ -741,15 +854,17 @@ int glue_python_run_host(const GluePythonApi *api, const char *prefix,
     if (make_host_paths(prefix, stdlib, &paths, result)) {
         return 1;
     }
-    int failed = run_python(api, NULL, 0, &paths, NULL, NULL, 0,
+    int failed = run_python(api, NULL, 0, &paths, NULL, NULL, 0, NULL, 0,
                             app_source, app_len, result);
     free_host_paths(&paths);
     return failed;
 }
 
-int glue_python_run_archive(const GluePythonApi *api,
+int glue_python_run_extensions(const GluePythonApi *api,
                             const GlueFrozenRecord *records, size_t count,
                             const char *prefix, const char *stdlib,
+                            const GlueExtensionRecord *extensions,
+                            size_t extension_count,
                             GlueResourceRequest request,
                             GlueResourceRelease release, void *context,
                             const unsigned char *bootstrap_source,
@@ -779,10 +894,26 @@ int glue_python_run_archive(const GluePythonApi *api,
         return fail(result, "invalid Python archive startup selection");
     }
     int failed = run_python(api, records, count, selected_host, &bridge,
+                            extensions, extension_count,
                             bootstrap_source, bootstrap_len,
                             app_source, app_len, result);
     free_host_paths(&paths);
     return failed;
+}
+
+int glue_python_run_archive(const GluePythonApi *api,
+                            const GlueFrozenRecord *records, size_t count,
+                            const char *prefix, const char *stdlib,
+                            GlueResourceRequest request,
+                            GlueResourceRelease release, void *context,
+                            const unsigned char *bootstrap_source,
+                            size_t bootstrap_len,
+                            const unsigned char *app_source, size_t app_len,
+                            GluePythonResult *result) {
+    return glue_python_run_extensions(api, records, count, prefix, stdlib,
+                                      NULL, 0, request, release, context,
+                                      bootstrap_source, bootstrap_len,
+                                      app_source, app_len, result);
 }
 
 int glue_python_boundary_test_ownership(void) {
@@ -1074,6 +1205,142 @@ int glue_python_boundary_test_archive_callbacks(void) {
     }
     failed = 0;
 done:
+    glue_python_result_free(&result);
+    return failed;
+}
+
+typedef struct ExtensionRegistrationTest {
+    const ExtensionOwner *expected;
+    size_t calls;
+    size_t fail_at;
+    size_t initializations;
+    int invalid;
+} ExtensionRegistrationTest;
+
+static ExtensionRegistrationTest extension_test;
+
+static PyObject *test_extension_initializer(void) {
+    extension_test.initializations++;
+    return NULL;
+}
+
+static int test_append_inittab(const char *name,
+                               PyObject *(*initializer)(void)) {
+    size_t index = extension_test.calls++;
+    if (index >= extension_test.expected->count ||
+        name != extension_test.expected->records[index].name ||
+        initializer != test_extension_initializer) {
+        extension_test.invalid = 1;
+    }
+    return index == extension_test.fail_at ? -1 : 0;
+}
+
+int glue_python_boundary_test_extensions(void) {
+    char names[MAX_EXTENSIONS][MAX_NAME + 2];
+    GlueExtensionRecord records[MAX_EXTENSIONS];
+    for (size_t index = 0; index < MAX_EXTENSIONS; index++) {
+        snprintf(names[index], sizeof(names[index]), "glue_native_%zu", index);
+        records[index].name = names[index];
+        records[index].initializer = (const void *)test_extension_initializer;
+    }
+    ExtensionOwner owner = {0};
+    GluePythonResult result = {0};
+    int failed = 1;
+    if (!valid_extensions(NULL, 0) || valid_extensions(NULL, 1) ||
+        valid_extensions(records, 0) ||
+        valid_extensions(records, MAX_EXTENSIONS + 1) ||
+        !valid_extensions(records, MAX_EXTENSIONS)) {
+        goto done;
+    }
+    const char *invalid[] = {
+        NULL, "", "glue_native_", "other", "glue_native_x.y",
+        "glue_native_x-y", "glue_native_x/y", "glue_native_x y",
+        "glue_native_x\n", "glue_native_\177", "glue_native_\200",
+        "Glue_native_x"
+    };
+    for (size_t index = 0; index < sizeof(invalid) / sizeof(*invalid); index++) {
+        records[0].name = invalid[index];
+        if (valid_extensions(records, 1) ||
+            !make_extensions(records, 1, &owner, &result) ||
+            owner.count != 0 || result.error == NULL) {
+            goto done;
+        }
+        glue_python_result_free(&result);
+    }
+    records[0].name = names[0];
+    records[0].initializer = NULL;
+    if (valid_extensions(records, 1)) {
+        goto done;
+    }
+    records[0].initializer = (const void *)test_extension_initializer;
+    records[1].name = names[0];
+    if (valid_extensions(records, 2)) {
+        goto done;
+    }
+    records[1].name = names[1];
+    char bounded[MAX_NAME + 2];
+    memset(bounded, 'x', sizeof(bounded));
+    memcpy(bounded, "glue_native_", sizeof("glue_native_") - 1);
+    bounded[MAX_NAME] = '\0';
+    records[0].name = bounded;
+    if (!valid_extensions(records, 1)) {
+        goto done;
+    }
+    bounded[MAX_NAME] = 'x';
+    bounded[MAX_NAME + 1] = '\0';
+    if (valid_extensions(records, 1)) {
+        goto done;
+    }
+    records[0].name = names[0];
+    if (make_extensions(records, MAX_EXTENSIONS, &owner, &result) ||
+        owner.count != MAX_EXTENSIONS || owner.published ||
+        owner.records[0].name == names[0] ||
+        owner.records[0].initializer != records[0].initializer) {
+        goto done;
+    }
+    names[0][0] = 'x';
+    if (strcmp(owner.records[0].name, "glue_native_0") != 0) {
+        goto done;
+    }
+    names[0][0] = 'g';
+    free_extensions(&owner);
+    free_extensions(&owner);
+    if (owner.count != 0 || owner.records[0].name != NULL) {
+        goto done;
+    }
+    GluePythonApi api = {0};
+    api.PyImport_AppendInittab = (void *)test_append_inittab;
+    /* This fake public API records borrowed pointers without calling Python or
+     * any initializer. Exercise success and first/partial append failures. */
+    const size_t failures[] = {MAX_EXTENSIONS, 0, 1};
+    for (size_t index = 0; index < sizeof(failures) / sizeof(*failures); index++) {
+        if (make_extensions(records, 2, &owner, &result)) {
+            goto done;
+        }
+        extension_test = (ExtensionRegistrationTest){&owner, 0, failures[index], 0, 0};
+        int rejected = register_extensions(&api, &owner, &result);
+        size_t calls = failures[index] == 0 ? 1 : 2;
+        if (rejected != (failures[index] < 2) ||
+            extension_test.calls != calls || extension_test.initializations != 0 ||
+            extension_test.invalid || !owner.published) {
+            goto done;
+        }
+        const char *copied = owner.records[0].name;
+        free_extensions(&owner);
+        if (owner.count != 2 || owner.records[0].name != copied ||
+            strcmp(copied, "glue_native_0") != 0) {
+            goto done;
+        }
+        /* The fake append retains no process table. Only this test may release
+         * names after proving the production cleanup preserves published ones. */
+        owner.published = 0;
+        free_extensions(&owner);
+        glue_python_result_free(&result);
+    }
+    failed = 0;
+done:
+    owner.published = 0; /* No real AppendInittab call occurs in this selftest. */
+    free_extensions(&owner);
     glue_python_result_free(&result);
     return failed;
 }

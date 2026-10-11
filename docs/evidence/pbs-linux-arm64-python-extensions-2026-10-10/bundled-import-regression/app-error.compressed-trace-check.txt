@@ -1,0 +1,1 @@
+Trace checks passed: verified archive admission before sealed stock image or exact pre-init rejection, isolated archive imports/resources, exact diagnostics and exit, no filesystem mutation, source fallback or extra process

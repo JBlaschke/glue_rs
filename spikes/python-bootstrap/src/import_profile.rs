@@ -122,7 +122,7 @@ fn manifest_for(resources: BTreeMap<String, ResourceSpec>) -> Result<Manifest, S
     Ok(m)
 }
 
-fn limits() -> ArchiveLimits {
+pub(super) fn limits() -> ArchiveLimits {
     ArchiveLimits {
         max_manifest_bytes: 2 * 1024 * 1024,
         max_archive_bytes: 128 * 1024 * 1024,
@@ -222,7 +222,7 @@ pub(super) fn prepare(full: &Path, bundle_path: &Path, output: &Path) -> Result<
     Ok(())
 }
 
-fn admit(m: &Manifest) -> Result<(), String> {
+pub(super) fn admit(m: &Manifest) -> Result<(), String> {
     if *m != manifest_for(m.resources.clone())? {
         return Err("archive differs from the archive Python imports profile".into());
     }

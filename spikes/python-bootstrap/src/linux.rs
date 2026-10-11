@@ -1,6 +1,8 @@
 //! Exact-image experiment. GNU ld.so handles the stock image's TLS/relocations;
 //! this does not extend the general native Lua ELF admission profile.
 use super::*;
+#[path = "native_linux.rs"]
+mod native;
 use std::{
     ffi::{CStr, CString},
     io::Write,
@@ -10,7 +12,7 @@ use std::{
 };
 
 static ATTEMPTED: AtomicBool = AtomicBool::new(false);
-const NAMES: [&str; 28] = [
+const NAMES: [&str; 29] = [
     "Py_GetVersion",
     "Py_IsInitialized",
     "PyPreConfig_InitIsolatedConfig",
@@ -39,6 +41,7 @@ const NAMES: [&str; 28] = [
     "PyBytes_FromStringAndSize",
     "PyErr_SetString",
     "PyExc_RuntimeError",
+    "PyImport_AppendInittab",
 ];
 const OS_LIBRARIES: [&str; 9] = [
     "libc.so.6",
@@ -56,7 +59,7 @@ const OS_LIBRARIES: [&str; 9] = [
 struct Api {
     abi_revision: u32,
     reserved: u32,
-    symbols: [*mut libc::c_void; 28],
+    symbols: [*mut libc::c_void; 29],
 }
 #[repr(C)]
 struct FrozenRecord {
@@ -64,6 +67,11 @@ struct FrozenRecord {
     code: *const u8,
     size: i32,
     is_package: i32,
+}
+#[repr(C)]
+struct ExtensionRecord {
+    name: *const libc::c_char,
+    initializer: *const libc::c_void,
 }
 #[repr(C)]
 struct BridgeResult {
@@ -76,8 +84,9 @@ struct ResourceReply {
     len: usize,
 }
 const _: () = {
-    assert!(std::mem::size_of::<Api>() == 232);
+    assert!(std::mem::size_of::<Api>() == 240);
     assert!(std::mem::size_of::<FrozenRecord>() == 24);
+    assert!(std::mem::size_of::<ExtensionRecord>() == 16);
     assert!(std::mem::size_of::<BridgeResult>() == 16);
     assert!(std::mem::size_of::<ResourceReply>() == 16);
 };
@@ -99,12 +108,14 @@ unsafe extern "C" {
         app_len: usize,
         result: *mut BridgeResult,
     ) -> libc::c_int;
-    fn glue_python_run_archive(
+    fn glue_python_run_extensions(
         api: *const Api,
         records: *const FrozenRecord,
         count: usize,
         prefix: *const libc::c_char,
         stdlib: *const libc::c_char,
+        extensions: *const ExtensionRecord,
+        extension_count: usize,
         request: unsafe extern "C" fn(
             *mut libc::c_void,
             *const u8,
@@ -125,6 +136,8 @@ unsafe extern "C" {
     fn glue_python_boundary_test_host_paths() -> libc::c_int;
     #[cfg(test)]
     fn glue_python_boundary_test_archive_callbacks() -> libc::c_int;
+    #[cfg(test)]
+    fn glue_python_boundary_test_extensions() -> libc::c_int;
 }
 
 fn preflight() -> Result<(), String> {
@@ -213,6 +226,10 @@ fn runtime_file(library: &[u8], baseline: Option<&Path>) -> Result<File, String>
 }
 
 fn load_api(file: File) -> Result<Api, String> {
+    Ok(load_api_with_handle(file)?.0)
+}
+
+fn load_api_with_handle(file: File) -> Result<(Api, *mut libc::c_void, usize), String> {
     let path = CString::new(format!("/proc/self/fd/{}", file.as_raw_fd())).unwrap();
     // SAFETY: exact pinned stock image, immutable sealed fd (or read-only pinned
     // comparison input); trusted native code. Eager system-loader relocation.
@@ -239,9 +256,9 @@ fn load_api(file: File) -> Result<Api, String> {
     // SAFETY: live loader-owned link_map prefix.
     let base = unsafe { (*link).address };
     let mut api = Api {
-        abi_revision: 3,
+        abi_revision: 4,
         reserved: 0,
-        symbols: [std::ptr::null_mut(); 28],
+        symbols: [std::ptr::null_mut(); 29],
     };
     for (slot, name) in api.symbols.iter_mut().zip(NAMES) {
         let key = CString::new(name).unwrap();
@@ -261,7 +278,7 @@ fn load_api(file: File) -> Result<Api, String> {
         *slot = address;
     }
     check_images(Some(base))?;
-    Ok(api)
+    Ok((api, handle, base))
 }
 
 fn invoke_frozen(api: &Api, payload: &mut Payload, negative: Option<&str>) -> Result<(), String> {
@@ -387,6 +404,7 @@ pub(super) fn run_imports(
             index: &mut payload.index,
         },
         negative,
+        &[],
     )
 }
 
@@ -414,7 +432,74 @@ pub(super) fn run_host_imports(
             index: &mut payload.index,
         },
         negative,
+        &[],
     )
+}
+
+pub(super) fn run_extensions(
+    mut payload: extension_profile::Payload,
+    negative: bool,
+) -> Result<(), String> {
+    preflight()?;
+    match payload.runtime {
+        extension_profile::Runtime::Bundled { library, bundle } => {
+            let (api, handle, base) = load_api_with_handle(runtime_file(&library, None)?)?;
+            let registrations = native::load(&mut payload.images, handle, base)?;
+            let names: Vec<_> = bundle
+                .modules
+                .iter()
+                .map(|m| CString::new(m.name.as_str()).map_err(|_| "frozen name contains NUL"))
+                .collect::<Result<_, _>>()?;
+            let codes: Vec<_> = bundle
+                .modules
+                .iter()
+                .map(|m| m.decode_hex())
+                .collect::<Result<_, _>>()?;
+            let records: Vec<_> = bundle
+                .modules
+                .iter()
+                .zip(&names)
+                .zip(&codes)
+                .map(|((module, name), code)| FrozenRecord {
+                    name: name.as_ptr(),
+                    code: code.as_ptr(),
+                    size: code.len() as i32,
+                    is_package: i32::from(module.is_package),
+                })
+                .collect();
+            invoke_archive(
+                &api,
+                ArchiveStartup::Frozen(&records),
+                ArchiveApplication {
+                    app: &mut payload.app,
+                    bootstrap: &payload.bootstrap,
+                    index: &mut payload.index,
+                },
+                negative,
+                &registrations.records,
+            )
+        }
+        extension_profile::Runtime::Host(config) => {
+            let verified = config.verify_imports(&host_import_profile::source_specs()?)?;
+            let prefix = CString::new(verified.config.prefix.as_str())
+                .map_err(|_| "host prefix contains NUL")?;
+            let stdlib = CString::new(verified.config.stdlib.as_str())
+                .map_err(|_| "host stdlib contains NUL")?;
+            let (api, handle, base) = load_api_with_handle(verified.library)?;
+            let registrations = native::load(&mut payload.images, handle, base)?;
+            invoke_archive(
+                &api,
+                ArchiveStartup::Host(&prefix, &stdlib),
+                ArchiveApplication {
+                    app: &mut payload.app,
+                    bootstrap: &payload.bootstrap,
+                    index: &mut payload.index,
+                },
+                negative,
+                &registrations.records,
+            )
+        }
+    }
 }
 
 enum ArchiveStartup<'a> {
@@ -433,6 +518,7 @@ fn invoke_archive(
     startup: ArchiveStartup<'_>,
     payload: ArchiveApplication<'_>,
     negative: bool,
+    extensions: &[ExtensionRecord],
 ) -> Result<(), String> {
     if negative {
         payload
@@ -458,12 +544,18 @@ fn invoke_archive(
     // synchronous call and finalization. C owns every Python API/object. Rust
     // callbacks catch panics and return buffers before C calls Python again.
     let status = unsafe {
-        glue_python_run_archive(
+        glue_python_run_extensions(
             api,
             records,
             count,
             prefix,
             stdlib,
+            if extensions.is_empty() {
+                std::ptr::null()
+            } else {
+                extensions.as_ptr()
+            },
+            extensions.len(),
             resource_request,
             resource_release,
             (payload.index as *mut imports::Index).cast(),
@@ -564,12 +656,15 @@ struct LinkMap {
 }
 
 struct ImageCheck {
-    runtime_base: Option<usize>,
+    admitted_bases: Vec<usize>,
     invalid: bool,
 }
 fn check_images(runtime_base: Option<usize>) -> Result<(), String> {
+    check_image_bases(runtime_base.into_iter().collect())
+}
+fn check_image_bases(admitted_bases: Vec<usize>) -> Result<(), String> {
     let mut check = ImageCheck {
-        runtime_base,
+        admitted_bases,
         invalid: false,
     };
     // SAFETY: synchronous loader traversal, callback only inspects loader-owned
@@ -599,7 +694,7 @@ unsafe extern "C" fn image_callback(
         return 1;
     }
     let bytes = unsafe { CStr::from_ptr(info.dlpi_name) }.to_bytes();
-    if bytes.is_empty() || check.runtime_base == Some(info.dlpi_addr as usize) {
+    if bytes.is_empty() || check.admitted_bases.contains(&(info.dlpi_addr as usize)) {
         return 0;
     }
     let name = bytes.rsplit(|b| *b == b'/').next().unwrap_or(bytes);
@@ -628,6 +723,12 @@ fn loader_error(context: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn c_validates_and_pins_registered_native_names_before_python_calls() {
+        // SAFETY: pure C ownership/metadata selftest, fake append never calls initializers.
+        assert_eq!(unsafe { super::glue_python_boundary_test_extensions() }, 0);
+    }
+
     #[test]
     fn c_owns_frozen_records_and_error_buffers() {
         // SAFETY: C-only ownership self-test does not initialize Python or

@@ -52,7 +52,7 @@ pub(super) fn source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
     Ok(specs)
 }
 
-fn runtime_names() -> Result<BTreeSet<String>, String> {
+pub(super) fn runtime_names() -> Result<BTreeSet<String>, String> {
     let builtins: serde_json::Value =
         serde_json::from_slice(RUNTIME_NAMES).map_err(|e| e.to_string())?;
     if builtins["schema_version"] != 0 || builtins["library_sha256"] != LIBRARY_SHA {
@@ -134,7 +134,7 @@ fn manifest_for(
     Ok(manifest)
 }
 
-fn limits() -> ArchiveLimits {
+pub(super) fn limits() -> ArchiveLimits {
     ArchiveLimits {
         max_archive_bytes: 128 * 1024,
         max_manifest_bytes: 16 * 1024,
@@ -146,7 +146,7 @@ fn limits() -> ArchiveLimits {
     }
 }
 
-fn admit(manifest: &Manifest) -> Result<host::Config, String> {
+pub(super) fn admit(manifest: &Manifest) -> Result<host::Config, String> {
     let runtime = manifest
         .runtimes
         .get("python")

@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* Revision 3: every address belongs to the one selected, pinned runtime.
+/* Revision 4: every address belongs to the one selected, pinned runtime.
  * PyImport_FrozenModules and PyExc_RuntimeError are exported public data
  * symbol addresses, not their values.
  * No Python object, PyConfig or PyStatus crosses this boundary. */
@@ -39,6 +39,7 @@ typedef struct GluePythonApi {
     void *PyBytes_FromStringAndSize;
     void *PyErr_SetString;
     void *PyExc_RuntimeError;
+    void *PyImport_AppendInittab;
 } GluePythonApi;
 
 typedef struct GlueFrozenRecord {
@@ -47,6 +48,15 @@ typedef struct GlueFrozenRecord {
     int32_t size;
     int32_t is_package;
 } GlueFrozenRecord;
+
+/* Rust supplies a reviewed initializer address from a process-pinned image.
+ * Names are top-level ASCII identifiers of at most 255 bytes beginning with
+ * glue_native_ and a nonempty suffix. C copies names; no Python object crosses
+ * this record. */
+typedef struct GlueExtensionRecord {
+    const char *name;
+    const void *initializer;
+} GlueExtensionRecord;
 
 typedef struct GluePythonResult {
     char *error;
@@ -107,11 +117,33 @@ int glue_python_run_archive(const GluePythonApi *api,
                             size_t bootstrap_len,
                             const unsigned char *app_source, size_t app_len,
                             GluePythonResult *result);
+
+/* Same archive/startup contract, with at most eight native registrations.
+ * NULL extensions and zero count selects no registrations. Native count, names
+ * and non-NULL addresses are checked before any Python API call. The selected
+ * public AppendInittab API
+ * registers copied names before initialization; stock BuiltinImporter owns
+ * single/multi-phase initialization and built-in metadata. Initializer images
+ * must stay pinned until process exit. Once registration begins, copied names
+ * also remain pinned until process exit, including partial registration or
+ * initialization failure: this boundary never rolls back or retries. */
+int glue_python_run_extensions(const GluePythonApi *api,
+                               const GlueFrozenRecord *records, size_t count,
+                               const char *prefix, const char *stdlib,
+                               const GlueExtensionRecord *extensions,
+                               size_t extension_count,
+                               GlueResourceRequest request,
+                               GlueResourceRelease release, void *context,
+                               const unsigned char *bootstrap_source,
+                               size_t bootstrap_len,
+                               const unsigned char *app_source, size_t app_len,
+                               GluePythonResult *result);
 void glue_python_result_free(GluePythonResult *result);
 
 /* Ownership/validation test: no interpreter initialization or Python calls. */
 int glue_python_boundary_test_ownership(void);
 int glue_python_boundary_test_host_paths(void);
 int glue_python_boundary_test_archive_callbacks(void);
+int glue_python_boundary_test_extensions(void);
 
 #endif
