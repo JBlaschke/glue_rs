@@ -125,6 +125,115 @@ fn tree_snapshot(root: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
 }
 
 #[test]
+fn python_selection_reports_its_capability_without_trying_lua_or_host_discovery() {
+    let temp = TestDir::new();
+    let mut manifest =
+        Manifest::from_json(&fs::read(fixture().join("manifest.json")).unwrap()).unwrap();
+    manifest.runtimes.get_mut("lua-fixture").unwrap().abi = glue_format::RuntimeAbi::Python {
+        version: glue_format::RuntimeVersion {
+            major: 3,
+            minor: 13,
+            patch: 16,
+        },
+        gil: glue_format::GilMode::Conventional,
+        debug: false,
+    };
+    let contents = manifest
+        .resources
+        .keys()
+        .map(|path| {
+            (
+                path.clone(),
+                fs::read(fixture().join("input").join(path)).unwrap(),
+            )
+        })
+        .collect();
+    let path = temp.0.join("declared Python.glue");
+    glue_format::write_archive(File::create(&path).unwrap(), &manifest, &contents).unwrap();
+    let before = tree_snapshot(&temp.0);
+    for command in ["doctor", "run"] {
+        let result = temp.run(&[arg(command), path.as_os_str()]);
+        assert_status(&result, 2);
+        let text = diagnostic(&result);
+        assert!(text.contains("Python"));
+        #[cfg(feature = "python-pbs")]
+        assert!(text.contains("registered exact controlled PBS profiles"));
+        #[cfg(not(feature = "python-pbs"))]
+        assert!(text.contains("--features python-pbs"));
+        assert!(!text.contains("invalid linked Lua"));
+    }
+    #[cfg(feature = "python-pbs")]
+    {
+        // A declaration claiming a known profile must meet its whole contract.
+        manifest.app_id = "stock-pbs-host-archive-imports".to_owned();
+        let claimed = temp.0.join("false controlled profile.glue");
+        glue_format::write_archive(File::create(&claimed).unwrap(), &manifest, &contents).unwrap();
+        for command in ["doctor", "run"] {
+            let result = temp.run(&[arg(command), claimed.as_os_str()]);
+            assert_status(&result, 1);
+            assert!(!result.stderr.is_empty());
+            assert!(!diagnostic(&result).contains("Ready:"));
+        }
+        fs::remove_file(claimed).unwrap();
+    }
+    assert_eq!(tree_snapshot(&temp.0), before);
+}
+
+#[test]
+fn inspection_accepts_runtime_sized_members_even_without_python_execution() {
+    let temp = TestDir::new();
+    let mut manifest =
+        Manifest::from_json(&fs::read(fixture().join("manifest.json")).unwrap()).unwrap();
+    let mut contents: BTreeMap<_, _> = manifest
+        .resources
+        .keys()
+        .map(|path| {
+            (
+                path.clone(),
+                fs::read(fixture().join("input").join(path)).unwrap(),
+            )
+        })
+        .collect();
+    let bytes = vec![b'x'; 64 * 1024 * 1024 + 1];
+    let resource = manifest.resources.get_mut("assets/message.txt").unwrap();
+    resource.size = bytes.len() as u64;
+    resource.sha256 = glue_format::digest(&bytes);
+    resource.compression = glue_format::Compression::Deflate;
+    contents.insert("assets/message.txt".to_owned(), bytes);
+    #[cfg(all(
+        not(feature = "linux-native"),
+        target_arch = "aarch64",
+        any(target_os = "macos", all(target_os = "linux", target_env = "gnu"))
+    ))]
+    {
+        let linked = linked_lua::manifest();
+        manifest.targets = linked.targets;
+        manifest.runtimes = linked.runtimes;
+        manifest.components = linked.components;
+        manifest.entrypoint = linked.entrypoint;
+    }
+    let path = temp.0.join("large runtime member.glue");
+    glue_format::write_archive(File::create(&path).unwrap(), &manifest, &contents).unwrap();
+    for command in ["inspect", "verify", "explain-size"] {
+        assert_status(&temp.run(&[arg(command), path.as_os_str()]), 0);
+    }
+    let cat = temp.run(&[arg("cat"), path.as_os_str(), arg("app/main.lua")]);
+    assert_status(&cat, 0);
+    assert_eq!(cat.stdout, contents["app/main.lua"]);
+    #[cfg(all(
+        not(feature = "linux-native"),
+        target_arch = "aarch64",
+        any(target_os = "macos", all(target_os = "linux", target_env = "gnu"))
+    ))]
+    for command in ["doctor", "run"] {
+        let result = temp.run(&[arg(command), path.as_os_str()]);
+        assert_status(&result, 1);
+        assert!(diagnostic(&result).contains("archive exceeds resource bytes"));
+        assert!(!diagnostic(&result).contains("Ready:"));
+    }
+}
+
+#[test]
 fn builds_are_deterministic_and_relocated_archives_remain_readable() {
     let temp = TestDir::new();
     let first = temp.build("first archive.glue");
@@ -338,7 +447,7 @@ mod linked_lua {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/lua-linked")
     }
 
-    fn manifest() -> Manifest {
+    pub(super) fn manifest() -> Manifest {
         Manifest::from_json(&fs::read(fixture().join(manifest_name())).unwrap()).unwrap()
     }
 

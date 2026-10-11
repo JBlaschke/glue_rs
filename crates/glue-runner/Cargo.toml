@@ -10,6 +10,7 @@ default = ["lua54"]
 lua54 = ["glue-runtime-lua/lua54"]
 lua55 = ["glue-runtime-lua/lua55"]
 linux-native = ["glue-runtime-lua/linux-native"]
+python-pbs = ["dep:glue-runtime-python", "glue-runtime-python/pbs-bootstrap"]
 
 [[bin]]
 name = "glue"
@@ -21,6 +22,7 @@ glue-resources.workspace = true
 glue-pack.workspace = true
 serde_json.workspace = true
 glue-runtime-lua.workspace = true
+glue-runtime-python = { workspace = true, optional = true }
 
 [lints]
 workspace = true

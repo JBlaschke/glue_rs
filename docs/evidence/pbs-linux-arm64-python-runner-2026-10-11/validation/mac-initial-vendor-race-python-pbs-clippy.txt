@@ -1,0 +1,39 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling zmij v1.0.23
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling serde_json v1.0.149
+   Compiling serde_core v1.0.228
+   Compiling libc v0.2.190
+   Compiling crc32fast v1.5.0
+   Compiling serde v1.0.228
+   Compiling thiserror v2.0.18
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.14
+error: could not compile `crc32fast` (build script)
+
+Caused by:
+  could not execute process `rustc --crate-name build_script_build --edition=2021 /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crc32fast-1.5.0/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "nightly", "std"))' -C metadata=db985b5f20e6d4a2 -C extra-filename=-6bd1dd44b11c0834 --out-dir /Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/build/crc32fast-6bd1dd44b11c0834 -L dependency=/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/deps --cap-lints allow` (never executed)
+
+Caused by:
+  No such file or directory (os error 2)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `find-msvc-tools` (lib)
+
+Caused by:
+  could not execute process `rustc --crate-name find_msvc_tools --edition=2021 /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/find-msvc-tools-0.1.14/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --allow=unexpected_cfgs '--warn=clippy::ptr_cast_constness' '--warn=clippy::ptr_as_ptr' --warn=missing_docs '--warn=clippy::manual_let_else' '--warn=clippy::doc_markdown' '--warn=clippy::disallowed_methods' '--warn=clippy::borrow_as_ptr' --check-cfg 'cfg(disable_clang_cl_tests)' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4f8466ed99881c33 -C extra-filename=-99752b1f40c1dbbb --out-dir /Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/deps -L dependency=/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/deps --cap-lints allow` (never executed)
+
+Caused by:
+  No such file or directory (os error 2)
+error: Current directory is invalid: No such file or directory (os error 2)
+
+error: could not compile `libc` (build script) due to 1 previous error
+error: could not compile `libc` (build script) due to 1 previous error
+error: could not parse/generate dep info at: /Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/deps/unicode_ident-f279b23a0f21f75d.d
+
+Caused by:
+  No such file or directory (os error 2)
+error: could not parse/generate dep info at: /Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/deps/shlex-7aae9c3fffe9c426.d
+
+Caused by:
+  No such file or directory (os error 2)

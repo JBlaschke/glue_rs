@@ -1,0 +1,130 @@
+   Compiling typenum v1.20.1
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.5
+   Compiling unicode-ident v1.0.26
+   Compiling zmij v1.0.23
+   Compiling const-oid v0.10.2
+   Compiling serde_json v1.0.149
+   Compiling crc32fast v1.5.0
+   Compiling serde_core v1.0.228
+   Compiling libc v0.2.190
+   Compiling itoa v1.0.18
+   Compiling simd-adler32 v0.3.10
+   Compiling adler2 v2.0.1
+   Compiling memchr v2.8.3
+   Compiling miniz_oxide v0.9.1
+   Compiling serde v1.0.228
+   Compiling thiserror v2.0.18
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.2
+   Compiling typed-path v0.12.3
+   Compiling hybrid-array v0.4.15
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.14
+   Compiling indexmap v2.14.2
+   Compiling cc v1.6.0
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling twox-hash v2.1.5
+   Compiling lua-src v551.0.2
+   Compiling ruzstd v0.9.0
+   Compiling digest v0.11.3
+   Compiling glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+   Compiling cpufeatures v0.3.1
+   Compiling sha2 v0.11.0
+   Compiling syn v2.0.119
+   Compiling glue-runtime-python v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-python)
+   Compiling flate2 v1.1.10
+   Compiling zip v8.6.0
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v2.0.18
+warning: glue-runtime-lua@0.1.0: In file included from /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9/lobject.c:20:
+warning: glue-runtime-lua@0.1.0: /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9/lua.h:16:10: fatal error: 'luaconf.h' file not found
+warning: glue-runtime-lua@0.1.0:    16 | #include "luaconf.h"
+warning: glue-runtime-lua@0.1.0:       |          ^~~~~~~~~~~
+warning: glue-runtime-lua@0.1.0: 1 error generated.
+error: failed to run custom build command for `glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)`
+
+Caused by:
+  process didn't exit successfully: `/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/build/glue-runtime-lua-bec8579db8ef60ef/build-script-build` (exit status: 101)
+  --- stdout
+  cargo:rerun-if-changed=build.rs
+  cargo:rerun-if-changed=c/bridge.c
+  cargo:rerun-if-changed=c/bridge.h
+  cargo:rerun-if-changed=native-exports.txt
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  cargo:rerun-if-env-changed=CC
+  cargo:rerun-if-env-changed=HOST_CC
+  cargo:rerun-if-env-changed=TARGET_CC
+  cargo:rerun-if-env-changed=CC_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CC_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CC_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CC_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CXX
+  cargo:rerun-if-env-changed=HOST_CXX
+  cargo:rerun-if-env-changed=TARGET_CXX
+  cargo:rerun-if-env-changed=CXX_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CXX_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CXX_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CXX_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CFLAGS
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CXXFLAGS
+  cargo:rerun-if-env-changed=HOST_CXXFLAGS
+  cargo:rerun-if-env-changed=TARGET_CXXFLAGS
+  cargo:rerun-if-env-changed=CXXFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CXXFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CXXFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CXXFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CPPFLAGS
+  cargo:rerun-if-env-changed=HOST_CPPFLAGS
+  cargo:rerun-if-env-changed=TARGET_CPPFLAGS
+  cargo:rerun-if-env-changed=CPPFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CPPFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=CPPFLAGS_aarch64-apple-darwin
+  cargo:rerun-if-env-changed=CPPFLAGS_aarch64_apple_darwin
+  cargo:rerun-if-env-changed=TARGET
+  cargo:rerun-if-env-changed=HOST
+  cargo:rerun-if-env-changed=PROFILE
+  cargo:rerun-if-env-changed=OPT_LEVEL
+  cargo:rerun-if-env-changed=DEBUG
+  cargo:rerun-if-env-changed=RUSTC
+  cargo:rerun-if-env-changed=RUSTFLAGS
+  cargo:rerun-if-env-changed=CARGO_ENCODED_RUSTFLAGS
+  cargo:rerun-if-env-changed=MACOSX_DEPLOYMENT_TARGET
+  cargo:rerun-if-env-changed=SDKROOT
+  cargo:rustc-env=GLUE_LUA_BUILD_PROVENANCE_PATH=/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/build/glue-runtime-lua-cf852da92756bf84/out/linked-lua-provenance.txt
+  cargo:warning=In file included from /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9/lobject.c:20:
+  cargo:warning=/Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9/lua.h:16:10: fatal error: 'luaconf.h' file not found
+  cargo:warning=   16 | #include "luaconf.h"
+  cargo:warning=      |          ^~~~~~~~~~~
+  cargo:warning=1 error generated.
+
+  --- stderr
+
+  thread 'main' panicked at /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/src/lib.rs:100:25:
+  ToolExecError: command did not execute successfully (status code exit status: 1): "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-2" "-fno-omit-frame-pointer" "-mno-omit-leaf-frame-pointer" "--target=arm64-apple-macosx" "-mmacosx-version-min=27.0" "-I" "/Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9" "-w" "-fno-common" "-DLUA_USE_MACOSX" "-DLUA_COMPAT_5_3" "-DLUA_USE_APICHECK" "-o" "/Users/johannes.blaschke/Developer/glue_rs/target/python-runner-checks/build/debug/build/glue-runtime-lua-cf852da92756bf84/out/lib/85932096c0c95c69-lobject.o" "-c" "/Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lua-src-551.0.2/lua-5.4.9/lobject.c"
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+warning: build failed, waiting for other jobs to finish...
+error[E0583]: file not found for module `private`
+   --> /Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:258:9
+    |
+258 |         mod private;
+    |         ^^^^^^^^^^^^
+...
+264 | crate_root!();
+    | ------------- in this macro invocation
+    |
+    = help: to create the module `private`, create file "/Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private.rs" or "/Users/johannes.blaschke/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs"
+    = note: if there is a `mod private` elsewhere in the crate already, import it with `use crate::...` instead
+    = note: this error originates in the macro `crate_root` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0583`.
+error: could not compile `serde` (lib) due to 1 previous error

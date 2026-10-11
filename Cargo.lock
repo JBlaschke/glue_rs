@@ -162,15 +162,7 @@ dependencies = [
 name = "glue-python-bootstrap-probe"
 version = "0.1.0"
 dependencies = [
- "cc",
- "glue-format",
- "glue-native",
- "glue-pbs",
- "glue-resources",
- "libc",
- "serde",
- "serde_json",
- "sha2",
+ "glue-runtime-python",
 ]
 
 [[package]]
@@ -190,6 +182,7 @@ dependencies = [
  "glue-pack",
  "glue-resources",
  "glue-runtime-lua",
+ "glue-runtime-python",
  "serde_json",
 ]
 
@@ -204,6 +197,21 @@ dependencies = [
  "libc",
  "lua-src",
  "thiserror",
+]
+
+[[package]]
+name = "glue-runtime-python"
+version = "0.1.0"
+dependencies = [
+ "cc",
+ "glue-format",
+ "glue-native",
+ "glue-pbs",
+ "glue-resources",
+ "libc",
+ "serde",
+ "serde_json",
+ "sha2",
 ]
 
 [[package]]

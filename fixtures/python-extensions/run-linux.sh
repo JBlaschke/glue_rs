@@ -41,11 +41,11 @@ if test "${1:-}" = --build; then
     printf '%s\n' "$status" > /evidence/native-baseline.exit-status.txt
     test "$status" -eq 0
     test ! -s /evidence/native-baseline.stderr.txt
-    cargo test --locked --offline --release -p glue-python-bootstrap-probe --features pbs-bootstrap \
+    cargo test --locked --offline --release -p glue-runtime-python -p glue-python-bootstrap-probe --features pbs-bootstrap \
         > /evidence/extensions-tests.txt 2>&1
-    cargo clippy --locked --offline --release --all-targets -p glue-python-bootstrap-probe \
+    cargo clippy --locked --offline --release --all-targets -p glue-runtime-python -p glue-python-bootstrap-probe \
         --features pbs-bootstrap -- -D warnings > /evidence/extensions-clippy.txt 2>&1
-    cargo build --locked --offline --release -p glue-python-bootstrap-probe --features pbs-bootstrap \
+    cargo build --locked --offline --release -p glue-runtime-python -p glue-python-bootstrap-probe --features pbs-bootstrap \
         > /evidence/extensions-build.txt 2>&1
     mkdir "$relocated" /build-target/runtime-empty
     /build-target/release/glue-python-bootstrap-probe prepare-imports \
@@ -119,7 +119,7 @@ PY
     readelf -d --dyn-syms "$relocated/glue-python-bootstrap-probe" > /evidence/launcher.elf.txt
     cp /workspace/fixtures/python-extensions/run-linux.sh /build-target/runtime-commands.sh
     mkdir /evidence/build-provenance
-    for record in /build-target/release/build/glue-python-bootstrap-probe-*/out/python-bootstrap-provenance.txt; do
+    for record in /build-target/release/build/glue-runtime-python-*/out/python-bootstrap-provenance.txt; do
         test -f "$record"
         cp "$record" "/evidence/build-provenance/$(basename "$(dirname "$(dirname "$record")")").txt"
         nm -u "$(dirname "$record")/libglue_python_bootstrap_boundary.a" \
