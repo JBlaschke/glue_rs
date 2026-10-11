@@ -56,6 +56,8 @@ pub enum PackError {
         #[source]
         source: FormatError,
     },
+    #[error("packaging profile: {0}")]
+    Profile(String),
     #[error("invalid input root {path:?}: {reason}")]
     Root { path: PathBuf, reason: &'static str },
     #[error("resource {resource:?} at {path:?}: {reason}")]
@@ -94,10 +96,42 @@ pub fn build_with_limits(
     limits: PackLimits,
 ) -> Result<BuildReport, PackError> {
     let manifest_bytes = read_manifest(manifest_path, limits.archive_limits.max_manifest_bytes)?;
+    build_admitted(manifest_path, root, output, manifest_bytes, |_| Ok(limits))
+}
+
+/// Select a packaging policy from the same manifest that will be packaged.
+///
+/// The schema's 16 MiB manifest bound applies before parsing. The policy runs
+/// once, before looking up the input root or opening any resource/output file;
+/// its narrower manifest and payload bounds then apply. This lets a caller
+/// admit a pinned runtime's larger member without widening unrelated builds.
+pub fn build_with_policy(
+    manifest_path: &Path,
+    root: &Path,
+    output: &Path,
+    policy: impl FnOnce(&Manifest) -> Result<PackLimits, String>,
+) -> Result<BuildReport, PackError> {
+    let manifest_bytes = read_manifest(manifest_path, MAX_MANIFEST_BYTES as u64)?;
+    build_admitted(manifest_path, root, output, manifest_bytes, policy)
+}
+
+fn build_admitted(
+    manifest_path: &Path,
+    root: &Path,
+    output: &Path,
+    manifest_bytes: Vec<u8>,
+    policy: impl FnOnce(&Manifest) -> Result<PackLimits, String>,
+) -> Result<BuildReport, PackError> {
     let manifest = Manifest::from_json(&manifest_bytes).map_err(|source| PackError::Manifest {
         path: manifest_path.to_owned(),
         source,
     })?;
+    let limits = policy(&manifest).map_err(PackError::Profile)?;
+    check_limit(
+        "manifest bytes",
+        manifest_bytes.len() as u64,
+        limits.archive_limits.max_manifest_bytes,
+    )?;
     let root = canonical_root(root)?;
     // Check the entire input budget before allocating any resource payload.
     check_limit(

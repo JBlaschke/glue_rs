@@ -196,13 +196,17 @@ The [clean native capture](docs/evidence/pbs-linux-arm64-python-extensions-2026-
 passes eleven matrix/control traces and twenty-two earlier Python regressions
 from implementation `b784c99`, with all 37 hostile trace edits rejected.
 
-## Run the controlled Python profiles
+## Run the pinned Python profiles
 
 The launcher feature is `python-pbs`; the shared executor's build feature is
-`pbs-bootstrap`. The registry admits the two exact bundled/explicit-host
-source/resource manifests and the registered-native declaration profile with
-four independent runtime/native provider combinations. It does not admit
-arbitrary Python apps, installations or wheels. Native hashes identify declared
+`pbs-bootstrap`. The registry admits bounded bundled source applications,
+the two exact bundled/explicit-host source/resource fixtures and the
+registered-native declaration profile with four independent runtime/native
+provider combinations. The source profile accepts application-owned entries,
+modules and assets while retaining the exact runtime, startup and stdlib pins.
+See the [source application staging/build workflow](fixtures/python-source-apps/README.md).
+Broader host installations, wheels and native package admission remain open.
+Native hashes identify declared
 images; admission still requires the reviewed ELF/import/initializer contract.
 
 ```sh
@@ -215,11 +219,11 @@ target/debug/glue run /absolute/path/to/controlled-profile.glue
 sh fixtures/python-runner/run-linux.sh
 ```
 
-`doctor` validates the exact declarations and checks compiled target, kernel,
+`doctor` validates the selected declarations and checks compiled target, kernel,
 GNU libc and page size without starting Python or inspecting host providers.
 `run` verifies archive payloads and host prerequisites before loading. The
 opened archive transfers directly to the shared executor, with the selected
-profile's original size limits rechecked before reads. The C bridge owns one
+profile's size limits rechecked before reads. The C bridge owns one
 synchronous interpreter lifecycle; loaded images remain pinned until exit.
 Default builds report Python execution as disabled, while inspection and
 verification accept the pinned runtime's 80 MiB member bound. See the
@@ -266,11 +270,11 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The source-profile workspace passes 350/351 Rust tests for `lua54`/`lua55` on
+The controlled-runner source checkpoint passed 350/351 Rust tests for `lua54`/`lua55` on
 macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
 and 68 portable Python bootstrap/host/import/native/profile-readiness tests. Both
-profiles pass all-target Clippy with warnings denied on both systems. The
-GNU opt-in shared Python runtime/probe passes 73 release tests and Clippy; all 209
+profiles passed all-target Clippy with warnings denied on both systems. The
+GNU opt-in shared Python runtime/probe passed 73 release tests and Clippy; all 209
 trace-policy tests pass, including 29 bundled-import, 20 host-import and 30
 native registration checks and 18 product-route checks. The importer
 also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
@@ -312,6 +316,8 @@ python3 -m unittest discover -s scripts -p 'test_linux_python_host_import_trace.
 python3 -m unittest discover -s scripts -p 'test_linux_python_extension_trace.py'
 sh fixtures/python-extensions/run-linux.sh
 sh fixtures/python-runner/run-linux.sh
+sh fixtures/python-source-apps/run-linux.sh
+python3 fixtures/python-source-apps/test_entry.py
 python3 fixtures/python-imports/test_importer.py
 sh scripts/run-linux-native-lua.sh lua54
 sh scripts/run-linux-native-lua.sh lua55

@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `f92ac34`.
+The earlier feature work and evidence were merged into `main` at `90c4a10`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -22,6 +22,7 @@ Further implementation continues on separate feature branches.
 | A7 host Python archive source/resources | `codex/a7-host-python-archive-imports` / `9aababa` (from merged `f99bb51`; evidence bundle follows) | Experimental host source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux 327/328 workspace tests, Clippy, 51 portable/56 GNU Python tests; 161 trace-policy and 16 importer protocol tests; seven host-import and fifteen prior regression traces pass |
 | A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` / `b784c99` (from merged `a50b654`; evidence bundle follows) | Experimental registered-initializer profile; controlled GNU Linux arm64 observation | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; 59 portable/65 GNU Python tests; 191 policy and 16 importer protocol tests; all eleven native and twenty-two prior regression traces pass; 37 hostile trace edits reject |
 | A7 controlled Python product route | `codex/a7-python-runner-profile` / `32a9562` (from merged `f92ac34`; evidence bundle follows) | Experimental launcher integration; controlled GNU Linux arm64 observation | Mac/Linux 350/351 workspace tests and Clippy; 68 portable/73 GNU Python tests, 14 GNU runner CLI tests, 209 policy and 16 importer tests; all nine product and 33 earlier traces pass; 30 CLI controls match and 185 hostile trace edits reject |
+| A7 bundled Python source applications | `codex/a7-python-source-apps` (from merged `90c4a10`) | Bounded source application admission | Dynamic application/component/entry identities with unchanged pinned runtime/stdlib/helper, narrow build policy and byte-based entry compilation; clean validation/evidence follows |
 
 ## Gate status
 
@@ -284,7 +285,19 @@ archive contents/statuses, and an independent audit rejects all 185 hostile
 actual-trace edits. Mac/Linux source profiles pass 350/351 tests and Clippy;
 Mac Python-enabled workspace checks also pass, while GNU execution remains
 opt-in and limited to the controlled registry. General application/host-stdlib
-admission, runtime version selection and other platforms remain later steps.
+admission, runtime version selection and other platforms remained later steps
+at that checkpoint.
+
+The next bundled source profile accepts application-owned source and assets,
+with a declared script entry below `app/` and imports below `app/python/`.
+Runtime, all 2,174 stdlib sources, importer and frozen-startup identities stay
+pinned. Portable admission checks bounded inventories, runtime-name collisions,
+module layout and source-only payload paths before acquisition. A trusted entry
+launcher compiles verified bytes through the existing importer and runs them
+as `__main__` with virtual metadata. The C bridge and loader remain unchanged.
+`glue build` selects the larger pinned-runtime policy from its same parsed
+manifest before looking up input resources. See
+[the source application decision](decisions/0017-bundled-python-source-apps.md).
 
 ## Next critical-path assignments
 
@@ -292,8 +305,8 @@ Extend native platform/release evidence beyond the controlled Linux Lua closure.
 Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
-Establish the FreeBSD bundled Python/Node producer. Broaden the controlled Python
-registry into general application and host-stdlib admission, extend native
+Establish the FreeBSD bundled Python/Node producer. Broaden Python host-stdlib
+admission beyond the fixed workload, extend native
 loading beyond registered initializers, and preserve both providers' archive
 source/resource behavior. Add version selection only after each candidate has
 its own verified producer, headers, runtime ABI and conformance evidence.

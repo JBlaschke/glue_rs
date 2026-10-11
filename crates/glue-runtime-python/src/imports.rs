@@ -7,6 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 pub(super) const MAX_REPLY: usize = 4 * 1024 * 1024;
 const MAX_FILES: usize = 4096;
 const MAX_TOTAL: usize = 48 * 1024 * 1024;
+const MAX_RESOURCE_KEY: usize = 4096 - "origin\t".len();
 const ROOTS: [&str; 2] = ["app/python", "stdlib"];
 
 pub(super) struct Index {
@@ -14,10 +15,28 @@ pub(super) struct Index {
     files: BTreeMap<String, Vec<u8>>,
     directories: BTreeSet<String>,
     owners: BTreeMap<String, &'static str>,
+    source_app: bool,
 }
 
 impl Index {
     pub(super) fn new(app_id: &str, files: BTreeMap<String, Vec<u8>>) -> Result<Self, String> {
+        Self::build(app_id, files, false)
+    }
+
+    /// General application resources may live anywhere below app/. Importable
+    /// module identities still come only from app/python/ and the pinned stdlib.
+    pub(super) fn new_source_app(
+        app_id: &str,
+        files: BTreeMap<String, Vec<u8>>,
+    ) -> Result<Self, String> {
+        Self::build(app_id, files, true)
+    }
+
+    fn build(
+        app_id: &str,
+        files: BTreeMap<String, Vec<u8>>,
+        source_app: bool,
+    ) -> Result<Self, String> {
         if app_id.is_empty()
             || app_id.len() > 128
             || !app_id
@@ -31,13 +50,25 @@ impl Index {
         }
         validate_resource_paths(files.keys()).map_err(|e| e.to_string())?;
         let mut total = 0usize;
-        let mut directories = BTreeSet::new();
+        let mut directories: BTreeSet<String> = BTreeSet::new();
         for (key, bytes) in &files {
-            if !ROOTS
-                .iter()
-                .any(|root| key.starts_with(&format!("{root}/")))
-            {
+            let allowed = if source_app {
+                key.starts_with("app/") || key.starts_with("stdlib/")
+            } else {
+                ROOTS
+                    .iter()
+                    .any(|root| key.starts_with(&format!("{root}/")))
+            };
+            if !allowed {
                 return Err(format!("resource outside archive import roots: {key}"));
+            }
+            if source_app {
+                if key.len() > MAX_RESOURCE_KEY {
+                    return Err(
+                        "archive application resource exceeds callback request bound".into(),
+                    );
+                }
+                validate_app_module(key)?;
             }
             total = total
                 .checked_add(bytes.len())
@@ -69,7 +100,8 @@ impl Index {
         }
         for directory in &directories {
             if files.contains_key(&format!("{directory}.py"))
-                && files.contains_key(&format!("{directory}/__init__.py"))
+                && (files.contains_key(&format!("{directory}/__init__.py"))
+                    || source_app && directory.starts_with("app/python/"))
             {
                 return Err(format!("ambiguous archive module/directory: {directory}"));
             }
@@ -79,6 +111,7 @@ impl Index {
             files,
             directories,
             owners,
+            source_app,
         })
     }
 
@@ -165,10 +198,14 @@ impl Index {
             return self.resolve(key);
         }
         ResourcePath::new(key).map_err(|e| e.to_string())?;
-        if !ROOTS
-            .iter()
-            .any(|root| key == *root || key.starts_with(&format!("{root}/")))
-        {
+        let allowed = if self.source_app {
+            key == "app" || key.starts_with("app/") || key == "stdlib" || key.starts_with("stdlib/")
+        } else {
+            ROOTS
+                .iter()
+                .any(|root| key == *root || key.starts_with(&format!("{root}/")))
+        };
+        if !allowed {
             return Err("archive resource request is outside import roots".into());
         }
         match operation {
@@ -210,6 +247,26 @@ impl Index {
             _ => Err("unknown archive resource request".into()),
         }
     }
+}
+
+fn validate_app_module(key: &str) -> Result<(), String> {
+    let Some(relative) = key.strip_prefix("app/python/") else {
+        return Ok(());
+    };
+    let Some(module) = relative.strip_suffix(".py") else {
+        return Ok(());
+    };
+    if module == "__init__"
+        || module.strip_suffix("/__init__").unwrap_or(module).len() > 255
+        || module
+            .split('/')
+            .any(|part| !module_name(part) || part.contains('.'))
+    {
+        return Err(format!(
+            "invalid archive application module hierarchy: {key}"
+        ));
+    }
+    Ok(())
 }
 
 fn module_name(name: &str) -> bool {
@@ -324,5 +381,71 @@ mod tests {
             .collect();
         assert!(Index::new("fixture", f).is_err());
         assert!(Index::new("../fixture", files()).is_err());
+    }
+
+    #[test]
+    fn source_app_resources_do_not_become_additional_import_roots() {
+        let mut f = files();
+        f.insert("app/tasks/report.py".into(), b"entry".to_vec());
+        f.insert("app/assets/bytes.bin".into(), b"\0\xff".to_vec());
+        assert!(Index::new("fixture", f.clone()).is_err());
+        let i = Index::new_source_app("fixture", f).unwrap();
+        assert_eq!(i.request(b"read\tapp/tasks/report.py").unwrap(), b"entry");
+        assert_eq!(i.request(b"read\tapp/assets/bytes.bin").unwrap(), b"\0\xff");
+        assert_eq!(i.request(b"stat\tapp/tasks").unwrap(), b"directory\n0");
+        assert_eq!(i.request(b"list\tapp").unwrap(), b"assets\npython\ntasks");
+        assert_eq!(
+            i.request(b"origin\tapp/tasks/report.py").unwrap(),
+            b"glue://fixture/app/tasks/report.py"
+        );
+        for name in ["tasks", "report", "assets"] {
+            assert_eq!(
+                i.request(format!("resolve\t{name}").as_bytes()).unwrap(),
+                b"missing\n\n\n"
+            );
+        }
+        assert!(
+            i.request(b"resolve\tpkg.member")
+                .unwrap()
+                .starts_with(b"module\n")
+        );
+        assert!(i.request(b"read\tpython/libpython.so").is_err());
+    }
+
+    #[test]
+    fn source_apps_reject_unreachable_module_hierarchies_without_changing_legacy() {
+        for key in [
+            "app/python/__init__.py",
+            "app/python/foo.bar.py",
+            "app/python/wrong-name/child.py",
+            "app/python/1parent/child.py",
+        ] {
+            let f = BTreeMap::from([(key.into(), Vec::new())]);
+            assert!(Index::new("fixture", f.clone()).is_ok(), "{key}");
+            assert!(Index::new_source_app("fixture", f).is_err(), "{key}");
+        }
+        let f = BTreeMap::from([
+            ("app/python/parent.py".into(), Vec::new()),
+            ("app/python/parent/child.py".into(), Vec::new()),
+        ]);
+        assert!(Index::new("fixture", f.clone()).is_ok());
+        assert!(Index::new_source_app("fixture", f).is_err());
+        let key = format!("app/python/{}/leaf.py", vec!["a".repeat(100); 3].join("/"));
+        assert!(Index::new_source_app("fixture", BTreeMap::from([(key, Vec::new())])).is_err());
+    }
+
+    #[test]
+    fn source_app_entry_requests_fit_the_native_request_limit() {
+        let key = format!(
+            "app/{}/{}.py",
+            vec!["a".repeat(255); 15].join("/"),
+            "b".repeat(244)
+        );
+        ResourcePath::new(&key).unwrap();
+        assert!(Index::new_source_app("fixture", BTreeMap::from([(key, Vec::new())])).is_err());
+        let mut f = files();
+        f.insert("app/tasks/empty.py".into(), Vec::new());
+        let i = Index::new_source_app("fixture", f).unwrap();
+        assert_eq!(i.request(b"read\tapp/tasks/empty.py").unwrap(), b"");
     }
 }
