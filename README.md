@@ -270,21 +270,22 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The controlled-runner source checkpoint passed 350/351 Rust tests for `lua54`/`lua55` on
-macOS and GNU Linux arm64, including 31 portable Mach-O parser tests, 64 PBS inspection tests
-and 68 portable Python bootstrap/host/import/native/profile-readiness tests. Both
-profiles passed all-target Clippy with warnings denied on both systems. The
-GNU opt-in shared Python runtime/probe passed 73 release tests and Clippy; all 209
-trace-policy tests pass, including 29 bundled-import, 20 host-import and 30
-native registration checks and 18 product-route checks. The importer
-also passes 16 protocol tests on Mac and the pinned stock Linux interpreter. The
-controlled Python product capture passes nine real `glue run` traces and all
-33 earlier Python regressions from clean `32a9562`; all 42 compressed traces
-independently replay. Its 30 CLI controls match expected results, and all 185
-hostile trace mutations reject.
-The [retained runner evidence](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
-records source/artifact identities, commands, controls and complete traces. The
-earlier native Linux validation covers both optional native profiles and
+The bundled-source application checkpoint passes 366/367 Rust tests for
+`lua54`/`lua55` on macOS and GNU Linux arm64, with all-target Clippy warnings
+denied. The Mac Python-enabled workspace also passes 366 tests and Clippy;
+execution requires the reviewed GNU Linux arm64 target. Every fresh optimized
+GNU shared Python/probe build passes 87 tests and Clippy, and the product runner
+passes 14 CLI tests and Clippy. On both Mac and the pinned stock Linux interpreter,
+all 238 policy tests, 16 importer tests and seven byte-entry protocol tests pass.
+All six new source-app traces and 42 fresh Python regression traces pass from
+clean `d3ddac3`; all 48 compressed traces independently replay. The 34 new and
+30 existing CLI controls match exact results, and all 198 hostile source-app
+trace edits reject. The
+[source-app evidence](docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+retains source/artifact identities, commands, controls and complete traces;
+the [runner checkpoint](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+records the earlier product integration. Earlier native Linux validation covers
+both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
 initializer/function errors, bounded ELF parsing and closure rejection.

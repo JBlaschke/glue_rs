@@ -1,0 +1,32 @@
+{
+  "entry-tests": 7,
+  "importer-tests": 16,
+  "linux-entry-protocol-tests": 7,
+  "linux-importer-protocol-tests": 16,
+  "linux-lua54": {
+    "clippy": "pass",
+    "tests": 366
+  },
+  "linux-lua55": {
+    "clippy": "pass",
+    "tests": 367
+  },
+  "linux-python-policy-tests": 238,
+  "linux_python": "Python 3.13.16",
+  "lua54": {
+    "clippy": "pass",
+    "tests": 366
+  },
+  "lua55": {
+    "clippy": "pass",
+    "tests": 367
+  },
+  "policy-tests": 238,
+  "python-pbs": {
+    "clippy": "pass",
+    "tests": 366
+  },
+  "source_branch": "codex/a7-python-source-apps",
+  "source_clean_before_after": true,
+  "source_commit": "d3ddac33e41bd681668ce0565c3830e46105ebf5"
+}

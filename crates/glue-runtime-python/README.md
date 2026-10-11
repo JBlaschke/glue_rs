@@ -83,3 +83,8 @@ does not add runtime discovery, unloading, workers or another platform/ABI.
 
 See [decision 0016](../../docs/decisions/0016-controlled-python-runner.md) for
 the ownership and scope contract.
+The [source-app evidence](../../docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+retains six application traces and 42 fresh regression traces from clean
+`d3ddac3`, all independently replayed. The shared optimized GNU builds pass
+87 tests and Clippy; the unchanged C bridge and Linux loader retain API4,
+29 selected exports and a 240-byte table.

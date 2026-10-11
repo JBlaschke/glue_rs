@@ -22,7 +22,7 @@ Further implementation continues on separate feature branches.
 | A7 host Python archive source/resources | `codex/a7-host-python-archive-imports` / `9aababa` (from merged `f99bb51`; evidence bundle follows) | Experimental host source/resource adapter; controlled GNU Linux arm64 observation | Mac/Linux 327/328 workspace tests, Clippy, 51 portable/56 GNU Python tests; 161 trace-policy and 16 importer protocol tests; seven host-import and fifteen prior regression traces pass |
 | A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` / `b784c99` (from merged `a50b654`; evidence bundle follows) | Experimental registered-initializer profile; controlled GNU Linux arm64 observation | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; 59 portable/65 GNU Python tests; 191 policy and 16 importer protocol tests; all eleven native and twenty-two prior regression traces pass; 37 hostile trace edits reject |
 | A7 controlled Python product route | `codex/a7-python-runner-profile` / `32a9562` (from merged `f92ac34`; evidence bundle follows) | Experimental launcher integration; controlled GNU Linux arm64 observation | Mac/Linux 350/351 workspace tests and Clippy; 68 portable/73 GNU Python tests, 14 GNU runner CLI tests, 209 policy and 16 importer tests; all nine product and 33 earlier traces pass; 30 CLI controls match and 185 hostile trace edits reject |
-| A7 bundled Python source applications | `codex/a7-python-source-apps` (from merged `90c4a10`) | Bounded source application admission | Dynamic application/component/entry identities with unchanged pinned runtime/stdlib/helper, narrow build policy and byte-based entry compilation; clean validation/evidence follows |
+| A7 bundled Python source applications | `codex/a7-python-source-apps` / `d3ddac3` (from merged `90c4a10`; evidence bundle follows) | Experimental bounded source applications; controlled GNU Linux arm64 observation | Mac/Linux 366/367 workspace tests and Clippy; 87 GNU Python/probe and 14 runner tests; 238 policy, 16 importer and 7 byte-entry tests; all six new and 42 regression traces pass/replay; 34 new and 30 existing CLI controls match; 198 hostile source-app edits reject |
 
 ## Gate status
 
@@ -298,6 +298,19 @@ as `__main__` with virtual metadata. The C bridge and loader remain unchanged.
 `glue build` selects the larger pinned-runtime policy from its same parsed
 manifest before looking up input resources. See
 [the source application decision](decisions/0017-bundled-python-source-apps.md).
+
+The [clean source-app evidence](evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+retains six actual application invocations and 42 fresh prior-route regressions
+from `d3ddac3`. All 48 compressed traces replay. Independent controls agree with
+the actual build/inventory/entry bytes and expected statuses; all 198 hostile
+actual-source-app trace edits reject. Source workspaces pass 366/367 tests and
+Clippy on Mac/Linux, the Mac Python-enabled workspace passes 366, and optimized
+GNU Python/probe builds pass 87. Policy/importer/entry suites pass 238/16/7 on
+both Mac and the pinned stock Linux interpreter. The C bridge, API4 table and
+Linux loader mechanisms remain byte-identical to the merged parent. This expands
+bundled application source admission while preserving the exact runtime/stdlib
+pins; general host-stdlib admission, version selection and other platforms remain
+open.
 
 ## Next critical-path assignments
 

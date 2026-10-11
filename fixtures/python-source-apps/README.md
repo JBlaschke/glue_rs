@@ -80,3 +80,8 @@ unavailable temporary paths after producer/header/build removal.
 
 See [decision 0017](../../docs/decisions/0017-bundled-python-source-apps.md)
 for admission, ownership and remaining compatibility scope.
+The [clean capture](../../docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+retains all six source-app and 42 regression traces from `d3ddac3`, with passing
+compressed replays, 34 exact source-app CLI controls and 198 rejected hostile
+source-app edits. The default harness required a clean implementation checkout;
+the retained development opt-in is `false`.

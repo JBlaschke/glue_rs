@@ -1,0 +1,65 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x0
+There are 7 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0002c8 0x0002c8 R E 0x10000
+  LOAD           0x00ff00 0x000000000001ff00 0x000000000001ff00 0x000100 0x000100 RW  0x10000
+  DYNAMIC        0x00ff00 0x000000000001ff00 0x000000000001ff00 0x0000e0 0x0000e0 RW  0x8
+  NOTE           0x0001c8 0x00000000000001c8 0x00000000000001c8 0x000024 0x000024 R   0x4
+  GNU_EH_FRAME   0x000288 0x0000000000000288 0x0000000000000288 0x000014 0x000014 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x00ff00 0x000000000001ff00 0x000000000001ff00 0x000100 0x000100 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.build-id .hash .dynsym .dynstr .text .eh_frame_hdr .eh_frame 
+   01     .dynamic .got 
+   02     .dynamic 
+   03     .note.gnu.build-id 
+   04     .eh_frame_hdr 
+   05     
+   06     .dynamic .got 
+
+Dynamic section at offset 0xff00 contains 9 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000e (SONAME)             Library soname: [libglue_python_dependency.so]
+ 0x0000000000000004 (HASH)               0x1f0
+ 0x0000000000000005 (STRTAB)             0x238
+ 0x0000000000000006 (SYMTAB)             0x208
+ 0x000000000000000a (STRSZ)              60 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000000 (NULL)               0x0
+
+There are no relocations in this file.
+
+Symbol table '.dynsym' contains 2 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000280     8 FUNC    GLOBAL DEFAULT    5 glue_python_dependency_answer
+
+Symbol table '.symtab' contains 19 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000000001c8     0 SECTION LOCAL  DEFAULT    1 .note.gnu.build-id
+     2: 00000000000001f0     0 SECTION LOCAL  DEFAULT    2 .hash
+     3: 0000000000000208     0 SECTION LOCAL  DEFAULT    3 .dynsym
+     4: 0000000000000238     0 SECTION LOCAL  DEFAULT    4 .dynstr
+     5: 0000000000000280     0 SECTION LOCAL  DEFAULT    5 .text
+     6: 0000000000000288     0 SECTION LOCAL  DEFAULT    6 .eh_frame_hdr
+     7: 00000000000002a0     0 SECTION LOCAL  DEFAULT    7 .eh_frame
+     8: 000000000001ff00     0 SECTION LOCAL  DEFAULT    8 .dynamic
+     9: 000000000001ffe0     0 SECTION LOCAL  DEFAULT    9 .got
+    10: 0000000000000000     0 SECTION LOCAL  DEFAULT   10 .comment
+    11: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS dependency.c
+    12: 0000000000000280     0 NOTYPE  LOCAL  DEFAULT    5 $x
+    13: 00000000000002b4     0 NOTYPE  LOCAL  DEFAULT    7 $d
+    14: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS 
+    15: 000000000001ff00     0 OBJECT  LOCAL  DEFAULT  ABS _DYNAMIC
+    16: 0000000000000288     0 NOTYPE  LOCAL  DEFAULT    6 __GNU_EH_FRAME_HDR
+    17: 000000000001fff8     0 OBJECT  LOCAL  DEFAULT  ABS _GLOBAL_OFFSET_TABLE_
+    18: 0000000000000280     8 FUNC    GLOBAL DEFAULT    5 glue_python_dependency_answer

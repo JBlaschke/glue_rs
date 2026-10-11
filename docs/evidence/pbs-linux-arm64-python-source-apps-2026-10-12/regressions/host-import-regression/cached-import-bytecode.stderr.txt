@@ -1,0 +1,1 @@
+glue-python-bootstrap-probe: host startup bytecode cache is unsupported: /build-target/host Python imports cached-import-bytecode/lib/python3.13/importlib/resources/__pycache__

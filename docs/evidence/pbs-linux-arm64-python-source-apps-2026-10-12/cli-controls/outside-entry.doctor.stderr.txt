@@ -1,0 +1,1 @@
+glue: source app entry must be a canonical .py resource under app/

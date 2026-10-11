@@ -92,3 +92,13 @@ every Python package.
 See [the controlled runner decision](0016-controlled-python-runner.md),
 [archive imports](0013-python-archive-source-resources.md) and
 [the source application fixture](../../fixtures/python-source-apps/README.md).
+
+The [clean evidence](../evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+uses implementation `d3ddac3`: six application traces and 42 fresh regressions
+pass both live checks and compressed replays. All 34 source-app and 30 existing
+CLI controls match exact results, and all 198 hostile source-app edits reject.
+Mac/Linux source workspaces pass 366/367 tests and Clippy; optimized GNU shared
+Python/probe builds pass 87 tests, with 238 policy, 16 importer and seven entry
+protocol tests passing on both interpreters. The evidence distinguishes complete
+write coverage/seals and visible ELF bytes from complete payload hashing, which
+is verified separately against the pinned inputs.

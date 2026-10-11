@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+podman run --rm --network none --read-only --mount 'type=bind,source=/Users/johannes.blaschke/Developer/glue_rs/target/python-source-apps-runner-regression-build,destination=/build-target,ro' 62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe readelf -W -d --dyn-syms '/build-target/relocated Python runner/glue' > target/python-source-apps-runner-regression-capture/launcher-wide.elf.txt
+python3 -I -S -B target/python-runner-control-audit.py --capture target/python-source-apps-runner-regression-capture --build target/python-source-apps-runner-regression-build --source-revision d3ddac33e41bd681668ce0565c3830e46105ebf5 --wide-elf target/python-source-apps-runner-regression-capture/launcher-wide.elf.txt --output target/python-source-apps-runner-regression-capture/control-audit.json
