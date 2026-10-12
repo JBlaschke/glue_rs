@@ -1,0 +1,2 @@
+Built /build-target/relocated Python source apps/minimal.glue: 2179 resources, 83085052 archive bytes, 112875742 uncompressed bytes
+Archive SHA-256: b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084

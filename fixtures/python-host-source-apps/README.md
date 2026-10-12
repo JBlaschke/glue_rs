@@ -83,8 +83,14 @@ additional stdlib imports/resources and finalization, and rejects corrupt app
 bytes plus damaged unused host sources, deep caches, startup shadows and a
 missing library. Its separate strict checker leaves historical policies
 unchanged. Runtime containers are unprivileged/read-only, without the workspace
-or build/producer/header tools, with poisoned environment, empty working
+or producer/header/staging/build inputs, with poisoned environment, empty working
 directory and unavailable temporary paths.
 
 See [decision 0018](../../docs/decisions/0018-host-python-source-apps.md) for
 ownership, startup prerequisites and the remaining compatibility scope.
+
+The [clean evidence bundle](../../docs/evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
+retains 13 host-app cases, 48 fresh historical regressions, all compressed
+replays, 51 exact new product controls and 567 rejected hostile trace edits.
+The protocol passes all 11 tests on pinned stock Linux; Mac runs 11 with two
+stock-only skips.

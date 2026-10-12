@@ -1,0 +1,73 @@
+{
+  "all_product_binaries_identical": true,
+  "all_thin_probe_binaries_identical": true,
+  "boundary_build": {
+    "bytes": 9201,
+    "path": "crates/glue-runtime-python/build.rs",
+    "sha256": "c6038e563fd631c6cbfd126144aad68b8aa7b1c27df20d2b4e23c40d79a3aadb",
+    "unchanged_from_merged_parent": true
+  },
+  "boundary_c": {
+    "bytes": 51676,
+    "path": "crates/glue-runtime-python/boundary/bridge.c",
+    "sha256": "ec0adf72446d0244580273a18bdbaa7ece417eba10deb95b4bbbf5bd2517f917",
+    "unchanged_from_merged_parent": true
+  },
+  "boundary_header": {
+    "bytes": 7240,
+    "path": "crates/glue-runtime-python/boundary/bridge.h",
+    "sha256": "4dcf6f595e8ecfa8ca578e0d928a16d664189fcc4f1053f7d3fab3f03d7b4d17",
+    "unchanged_from_merged_parent": true
+  },
+  "bundled-import_executable": {
+    "bytes": 3188392,
+    "path": "target/python-host-source-apps-bundled-import-regression-build/relocated Python imports/glue-python-bootstrap-probe",
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "bundled_apps_product": {
+    "bytes": 3397400,
+    "path": "target/python-host-source-apps-source-regression-build/relocated Python source apps/glue",
+    "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555"
+  },
+  "frozen_executable": {
+    "bytes": 3188392,
+    "path": "target/python-host-source-apps-frozen-regression-build/relocated Python bootstrap/glue-python-bootstrap-probe",
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "host-import_executable": {
+    "bytes": 3188392,
+    "path": "target/python-host-source-apps-host-import-regression-build/relocated Python host imports/glue-python-bootstrap-probe",
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "host-startup_executable": {
+    "bytes": 3188392,
+    "path": "target/python-host-source-apps-host-startup-regression-build/relocated Python host/glue-python-bootstrap-probe",
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "host_apps_product": {
+    "bytes": 3397400,
+    "path": "target/python-host-source-apps-final-build/relocated Python host source apps/glue",
+    "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555"
+  },
+  "native_executable": {
+    "bytes": 3188392,
+    "path": "target/python-host-source-apps-native-regression-build/relocated Python extensions/glue-python-bootstrap-probe",
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "native_loader": {
+    "bytes": 8728,
+    "path": "crates/glue-runtime-python/src/native_linux.rs",
+    "sha256": "47dd154d97289ee471f708ddaf1523f6e64feda4c0c81a432d69561ff2d3d375",
+    "unchanged_from_merged_parent": true
+  },
+  "runner_executable": {
+    "bytes": 3397400,
+    "path": "target/python-host-source-apps-runner-regression-build/relocated Python runner/glue",
+    "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555"
+  },
+  "source_executable": {
+    "bytes": 3397400,
+    "path": "target/python-host-source-apps-source-regression-build/relocated Python source apps/glue",
+    "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555"
+  }
+}

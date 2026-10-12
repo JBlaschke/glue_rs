@@ -1,0 +1,32 @@
+   Compiling lua-src v551.0.2
+   Compiling glue-runtime-python v0.1.0 (/workspace/crates/glue-runtime-python)
+   Compiling glue-runner v0.1.0 (/workspace/crates/glue-runner)
+   Compiling glue-pack v0.1.0 (/workspace/crates/glue-pack)
+   Compiling glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua)
+    Finished `release` profile [optimized] target(s) in 8.14s
+     Running unittests src/main.rs (/build-target/release/deps/glue-f0774666306e8d4b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/cli.rs (/build-target/release/deps/cli-67067149f9cd346c)
+
+running 14 tests
+test build_preserves_existing_outputs_and_rejects_incorrect_declared_hashes ... ok
+test corrupt_payload_verification_and_cat_fail_without_stdout_data ... ok
+test help_and_version_succeed_without_an_archive ... ok
+test doctor_run_and_standalone_build_report_unavailable_execution_without_artifacts ... ok
+test explain_size_reports_payload_totals_and_container_overhead ... ok
+test linked_lua::corrupt_import_is_verified_before_its_body_runs ... ok
+test builds_are_deterministic_and_relocated_archives_remain_readable ... ok
+test linked_lua::builds_and_runs_relocated_lua_archive_without_host_module_fallback ... ok
+test linked_lua::lua_errors_report_virtual_archive_origins ... ok
+test linked_lua::rejects_the_other_lua_version_without_substitution ... ok
+test linked_lua::refuses_runtime_identity_and_target_mismatches_before_execution ... ok
+test malformed_archives_unknown_commands_and_invalid_flags_report_errors ... ok
+test python_selection_reports_its_capability_without_trying_lua_or_host_discovery ... ok
+test inspection_accepts_runtime_sized_members_even_without_python_execution ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+

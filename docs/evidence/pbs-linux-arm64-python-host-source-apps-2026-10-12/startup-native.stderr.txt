@@ -1,0 +1,1 @@
+glue: host startup encodings entry is outside pinned sources: /build-target/host Python source apps startup-native/lib/python3.13/encodings/__init__.cpython-313-aarch64-linux-gnu.so

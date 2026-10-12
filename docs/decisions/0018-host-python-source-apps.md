@@ -82,7 +82,8 @@ the selected library remains pinned for process life. C boundary API4 and its
 ## Host prerequisite and scope
 
 The installed library and startup path hierarchy must stay immutable and
-read-only throughout execution. No-follow checks, hashing and open descriptors
+read-only throughout execution and finalization; the mapped library backing
+must remain immutable for process life. No-follow checks, hashing and open descriptors
 do not freeze mutable backing files or bind all later pathname lookups. The
 source snapshot reduces subsequent filesystem dependence; it does not remove
 the host startup prerequisite.
@@ -94,3 +95,7 @@ extension-file loading, workers or another platform. G0/G1/G2 remain open.
 
 See [the bundled source application decision](0017-bundled-python-source-apps.md)
 and [the existing host-import decision](0014-host-python-archive-imports.md).
+
+The [clean host source-app evidence](../evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
+retains all 13 new and 48 prior-route traces from `dd6274f`, with compressed
+replays, exact CLI controls and the independent 567-edit rejection audit.

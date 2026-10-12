@@ -1,0 +1,1271 @@
+{
+  "capture_commands": {
+    "bytes": 14538,
+    "sha256": "5c13f8f7f2dc14ca0e20e9b86762b8395909e217c011e0ef65adf71cbf03ec65"
+  },
+  "command": [
+    "target/python-source-apps-control-audit.py",
+    "--capture",
+    "target/python-host-source-apps-source-regression-capture",
+    "--build",
+    "target/python-host-source-apps-source-regression-build",
+    "--source-revision",
+    "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+    "--output",
+    "target/python-host-source-apps-source-regression-capture/control-audit.json"
+  ],
+  "controls": [
+    {
+      "command": [
+        "/build-target/release/glue",
+        "build",
+        "--manifest",
+        "/build-target/staging/minimal/manifest.json",
+        "--root",
+        "/build-target/staging/minimal/root",
+        "--output",
+        "/build-target/relocated Python source apps/minimal.glue"
+      ],
+      "comparison": "actual archive size/hash plus manifest inventory count/bytes",
+      "mode": "minimal",
+      "operation": "build",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 214,
+        "sha256": "1560eeba6b134607641e3bb4e098592f63baa8873b2adf6587afc6a0a630add3"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/minimal.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "minimal",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 336475,
+        "sha256": "e43d71c8c505a6b760c9551a4396a5c6fb6c18d9ad3eb94e03205e1bc1e107a6"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/minimal.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "minimal",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "57bd07c59f5bcbe56b457feed9c3cdda6947dafc97d36fdaafe1ce5ea7712a52"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/minimal.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "minimal",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 601,
+        "sha256": "794182d14be4e646f115a7059afa497e5ee2eb0d492b93f72b405efdd56b26e4"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/minimal.glue",
+        "app/launch.py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "minimal",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 673,
+        "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44"
+      }
+    },
+    {
+      "command": [
+        "/build-target/release/glue",
+        "build",
+        "--manifest",
+        "/build-target/staging/resources/manifest.json",
+        "--root",
+        "/build-target/staging/resources/root",
+        "--output",
+        "/build-target/relocated Python source apps/resources.glue"
+      ],
+      "comparison": "actual archive size/hash plus manifest inventory count/bytes",
+      "mode": "resources",
+      "operation": "build",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 216,
+        "sha256": "a3a702b53a0edcd390db502380116374489f081cadc0bcc82008ad811d6daaee"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/resources.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "resources",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 337267,
+        "sha256": "aee054851bd9427ed8265c25ef1b4f8819e690aab14d7fc5ab1c0c3add62988f"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/resources.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "resources",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "1926ce797b3b775497f7cee8610a0d580690d25c0fff0ad4512a663faad7053c"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/resources.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "resources",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 599,
+        "sha256": "475a60bfa359e8a77976f041635770f1de08f82036f62648538895a9f7d24010"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/resources.glue",
+        "app/tasks/report's [daily].py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "resources",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2023,
+        "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0"
+      }
+    },
+    {
+      "command": [
+        "/build-target/release/glue",
+        "build",
+        "--manifest",
+        "/build-target/staging/app-error/manifest.json",
+        "--root",
+        "/build-target/staging/app-error/root",
+        "--output",
+        "/build-target/relocated Python source apps/app-error.glue"
+      ],
+      "comparison": "actual archive size/hash plus manifest inventory count/bytes",
+      "mode": "app-error",
+      "operation": "build",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 216,
+        "sha256": "493aec87898db40da10365578ace4139d690254a0b03be8244a384e2680b70d5"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/app-error.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "app-error",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 336336,
+        "sha256": "d91402571fb0ea74e55c3bbd7a8ef7414b28602507186f35bdb07506e1ee47ab"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/app-error.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "app-error",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "88eae0a4d779ff702dc3d0558126bd18be47e4690bf652ba32e47e94909f73b7"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/app-error.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "app-error",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 601,
+        "sha256": "d777888eeaa52f14dfa9ce5945ecff9cf85173ba069f4fec5727a5eacbf8d680"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/app-error.glue",
+        "app/jobs/fail.py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "app-error",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 59,
+        "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9"
+      }
+    },
+    {
+      "command": [
+        "/build-target/release/glue",
+        "build",
+        "--manifest",
+        "/build-target/staging/syntax/manifest.json",
+        "--root",
+        "/build-target/staging/syntax/root",
+        "--output",
+        "/build-target/relocated Python source apps/syntax.glue"
+      ],
+      "comparison": "actual archive size/hash plus manifest inventory count/bytes",
+      "mode": "syntax",
+      "operation": "build",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 213,
+        "sha256": "e4e9844c9357f5544b68c652797e97ec214f0dd229bed9429922429f4f93940a"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/syntax.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "syntax",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 336345,
+        "sha256": "d9504b82bd9ae989434557f50afc2f1372f4b8e443fe09eaa2ede04099a9a3ca"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/syntax.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "syntax",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "61ba097a78d5cf0c2be8603c94824895575473579253de309ce256ec2fa28e49"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/syntax.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "syntax",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 600,
+        "sha256": "8e58e40251e340d89477effc8b16d8dfecffb42d1aeb3b567e1eab00ca1e6762"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/syntax.glue",
+        "app/jobs/invalid.py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "syntax",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 38,
+        "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779"
+      }
+    },
+    {
+      "command": [
+        "/build-target/release/glue",
+        "build",
+        "--manifest",
+        "/build-target/staging/nul/manifest.json",
+        "--root",
+        "/build-target/staging/nul/root",
+        "--output",
+        "/build-target/relocated Python source apps/nul.glue"
+      ],
+      "comparison": "actual archive size/hash plus manifest inventory count/bytes",
+      "mode": "nul",
+      "operation": "build",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 210,
+        "sha256": "c17f15b809326452681aeef591240ebed22bd1f8d75c2bb6b1dbfbfbc33a6111"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/nul.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "nul",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 336336,
+        "sha256": "ffc5085a1b8362d72fa9594d5eb2fd1487b8b865634d10179bf1d544882e5eea"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/nul.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "nul",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "8c5361acf4e04da2e78ef7251557ec0959336e0973d23b8fc9cf1a63250cc90d"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/nul.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "nul",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 597,
+        "sha256": "39430defefff86829798bd79cde5bdfa981f097a974447f878775257122df41b"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/nul.glue",
+        "app/embedded-nul.py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "nul",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 22,
+        "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "inspect",
+        "/build-target/relocated Python source apps/corrupt-source.glue",
+        "--json"
+      ],
+      "comparison": "exact actual canonical manifest bytes",
+      "mode": "corrupt-source",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 336475,
+        "sha256": "e43d71c8c505a6b760c9551a4396a5c6fb6c18d9ad3eb94e03205e1bc1e107a6"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "verify",
+        "/build-target/relocated Python source apps/corrupt-source.glue"
+      ],
+      "comparison": "exact complete manifest count/bytes or stored source CRC rejection",
+      "mode": "corrupt-source",
+      "operation": "verify",
+      "status": 1,
+      "stderr": {
+        "bytes": 70,
+        "sha256": "d606b27c114e2a7ef99613b0008585d9e407528e79ec62e7df8456ffac52e400"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "doctor",
+        "/build-target/relocated Python source apps/corrupt-source.glue"
+      ],
+      "comparison": "exact declared build/target readiness text without executing source",
+      "mode": "corrupt-source",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 601,
+        "sha256": "794182d14be4e646f115a7059afa497e5ee2eb0d492b93f72b405efdd56b26e4"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python source apps/glue",
+        "cat",
+        "/build-target/relocated Python source apps/corrupt-source.glue",
+        "app/launch.py"
+      ],
+      "comparison": "exact archive declared entry bytes, including quoting and embedded NUL",
+      "mode": "corrupt-source",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 673,
+        "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44"
+      }
+    },
+    {
+      "comparison": "declaration rejection and preserved/absent build output; doctor advertises no readiness",
+      "mode": "protected-module",
+      "operation": "build",
+      "status": 1,
+      "stderr": {
+        "bytes": 69,
+        "sha256": "58c9d9202e3a80c2b9cb891ce782dded13c1e00ff3628657aee934f9efecc6a5"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "comparison": "declaration rejection and preserved/absent build output; doctor advertises no readiness",
+      "mode": "bytecode",
+      "operation": "build",
+      "status": 1,
+      "stderr": {
+        "bytes": 100,
+        "sha256": "38c6be77a91fe1f89ec72baf74875450f52725ad17fc8e41f97945a9de22f5f6"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "comparison": "declaration rejection and preserved/absent build output; doctor advertises no readiness",
+      "mode": "helper-drift",
+      "operation": "build",
+      "status": 1,
+      "stderr": {
+        "bytes": 104,
+        "sha256": "0057807d31ae43cff7acd32b2736011395e6e329ee91ff9fa9eff39d2d45f568"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "comparison": "declaration rejection and preserved/absent build output; doctor advertises no readiness",
+      "mode": "helper-drift",
+      "operation": "doctor",
+      "status": 1,
+      "stderr": {
+        "bytes": 85,
+        "sha256": "75e0982f46ffa14b05eab5ee4faa5cd9b190d460cfa54f3c0ff639521c84a27d"
+      },
+      "stdout": {
+        "bytes": 396,
+        "sha256": "decd878fdc1ea63fc47057fd3a651d9a078919e5643c818400be02c46da7b98b"
+      }
+    },
+    {
+      "comparison": "declaration rejection and preserved/absent build output; doctor advertises no readiness",
+      "mode": "outside-entry",
+      "operation": "doctor",
+      "status": 1,
+      "stderr": {
+        "bytes": 67,
+        "sha256": "932dde6c4ad857dce63e7de15d6bd86b760265a9808edd1fe08095d4ef422693"
+      },
+      "stdout": {
+        "bytes": 396,
+        "sha256": "decd878fdc1ea63fc47057fd3a651d9a078919e5643c818400be02c46da7b98b"
+      }
+    }
+  ],
+  "counts": {
+    "controls": 34,
+    "provenance_files": 8,
+    "provenance_receipts": 4,
+    "runtime_cases": 6
+  },
+  "findings": [],
+  "launcher": {
+    "binary": {
+      "bytes": 3397400,
+      "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555"
+    },
+    "complete_elf": {
+      "bytes": 12625,
+      "sha256": "b3496585b27069053bf47a95f64df42ef87dc7576836b61024c7086d8a65bf80"
+    },
+    "needed": [
+      "libm.so.6",
+      "libgcc_s.so.1",
+      "libc.so.6"
+    ],
+    "python_undefined_symbols": []
+  },
+  "metadata": {
+    "bytes": 14329,
+    "sha256": "7825fff1cbe25e57756da63ae2b221cc7dea8e0a91004fd8ebe4a49673845170"
+  },
+  "provenance": [
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-14ab81c3f7980735.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-14ab81c3f7980735.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-1dbcd75715a52b3d.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-1dbcd75715a52b3d.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-674bae5fdd062d43.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-674bae5fdd062d43.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-97d81cc4d4d9dc64.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-97d81cc4d4d9dc64.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    }
+  ],
+  "runtime": [
+    {
+      "archive": {
+        "app_id": "minimal.source",
+        "application": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        },
+        "bytes": 83085052,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "manifest_bytes": 336474,
+        "manifest_sha256": "7c07acaec30b6bdb7c278cdee712840e1adcd18457eb969fe935196695e49a9f",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82853853,
+          "archive_read_bytes": 749424,
+          "ranges_sha256": "d74ff048719d29f9b847ee704fe7031a661860cd2bb49d265a1c28cdfa095fa4"
+        },
+        "sha256": "b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82861176
+      },
+      "mode": "minimal",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 50,
+        "sha256": "ab7ced5b3dd2d37ba1d7304d3cafd9dc8b0700c78e3888cb5d6e4d7615f8296e"
+      },
+      "trace": {
+        "bytes": 6589676,
+        "sha256": "f1453ad2ee4f78eeff5514fecc5437a37836271fe5beb30d0ca4e14f78b17a54"
+      }
+    },
+    {
+      "archive": {
+        "app_id": "daily.report",
+        "application": {
+          "app/python/report_data/__init__.py": {
+            "compression": "stored",
+            "sha256": "89e06ad2e2929dea441f54af293b1c7821ec96d9a9381a0aec8c1a9ee026451d",
+            "size": 26
+          },
+          "app/python/report_data/answer.py": {
+            "compression": "stored",
+            "sha256": "200a2dfcd924e06463c2cf770dc0b94dc57e4225dc0db8a84ad2912910a89e26",
+            "size": 81
+          },
+          "app/python/report_data/assets/binary.bin": {
+            "compression": "stored",
+            "sha256": "27279180881062e729fe01cf5a43b43652a7608246863f7714036191e54a3f4e",
+            "size": 4
+          },
+          "app/python/report_data/assets/message.txt": {
+            "compression": "stored",
+            "sha256": "e9478f62d7fa9bf6d253cd7e4129b4a0ad0c97025c8a8d0b04dfdc48dd650353",
+            "size": 16
+          },
+          "app/python/report_parts/assets/part.txt": {
+            "compression": "stored",
+            "sha256": "4281ef15452913e09aa213310952b195aeb8cb01fca8a66eb513ed2fb660294b",
+            "size": 17
+          },
+          "app/python/report_parts/extra.py": {
+            "compression": "stored",
+            "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+            "size": 11
+          },
+          "app/tasks/report's [daily].py": {
+            "compression": "stored",
+            "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0",
+            "size": 2023
+          }
+        },
+        "bytes": 83088333,
+        "component": "report",
+        "entry": "app/tasks/report's [daily].py",
+        "manifest_bytes": 337266,
+        "manifest_sha256": "66d30f3e1cb996e61a1c7765d2f7368eed33e344a276d153bff3cbd187adf3fc",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82856596,
+          "archive_read_bytes": 751212,
+          "ranges_sha256": "3a1f3e796510ef7ab8067bd4f7a032d3851ff09ab63c193f8e0014677a812280"
+        },
+        "sha256": "3a6cdb5dee05c0049af85a503f93c1718752b6bbe0c887b0b30f1cb36e3e36d4",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82863919
+      },
+      "mode": "resources",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 90,
+        "sha256": "451ff7055edb8bb3a4d471b55b13c72e1cd967a2df691a3a2109d1eb0fe93235"
+      },
+      "trace": {
+        "bytes": 6663653,
+        "sha256": "652765d1d5cdcf38ecfb9df7139b1013e1613c6a1ab28a12f0d46ef73ce880d9"
+      }
+    },
+    {
+      "archive": {
+        "app_id": "failing.source",
+        "application": {
+          "app/jobs/fail.py": {
+            "compression": "stored",
+            "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+            "size": 59
+          }
+        },
+        "bytes": 83084125,
+        "component": "fail",
+        "entry": "app/jobs/fail.py",
+        "manifest_bytes": 336335,
+        "manifest_sha256": "2c425577e909941bf30b91d97cbec0d39fae1f0ab4f409ff9e5cdd9fc0e2c342",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82853015,
+          "archive_read_bytes": 749123,
+          "ranges_sha256": "756b5a6ebfb63bb5cbabbfbbb16b5d6f0348f1d5e56d9241736148ffb06c0a87"
+        },
+        "sha256": "62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82860338
+      },
+      "mode": "app-error",
+      "status": 1,
+      "stderr": {
+        "bytes": 43,
+        "sha256": "d87612f6dfb5b982f077b82b52a6561ae3744db5ac55adbbfcae96b3a19780a7"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 6653126,
+        "sha256": "231f2b2b4a54b8df988f38f6d68c48bc0358621f39d7f8d72f017712b1e3323c"
+      }
+    },
+    {
+      "archive": {
+        "app_id": "syntax.source",
+        "application": {
+          "app/jobs/invalid.py": {
+            "compression": "stored",
+            "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+            "size": 38
+          }
+        },
+        "bytes": 83084119,
+        "component": "syntax",
+        "entry": "app/jobs/invalid.py",
+        "manifest_bytes": 336344,
+        "manifest_sha256": "579c8f1da7d2865ca7a09919051db599ebe40091de5166a7169fa23c798ba38d",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82853006,
+          "archive_read_bytes": 749138,
+          "ranges_sha256": "0916d3a8e1500c554a1da5279812e9c8d3e58c5016dcb5f1f6f0a8786fdae730"
+        },
+        "sha256": "1a9166427e9bccaeae32d72e80bcb79b7e570727db494258ad830f7881e93059",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82860329
+      },
+      "mode": "syntax",
+      "status": 1,
+      "stderr": {
+        "bytes": 42,
+        "sha256": "ebcf731dfae5d8d98344fb477e2748d32e61fc75f8b154ee6dbfdd3334fe989c"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 6555136,
+        "sha256": "7c8d0b11a3ab67bced71252d01b00f99cae90f9b5be6d27e998515104d22a1db"
+      }
+    },
+    {
+      "archive": {
+        "app_id": "nul.source",
+        "application": {
+          "app/embedded-nul.py": {
+            "compression": "stored",
+            "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+            "size": 22
+          }
+        },
+        "bytes": 83084094,
+        "component": "nul",
+        "entry": "app/embedded-nul.py",
+        "manifest_bytes": 336335,
+        "manifest_sha256": "436f137b3e5d497bc3125726a9abc8599f1fc005d068f865f6eaf730c0cc1d29",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82852981,
+          "archive_read_bytes": 749129,
+          "ranges_sha256": "aca522ae13cc96f0371be6431398d715d62a4918ecb2f8ba0a7606f5e6913420"
+        },
+        "sha256": "00e5cea5acd655b154a428b5e90f085cbb0d202d7754ad5b437e8b5edd035cd7",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82860304
+      },
+      "mode": "nul",
+      "status": 1,
+      "stderr": {
+        "bytes": 69,
+        "sha256": "6c7a35b1b3410ee5eb5f25a2d1a13ce48037d5137d584f61cb424b88f35d92e7"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 6456377,
+        "sha256": "bf03b7609819809d6843286fb838e7c143c1cb4bbc10f38290f5f026642e6c68"
+      }
+    },
+    {
+      "archive": {
+        "app_id": "minimal.source",
+        "application": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        },
+        "bytes": 83085052,
+        "component": "launch",
+        "corrupt_offset": 337350,
+        "entry": "app/launch.py",
+        "manifest_bytes": 336474,
+        "manifest_sha256": "7c07acaec30b6bdb7c278cdee712840e1adcd18457eb969fe935196695e49a9f",
+        "provider": {
+          "abi": {
+            "debug": false,
+            "gil": "conventional",
+            "language": "python",
+            "version": {
+              "major": 3,
+              "minor": 13,
+              "patch": 16
+            }
+          },
+          "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+          "provisioning": {
+            "mode": "bundled",
+            "provider": "python_build_standalone",
+            "runtime_library": "python/libpython3.13.so.1.0",
+            "source": {
+              "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+              "release": "20261009",
+              "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+              "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+              "variant": "pgo+lto-full/bundled-source-apps-v1"
+            },
+            "stdlib": "python/frozen.json"
+          },
+          "required_features": [],
+          "target": "linux-arm64"
+        },
+        "readiness": {
+          "archive_cursor": 82853853,
+          "archive_read_bytes": 749424,
+          "ranges_sha256": "d74ff048719d29f9b847ee704fe7031a661860cd2bb49d265a1c28cdfa095fa4"
+        },
+        "sha256": "b9609b72f42883949915c291c6439f331770a3a8f256dcc063e34158d80562d6",
+        "target": {
+          "abi": {
+            "family": "glibc",
+            "minimum_version": "2.36"
+          },
+          "arch": "aarch64",
+          "cpu_features": [],
+          "minimum_os_version": "7.1.4",
+          "os": "linux",
+          "page_sizes": [
+            4096
+          ]
+        },
+        "zip_directory_offset": 82861176
+      },
+      "mode": "corrupt-source",
+      "status": 1,
+      "stderr": {
+        "bytes": 70,
+        "sha256": "d606b27c114e2a7ef99613b0008585d9e407528e79ec62e7df8456ffac52e400"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 3405363,
+        "sha256": "846c3d528f79cb818393b25ad1751b30dacb42f0c55c46ffbd41126afaa96840"
+      }
+    }
+  ],
+  "schema_version": 0,
+  "script": {
+    "bytes": 9926,
+    "sha256": "99f60fe02bfa87c8bf4517b2fe2fd840dc17af1a4ea137ffdab8de0a59df197c"
+  },
+  "source_branch": "codex/a7-host-source-apps",
+  "source_clean": true,
+  "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818"
+}

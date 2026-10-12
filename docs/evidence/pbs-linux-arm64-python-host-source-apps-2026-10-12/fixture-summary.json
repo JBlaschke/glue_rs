@@ -1,0 +1,525 @@
+{
+  "accepted_rejection_shortcuts": [
+    {
+      "accepted": true,
+      "changed_trace_sha256": "bb2f174041e78ffebd3d3f38e4731cf17c41e6bc37113c3c9a2dabaaf3f7df3b",
+      "control": "unrelated pristine entry read omitted before CRC rejection",
+      "mode": "corrupt-source",
+      "reason": "Complete metadata and selected corrupt bytes remain admitted; readers close and no host provider is acquired.",
+      "removed_read_sha256": "3d2e165b15e3791a65a9c2d5e6337ff64a99f287b6b3ebd016841720ae7d8e37"
+    }
+  ],
+  "api": {
+    "provenance_receipts": 4,
+    "public_exports": 29,
+    "revision": 4,
+    "table_bytes": 240
+  },
+  "applications": {
+    "app-error": {
+      "app_id": "failing.source",
+      "bytes": 59,
+      "component": "fail",
+      "entry": "app/jobs/fail.py",
+      "resource_count": 1,
+      "resources": {
+        "app/jobs/fail.py": {
+          "compression": "stored",
+          "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+          "size": 59
+        }
+      }
+    },
+    "corrupt-source": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "deep-cache": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "minimal": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "missing-library": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "missing-source": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "nul": {
+      "app_id": "nul.source",
+      "bytes": 22,
+      "component": "nul",
+      "entry": "app/embedded-nul.py",
+      "resource_count": 1,
+      "resources": {
+        "app/embedded-nul.py": {
+          "compression": "stored",
+          "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+          "size": 22
+        }
+      }
+    },
+    "resources": {
+      "app_id": "daily.report",
+      "bytes": 2178,
+      "component": "report",
+      "entry": "app/tasks/report's [daily].py",
+      "resource_count": 7,
+      "resources": {
+        "app/python/report_data/__init__.py": {
+          "compression": "stored",
+          "sha256": "89e06ad2e2929dea441f54af293b1c7821ec96d9a9381a0aec8c1a9ee026451d",
+          "size": 26
+        },
+        "app/python/report_data/answer.py": {
+          "compression": "stored",
+          "sha256": "200a2dfcd924e06463c2cf770dc0b94dc57e4225dc0db8a84ad2912910a89e26",
+          "size": 81
+        },
+        "app/python/report_data/assets/binary.bin": {
+          "compression": "stored",
+          "sha256": "27279180881062e729fe01cf5a43b43652a7608246863f7714036191e54a3f4e",
+          "size": 4
+        },
+        "app/python/report_data/assets/message.txt": {
+          "compression": "stored",
+          "sha256": "e9478f62d7fa9bf6d253cd7e4129b4a0ad0c97025c8a8d0b04dfdc48dd650353",
+          "size": 16
+        },
+        "app/python/report_parts/assets/part.txt": {
+          "compression": "stored",
+          "sha256": "4281ef15452913e09aa213310952b195aeb8cb01fca8a66eb513ed2fb660294b",
+          "size": 17
+        },
+        "app/python/report_parts/extra.py": {
+          "compression": "stored",
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/tasks/report's [daily].py": {
+          "compression": "stored",
+          "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0",
+          "size": 2023
+        }
+      }
+    },
+    "startup-bytecode": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "startup-native": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    },
+    "stdlib": {
+      "app_id": "stdlib.source",
+      "bytes": 1236,
+      "component": "stdlib",
+      "entry": "app/tasks/stdlib.py",
+      "resource_count": 1,
+      "resources": {
+        "app/tasks/stdlib.py": {
+          "compression": "stored",
+          "sha256": "5632df70b6569c873b7d25487ea069d6383d1436b4692c7a4b4dddea94284d08",
+          "size": 1236
+        }
+      }
+    },
+    "syntax": {
+      "app_id": "syntax.source",
+      "bytes": 38,
+      "component": "syntax",
+      "entry": "app/jobs/invalid.py",
+      "resource_count": 1,
+      "resources": {
+        "app/jobs/invalid.py": {
+          "compression": "stored",
+          "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+          "size": 38
+        }
+      }
+    },
+    "wrong-source": {
+      "app_id": "minimal.source",
+      "bytes": 685,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "resource_count": 2,
+      "resources": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      }
+    }
+  },
+  "archives": {
+    "app-error": {
+      "file": "app-error.glue",
+      "sha256": "ddd9a059df433e3bc20573a999b27757614bc707af9d516db4eaa2c07e1d58cc",
+      "size": 5561
+    },
+    "corrupt-source": {
+      "file": "corrupt-source.glue",
+      "sha256": "26e2bfcd458c8bc5f092970754a61caa166a1a3b8487cae4581c048e9a32f207",
+      "size": 6488
+    },
+    "deep-cache": {
+      "file": "deep-cache.glue",
+      "sha256": "02ab4c997ce5d1c1e0f62d03961c6d57e2f85fa4cad224fcfc7d90c2f579fe24",
+      "size": 6510
+    },
+    "minimal": {
+      "file": "minimal.glue",
+      "sha256": "9924ef3c70138e9e11e68b2ee7b478b9592ad4b08850f2ac34b3e290f0f0d07e",
+      "size": 6488
+    },
+    "missing-library": {
+      "file": "missing-library.glue",
+      "sha256": "2549df9196418a59c29abcbda76baeeb9826248f0eec663634076e04898b709f",
+      "size": 6520
+    },
+    "missing-source": {
+      "file": "missing-source.glue",
+      "sha256": "dfce2ecd8694c5c448ec30f987d029a4a7c43d090baaec6588751e57d419d377",
+      "size": 6518
+    },
+    "nul": {
+      "file": "nul.glue",
+      "sha256": "bb93ac4200c04793dff3069d0326de426d28bbb483fefa9cc972441ab71c3bc6",
+      "size": 5530
+    },
+    "resources": {
+      "file": "resources.glue",
+      "sha256": "bd4e6ed9980c9f81510ff6671ad2f8126d0dd1367923e151105850a7b1e8f6a0",
+      "size": 9769
+    },
+    "startup-bytecode": {
+      "file": "startup-bytecode.glue",
+      "sha256": "e3dc75d8cd17d10829893b0ff3419131b653f71738561836fefa5d4626b1b648",
+      "size": 6522
+    },
+    "startup-native": {
+      "file": "startup-native.glue",
+      "sha256": "fec16b6e701cfa976a0538bcb2aac726800a6962d7c1847ee66904c7662901b3",
+      "size": 6518
+    },
+    "stdlib": {
+      "file": "stdlib.glue",
+      "sha256": "b570820e3f0265f8b17b230fbd55160ff244acb78352b9f79982a083e53d6b35",
+      "size": 6755
+    },
+    "syntax": {
+      "file": "syntax.glue",
+      "sha256": "3766feda08788b0945f625ee4ac2da522d5ee44fbaf94b8af0d91a18bfd1baa7",
+      "size": 5555
+    },
+    "wrong-source": {
+      "file": "wrong-source.glue",
+      "sha256": "966b84c1ea965d98db65b379ac96d601ad6e1ea1dfc3bcadca7e17878dbabdae",
+      "size": 6514
+    }
+  },
+  "content": {
+    "app-error": {
+      "resources": 2,
+      "uncompressed_bytes": 13569
+    },
+    "corrupt-source": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "deep-cache": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "minimal": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "missing-library": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "missing-source": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "nul": {
+      "resources": 2,
+      "uncompressed_bytes": 13532
+    },
+    "resources": {
+      "resources": 8,
+      "uncompressed_bytes": 15688
+    },
+    "startup-bytecode": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "startup-native": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    },
+    "stdlib": {
+      "resources": 2,
+      "uncompressed_bytes": 14746
+    },
+    "syntax": {
+      "resources": 2,
+      "uncompressed_bytes": 13548
+    },
+    "wrong-source": {
+      "resources": 3,
+      "uncompressed_bytes": 14195
+    }
+  },
+  "controls": 51,
+  "corrupt_source": {
+    "corrupt_member_sha256": "0a7093fde565e53ed92ab7b547f031ed748ec33a65cc4364d91fa323c40f11e9",
+    "data_offset": 2132,
+    "key": "app/python/simple_value.py",
+    "only_changed_archive_byte": 2132,
+    "original_member_sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+    "size": 12
+  },
+  "error_finalization_scope": "Success stdout precedes retained owner release; error-mode finalization ownership is established by synchronous source/C lifetimes together with complete phase/closure traces, before outer CLI stderr.",
+  "host_trees": {
+    "deep-cache": {
+      "files": 2176,
+      "prefix": "/build-target/host Python source apps deep-cache",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 112722068
+    },
+    "missing-library": {
+      "files": 2174,
+      "prefix": "/build-target/host Python source apps missing-library",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 39158056
+    },
+    "missing-source": {
+      "files": 2174,
+      "prefix": "/build-target/host Python source apps missing-source",
+      "snapshot_source_files": 2173,
+      "uncompressed_bytes": 112719912
+    },
+    "pristine": {
+      "files": 2184,
+      "prefix": "/build-target/host Python source apps",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 112722403
+    },
+    "startup-bytecode": {
+      "files": 2176,
+      "prefix": "/build-target/host Python source apps startup-bytecode",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 112722068
+    },
+    "startup-native": {
+      "files": 2176,
+      "prefix": "/build-target/host Python source apps startup-native",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 112722068
+    },
+    "wrong-source": {
+      "files": 2175,
+      "prefix": "/build-target/host Python source apps wrong-source",
+      "snapshot_source_files": 2174,
+      "uncompressed_bytes": 112722024
+    }
+  },
+  "hostile_actual_mutations": 567,
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "launcher": {
+    "file": "glue",
+    "sha256": "bb391937bf7541bcf09f75efd2fedc9453a0c33170aea05f151d21a5b10b8555",
+    "size": 3397400
+  },
+  "retention_date": "2026-10-12",
+  "source_branch": {
+    "receipt": "source-branch.txt",
+    "recorded_at": "capture",
+    "value": "codex/a7-host-source-apps"
+  },
+  "source_clean": true,
+  "source_commit": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+  "source_projection": {
+    "cache_directories": 202,
+    "empty_sources": 24,
+    "files": 2174,
+    "inventory": {
+      "file": "stdlib-pins.json",
+      "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+      "size": 326131
+    },
+    "uncompressed_bytes": 39158056
+  },
+  "statuses": {
+    "app-error": 1,
+    "corrupt-source": 1,
+    "deep-cache": 1,
+    "minimal": 0,
+    "missing-library": 1,
+    "missing-source": 1,
+    "nul": 1,
+    "resources": 0,
+    "startup-bytecode": 1,
+    "startup-native": 1,
+    "stdlib": 0,
+    "syntax": 1,
+    "wrong-source": 1
+  },
+  "stderr_bytes": {
+    "app-error": 43,
+    "corrupt-source": 70,
+    "deep-cache": 190,
+    "minimal": 0,
+    "missing-library": 135,
+    "missing-source": 147,
+    "nul": 69,
+    "resources": 0,
+    "startup-bytecode": 155,
+    "startup-native": 182,
+    "stdlib": 0,
+    "syntax": 42,
+    "wrong-source": 124
+  },
+  "stdout_bytes": {
+    "app-error": 0,
+    "corrupt-source": 0,
+    "deep-cache": 0,
+    "minimal": 50,
+    "missing-library": 0,
+    "missing-source": 0,
+    "nul": 0,
+    "resources": 90,
+    "startup-bytecode": 0,
+    "startup-native": 0,
+    "stdlib": 76,
+    "syntax": 0,
+    "wrong-source": 0
+  },
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "trace_read_scope": "Complete requested/returned host file counts, EOF/metadata/closure and pinned visible ELF prefix; s256 strings do not retain every source/library byte. Full file hashes are separately checked by Rust and retained host projection identities.",
+  "trusted_prelude": {
+    "file": "prelude.py",
+    "sha256": "89c6fd07ec27e83baf3af9612caf44e164867d7eff81d957bcaa0c139ccfff00",
+    "size": 455
+  }
+}

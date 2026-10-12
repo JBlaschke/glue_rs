@@ -96,3 +96,10 @@ retains six application traces and 42 fresh regression traces from clean
 `d3ddac3`, all independently replayed. The shared optimized GNU builds pass
 87 tests and Clippy; the unchanged C bridge and Linux loader retain API4,
 29 selected exports and a 240-byte table.
+
+The [host source-app evidence](../../docs/evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
+retains the paired explicit-host provider's 13 cases and 48 fresh regressions
+from clean `dd6274f`. All 61 complete traces replay, all 51 new controls agree
+and all 567 hostile trace edits reject; optimized GNU shared builds pass 102
+tests and Clippy. The C boundary and selected GNU library mapping implementation
+remain unchanged.

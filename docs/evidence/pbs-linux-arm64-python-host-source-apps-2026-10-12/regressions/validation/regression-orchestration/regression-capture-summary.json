@@ -1,0 +1,152 @@
+{
+  "groups": {
+    "bundled-import": {
+      "build": "target/python-host-source-apps-bundled-import-regression-build",
+      "capture": "target/python-host-source-apps-bundled-import-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 3,
+      "trace_sha256": {
+        "app-error.trace.txt": "35e0efd7c41fafec15dab6d708403ace88775b033593c1ba801c64882e3b2c16",
+        "corrupt-source.trace.txt": "6c9612d0743faa8c829b7435ccd0f33d97d6460369c63d510b5961d8f616a848",
+        "success.trace.txt": "8c07c8e4114d57eda95e688c94445e618fe2b8fcada69011172b3de5caf8e4a9"
+      }
+    },
+    "frozen": {
+      "build": "target/python-host-source-apps-frozen-regression-build",
+      "capture": "target/python-host-source-apps-frozen-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 4,
+      "trace_sha256": {
+        "app-error.trace.txt": "e852559881c7328b09d3c4c7c9e8221f39ae6432e4bf5a22c9f1fffa0f1f02b8",
+        "bad-bytecode.trace.txt": "c6449e59868889f84c5ae2ab814cd40ce6a2929b48d917e8031d5a92f5018732",
+        "missing-encodings.trace.txt": "e0d2d54d11b7e40888623f15a5f63b1a60112070a0489b128008162f524596b2",
+        "success.trace.txt": "431e3354178b7ca785ee9d530f82e741fca775372c00a659b06aecfc74f02d5e"
+      }
+    },
+    "host-import": {
+      "build": "target/python-host-source-apps-host-import-regression-build",
+      "capture": "target/python-host-source-apps-host-import-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 7,
+      "trace_sha256": {
+        "app-error.trace.txt": "39b57a1069bc40b1625bf736ccc764469b1953c92682f55c0c25e47047fffdc3",
+        "cached-import-bytecode.trace.txt": "a8da46a449328fe57200548c04c8bc4755b748f0f931ea85a44ccbc73f77af34",
+        "corrupt-source.trace.txt": "33a994c5e0b4c467da8adde75b2112b988d5dc3641f8ac5e3cba94ac245a0f62",
+        "missing-import-source.trace.txt": "d6e7c082cc54a8c9677c8c26d37345152d64cb667624f5bc35585a03f4b55dab",
+        "success.trace.txt": "8b45a284a64a946aa03b490fd35437e61cc0110c3f96a77c09f2503be93f3f61",
+        "wrong-import-source.trace.txt": "5e6d9a71914fe478c54119fda5280ba12ac4768ef7366cac7b607b9e8855d998",
+        "wrong-library.trace.txt": "870265842e176ca5aa2de8ba1b9b4b5d63fd04335277dd0c9769841fb97ad05e"
+      }
+    },
+    "host-startup": {
+      "build": "target/python-host-source-apps-host-startup-regression-build",
+      "capture": "target/python-host-source-apps-host-startup-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 8,
+      "trace_sha256": {
+        "app-error.trace.txt": "5fa9fa6f2807f35a9db15440b851c68fd98abed4c3c6db63d224ac0332268ba1",
+        "cached-bytecode.trace.txt": "47e11a48aa38cdf549f8d05ba80bdfac15abcc503ed77110ddc84612ff7ea268",
+        "missing-encodings.trace.txt": "1f1cd8abbd21ba91ed41ec68c69f82d727d00aa8b6bf217683e2b417be6399e0",
+        "missing-library.trace.txt": "68ef8a44d96b71611d0923b4b87fce9c0c0bad294a8d829d93fe6df4fadd637f",
+        "success.trace.txt": "defb3b3fe9af85692ef3ad997f3212b09cc03d50937dbe4c06b914974610eaaa",
+        "symlink-stdlib.trace.txt": "5240441872c8754b9208245e39deebaed0fde82463dcbc79bc31d1171219acc6",
+        "wrong-library.trace.txt": "56df1dc577e221f5bf34fa4cc63b5d46625aae7b19f543fdd3c5557014b5e5a1",
+        "wrong-stdlib.trace.txt": "e4ca760bbefac468b28176e4c2e9bd8b783906225aa3301d844f07eee4f60dff"
+      }
+    },
+    "native": {
+      "build": "target/python-host-source-apps-native-regression-build",
+      "capture": "target/python-host-source-apps-native-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 11,
+      "trace_sha256": {
+        "bundled-archived-app-error.trace.txt": "1eff89d97b25fce57709e7b9a279282a8eaa03bc188d12deff29e091ad8e8f28",
+        "bundled-archived.trace.txt": "ac123d391cfeb86a71a643302ab25015799c4f2828c88e71a998d5e1bc97b055",
+        "bundled-host-app-error.trace.txt": "5a4e50f5b16052068206754bee1050332aaf4e90285d20a657aad1e577be6ed7",
+        "bundled-host.trace.txt": "2aa24e3ea4926acaddcb3b07299f783aa94fd187c956b92336a09d19b33be6b1",
+        "corrupt-native.trace.txt": "70ccd47577a8cf086d3ce03e0f795a6d67bfad44e624a107e899b9088c84e363",
+        "host-archived-app-error.trace.txt": "fe0ca2c45c7b4086044cfeaa250ff284e9d0cddac487c449d7eff624c5f998ec",
+        "host-archived.trace.txt": "da656f157e78cff27001a6610e7b08612bcd2a79f1c921d3ee80b58958f2dfb3",
+        "host-host-app-error.trace.txt": "d343ecfd52a67413a805c2e918a9858d1396117e6f760ce9f79f735496d688ba",
+        "host-host.trace.txt": "e515f9f557061faf5ecbc103a608a2f5f82fbec533680a9e0c7a49cbf0fd7a94",
+        "missing-host-image.trace.txt": "d5fc6339feda5c3879809bc5c984d379855a982006ce02e32b63217b7a6579cf",
+        "wrong-host-image.trace.txt": "5d201b9be19ed88b40ea93a615ebe668676479d47e563b0c80b315beeb0dfbbe"
+      }
+    },
+    "runner": {
+      "build": "target/python-host-source-apps-runner-regression-build",
+      "capture": "target/python-host-source-apps-runner-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "runner_clippy": "pass",
+      "runner_tests": 14,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 9,
+      "trace_sha256": {
+        "bundled-archived.trace.txt": "bd628c898c7cb2b9c55e8f88d056a0ed70419ac4a62c834e2259f5a68295a8a6",
+        "bundled-host.trace.txt": "7300eda03adf44758300349b826c441b38d4cfb012377100e74054884293fc65",
+        "bundled-imports.trace.txt": "22d74fc57dac7e15c59d6d53c70f90a3ad99414f8df066822a81501752228e9a",
+        "corrupt-native.trace.txt": "a354a3d5ac119c5e00ff9eb38bff2b2643bab54d4507d9682d31671432a8249a",
+        "host-archived.trace.txt": "8aa10c268cc7127acd33f864b3aade1102c885f960e09c21af7e48a0a53edffd",
+        "host-host.trace.txt": "c263de9a13dc412d5b4a0165bfccb10739d177c43e616ac92658d55ca70b25c2",
+        "host-imports.trace.txt": "8a78826ebf0b9edae63fcfcd1e116b3190df404faa6926eeb791d0bf03ef8bbf",
+        "missing-host-image.trace.txt": "9f2b1b39719ed4020b956069f438cf8474119d2f7fb9794271fa7a849ff34dd9",
+        "wrong-host-image.trace.txt": "d50ba79e25528f5dc02ca2dab5672706fdd9290d4567b1a18ff45a104f946e15"
+      }
+    },
+    "source": {
+      "build": "target/python-host-source-apps-source-regression-build",
+      "capture": "target/python-host-source-apps-source-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 102,
+      "runner_clippy": "pass",
+      "runner_tests": 14,
+      "source_diff_bytes": 0,
+      "source_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+      "source_status": "",
+      "trace_count": 6,
+      "trace_sha256": {
+        "app-error.trace.txt": "231f2b2b4a54b8df988f38f6d68c48bc0358621f39d7f8d72f017712b1e3323c",
+        "corrupt-source.trace.txt": "846c3d528f79cb818393b25ad1751b30dacb42f0c55c46ffbd41126afaa96840",
+        "minimal.trace.txt": "f1453ad2ee4f78eeff5514fecc5437a37836271fe5beb30d0ca4e14f78b17a54",
+        "nul.trace.txt": "bf03b7609819809d6843286fb838e7c143c1cb4bbc10f38290f5f026642e6c68",
+        "resources.trace.txt": "652765d1d5cdcf38ecfb9df7139b1013e1613c6a1ab28a12f0d46ef73ce880d9",
+        "syntax.trace.txt": "7c8d0b11a3ab67bced71252d01b00f99cae90f9b5be6d27e998515104d22a1db"
+      }
+    }
+  },
+  "note": "Seven fresh independent old harnesses, unchanged old policies. This orchestration receipt records source branch around captures; four old harnesses do not themselves emit branch receipts.",
+  "source_branch": "codex/a7-host-source-apps",
+  "source_clean_before_after": true,
+  "source_commit": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+  "trace_count": 48
+}

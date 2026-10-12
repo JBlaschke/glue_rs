@@ -1,0 +1,51 @@
+{
+  "source_commit": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+  "source_clean": true,
+  "source_branch": {
+    "value": "codex/a7-host-source-apps",
+    "receipt": "source-branch-at-retention.txt",
+    "recorded_at": "retention",
+    "note": "This legacy capture has no per-harness capture-time branch receipt; branch was derived from the clean current checkout at retention with the same source commit. Separate orchestration records retain the branch around every capture."
+  },
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "launcher": {
+    "file": "glue-python-bootstrap-probe",
+    "size": 3188392,
+    "sha256": "f698b313193800b62e4d8a795345afe7f4a2d90a8c0ac61534d0bd2b737a099c"
+  },
+  "archives": {
+    "success": {
+      "file": "app.glue",
+      "size": 73707094,
+      "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+    },
+    "missing-encodings": {
+      "file": "app.glue",
+      "size": 73707094,
+      "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+    },
+    "bad-bytecode": {
+      "file": "app.glue",
+      "size": 73707094,
+      "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+    },
+    "app-error": {
+      "file": "app.glue",
+      "size": 73707094,
+      "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062"
+    }
+  },
+  "frozen_bundle": {
+    "file": "freeze-bundle.json",
+    "size": 139523,
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+  },
+  "stdout_bytes": 108,
+  "statuses": {
+    "success": 0,
+    "missing-encodings": 1,
+    "bad-bytecode": 1,
+    "app-error": 1
+  }
+}

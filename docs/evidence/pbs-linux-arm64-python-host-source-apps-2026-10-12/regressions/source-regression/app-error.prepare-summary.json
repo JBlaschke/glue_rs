@@ -1,0 +1,17 @@
+{
+  "app_id": "failing.source",
+  "application": {
+    "app/jobs/fail.py": {
+      "compression": "stored",
+      "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+      "size": 59
+    }
+  },
+  "application_bytes": 59,
+  "application_resources": 1,
+  "base_sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+  "component": "fail",
+  "entry": "app/jobs/fail.py",
+  "schema_version": 0,
+  "stock_resources": 2177
+}
