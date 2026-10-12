@@ -181,24 +181,28 @@ fn python_selection_reports_its_capability_without_trying_lua_or_host_discovery(
         // Merely claiming the larger source-app build identity cannot widen
         // packaging limits or cause input-root lookup before profile admission.
         manifest.app_id = "unadmitted.source.app".into();
-        manifest.runtimes.get_mut("lua-fixture").unwrap().build_id =
-            "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1".into();
         let declaration = temp.0.join("false source profile.json");
-        fs::write(&declaration, manifest.to_json().unwrap()).unwrap();
         let destination = temp.0.join("preserved source output.glue");
         fs::write(&destination, b"preserved output").unwrap();
-        let result = temp.run(&[
-            arg("build"),
-            arg("--manifest"),
-            declaration.as_os_str(),
-            arg("--root"),
-            temp.0.join("missing input root").as_os_str(),
-            arg("--output"),
-            destination.as_os_str(),
-        ]);
-        assert_status(&result, 1);
-        assert!(diagnostic(&result).contains("packaging profile:"));
-        assert_eq!(fs::read(&destination).unwrap(), b"preserved output");
+        for build_id in [
+            "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
+            "pbs-20261009-cpython-3.13.16-pgo-lto-host-source-apps-v1",
+        ] {
+            manifest.runtimes.get_mut("lua-fixture").unwrap().build_id = build_id.into();
+            fs::write(&declaration, manifest.to_json().unwrap()).unwrap();
+            let result = temp.run(&[
+                arg("build"),
+                arg("--manifest"),
+                declaration.as_os_str(),
+                arg("--root"),
+                temp.0.join("missing input root").as_os_str(),
+                arg("--output"),
+                destination.as_os_str(),
+            ]);
+            assert_status(&result, 1);
+            assert!(diagnostic(&result).contains("packaging profile:"));
+            assert_eq!(fs::read(&destination).unwrap(), b"preserved output");
+        }
         fs::remove_file(declaration).unwrap();
         fs::remove_file(destination).unwrap();
     }

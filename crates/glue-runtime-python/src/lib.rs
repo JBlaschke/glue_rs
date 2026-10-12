@@ -13,6 +13,7 @@ mod bundle;
 mod extension_profile;
 mod host;
 mod host_import_profile;
+mod host_source_app_profile;
 mod import_profile;
 #[cfg_attr(
     not(all(
@@ -124,6 +125,9 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::HostSourceApp => linux::run_host_source_app(
+                host_source_app_profile::read_archive(archive).map_err(ExecutionError::failed)?,
+            ),
             profile::Kind::BundledSourceApp => linux::run_imports(
                 source_app_profile::read_archive(archive).map_err(ExecutionError::failed)?,
                 None,

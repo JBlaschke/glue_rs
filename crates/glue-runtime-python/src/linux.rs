@@ -408,6 +408,35 @@ pub(super) fn run_imports(
     )
 }
 
+pub(super) fn run_host_source_app(
+    mut payload: host_source_app_profile::Payload,
+) -> Result<(), String> {
+    preflight()?;
+    let snapshot = payload.config.verify_source_snapshot()?;
+    payload.resources.extend(snapshot.files);
+    let mut index = imports::Index::new_source_app(&payload.app_id, payload.resources)?;
+    let verified = snapshot.verified;
+    let prefix =
+        CString::new(verified.config.prefix.as_str()).map_err(|_| "host prefix contains NUL")?;
+    let stdlib =
+        CString::new(verified.config.stdlib.as_str()).map_err(|_| "host stdlib contains NUL")?;
+    // Startup uses the immutable installed paths. All later source resolution
+    // uses the owned snapshot; the trusted prelude removes filesystem finders.
+    // The original startup leases remain live through interpreter finalization.
+    let api = load_api(verified.library)?;
+    invoke_archive(
+        &api,
+        ArchiveStartup::Host(&prefix, &stdlib),
+        ArchiveApplication {
+            app: &mut payload.app,
+            bootstrap: &payload.bootstrap,
+            index: &mut index,
+        },
+        false,
+        &[],
+    )
+}
+
 pub(super) fn run_host_imports(
     mut payload: host_import_profile::Payload,
     negative: bool,

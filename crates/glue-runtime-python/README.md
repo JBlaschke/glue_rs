@@ -1,11 +1,11 @@
 # Pinned PBS Python runtime
 
 This crate owns execution mechanisms shared by the product runner and the
-Python bootstrap probe. Its public registry supports bounded bundled source
+Python bootstrap probe. Its public registry supports bounded bundled and host source
 applications and the existing exact source/resource and registered-native
 declaration profiles for stock CPython
 3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64.
-General host-stdlib and native package compatibility remain pending.
+General installation discovery and native package compatibility remain pending.
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact
@@ -20,6 +20,7 @@ The registry contains:
 | Application identity | Runtime | Native images |
 | --- | --- | --- |
 | Arbitrary admitted ID with the bundled-source-apps-v1 build identity | Bundled, sealed library | None |
+| Arbitrary admitted ID with the host-source-apps-v1 build identity | Explicit immutable host library/startup paths; full pinned source snapshot | None |
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
@@ -68,11 +69,18 @@ and directory leases remain live through finalization. Successfully loaded
 provider handles stay pinned for process life, and a process may attempt one
 Python lifecycle.
 
-Host validation covers the controlled app's 69-source dependency closure and
-required absent bytecode-cache locations. The host installation and native
+Historical host validation covers the controlled app's 69-source dependency closure and
+required absent bytecode-cache locations. The new host source-app profile
+verifies all 2,174 pinned sources into an owned snapshot, checks derived cache
+locations and startup shadows, and removes ordinary filesystem import fallback
+before installing the same shared importer. Individual snapshot source
+descriptors close promptly. Already initialized host startup modules retain
+their stock metadata; later source modules use virtual origins. See
+[decision 0018](../../docs/decisions/0018-host-python-source-apps.md).
+The host installation and native
 files must stay immutable and read-only throughout execution. Open descriptors
 do not freeze mutable backing bytes, and this profile does not validate an
-arbitrary installed stdlib or site-packages tree. Bundled archive imports and
+arbitrary installed stdlib or site-packages tree. Shared source imports and
 resources preserve virtual diagnostic origins, source-only compilation,
 read-only seekable streams and `as_file`/legacy `path` rejection.
 

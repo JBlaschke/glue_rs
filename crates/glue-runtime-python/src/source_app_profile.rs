@@ -155,11 +155,32 @@ fn app_resource(key: &str) -> Result<(), String> {
 /// Portable declaration/layout admission before any application/provider I/O.
 /// Empty index placeholders validate ownership without allocating payload bytes.
 pub(super) fn admit(manifest: &Manifest) -> Result<(), String> {
+    admit_application(manifest, &fixed_specs()?)?;
+    let component = &manifest.components[&manifest.entrypoint];
+    if *manifest
+        != manifest_for(
+            &manifest.app_id,
+            &manifest.entrypoint,
+            &component.entry_point,
+            manifest.resources.clone(),
+        )?
+    {
+        return Err("manifest differs from the pinned bundled source app provider contract".into());
+    }
+    Ok(())
+}
+
+/// Shared source-only application policy. Each provider independently admits
+/// its exact declarations and supplies only its own fixed archive resources.
+pub(super) fn admit_application(
+    manifest: &Manifest,
+    fixed: &BTreeMap<String, ResourceSpec>,
+) -> Result<(), String> {
     manifest.validate().map_err(|error| error.to_string())?;
     app_identity(&manifest.app_id)?;
     if manifest.components.len() != 1 || manifest.runtimes.len() != 1 || manifest.targets.len() != 1
     {
-        return Err("bundled source apps require one component, runtime and target".into());
+        return Err("source apps require one component, runtime and target".into());
     }
     let component = manifest
         .components
@@ -176,17 +197,6 @@ pub(super) fn admit(manifest: &Manifest) -> Result<(), String> {
     if entry.size > MAX_ENTRY_BYTES {
         return Err("source app entry exceeds 64 KiB".into());
     }
-    if *manifest
-        != manifest_for(
-            &manifest.app_id,
-            &manifest.entrypoint,
-            &component.entry_point,
-            manifest.resources.clone(),
-        )?
-    {
-        return Err("manifest differs from the pinned bundled source app provider contract".into());
-    }
-    let fixed = fixed_specs()?;
     let mut expected = fixed.clone();
     let mut app_paths = BTreeMap::new();
     let mut app_bytes = 0u64;

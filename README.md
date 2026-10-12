@@ -199,12 +199,17 @@ from implementation `b784c99`, with all 37 hostile trace edits rejected.
 ## Run the pinned Python profiles
 
 The launcher feature is `python-pbs`; the shared executor's build feature is
-`pbs-bootstrap`. The registry admits bounded bundled source applications,
+`pbs-bootstrap`. The registry admits bounded bundled and explicit-host source applications,
 the two exact bundled/explicit-host source/resource fixtures and the
 registered-native declaration profile with four independent runtime/native
 provider combinations. The source profile accepts application-owned entries,
 modules and assets while retaining the exact runtime, startup and stdlib pins.
 See the [source application staging/build workflow](fixtures/python-source-apps/README.md).
+The [explicit-host workflow](fixtures/python-host-source-apps/README.md) uses
+the full pinned source projection from its selected installation. Source bytes
+verify into an immutable snapshot before startup; later imports use the shared
+buffer importer with filesystem fallback disabled. Installed startup paths must
+remain immutable and read-only.
 Broader host installations, wheels and native package admission remain open.
 Native hashes identify declared
 images; admission still requires the reviewed ELF/import/initializer contract.
