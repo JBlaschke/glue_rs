@@ -1,0 +1,1 @@
+"/usr/local/bin/python3" "target/python-source-app-trace-audit.py" "--capture" "target/python-source-apps-final-capture" "--build" "target/python-source-apps-final-build" "--require-clean-capture" "--output" "target/python-source-app-checks/product-trace-audit.json"

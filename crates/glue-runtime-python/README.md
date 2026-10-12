@@ -1,10 +1,11 @@
-# Controlled PBS Python runtime
+# Pinned PBS Python runtime
 
 This crate owns execution mechanisms shared by the product runner and the
-Python bootstrap probe. Its public registry supports the existing exact
-source/resource and registered-native declaration profiles for stock CPython
+Python bootstrap probe. Its public registry supports bounded bundled source
+applications and the existing exact source/resource and registered-native
+declaration profiles for stock CPython
 3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64.
-General Python application/package compatibility remains pending.
+General host-stdlib and native package compatibility remain pending.
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact
@@ -18,12 +19,20 @@ The registry contains:
 
 | Application identity | Runtime | Native images |
 | --- | --- | --- |
+| Arbitrary admitted ID with the bundled-source-apps-v1 build identity | Bundled, sealed library | None |
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
 
-Admission preserves the exact app/helper/source declarations, provider layout,
-ABI, target and inventories. The registered-native profile admits a fixed
+Source applications declare their own entry, modules and assets below `app/`;
+importable sources live below `app/python/`. Runtime, importer, frozen startup
+and stdlib identities stay pinned. App inventory limits are 1,024 files, 8 MiB
+combined, 4 MiB per file and 64 KiB for the entry. Reserved runtime names,
+unsupported module layouts, bytecode/cache/native paths and provider drift
+reject before acquisition. See [the source application contract](../../docs/decisions/0017-bundled-python-source-apps.md).
+
+Historical fixture admission preserves the exact app/helper/source declarations,
+provider layout, ABI, target and inventories. The registered-native profile admits a fixed
 five-image dependency/API/ELF contract using declared image hashes. Those hashes
 identify bytes; they are not fixed compiled fixture pins or a safety guarantee
 for native C. It uses stock `BuiltinImporter` registration metadata and does
@@ -70,8 +79,12 @@ read-only seekable streams and `as_file`/legacy `path` rejection.
 `experimental::dispatch` retains fixture preparation, disk baselines and
 negative controls for the thin `glue-python-bootstrap-probe` executable.
 Product `execute` exposes none of those overrides. The optional CLI route
-does not add runtime discovery, arbitrary application admission, unloading,
-workers or another platform/ABI.
+does not add runtime discovery, unloading, workers or another platform/ABI.
 
 See [decision 0016](../../docs/decisions/0016-controlled-python-runner.md) for
 the ownership and scope contract.
+The [source-app evidence](../../docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+retains six application traces and 42 fresh regression traces from clean
+`d3ddac3`, all independently replayed. The shared optimized GNU builds pass
+87 tests and Clippy; the unchanged C bridge and Linux loader retain API4,
+29 selected exports and a 240-byte table.

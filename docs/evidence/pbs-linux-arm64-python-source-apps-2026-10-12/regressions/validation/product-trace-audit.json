@@ -1,0 +1,1309 @@
+{
+  "baseline_count": 6,
+  "baselines": [
+    {
+      "archive_bytes": 83085052,
+      "archive_sha256": "b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084",
+      "exit_status": 0,
+      "manifest_sha256": "7c07acaec30b6bdb7c278cdee712840e1adcd18457eb969fe935196695e49a9f",
+      "mode": "minimal",
+      "passed": true,
+      "records": 33310,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 50,
+      "stdout_sha256": "ab7ced5b3dd2d37ba1d7304d3cafd9dc8b0700c78e3888cb5d6e4d7615f8296e",
+      "trace_sha256": "a09f586400590f75637b6410b9f9bae7a32f4b436fd6bc94f06f180cc506d949"
+    },
+    {
+      "archive_bytes": 83088333,
+      "archive_sha256": "3a6cdb5dee05c0049af85a503f93c1718752b6bbe0c887b0b30f1cb36e3e36d4",
+      "exit_status": 0,
+      "manifest_sha256": "66d30f3e1cb996e61a1c7765d2f7368eed33e344a276d153bff3cbd187adf3fc",
+      "mode": "resources",
+      "passed": true,
+      "records": 33380,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 90,
+      "stdout_sha256": "451ff7055edb8bb3a4d471b55b13c72e1cd967a2df691a3a2109d1eb0fe93235",
+      "trace_sha256": "b566800ec8773cc7c6a1add6d054f5c7094d7222105603ece71112ef44d0b76d"
+    },
+    {
+      "archive_bytes": 83084125,
+      "archive_sha256": "62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87",
+      "exit_status": 1,
+      "manifest_sha256": "2c425577e909941bf30b91d97cbec0d39fae1f0ab4f409ff9e5cdd9fc0e2c342",
+      "mode": "app-error",
+      "passed": true,
+      "records": 33292,
+      "stderr_bytes": 43,
+      "stderr_sha256": "d87612f6dfb5b982f077b82b52a6561ae3744db5ac55adbbfcae96b3a19780a7",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "4c40dfa1dd60dfd04de2a9d1204d79d5bd7f9afa9bff498309f4b5f459251e56"
+    },
+    {
+      "archive_bytes": 83084119,
+      "archive_sha256": "1a9166427e9bccaeae32d72e80bcb79b7e570727db494258ad830f7881e93059",
+      "exit_status": 1,
+      "manifest_sha256": "579c8f1da7d2865ca7a09919051db599ebe40091de5166a7169fa23c798ba38d",
+      "mode": "syntax",
+      "passed": true,
+      "records": 33290,
+      "stderr_bytes": 42,
+      "stderr_sha256": "ebcf731dfae5d8d98344fb477e2748d32e61fc75f8b154ee6dbfdd3334fe989c",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "066ddfba644a883fab937e6164b7bfeafdc8788c0a094f14af48e4ced73adadc"
+    },
+    {
+      "archive_bytes": 83084094,
+      "archive_sha256": "00e5cea5acd655b154a428b5e90f085cbb0d202d7754ad5b437e8b5edd035cd7",
+      "exit_status": 1,
+      "manifest_sha256": "436f137b3e5d497bc3125726a9abc8599f1fc005d068f865f6eaf730c0cc1d29",
+      "mode": "nul",
+      "passed": true,
+      "records": 33294,
+      "stderr_bytes": 69,
+      "stderr_sha256": "6c7a35b1b3410ee5eb5f25a2d1a13ce48037d5137d584f61cb424b88f35d92e7",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "4d2df7ca49193112af3d0a909d89809e3ab94db8dbd686e2a8e44ac18045802f"
+    },
+    {
+      "archive_bytes": 83085052,
+      "archive_sha256": "b9609b72f42883949915c291c6439f331770a3a8f256dcc063e34158d80562d6",
+      "exit_status": 1,
+      "manifest_sha256": "7c07acaec30b6bdb7c278cdee712840e1adcd18457eb969fe935196695e49a9f",
+      "mode": "corrupt-source",
+      "passed": true,
+      "records": 26289,
+      "stderr_bytes": 70,
+      "stderr_sha256": "d606b27c114e2a7ef99613b0008585d9e407528e79ec62e7df8456ffac52e400",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "9d4c3c819794ca835d6e69d7c54a425c5f1dae2c08182a1ed01d01c3967d08f6"
+    }
+  ],
+  "capture_branch": "codex/a7-python-source-apps",
+  "capture_metadata_sha256": "7825fff1cbe25e57756da63ae2b221cc7dea8e0a91004fd8ebe4a49673845170",
+  "capture_revision": "d3ddac33e41bd681668ce0565c3830e46105ebf5",
+  "capture_status": "",
+  "checker_sha256": {
+    "check-linux-python-bootstrap-trace.py": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+    "check-linux-python-extension-trace.py": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+    "check-linux-python-host-import-trace.py": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+    "check-linux-python-host-trace.py": "499a3ca1eed789837cf56a73574115913d9c7d3bd8d081ce2a26974bc3b497fe",
+    "check-linux-python-import-trace.py": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed",
+    "check-linux-python-runner-trace.py": "3374d5d7da7ee28704ae03ae10b897a0e4aa3442020eb67eb8fa29f91b111635",
+    "check-linux-python-source-app-trace.py": "6a31b6841399fceba2c639cee751261d73c5b6369ecc88813afa4ba0129ef69a"
+  },
+  "command": [
+    "target/python-source-app-trace-audit.py",
+    "--capture",
+    "target/python-source-apps-final-capture",
+    "--build",
+    "target/python-source-apps-final-build",
+    "--require-clean-capture",
+    "--output",
+    "target/python-source-app-checks/product-trace-audit.json"
+  ],
+  "elapsed_seconds": 85.809,
+  "mutation_count": 198,
+  "mutations": [
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "minimal",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "minimal",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "minimal",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26274: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "minimal",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26257: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "minimal",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26279: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "minimal",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26273: unexpected additional process or thread",
+      "mode": "minimal",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26279: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "minimal",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33303: source workload inherited descriptor identity differs",
+      "mode": "minimal",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26273: diagnostic publication precedes verified image and isolated startup",
+      "mode": "minimal",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33310: completion disagrees with expected fixture exit",
+      "mode": "minimal",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 33310: source syscall follows exit_group",
+      "mode": "minimal",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33142: seals must be requested then successfully verified as 0xf",
+      "mode": "minimal",
+      "mutation": "missing complete seal request",
+      "rejected": true
+    },
+    {
+      "error": "line 33143: libpython alias load precedes verified sealing",
+      "mode": "minimal",
+      "mutation": "missing seal verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33145: selected alias metadata must follow its one header read",
+      "mode": "minimal",
+      "mutation": "missing alias ELF header",
+      "rejected": true
+    },
+    {
+      "error": "line 33146: stock reservation must follow the single sealed alias",
+      "mode": "minimal",
+      "mutation": "missing alias FD metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 33147: stock base must lie in its verified loader reservation",
+      "mode": "minimal",
+      "mutation": "missing loader reservation",
+      "rejected": true
+    },
+    {
+      "error": "line 33151: stock writable map differs from selected image base",
+      "mode": "minimal",
+      "mutation": "missing image guard",
+      "rejected": true
+    },
+    {
+      "error": "line 33202: stock RELRO must follow BSS and alias/OS-reader closure",
+      "mode": "minimal",
+      "mutation": "missing anonymous BSS",
+      "rejected": true
+    },
+    {
+      "error": "line 33204: Python initialization query precedes selected image mappings and alias closure",
+      "mode": "minimal",
+      "mutation": "missing RELRO",
+      "rejected": true
+    },
+    {
+      "error": "line 33302: diagnostic publication precedes verified image and isolated startup",
+      "mode": "minimal",
+      "mutation": "missing entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33302: diagnostic publication precedes verified image and isolated startup",
+      "mode": "minimal",
+      "mutation": "missing thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 33148: stock image mapping must match a once-only sealed private segment",
+      "mode": "minimal",
+      "mutation": "selected mapping returned another address",
+      "rejected": true
+    },
+    {
+      "error": "line 33148: stock image mapping must match a once-only sealed private segment",
+      "mode": "minimal",
+      "mutation": "writable executable selected mapping",
+      "rejected": true
+    },
+    {
+      "error": "line 33303: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "minimal",
+      "mutation": "live mapping unmapped before application/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33303: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "minimal",
+      "mutation": "anonymous returned range overlaps image",
+      "rejected": true
+    },
+    {
+      "error": "line 33303: only the observed once-only archived random-module seed is admitted",
+      "mode": "minimal",
+      "mutation": "additional workload entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33303: thread query differs from this initialized workload",
+      "mode": "minimal",
+      "mutation": "additional thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "resources",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "resources",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "resources",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26334: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "resources",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26317: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "resources",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26339: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "resources",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26333: unexpected additional process or thread",
+      "mode": "resources",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26339: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "resources",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33373: source workload inherited descriptor identity differs",
+      "mode": "resources",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26333: diagnostic publication precedes verified image and isolated startup",
+      "mode": "resources",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33380: completion disagrees with expected fixture exit",
+      "mode": "resources",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 33380: source syscall follows exit_group",
+      "mode": "resources",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33214: seals must be requested then successfully verified as 0xf",
+      "mode": "resources",
+      "mutation": "missing complete seal request",
+      "rejected": true
+    },
+    {
+      "error": "line 33215: libpython alias load precedes verified sealing",
+      "mode": "resources",
+      "mutation": "missing seal verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33217: selected alias metadata must follow its one header read",
+      "mode": "resources",
+      "mutation": "missing alias ELF header",
+      "rejected": true
+    },
+    {
+      "error": "line 33218: stock reservation must follow the single sealed alias",
+      "mode": "resources",
+      "mutation": "missing alias FD metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 33219: stock base must lie in its verified loader reservation",
+      "mode": "resources",
+      "mutation": "missing loader reservation",
+      "rejected": true
+    },
+    {
+      "error": "line 33223: stock writable map differs from selected image base",
+      "mode": "resources",
+      "mutation": "missing image guard",
+      "rejected": true
+    },
+    {
+      "error": "line 33274: stock RELRO must follow BSS and alias/OS-reader closure",
+      "mode": "resources",
+      "mutation": "missing anonymous BSS",
+      "rejected": true
+    },
+    {
+      "error": "line 33276: Python initialization query precedes selected image mappings and alias closure",
+      "mode": "resources",
+      "mutation": "missing RELRO",
+      "rejected": true
+    },
+    {
+      "error": "line 33372: diagnostic publication precedes verified image and isolated startup",
+      "mode": "resources",
+      "mutation": "missing entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33372: diagnostic publication precedes verified image and isolated startup",
+      "mode": "resources",
+      "mutation": "missing thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 33220: stock image mapping must match a once-only sealed private segment",
+      "mode": "resources",
+      "mutation": "selected mapping returned another address",
+      "rejected": true
+    },
+    {
+      "error": "line 33220: stock image mapping must match a once-only sealed private segment",
+      "mode": "resources",
+      "mutation": "writable executable selected mapping",
+      "rejected": true
+    },
+    {
+      "error": "line 33373: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "resources",
+      "mutation": "live mapping unmapped before application/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33373: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "resources",
+      "mutation": "anonymous returned range overlaps image",
+      "rejected": true
+    },
+    {
+      "error": "line 33373: only the observed once-only archived random-module seed is admitted",
+      "mode": "resources",
+      "mutation": "additional workload entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33373: thread query differs from this initialized workload",
+      "mode": "resources",
+      "mutation": "additional thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "app-error",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "app-error",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "app-error",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26261: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "app-error",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26244: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "app-error",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26266: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "app-error",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26260: unexpected additional process or thread",
+      "mode": "app-error",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26266: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "app-error",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33286: source workload inherited descriptor identity differs",
+      "mode": "app-error",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26260: diagnostic publication precedes verified image and isolated startup",
+      "mode": "app-error",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33292: completion disagrees with expected fixture exit",
+      "mode": "app-error",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 33292: source syscall follows exit_group",
+      "mode": "app-error",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33129: seals must be requested then successfully verified as 0xf",
+      "mode": "app-error",
+      "mutation": "missing complete seal request",
+      "rejected": true
+    },
+    {
+      "error": "line 33130: libpython alias load precedes verified sealing",
+      "mode": "app-error",
+      "mutation": "missing seal verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33132: selected alias metadata must follow its one header read",
+      "mode": "app-error",
+      "mutation": "missing alias ELF header",
+      "rejected": true
+    },
+    {
+      "error": "line 33133: stock reservation must follow the single sealed alias",
+      "mode": "app-error",
+      "mutation": "missing alias FD metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 33134: stock base must lie in its verified loader reservation",
+      "mode": "app-error",
+      "mutation": "missing loader reservation",
+      "rejected": true
+    },
+    {
+      "error": "line 33138: stock writable map differs from selected image base",
+      "mode": "app-error",
+      "mutation": "missing image guard",
+      "rejected": true
+    },
+    {
+      "error": "line 33189: stock RELRO must follow BSS and alias/OS-reader closure",
+      "mode": "app-error",
+      "mutation": "missing anonymous BSS",
+      "rejected": true
+    },
+    {
+      "error": "line 33191: Python initialization query precedes selected image mappings and alias closure",
+      "mode": "app-error",
+      "mutation": "missing RELRO",
+      "rejected": true
+    },
+    {
+      "error": "line 33285: diagnostic publication precedes verified image and isolated startup",
+      "mode": "app-error",
+      "mutation": "missing entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33285: diagnostic publication precedes verified image and isolated startup",
+      "mode": "app-error",
+      "mutation": "missing thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 33135: stock image mapping must match a once-only sealed private segment",
+      "mode": "app-error",
+      "mutation": "selected mapping returned another address",
+      "rejected": true
+    },
+    {
+      "error": "line 33135: stock image mapping must match a once-only sealed private segment",
+      "mode": "app-error",
+      "mutation": "writable executable selected mapping",
+      "rejected": true
+    },
+    {
+      "error": "line 33286: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "app-error",
+      "mutation": "live mapping unmapped before application/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33286: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "app-error",
+      "mutation": "anonymous returned range overlaps image",
+      "rejected": true
+    },
+    {
+      "error": "line 33286: only the observed once-only archived random-module seed is admitted",
+      "mode": "app-error",
+      "mutation": "additional workload entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33286: thread query differs from this initialized workload",
+      "mode": "app-error",
+      "mutation": "additional thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "syntax",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "syntax",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "syntax",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26262: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "syntax",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26245: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "syntax",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26267: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "syntax",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26261: unexpected additional process or thread",
+      "mode": "syntax",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26267: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "syntax",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33284: source workload inherited descriptor identity differs",
+      "mode": "syntax",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26261: diagnostic publication precedes verified image and isolated startup",
+      "mode": "syntax",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33290: completion disagrees with expected fixture exit",
+      "mode": "syntax",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 33290: source syscall follows exit_group",
+      "mode": "syntax",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33129: seals must be requested then successfully verified as 0xf",
+      "mode": "syntax",
+      "mutation": "missing complete seal request",
+      "rejected": true
+    },
+    {
+      "error": "line 33130: libpython alias load precedes verified sealing",
+      "mode": "syntax",
+      "mutation": "missing seal verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33132: selected alias metadata must follow its one header read",
+      "mode": "syntax",
+      "mutation": "missing alias ELF header",
+      "rejected": true
+    },
+    {
+      "error": "line 33133: stock reservation must follow the single sealed alias",
+      "mode": "syntax",
+      "mutation": "missing alias FD metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 33134: stock base must lie in its verified loader reservation",
+      "mode": "syntax",
+      "mutation": "missing loader reservation",
+      "rejected": true
+    },
+    {
+      "error": "line 33138: stock writable map differs from selected image base",
+      "mode": "syntax",
+      "mutation": "missing image guard",
+      "rejected": true
+    },
+    {
+      "error": "line 33189: stock RELRO must follow BSS and alias/OS-reader closure",
+      "mode": "syntax",
+      "mutation": "missing anonymous BSS",
+      "rejected": true
+    },
+    {
+      "error": "line 33191: Python initialization query precedes selected image mappings and alias closure",
+      "mode": "syntax",
+      "mutation": "missing RELRO",
+      "rejected": true
+    },
+    {
+      "error": "line 33283: diagnostic publication precedes verified image and isolated startup",
+      "mode": "syntax",
+      "mutation": "missing entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33283: diagnostic publication precedes verified image and isolated startup",
+      "mode": "syntax",
+      "mutation": "missing thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 33135: stock image mapping must match a once-only sealed private segment",
+      "mode": "syntax",
+      "mutation": "selected mapping returned another address",
+      "rejected": true
+    },
+    {
+      "error": "line 33135: stock image mapping must match a once-only sealed private segment",
+      "mode": "syntax",
+      "mutation": "writable executable selected mapping",
+      "rejected": true
+    },
+    {
+      "error": "line 33284: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "syntax",
+      "mutation": "live mapping unmapped before application/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33284: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "syntax",
+      "mutation": "anonymous returned range overlaps image",
+      "rejected": true
+    },
+    {
+      "error": "line 33284: only the observed once-only archived random-module seed is admitted",
+      "mode": "syntax",
+      "mutation": "additional workload entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33284: thread query differs from this initialized workload",
+      "mode": "syntax",
+      "mutation": "additional thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "nul",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "nul",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "nul",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26261: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "nul",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26244: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "nul",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26266: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "nul",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26260: unexpected additional process or thread",
+      "mode": "nul",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26266: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "nul",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33288: source workload inherited descriptor identity differs",
+      "mode": "nul",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26260: diagnostic publication precedes verified image and isolated startup",
+      "mode": "nul",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 33294: completion disagrees with expected fixture exit",
+      "mode": "nul",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 33294: source syscall follows exit_group",
+      "mode": "nul",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33128: seals must be requested then successfully verified as 0xf",
+      "mode": "nul",
+      "mutation": "missing complete seal request",
+      "rejected": true
+    },
+    {
+      "error": "line 33129: libpython alias load precedes verified sealing",
+      "mode": "nul",
+      "mutation": "missing seal verification",
+      "rejected": true
+    },
+    {
+      "error": "line 33131: selected alias metadata must follow its one header read",
+      "mode": "nul",
+      "mutation": "missing alias ELF header",
+      "rejected": true
+    },
+    {
+      "error": "line 33132: stock reservation must follow the single sealed alias",
+      "mode": "nul",
+      "mutation": "missing alias FD metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 33133: stock base must lie in its verified loader reservation",
+      "mode": "nul",
+      "mutation": "missing loader reservation",
+      "rejected": true
+    },
+    {
+      "error": "line 33137: stock writable map differs from selected image base",
+      "mode": "nul",
+      "mutation": "missing image guard",
+      "rejected": true
+    },
+    {
+      "error": "line 33188: stock RELRO must follow BSS and alias/OS-reader closure",
+      "mode": "nul",
+      "mutation": "missing anonymous BSS",
+      "rejected": true
+    },
+    {
+      "error": "line 33190: Python initialization query precedes selected image mappings and alias closure",
+      "mode": "nul",
+      "mutation": "missing RELRO",
+      "rejected": true
+    },
+    {
+      "error": "line 33287: diagnostic publication precedes verified image and isolated startup",
+      "mode": "nul",
+      "mutation": "missing entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33287: diagnostic publication precedes verified image and isolated startup",
+      "mode": "nul",
+      "mutation": "missing thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 33134: stock image mapping must match a once-only sealed private segment",
+      "mode": "nul",
+      "mutation": "selected mapping returned another address",
+      "rejected": true
+    },
+    {
+      "error": "line 33134: stock image mapping must match a once-only sealed private segment",
+      "mode": "nul",
+      "mutation": "writable executable selected mapping",
+      "rejected": true
+    },
+    {
+      "error": "line 33288: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "nul",
+      "mutation": "live mapping unmapped before application/finalization",
+      "rejected": true
+    },
+    {
+      "error": "line 33288: operation replaces, changes or unmaps the live selected stock image",
+      "mode": "nul",
+      "mutation": "anonymous returned range overlaps image",
+      "rejected": true
+    },
+    {
+      "error": "line 33288: only the observed once-only archived random-module seed is admitted",
+      "mode": "nul",
+      "mutation": "additional workload entropy",
+      "rejected": true
+    },
+    {
+      "error": "line 33288: thread query differs from this initialized workload",
+      "mode": "nul",
+      "mutation": "additional thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "corrupt-source",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact relocated fixture command",
+      "mode": "corrupt-source",
+      "mutation": "additional CLI argument",
+      "rejected": true
+    },
+    {
+      "error": "source-app product readiness query is missing",
+      "mode": "corrupt-source",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26274: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "corrupt-source",
+      "mutation": "repeated readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26257: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "corrupt-source",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 26279: readiness must follow exact metadata admission and precede all payloads",
+      "mode": "corrupt-source",
+      "mutation": "readiness after payload read",
+      "rejected": true
+    },
+    {
+      "error": "line 26273: unexpected additional process or thread",
+      "mode": "corrupt-source",
+      "mutation": "extra PID on readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26279: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "corrupt-source",
+      "mutation": "archive close before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 26283: source workload inherited descriptor identity differs",
+      "mode": "corrupt-source",
+      "mutation": "output evidence path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 26273: pre-init rejection requires the closed archive and no Python image",
+      "mode": "corrupt-source",
+      "mutation": "early output before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 26289: completion disagrees with expected fixture exit",
+      "mode": "corrupt-source",
+      "mutation": "wrong completed exit",
+      "rejected": true
+    },
+    {
+      "error": "line 26289: source syscall follows exit_group",
+      "mode": "corrupt-source",
+      "mutation": "stdio poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unexpected openat argument count",
+      "mode": "minimal",
+      "mutation": "failed temporary file creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unexpected openat argument count",
+      "mode": "minimal",
+      "mutation": "failed O_TMPFILE creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unapproved OS, Python-source or filesystem read path",
+      "mode": "minimal",
+      "mutation": "failed source URI fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unapproved OS, Python-source or filesystem read path",
+      "mode": "minimal",
+      "mutation": "failed host source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unapproved syscall mkdir",
+      "mode": "minimal",
+      "mutation": "failed cache materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33309: unapproved syscall clone3",
+      "mode": "minimal",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unexpected openat argument count",
+      "mode": "resources",
+      "mutation": "failed temporary file creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unexpected openat argument count",
+      "mode": "resources",
+      "mutation": "failed O_TMPFILE creation",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unapproved OS, Python-source or filesystem read path",
+      "mode": "resources",
+      "mutation": "failed source URI fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unapproved OS, Python-source or filesystem read path",
+      "mode": "resources",
+      "mutation": "failed host source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unapproved syscall mkdir",
+      "mode": "resources",
+      "mutation": "failed cache materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 33379: unapproved syscall clone3",
+      "mode": "resources",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: acquisition or memory mutation follows rejection publication",
+      "mode": "corrupt-source",
+      "mutation": "failed temporary file creation",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: acquisition or memory mutation follows rejection publication",
+      "mode": "corrupt-source",
+      "mutation": "failed O_TMPFILE creation",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: acquisition or memory mutation follows rejection publication",
+      "mode": "corrupt-source",
+      "mutation": "failed source URI fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: acquisition or memory mutation follows rejection publication",
+      "mode": "corrupt-source",
+      "mutation": "failed host source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: unapproved syscall mkdir",
+      "mode": "corrupt-source",
+      "mutation": "failed cache materialization",
+      "rejected": true
+    },
+    {
+      "error": "line 26288: unapproved syscall clone3",
+      "mode": "corrupt-source",
+      "mutation": "failed subprocess creation",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata inventory differs",
+      "mode": "minimal",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "minimal",
+      "mutation": "provider-debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "minimal",
+      "mutation": "host-provider",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "minimal",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "minimal",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "minimal",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "minimal",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "minimal",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata inventory differs",
+      "mode": "resources",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "resources",
+      "mutation": "provider-debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "resources",
+      "mutation": "host-provider",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "resources",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "resources",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "resources",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "resources",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "resources",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata inventory differs",
+      "mode": "corrupt-source",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "provider-debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "host-provider",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained source application inventory or pinned provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "line 26282: pre-init rejection requires the closed archive and no Python image",
+      "mode": "corrupt-source",
+      "mutation": "selected CRC payload omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 26281: selected corrupt source read differs from its retained stored payload",
+      "mode": "corrupt-source",
+      "mutation": "selected CRC byte substituted",
+      "rejected": true
+    },
+    {
+      "error": "line 26284: pre-init rejection requires the closed archive and no Python image",
+      "mode": "corrupt-source",
+      "mutation": "selected CRC read repeated",
+      "rejected": true
+    },
+    {
+      "error": "retained source metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false retained corruption offset",
+      "rejected": true
+    }
+  ],
+  "passed": true,
+  "rejected_count": 198,
+  "repository_revision": "d3ddac33e41bd681668ce0565c3830e46105ebf5",
+  "repository_status": "",
+  "script_sha256": "89c07d2fd786f5cf0dce1f0c5b0d52063b63419b9cd9e1472f7eb3fc7c4c304e"
+}

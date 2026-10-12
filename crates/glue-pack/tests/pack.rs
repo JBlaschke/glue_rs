@@ -1,5 +1,5 @@
 use glue_format::{Archive, ArchiveLimits, Manifest, digest};
-use glue_pack::{PackError, PackLimits, build, build_with_limits};
+use glue_pack::{PackError, PackLimits, build, build_with_limits, build_with_policy};
 use serde_json::json;
 use std::{
     collections::BTreeMap,
@@ -85,6 +85,37 @@ impl Drop for Fixture {
     fn drop(&mut self) {
         fs::remove_dir_all(&self.directory).unwrap();
     }
+}
+
+#[test]
+fn profile_policy_rejects_before_root_lookup_and_preserves_existing_output() {
+    let fixture = Fixture::new();
+    let output = fixture.output("preserved.glue");
+    fs::write(&output, b"existing output").unwrap();
+    let error = build_with_policy(
+        &fixture.manifest,
+        &fixture.output("missing root"),
+        &output,
+        |_| Err("unadmitted runtime".into()),
+    )
+    .unwrap_err();
+    assert!(matches!(error, PackError::Profile(_)));
+    assert_eq!(fs::read(output).unwrap(), b"existing output");
+}
+
+#[test]
+fn profile_policy_and_archive_use_one_parsed_manifest_snapshot() {
+    let fixture = Fixture::new();
+    let original = Manifest::from_json(&fs::read(&fixture.manifest).unwrap()).unwrap();
+    let output = fixture.output("snapshot.glue");
+    build_with_policy(&fixture.manifest, &fixture.root, &output, |admitted| {
+        assert_eq!(admitted, &original);
+        fs::write(&fixture.manifest, b"changed after admission").unwrap();
+        Ok(PackLimits::default())
+    })
+    .unwrap();
+    let archive = Archive::open(Cursor::new(fs::read(output).unwrap())).unwrap();
+    assert_eq!(archive.manifest(), &original);
 }
 
 #[test]

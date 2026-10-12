@@ -1,0 +1,92 @@
+{
+  "bundled-archived": {
+    "raw_bytes": 6780133,
+    "raw_sha256": "58cb158e8b1bc038220b75898a6d0606a581e3a5546001b68cea73a46de46f7e",
+    "gzip_bytes": 1257347,
+    "gzip_sha256": "627607f5e02e45dd261162f4beb54218770d8d920e3dcfa40b96f778d189dab0",
+    "records": 33685,
+    "pids": [
+      16
+    ]
+  },
+  "bundled-host": {
+    "raw_bytes": 6688372,
+    "raw_sha256": "7a653ab8d5fdcb59938aa10c42a4de57b9e2ee865e04dd9115cf17a80dd1b5af",
+    "gzip_bytes": 1257692,
+    "gzip_sha256": "6a98a6bce2fe2a31e84e252ae37e3865ea04bf878e46e7cc8b13ecaf296a1ff3",
+    "records": 33799,
+    "pids": [
+      20
+    ]
+  },
+  "bundled-imports": {
+    "raw_bytes": 6714459,
+    "raw_sha256": "a0e28bc3547c1e071373da97d5df179125b1dd72ba9b3f54b77c74ba2007dd6a",
+    "gzip_bytes": 1254537,
+    "gzip_sha256": "726ac197722d70ed708df7df212a72b2e6291c2f55df7e0a855413eaea06d86b",
+    "records": 33514,
+    "pids": [
+      8
+    ]
+  },
+  "corrupt-native": {
+    "raw_bytes": 3318360,
+    "raw_sha256": "344e7e4904ea42c7e86657ac71416214e12c976ebb309f5a9cef4525cfbfd1a8",
+    "gzip_bytes": 245773,
+    "gzip_sha256": "e5f01d5ad08fa5215dd60bfe63cc0cfc13f40cc4bbd4fa5125e2e61f2e525146",
+    "records": 26583,
+    "pids": [
+      32
+    ]
+  },
+  "host-archived": {
+    "raw_bytes": 1599000,
+    "raw_sha256": "c1af20f28dd1d18f466f9e876505e4acf437b5e52f26bc99aafb77a9d8b3c16d",
+    "gzip_bytes": 199326,
+    "gzip_sha256": "47b67cc635afdddaf8c641f6aba27ec5f4535bba9c4e2bd2927ee9dd572d060d",
+    "records": 5880,
+    "pids": [
+      24
+    ]
+  },
+  "host-host": {
+    "raw_bytes": 1638264,
+    "raw_sha256": "f222671b68d246e46170a85077512acba0a9c3d35bfe721774edb04f3f3adb20",
+    "gzip_bytes": 200672,
+    "gzip_sha256": "a7da250166be2ada0d55ebe4a5d31cba24a76806e6be66ed733edeb5d4f65950",
+    "records": 5989,
+    "pids": [
+      28
+    ]
+  },
+  "host-imports": {
+    "raw_bytes": 1566577,
+    "raw_sha256": "efef4db68e6ed2163dea73ea32451119bb2ab18b678588ac029b84e2ad8a17ed",
+    "gzip_bytes": 196842,
+    "gzip_sha256": "fc8e8bb6be0a3dfc395b52731166ffae09915f6af6cfe51cec4c1868009f07ea",
+    "records": 5714,
+    "pids": [
+      12
+    ]
+  },
+  "missing-host-image": {
+    "raw_bytes": 6799000,
+    "raw_sha256": "79b486a9cdbaf702c5c8621fdffa6f043be59c9c1c9d99cee29fcbfa6ecad5ad",
+    "gzip_bytes": 1252661,
+    "gzip_sha256": "7d2bd760034241028d17b63f8c743dcd6f7a15ef0308fbfbca5a3373985bfa8c",
+    "records": 33378,
+    "pids": [
+      36
+    ]
+  },
+  "wrong-host-image": {
+    "raw_bytes": 6748990,
+    "raw_sha256": "36bafe52ed453829a95d5a6b2ad3f3df8213859e65a2b532224772bb35fe1f69",
+    "gzip_bytes": 1253332,
+    "gzip_sha256": "88a4c355b8e30c9b3d888aff5e126fdc4be04d3d81ce32d8909c831baae2dffd",
+    "records": 33430,
+    "pids": [
+      40
+    ]
+  }
+}

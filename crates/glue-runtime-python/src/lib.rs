@@ -1,7 +1,7 @@
-//! Execution of exact, controlled stock PBS Python profiles.
+//! Execution of pinned stock PBS Python source applications and fixture profiles.
 //!
-//! This crate supports the pinned GNU Linux arm64 fixture contracts, not general
-//! Python applications or runtime discovery. Provider handles remain pinned for
+//! This crate supports a bounded GNU Linux arm64 source-application contract and
+//! exact fixture profiles. Provider handles remain pinned for
 //! process life; the synchronous executor owns one interpreter lifecycle.
 #![deny(unsafe_code)]
 
@@ -34,6 +34,8 @@ mod imports;
 ))]
 #[allow(unsafe_code)]
 mod linux;
+mod source_app_profile;
+mod source_entry;
 
 use bundle::Bundle;
 use glue_format::*;
@@ -91,7 +93,7 @@ impl std::fmt::Display for ExecutionError {
 
 impl std::error::Error for ExecutionError {}
 
-/// Run one exact controlled profile from its already-open archive.
+/// Run one admitted pinned profile from its already-open archive.
 ///
 /// All archive resources verify before provider loading. The private C boundary
 /// owns Python objects and runs initialization, execution and finalization on
@@ -122,6 +124,11 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::BundledSourceApp => linux::run_imports(
+                source_app_profile::read_archive(archive).map_err(ExecutionError::failed)?,
+                None,
+                false,
+            ),
             profile::Kind::BundledImports => linux::run_imports(
                 import_profile::read_archive(archive).map_err(ExecutionError::failed)?,
                 None,

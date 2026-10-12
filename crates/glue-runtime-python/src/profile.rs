@@ -1,9 +1,12 @@
-//! Portable admission for the exact controlled PBS Python fixture registry.
+//! Portable admission for pinned PBS Python source applications and fixtures.
 //!
-//! Admission does not acquire a provider or claim arbitrary app compatibility.
+//! Admission does not acquire a provider or establish package compatibility.
 //! Readiness is a separate build/platform check and never starts Python.
 
-use super::{ExecutionError, extension_profile, host_import_profile, import_profile, platform};
+use super::{
+    ExecutionError, extension_profile, host_import_profile, import_profile, platform,
+    source_app_profile,
+};
 use glue_format::{ArchiveLimits, Manifest, RuntimeAbi};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -11,9 +14,10 @@ pub(crate) enum Kind {
     BundledImports,
     HostImports,
     RegisteredExtensions,
+    BundledSourceApp,
 }
 
-/// An admitted exact profile, tied to the manifest from which it was selected.
+/// An admitted profile, tied to the manifest from which it was selected.
 /// Its private fields prevent construction of an unchecked execution token.
 #[derive(Clone, Debug)]
 pub struct ControlledProfile {
@@ -29,6 +33,7 @@ impl ControlledProfile {
             Kind::BundledImports => "controlled bundled Python source/resources",
             Kind::HostImports => "controlled explicit-host Python source/resources",
             Kind::RegisteredExtensions => "controlled registered Python native extensions",
+            Kind::BundledSourceApp => "pinned bundled Python source application",
         }
     }
 }
@@ -40,7 +45,7 @@ pub fn archive_limits() -> ArchiveLimits {
     import_profile::limits()
 }
 
-/// Validate exact declarations on any platform, without opening host files.
+/// Validate pinned declarations on any platform, without opening host files.
 pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError> {
     manifest
         .validate()
@@ -71,9 +76,13 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             extension_profile::admit(manifest).map_err(ExecutionError::failed)?;
             Kind::RegisteredExtensions
         }
+        _ if runtime.build_id == source_app_profile::BUILD_ID => {
+            source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
+            Kind::BundledSourceApp
+        }
         _ => {
             return Err(ExecutionError::unsupported(
-                "Python execution supports only the registered exact controlled PBS profiles; arbitrary applications are pending",
+                "Python execution requires a supported pinned PBS source-application or controlled fixture profile",
             ));
         }
     };
@@ -81,6 +90,28 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
         kind,
         manifest: manifest.clone(),
     })
+}
+
+/// Return narrowly admitted build bounds for a bundled source application.
+///
+/// Other manifests retain the caller's ordinary packaging policy. Admission
+/// uses the actual parsed manifest without reading runtime or app payloads.
+pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, ExecutionError> {
+    manifest
+        .validate()
+        .map_err(|error| ExecutionError::failed(error.to_string()))?;
+    let component = &manifest.components[&manifest.entrypoint];
+    let runtime = &manifest.runtimes[&component.runtime];
+    if runtime.build_id != source_app_profile::BUILD_ID {
+        return Ok(None);
+    }
+    let selected = validate(manifest)?;
+    if selected.kind != Kind::BundledSourceApp {
+        return Err(ExecutionError::failed(
+            "source application build identity conflicts with a reserved fixture",
+        ));
+    }
+    Ok(Some(source_app_profile::limits()))
 }
 
 /// Check feature and actual host compatibility for an already-admitted profile.

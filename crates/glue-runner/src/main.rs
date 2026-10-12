@@ -235,6 +235,19 @@ fn execute(command: Command) -> Result<ExitCode> {
             root,
             output,
         } => {
+            #[cfg(feature = "python-pbs")]
+            let report = glue_pack::build_with_policy(&manifest, &root, &output, |manifest| {
+                let Some(archive_limits) = glue_runtime_python::profile::packaging_limits(manifest)
+                    .map_err(|error| error.to_string())?
+                else {
+                    return Ok(glue_pack::PackLimits::default());
+                };
+                Ok(glue_pack::PackLimits {
+                    max_input_bytes: archive_limits.max_total_uncompressed_bytes,
+                    archive_limits,
+                })
+            })?;
+            #[cfg(not(feature = "python-pbs"))]
             let report = glue_pack::build(&manifest, &root, &output)?;
             println!(
                 "Built {}: {} resources, {} archive bytes, {} uncompressed bytes",

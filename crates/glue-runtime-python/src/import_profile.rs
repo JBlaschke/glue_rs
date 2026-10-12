@@ -3,7 +3,7 @@ use super::*;
 use std::io::{Seek, SeekFrom, Write};
 
 pub(super) const IMPORTER: &str = "python/archive-importer.py";
-const BOOTSTRAP: &[u8] = include_bytes!("../../../fixtures/python-imports/bootstrap.py");
+pub(super) const BOOTSTRAP: &[u8] = include_bytes!("../../../fixtures/python-imports/bootstrap.py");
 pub(super) const SOURCE_PINS: &[u8] =
     include_bytes!("../../../fixtures/python-imports/stdlib-pins.json");
 pub(super) const CORRUPT_SOURCE: &str = "app/python/glue_demo/__init__.py";
@@ -49,7 +49,7 @@ pub(super) fn app_resources() -> BTreeMap<String, Vec<u8>> {
     resources
 }
 
-fn source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
+pub(super) fn source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
     let pins: serde_json::Value = serde_json::from_slice(SOURCE_PINS).map_err(|e| e.to_string())?;
     if pins["schema_version"] != 0 || pins["artifact_sha256"] != bundle::FULL_SHA256 {
         return Err("stdlib source inventory pin differs from selected PBS input".into());

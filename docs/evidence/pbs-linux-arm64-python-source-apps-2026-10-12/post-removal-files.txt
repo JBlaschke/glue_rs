@@ -1,0 +1,11 @@
+/build-target/.rustc_info.json
+/build-target/runtime-commands.sh
+/build-target/relocated Python source apps/glue
+/build-target/relocated Python source apps/corrupt-source.glue
+/build-target/relocated Python source apps/outside-entry.glue
+/build-target/relocated Python source apps/helper-drift.glue
+/build-target/relocated Python source apps/syntax.glue
+/build-target/relocated Python source apps/minimal.glue
+/build-target/relocated Python source apps/nul.glue
+/build-target/relocated Python source apps/app-error.glue
+/build-target/relocated Python source apps/resources.glue
