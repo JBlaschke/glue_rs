@@ -41,6 +41,20 @@ const SNAPSHOT_SOURCE_COUNT: usize = 2174;
 const SNAPSHOT_SOURCE_BYTES: u64 = 39_158_056;
 const SNAPSHOT_DIRECTORY_COUNT: usize = 202;
 const MAX_SNAPSHOT_DIRECTORY_OWNERS: usize = 256;
+const INSTALL_SNAPSHOT_SOURCE_COUNT: usize = 1037;
+const INSTALL_SNAPSHOT_SOURCE_BYTES: u64 = 15_894_268;
+const INSTALL_SNAPSHOT_DIRECTORY_COUNT: usize = 100;
+const INSTALL_STARTUP_CACHE_BYTES: u64 = 21_157;
+const MAX_INSTALL_RETAINED_OWNERS: usize = 763;
+const INSTALL_SOURCE_PINS: &[u8] =
+    include_bytes!("../../../fixtures/python-install-host-source-apps/source-pins.json");
+const INSTALL_CACHE_PINS: &[u8] =
+    include_bytes!("../../../fixtures/python-install-host-source-apps/cache-pins.json");
+const INSTALL_CACHE_NAMES: [&str; 3] = [
+    "__init__.cpython-313.pyc",
+    "aliases.cpython-313.pyc",
+    "utf_8.cpython-313.pyc",
+];
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) struct Config {
@@ -72,6 +86,12 @@ struct SourceSnapshotLayout {
     directories: BTreeSet<PathBuf>,
     encodings: BTreeSet<String>,
     startup_shadows: BTreeSet<PathBuf>,
+}
+
+struct InstallSourceSnapshotLayout {
+    sources: SourceSnapshotLayout,
+    cache_directory: PathBuf,
+    caches: Vec<(PathBuf, ResourceSpec)>,
 }
 
 struct ImportSources<'a> {
@@ -182,7 +202,121 @@ impl Config {
             return Err("host configuration differs from the fixed installation layout".into());
         }
         let specs = super::import_profile::source_specs()?;
-        if specs.len() != SNAPSHOT_SOURCE_COUNT {
+        self.source_snapshot_layout_from(
+            specs,
+            SNAPSHOT_SOURCE_COUNT,
+            SNAPSHOT_SOURCE_BYTES,
+            SNAPSHOT_DIRECTORY_COUNT,
+        )
+    }
+
+    /// Admit the independently pinned stock install-only source/cache layout
+    /// without inspecting paths. The full-source profile keeps its own pins and
+    /// rejects every cache; this policy requires the three stock startup caches.
+    pub(super) fn validate_install_source_snapshot_layout(&self) -> Result<(), String> {
+        self.install_source_snapshot_layout().map(|_| ())
+    }
+
+    /// Verify exact install-only startup caches and sources before loading. The
+    /// cache and six startup descriptors, plus deduplicated directory owners,
+    /// remain live through finalization. Snapshot sources become owned bytes.
+    pub(super) fn verify_install_source_snapshot(&self) -> Result<SourceSnapshot, String> {
+        let layout = self.install_source_snapshot_layout()?;
+        let (mut directories, mut caches) =
+            install_snapshot_prerequisites(&layout, Path::new(&self.stdlib))?;
+        let mut verified = self.verify_install_startup()?;
+        let files = snapshot_sources(&layout.sources.files)?;
+        verified._sources.append(&mut caches);
+        verified._directories.append(&mut directories);
+        Ok(SourceSnapshot { verified, files })
+    }
+
+    fn install_source_snapshot_layout(&self) -> Result<InstallSourceSnapshotLayout, String> {
+        if Self::parse(&self.prefix)? != *self {
+            return Err("host configuration differs from the fixed installation layout".into());
+        }
+        let sources = self.source_snapshot_layout_from(
+            install_source_specs()?,
+            INSTALL_SNAPSHOT_SOURCE_COUNT,
+            INSTALL_SNAPSHOT_SOURCE_BYTES,
+            INSTALL_SNAPSHOT_DIRECTORY_COUNT,
+        )?;
+        let cache_directory = Path::new(&self.stdlib).join("encodings/__pycache__");
+        validate_path(
+            cache_directory
+                .to_str()
+                .ok_or("host cache path must be ASCII")?,
+        )?;
+        let mut caches = Vec::new();
+        for (relative, spec) in install_cache_specs()? {
+            let path = Path::new(&self.stdlib).join(relative);
+            validate_path(path.to_str().ok_or("host cache path must be ASCII")?)?;
+            caches.push((path, spec));
+        }
+        let ancestry = Path::new(&self.stdlib).components().count();
+        // The source snapshot has 100 directories plus this one cache owner.
+        // The legacy library/six-source verifier retains 9P+12 descriptors;
+        // the snapshot adds P+100 directories and three cache descriptors.
+        if sources.directories.len() + ancestry > MAX_SNAPSHOT_DIRECTORY_OWNERS {
+            return Err("host source snapshot directory owners exceed 256".into());
+        }
+        let retained = ancestry
+            .checked_mul(10)
+            .and_then(|count| count.checked_add(115))
+            .ok_or("install-only host retained owner count overflow")?;
+        if retained > MAX_INSTALL_RETAINED_OWNERS {
+            return Err("install-only host retained owners exceed 763".into());
+        }
+        Ok(InstallSourceSnapshotLayout {
+            sources,
+            cache_directory,
+            caches,
+        })
+    }
+
+    // The new cache prerequisite already checked both startup directories.
+    // Keep the old verifier unchanged so its historical syscall order and
+    // reject-all-cache contract remain available to every older profile.
+    fn verify_install_startup(&self) -> Result<VerifiedHost, String> {
+        let mut directories = open_directories(Path::new(&self.stdlib))?;
+        directories.append(&mut open_directories(
+            &Path::new(&self.stdlib).join("encodings"),
+        )?);
+        let (library, mut library_dirs) = verified_file(
+            Path::new(&self.library),
+            LIBRARY_SIZE,
+            RUNTIME_LIBRARY_SHA256,
+        )?;
+        directories.append(&mut library_dirs);
+        let mut sources = Vec::with_capacity(MODULE_SPECS.len());
+        for spec in &MODULE_SPECS {
+            let relative = spec
+                .source_path
+                .strip_prefix(SOURCE_PREFIX)
+                .ok_or("reviewed startup source is outside the fixed standard library")?;
+            let source = format!("{}/{relative}", self.stdlib);
+            validate_path(&source)?;
+            let (file, mut source_dirs) =
+                verified_file(Path::new(&source), spec.source_size, spec.source_sha256)?;
+            sources.push(file);
+            directories.append(&mut source_dirs);
+        }
+        Ok(VerifiedHost {
+            config: self.clone(),
+            library,
+            _sources: sources,
+            _directories: directories,
+        })
+    }
+
+    fn source_snapshot_layout_from(
+        &self,
+        specs: BTreeMap<String, ResourceSpec>,
+        source_count: usize,
+        source_bytes: u64,
+        directory_count: usize,
+    ) -> Result<SourceSnapshotLayout, String> {
+        if specs.len() != source_count {
             return Err("host source snapshot inventory count differs from pins".into());
         }
         validate_resource_paths(specs.keys())
@@ -209,7 +343,7 @@ impl Config {
             total = total
                 .checked_add(spec.size)
                 .ok_or("host source snapshot byte total overflow")?;
-            if total > SNAPSHOT_SOURCE_BYTES {
+            if total > source_bytes {
                 return Err("host source snapshot exceeds its pinned byte total".into());
             }
             // Archive compression describes different storage. Host files are
@@ -235,7 +369,7 @@ impl Config {
             }
             files.push((key, source, spec));
         }
-        if total != SNAPSHOT_SOURCE_BYTES || directories.len() != SNAPSHOT_DIRECTORY_COUNT {
+        if total != source_bytes || directories.len() != directory_count {
             return Err("host source snapshot layout differs from the pinned projection".into());
         }
         let owner_count = directories.len() + stdlib.components().count() - 1;
@@ -333,6 +467,187 @@ impl Config {
     }
 }
 
+fn install_source_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
+    let pins: serde_json::Value =
+        serde_json::from_slice(INSTALL_SOURCE_PINS).map_err(|error| error.to_string())?;
+    install_source_specs_from(&pins)
+}
+
+fn install_source_specs_from(
+    pins: &serde_json::Value,
+) -> Result<BTreeMap<String, ResourceSpec>, String> {
+    if pins["schema_version"] != 0
+        || pins["artifact_sha256"] != super::bundle::INSTALL_ONLY_SHA256
+        || pins["artifact_size"] != 57_626_877u64
+        || pins["paired_full_artifact_sha256"] != super::bundle::FULL_SHA256
+        || pins["paired_full_source_inventory_sha256"]
+            != glue_format::digest(super::import_profile::SOURCE_PINS)
+        || pins["stock_tar_mtime"] != 1_704_067_200u64
+    {
+        return Err("install-only source inventory differs from pinned PBS inputs".into());
+    }
+    let files = pins["files"]
+        .as_object()
+        .ok_or("missing install-only host source inventory")?;
+    if files.len() != INSTALL_SNAPSHOT_SOURCE_COUNT {
+        return Err("install-only source inventory count differs from pins".into());
+    }
+    let full = super::import_profile::source_specs()?;
+    let mut specs = BTreeMap::new();
+    let mut total = 0u64;
+    for (relative, value) in files {
+        let key = format!("stdlib/{relative}");
+        let source = full
+            .get(&key)
+            .ok_or("install-only source is outside the full PBS projection")?;
+        if !relative.ends_with(".py")
+            || value["size"] != source.size
+            || value["sha256"] != source.sha256
+        {
+            return Err("install-only source identity differs from full PBS source".into());
+        }
+        total = total
+            .checked_add(source.size)
+            .ok_or("install-only source byte count overflow")?;
+        let mut spec = source.clone();
+        spec.compression = Compression::Stored;
+        specs.insert(key, spec);
+    }
+    let mut tests = 0usize;
+    let mut idle_tests = 0usize;
+    for key in full.keys().filter(|key| !specs.contains_key(*key)) {
+        if key.starts_with("stdlib/test/") {
+            tests += 1;
+        } else if key.starts_with("stdlib/idlelib/") {
+            idle_tests += 1;
+        } else {
+            return Err("install-only source omission is outside pinned test packages".into());
+        }
+    }
+    if total != INSTALL_SNAPSHOT_SOURCE_BYTES || tests != 1072 || idle_tests != 65 {
+        return Err("install-only source projection differs from pins".into());
+    }
+    Ok(specs)
+}
+
+fn install_cache_specs() -> Result<BTreeMap<String, ResourceSpec>, String> {
+    let pins: serde_json::Value =
+        serde_json::from_slice(INSTALL_CACHE_PINS).map_err(|error| error.to_string())?;
+    install_cache_specs_from(&pins)
+}
+
+fn install_cache_specs_from(
+    pins: &serde_json::Value,
+) -> Result<BTreeMap<String, ResourceSpec>, String> {
+    if pins["schema_version"] != 0
+        || pins["artifact_sha256"] != super::bundle::INSTALL_ONLY_SHA256
+        || pins["artifact_size"] != 57_626_877u64
+        || pins["source_inventory_sha256"] != glue_format::digest(INSTALL_SOURCE_PINS)
+        || pins["stock_tar_mtime"] != 1_704_067_200u64
+        || pins["bytecode_source_mtime"] != 1_791_559_484u64
+    {
+        return Err("install-only startup cache inventory differs from pinned PBS input".into());
+    }
+    let files = pins["files"]
+        .as_object()
+        .ok_or("missing install-only startup cache inventory")?;
+    let expected: BTreeSet<_> = INSTALL_CACHE_NAMES
+        .iter()
+        .map(|name| format!("encodings/__pycache__/{name}"))
+        .collect();
+    if files.keys().cloned().collect::<BTreeSet<_>>() != expected {
+        return Err("install-only startup cache names differ from pins".into());
+    }
+    let mut specs = BTreeMap::new();
+    let mut total = 0u64;
+    for (key, value) in files {
+        let size = value["size"]
+            .as_u64()
+            .ok_or("missing install-only startup cache size")?;
+        let sha256 = value["sha256"]
+            .as_str()
+            .ok_or("missing install-only startup cache hash")?;
+        if size == 0
+            || size > super::imports::MAX_REPLY as u64
+            || sha256.len() != 64
+            || !sha256
+                .bytes()
+                .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+        {
+            return Err("invalid install-only startup cache metadata".into());
+        }
+        total = total
+            .checked_add(size)
+            .ok_or("install-only startup cache byte count overflow")?;
+        specs.insert(
+            key.clone(),
+            ResourceSpec {
+                size,
+                sha256: sha256.into(),
+                compression: Compression::Stored,
+            },
+        );
+    }
+    if total != INSTALL_STARTUP_CACHE_BYTES {
+        return Err("install-only startup cache byte total differs from pins".into());
+    }
+    Ok(specs)
+}
+
+fn install_snapshot_prerequisites(
+    layout: &InstallSourceSnapshotLayout,
+    stdlib: &Path,
+) -> Result<(Vec<File>, Vec<File>), String> {
+    let mut paths = layout.sources.directories.clone();
+    paths.insert(layout.cache_directory.clone());
+    let directories = snapshot_directories(&paths)?;
+    for directory in &layout.sources.directories {
+        let cache = directory.join("__pycache__");
+        if cache != layout.cache_directory {
+            require_cache_absent(&cache)?;
+        }
+    }
+    require_snapshot_startup_with_cache(&layout.sources, stdlib, Some(&layout.cache_directory))?;
+    require_closed_startup_caches(layout)?;
+    let mut caches = Vec::with_capacity(layout.caches.len());
+    for (path, spec) in &layout.caches {
+        // Their complete ancestor chains are already held by the deduplicated
+        // directory owners. Keep the cache descriptor without duplicating them.
+        let file = open_checked(path, false)?;
+        let (file, _) = verify_opened_file(path, file, Vec::new(), spec.size, &spec.sha256)?;
+        caches.push(file);
+    }
+    Ok((directories, caches))
+}
+
+fn require_closed_startup_caches(layout: &InstallSourceSnapshotLayout) -> Result<(), String> {
+    let expected: BTreeSet<_> = layout
+        .caches
+        .iter()
+        .map(|(path, _)| path.file_name().unwrap().to_owned())
+        .collect();
+    let entries = fs::read_dir(&layout.cache_directory)
+        .map_err(|error| format!("list host startup caches: {error}"))?;
+    let mut seen = BTreeSet::new();
+    for entry in entries {
+        let entry = entry.map_err(|error| format!("list host startup caches: {error}"))?;
+        let name = entry.file_name();
+        if !expected.contains(&name) || !seen.insert(name) {
+            return Err(format!(
+                "host startup cache entry is outside pinned caches: {}",
+                entry.path().display()
+            ));
+        }
+        let metadata = fs::symlink_metadata(entry.path())
+            .map_err(|error| format!("inspect host startup cache entry: {error}"))?;
+        require_kind(&entry.path(), &metadata, false)?;
+    }
+    if seen != expected {
+        return Err("host startup cache inventory differs from pinned caches".into());
+    }
+    Ok(())
+}
+
 fn snapshot_prerequisites(
     layout: &SourceSnapshotLayout,
     stdlib: &Path,
@@ -365,6 +680,14 @@ fn snapshot_directories(paths: &BTreeSet<PathBuf>) -> Result<Vec<File>, String> 
 }
 
 fn require_snapshot_startup(layout: &SourceSnapshotLayout, stdlib: &Path) -> Result<(), String> {
+    require_snapshot_startup_with_cache(layout, stdlib, None)
+}
+
+fn require_snapshot_startup_with_cache(
+    layout: &SourceSnapshotLayout,
+    stdlib: &Path,
+    cache_directory: Option<&Path>,
+) -> Result<(), String> {
     for path in &layout.startup_shadows {
         match fs::symlink_metadata(path) {
             Ok(_) => {
@@ -389,6 +712,10 @@ fn require_snapshot_startup(layout: &SourceSnapshotLayout, stdlib: &Path) -> Res
             directory.display()
         )
     })?;
+    let mut expected = layout.encodings.clone();
+    if cache_directory.is_some() {
+        expected.insert("__pycache__".into());
+    }
     let mut seen = BTreeSet::new();
     for entry in entries {
         let entry = entry.map_err(|error| format!("list host startup encodings: {error}"))?;
@@ -396,7 +723,8 @@ fn require_snapshot_startup(layout: &SourceSnapshotLayout, stdlib: &Path) -> Res
             .file_name()
             .into_string()
             .map_err(|_| "host startup encodings name must be ASCII")?;
-        if !layout.encodings.contains(&name) || !seen.insert(name) {
+        let directory = cache_directory.is_some() && name == "__pycache__";
+        if !expected.contains(&name) || !seen.insert(name) {
             return Err(format!(
                 "host startup encodings entry is outside pinned sources: {}",
                 entry.path().display()
@@ -404,9 +732,9 @@ fn require_snapshot_startup(layout: &SourceSnapshotLayout, stdlib: &Path) -> Res
         }
         let metadata = fs::symlink_metadata(entry.path())
             .map_err(|error| format!("inspect host startup encodings entry: {error}"))?;
-        require_kind(&entry.path(), &metadata, false)?;
+        require_kind(&entry.path(), &metadata, directory)?;
     }
-    if seen != layout.encodings {
+    if seen != expected {
         return Err("host startup encodings inventory differs from pinned sources".into());
     }
     Ok(())
@@ -772,6 +1100,317 @@ mod tests {
                 .source_snapshot_layout()
                 .unwrap()
                 .startup_shadows,
+        }
+    }
+
+    fn install_snapshot_fixture(fixture: &Fixture) -> InstallSourceSnapshotLayout {
+        let sources = snapshot_fixture(fixture);
+        let cache_directory = Path::new(&fixture.config().stdlib).join("encodings/__pycache__");
+        fs::create_dir(&cache_directory).unwrap();
+        let caches = INSTALL_CACHE_NAMES
+            .iter()
+            .map(|name| {
+                let bytes = format!("verified startup cache {name}\n").into_bytes();
+                let path = cache_directory.join(name);
+                fs::write(&path, &bytes).unwrap();
+                (path, import_pin(&bytes))
+            })
+            .collect();
+        InstallSourceSnapshotLayout {
+            sources,
+            cache_directory,
+            caches,
+        }
+    }
+
+    #[test]
+    fn install_snapshot_layout_pins_the_complete_projection_and_stock_caches() {
+        let config = Config::parse("/absent install-only Python").unwrap();
+        config.validate_install_source_snapshot_layout().unwrap();
+        let layout = config.install_source_snapshot_layout().unwrap();
+        assert_eq!(layout.sources.files.len(), 1037);
+        assert_eq!(layout.sources.directories.len(), 100);
+        assert_eq!(layout.sources.encodings.len(), 122);
+        assert_eq!(
+            layout
+                .sources
+                .files
+                .iter()
+                .map(|(_, _, spec)| spec.size)
+                .sum::<u64>(),
+            15_894_268
+        );
+        assert!(layout.sources.files.iter().all(|(key, _, spec)| {
+            !key.starts_with("stdlib/test/") && spec.compression == Compression::Stored
+        }));
+        assert!(layout.sources.files.iter().any(|(key, _, _)| {
+            key == "stdlib/site-packages/pip/_vendor/urllib3/contrib/emscripten/fetch.py"
+        }));
+        assert_eq!(layout.caches.len(), 3);
+        assert_eq!(
+            layout.caches.iter().map(|(_, spec)| spec.size).sum::<u64>(),
+            21_157
+        );
+        assert!(layout.caches.iter().all(|(path, spec)| {
+            path.parent() == Some(layout.cache_directory.as_path())
+                && spec.compression == Compression::Stored
+        }));
+        assert!(!Path::new(&config.prefix).exists());
+        let mut changed = config;
+        changed.library.push('x');
+        assert!(
+            changed
+                .verify_install_source_snapshot()
+                .unwrap_err()
+                .contains("fixed installation layout")
+        );
+    }
+
+    #[test]
+    fn install_snapshot_bounds_total_leases_and_all_expanded_paths_before_io() {
+        let within_budget = Config::parse(&"/a".repeat(61)).unwrap();
+        within_budget
+            .validate_install_source_snapshot_layout()
+            .unwrap();
+        let over_budget = Config::parse(&"/a".repeat(62)).unwrap();
+        assert_eq!(
+            over_budget.verify_install_source_snapshot().unwrap_err(),
+            "install-only host retained owners exceed 763"
+        );
+        // The install projection is smaller, but a 256-distinct-directory cap
+        // alone would permit more than a thousand duplicated startup leases.
+        let excessive_directories = Config::parse(&"/a".repeat(154)).unwrap();
+        assert_eq!(
+            excessive_directories
+                .verify_install_source_snapshot()
+                .unwrap_err(),
+            "host source snapshot directory owners exceed 256"
+        );
+        let long = Config::parse(&format!(
+            "/{}",
+            "a".repeat(MAX_PATH_BYTES - LIBRARY_SUFFIX.len() - 1)
+        ))
+        .unwrap();
+        assert!(
+            long.verify_install_source_snapshot()
+                .unwrap_err()
+                .starts_with("host paths must be canonical")
+        );
+        assert!(
+            over_budget
+                .import_sources(&import_pins("source.py", b"source"))
+                .is_ok()
+        );
+    }
+
+    #[test]
+    fn install_snapshot_metadata_rejects_pin_drift_before_any_host_access() {
+        let sources: serde_json::Value = serde_json::from_slice(INSTALL_SOURCE_PINS).unwrap();
+        let caches: serde_json::Value = serde_json::from_slice(INSTALL_CACHE_PINS).unwrap();
+        for field in [
+            "schema_version",
+            "artifact_sha256",
+            "paired_full_source_inventory_sha256",
+        ] {
+            let mut changed = sources.clone();
+            changed[field] = serde_json::json!("changed");
+            assert!(install_source_specs_from(&changed).is_err());
+        }
+        let mut changed = sources;
+        changed["files"]["asyncio/taskgroups.py"]["sha256"] = serde_json::json!("f".repeat(64));
+        assert!(
+            install_source_specs_from(&changed)
+                .unwrap_err()
+                .contains("identity differs")
+        );
+        for field in [
+            "schema_version",
+            "artifact_sha256",
+            "source_inventory_sha256",
+            "stock_tar_mtime",
+            "bytecode_source_mtime",
+        ] {
+            let mut changed = caches.clone();
+            changed[field] = serde_json::json!("changed");
+            assert!(install_cache_specs_from(&changed).is_err());
+        }
+        let mut changed = caches.clone();
+        changed["files"]["encodings/__pycache__/__init__.cpython-313.pyc"]["sha256"] =
+            serde_json::json!("not a hash");
+        assert!(
+            install_cache_specs_from(&changed)
+                .unwrap_err()
+                .contains("invalid")
+        );
+        let mut changed = caches;
+        let files = changed["files"].as_object_mut().unwrap();
+        let entry = files
+            .remove("encodings/__pycache__/utf_8.cpython-313.pyc")
+            .unwrap();
+        files.insert(
+            "encodings/__pycache__/../utf_8.cpython-313.pyc".into(),
+            entry,
+        );
+        assert!(
+            install_cache_specs_from(&changed)
+                .unwrap_err()
+                .contains("names differ")
+        );
+    }
+
+    #[test]
+    fn install_snapshot_verifies_closed_caches_keeps_rewound_files_and_deduplicates_owners() {
+        let fixture = Fixture::new();
+        let layout = install_snapshot_fixture(&fixture);
+        let (directories, mut caches) =
+            install_snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib)).unwrap();
+        assert_eq!(
+            directories.len(),
+            Path::new(&fixture.config().stdlib).components().count() + 4
+        );
+        assert_eq!(caches.len(), 3);
+        for ((path, spec), file) in layout.caches.iter().zip(&mut caches) {
+            let mut bytes = Vec::new();
+            file.read_to_end(&mut bytes).unwrap();
+            assert_eq!(glue_format::digest(&bytes), spec.sha256);
+            assert_eq!(bytes.len() as u64, spec.size);
+            fs::remove_file(path).unwrap();
+        }
+        // Retained descriptors still own the verified files after unlinking.
+        for file in &mut caches {
+            file.seek(SeekFrom::Start(0)).unwrap();
+            let mut byte = [0];
+            assert_eq!(file.read(&mut byte).unwrap(), 1);
+        }
+    }
+
+    #[test]
+    fn install_snapshot_rejects_missing_changed_truncated_and_extra_caches() {
+        for mode in 0..4 {
+            let fixture = Fixture::new();
+            let layout = install_snapshot_fixture(&fixture);
+            let path = &layout.caches[0].0;
+            match mode {
+                0 => fs::remove_file(path).unwrap(),
+                1 => {
+                    let mut bytes = fs::read(path).unwrap();
+                    bytes[0] ^= 1;
+                    fs::write(path, bytes).unwrap();
+                }
+                2 => fs::write(path, b"short").unwrap(),
+                _ => fs::write(
+                    layout.cache_directory.join("extra.cpython-313.pyc"),
+                    b"extra",
+                )
+                .unwrap(),
+            }
+            let error =
+                install_snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib))
+                    .unwrap_err();
+            assert!(
+                error.contains(match mode {
+                    0 => "cache inventory differs",
+                    1 => "identity mismatch",
+                    2 => "size mismatch",
+                    _ => "outside pinned caches",
+                }),
+                "{mode}: {error}"
+            );
+            assert!(!Path::new(&fixture.config().library).exists());
+        }
+    }
+
+    #[test]
+    fn install_snapshot_checks_all_derived_caches_before_missing_library_or_sources() {
+        let fixture = Fixture::new();
+        let config = fixture.config();
+        let layout = config.install_source_snapshot_layout().unwrap();
+        let mut directories = layout.sources.directories.clone();
+        directories.insert(layout.cache_directory);
+        for directory in &directories {
+            fs::create_dir_all(directory).unwrap();
+        }
+        let cache = Path::new(&config.stdlib).join("site-packages/pip/_vendor/idna/__pycache__");
+        fs::create_dir(&cache).unwrap();
+        assert_eq!(
+            config.verify_install_source_snapshot().unwrap_err(),
+            format!(
+                "host startup bytecode cache is unsupported: {}",
+                cache.display()
+            )
+        );
+        assert!(!Path::new(&config.library).exists());
+    }
+
+    #[test]
+    fn install_snapshot_keeps_full_host_cache_rejection_and_excludes_other_startup_shadows() {
+        for relative in [
+            "codecs.pyc",
+            "encodings.py",
+            "encodings/unreviewed.py",
+            "encodings/__init__.so",
+        ] {
+            let fixture = Fixture::new();
+            let layout = install_snapshot_fixture(&fixture);
+            fixture.host_source(relative, b"unreviewed startup input");
+            let error =
+                install_snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib))
+                    .unwrap_err();
+            assert!(
+                error.contains("shadow is unsupported") || error.contains("outside pinned sources"),
+                "{relative}: {error}"
+            );
+        }
+        let fixture = Fixture::new();
+        let layout = install_snapshot_fixture(&fixture);
+        assert!(
+            fixture
+                .config()
+                .verify()
+                .unwrap_err()
+                .contains("bytecode cache is unsupported")
+        );
+        assert!(
+            snapshot_prerequisites(&layout.sources, Path::new(&fixture.config().stdlib))
+                .unwrap_err()
+                .contains("bytecode cache is unsupported")
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn install_snapshot_rejects_cache_directory_file_symlinks_and_nonregular_entries() {
+        use std::os::unix::fs::symlink;
+        for mode in 0..4 {
+            let fixture = Fixture::new();
+            let layout = install_snapshot_fixture(&fixture);
+            match mode {
+                0 => {
+                    let real = fixture.0.join("real-cache");
+                    fs::rename(&layout.cache_directory, &real).unwrap();
+                    symlink(real, &layout.cache_directory).unwrap();
+                }
+                1 => {
+                    fs::remove_file(&layout.caches[0].0).unwrap();
+                    symlink(
+                        fixture.file("real-cache.pyc", b"cache"),
+                        &layout.caches[0].0,
+                    )
+                    .unwrap();
+                }
+                2 => {
+                    fs::remove_file(&layout.caches[0].0).unwrap();
+                    fs::create_dir(&layout.caches[0].0).unwrap();
+                }
+                _ => {
+                    fs::remove_dir_all(&layout.cache_directory).unwrap();
+                    fs::write(&layout.cache_directory, b"not a directory").unwrap();
+                }
+            }
+            let error =
+                install_snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib))
+                    .unwrap_err();
+            assert!(error.contains("without symlinks"), "{mode}: {error}");
         }
     }
 

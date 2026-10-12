@@ -1,0 +1,20 @@
+{
+  "app_id": "syntax.source",
+  "application": {
+    "app/jobs/invalid.py": {
+      "compression": "stored",
+      "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+      "size": 38
+    }
+  },
+  "application_bytes": 38,
+  "application_files": 1,
+  "base": {
+    "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+    "size": 83092494
+  },
+  "component": "syntax",
+  "entry": "app/jobs/invalid.py",
+  "prefix": "/build-target/host Python source apps",
+  "schema_version": 0
+}

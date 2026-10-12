@@ -1,0 +1,181 @@
+{
+  "expected_optimized_python_tests": 116,
+  "groups": {
+    "bundled-import": {
+      "build": "target/python-install-host-source-apps-bundled-import-regression-build",
+      "capture": "target/python-install-host-source-apps-bundled-import-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 3,
+      "trace_sha256": {
+        "app-error.trace.txt": "bb0f16cabe7d295df78f30073be04adad9c20fe83b071fefffc7fb7765f22c46",
+        "corrupt-source.trace.txt": "96f25f841f8aeb9e2628abb7a529fb14d277e655f6f28716a6b8258d7780ab9d",
+        "success.trace.txt": "c5aa4f3a32cf0bb2e4c88c516134bd8c30c0cd3a5fcd2d73e26305b1a2ae45d9"
+      }
+    },
+    "frozen": {
+      "build": "target/python-install-host-source-apps-frozen-regression-build",
+      "capture": "target/python-install-host-source-apps-frozen-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 4,
+      "trace_sha256": {
+        "app-error.trace.txt": "89f872f15160ca9e51b4345988c8dfbdd3577112821b473395d24ab36c5bd3be",
+        "bad-bytecode.trace.txt": "9affe10a987845fe89f7401b05db79c4c92d125fa8698379520a23878543df65",
+        "missing-encodings.trace.txt": "6b3df70e1223535fdb9e39711dd881f411497d2787890148cf43212884dbb100",
+        "success.trace.txt": "d102ac11d96409c47bde1a3959e83f3d27575f0a7bc4741df006d2b00befa8c7"
+      }
+    },
+    "host-import": {
+      "build": "target/python-install-host-source-apps-host-import-regression-build",
+      "capture": "target/python-install-host-source-apps-host-import-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 7,
+      "trace_sha256": {
+        "app-error.trace.txt": "cc45887243a9c29ffb79d916f8923cc6f0060730b5784add0d0ebfb6d4b73ffc",
+        "cached-import-bytecode.trace.txt": "9cc5fec7ff945fbf7dfaf5575c4189924c9b507c29759f15c9f6c1e1b88cc285",
+        "corrupt-source.trace.txt": "ddf16b127256b126f6db78157a3be22423297bf2fda6223ffbb3f6bfb4a594b7",
+        "missing-import-source.trace.txt": "007d3fad7d466abe9ae6826d9ff29f681026251cbd1f703bfe429c105e54003a",
+        "success.trace.txt": "b4294305c92ded705c229cf6711867fd5f437441238bb297953d6eaffc0a3e82",
+        "wrong-import-source.trace.txt": "624ba32d85d4ecae5f4f6e834bd080f515e029405e7dc3079550a6c647f3502d",
+        "wrong-library.trace.txt": "f5f785a19ff571a7e9da418e40fc480fddb2bccacf5615b73fc3dfdc3a6cb74e"
+      }
+    },
+    "host-source": {
+      "build": "target/python-install-host-source-apps-host-source-regression-build",
+      "capture": "target/python-install-host-source-apps-host-source-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "runner_clippy": "pass",
+      "runner_tests": 14,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 13,
+      "trace_sha256": {
+        "app-error.trace.txt": "a09b4f2e2f716dbe0ec22b5408d36744ba7c1e5957811fe7204b3671dd102c50",
+        "corrupt-source.trace.txt": "dd4e281231db146d4863cdb21d2c67057a56de4ab76f3cb0abf803ddc2d775bf",
+        "deep-cache.trace.txt": "880c48d4ce6eef6fb973934bb198321a2ef76cb8b9d90dd105e24dd3ad27cbbc",
+        "minimal.trace.txt": "899d4920f9255f369693e53df3be249ecbeca31e2170d631f065586699e7cdb6",
+        "missing-library.trace.txt": "c4d458117d6bfe0ae9dac6282cdd9030a25738fc56d9d4b365dfc83494fde9ef",
+        "missing-source.trace.txt": "4ebe8422c930c23c8198e1123aa94a80032d8f8ba6b96b17236475f8842600b9",
+        "nul.trace.txt": "bd70fb08b362ef03aef03b2a55949777bc4e49ae5e142a6cbf02543d638801ea",
+        "resources.trace.txt": "df23e8ba695e14cd70a312b71308d6c8fa096d727eac1120cce2e1b267a8605e",
+        "startup-bytecode.trace.txt": "14927b2e46fc38f4a5be7a4b8cee970b529f12529a99f1b9f86c11a21b6014fe",
+        "startup-native.trace.txt": "c7c9e26fcd0edce91e46aefe46652557b0a8bbbb88e38477c38589662817683c",
+        "stdlib.trace.txt": "caa6c7c0b767a5b216a2c4d545d74c905744c0cd0c496fe8a83fb57870e53d5c",
+        "syntax.trace.txt": "cfbb3edb9c85cbdd2f22ab593b9b7a0d72880211748fbbed47d1accfe4eb59ab",
+        "wrong-source.trace.txt": "5d95e778d03121018685feab48f5f44933dbabcf0ae2926809f62ceba9dc2813"
+      }
+    },
+    "host-startup": {
+      "build": "target/python-install-host-source-apps-host-startup-regression-build",
+      "capture": "target/python-install-host-source-apps-host-startup-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 8,
+      "trace_sha256": {
+        "app-error.trace.txt": "e0692d78940fcd743a9b9d62a06f1fdfe5a86f78bf80808e9fb9591a59390bde",
+        "cached-bytecode.trace.txt": "eacf23a1e859deb00933c6aab32b095857937833107229779e3a04b562ec8d69",
+        "missing-encodings.trace.txt": "18290c08fa198e39fa3ea999e03f15c3b5047b42a065d6f00b825128494821fe",
+        "missing-library.trace.txt": "c29cfe3e734b72a4d96729cd62f58f9bf54750876cebdaf5e09121de4bae0f3c",
+        "success.trace.txt": "e52677d88d9e14491185d96e611938627bddebf3b64a34bddc1e71faec23a258",
+        "symlink-stdlib.trace.txt": "18472edbf2b6449ec38400ad0fbb67aea89f9a68013a36636b0db1259a41dd4e",
+        "wrong-library.trace.txt": "1830234513b362b99f989ea89d171fa5fca9eb5e81f6ee032f272ebd5c860b0d",
+        "wrong-stdlib.trace.txt": "9bc82a4a1f06903774d91378aec99faba757735675c6672930563555724c2b19"
+      }
+    },
+    "native": {
+      "build": "target/python-install-host-source-apps-native-regression-build",
+      "capture": "target/python-install-host-source-apps-native-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 11,
+      "trace_sha256": {
+        "bundled-archived-app-error.trace.txt": "d2c6233ab34a3c052c63981301d6228b4c8bbbb99fee5e0d8655dae0800594db",
+        "bundled-archived.trace.txt": "9fb9b285620744d7dc87f09e05f695b2f56edfb6387d31b8cb7c6f8618cb01eb",
+        "bundled-host-app-error.trace.txt": "86cb0cc59638ab5932b8226505b109abfe9253dd22722aa638204f08235dfcb0",
+        "bundled-host.trace.txt": "1b016b439eb5761d705ef147af5ee9d602b704aa64f0a16579380d0e316e3f4e",
+        "corrupt-native.trace.txt": "dbfba6d6b3502d7f44a1f755cfbe9385eb82a11b0df45b143d97699f446a4338",
+        "host-archived-app-error.trace.txt": "4339972a5b87c186ffa8eba506e813377050736a6afb30ef227e6a6c27ce8344",
+        "host-archived.trace.txt": "7ace42e84a0800ca18fd72ff5a58e046a924781e59cbc020f63810191207c313",
+        "host-host-app-error.trace.txt": "0a37213cd3d338ca9ad4c0cdb9a67f415f84de47085410d3073994fa1c796ea6",
+        "host-host.trace.txt": "86a4cd30fb8183e88d33e784511add7624db9d4a07bd3ebd615ef76cc526a346",
+        "missing-host-image.trace.txt": "873b53853d69bfe9cbc60000ce794e487a835912ed2250667ae598b2b76aa0c4",
+        "wrong-host-image.trace.txt": "55ff1deeee809af7751ad4847e9bb43be77ca388202074f97eec58415764b1b0"
+      }
+    },
+    "runner": {
+      "build": "target/python-install-host-source-apps-runner-regression-build",
+      "capture": "target/python-install-host-source-apps-runner-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "runner_clippy": "pass",
+      "runner_tests": 14,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 9,
+      "trace_sha256": {
+        "bundled-archived.trace.txt": "7fc6fe719c58a63284fbebf362328eb1a3ee63860f57200970e14ef3f0b330fb",
+        "bundled-host.trace.txt": "5b91e1fd8a88990d4bf061eef5fc064057725cefc0fbcf4e38cff4fb5a9c736b",
+        "bundled-imports.trace.txt": "c2d6f233c95cb106bf97f25c37ef717d84dd4364064c53ba610833f4d4025286",
+        "corrupt-native.trace.txt": "ea9ec389f4b5e16c1846381117faf68c492b0c79da7c443c24e48e1d7b769275",
+        "host-archived.trace.txt": "9930a7ecb3d75fb5c6e22cc808049f9d6aada890b3486c1209ad5383aaa85f69",
+        "host-host.trace.txt": "5ef2c1f9f7907bdfa772a53a7a668773e114854c04a2e8e5423690ee8bb0bc28",
+        "host-imports.trace.txt": "b053679f67af7a89fa716f140a7749ff04bf53bf3323664c6830716793a5d4d3",
+        "missing-host-image.trace.txt": "20948589c0fb588e8e22945bf9362904ebf17f8705f61ae4fbd8148a5668ed87",
+        "wrong-host-image.trace.txt": "c7ac36ccb367dade55e3abcac323af7b18a07e29025ab67bb1498de44731a2ce"
+      }
+    },
+    "source": {
+      "build": "target/python-install-host-source-apps-source-regression-build",
+      "capture": "target/python-install-host-source-apps-source-regression-capture",
+      "harness_status": 0,
+      "optimized_python_clippy": "pass",
+      "optimized_python_tests": 116,
+      "runner_clippy": "pass",
+      "runner_tests": 14,
+      "source_diff_bytes": 0,
+      "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_status": "",
+      "trace_count": 6,
+      "trace_sha256": {
+        "app-error.trace.txt": "9205fa75b67cbb1827bd4af8127a07e36a02ed18551650f65d25ca3fa83c3678",
+        "corrupt-source.trace.txt": "2e0a76ad7d683ed7f54056817819787a0ab4401492188be69fe577a4815168d9",
+        "minimal.trace.txt": "474544c692a66c675cd21a11a29086640c5e7f85861d31b518268e30ea04d656",
+        "nul.trace.txt": "668e405e2c50274e660928138c0bbcfdc5dcde00e4283ba3eb9223b3133c8a77",
+        "resources.trace.txt": "c84591c7eb3564e46516185012eed1c3539705ca1021b58232a222f575895602",
+        "syntax.trace.txt": "ddf634f698618f8e12f8507c4427150959b8c47d211a9818241d405f2565e024"
+      }
+    }
+  },
+  "note": "Eight fresh independent old harnesses, unchanged old policies. This orchestration receipt records source branch around captures; four old harnesses do not themselves emit branch receipts.",
+  "source_branch": "codex/a7-install-only-host-source-apps",
+  "source_clean_before_after": true,
+  "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+  "trace_count": 61
+}

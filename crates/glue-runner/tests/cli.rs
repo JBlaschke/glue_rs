@@ -187,6 +187,7 @@ fn python_selection_reports_its_capability_without_trying_lua_or_host_discovery(
         for build_id in [
             "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-source-apps-v1",
             "pbs-20261009-cpython-3.13.16-pgo-lto-host-source-apps-v1",
+            "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
         ] {
             manifest.runtimes.get_mut("lua-fixture").unwrap().build_id = build_id.into();
             fs::write(&declaration, manifest.to_json().unwrap()).unwrap();

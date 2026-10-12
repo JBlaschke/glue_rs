@@ -1,0 +1,8 @@
+{
+  "key": "app/python/simple_value.py",
+  "data_offset": 2156,
+  "only_changed_archive_byte": 2156,
+  "size": 12,
+  "original_sha256": "9e0ea575020252467eaf2aa81aa76efafbdbeb16e371f254de117db52d5cf975",
+  "corrupt_sha256": "65a0ee1b3995572a63501d9c1354a35bbcdb2dd5d821bca6378ebff59973ba44"
+}

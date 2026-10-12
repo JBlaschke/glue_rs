@@ -5,7 +5,7 @@
 
 use super::{
     ExecutionError, extension_profile, host_import_profile, host_source_app_profile,
-    import_profile, platform, source_app_profile,
+    import_profile, install_host_source_app_profile, platform, source_app_profile,
 };
 use glue_format::{ArchiveLimits, Manifest, RuntimeAbi};
 
@@ -16,6 +16,7 @@ pub(crate) enum Kind {
     RegisteredExtensions,
     BundledSourceApp,
     HostSourceApp,
+    InstallHostSourceApp,
 }
 
 /// An admitted profile, tied to the manifest from which it was selected.
@@ -36,6 +37,7 @@ impl ControlledProfile {
             Kind::RegisteredExtensions => "controlled registered Python native extensions",
             Kind::BundledSourceApp => "pinned bundled Python source application",
             Kind::HostSourceApp => "pinned explicit-host Python source application",
+            Kind::InstallHostSourceApp => "pinned install-only host Python source application",
         }
     }
 }
@@ -86,6 +88,10 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             host_source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
             Kind::HostSourceApp
         }
+        _ if runtime.build_id == install_host_source_app_profile::BUILD_ID => {
+            install_host_source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
+            Kind::InstallHostSourceApp
+        }
         _ => {
             return Err(ExecutionError::unsupported(
                 "Python execution requires a supported pinned PBS source-application or controlled fixture profile",
@@ -110,6 +116,7 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
     let runtime = &manifest.runtimes[&component.runtime];
     if runtime.build_id != source_app_profile::BUILD_ID
         && runtime.build_id != host_source_app_profile::BUILD_ID
+        && runtime.build_id != install_host_source_app_profile::BUILD_ID
     {
         return Ok(None);
     }
@@ -117,6 +124,7 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
     match selected.kind {
         Kind::BundledSourceApp => Ok(Some(source_app_profile::limits())),
         Kind::HostSourceApp => Ok(Some(host_source_app_profile::limits())),
+        Kind::InstallHostSourceApp => Ok(Some(install_host_source_app_profile::limits())),
         _ => Err(ExecutionError::failed(
             "source application build identity conflicts with a reserved fixture",
         )),

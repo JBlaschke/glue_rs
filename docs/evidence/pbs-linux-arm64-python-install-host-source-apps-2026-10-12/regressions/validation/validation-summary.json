@@ -1,0 +1,35 @@
+{
+  "entry-tests": 7,
+  "host-protocol-tests": 11,
+  "host-protocol-tests-skipped": 2,
+  "importer-tests": 16,
+  "linux-entry-protocol-tests": 7,
+  "linux-host-protocol-tests": 11,
+  "linux-importer-protocol-tests": 16,
+  "linux-lua54": {
+    "clippy": "pass",
+    "tests": 395
+  },
+  "linux-lua55": {
+    "clippy": "pass",
+    "tests": 396
+  },
+  "linux-python-policy-tests": 288,
+  "linux_python": "Python 3.13.16",
+  "lua54": {
+    "clippy": "pass",
+    "tests": 395
+  },
+  "lua55": {
+    "clippy": "pass",
+    "tests": 396
+  },
+  "policy-tests": 288,
+  "python-pbs": {
+    "clippy": "pass",
+    "tests": 395
+  },
+  "source_branch": "codex/a7-install-only-host-source-apps",
+  "source_clean_before_after": true,
+  "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114"
+}

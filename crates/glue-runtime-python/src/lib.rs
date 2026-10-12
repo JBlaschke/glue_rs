@@ -26,6 +26,7 @@ mod import_profile;
     allow(dead_code)
 )]
 mod imports;
+mod install_host_source_app_profile;
 #[cfg(all(
     feature = "pbs-bootstrap",
     target_os = "linux",
@@ -125,6 +126,10 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::InstallHostSourceApp => linux::run_install_host_source_app(
+                install_host_source_app_profile::read_archive(archive)
+                    .map_err(ExecutionError::failed)?,
+            ),
             profile::Kind::HostSourceApp => linux::run_host_source_app(
                 host_source_app_profile::read_archive(archive).map_err(ExecutionError::failed)?,
             ),

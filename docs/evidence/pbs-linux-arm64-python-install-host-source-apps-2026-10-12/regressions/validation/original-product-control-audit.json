@@ -1,0 +1,1115 @@
+{
+  "audit_script": {
+    "bytes": 11063,
+    "sha256": "6f050a8c07858cf412217a0666ac2f0ca74bf716d70129148209f1a327c44b09"
+  },
+  "capture_commands": {
+    "bytes": 15590,
+    "sha256": "eff120239585354763a2e4e1cabf53a88015234ebe2dd460ce5df134c7805a6e"
+  },
+  "command": [
+    "target/python-runner-control-audit.py",
+    "--capture",
+    "target/python-install-host-source-apps-runner-regression-capture",
+    "--build",
+    "target/python-install-host-source-apps-runner-regression-build",
+    "--source-revision",
+    "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+    "--wide-elf",
+    "target/python-install-host-source-app-checks/original-product.launcher.wide.elf.txt",
+    "--output",
+    "target/python-install-host-source-apps-runner-regression-capture/control-audit.json"
+  ],
+  "controls": [
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/bundled-imports.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "bundled-imports",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 338699,
+        "sha256": "3dd958e155a3eeb36a8357da6f2b0883f44ae456aacd9b25588523dbc015a823"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/bundled-imports.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "bundled-imports",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "35f48dc703b96c9e64d399b272dfefd8ffa08905752fef9a15ce857506d5be1d"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/bundled-imports.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "bundled-imports",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 614,
+        "sha256": "cbe06252291774725861b3cc0d73bdff187b5dafa2dbd85bf10c8b8442f537df"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/bundled-imports.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "bundled-imports",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 9122,
+        "sha256": "0e4b3bce73eaa08e9acbb9aefeae298a1e43fdd1a62148141718d60b7065694f"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/host-imports.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "host-imports",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3483,
+        "sha256": "f57de07ca9492c1abd18daf8fdf3f06f205736358c6da6fe5898256fe64efb4b"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/host-imports.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "host-imports",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 49,
+        "sha256": "4f2423fcce8c6d963eb7b156e0b4ad480e1edfd2931394c03eafd75cf30fb997"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/host-imports.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "host-imports",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 625,
+        "sha256": "cc9626c7249c7a83fb7ffd8eb8f3c7f0615ec94542205e72368dbcc55566eb9e"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/host-imports.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "host-imports",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 9122,
+        "sha256": "0e4b3bce73eaa08e9acbb9aefeae298a1e43fdd1a62148141718d60b7065694f"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/bundled-archived.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "bundled-archived",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 341134,
+        "sha256": "809c809059adc0b77142994e2325184b1e1d2cace564f6861c9e72585e0f48bc"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/bundled-archived.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "bundled-archived",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "1fff52592ddbfcdbd21dba8bc54fcf7a16b67044f1b8a33a4c619d93e51fe5f8"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/bundled-archived.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "bundled-archived",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 624,
+        "sha256": "edbacd50c4408e17154ea42ce3d349664847fb6c3c82d6a20de2f2b15b216b79"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/bundled-archived.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "bundled-archived",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 15876,
+        "sha256": "2c9f8f075ec2cb8a32eee41ed67fcc822c0dcba1f35cbf5d97025366f2c8c140"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/bundled-host.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "bundled-host",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 339899,
+        "sha256": "3e3057aadad0b6d87260cc82e256581e7fc6e247d95062ac408f1e10aab829f4"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/bundled-host.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "bundled-host",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "5cd1608ba673347422657f258e704986fea03279cebd16e05dbd81712c1333fb"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/bundled-host.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "bundled-host",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 624,
+        "sha256": "edbacd50c4408e17154ea42ce3d349664847fb6c3c82d6a20de2f2b15b216b79"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/bundled-host.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "bundled-host",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 15876,
+        "sha256": "2c9f8f075ec2cb8a32eee41ed67fcc822c0dcba1f35cbf5d97025366f2c8c140"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/host-archived.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "host-archived",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 5913,
+        "sha256": "9b43e35da987162e2fe71abefa90185d9caf870f91aa14161b5fde7f60e69803"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/host-archived.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "host-archived",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 50,
+        "sha256": "4f95629c0d6cf3bcf40f3b8d4bf585d802b5e2a7be44bcdb8e2c5849487588dd"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/host-archived.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "host-archived",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 624,
+        "sha256": "edbacd50c4408e17154ea42ce3d349664847fb6c3c82d6a20de2f2b15b216b79"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/host-archived.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "host-archived",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 15876,
+        "sha256": "2c9f8f075ec2cb8a32eee41ed67fcc822c0dcba1f35cbf5d97025366f2c8c140"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/host-host.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "host-host",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 4678,
+        "sha256": "c766b4018ba1cb346872260bea6a3ad92fb1b6dd974b751bb2208327cec59c35"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/host-host.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "host-host",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 49,
+        "sha256": "781b427a633f5bd40518df9377f27ab79233719ce36d25dba3502d22b029bd0d"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "doctor",
+        "/build-target/relocated Python runner/host-host.glue"
+      ],
+      "comparison": "exact pinned build/target prerequisite output",
+      "mode": "host-host",
+      "operation": "doctor",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 624,
+        "sha256": "edbacd50c4408e17154ea42ce3d349664847fb6c3c82d6a20de2f2b15b216b79"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "cat",
+        "/build-target/relocated Python runner/host-host.glue",
+        "app/main.py"
+      ],
+      "comparison": "exact archive app/main.py payload",
+      "mode": "host-host",
+      "operation": "cat",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 15876,
+        "sha256": "2c9f8f075ec2cb8a32eee41ed67fcc822c0dcba1f35cbf5d97025366f2c8c140"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/corrupt-native.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "corrupt-native",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 341134,
+        "sha256": "809c809059adc0b77142994e2325184b1e1d2cace564f6861c9e72585e0f48bc"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/corrupt-native.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "corrupt-native",
+      "operation": "verify",
+      "status": 1,
+      "stderr": {
+        "bytes": 79,
+        "sha256": "36a0d0cda740622bb4380b74829fd37d372210264d4a3644fcfdee7c7a9680a0"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/missing-host-image.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "missing-host-image",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 339994,
+        "sha256": "6e457239c1281d2d537b9996c56dffc58791194d81978a8eb5d67a7f1db989c1"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/missing-host-image.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "missing-host-image",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "5cd1608ba673347422657f258e704986fea03279cebd16e05dbd81712c1333fb"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "inspect",
+        "/build-target/relocated Python runner/wrong-host-image.glue",
+        "--json"
+      ],
+      "comparison": "exact raw archive manifest plus LF",
+      "mode": "wrong-host-image",
+      "operation": "inspect",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 339984,
+        "sha256": "0b1a1ab0eb029a0c7ee91fb944f811e6c7441c813d3cbca54f19ddd2bd82dac4"
+      }
+    },
+    {
+      "command": [
+        "/build-target/relocated Python runner/glue",
+        "verify",
+        "/build-target/relocated Python runner/wrong-host-image.glue"
+      ],
+      "comparison": "exact manifest resource count/bytes or exact stored CRC rejection",
+      "mode": "wrong-host-image",
+      "operation": "verify",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 55,
+        "sha256": "5cd1608ba673347422657f258e704986fea03279cebd16e05dbd81712c1333fb"
+      }
+    }
+  ],
+  "counts": {
+    "controls": 30,
+    "runtime_cases": 9,
+    "shared_c_provenance_files": 8
+  },
+  "findings": [],
+  "launcher": {
+    "binary": {
+      "bytes": 3932048,
+      "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47"
+    },
+    "complete_elf_listing": {
+      "bytes": 12625,
+      "sha256": "df017629f9aee71f97b8b275b3f09a124324d9df606cdc04b0fd665d3e641a9f"
+    },
+    "needed": [
+      "libm.so.6",
+      "libgcc_s.so.1",
+      "libc.so.6"
+    ],
+    "python_undefined_symbols": [],
+    "undefined_symbols": 128
+  },
+  "metadata": {
+    "bytes": 15217,
+    "sha256": "3e124cf97c7dbde873874546f9f738f907dd93db140494fc53e08cb50b2fdfd9"
+  },
+  "provenance": [
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-14ab81c3f7980735.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-14ab81c3f7980735.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-1dbcd75715a52b3d.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-1dbcd75715a52b3d.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-674bae5fdd062d43.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-674bae5fdd062d43.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    },
+    {
+      "bytes": 1328,
+      "name": "glue-runtime-python-97d81cc4d4d9dc64.txt",
+      "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8"
+    },
+    {
+      "bytes": 409,
+      "name": "glue-runtime-python-97d81cc4d4d9dc64.undefined.txt",
+      "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964"
+    }
+  ],
+  "runtime": [
+    {
+      "archive": {
+        "bytes": 83092494,
+        "manifest_bytes": 338698,
+        "manifest_sha256": "cfaa7ef0158a5887de4fb04ade02a3f405d9ef18199fefea8372b9b0c967770b",
+        "runtime": "bundled",
+        "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+        "zip_directory_offset": 82867136
+      },
+      "mode": "bundled-imports",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 100,
+        "sha256": "43b80f8a941817351efc42ccc55a69b63bf763f3f931b27b9feff22bc0c63063"
+      },
+      "trace": {
+        "bytes": 6714459,
+        "sha256": "c2d6f233c95cb106bf97f25c37ef717d84dd4364064c53ba610833f4d4025286"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 13932,
+        "manifest_bytes": 3482,
+        "manifest_sha256": "9e91c00bb42f6366e28adf7a78998838c73671b2c2ee801d2c8f9b359dbc129e",
+        "runtime": "host",
+        "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682",
+        "zip_directory_offset": 12165
+      },
+      "mode": "host-imports",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 100,
+        "sha256": "43b80f8a941817351efc42ccc55a69b63bf763f3f931b27b9feff22bc0c63063"
+      },
+      "trace": {
+        "bytes": 1566577,
+        "sha256": "b053679f67af7a89fa716f140a7749ff04bf53bf3323664c6830716793a5d4d3"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 83438354,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "compression": "stored",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+            "size": 68672
+          },
+          "glue_native_init_error.so": {
+            "compression": "stored",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+            "size": 68400
+          },
+          "glue_native_multi.so": {
+            "compression": "stored",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+            "size": 68640
+          },
+          "glue_native_single.so": {
+            "compression": "stored",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+            "size": 68536
+          },
+          "libglue_python_dependency.so": {
+            "compression": "stored",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+            "size": 67152
+          }
+        },
+        "manifest_bytes": 341133,
+        "manifest_sha256": "0bb74b9dbbab2c89713a33fa10b94becc429feacf76d8ad948f69b6a084047c0",
+        "native": "archived",
+        "runtime": "bundled",
+        "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+        "zip_directory_offset": 83212512
+      },
+      "mode": "bundled-archived",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 169,
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07"
+      },
+      "trace": {
+        "bytes": 6780133,
+        "sha256": "7fc6fe719c58a63284fbebf362328eb1a3ee63860f57200970e14ef3f0b330fb"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 83094831,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "path": "/build-target/host Python extensions/glue_native_exec_error.so",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+          },
+          "glue_native_init_error.so": {
+            "path": "/build-target/host Python extensions/glue_native_init_error.so",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+          },
+          "glue_native_multi.so": {
+            "path": "/build-target/host Python extensions/glue_native_multi.so",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+          },
+          "glue_native_single.so": {
+            "path": "/build-target/host Python extensions/glue_native_single.so",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+          },
+          "libglue_python_dependency.so": {
+            "path": "/build-target/host Python extensions/libglue_python_dependency.so",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+          }
+        },
+        "manifest_bytes": 339898,
+        "manifest_sha256": "6e4fa71a35cba2c530b118001c90e92938e0d2e5e72c0c32f3bead448e426f9e",
+        "native": "host",
+        "runtime": "bundled",
+        "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+        "zip_directory_offset": 82869473
+      },
+      "mode": "bundled-host",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 169,
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07"
+      },
+      "trace": {
+        "bytes": 6688372,
+        "sha256": "5b91e1fd8a88990d4bf061eef5fc064057725cefc0fbcf4e38cff4fb5a9c736b"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 359787,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "compression": "stored",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+            "size": 68672
+          },
+          "glue_native_init_error.so": {
+            "compression": "stored",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+            "size": 68400
+          },
+          "glue_native_multi.so": {
+            "compression": "stored",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+            "size": 68640
+          },
+          "glue_native_single.so": {
+            "compression": "stored",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+            "size": 68536
+          },
+          "libglue_python_dependency.so": {
+            "compression": "stored",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+            "size": 67152
+          }
+        },
+        "manifest_bytes": 5912,
+        "manifest_sha256": "06edb5782ae00523bea9fda147fc17beacb91a836074649aee0774d6410934fa",
+        "native": "archived",
+        "runtime": "host",
+        "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+        "zip_directory_offset": 357536
+      },
+      "mode": "host-archived",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 169,
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07"
+      },
+      "trace": {
+        "bytes": 1599000,
+        "sha256": "9930a7ecb3d75fb5c6e22cc808049f9d6aada890b3486c1209ad5383aaa85f69"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 16264,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "path": "/build-target/host Python extensions/glue_native_exec_error.so",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+          },
+          "glue_native_init_error.so": {
+            "path": "/build-target/host Python extensions/glue_native_init_error.so",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+          },
+          "glue_native_multi.so": {
+            "path": "/build-target/host Python extensions/glue_native_multi.so",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+          },
+          "glue_native_single.so": {
+            "path": "/build-target/host Python extensions/glue_native_single.so",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+          },
+          "libglue_python_dependency.so": {
+            "path": "/build-target/host Python extensions/libglue_python_dependency.so",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+          }
+        },
+        "manifest_bytes": 4677,
+        "manifest_sha256": "be805bac8493c33d0ed7911f10bd1c95280747485e5910f102c71a87e3b77518",
+        "native": "host",
+        "runtime": "host",
+        "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+        "zip_directory_offset": 14497
+      },
+      "mode": "host-host",
+      "status": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 169,
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07"
+      },
+      "trace": {
+        "bytes": 1638264,
+        "sha256": "5ef2c1f9f7907bdfa772a53a7a668773e114854c04a2e8e5423690ee8bb0bc28"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 83438354,
+        "corrupt_native_offset": 621546,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "compression": "stored",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+            "size": 68672
+          },
+          "glue_native_init_error.so": {
+            "compression": "stored",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+            "size": 68400
+          },
+          "glue_native_multi.so": {
+            "compression": "stored",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+            "size": 68640
+          },
+          "glue_native_single.so": {
+            "compression": "stored",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+            "size": 68536
+          },
+          "libglue_python_dependency.so": {
+            "compression": "stored",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+            "size": 67152
+          }
+        },
+        "manifest_bytes": 341133,
+        "manifest_sha256": "0bb74b9dbbab2c89713a33fa10b94becc429feacf76d8ad948f69b6a084047c0",
+        "native": "archived",
+        "runtime": "bundled",
+        "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+        "zip_directory_offset": 83212512
+      },
+      "mode": "corrupt-native",
+      "status": 1,
+      "stderr": {
+        "bytes": 79,
+        "sha256": "36a0d0cda740622bb4380b74829fd37d372210264d4a3644fcfdee7c7a9680a0"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 3318360,
+        "sha256": "ea9ec389f4b5e16c1846381117faf68c492b0c79da7c443c24e48e1d7b769275"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 83094926,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "path": "/build-target/host Python extensions missing-host-image/glue_native_exec_error.so",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+          },
+          "glue_native_init_error.so": {
+            "path": "/build-target/host Python extensions missing-host-image/glue_native_init_error.so",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+          },
+          "glue_native_multi.so": {
+            "path": "/build-target/host Python extensions missing-host-image/glue_native_multi.so",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+          },
+          "glue_native_single.so": {
+            "path": "/build-target/host Python extensions missing-host-image/glue_native_single.so",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+          },
+          "libglue_python_dependency.so": {
+            "path": "/build-target/host Python extensions missing-host-image/libglue_python_dependency.so",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+          }
+        },
+        "manifest_bytes": 339993,
+        "manifest_sha256": "8b2537e66d99c23a1cfdf5570523b2ae3a31295b73b746a2811d7324cd937e66",
+        "native": "host",
+        "runtime": "bundled",
+        "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+        "zip_directory_offset": 82869568
+      },
+      "mode": "missing-host-image",
+      "status": 1,
+      "stderr": {
+        "bytes": 141,
+        "sha256": "e3a3d6a0d2975c2cb66364ffe22a0fcee0f97de466c868dc9c5424087f868324"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 6799000,
+        "sha256": "20948589c0fb588e8e22945bf9362904ebf17f8705f61ae4fbd8148a5668ed87"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 83094916,
+        "declarations": {
+          "glue_native_exec_error.so": {
+            "path": "/build-target/host Python extensions wrong-host-image/glue_native_exec_error.so",
+            "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+          },
+          "glue_native_init_error.so": {
+            "path": "/build-target/host Python extensions wrong-host-image/glue_native_init_error.so",
+            "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+          },
+          "glue_native_multi.so": {
+            "path": "/build-target/host Python extensions wrong-host-image/glue_native_multi.so",
+            "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+          },
+          "glue_native_single.so": {
+            "path": "/build-target/host Python extensions wrong-host-image/glue_native_single.so",
+            "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+          },
+          "libglue_python_dependency.so": {
+            "path": "/build-target/host Python extensions wrong-host-image/libglue_python_dependency.so",
+            "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+          }
+        },
+        "manifest_bytes": 339983,
+        "manifest_sha256": "b351e7613b020b9b544719c0b71ca7a6957550a3756b755cf7a721a0b0350d45",
+        "native": "host",
+        "runtime": "bundled",
+        "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+        "zip_directory_offset": 82869558
+      },
+      "mode": "wrong-host-image",
+      "status": 1,
+      "stderr": {
+        "bytes": 111,
+        "sha256": "f4642b45ac28ed33d973f0e2b533e7c5a7a096d3e1a1622d6e71dc9c9ca68127"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "trace": {
+        "bytes": 6748990,
+        "sha256": "c7ac36ccb367dade55e3abcac323af7b18a07e29025ab67bb1498de44731a2ce"
+      },
+      "trace_check": {
+        "bytes": 221,
+        "sha256": "e201b5c2a69b2d05ee5e8335baa24596800b1d5118ece7071951e0a7fa4088f2"
+      }
+    }
+  ],
+  "schema_version": 0,
+  "scope": "Nine actual product runs and thirty untraced control commands; complete launcher dynamic symbols; actual archive identities and payload comparisons.",
+  "source_branch": "codex/a7-install-only-host-source-apps",
+  "source_clean": true,
+  "source_revision": "7a8e32c54d0375a755b55a679e18ef97e6c50114"
+}

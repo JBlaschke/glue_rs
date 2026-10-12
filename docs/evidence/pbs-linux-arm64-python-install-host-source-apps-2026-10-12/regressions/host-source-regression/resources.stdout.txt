@@ -1,0 +1,1 @@
+PASS source-app=resources packages=archive namespaces=archive resources=streams answer=42

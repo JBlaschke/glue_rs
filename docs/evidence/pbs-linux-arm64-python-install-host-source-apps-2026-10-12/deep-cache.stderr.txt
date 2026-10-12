@@ -1,0 +1,1 @@
+glue: host startup bytecode cache is unsupported: /build-target/host Python install source apps deep-cache/lib/python3.13/site-packages/pip/_vendor/idna/__pycache__

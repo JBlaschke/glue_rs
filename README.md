@@ -211,8 +211,17 @@ verify into an immutable snapshot before startup; later imports use the shared
 buffer importer with filesystem fallback disabled. Installed startup paths must
 remain immutable and read-only.
 Broader host installations, wheels and native package admission remain open.
-Native hashes identify declared
-images; admission still requires the reviewed ELF/import/initializer contract.
+For the registered native profile, hashes identify declared images; admission
+also requires the reviewed ELF/import/initializer contract.
+
+The [install-only host workflow](fixtures/python-install-host-source-apps/README.md)
+selects the independently pinned install-only distribution's 1,037 sources and
+three encoding caches. All selected source/library/cache identities verify
+before Python loads; the stock cache directory admits only its exact three
+files. Later imports use the same owned source snapshot and virtual resource
+streams. The full-source host profile continues to require its wider inventory
+and reject every startup cache. See
+[the install-only host decision](docs/decisions/0019-install-only-host-python-source-apps.md).
 
 ```sh
 # GNU Linux arm64, using the independently verified pinned header tree:
@@ -275,23 +284,24 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The explicit-host source application checkpoint passes 381/382 Rust tests for
-`lua54`/`lua55` on macOS and GNU Linux arm64, with all-target Clippy warnings
-denied. The Mac Python-enabled workspace passes 381 tests and Clippy;
-execution requires the reviewed GNU Linux arm64 target. Optimized GNU shared
-Python/probe builds pass 102 tests and Clippy, and the product runner passes
-14 CLI tests and Clippy. On Mac and the pinned stock Linux interpreter, all
-261 policy, 16 importer and seven byte-entry tests pass. The host source
-protocol passes all 11 tests on stock Linux; Mac runs 11 with two stock-only
-skips. All 13 new and 48 fresh regression traces pass from clean `dd6274f`
-and all 61 compressed traces replay. The 51 new, 34 bundled-app and 30
-original product controls match exact results; all 567 hostile host-app
-trace edits reject. The
-[host source-app evidence](docs/evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
-retains source/artifact identities, commands, controls, audits and full traces.
-The [bundled source-app checkpoint](docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+The install-only host source application checkpoint passes 395/396 Rust tests
+for `lua54`/`lua55` on macOS and GNU Linux arm64, with all-target Clippy warnings
+denied. The Mac Python-enabled workspace passes 395 tests and Clippy;
+execution requires the reviewed GNU Linux arm64 target. Every optimized GNU
+shared Python/probe build passes 116 tests and Clippy, and product runner
+builds pass 14 CLI tests and Clippy. On Mac and pinned stock Linux, all 288
+policy, 16 importer and seven byte-entry tests pass. The host source protocol
+passes all 11 tests on stock Linux; Mac runs 11 with two stock-only skips.
+All 16 new and 61 fresh regression traces pass from clean `7a8e32c` and all
+77 compressed traces replay. The 60 new, 51 full-host, 34 bundled-app and
+30 original product controls match; all 894 hostile trace edits reject.
+The [install-only host evidence](docs/evidence/pbs-linux-arm64-python-install-host-source-apps-2026-10-12/README.md)
+retains source/artifact identities, controls, the independent complete-provider
+audit and full traces. The
+[full-host checkpoint](docs/evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md),
+[bundled source-app checkpoint](docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
 and [runner checkpoint](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
-retain the earlier provider and product integration evidence. Earlier native
+retain the earlier provider/product evidence. Earlier native
 Linux validation covers
 both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
@@ -327,6 +337,8 @@ sh fixtures/python-extensions/run-linux.sh
 sh fixtures/python-runner/run-linux.sh
 sh fixtures/python-source-apps/run-linux.sh
 sh fixtures/python-host-source-apps/run-linux.sh
+sh fixtures/python-install-host-source-apps/run-linux.sh
+python3 -m unittest discover -s scripts -p 'test_linux_python_install_host_source_app_trace.py'
 python3 fixtures/python-host-source-apps/test_protocol.py
 python3 fixtures/python-source-apps/test_entry.py
 python3 fixtures/python-imports/test_importer.py
