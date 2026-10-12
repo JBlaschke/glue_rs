@@ -21,6 +21,7 @@ The registry contains:
 | --- | --- | --- |
 | Arbitrary admitted ID with the bundled-source-apps-v1 build identity | Bundled, sealed library | None |
 | Arbitrary admitted ID with the host-source-apps-v1 build identity | Explicit immutable host library/startup paths; full pinned source snapshot | None |
+| Arbitrary admitted ID with the host-install-source-apps-v1 build identity | Explicit immutable host paths; install-only source snapshot and three pinned startup caches | None |
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
@@ -77,6 +78,15 @@ before installing the same shared importer. Individual snapshot source
 descriptors close promptly. Already initialized host startup modules retain
 their stock metadata; later source modules use virtual origins. See
 [decision 0018](../../docs/decisions/0018-host-python-source-apps.md).
+
+The separate install-only host profile snapshots its 1,037 pinned sources and
+requires the exact three shipped startup caches in a closed encoding-cache
+directory. Every other derived cache location remains forbidden. Cache owners
+join startup and directory leases through finalization. The 256-directory cap
+is supplemented by a 763-total-owner cap before host access. Its bounded helper
+stages app-only archives without a full runtime archive. See
+[decision 0019](../../docs/decisions/0019-install-only-host-python-source-apps.md).
+
 The host installation and native
 files must stay immutable and read-only throughout execution. Open descriptors
 do not freeze mutable backing bytes, and this profile does not validate an

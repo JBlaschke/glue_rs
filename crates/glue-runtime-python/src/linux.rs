@@ -408,11 +408,22 @@ pub(super) fn run_imports(
     )
 }
 
-pub(super) fn run_host_source_app(
+pub(super) fn run_host_source_app(payload: host_source_app_profile::Payload) -> Result<(), String> {
+    run_host_source_app_with(payload, host::Config::verify_source_snapshot)
+}
+
+pub(super) fn run_install_host_source_app(
+    payload: host_source_app_profile::Payload,
+) -> Result<(), String> {
+    run_host_source_app_with(payload, host::Config::verify_install_source_snapshot)
+}
+
+fn run_host_source_app_with(
     mut payload: host_source_app_profile::Payload,
+    snapshot_provider: fn(&host::Config) -> Result<host::SourceSnapshot, String>,
 ) -> Result<(), String> {
     preflight()?;
-    let snapshot = payload.config.verify_source_snapshot()?;
+    let snapshot = snapshot_provider(&payload.config)?;
     payload.resources.extend(snapshot.files);
     let mut index = imports::Index::new_source_app(&payload.app_id, payload.resources)?;
     let verified = snapshot.verified;

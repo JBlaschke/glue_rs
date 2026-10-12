@@ -42,12 +42,24 @@ pub(super) fn fixed_specs() -> BTreeMap<String, ResourceSpec> {
     )])
 }
 
+#[cfg(test)]
 pub(super) fn manifest_for(
     app_id: &str,
     component_id: &str,
     entry: &str,
     resources: BTreeMap<String, ResourceSpec>,
     config: &host::Config,
+) -> Result<Manifest, String> {
+    manifest_for_build(app_id, component_id, entry, resources, config, BUILD_ID)
+}
+
+pub(super) fn manifest_for_build(
+    app_id: &str,
+    component_id: &str,
+    entry: &str,
+    resources: BTreeMap<String, ResourceSpec>,
+    config: &host::Config,
+    build_id: &str,
 ) -> Result<Manifest, String> {
     // The historical constructor requires app/main.py. Replace that temporary
     // shape before validating the new declared application entry.
@@ -73,12 +85,24 @@ pub(super) fn manifest_for(
             native_modules: BTreeSet::new(),
         },
     )]);
-    manifest.runtimes.get_mut("python").unwrap().build_id = BUILD_ID.into();
+    manifest.runtimes.get_mut("python").unwrap().build_id = build_id.into();
     manifest.validate().map_err(|error| error.to_string())?;
     Ok(manifest)
 }
 
 pub(super) fn admit(manifest: &Manifest) -> Result<host::Config, String> {
+    admit_for_build(
+        manifest,
+        BUILD_ID,
+        host::Config::validate_source_snapshot_layout,
+    )
+}
+
+pub(super) fn admit_for_build(
+    manifest: &Manifest,
+    build_id: &str,
+    validate_layout: fn(&host::Config) -> Result<(), String>,
+) -> Result<host::Config, String> {
     source_app_profile::admit_application(manifest, &fixed_specs())?;
     let runtime = manifest
         .runtimes
@@ -96,17 +120,18 @@ pub(super) fn admit(manifest: &Manifest) -> Result<host::Config, String> {
         .strip_suffix("/lib/python3.13")
         .ok_or("host source app stdlib differs from the fixed installation layout")?;
     let config = host::Config::parse(prefix)?;
-    config.validate_source_snapshot_layout()?;
+    validate_layout(&config)?;
     let component = &manifest.components[&manifest.entrypoint];
     if runtime_library != &config.library
         || stdlib != &config.stdlib
         || *manifest
-            != manifest_for(
+            != manifest_for_build(
                 &manifest.app_id,
                 &manifest.entrypoint,
                 &component.entry_point,
                 manifest.resources.clone(),
                 &config,
+                build_id,
             )?
     {
         return Err("manifest differs from the pinned host source app provider contract".into());
@@ -127,11 +152,18 @@ pub(super) struct Payload {
     pub resources: BTreeMap<String, Vec<u8>>,
 }
 
-pub(super) fn read_archive(mut archive: Archive<File>) -> Result<Payload, String> {
+pub(super) fn read_archive(archive: Archive<File>) -> Result<Payload, String> {
+    read_archive_with(archive, admit)
+}
+
+pub(super) fn read_archive_with(
+    mut archive: Archive<File>,
+    admission: fn(&Manifest) -> Result<host::Config, String>,
+) -> Result<Payload, String> {
     archive
         .check_limits(limits())
         .map_err(|error| error.to_string())?;
-    let config = admit(archive.manifest())?;
+    let config = admission(archive.manifest())?;
     let app_id = archive.manifest().app_id.clone();
     let entry = archive.manifest().components[&archive.manifest().entrypoint]
         .entry_point

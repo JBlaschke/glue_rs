@@ -211,8 +211,17 @@ verify into an immutable snapshot before startup; later imports use the shared
 buffer importer with filesystem fallback disabled. Installed startup paths must
 remain immutable and read-only.
 Broader host installations, wheels and native package admission remain open.
-Native hashes identify declared
-images; admission still requires the reviewed ELF/import/initializer contract.
+For the registered native profile, hashes identify declared images; admission
+also requires the reviewed ELF/import/initializer contract.
+
+The [install-only host workflow](fixtures/python-install-host-source-apps/README.md)
+selects the independently pinned install-only distribution's 1,037 sources and
+three encoding caches. All selected source/library/cache identities verify
+before Python loads; the stock cache directory admits only its exact three
+files. Later imports use the same owned source snapshot and virtual resource
+streams. The full-source host profile continues to require its wider inventory
+and reject every startup cache. See
+[the install-only host decision](docs/decisions/0019-install-only-host-python-source-apps.md).
 
 ```sh
 # GNU Linux arm64, using the independently verified pinned header tree:
@@ -327,6 +336,8 @@ sh fixtures/python-extensions/run-linux.sh
 sh fixtures/python-runner/run-linux.sh
 sh fixtures/python-source-apps/run-linux.sh
 sh fixtures/python-host-source-apps/run-linux.sh
+sh fixtures/python-install-host-source-apps/run-linux.sh
+python3 -m unittest discover -s scripts -p 'test_linux_python_install_host_source_app_trace.py'
 python3 fixtures/python-host-source-apps/test_protocol.py
 python3 fixtures/python-source-apps/test_entry.py
 python3 fixtures/python-imports/test_importer.py
