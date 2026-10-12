@@ -11,6 +11,10 @@ resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
 Linux targets. General native loading, host/archived runtime acquisition,
 general Python/Node compatibility, workers and standalone executables remain pending.
 The archive and manifest are experimental version 0; G0/G1/G2 remain open.
+An experimental worker-message codec and controller ledger are tested through
+synthetic Rust peers over anonymous pipes. Runtime worker execution and
+cross-language calls remain pending; see
+[the protocol fixture](fixtures/worker-protocol/README.md).
 An opt-in GNU Linux arm64 profile also runs a controlled native Lua closure
 through sealed executable memfds in `glue run`. The optional `python-pbs` build
 also routes the exact controlled PBS source/resource and registered-native profiles
