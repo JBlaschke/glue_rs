@@ -1,0 +1,1686 @@
+{
+  "install_host_source_apps": {
+    "accepted_rejection_shortcuts": [
+      {
+        "accepted": true,
+        "changed_trace_sha256": "b7746f3c30646bfa90a765e3462ebf3e50a538b75eeb75d3e4b2d16495185a5b",
+        "control": "unrelated pristine entry read omitted before CRC rejection",
+        "mode": "corrupt-source",
+        "reason": "Complete metadata and selected corrupt bytes remain admitted; readers close and no host provider is acquired.",
+        "removed_read_sha256": "ffc2f0fc59a8131704d3022076634a014273841f6381dce5501c30be9cdc37e0"
+      }
+    ],
+    "api": {
+      "provenance_receipts": 4,
+      "public_exports": 29,
+      "revision": 4,
+      "table_bytes": 240
+    },
+    "applications": {
+      "app-error": {
+        "app_id": "failing.source",
+        "bytes": 59,
+        "component": "fail",
+        "entry": "app/jobs/fail.py",
+        "resource_count": 1,
+        "resources": {
+          "app/jobs/fail.py": {
+            "compression": "stored",
+            "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+            "size": 59
+          }
+        }
+      },
+      "corrupt-source": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "deep-cache": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "extra-cache": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "minimal": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "missing-cache": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "missing-library": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "missing-source": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "nul": {
+        "app_id": "nul.source",
+        "bytes": 22,
+        "component": "nul",
+        "entry": "app/embedded-nul.py",
+        "resource_count": 1,
+        "resources": {
+          "app/embedded-nul.py": {
+            "compression": "stored",
+            "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+            "size": 22
+          }
+        }
+      },
+      "resources": {
+        "app_id": "daily.report",
+        "bytes": 2178,
+        "component": "report",
+        "entry": "app/tasks/report's [daily].py",
+        "resource_count": 7,
+        "resources": {
+          "app/python/report_data/__init__.py": {
+            "compression": "stored",
+            "sha256": "89e06ad2e2929dea441f54af293b1c7821ec96d9a9381a0aec8c1a9ee026451d",
+            "size": 26
+          },
+          "app/python/report_data/answer.py": {
+            "compression": "stored",
+            "sha256": "200a2dfcd924e06463c2cf770dc0b94dc57e4225dc0db8a84ad2912910a89e26",
+            "size": 81
+          },
+          "app/python/report_data/assets/binary.bin": {
+            "compression": "stored",
+            "sha256": "27279180881062e729fe01cf5a43b43652a7608246863f7714036191e54a3f4e",
+            "size": 4
+          },
+          "app/python/report_data/assets/message.txt": {
+            "compression": "stored",
+            "sha256": "e9478f62d7fa9bf6d253cd7e4129b4a0ad0c97025c8a8d0b04dfdc48dd650353",
+            "size": 16
+          },
+          "app/python/report_parts/assets/part.txt": {
+            "compression": "stored",
+            "sha256": "4281ef15452913e09aa213310952b195aeb8cb01fca8a66eb513ed2fb660294b",
+            "size": 17
+          },
+          "app/python/report_parts/extra.py": {
+            "compression": "stored",
+            "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+            "size": 11
+          },
+          "app/tasks/report's [daily].py": {
+            "compression": "stored",
+            "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0",
+            "size": 2023
+          }
+        }
+      },
+      "startup-bytecode": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "startup-native": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "stdlib": {
+        "app_id": "stdlib.source",
+        "bytes": 1236,
+        "component": "stdlib",
+        "entry": "app/tasks/stdlib.py",
+        "resource_count": 1,
+        "resources": {
+          "app/tasks/stdlib.py": {
+            "compression": "stored",
+            "sha256": "5632df70b6569c873b7d25487ea069d6383d1436b4692c7a4b4dddea94284d08",
+            "size": 1236
+          }
+        }
+      },
+      "syntax": {
+        "app_id": "syntax.source",
+        "bytes": 38,
+        "component": "syntax",
+        "entry": "app/jobs/invalid.py",
+        "resource_count": 1,
+        "resources": {
+          "app/jobs/invalid.py": {
+            "compression": "stored",
+            "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+            "size": 38
+          }
+        }
+      },
+      "wrong-cache": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      },
+      "wrong-source": {
+        "app_id": "minimal.source",
+        "bytes": 685,
+        "component": "launch",
+        "entry": "app/launch.py",
+        "resource_count": 2,
+        "resources": {
+          "app/launch.py": {
+            "compression": "stored",
+            "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+            "size": 673
+          },
+          "app/python/simple_value.py": {
+            "compression": "stored",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12
+          }
+        }
+      }
+    },
+    "archives": {
+      "app-error": {
+        "file": "app-error.glue",
+        "sha256": "aa1093d52fc3f24018d9800c56a23439279c53e6c828b2b5074a797b7a54f228",
+        "size": 5585
+      },
+      "corrupt-source": {
+        "file": "corrupt-source.glue",
+        "sha256": "65a0ee1b3995572a63501d9c1354a35bbcdb2dd5d821bca6378ebff59973ba44",
+        "size": 6512
+      },
+      "deep-cache": {
+        "file": "deep-cache.glue",
+        "sha256": "8ff6b6ec1e220789284026ec646a3e109d857db4043a9e693d302fbcdf382ec6",
+        "size": 6534
+      },
+      "extra-cache": {
+        "file": "extra-cache.glue",
+        "sha256": "acb193ea95bd3b7bb10ab4d51240e5753e87ab3182604936880a7efe87c39e3d",
+        "size": 6536
+      },
+      "minimal": {
+        "file": "minimal.glue",
+        "sha256": "9e0ea575020252467eaf2aa81aa76efafbdbeb16e371f254de117db52d5cf975",
+        "size": 6512
+      },
+      "missing-cache": {
+        "file": "missing-cache.glue",
+        "sha256": "5df8f4a9a3dd66a99ec9e8570dcc2b839f4b8d5928b75fa04a52b10b853eefcb",
+        "size": 6540
+      },
+      "missing-library": {
+        "file": "missing-library.glue",
+        "sha256": "d168faedae651ecd6a61690e520400629a050353cb85672c6cba679b291a1eef",
+        "size": 6544
+      },
+      "missing-source": {
+        "file": "missing-source.glue",
+        "sha256": "0a4374f83b825e3f8cddc17275a4fefbe65ca75d298e5ccb8eae85c7992eb8cc",
+        "size": 6542
+      },
+      "nul": {
+        "file": "nul.glue",
+        "sha256": "ecf49e2fc59d0b6be3cc38f11fcdad6d214abd27e6ea463810c8231b1146c377",
+        "size": 5554
+      },
+      "resources": {
+        "file": "resources.glue",
+        "sha256": "7cb47576f8c9de5f94e421afbd81148ae3b0e82e657a9892ed98ce5b11352527",
+        "size": 9793
+      },
+      "startup-bytecode": {
+        "file": "startup-bytecode.glue",
+        "sha256": "781d72fe4867832c86964244ccfdfc44c1044579ae9589abfffd218558296ac8",
+        "size": 6546
+      },
+      "startup-native": {
+        "file": "startup-native.glue",
+        "sha256": "f42c21272905229512196bc61131b3a507a21b1fdde0d248a4733f00546a4ba1",
+        "size": 6542
+      },
+      "stdlib": {
+        "file": "stdlib.glue",
+        "sha256": "44b3c9a74e45372da7d3dcab696a3fd46b44bb82b5ec003007c903abfcbffb03",
+        "size": 6779
+      },
+      "syntax": {
+        "file": "syntax.glue",
+        "sha256": "97f807888b2b15ec821b2da7dfea8e047958ce02efbdff3f5166a374d6237dad",
+        "size": 5579
+      },
+      "wrong-cache": {
+        "file": "wrong-cache.glue",
+        "sha256": "c9bcd041fc5b0ce05c7b946f83102bdec652172472e94d70a83bef20a828625b",
+        "size": 6536
+      },
+      "wrong-source": {
+        "file": "wrong-source.glue",
+        "sha256": "8197add0bff520ffa343978f279d379734b7f7d69667276279df6f43db3de534",
+        "size": 6538
+      }
+    },
+    "content": {
+      "app-error": {
+        "resources": 2,
+        "uncompressed_bytes": 13569
+      },
+      "corrupt-source": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "deep-cache": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "extra-cache": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "minimal": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "missing-cache": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "missing-library": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "missing-source": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "nul": {
+        "resources": 2,
+        "uncompressed_bytes": 13532
+      },
+      "resources": {
+        "resources": 8,
+        "uncompressed_bytes": 15688
+      },
+      "startup-bytecode": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "startup-native": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "stdlib": {
+        "resources": 2,
+        "uncompressed_bytes": 14746
+      },
+      "syntax": {
+        "resources": 2,
+        "uncompressed_bytes": 13548
+      },
+      "wrong-cache": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      },
+      "wrong-source": {
+        "resources": 3,
+        "uncompressed_bytes": 14195
+      }
+    },
+    "controls": 60,
+    "corrupt_source": {
+      "corrupt_member_sha256": "0a7093fde565e53ed92ab7b547f031ed748ec33a65cc4364d91fa323c40f11e9",
+      "data_offset": 2156,
+      "key": "app/python/simple_value.py",
+      "only_changed_archive_byte": 2156,
+      "original_member_sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "error_finalization_scope": "Success stdout precedes retained owner release; error-mode finalization ownership is established by synchronous source/C lifetimes together with complete phase/closure traces, before outer CLI stderr.",
+    "host_trees": {
+      "deep-cache": {
+        "complete_inventory_sha256": "bfd34a848e43781e51050f02171c1d4c287e0afd5b9be258328ea8c345648b63",
+        "declared_changes_only": true,
+        "directories": 198,
+        "prefix": "/build-target/host Python install source apps deep-cache",
+        "read_only": true,
+        "regular_bytes": 182155983,
+        "regular_files": 3479,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "extra-cache": {
+        "complete_inventory_sha256": "a0775d99bf4c53d24eeb63f88c7a3db7ecbb049da27e70173a38c5db53fa6e05",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps extra-cache",
+        "read_only": true,
+        "regular_bytes": 182155983,
+        "regular_files": 3479,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "missing-cache": {
+        "complete_inventory_sha256": "07725b412db90fe2a308d64f1f6c624af4450c0847de9e3d4b3ac5d98c353027",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps missing-cache",
+        "read_only": true,
+        "regular_bytes": 182149650,
+        "regular_files": 3477,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "missing-library": {
+        "complete_inventory_sha256": "8ad596380abc32c25f81eac75ee6ab65eb5cd577a2a1d21a2463e459062decb2",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps missing-library",
+        "read_only": true,
+        "regular_bytes": 108591971,
+        "regular_files": 3477,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "missing-source": {
+        "complete_inventory_sha256": "01ba4c69337c0f5d19d11847f60298bf153d0ce3680b1e7366a3d8a3568944a0",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps missing-source",
+        "read_only": true,
+        "regular_bytes": 182145890,
+        "regular_files": 3477,
+        "snapshot_source_files": 1036,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "primary": {
+        "complete_inventory_sha256": "541ea76715d9071e10cb92df984a61ca0da461c1fd9f2d39237ce874b2d8344e",
+        "declared_changes_only": true,
+        "directories": 199,
+        "prefix": "/build-target/host Python install source apps",
+        "read_only": true,
+        "regular_bytes": 182156318,
+        "regular_files": 3487,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "startup-bytecode": {
+        "complete_inventory_sha256": "4a720988bbaccb7f4461bba3ea38adc1ee03e5d629b1b066a6b1c489a3e0fb62",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps startup-bytecode",
+        "read_only": true,
+        "regular_bytes": 182155983,
+        "regular_files": 3479,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "startup-native": {
+        "complete_inventory_sha256": "a22e0b633ab1b22e2d8a1a2f08fcb20f688c325577fa8ac1c19850bec5a0578e",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps startup-native",
+        "read_only": true,
+        "regular_bytes": 182155983,
+        "regular_files": 3479,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "wrong-cache": {
+        "complete_inventory_sha256": "d50baf80c4f384de3b7147979e7e3937d2ff42ea99a02f619b1ba08323eb886e",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps wrong-cache",
+        "read_only": true,
+        "regular_bytes": 182155939,
+        "regular_files": 3478,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      },
+      "wrong-source": {
+        "complete_inventory_sha256": "4fcd7a59b03026edbe1c9eee11e9207443fe6991c072d15b0682c090614836c8",
+        "declared_changes_only": true,
+        "directories": 197,
+        "prefix": "/build-target/host Python install source apps wrong-source",
+        "read_only": true,
+        "regular_bytes": 182155939,
+        "regular_files": 3478,
+        "snapshot_source_files": 1037,
+        "stock_mtimes_preserved": true,
+        "symlinks": 1048
+      }
+    },
+    "hostile_actual_mutations": 894,
+    "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "launcher": {
+      "file": "glue",
+      "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47",
+      "size": 3932048
+    },
+    "retention_date": "2026-10-12",
+    "source_branch": {
+      "receipt": "source-branch.txt",
+      "recorded_at": "capture",
+      "value": "codex/a7-install-only-host-source-apps"
+    },
+    "source_clean": true,
+    "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+    "source_projection": {
+      "cache_locations_required_absent": 99,
+      "derived_source_cache_locations": 100,
+      "directory_owner_cap": 256,
+      "empty_sources": 10,
+      "files": 1037,
+      "inventory": {
+        "file": "source-pins.json",
+        "sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+        "size": 155575
+      },
+      "required_stock_cache_bytes": 21157,
+      "required_stock_cache_files": 3,
+      "retained_owner_cap": 763,
+      "uncompressed_bytes": 15894268
+    },
+    "statuses": {
+      "app-error": 1,
+      "corrupt-source": 1,
+      "deep-cache": 1,
+      "extra-cache": 1,
+      "minimal": 0,
+      "missing-cache": 1,
+      "missing-library": 1,
+      "missing-source": 1,
+      "nul": 1,
+      "resources": 0,
+      "startup-bytecode": 1,
+      "startup-native": 1,
+      "stdlib": 0,
+      "syntax": 1,
+      "wrong-cache": 1,
+      "wrong-source": 1
+    },
+    "stderr_bytes": {
+      "app-error": 43,
+      "corrupt-source": 70,
+      "deep-cache": 165,
+      "extra-cache": 179,
+      "minimal": 0,
+      "missing-cache": 62,
+      "missing-library": 143,
+      "missing-source": 154,
+      "nul": 69,
+      "resources": 0,
+      "startup-bytecode": 163,
+      "startup-native": 190,
+      "stdlib": 0,
+      "syntax": 42,
+      "wrong-cache": 155,
+      "wrong-source": 131
+    },
+    "stdout_bytes": {
+      "app-error": 0,
+      "corrupt-source": 0,
+      "deep-cache": 0,
+      "extra-cache": 0,
+      "minimal": 50,
+      "missing-cache": 0,
+      "missing-library": 0,
+      "missing-source": 0,
+      "nul": 0,
+      "resources": 90,
+      "startup-bytecode": 0,
+      "startup-native": 0,
+      "stdlib": 76,
+      "syntax": 0,
+      "wrong-cache": 0,
+      "wrong-source": 0
+    },
+    "target_triple": "aarch64-unknown-linux-gnu",
+    "trace_read_scope": "Complete requested/returned host file counts, EOF/metadata/closure and pinned visible ELF prefix; s256 strings do not retain every source/library byte. Full file hashes are separately checked by Rust and retained host projection identities.",
+    "trusted_prelude": {
+      "file": "prelude.py",
+      "sha256": "89c6fd07ec27e83baf3af9612caf44e164867d7eff81d957bcaa0c139ccfff00",
+      "size": 455
+    }
+  },
+  "regressions": {
+    "extensions": {
+      "archives": {
+        "bundled-archived": {
+          "file": "bundled-archived.glue",
+          "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+          "size": 83438354
+        },
+        "bundled-archived-app-error": {
+          "file": "bundled-archived.glue",
+          "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+          "size": 83438354
+        },
+        "bundled-host": {
+          "file": "bundled-host.glue",
+          "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+          "size": 83094831
+        },
+        "bundled-host-app-error": {
+          "file": "bundled-host.glue",
+          "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+          "size": 83094831
+        },
+        "corrupt-native": {
+          "file": "corrupt-native.glue",
+          "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+          "size": 83438354
+        },
+        "host-archived": {
+          "file": "host-archived.glue",
+          "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+          "size": 359787
+        },
+        "host-archived-app-error": {
+          "file": "host-archived.glue",
+          "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+          "size": 359787
+        },
+        "host-host": {
+          "file": "host-host.glue",
+          "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+          "size": 16264
+        },
+        "host-host-app-error": {
+          "file": "host-host.glue",
+          "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+          "size": 16264
+        },
+        "missing-host-image": {
+          "file": "missing-host-image.glue",
+          "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+          "size": 83094926
+        },
+        "wrong-host-image": {
+          "file": "wrong-host-image.glue",
+          "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+          "size": 83094916
+        }
+      },
+      "baseline_stdout_bytes": 69,
+      "corrupt_native": {
+        "corrupt_sha256": "ce1b5a0a2bd6ba1237baefcb25b482ebeb23a742856171750cb6d6fbaac0a117",
+        "data_offset": 621546,
+        "key": "native/libglue_python_dependency.so",
+        "only_changed_archive_byte": 621546,
+        "original_sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+        "size": 67152
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "images": {
+        "glue_native_exec_error.so": {
+          "file": "glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+          "size": 68672
+        },
+        "glue_native_init_error.so": {
+          "file": "glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+          "size": 68400
+        },
+        "glue_native_multi.so": {
+          "file": "glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+          "size": 68640
+        },
+        "glue_native_single.so": {
+          "file": "glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+          "size": 68536
+        },
+        "libglue_python_dependency.so": {
+          "file": "libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+          "size": 67152
+        }
+      },
+      "launcher": {
+        "file": "glue-python-bootstrap-probe",
+        "sha256": "1d0a89a24d40a07e47dc3763ba45037c4bad9639ef5da7630cd69f53f5d7210a",
+        "size": 3190064
+      },
+      "source_branch": {
+        "receipt": "source-branch.txt",
+        "recorded_at": "capture",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "statuses": {
+        "bundled-archived": 0,
+        "bundled-archived-app-error": 1,
+        "bundled-host": 0,
+        "bundled-host-app-error": 1,
+        "corrupt-native": 1,
+        "host-archived": 0,
+        "host-archived-app-error": 1,
+        "host-host": 0,
+        "host-host-app-error": 1,
+        "missing-host-image": 1,
+        "wrong-host-image": 1
+      },
+      "stdout_bytes": {
+        "bundled-archived": 169,
+        "bundled-archived-app-error": 169,
+        "bundled-host": 169,
+        "bundled-host-app-error": 169,
+        "corrupt-native": 0,
+        "host-archived": 169,
+        "host-archived-app-error": 169,
+        "host-host": 169,
+        "host-host-app-error": 169,
+        "missing-host-image": 0,
+        "wrong-host-image": 0
+      },
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "frozen": {
+      "archives": {
+        "app-error": {
+          "file": "app.glue",
+          "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062",
+          "size": 73707094
+        },
+        "bad-bytecode": {
+          "file": "app.glue",
+          "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062",
+          "size": 73707094
+        },
+        "missing-encodings": {
+          "file": "app.glue",
+          "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062",
+          "size": 73707094
+        },
+        "success": {
+          "file": "app.glue",
+          "sha256": "9b155e92dea9f054679a9a0950a9adada1ddd4c3dd6268a13f50adf24279f062",
+          "size": 73707094
+        }
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue-python-bootstrap-probe",
+        "sha256": "1d0a89a24d40a07e47dc3763ba45037c4bad9639ef5da7630cd69f53f5d7210a",
+        "size": 3190064
+      },
+      "source_branch": {
+        "note": "This legacy capture has no per-harness capture-time branch receipt; branch was derived from the clean current checkout at retention with the same source commit. Separate orchestration records retain the branch around every capture.",
+        "receipt": "source-branch-at-retention.txt",
+        "recorded_at": "retention",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "statuses": {
+        "app-error": 1,
+        "bad-bytecode": 1,
+        "missing-encodings": 1,
+        "success": 0
+      },
+      "stdout_bytes": 108,
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "host": {
+      "archives": {
+        "app-error": {
+          "file": "success.glue",
+          "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18",
+          "size": 2741
+        },
+        "cached-bytecode": {
+          "file": "cached-bytecode.glue",
+          "sha256": "ca0791efba245e03d99f755112abff7362fca88dd02007838705f2228fbfdbc4",
+          "size": 2773
+        },
+        "missing-encodings": {
+          "file": "missing-encodings.glue",
+          "sha256": "3fed3406a05d2c43a79c4561d341ecb499f09783f865ecc039238e1ff5ec386f",
+          "size": 2777
+        },
+        "missing-library": {
+          "file": "missing-library.glue",
+          "sha256": "731d6cb68d7ea75229cf0c3e297466b6c1b6e5105e1721b590bc21d9e54dc406",
+          "size": 2773
+        },
+        "success": {
+          "file": "success.glue",
+          "sha256": "950ce62eaeab9eb59dbe3777b087e0428b97fbbb0fc4fddd98747de11da11d18",
+          "size": 2741
+        },
+        "symlink-stdlib": {
+          "file": "symlink-stdlib.glue",
+          "sha256": "dfc6da3209d2f011281645e0b5aeb7ec3cd74d8457c235e71f42ac0a300cab0f",
+          "size": 2771
+        },
+        "wrong-library": {
+          "file": "wrong-library.glue",
+          "sha256": "a60fc7df7a3116b14bfa0a3436bb177b0f5755c9261b7dfd3dfd31ebcaac9b37",
+          "size": 2769
+        },
+        "wrong-stdlib": {
+          "file": "wrong-stdlib.glue",
+          "sha256": "a321b1b099b3fbc924c4a646d1b9854417c9c84e7ddb9e384b9a8b785fca4968",
+          "size": 2767
+        }
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue-python-bootstrap-probe",
+        "sha256": "1d0a89a24d40a07e47dc3763ba45037c4bad9639ef5da7630cd69f53f5d7210a",
+        "size": 3190064
+      },
+      "source_branch": {
+        "note": "This legacy capture has no per-harness capture-time branch receipt; branch was derived from the clean current checkout at retention with the same source commit. Separate orchestration records retain the branch around every capture.",
+        "receipt": "source-branch-at-retention.txt",
+        "recorded_at": "retention",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "statuses": {
+        "app-error": 1,
+        "cached-bytecode": 1,
+        "missing-encodings": 1,
+        "missing-library": 1,
+        "success": 0,
+        "symlink-stdlib": 1,
+        "wrong-library": 1,
+        "wrong-stdlib": 1
+      },
+      "stdout_bytes": 111,
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "host-source": {
+      "api": {
+        "public_exports": 29,
+        "revision": 4,
+        "table_bytes": 240
+      },
+      "archives": {
+        "app-error": {
+          "file": "app-error.glue",
+          "sha256": "ddd9a059df433e3bc20573a999b27757614bc707af9d516db4eaa2c07e1d58cc",
+          "size": 5561
+        },
+        "corrupt-source": {
+          "file": "corrupt-source.glue",
+          "sha256": "26e2bfcd458c8bc5f092970754a61caa166a1a3b8487cae4581c048e9a32f207",
+          "size": 6488
+        },
+        "deep-cache": {
+          "file": "deep-cache.glue",
+          "sha256": "02ab4c997ce5d1c1e0f62d03961c6d57e2f85fa4cad224fcfc7d90c2f579fe24",
+          "size": 6510
+        },
+        "minimal": {
+          "file": "minimal.glue",
+          "sha256": "9924ef3c70138e9e11e68b2ee7b478b9592ad4b08850f2ac34b3e290f0f0d07e",
+          "size": 6488
+        },
+        "missing-library": {
+          "file": "missing-library.glue",
+          "sha256": "2549df9196418a59c29abcbda76baeeb9826248f0eec663634076e04898b709f",
+          "size": 6520
+        },
+        "missing-source": {
+          "file": "missing-source.glue",
+          "sha256": "dfce2ecd8694c5c448ec30f987d029a4a7c43d090baaec6588751e57d419d377",
+          "size": 6518
+        },
+        "nul": {
+          "file": "nul.glue",
+          "sha256": "bb93ac4200c04793dff3069d0326de426d28bbb483fefa9cc972441ab71c3bc6",
+          "size": 5530
+        },
+        "resources": {
+          "file": "resources.glue",
+          "sha256": "bd4e6ed9980c9f81510ff6671ad2f8126d0dd1367923e151105850a7b1e8f6a0",
+          "size": 9769
+        },
+        "startup-bytecode": {
+          "file": "startup-bytecode.glue",
+          "sha256": "e3dc75d8cd17d10829893b0ff3419131b653f71738561836fefa5d4626b1b648",
+          "size": 6522
+        },
+        "startup-native": {
+          "file": "startup-native.glue",
+          "sha256": "fec16b6e701cfa976a0538bcb2aac726800a6962d7c1847ee66904c7662901b3",
+          "size": 6518
+        },
+        "stdlib": {
+          "file": "stdlib.glue",
+          "sha256": "b570820e3f0265f8b17b230fbd55160ff244acb78352b9f79982a083e53d6b35",
+          "size": 6755
+        },
+        "syntax": {
+          "file": "syntax.glue",
+          "sha256": "3766feda08788b0945f625ee4ac2da522d5ee44fbaf94b8af0d91a18bfd1baa7",
+          "size": 5555
+        },
+        "wrong-source": {
+          "file": "wrong-source.glue",
+          "sha256": "966b84c1ea965d98db65b379ac96d601ad6e1ea1dfc3bcadca7e17878dbabdae",
+          "size": 6514
+        }
+      },
+      "content": {
+        "app-error": {
+          "resources": 2,
+          "uncompressed_bytes": 13569
+        },
+        "corrupt-source": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "deep-cache": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "minimal": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "missing-library": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "missing-source": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "nul": {
+          "resources": 2,
+          "uncompressed_bytes": 13532
+        },
+        "resources": {
+          "resources": 8,
+          "uncompressed_bytes": 15688
+        },
+        "startup-bytecode": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "startup-native": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        },
+        "stdlib": {
+          "resources": 2,
+          "uncompressed_bytes": 14746
+        },
+        "syntax": {
+          "resources": 2,
+          "uncompressed_bytes": 13548
+        },
+        "wrong-source": {
+          "resources": 3,
+          "uncompressed_bytes": 14195
+        }
+      },
+      "controls": 51,
+      "corrupt_source": {
+        "corrupt_sha256": "0a7093fde565e53ed92ab7b547f031ed748ec33a65cc4364d91fa323c40f11e9",
+        "data_offset": 2132,
+        "key": "app/python/simple_value.py",
+        "only_changed_archive_byte": 2132,
+        "original_sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+        "size": 12
+      },
+      "host_trees": {
+        "deep-cache": {
+          "files": 2176,
+          "prefix": "/build-target/host Python source apps deep-cache",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 112722068
+        },
+        "missing-library": {
+          "files": 2174,
+          "prefix": "/build-target/host Python source apps missing-library",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 39158056
+        },
+        "missing-source": {
+          "files": 2174,
+          "prefix": "/build-target/host Python source apps missing-source",
+          "snapshot_source_files": 2173,
+          "uncompressed_bytes": 112719912
+        },
+        "pristine": {
+          "files": 2184,
+          "prefix": "/build-target/host Python source apps",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 112722403
+        },
+        "startup-bytecode": {
+          "files": 2176,
+          "prefix": "/build-target/host Python source apps startup-bytecode",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 112722068
+        },
+        "startup-native": {
+          "files": 2176,
+          "prefix": "/build-target/host Python source apps startup-native",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 112722068
+        },
+        "wrong-source": {
+          "files": 2175,
+          "prefix": "/build-target/host Python source apps wrong-source",
+          "snapshot_source_files": 2174,
+          "uncompressed_bytes": 112722024
+        }
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue",
+        "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47",
+        "size": 3932048
+      },
+      "source_branch": {
+        "receipt": "source-branch.txt",
+        "recorded_at": "capture",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_projection": {
+        "cache_directories": 202,
+        "files": 2174,
+        "inventory": {
+          "file": "stdlib-pins.json",
+          "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+          "size": 326131
+        },
+        "uncompressed_bytes": 39158056
+      },
+      "statuses": {
+        "app-error": 1,
+        "corrupt-source": 1,
+        "deep-cache": 1,
+        "minimal": 0,
+        "missing-library": 1,
+        "missing-source": 1,
+        "nul": 1,
+        "resources": 0,
+        "startup-bytecode": 1,
+        "startup-native": 1,
+        "stdlib": 0,
+        "syntax": 1,
+        "wrong-source": 1
+      },
+      "stderr_bytes": {
+        "app-error": 43,
+        "corrupt-source": 70,
+        "deep-cache": 190,
+        "minimal": 0,
+        "missing-library": 135,
+        "missing-source": 147,
+        "nul": 69,
+        "resources": 0,
+        "startup-bytecode": 155,
+        "startup-native": 182,
+        "stdlib": 0,
+        "syntax": 42,
+        "wrong-source": 124
+      },
+      "stdout_bytes": {
+        "app-error": 0,
+        "corrupt-source": 0,
+        "deep-cache": 0,
+        "minimal": 50,
+        "missing-library": 0,
+        "missing-source": 0,
+        "nul": 0,
+        "resources": 90,
+        "startup-bytecode": 0,
+        "startup-native": 0,
+        "stdlib": 76,
+        "syntax": 0,
+        "wrong-source": 0
+      },
+      "target_triple": "aarch64-unknown-linux-gnu",
+      "trace_read_scope": "Complete file byte coverage/EOF/metadata/closure and separately hashed readonly provider identities; abbreviated trace strings do not independently retain every file byte.",
+      "trusted_prelude": {
+        "file": "prelude.py",
+        "sha256": "89c6fd07ec27e83baf3af9612caf44e164867d7eff81d957bcaa0c139ccfff00",
+        "size": 455
+      }
+    },
+    "hostimports": {
+      "archives": {
+        "app-error": {
+          "file": "success.glue",
+          "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682",
+          "size": 13932
+        },
+        "cached-import-bytecode": {
+          "file": "cached-import-bytecode.glue",
+          "sha256": "db05acc23bfef5b719ee1a018c8c71086ff35fa9e0715153d11a9115bbe0eca0",
+          "size": 13978
+        },
+        "corrupt-source": {
+          "file": "corrupt-source.glue",
+          "sha256": "3ef231cbfa97bbdf50b1e38b5aa693824478ff15d74d3d5ed0b7596774b1024e",
+          "size": 13932
+        },
+        "missing-import-source": {
+          "file": "missing-import-source.glue",
+          "sha256": "1c5253a146ae12a2ddb62cae2e7fb3a487b432225abb19c488d9b40f093f2e42",
+          "size": 13976
+        },
+        "success": {
+          "file": "success.glue",
+          "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682",
+          "size": 13932
+        },
+        "wrong-import-source": {
+          "file": "wrong-import-source.glue",
+          "sha256": "9633057d3156ad88c5770f0b839d57897d028ca50abf88d854ca2e0cef2c5597",
+          "size": 13972
+        },
+        "wrong-library": {
+          "file": "wrong-library.glue",
+          "sha256": "f644ad233f99f3c39fb7ff7b0a98f65a02fc67e3bf07bc16e14760ea13f9d2e7",
+          "size": 13960
+        }
+      },
+      "corrupt_source": {
+        "corrupt_sha256": "d8f9185a8c89ef3c93e4d8c580f5fbcaaacf30bc781ef3657d0479baee647b0a",
+        "data_offset": 6235,
+        "key": "app/python/glue_demo/__init__.py",
+        "only_changed_archive_byte": 6235,
+        "original_sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+        "size": 104
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "host_sources": {
+        "cache_locations": 12,
+        "runtime_names": {
+          "file": "runtime-names.json",
+          "sha256": "daa8daae25ac462e1489e1a14a6d9fc8ce8091791d3294656d6814b2e55d42ac",
+          "size": 2410
+        },
+        "startup_files": 6,
+        "supplemental_bytes": 1372061,
+        "supplemental_files": 63,
+        "supplemental_pins": {
+          "file": "stdlib-import-pins.json",
+          "sha256": "3f73bcdba6bdca48bca36e070e82b54b94d6ae80772c1ed83a4a36ba3cd66b1b",
+          "size": 10668
+        },
+        "total_bytes": 1434587,
+        "total_files": 69
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue-python-bootstrap-probe",
+        "sha256": "1d0a89a24d40a07e47dc3763ba45037c4bad9639ef5da7630cd69f53f5d7210a",
+        "size": 3190064
+      },
+      "resource_count": 18,
+      "source_branch": {
+        "note": "This legacy capture has no per-harness capture-time branch receipt; branch was derived from the clean current checkout at retention with the same source commit. Separate orchestration records retain the branch around every capture.",
+        "receipt": "source-branch-at-retention.txt",
+        "recorded_at": "retention",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_projection": {
+        "files": 0,
+        "inventory": {
+          "file": "stdlib-pins.json",
+          "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+          "size": 326131
+        },
+        "uncompressed_bytes": 0
+      },
+      "statuses": {
+        "app-error": 1,
+        "cached-import-bytecode": 1,
+        "corrupt-source": 1,
+        "missing-import-source": 1,
+        "success": 0,
+        "wrong-import-source": 1,
+        "wrong-library": 1
+      },
+      "stdout_bytes": 100,
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "imports": {
+      "archives": {
+        "app-error": {
+          "file": "app.glue",
+          "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+          "size": 83092494
+        },
+        "corrupt-source": {
+          "file": "corrupt-source.glue",
+          "sha256": "da8b417cd2059fd7137bca38f7f367ee6292d1c911d247adb75bb0f10f8665d8",
+          "size": 83092494
+        },
+        "success": {
+          "file": "app.glue",
+          "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+          "size": 83092494
+        }
+      },
+      "corrupt_source": {
+        "corrupt_sha256": "d8f9185a8c89ef3c93e4d8c580f5fbcaaacf30bc781ef3657d0479baee647b0a",
+        "data_offset": 341451,
+        "key": "app/python/glue_demo/__init__.py",
+        "only_changed_archive_byte": 341451,
+        "original_sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+        "size": 104
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue-python-bootstrap-probe",
+        "sha256": "1d0a89a24d40a07e47dc3763ba45037c4bad9639ef5da7630cd69f53f5d7210a",
+        "size": 3190064
+      },
+      "resource_count": 2194,
+      "source_branch": {
+        "note": "This legacy capture has no per-harness capture-time branch receipt; branch was derived from the clean current checkout at retention with the same source commit. Separate orchestration records retain the branch around every capture.",
+        "receipt": "source-branch-at-retention.txt",
+        "recorded_at": "retention",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_projection": {
+        "files": 2174,
+        "inventory": {
+          "file": "stdlib-pins.json",
+          "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+          "size": 326131
+        },
+        "uncompressed_bytes": 39158056
+      },
+      "statuses": {
+        "app-error": 1,
+        "corrupt-source": 1,
+        "success": 0
+      },
+      "stdout_bytes": 100,
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "runner": {
+      "archives": {
+        "bundled-archived": {
+          "file": "bundled-archived.glue",
+          "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+          "size": 83438354
+        },
+        "bundled-host": {
+          "file": "bundled-host.glue",
+          "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+          "size": 83094831
+        },
+        "bundled-imports": {
+          "file": "bundled-imports.glue",
+          "sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+          "size": 83092494
+        },
+        "corrupt-native": {
+          "file": "corrupt-native.glue",
+          "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+          "size": 83438354
+        },
+        "host-archived": {
+          "file": "host-archived.glue",
+          "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+          "size": 359787
+        },
+        "host-host": {
+          "file": "host-host.glue",
+          "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+          "size": 16264
+        },
+        "host-imports": {
+          "file": "host-imports.glue",
+          "sha256": "7c40a384de3af8855fa60c059c96a9de16477167153b5abe0eafd613db752682",
+          "size": 13932
+        },
+        "missing-host-image": {
+          "file": "missing-host-image.glue",
+          "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+          "size": 83094926
+        },
+        "wrong-host-image": {
+          "file": "wrong-host-image.glue",
+          "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+          "size": 83094916
+        }
+      },
+      "baseline_stdout_bytes": 69,
+      "corrupt_native": {
+        "corrupt_sha256": "ce1b5a0a2bd6ba1237baefcb25b482ebeb23a742856171750cb6d6fbaac0a117",
+        "data_offset": 621546,
+        "key": "native/libglue_python_dependency.so",
+        "only_changed_archive_byte": 621546,
+        "original_sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+        "size": 67152
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "host_sources": {
+        "cache_locations": 12,
+        "runtime_names": {
+          "file": "runtime-names.json",
+          "sha256": "daa8daae25ac462e1489e1a14a6d9fc8ce8091791d3294656d6814b2e55d42ac",
+          "size": 2410
+        },
+        "startup_files": 6,
+        "supplemental_bytes": 1372061,
+        "supplemental_files": 63,
+        "supplemental_pins": {
+          "file": "stdlib-import-pins.json",
+          "sha256": "3f73bcdba6bdca48bca36e070e82b54b94d6ae80772c1ed83a4a36ba3cd66b1b",
+          "size": 10668
+        },
+        "total_bytes": 1434587,
+        "total_files": 69
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "images": {
+        "glue_native_exec_error.so": {
+          "file": "glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+          "size": 68672
+        },
+        "glue_native_init_error.so": {
+          "file": "glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+          "size": 68400
+        },
+        "glue_native_multi.so": {
+          "file": "glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+          "size": 68640
+        },
+        "glue_native_single.so": {
+          "file": "glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+          "size": 68536
+        },
+        "libglue_python_dependency.so": {
+          "file": "libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+          "size": 67152
+        }
+      },
+      "launcher": {
+        "file": "glue",
+        "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47",
+        "size": 3932048
+      },
+      "source_branch": {
+        "receipt": "source-branch.txt",
+        "recorded_at": "capture",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_projection": {
+        "files": 2174,
+        "inventory": {
+          "file": "stdlib-pins.json",
+          "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+          "size": 326131
+        },
+        "uncompressed_bytes": 39158056
+      },
+      "statuses": {
+        "bundled-archived": 0,
+        "bundled-host": 0,
+        "bundled-imports": 0,
+        "corrupt-native": 1,
+        "host-archived": 0,
+        "host-host": 0,
+        "host-imports": 0,
+        "missing-host-image": 1,
+        "wrong-host-image": 1
+      },
+      "stdout_bytes": {
+        "bundled-archived": 169,
+        "bundled-host": 169,
+        "bundled-imports": 100,
+        "corrupt-native": 0,
+        "host-archived": 169,
+        "host-host": 169,
+        "host-imports": 100,
+        "missing-host-image": 0,
+        "wrong-host-image": 0
+      },
+      "target_triple": "aarch64-unknown-linux-gnu"
+    },
+    "source": {
+      "applications": {
+        "app-error": {
+          "bytes": 59,
+          "component": "fail",
+          "entry": "app/jobs/fail.py",
+          "files": 1,
+          "id": "failing.source"
+        },
+        "corrupt-source": {
+          "bytes": 685,
+          "component": "launch",
+          "entry": "app/launch.py",
+          "files": 2,
+          "id": "minimal.source"
+        },
+        "minimal": {
+          "bytes": 685,
+          "component": "launch",
+          "entry": "app/launch.py",
+          "files": 2,
+          "id": "minimal.source"
+        },
+        "nul": {
+          "bytes": 22,
+          "component": "nul",
+          "entry": "app/embedded-nul.py",
+          "files": 1,
+          "id": "nul.source"
+        },
+        "resources": {
+          "bytes": 2178,
+          "component": "report",
+          "entry": "app/tasks/report's [daily].py",
+          "files": 7,
+          "id": "daily.report"
+        },
+        "syntax": {
+          "bytes": 38,
+          "component": "syntax",
+          "entry": "app/jobs/invalid.py",
+          "files": 1,
+          "id": "syntax.source"
+        }
+      },
+      "archives": {
+        "app-error": {
+          "file": "app-error.glue",
+          "sha256": "62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87",
+          "size": 83084125
+        },
+        "corrupt-source": {
+          "file": "corrupt-source.glue",
+          "sha256": "b9609b72f42883949915c291c6439f331770a3a8f256dcc063e34158d80562d6",
+          "size": 83085052
+        },
+        "minimal": {
+          "file": "minimal.glue",
+          "sha256": "b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084",
+          "size": 83085052
+        },
+        "nul": {
+          "file": "nul.glue",
+          "sha256": "00e5cea5acd655b154a428b5e90f085cbb0d202d7754ad5b437e8b5edd035cd7",
+          "size": 83084094
+        },
+        "resources": {
+          "file": "resources.glue",
+          "sha256": "3a6cdb5dee05c0049af85a503f93c1718752b6bbe0c887b0b30f1cb36e3e36d4",
+          "size": 83088333
+        },
+        "syntax": {
+          "file": "syntax.glue",
+          "sha256": "1a9166427e9bccaeae32d72e80bcb79b7e570727db494258ad830f7881e93059",
+          "size": 83084119
+        }
+      },
+      "corrupt_source": {
+        "corrupt_sha256": "0a7093fde565e53ed92ab7b547f031ed748ec33a65cc4364d91fa323c40f11e9",
+        "data_offset": 337350,
+        "key": "app/python/simple_value.py",
+        "only_changed_archive_byte": 337350,
+        "original_sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+        "size": 12
+      },
+      "frozen_bundle": {
+        "file": "freeze-bundle.json",
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      },
+      "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+      "launcher": {
+        "file": "glue",
+        "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47",
+        "size": 3932048
+      },
+      "source_branch": {
+        "receipt": "source-branch.txt",
+        "recorded_at": "capture",
+        "value": "codex/a7-install-only-host-source-apps"
+      },
+      "source_clean": true,
+      "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+      "source_projection": {
+        "files": 2174,
+        "inventory": {
+          "file": "stdlib-pins.json",
+          "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+          "size": 326131
+        },
+        "uncompressed_bytes": 39158056
+      },
+      "statuses": {
+        "app-error": 1,
+        "corrupt-source": 1,
+        "minimal": 0,
+        "nul": 1,
+        "resources": 0,
+        "syntax": 1
+      },
+      "stderr_bytes": {
+        "app-error": 43,
+        "corrupt-source": 70,
+        "minimal": 0,
+        "nul": 69,
+        "resources": 0,
+        "syntax": 42
+      },
+      "stdout_bytes": {
+        "app-error": 0,
+        "corrupt-source": 0,
+        "minimal": 50,
+        "nul": 0,
+        "resources": 90,
+        "syntax": 0
+      },
+      "target_triple": "aarch64-unknown-linux-gnu"
+    }
+  }
+}

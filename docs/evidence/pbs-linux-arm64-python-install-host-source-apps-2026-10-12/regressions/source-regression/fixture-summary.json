@@ -1,0 +1,138 @@
+{
+  "source_commit": "7a8e32c54d0375a755b55a679e18ef97e6c50114",
+  "source_clean": true,
+  "source_branch": {
+    "value": "codex/a7-install-only-host-source-apps",
+    "receipt": "source-branch.txt",
+    "recorded_at": "capture"
+  },
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "target_triple": "aarch64-unknown-linux-gnu",
+  "launcher": {
+    "file": "glue",
+    "size": 3932048,
+    "sha256": "e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47"
+  },
+  "archives": {
+    "minimal": {
+      "file": "minimal.glue",
+      "size": 83085052,
+      "sha256": "b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084"
+    },
+    "resources": {
+      "file": "resources.glue",
+      "size": 83088333,
+      "sha256": "3a6cdb5dee05c0049af85a503f93c1718752b6bbe0c887b0b30f1cb36e3e36d4"
+    },
+    "app-error": {
+      "file": "app-error.glue",
+      "size": 83084125,
+      "sha256": "62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87"
+    },
+    "syntax": {
+      "file": "syntax.glue",
+      "size": 83084119,
+      "sha256": "1a9166427e9bccaeae32d72e80bcb79b7e570727db494258ad830f7881e93059"
+    },
+    "nul": {
+      "file": "nul.glue",
+      "size": 83084094,
+      "sha256": "00e5cea5acd655b154a428b5e90f085cbb0d202d7754ad5b437e8b5edd035cd7"
+    },
+    "corrupt-source": {
+      "file": "corrupt-source.glue",
+      "size": 83085052,
+      "sha256": "b9609b72f42883949915c291c6439f331770a3a8f256dcc063e34158d80562d6"
+    }
+  },
+  "frozen_bundle": {
+    "file": "freeze-bundle.json",
+    "size": 139523,
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7"
+  },
+  "source_projection": {
+    "files": 2174,
+    "uncompressed_bytes": 39158056,
+    "inventory": {
+      "file": "stdlib-pins.json",
+      "size": 326131,
+      "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8"
+    }
+  },
+  "applications": {
+    "minimal": {
+      "id": "minimal.source",
+      "entry": "app/launch.py",
+      "component": "launch",
+      "files": 2,
+      "bytes": 685
+    },
+    "resources": {
+      "id": "daily.report",
+      "entry": "app/tasks/report's [daily].py",
+      "component": "report",
+      "files": 7,
+      "bytes": 2178
+    },
+    "app-error": {
+      "id": "failing.source",
+      "entry": "app/jobs/fail.py",
+      "component": "fail",
+      "files": 1,
+      "bytes": 59
+    },
+    "syntax": {
+      "id": "syntax.source",
+      "entry": "app/jobs/invalid.py",
+      "component": "syntax",
+      "files": 1,
+      "bytes": 38
+    },
+    "nul": {
+      "id": "nul.source",
+      "entry": "app/embedded-nul.py",
+      "component": "nul",
+      "files": 1,
+      "bytes": 22
+    },
+    "corrupt-source": {
+      "id": "minimal.source",
+      "entry": "app/launch.py",
+      "component": "launch",
+      "files": 2,
+      "bytes": 685
+    }
+  },
+  "stdout_bytes": {
+    "minimal": 50,
+    "resources": 90,
+    "app-error": 0,
+    "syntax": 0,
+    "nul": 0,
+    "corrupt-source": 0
+  },
+  "stderr_bytes": {
+    "minimal": 0,
+    "resources": 0,
+    "app-error": 43,
+    "syntax": 42,
+    "nul": 69,
+    "corrupt-source": 70
+  },
+  "statuses": {
+    "minimal": 0,
+    "resources": 0,
+    "app-error": 1,
+    "syntax": 1,
+    "nul": 1,
+    "corrupt-source": 1
+  },
+  "corrupt_source": {
+    "key": "app/python/simple_value.py",
+    "data_offset": 337350,
+    "size": 12,
+    "original_sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+    "corrupt_sha256": "0a7093fde565e53ed92ab7b547f031ed748ec33a65cc4364d91fa323c40f11e9",
+    "only_changed_archive_byte": 337350
+  }
+}

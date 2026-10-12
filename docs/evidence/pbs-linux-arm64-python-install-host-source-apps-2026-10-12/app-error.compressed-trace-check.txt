@@ -1,0 +1,1 @@
+Trace checks passed: app-error; exact readiness/archive/input phases and entry outcomes; all pinned sources and three closed startup caches verified before load, observed stale-cache reads and source startup, private stock image retained through finalization; no source fallback/mutation or extra process

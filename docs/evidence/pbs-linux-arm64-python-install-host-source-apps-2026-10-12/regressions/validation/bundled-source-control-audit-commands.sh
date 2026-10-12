@@ -1,0 +1,1 @@
+python3 -B target/python-source-apps-control-audit.py --capture target/python-install-host-source-apps-source-regression-capture --build target/python-install-host-source-apps-source-regression-build --source-revision 7a8e32c54d0375a755b55a679e18ef97e6c50114 --output target/python-install-host-source-apps-source-regression-capture/control-audit.json

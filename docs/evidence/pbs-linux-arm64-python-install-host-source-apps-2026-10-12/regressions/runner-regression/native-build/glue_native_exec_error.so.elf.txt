@@ -1,0 +1,128 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x0
+There are 7 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000814 0x000814 R E 0x10000
+  LOAD           0x00fe40 0x000000000001fe40 0x000000000001fe40 0x0002d8 0x0002e8 RW  0x10000
+  DYNAMIC        0x00fe40 0x000000000001fe40 0x000000000001fe40 0x000170 0x000170 RW  0x8
+  NOTE           0x0001c8 0x00000000000001c8 0x00000000000001c8 0x000024 0x000024 R   0x4
+  GNU_EH_FRAME   0x00073c 0x000000000000073c 0x000000000000073c 0x000034 0x000034 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x00fe40 0x000000000001fe40 0x000000000001fe40 0x0001c0 0x0001c0 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.build-id .hash .dynsym .dynstr .rela.dyn .rela.plt .plt .text .rodata .eh_frame_hdr .eh_frame 
+   01     .dynamic .got .data .bss 
+   02     .dynamic 
+   03     .note.gnu.build-id 
+   04     .eh_frame_hdr 
+   05     
+   06     .dynamic .got 
+
+Dynamic section at offset 0xfe40 contains 19 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libglue_python_dependency.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpython3.13.so.1.0]
+ 0x000000000000000e (SONAME)             Library soname: [glue_native_exec_error.so]
+ 0x0000000000000004 (HASH)               0x1f0
+ 0x0000000000000005 (STRTAB)             0x320
+ 0x0000000000000006 (SYMTAB)             0x230
+ 0x000000000000000a (STRSZ)              223 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x1ffb0
+ 0x0000000000000002 (PLTRELSZ)           120 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x508
+ 0x0000000000000007 (RELA)               0x400
+ 0x0000000000000008 (RELASZ)             264 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffff9 (RELACOUNT)          10
+ 0x0000000000000000 (NULL)               0x0
+
+Relocation section '.rela.dyn' at offset 0x400 contains 11 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000020028  0000000000000403 R_AARCH64_RELATIVE                        700
+0000000000020040  0000000000000403 R_AARCH64_RELATIVE                        20098
+0000000000020048  0000000000000403 R_AARCH64_RELATIVE                        20068
+0000000000020070  0000000000000403 R_AARCH64_RELATIVE                        640
+0000000000020098  0000000000000403 R_AARCH64_RELATIVE                        718
+00000000000200a0  0000000000000403 R_AARCH64_RELATIVE                        620
+00000000000200b8  0000000000000403 R_AARCH64_RELATIVE                        720
+00000000000200c0  0000000000000403 R_AARCH64_RELATIVE                        600
+00000000000200d8  0000000000000403 R_AARCH64_RELATIVE                        730
+00000000000200e0  0000000000000403 R_AARCH64_RELATIVE                        5f0
+000000000001fff8  0000000300000401 R_AARCH64_GLOB_DAT     0000000000000000 PyExc_RuntimeError + 0
+
+Relocation section '.rela.plt' at offset 0x508 contains 5 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000001ffc8  0000000400000402 R_AARCH64_JUMP_SLOT    0000000000000000 PyErr_SetString + 0
+000000000001ffd0  0000000500000402 R_AARCH64_JUMP_SLOT    0000000000000000 PyModuleDef_Init + 0
+000000000001ffd8  0000000600000402 R_AARCH64_JUMP_SLOT    0000000000000000 PyLong_FromLong + 0
+000000000001ffe0  0000000700000402 R_AARCH64_JUMP_SLOT    0000000000000000 glue_python_dependency_answer + 0
+000000000001ffe8  0000000800000402 R_AARCH64_JUMP_SLOT    0000000000000000 PyModule_GetState + 0
+
+Symbol table '.dynsym' contains 10 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000000005f0     0 SECTION LOCAL  DEFAULT    8 .text
+     2: 0000000000020000     0 SECTION LOCAL  DEFAULT   14 .data
+     3: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  UND PyExc_RuntimeError
+     4: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyErr_SetString
+     5: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyModuleDef_Init
+     6: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyLong_FromLong
+     7: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND glue_python_dependency_answer
+     8: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyModule_GetState
+     9: 00000000000006c0    28 FUNC    GLOBAL DEFAULT    8 PyInit_glue_native_exec_error
+
+Symbol table '.symtab' contains 44 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000000001c8     0 SECTION LOCAL  DEFAULT    1 .note.gnu.build-id
+     2: 00000000000001f0     0 SECTION LOCAL  DEFAULT    2 .hash
+     3: 0000000000000230     0 SECTION LOCAL  DEFAULT    3 .dynsym
+     4: 0000000000000320     0 SECTION LOCAL  DEFAULT    4 .dynstr
+     5: 0000000000000400     0 SECTION LOCAL  DEFAULT    5 .rela.dyn
+     6: 0000000000000508     0 SECTION LOCAL  DEFAULT    6 .rela.plt
+     7: 0000000000000580     0 SECTION LOCAL  DEFAULT    7 .plt
+     8: 00000000000005f0     0 SECTION LOCAL  DEFAULT    8 .text
+     9: 00000000000006e0     0 SECTION LOCAL  DEFAULT    9 .rodata
+    10: 000000000000073c     0 SECTION LOCAL  DEFAULT   10 .eh_frame_hdr
+    11: 0000000000000770     0 SECTION LOCAL  DEFAULT   11 .eh_frame
+    12: 000000000001fe40     0 SECTION LOCAL  DEFAULT   12 .dynamic
+    13: 000000000001ffb0     0 SECTION LOCAL  DEFAULT   13 .got
+    14: 0000000000020000     0 SECTION LOCAL  DEFAULT   14 .data
+    15: 0000000000020118     0 SECTION LOCAL  DEFAULT   15 .bss
+    16: 0000000000000000     0 SECTION LOCAL  DEFAULT   16 .comment
+    17: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS exec-error.c
+    18: 00000000000005f0     0 NOTYPE  LOCAL  DEFAULT    8 $x
+    19: 00000000000005f0    12 FUNC    LOCAL  DEFAULT    8 init_calls
+    20: 0000000000000600    24 FUNC    LOCAL  DEFAULT    8 executions
+    21: 0000000000000620    24 FUNC    LOCAL  DEFAULT    8 answer
+    22: 00000000000006e0     0 NOTYPE  LOCAL  DEFAULT    9 $d
+    23: 0000000000000640   120 FUNC    LOCAL  DEFAULT    8 execute
+    24: 0000000000020118     0 NOTYPE  LOCAL  DEFAULT   15 $d
+    25: 0000000000020118     8 OBJECT  LOCAL  DEFAULT   15 initialization_count
+    26: 0000000000020120     8 OBJECT  LOCAL  DEFAULT   15 execution_attempt_count
+    27: 0000000000020000     0 NOTYPE  LOCAL  DEFAULT   14 $d
+    28: 0000000000020000   104 OBJECT  LOCAL  DEFAULT   14 definition
+    29: 0000000000020098   128 OBJECT  LOCAL  DEFAULT   14 methods
+    30: 0000000000020068    48 OBJECT  LOCAL  DEFAULT   14 slots
+    31: 0000000000000784     0 NOTYPE  LOCAL  DEFAULT   11 $d
+    32: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS 
+    33: 000000000001fe40     0 OBJECT  LOCAL  DEFAULT  ABS _DYNAMIC
+    34: 000000000000073c     0 NOTYPE  LOCAL  DEFAULT   10 __GNU_EH_FRAME_HDR
+    35: 000000000001fff0     0 OBJECT  LOCAL  DEFAULT  ABS _GLOBAL_OFFSET_TABLE_
+    36: 0000000000000580     0 NOTYPE  LOCAL  DEFAULT    7 $x
+    37: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  UND PyExc_RuntimeError
+    38: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyErr_SetString
+    39: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyModuleDef_Init
+    40: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyLong_FromLong
+    41: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND glue_python_dependency_answer
+    42: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND PyModule_GetState
+    43: 00000000000006c0    28 FUNC    GLOBAL DEFAULT    8 PyInit_glue_native_exec_error

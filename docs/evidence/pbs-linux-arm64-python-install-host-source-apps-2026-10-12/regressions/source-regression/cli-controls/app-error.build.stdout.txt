@@ -1,0 +1,2 @@
+Built /build-target/relocated Python source apps/app-error.glue: 2178 resources, 83084125 archive bytes, 112875116 uncompressed bytes
+Archive SHA-256: 62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87

@@ -1,0 +1,2 @@
+Built /build-target/relocated Python host source apps/resources.glue: 8 resources, 9769 archive bytes, 15688 uncompressed bytes
+Archive SHA-256: bd4e6ed9980c9f81510ff6671ad2f8126d0dd1367923e151105850a7b1e8f6a0

@@ -1,0 +1,22 @@
+{
+  "app_id": "minimal.source",
+  "application": {
+    "app/launch.py": {
+      "compression": "stored",
+      "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+      "size": 673
+    },
+    "app/python/simple_value.py": {
+      "compression": "stored",
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    }
+  },
+  "application_bytes": 685,
+  "application_resources": 2,
+  "base_sha256": "cb4c6365600e29efd3066ec9f233f2f1467a7a13f3438c4f12defbe4bb9f9520",
+  "component": "launch",
+  "entry": "app/launch.py",
+  "schema_version": 0,
+  "stock_resources": 2177
+}

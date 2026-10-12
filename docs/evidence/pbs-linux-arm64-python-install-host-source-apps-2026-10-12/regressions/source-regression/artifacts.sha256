@@ -1,0 +1,9 @@
+e4018ce501a87ebb8a78097be31dc03ca6a94fea938a3775bab32093a4cb8d47  /build-target/relocated Python source apps/glue
+62d8db804ae6dfa9e338850f58b661eb85c43505faa25bacc362c071a6acae87  /build-target/relocated Python source apps/app-error.glue
+b9609b72f42883949915c291c6439f331770a3a8f256dcc063e34158d80562d6  /build-target/relocated Python source apps/corrupt-source.glue
+8ec4f65f1365380ea0e32c5755098ce4f05345cbc0a7e14177e9336b05c5c859  /build-target/relocated Python source apps/helper-drift.glue
+b5c40d817f6e618045a9d69ab6ba9385fe3ea31aa4947306ae25120340ddb084  /build-target/relocated Python source apps/minimal.glue
+00e5cea5acd655b154a428b5e90f085cbb0d202d7754ad5b437e8b5edd035cd7  /build-target/relocated Python source apps/nul.glue
+d702bc309b2543e9bd80a3d840a264205b8763a9c5b6b0e29b13485d2a2575ab  /build-target/relocated Python source apps/outside-entry.glue
+3a6cdb5dee05c0049af85a503f93c1718752b6bbe0c887b0b30f1cb36e3e36d4  /build-target/relocated Python source apps/resources.glue
+1a9166427e9bccaeae32d72e80bcb79b7e570727db494258ad830f7881e93059  /build-target/relocated Python source apps/syntax.glue

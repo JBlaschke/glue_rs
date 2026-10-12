@@ -1,0 +1,1 @@
+PASS source-app=stdlib fractions=1/2 statistics=42 xml=42 resources=streams

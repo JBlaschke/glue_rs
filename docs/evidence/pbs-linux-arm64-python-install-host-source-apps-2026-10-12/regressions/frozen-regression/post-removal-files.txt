@@ -1,0 +1,4 @@
+/build-target/.rustc_info.json
+/build-target/runtime-commands.sh
+/build-target/relocated Python bootstrap/glue-python-bootstrap-probe
+/build-target/relocated Python bootstrap/app.glue

@@ -68,3 +68,7 @@ installation compatibility, wheels, extension discovery, workers or another
 platform. The C boundary and selected GNU mapping mechanism remain unchanged.
 G0/G1/G2 remain open. See
 [the full-source host contract](0018-host-python-source-apps.md).
+
+The [clean install-only host evidence](../evidence/pbs-linux-arm64-python-install-host-source-apps-2026-10-12/README.md)
+retains 16 new and 61 prior-route traces from `7a8e32c`, compressed replays,
+exact CLI controls, the complete provider audit and 894 rejected hostile edits.

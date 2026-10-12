@@ -113,3 +113,8 @@ from clean `dd6274f`. All 61 complete traces replay, all 51 new controls agree
 and all 567 hostile trace edits reject; optimized GNU shared builds pass 102
 tests and Clippy. The C boundary and selected GNU library mapping implementation
 remain unchanged.
+
+The [install-only host evidence](../../docs/evidence/pbs-linux-arm64-python-install-host-source-apps-2026-10-12/README.md)
+retains 16 stock/cache cases and 61 fresh regressions from clean `7a8e32c`.
+All 77 complete traces replay, all 60 new controls agree and all 894 hostile
+edits reject; optimized GNU shared builds pass 116 tests and Clippy.

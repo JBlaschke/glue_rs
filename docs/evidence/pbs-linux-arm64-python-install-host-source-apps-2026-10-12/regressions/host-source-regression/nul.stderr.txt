@@ -1,0 +1,1 @@
+glue: source code string cannot contain null bytes (embedded-nul.py)

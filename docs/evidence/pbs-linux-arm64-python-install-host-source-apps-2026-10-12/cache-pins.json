@@ -1,0 +1,22 @@
+{
+  "artifact_sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+  "artifact_size": 57626877,
+  "bytecode_source_mtime": 1791559484,
+  "files": {
+    "encodings/__pycache__/__init__.cpython-313.pyc": {
+      "sha256": "ffc86018b4472655c7e7e751d81388f680be37462465346899cca17cc4f38a45",
+      "size": 6289
+    },
+    "encodings/__pycache__/aliases.cpython-313.pyc": {
+      "sha256": "61115bc7158a7bf19c18c58d5671343479927464eeb5a0c894519c18e6c22084",
+      "size": 12563
+    },
+    "encodings/__pycache__/utf_8.cpython-313.pyc": {
+      "sha256": "27f9809d7346fd60f4f94be674cb6dd9ef51e58dbed99ee1896b599cb526f015",
+      "size": 2305
+    }
+  },
+  "schema_version": 0,
+  "source_inventory_sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+  "stock_tar_mtime": 1704067200
+}

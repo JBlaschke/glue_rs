@@ -24,7 +24,7 @@ Further implementation continues on separate feature branches.
 | A7 controlled Python product route | `codex/a7-python-runner-profile` / `32a9562` (from merged `f92ac34`; evidence bundle follows) | Experimental launcher integration; controlled GNU Linux arm64 observation | Mac/Linux 350/351 workspace tests and Clippy; 68 portable/73 GNU Python tests, 14 GNU runner CLI tests, 209 policy and 16 importer tests; all nine product and 33 earlier traces pass; 30 CLI controls match and 185 hostile trace edits reject |
 | A7 bundled Python source applications | `codex/a7-python-source-apps` / `d3ddac3` (from merged `90c4a10`; evidence bundle follows) | Experimental bounded source applications; controlled GNU Linux arm64 observation | Mac/Linux 366/367 workspace tests and Clippy; 87 GNU Python/probe and 14 runner tests; 238 policy, 16 importer and 7 byte-entry tests; all six new and 42 regression traces pass/replay; 34 new and 30 existing CLI controls match; 198 hostile source-app edits reject |
 | A7 explicit-host Python source applications | `codex/a7-host-source-apps` / `dd6274f` (from merged `cb3cae4`) | Experimental bounded host source applications; controlled GNU Linux arm64 observation | Full pinned snapshot and startup guards; Mac/Linux 381/382 tests and Clippy; 102 GNU Python/probe and 14 runner tests; 261 policy and 11 host protocol tests (2 Mac skips); all 13 new and 48 regression traces pass/replay; 51 new/34 bundled/30 original controls match; all 567 hostile edits reject |
-| A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` (from merged `442d9eb`) | Pinned install-only source snapshot and exact stock startup-cache admission | Separate build identity, 1,037-source inventory and three verified startup caches; full-source profile retains cache rejection; clean validation/evidence follows |
+| A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` / `7a8e32c` (from merged `442d9eb`) | Experimental stock install-only host applications; controlled GNU Linux arm64 observation | Exact 1,037-source/three-cache prerequisites; complete provider audit; Mac/Linux 395/396 tests and Clippy; 116 GNU Python/probe and 14 runner tests; 288 policies; all 16 new/61 regression traces pass/replay; 60/51/34/30 product controls match; all 894 hostile edits reject |
 
 ## Gate status
 
@@ -335,6 +335,30 @@ and run 11 with two stock-only skips on Mac. The C bridge, API4 table and
 selected GNU library mapping implementation remain unchanged. This supports the
 exact full projection; broader installation/package compatibility and version
 selection remain open.
+
+The separate install-only host identity uses all 1,037 source files and the
+three exact encoding caches shipped by the independently pinned distribution.
+Closed cache admission and byte/hash verification precede runtime loading;
+all other derived caches and startup shadows reject. Source bytes are owned
+before initialization, while cache/startup/directory owners remain live through
+finalization. A separate total-descriptor cap prevents the smaller inventory
+from implicitly widening prefix depth. The full-source host identity retains
+its own inventory and cache rejection; no provider subset is selected silently.
+See [decision 0019](decisions/0019-install-only-host-python-source-apps.md).
+
+The [clean install-only host evidence](evidence/pbs-linux-arm64-python-install-host-source-apps-2026-10-12/README.md)
+retains 16 new and 61 fresh regression traces from `7a8e32c`, all replayed.
+Stock normalized mtimes make the three observed caches stale; traces read each
+cache completely, close it and read its matching source. Runtime admission
+checks bytes/path identity without imposing those exact mtimes on every host.
+An independent post-runtime audit verifies all ten complete stock/control trees
+on a case-sensitive Linux volume before cleanup. Mac/Linux workspaces pass
+395/396 tests and Clippy; optimized GNU builds pass 116 Python/probe and 14 CLI
+tests. Policy/importer/entry protocols pass 288/16/7; host protocol runs 11 with
+two Mac skips and passes all 11 on stock Linux. All 60 new and 51/34/30 prior
+product controls agree; all 894 hostile actual-trace edits reject. The C bridge
+and selected GNU library mapping implementation remain unchanged. Broader host
+installations, runtime versions and package/platform compatibility remain open.
 
 ## Next critical-path assignments
 

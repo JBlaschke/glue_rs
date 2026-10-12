@@ -1,0 +1,1 @@
+Trace checks passed: exact glue run route and target readiness, one admitted archive, unchanged immutable runtime/source/native provider policy, exact diagnostics/finalization/exit, no fallback, mutation or extra process

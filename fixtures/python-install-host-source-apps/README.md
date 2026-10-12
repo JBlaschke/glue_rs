@@ -89,3 +89,8 @@ the retained audit/provenance receipts.
 
 See [decision 0019](../../docs/decisions/0019-install-only-host-python-source-apps.md)
 for the profile's admission, ownership and remaining scope.
+
+The [clean evidence bundle](../../docs/evidence/pbs-linux-arm64-python-install-host-source-apps-2026-10-12/README.md)
+retains all 16 new cases and 61 fresh regressions from `7a8e32c`, all compressed
+replays, 60 exact new controls and 894 rejected hostile edits. Complete provider
+audit and Linux-volume cleanup receipts accompany the exported artifact hashes.

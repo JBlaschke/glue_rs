@@ -1,0 +1,1 @@
+glue: host startup bytecode cache is unsupported: /build-target/host Python source apps deep-cache/lib/python3.13/test/test_importlib/namespace_pkgs/module_and_namespace_package/__pycache__
