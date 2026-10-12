@@ -1,0 +1,61 @@
+{
+  "files": {
+    "Cargo.lock": {
+      "bytes": 10379,
+      "sha256": "541d6d500ab0af953926f2c604701a2cbda6ddb8dc814d601f5b5befdec8068b"
+    },
+    "Cargo.toml": {
+      "bytes": 1330,
+      "sha256": "4232406d2d8f10ebf5d6e428884cfe41360c22de66bda7e1087382d56b734d12"
+    },
+    "crates/glue-ipc/Cargo.toml": {
+      "bytes": 202,
+      "sha256": "6cd57c993e7e40974d96b918a799e7adc078856fe25eaf8b5832b08a03920f5b"
+    },
+    "crates/glue-ipc/src/codec.rs": {
+      "bytes": 19435,
+      "sha256": "40438606ff9643e312d63acb0e64c21926e203746ec2e01f0cc5d8d6a0b0ea70"
+    },
+    "crates/glue-ipc/src/lib.rs": {
+      "bytes": 4384,
+      "sha256": "45913e11bb0f3a8cd76b885a8e7d20ddcec2b1d904b71504ef49d5ed8846772c"
+    },
+    "crates/glue-ipc/src/session.rs": {
+      "bytes": 14315,
+      "sha256": "de0e6f832dd4ef0c9d24ef08823d70bd7e25fefef88e33e799bd26e3b7afb525"
+    },
+    "crates/glue-ipc/tests/codec.rs": {
+      "bytes": 22394,
+      "sha256": "e7693a3659020ba119897be56c477af6a1be563c2d6b1ce81aabb86597b0927c"
+    },
+    "docs/decisions/0020-worker-message-protocol.md": {
+      "bytes": 7684,
+      "sha256": "ea942441c2b6ed1c13796309f71d091f15eae794f1fb3b5b0b59583a353fe29b"
+    },
+    "fixtures/worker-protocol/Cargo.toml": {
+      "bytes": 290,
+      "sha256": "ba61ac53adde90851ff171f0c357d4a2afc981834de7398c0b52bcd831b19604"
+    },
+    "fixtures/worker-protocol/README.md": {
+      "bytes": 1029,
+      "sha256": "2839a9ce6f6b3b42b2dbc843fd973dd3ea1745bbcf5d399292f49ba44339e424"
+    },
+    "fixtures/worker-protocol/run-linux.sh": {
+      "bytes": 3046,
+      "sha256": "ab0f70a5af8770b43bf3814e0cb0c894152db003c6642fe7845bfeaa7f1f7554"
+    },
+    "fixtures/worker-protocol/src/main.rs": {
+      "bytes": 3966,
+      "sha256": "bd81321801b54532ea1e7af861e5c0a4ccb69c1ca09de5fcaa0ee79e4422abe7"
+    },
+    "fixtures/worker-protocol/tests/pipes.rs": {
+      "bytes": 9146,
+      "sha256": "804f27997deed3268ee6a49f7ed885742dd126562ca7e070d2a11fdfd3267c41"
+    },
+    "rust-toolchain.toml": {
+      "bytes": 86,
+      "sha256": "6a3177dca3783745b00765ea571974808dad2644947fc0a8df5927048edf13a5"
+    }
+  },
+  "implementation_commit": "42197bbbe6116fae4683e4fa21f441757c675244"
+}
