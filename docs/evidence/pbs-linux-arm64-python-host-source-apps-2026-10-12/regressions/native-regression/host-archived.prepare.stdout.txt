@@ -1,0 +1,1 @@
+prepared registered native extension fixture (archived)

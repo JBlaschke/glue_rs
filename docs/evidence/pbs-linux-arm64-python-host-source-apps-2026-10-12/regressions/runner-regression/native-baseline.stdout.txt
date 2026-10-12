@@ -1,0 +1,1 @@
+GLUE_PYTHON_EXTENSIONS_PASS single=42 multi=44 retry=2 dependency=42

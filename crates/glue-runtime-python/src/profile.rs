@@ -4,8 +4,8 @@
 //! Readiness is a separate build/platform check and never starts Python.
 
 use super::{
-    ExecutionError, extension_profile, host_import_profile, import_profile, platform,
-    source_app_profile,
+    ExecutionError, extension_profile, host_import_profile, host_source_app_profile,
+    import_profile, platform, source_app_profile,
 };
 use glue_format::{ArchiveLimits, Manifest, RuntimeAbi};
 
@@ -15,6 +15,7 @@ pub(crate) enum Kind {
     HostImports,
     RegisteredExtensions,
     BundledSourceApp,
+    HostSourceApp,
 }
 
 /// An admitted profile, tied to the manifest from which it was selected.
@@ -34,6 +35,7 @@ impl ControlledProfile {
             Kind::HostImports => "controlled explicit-host Python source/resources",
             Kind::RegisteredExtensions => "controlled registered Python native extensions",
             Kind::BundledSourceApp => "pinned bundled Python source application",
+            Kind::HostSourceApp => "pinned explicit-host Python source application",
         }
     }
 }
@@ -80,6 +82,10 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
             Kind::BundledSourceApp
         }
+        _ if runtime.build_id == host_source_app_profile::BUILD_ID => {
+            host_source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
+            Kind::HostSourceApp
+        }
         _ => {
             return Err(ExecutionError::unsupported(
                 "Python execution requires a supported pinned PBS source-application or controlled fixture profile",
@@ -92,7 +98,7 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
     })
 }
 
-/// Return narrowly admitted build bounds for a bundled source application.
+/// Return narrowly admitted build bounds for a pinned source application.
 ///
 /// Other manifests retain the caller's ordinary packaging policy. Admission
 /// uses the actual parsed manifest without reading runtime or app payloads.
@@ -102,16 +108,19 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
         .map_err(|error| ExecutionError::failed(error.to_string()))?;
     let component = &manifest.components[&manifest.entrypoint];
     let runtime = &manifest.runtimes[&component.runtime];
-    if runtime.build_id != source_app_profile::BUILD_ID {
+    if runtime.build_id != source_app_profile::BUILD_ID
+        && runtime.build_id != host_source_app_profile::BUILD_ID
+    {
         return Ok(None);
     }
     let selected = validate(manifest)?;
-    if selected.kind != Kind::BundledSourceApp {
-        return Err(ExecutionError::failed(
+    match selected.kind {
+        Kind::BundledSourceApp => Ok(Some(source_app_profile::limits())),
+        Kind::HostSourceApp => Ok(Some(host_source_app_profile::limits())),
+        _ => Err(ExecutionError::failed(
             "source application build identity conflicts with a reserved fixture",
-        ));
+        )),
     }
-    Ok(Some(source_app_profile::limits()))
 }
 
 /// Check feature and actual host compatibility for an already-admitted profile.

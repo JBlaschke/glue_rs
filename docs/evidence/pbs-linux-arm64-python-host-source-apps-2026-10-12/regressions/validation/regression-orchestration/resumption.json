@@ -1,0 +1,28 @@
+{
+  "completed_source_group": "kept unchanged; six checked clean traces",
+  "observed_runner_console_bytes": 0,
+  "orphan_check": "Task harness/build process filter and pinned-image podman ps were empty before resumption.",
+  "preserved_partial_directories": {
+    "build": "target/python-host-source-apps-runner-regression-interrupted-01/build",
+    "capture": "target/python-host-source-apps-runner-regression-interrupted-01/capture"
+  },
+  "preserved_runner_receipts": [
+    "runner.console.txt",
+    "runner.source-branch-before.txt",
+    "runner.source-revision-before.txt",
+    "runner.started.txt"
+  ],
+  "previous_orchestration_exit_status": 126,
+  "previous_orchestration_output": "empty; reported by the parent execution session",
+  "reason": "Resume after orchestration exit126 without a diagnostic. Partial runner build/CLI-control artifacts were found on inspection; no runner runtime traces were captured. The cause remains unknown.",
+  "recorded_at": "2026-10-12T14:45:51.187519+00:00",
+  "resumed_groups": [
+    "runner",
+    "native",
+    "host-import",
+    "bundled-import",
+    "frozen",
+    "host-startup"
+  ],
+  "source_commit": "dd6274f9def358ce562ba229f79e14cc2fe6c818"
+}

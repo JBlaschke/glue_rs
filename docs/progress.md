@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `90c4a10`.
+The earlier feature work and evidence were merged into `main` at `cb3cae4`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -23,6 +23,7 @@ Further implementation continues on separate feature branches.
 | A7 registered Python native initializers | `codex/a7-python-extension-init-bridge` / `b784c99` (from merged `a50b654`; evidence bundle follows) | Experimental registered-initializer profile; controlled GNU Linux arm64 observation | Mac/Linux 338/339 workspace tests and Clippy for Lua 5.4/5.5; 59 portable/65 GNU Python tests; 191 policy and 16 importer protocol tests; all eleven native and twenty-two prior regression traces pass; 37 hostile trace edits reject |
 | A7 controlled Python product route | `codex/a7-python-runner-profile` / `32a9562` (from merged `f92ac34`; evidence bundle follows) | Experimental launcher integration; controlled GNU Linux arm64 observation | Mac/Linux 350/351 workspace tests and Clippy; 68 portable/73 GNU Python tests, 14 GNU runner CLI tests, 209 policy and 16 importer tests; all nine product and 33 earlier traces pass; 30 CLI controls match and 185 hostile trace edits reject |
 | A7 bundled Python source applications | `codex/a7-python-source-apps` / `d3ddac3` (from merged `90c4a10`; evidence bundle follows) | Experimental bounded source applications; controlled GNU Linux arm64 observation | Mac/Linux 366/367 workspace tests and Clippy; 87 GNU Python/probe and 14 runner tests; 238 policy, 16 importer and 7 byte-entry tests; all six new and 42 regression traces pass/replay; 34 new and 30 existing CLI controls match; 198 hostile source-app edits reject |
+| A7 explicit-host Python source applications | `codex/a7-host-source-apps` / `dd6274f` (from merged `cb3cae4`) | Experimental bounded host source applications; controlled GNU Linux arm64 observation | Full pinned snapshot and startup guards; Mac/Linux 381/382 tests and Clippy; 102 GNU Python/probe and 14 runner tests; 261 policy and 11 host protocol tests (2 Mac skips); all 13 new and 48 regression traces pass/replay; 51 new/34 bundled/30 original controls match; all 567 hostile edits reject |
 
 ## Gate status
 
@@ -312,14 +313,36 @@ bundled application source admission while preserving the exact runtime/stdlib
 pins; general host-stdlib admission, version selection and other platforms remain
 open.
 
+The paired explicit-host source profile uses the same admitted applications
+with a full verified host source snapshot. All 2,174 sources (39,158,056 bytes)
+and the selected library verify before loading; derived caches and startup
+shadows reject. Snapshot sources close promptly into owned bytes, while startup
+and directory owners remain live through finalization. A trusted prelude removes
+ordinary filesystem import fallback before the unchanged importer runs. Host
+startup still requires immutable read-only installed paths, and the mapped
+library requires immutable backing for process life. See
+[decision 0018](decisions/0018-host-python-source-apps.md).
+
+The [clean host source-app evidence](evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
+retains 13 new and 48 fresh regression traces from `dd6274f`, all replayed.
+All 51 new, 34 bundled-app and 30 original product controls match; all 567
+hostile actual-trace edits reject. Mac/Linux source workspaces pass 381/382
+tests and Clippy, the Mac Python-enabled workspace passes 381, and optimized
+GNU Python/probe builds pass 102. Policy/importer/entry protocols pass 261/16/7
+on both interpreters; host source protocol tests pass all 11 on stock Linux
+and run 11 with two stock-only skips on Mac. The C bridge, API4 table and
+selected GNU library mapping implementation remain unchanged. This supports the
+exact full projection; broader installation/package compatibility and version
+selection remain open.
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
 Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.
-Establish the FreeBSD bundled Python/Node producer. Broaden Python host-stdlib
-admission beyond the fixed workload, extend native
+Establish the FreeBSD bundled Python/Node producer. Extend Python host-installation
+compatibility beyond the pinned full-source snapshot, extend native
 loading beyond registered initializers, and preserve both providers' archive
 source/resource behavior. Add version selection only after each candidate has
 its own verified producer, headers, runtime ABI and conformance evidence.

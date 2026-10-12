@@ -199,12 +199,17 @@ from implementation `b784c99`, with all 37 hostile trace edits rejected.
 ## Run the pinned Python profiles
 
 The launcher feature is `python-pbs`; the shared executor's build feature is
-`pbs-bootstrap`. The registry admits bounded bundled source applications,
+`pbs-bootstrap`. The registry admits bounded bundled and explicit-host source applications,
 the two exact bundled/explicit-host source/resource fixtures and the
 registered-native declaration profile with four independent runtime/native
 provider combinations. The source profile accepts application-owned entries,
 modules and assets while retaining the exact runtime, startup and stdlib pins.
 See the [source application staging/build workflow](fixtures/python-source-apps/README.md).
+The [explicit-host workflow](fixtures/python-host-source-apps/README.md) uses
+the full pinned source projection from its selected installation. Source bytes
+verify into an immutable snapshot before startup; later imports use the shared
+buffer importer with filesystem fallback disabled. Installed startup paths must
+remain immutable and read-only.
 Broader host installations, wheels and native package admission remain open.
 Native hashes identify declared
 images; admission still requires the reviewed ELF/import/initializer contract.
@@ -270,21 +275,24 @@ operations return 0; input and argument errors return 1.
 
 ## Development and evidence
 
-The bundled-source application checkpoint passes 366/367 Rust tests for
+The explicit-host source application checkpoint passes 381/382 Rust tests for
 `lua54`/`lua55` on macOS and GNU Linux arm64, with all-target Clippy warnings
-denied. The Mac Python-enabled workspace also passes 366 tests and Clippy;
-execution requires the reviewed GNU Linux arm64 target. Every fresh optimized
-GNU shared Python/probe build passes 87 tests and Clippy, and the product runner
-passes 14 CLI tests and Clippy. On both Mac and the pinned stock Linux interpreter,
-all 238 policy tests, 16 importer tests and seven byte-entry protocol tests pass.
-All six new source-app traces and 42 fresh Python regression traces pass from
-clean `d3ddac3`; all 48 compressed traces independently replay. The 34 new and
-30 existing CLI controls match exact results, and all 198 hostile source-app
+denied. The Mac Python-enabled workspace passes 381 tests and Clippy;
+execution requires the reviewed GNU Linux arm64 target. Optimized GNU shared
+Python/probe builds pass 102 tests and Clippy, and the product runner passes
+14 CLI tests and Clippy. On Mac and the pinned stock Linux interpreter, all
+261 policy, 16 importer and seven byte-entry tests pass. The host source
+protocol passes all 11 tests on stock Linux; Mac runs 11 with two stock-only
+skips. All 13 new and 48 fresh regression traces pass from clean `dd6274f`
+and all 61 compressed traces replay. The 51 new, 34 bundled-app and 30
+original product controls match exact results; all 567 hostile host-app
 trace edits reject. The
-[source-app evidence](docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
-retains source/artifact identities, commands, controls and complete traces;
-the [runner checkpoint](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
-records the earlier product integration. Earlier native Linux validation covers
+[host source-app evidence](docs/evidence/pbs-linux-arm64-python-host-source-apps-2026-10-12/README.md)
+retains source/artifact identities, commands, controls, audits and full traces.
+The [bundled source-app checkpoint](docs/evidence/pbs-linux-arm64-python-source-apps-2026-10-12/README.md)
+and [runner checkpoint](docs/evidence/pbs-linux-arm64-python-runner-2026-10-11/README.md)
+retain the earlier provider and product integration evidence. Earlier native
+Linux validation covers
 both optional native profiles and
 53/54 optimized Mac C-boundary tests. Tests cover allocation
 failures, callback panic containment, buffer cleanup, GC/finalizers, native
@@ -318,6 +326,8 @@ python3 -m unittest discover -s scripts -p 'test_linux_python_extension_trace.py
 sh fixtures/python-extensions/run-linux.sh
 sh fixtures/python-runner/run-linux.sh
 sh fixtures/python-source-apps/run-linux.sh
+sh fixtures/python-host-source-apps/run-linux.sh
+python3 fixtures/python-host-source-apps/test_protocol.py
 python3 fixtures/python-source-apps/test_entry.py
 python3 fixtures/python-imports/test_importer.py
 sh scripts/run-linux-native-lua.sh lua54

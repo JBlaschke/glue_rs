@@ -3,7 +3,9 @@
 //! The base policy checks the library and six startup source files; archive
 //! imports add a bounded reviewed source subset. Their bytecode cache
 //! directories must be absent. This does not certify the complete installed
-//! standard library or provide runtime discovery.
+//! standard library or provide runtime discovery. The separate source snapshot
+//! policy verifies the complete pinned source projection before initialization;
+//! its caller serves owned bytes after host startup instead of reopening them.
 //! Python subsequently opens source files by path, so the experiment must
 //! keep the installation immutable (the harness uses a read-only mount).
 
@@ -35,6 +37,10 @@ const SOURCE_PREFIX: &str = "install/lib/python3.13/";
 const LIBRARY_SIZE: u64 = 73_563_968;
 const MAX_IMPORT_SOURCES: usize = 128;
 const MAX_IMPORT_SOURCE_BYTES: u64 = 4 * 1024 * 1024;
+const SNAPSHOT_SOURCE_COUNT: usize = 2174;
+const SNAPSHOT_SOURCE_BYTES: u64 = 39_158_056;
+const SNAPSHOT_DIRECTORY_COUNT: usize = 202;
+const MAX_SNAPSHOT_DIRECTORY_OWNERS: usize = 256;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) struct Config {
@@ -51,6 +57,21 @@ pub(super) struct VerifiedHost {
     pub library: File,
     _sources: Vec<File>,
     _directories: Vec<File>,
+}
+
+/// The installed sources are immutable owned bytes. Only the legacy startup
+/// files and distinct directory owners remain open through finalization.
+#[derive(Debug)]
+pub(super) struct SourceSnapshot {
+    pub verified: VerifiedHost,
+    pub files: BTreeMap<String, Vec<u8>>,
+}
+
+struct SourceSnapshotLayout {
+    files: Vec<(String, PathBuf, ResourceSpec)>,
+    directories: BTreeSet<PathBuf>,
+    encodings: BTreeSet<String>,
+    startup_shadows: BTreeSet<PathBuf>,
 }
 
 struct ImportSources<'a> {
@@ -133,6 +154,121 @@ impl Config {
         Ok(verified)
     }
 
+    /// Validate every expanded source/cache/shadow path and compiled inventory
+    /// bound without inspecting a host path. Existing host profiles do not use
+    /// this wider policy.
+    pub(super) fn validate_source_snapshot_layout(&self) -> Result<(), String> {
+        self.source_snapshot_layout().map(|_| ())
+    }
+
+    /// Snapshot the exact full PBS .py projection before the interpreter loads.
+    /// Cache checks and startup shadow rejection precede library/source hashing.
+    /// Source descriptors close promptly after their owned bytes verify; parent
+    /// directory descriptors are deduplicated. As with the legacy host policy,
+    /// callers must keep the installation immutable through execution and
+    /// finalization; the mapped library remains pinned for process life.
+    pub(super) fn verify_source_snapshot(&self) -> Result<SourceSnapshot, String> {
+        let layout = self.source_snapshot_layout()?;
+        let mut directories = snapshot_prerequisites(&layout, Path::new(&self.stdlib))?;
+        // Keep the old library/six-source verifier and its ownership behavior.
+        let mut verified = self.verify()?;
+        let files = snapshot_sources(&layout.files)?;
+        verified._directories.append(&mut directories);
+        Ok(SourceSnapshot { verified, files })
+    }
+
+    fn source_snapshot_layout(&self) -> Result<SourceSnapshotLayout, String> {
+        if Self::parse(&self.prefix)? != *self {
+            return Err("host configuration differs from the fixed installation layout".into());
+        }
+        let specs = super::import_profile::source_specs()?;
+        if specs.len() != SNAPSHOT_SOURCE_COUNT {
+            return Err("host source snapshot inventory count differs from pins".into());
+        }
+        validate_resource_paths(specs.keys())
+            .map_err(|error| format!("invalid host source snapshot path: {error}"))?;
+        let stdlib = Path::new(&self.stdlib);
+        let mut files = Vec::with_capacity(specs.len());
+        let mut directories = BTreeSet::from([stdlib.to_owned()]);
+        let mut encodings = BTreeSet::new();
+        let mut total = 0u64;
+        for (key, mut spec) in specs {
+            let relative = key
+                .strip_prefix("stdlib/")
+                .ok_or("host source snapshot is outside stdlib")?;
+            if !relative.ends_with(".py")
+                || spec.size > super::imports::MAX_REPLY as u64
+                || spec.sha256.len() != 64
+                || !spec
+                    .sha256
+                    .bytes()
+                    .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+            {
+                return Err("invalid host source snapshot metadata".into());
+            }
+            total = total
+                .checked_add(spec.size)
+                .ok_or("host source snapshot byte total overflow")?;
+            if total > SNAPSHOT_SOURCE_BYTES {
+                return Err("host source snapshot exceeds its pinned byte total".into());
+            }
+            // Archive compression describes different storage. Host files are
+            // raw source bytes with the same exact size/hash identity.
+            spec.compression = Compression::Stored;
+            let source = stdlib.join(relative);
+            validate_path(source.to_str().ok_or("host source path must be ASCII")?)?;
+            let mut directory = source.parent().ok_or("host source has no parent")?;
+            loop {
+                let cache = directory.join("__pycache__");
+                validate_path(cache.to_str().ok_or("host cache path must be ASCII")?)?;
+                directories.insert(directory.to_owned());
+                if directory == stdlib {
+                    break;
+                }
+                directory = directory.parent().ok_or("host source escaped stdlib")?;
+            }
+            if let Some(name) = relative.strip_prefix("encodings/") {
+                if name.contains('/') {
+                    return Err("host startup encodings inventory must contain only files".into());
+                }
+                encodings.insert(name.into());
+            }
+            files.push((key, source, spec));
+        }
+        if total != SNAPSHOT_SOURCE_BYTES || directories.len() != SNAPSHOT_DIRECTORY_COUNT {
+            return Err("host source snapshot layout differs from the pinned projection".into());
+        }
+        let owner_count = directories.len() + stdlib.components().count() - 1;
+        if owner_count > MAX_SNAPSHOT_DIRECTORY_OWNERS {
+            return Err("host source snapshot directory owners exceed 256".into());
+        }
+        // Before the archive finder exists, host startup can consult codecs and
+        // encodings. Extension/sourceless/package shadows must not win there.
+        let mut startup_shadows = BTreeSet::new();
+        for name in ["codecs", "encodings"] {
+            for suffix in [
+                ".pyc",
+                ".pyo",
+                ".cpython-313-aarch64-linux-gnu.so",
+                ".abi3.so",
+                ".so",
+            ] {
+                startup_shadows.insert(stdlib.join(format!("{name}{suffix}")));
+            }
+        }
+        startup_shadows.insert(stdlib.join("codecs"));
+        startup_shadows.insert(stdlib.join("encodings.py"));
+        for path in &startup_shadows {
+            validate_path(path.to_str().ok_or("host startup path must be ASCII")?)?;
+        }
+        Ok(SourceSnapshotLayout {
+            files,
+            directories,
+            encodings,
+            startup_shadows,
+        })
+    }
+
     fn import_sources<'a>(
         &self,
         pins: &'a BTreeMap<String, ResourceSpec>,
@@ -195,6 +331,126 @@ impl Config {
         caches.remove(&stdlib.join("encodings/__pycache__"));
         Ok(ImportSources { files, caches })
     }
+}
+
+fn snapshot_prerequisites(
+    layout: &SourceSnapshotLayout,
+    stdlib: &Path,
+) -> Result<Vec<File>, String> {
+    let directories = snapshot_directories(&layout.directories)?;
+    for directory in &layout.directories {
+        require_cache_absent(&directory.join("__pycache__"))?;
+    }
+    require_snapshot_startup(layout, stdlib)?;
+    Ok(directories)
+}
+
+fn snapshot_directories(paths: &BTreeSet<PathBuf>) -> Result<Vec<File>, String> {
+    let mut owners = BTreeMap::new();
+    for path in paths {
+        let mut current = PathBuf::from("/");
+        if !owners.contains_key(&current) {
+            owners.insert(current.clone(), open_checked(&current, true)?);
+        }
+        for component in path.components() {
+            if let Component::Normal(name) = component {
+                current.push(name);
+                if !owners.contains_key(&current) {
+                    owners.insert(current.clone(), open_checked(&current, true)?);
+                }
+            }
+        }
+    }
+    Ok(owners.into_values().collect())
+}
+
+fn require_snapshot_startup(layout: &SourceSnapshotLayout, stdlib: &Path) -> Result<(), String> {
+    for path in &layout.startup_shadows {
+        match fs::symlink_metadata(path) {
+            Ok(_) => {
+                return Err(format!(
+                    "host startup source shadow is unsupported: {}",
+                    path.display()
+                ));
+            }
+            Err(error) if error.raw_os_error() == Some(libc::ENOENT) => {}
+            Err(error) => {
+                return Err(format!(
+                    "inspect host startup shadow {}: {error}",
+                    path.display()
+                ));
+            }
+        }
+    }
+    let directory = stdlib.join("encodings");
+    let entries = fs::read_dir(&directory).map_err(|error| {
+        format!(
+            "list host startup encodings {}: {error}",
+            directory.display()
+        )
+    })?;
+    let mut seen = BTreeSet::new();
+    for entry in entries {
+        let entry = entry.map_err(|error| format!("list host startup encodings: {error}"))?;
+        let name = entry
+            .file_name()
+            .into_string()
+            .map_err(|_| "host startup encodings name must be ASCII")?;
+        if !layout.encodings.contains(&name) || !seen.insert(name) {
+            return Err(format!(
+                "host startup encodings entry is outside pinned sources: {}",
+                entry.path().display()
+            ));
+        }
+        let metadata = fs::symlink_metadata(entry.path())
+            .map_err(|error| format!("inspect host startup encodings entry: {error}"))?;
+        require_kind(&entry.path(), &metadata, false)?;
+    }
+    if seen != layout.encodings {
+        return Err("host startup encodings inventory differs from pinned sources".into());
+    }
+    Ok(())
+}
+
+fn snapshot_sources(
+    sources: &[(String, PathBuf, ResourceSpec)],
+) -> Result<BTreeMap<String, Vec<u8>>, String> {
+    let mut files = BTreeMap::new();
+    for (key, path, spec) in sources {
+        if spec.size > super::imports::MAX_REPLY as u64 {
+            return Err("host source snapshot file exceeds its byte bound".into());
+        }
+        // Every ancestor was opened without following symlinks before cache
+        // admission. Recheck the source's path/open/path identity itself here.
+        let mut file = open_checked(path, false)?;
+        if file.metadata().map_err(|error| error.to_string())?.len() != spec.size {
+            return Err(format!("host file size mismatch: {}", path.display()));
+        }
+        let maximum = spec
+            .size
+            .checked_add(1)
+            .ok_or("host source size overflow")?;
+        let mut bytes = Vec::with_capacity(
+            usize::try_from(spec.size).map_err(|_| "host source size exceeds address space")?,
+        );
+        (&mut file)
+            .take(maximum)
+            .read_to_end(&mut bytes)
+            .map_err(|error| format!("read host source snapshot {}: {error}", path.display()))?;
+        if bytes.len() as u64 != spec.size || glue_format::digest(&bytes) != spec.sha256 {
+            return Err(format!("host file identity mismatch: {}", path.display()));
+        }
+        if file.metadata().map_err(|error| error.to_string())?.len() != spec.size {
+            return Err(format!(
+                "host file size changed while reading: {}",
+                path.display()
+            ));
+        }
+        files.insert(key.clone(), bytes);
+        // This descriptor is deliberately absent from SourceSnapshot owners.
+        // The next source opens only after this File has been dropped.
+    }
+    Ok(files)
 }
 
 fn verify_import_sources(imports: &ImportSources<'_>) -> Result<(Vec<File>, Vec<File>), String> {
@@ -483,6 +739,306 @@ mod tests {
 
     fn import_pins(relative: &str, bytes: &[u8]) -> BTreeMap<String, ResourceSpec> {
         BTreeMap::from([(relative.into(), import_pin(bytes))])
+    }
+
+    fn snapshot_fixture(fixture: &Fixture) -> SourceSnapshotLayout {
+        let stdlib = fixture.0.join("lib/python3.13");
+        let files = [
+            ("encodings/__init__.py", b"startup source\n".as_slice()),
+            ("codecs.py", b"codec source\n".as_slice()),
+            ("test/nested/value.py", b"answer = 42\n".as_slice()),
+            ("empty.py", b"".as_slice()),
+        ]
+        .into_iter()
+        .map(|(relative, bytes)| {
+            (
+                format!("stdlib/{relative}"),
+                fixture.host_source(relative, bytes),
+                import_pin(bytes),
+            )
+        })
+        .collect();
+        SourceSnapshotLayout {
+            files,
+            directories: BTreeSet::from([
+                stdlib.clone(),
+                stdlib.join("encodings"),
+                stdlib.join("test"),
+                stdlib.join("test/nested"),
+            ]),
+            encodings: BTreeSet::from(["__init__.py".into()]),
+            startup_shadows: fixture
+                .config()
+                .source_snapshot_layout()
+                .unwrap()
+                .startup_shadows,
+        }
+    }
+
+    #[test]
+    fn source_snapshot_layout_is_complete_portable_and_bounds_every_expanded_path() {
+        let config = Config::parse("/absent source snapshot host").unwrap();
+        config.validate_source_snapshot_layout().unwrap();
+        let layout = config.source_snapshot_layout().unwrap();
+        assert_eq!(layout.files.len(), 2174);
+        assert_eq!(layout.directories.len(), 202);
+        assert_eq!(
+            layout
+                .files
+                .iter()
+                .map(|(_, _, spec)| spec.size)
+                .sum::<u64>(),
+            39_158_056
+        );
+        assert!(
+            layout
+                .files
+                .iter()
+                .all(|(_, _, spec)| spec.compression == Compression::Stored)
+        );
+        assert!(
+            layout
+                .files
+                .iter()
+                .any(|(key, _, spec)| key.starts_with("stdlib/test/") && spec.size == 0)
+        );
+        assert!(
+            layout.directories.contains(
+                &Path::new(&config.stdlib)
+                    .join("test/test_importlib/namespace_pkgs/module_and_namespace_package")
+            )
+        );
+        let long = Config::parse(&format!(
+            "/{}",
+            "a".repeat(MAX_PATH_BYTES - LIBRARY_SUFFIX.len() - 1)
+        ))
+        .unwrap();
+        assert!(
+            long.validate_source_snapshot_layout()
+                .unwrap_err()
+                .starts_with("host paths must be canonical")
+        );
+        let mut changed = config;
+        changed.stdlib.push('x');
+        assert!(
+            changed
+                .validate_source_snapshot_layout()
+                .unwrap_err()
+                .contains("fixed installation layout")
+        );
+    }
+
+    #[test]
+    fn source_snapshot_copies_owned_bytes_and_closes_individual_source_descriptors() {
+        let fixture = Fixture::new();
+        let layout = snapshot_fixture(&fixture);
+        let owners = snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib)).unwrap();
+        let snapshot = snapshot_sources(&layout.files).unwrap();
+        assert_eq!(snapshot["stdlib/test/nested/value.py"], b"answer = 42\n");
+        assert_eq!(snapshot["stdlib/empty.py"], b"");
+        fs::write(
+            fixture.0.join("lib/python3.13/test/nested/value.py"),
+            b"changed source\n",
+        )
+        .unwrap();
+        fs::remove_file(fixture.0.join("lib/python3.13/empty.py")).unwrap();
+        assert_eq!(snapshot["stdlib/test/nested/value.py"], b"answer = 42\n");
+        assert_eq!(snapshot["stdlib/empty.py"], b"");
+        assert_eq!(
+            owners.len(),
+            fixture.0.join("lib/python3.13").components().count() + 3
+        );
+        #[cfg(target_os = "linux")]
+        {
+            let control = File::open(&layout.files[0].1).unwrap();
+            let targets = || {
+                fs::read_dir("/proc/self/fd")
+                    .unwrap()
+                    .filter_map(|entry| fs::read_link(entry.unwrap().path()).ok())
+                    .collect::<Vec<_>>()
+            };
+            assert!(targets().contains(&layout.files[0].1));
+            drop(control);
+            assert!(
+                !targets()
+                    .iter()
+                    .any(|target| layout.files.iter().any(|(_, path, _)| target == path)),
+                "snapshot retained a source descriptor"
+            );
+        }
+    }
+
+    #[test]
+    fn source_snapshot_full_projection_keeps_only_distinct_directory_owners() {
+        let fixture = Fixture::new();
+        let config = fixture.config();
+        let layout = config.source_snapshot_layout().unwrap();
+        for directory in &layout.directories {
+            fs::create_dir_all(directory).unwrap();
+        }
+        let owners = snapshot_directories(&layout.directories).unwrap();
+        assert_eq!(
+            owners.len(),
+            SNAPSHOT_DIRECTORY_COUNT + Path::new(&config.stdlib).components().count() - 1
+        );
+        // The fixture prefix has few ancestors; retaining one chain per source
+        // would instead exhaust a common 1024-descriptor process budget.
+        assert!(owners.len() < 256);
+    }
+
+    #[test]
+    fn source_snapshot_rejects_excessive_prefix_ancestry_before_host_access() {
+        let within_budget = Config::parse(&"/a".repeat(52)).unwrap();
+        within_budget.validate_source_snapshot_layout().unwrap();
+        let over_budget = Config::parse(&"/a".repeat(53)).unwrap();
+        assert_eq!(
+            over_budget
+                .verify_source_snapshot()
+                .unwrap_err()
+                .to_string(),
+            "host source snapshot directory owners exceed 256"
+        );
+        // This budget applies only to the new snapshot policy. The legacy
+        // supplemental-layout validator continues accepting the same prefix.
+        assert!(
+            over_budget
+                .import_sources(&import_pins("source.py", b"source"))
+                .is_ok()
+        );
+    }
+
+    #[test]
+    fn source_snapshot_rejects_missing_corrupt_and_truncated_sources() {
+        for mode in 0..3 {
+            let fixture = Fixture::new();
+            let layout = snapshot_fixture(&fixture);
+            let _owners =
+                snapshot_prerequisites(&layout, Path::new(&fixture.config().stdlib)).unwrap();
+            let path = fixture.0.join("lib/python3.13/test/nested/value.py");
+            match mode {
+                0 => fs::remove_file(&path).unwrap(),
+                1 => fs::write(&path, b"answer = 43\n").unwrap(),
+                _ => fs::write(&path, b"truncated").unwrap(),
+            }
+            let error = snapshot_sources(&layout.files).unwrap_err();
+            assert!(
+                error.contains(match mode {
+                    0 => "host path",
+                    1 => "identity mismatch",
+                    _ => "size mismatch",
+                }),
+                "{error}"
+            );
+        }
+    }
+
+    #[test]
+    fn source_snapshot_checks_unused_deep_caches_before_the_library_or_sources() {
+        let fixture = Fixture::new();
+        let config = fixture.config();
+        let layout = config.source_snapshot_layout().unwrap();
+        for directory in &layout.directories {
+            fs::create_dir_all(directory).unwrap();
+        }
+        let cache = Path::new(&config.stdlib)
+            .join("test/test_importlib/namespace_pkgs/module_and_namespace_package/__pycache__");
+        fs::create_dir(&cache).unwrap();
+        let error = config.verify_source_snapshot().unwrap_err();
+        assert_eq!(
+            error,
+            format!(
+                "host startup bytecode cache is unsupported: {}",
+                cache.display()
+            )
+        );
+        assert!(!Path::new(&config.library).exists());
+    }
+
+    #[test]
+    fn source_snapshot_excludes_startup_native_sourceless_and_package_shadows() {
+        for relative in [
+            "codecs",
+            "encodings.py",
+            "codecs.pyc",
+            "encodings.pyc",
+            "codecs.so",
+            "encodings.abi3.so",
+            "codecs.cpython-313-aarch64-linux-gnu.so",
+            "encodings/utf_8.pyc",
+            "encodings/__init__.so",
+            "encodings/unpinned.py",
+            "encodings/extra-directory",
+        ] {
+            let fixture = Fixture::new();
+            let layout = snapshot_fixture(&fixture);
+            let stdlib = fixture.0.join("lib/python3.13");
+            let path = stdlib.join(relative);
+            if relative == "codecs" || relative.ends_with("extra-directory") {
+                fs::create_dir(path).unwrap();
+            } else {
+                fs::write(path, b"unreviewed startup candidate").unwrap();
+            }
+            let error = snapshot_prerequisites(&layout, &stdlib).unwrap_err();
+            assert!(
+                error.contains("shadow is unsupported") || error.contains("outside pinned sources"),
+                "{relative}: {error}"
+            );
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn source_snapshot_rejects_source_encoding_cache_and_ancestor_symlinks() {
+        use std::os::unix::fs::symlink;
+        for mode in 0..4 {
+            let fixture = Fixture::new();
+            let layout = snapshot_fixture(&fixture);
+            let stdlib = fixture.0.join("lib/python3.13");
+            match mode {
+                0 => {
+                    let source = stdlib.join("test/nested/value.py");
+                    fs::remove_file(&source).unwrap();
+                    symlink(fixture.file("original.py", b"answer = 42\n"), source).unwrap();
+                    let _owners = snapshot_prerequisites(&layout, &stdlib).unwrap();
+                    assert!(
+                        snapshot_sources(&layout.files)
+                            .unwrap_err()
+                            .contains("without symlinks")
+                    );
+                }
+                1 => {
+                    let source = stdlib.join("encodings/__init__.py");
+                    fs::remove_file(&source).unwrap();
+                    symlink(fixture.file("original.py", b"startup source\n"), source).unwrap();
+                    assert!(
+                        snapshot_prerequisites(&layout, &stdlib)
+                            .unwrap_err()
+                            .contains("without symlinks")
+                    );
+                }
+                2 => {
+                    symlink(
+                        fixture.0.join("absent-cache"),
+                        stdlib.join("test/nested/__pycache__"),
+                    )
+                    .unwrap();
+                    assert!(
+                        snapshot_prerequisites(&layout, &stdlib)
+                            .unwrap_err()
+                            .contains("bytecode cache is unsupported")
+                    );
+                }
+                _ => {
+                    fs::rename(stdlib.join("test/nested"), fixture.0.join("real-nested")).unwrap();
+                    symlink(fixture.0.join("real-nested"), stdlib.join("test/nested")).unwrap();
+                    assert!(
+                        snapshot_prerequisites(&layout, &stdlib)
+                            .unwrap_err()
+                            .contains("without symlinks")
+                    );
+                }
+            }
+        }
     }
 
     #[test]

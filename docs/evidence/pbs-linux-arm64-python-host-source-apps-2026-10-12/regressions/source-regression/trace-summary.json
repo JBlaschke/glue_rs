@@ -1,0 +1,62 @@
+{
+  "app-error": {
+    "raw_bytes": 6653126,
+    "raw_sha256": "231f2b2b4a54b8df988f38f6d68c48bc0358621f39d7f8d72f017712b1e3323c",
+    "gzip_bytes": 1251263,
+    "gzip_sha256": "20e5a753597543502530cdd7e4d1fe338685c18fb644c0a6faa0e4d34d5189a7",
+    "records": 33289,
+    "pids": [
+      16
+    ]
+  },
+  "corrupt-source": {
+    "raw_bytes": 3405363,
+    "raw_sha256": "846c3d528f79cb818393b25ad1751b30dacb42f0c55c46ffbd41126afaa96840",
+    "gzip_bytes": 241929,
+    "gzip_sha256": "d8176461a204ac397829d7c9727b833822adbd75c337be7dff64adbe48617333",
+    "records": 26290,
+    "pids": [
+      28
+    ]
+  },
+  "minimal": {
+    "raw_bytes": 6589676,
+    "raw_sha256": "f1453ad2ee4f78eeff5514fecc5437a37836271fe5beb30d0ca4e14f78b17a54",
+    "gzip_bytes": 1250626,
+    "gzip_sha256": "01b632344b771c8cf55cb92069de099a22acaa12df5cdff712a45be4d9ca5b7a",
+    "records": 33310,
+    "pids": [
+      8
+    ]
+  },
+  "nul": {
+    "raw_bytes": 6456377,
+    "raw_sha256": "bf03b7609819809d6843286fb838e7c143c1cb4bbc10f38290f5f026642e6c68",
+    "gzip_bytes": 1248315,
+    "gzip_sha256": "e0a98b53dbccaa1303e18cbacf74f0eb4d740adf213b614865d3a4136cdd5eca",
+    "records": 33291,
+    "pids": [
+      24
+    ]
+  },
+  "resources": {
+    "raw_bytes": 6663653,
+    "raw_sha256": "652765d1d5cdcf38ecfb9df7139b1013e1613c6a1ab28a12f0d46ef73ce880d9",
+    "gzip_bytes": 1252276,
+    "gzip_sha256": "46ec97a122cb38016aa504254fe898d93e926f2a9b56574af0033c79076ae4dc",
+    "records": 33375,
+    "pids": [
+      12
+    ]
+  },
+  "syntax": {
+    "raw_bytes": 6555136,
+    "raw_sha256": "7c8d0b11a3ab67bced71252d01b00f99cae90f9b5be6d27e998515104d22a1db",
+    "gzip_bytes": 1249924,
+    "gzip_sha256": "d49c7e1936fc585e61f9148ebf36ad2bc3e8c7e8c734aee26499081477b2b277",
+    "records": 33298,
+    "pids": [
+      20
+    ]
+  }
+}

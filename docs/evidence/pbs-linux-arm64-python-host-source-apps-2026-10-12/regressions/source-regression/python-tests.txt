@@ -1,0 +1,165 @@
+   Compiling zmij v1.0.23
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_json v1.0.149
+   Compiling typenum v1.20.1
+   Compiling serde_core v1.0.228
+   Compiling libc v0.2.190
+   Compiling crc32fast v1.5.0
+   Compiling hybrid-array v0.4.15
+   Compiling cfg-if v1.0.5
+   Compiling syn v2.0.119
+   Compiling adler2 v2.0.1
+   Compiling simd-adler32 v0.3.10
+   Compiling miniz_oxide v0.9.1
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling memchr v2.8.3
+   Compiling serde v1.0.228
+   Compiling const-oid v0.10.2
+   Compiling digest v0.11.3
+   Compiling cpufeatures v0.3.1
+   Compiling serde_derive v1.0.228
+   Compiling flate2 v1.1.10
+   Compiling equivalent v1.0.2
+   Compiling itoa v1.0.18
+   Compiling thiserror v2.0.18
+   Compiling hashbrown v0.17.1
+   Compiling indexmap v2.14.2
+   Compiling sha2 v0.11.0
+   Compiling thiserror-impl v2.0.18
+   Compiling typed-path v0.12.3
+   Compiling zip v8.6.0
+   Compiling find-msvc-tools v0.1.14
+   Compiling shlex v2.0.1
+   Compiling glue-format v0.1.0 (/workspace/crates/glue-format)
+   Compiling cc v1.6.0
+   Compiling twox-hash v2.1.5
+   Compiling glue-resources v0.1.0 (/workspace/crates/glue-resources)
+   Compiling ruzstd v0.9.0
+   Compiling glue-runtime-python v0.1.0 (/workspace/crates/glue-runtime-python)
+   Compiling glue-native v0.1.0 (/workspace/crates/glue-native)
+   Compiling glue-pbs v0.1.0 (/workspace/crates/glue-pbs)
+   Compiling glue-python-bootstrap-probe v0.1.0 (/workspace/spikes/python-bootstrap)
+    Finished `release` profile [optimized] target(s) in 20.17s
+     Running unittests src/main.rs (/build-target/release/deps/glue_python_bootstrap_probe-f888d13b2b577990)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/build-target/release/deps/glue_runtime_python-0bd84bfac347c683)
+
+running 102 tests
+test bundle::tests::bounds_and_validates_app_source ... ok
+test bundle::tests::checks_inspected_pin_metadata_runtime_and_executable_identities ... ok
+test bundle::tests::accepts_pinned_contract_and_roundtrips_serialization ... ok
+test bundle::tests::checks_inspected_source_member_hashes_sizes_and_types ... ok
+test bundle::tests::rejects_duplicate_json_keys_at_every_contract_level ... ok
+test bundle::tests::rejects_invalid_hex_and_payload_hashes ... ok
+test bundle::tests::rejects_json_tail_and_deep_recursion ... ok
+test bundle::tests::rejects_unknown_fields_at_every_contract_level ... ok
+test bundle::tests::rejects_wrong_schema_and_every_producer_identity ... ok
+test bundle::tests::requires_exact_sorted_sources_and_package_flags ... ok
+test extension_profile::tests::inspected_facts_reject_local_and_global_python_api_substitutes ... ok
+test extension_profile::tests::inspected_facts_require_exact_dependency_closure_without_init_or_versions ... ok
+test extension_profile::tests::inspected_facts_require_one_exact_global_executable_initializer ... ok
+test extension_profile::tests::rejects_extra_resources_unreachable_images_and_mixed_native_providers ... ok
+test extension_profile::tests::host_image_declarations_require_exact_names_parent_and_explicit_valid_hashes ... ok
+test host::tests::accepts_only_absent_startup_cache_paths ... ok
+test host::tests::bounded_native_files_check_identity_bounds_and_return_rewound_owners ... ok
+test host::tests::bounds_expanded_paths_not_only_the_prefix ... ok
+test host::tests::bounds_supplemental_count_total_and_expanded_host_paths ... ok
+test host::tests::checks_supplemental_directory_ancestors_before_cache_queries ... ok
+test host::tests::prefix_resolves_only_the_fixed_profile ... ok
+test host::tests::rejects_changed_supplemental_source_size_and_hash ... ok
+test host::tests::rejects_directory_and_file_startup_caches ... ok
+test host::tests::rejects_each_startup_cache_before_opening_the_library ... ok
+test host::tests::rejects_every_nested_cache_before_supplemental_source_access ... ok
+test host::tests::rejects_file_and_directory_symlinks ... ok
+test host::tests::rejects_missing_files_and_directories_used_as_files ... ok
+test host::tests::rejects_path_normalization_and_escape_forms ... ok
+test host::tests::rejects_regular_file_as_directory_ancestor ... ok
+test host::tests::rejects_short_long_and_hash_mismatched_files ... ok
+test host::tests::rejects_startup_cache_lookup_errors_other_than_enoent ... ok
+test host::tests::rejects_startup_cache_symlinks_even_when_dangling ... ok
+test host::tests::rejects_supplemental_metadata_before_host_access ... ok
+test host::tests::rejects_supplemental_source_and_cache_symlinks ... ok
+test host::tests::rejects_supplemental_startup_duplicates_and_path_aliases ... ok
+test extension_profile::tests::rejects_provider_crosses_unbounded_images_wrong_runtime_and_dependency_edges ... ok
+test host::tests::revalidates_mutated_config_fields_before_filesystem_access ... ok
+test host::tests::source_snapshot_copies_owned_bytes_and_closes_individual_source_descriptors ... ok
+test bundle::tests::bounds_json_marshal_and_combined_payloads ... ok
+test host::tests::source_snapshot_checks_unused_deep_caches_before_the_library_or_sources ... ok
+test host::tests::source_snapshot_full_projection_keeps_only_distinct_directory_owners ... ok
+test host::tests::source_snapshot_layout_is_complete_portable_and_bounds_every_expanded_path ... ok
+test extension_profile::tests::four_provider_cells_preserve_the_exact_base_runtime_and_source_contract ... ok
+test host::tests::source_snapshot_rejects_excessive_prefix_ancestry_before_host_access ... ok
+test host::tests::streams_verified_file_and_returns_rewound_handle ... ok
+test host::tests::verifies_nested_supplemental_source_and_retains_rewound_descriptor ... ok
+test host::tests::source_snapshot_rejects_missing_corrupt_and_truncated_sources ... ok
+test host_import_profile::tests::host_archive_contains_only_exact_shared_app_and_importer ... ok
+test host_import_profile::tests::rejects_provider_identity_inventory_and_path_drift ... ok
+test host_import_profile::tests::rejects_runtime_stdlib_bridge_shadows_and_extra_archive_roots ... ok
+test host_source_app_profile::tests::corrupt_host_app_payload_rejects_before_snapshot_or_runtime_loading ... ok
+test host::tests::source_snapshot_excludes_startup_native_sourceless_and_package_shadows ... ok
+test host_source_app_profile::tests::host_source_app_requires_exact_helper_and_excludes_archived_provider_bytes ... ok
+test host::tests::source_snapshot_rejects_source_encoding_cache_and_ancestor_symlinks ... ok
+test host_source_app_profile::tests::host_source_application_tokens_remain_bound_to_the_opened_manifest ... ok
+test host_source_app_profile::tests::host_source_app_shares_source_layout_name_and_entry_restrictions ... ok
+test host_source_app_profile::tests::host_source_app_admission_is_portable_and_keeps_provider_and_build_policy_explicit ... ok
+test host_source_app_profile::tests::host_source_archive_returns_verified_entry_bytes_before_any_host_acquisition ... ok
+test host_source_app_profile::tests::host_source_app_rejects_provider_library_layout_abi_and_target_drift ... ok
+test imports::tests::enforces_per_file_and_collection_bounds_before_callbacks ... ok
+test imports::tests::immutable_resource_protocol_returns_bytes_metadata_and_sorted_children ... ok
+test imports::tests::rejects_ambiguous_and_overlapping_import_roots ... ok
+test imports::tests::rejects_malformed_aliases_escaping_paths_and_unknown_operations ... ok
+test imports::tests::resolves_source_packages_namespaces_and_reserved_missing_descendants ... ok
+test imports::tests::source_app_entry_requests_fit_the_native_request_limit ... ok
+test imports::tests::source_app_resources_do_not_become_additional_import_roots ... ok
+test imports::tests::source_apps_reject_unreachable_module_hierarchies_without_changing_legacy ... ok
+test linux::tests::c_copies_and_releases_archive_callback_buffers_before_python_calls ... ok
+test linux::tests::c_owns_frozen_records_and_error_buffers ... ok
+test linux::tests::c_owns_host_paths_and_rejects_invalid_configuration ... ok
+test linux::tests::c_validates_and_pins_registered_native_names_before_python_calls ... ok
+test linux::tests::resource_callback_contains_panics_and_transfers_binary_or_error_buffers ... ok
+test linux::tests::resource_callback_never_drops_a_panicking_panic_payload ... ok
+test platform::tests::readiness_compares_numeric_versions_and_zero_padded_components ... ok
+test platform::tests::readiness_rejects_insufficient_kernel_or_wrong_actual_page_size ... ok
+test platform::tests::readiness_rejects_malformed_or_overflowing_versions ... ok
+test platform::tests::readiness_requires_the_exact_gnu_arm64_declaration ... ok
+test profile::tests::archive_preparation_uses_the_open_descriptor_after_its_path_is_removed ... ok
+test profile::tests::declarations_are_portable_and_readiness_is_separate ... ok
+test profile::tests::exact_profile_drift_is_invalid_and_unregistered_applications_are_unsupported ... ok
+test profile::tests::execution_tokens_cannot_be_reused_for_a_different_manifest ... ok
+test import_profile::tests::exact_source_inventory_and_profile_admission ... ok
+test import_profile::tests::rejects_missing_extra_and_oversized_resources ... ok
+test import_profile::tests::rejects_source_hash_compression_and_provider_drift ... ok
+test source_app_profile::tests::application_entry_must_be_declared_source_under_app ... ok
+test source_app_profile::tests::existing_profile_ids_and_unsafe_or_oversized_identities_cannot_be_repurposed ... ok
+test source_app_profile::tests::application_count_per_file_and_combined_bytes_are_independently_bounded ... ok
+test source_app_profile::tests::declared_native_and_host_images_are_rejected_even_with_opaque_asset_names ... ok
+test source_app_profile::tests::arbitrary_application_and_component_ids_preserve_provider_pins ... ok
+test source_app_profile::tests::host_linked_abi_target_variant_and_mixed_components_do_not_fallback ... ok
+test source_app_profile::tests::fixed_runtime_stdlib_importer_and_frozen_identities_reject_drift ... ok
+test source_entry::tests::declared_entries_are_canonical_resources_and_safe_string_literals ... ok
+test tests::explicit_host_profile_contains_only_the_shared_app ... ok
+test tests::host_profile_rejects_mixed_installation_and_normalized_paths ... ok
+test tests::host_profile_rejects_provider_identity_and_app_drift ... ok
+test tests::incorrect_runtime_rejected ... ok
+test tests::manifest_rejects_provider_target_and_runtime_drift ... ok
+test tests::missing_archive_rejected_portably ... ok
+test tests::profile_round_trip ... ok
+test source_app_profile::tests::packaging_exception_does_not_relax_other_builds_or_invalid_source_declarations ... ok
+test source_app_profile::tests::native_bytecode_cache_and_outside_roots_are_rejected_case_insensitively ... ok
+test source_app_profile::tests::runtime_roots_and_ambiguous_application_layout_reject_before_payload_reads ... ok
+
+test result: ok. 102 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+
+   Doc-tests glue_runtime_python
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

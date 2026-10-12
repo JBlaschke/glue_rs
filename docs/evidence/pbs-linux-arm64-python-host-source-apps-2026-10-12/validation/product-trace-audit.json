@@ -1,0 +1,3636 @@
+{
+  "accepted_rejection_shortcuts": [
+    {
+      "accepted": true,
+      "changed_trace_sha256": "bb2f174041e78ffebd3d3f38e4731cf17c41e6bc37113c3c9a2dabaaf3f7df3b",
+      "control": "unrelated pristine entry read omitted before CRC rejection",
+      "mode": "corrupt-source",
+      "reason": "Complete metadata and selected corrupt bytes remain admitted; readers close and no host provider is acquired.",
+      "removed_read_sha256": "3d2e165b15e3791a65a9c2d5e6337ff64a99f287b6b3ebd016841720ae7d8e37"
+    }
+  ],
+  "baseline_count": 13,
+  "baselines": [
+    {
+      "archive_bytes": 6488,
+      "archive_sha256": "9924ef3c70138e9e11e68b2ee7b478b9592ad4b08850f2ac34b3e290f0f0d07e",
+      "exit_status": 0,
+      "manifest_sha256": "946cca1a3a1e2973fdb341f689d1413d8871398ae6fa6d95bea2a7e5ecfc4012",
+      "mode": "minimal",
+      "passed": true,
+      "records": 24624,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 50,
+      "stdout_sha256": "ab7ced5b3dd2d37ba1d7304d3cafd9dc8b0700c78e3888cb5d6e4d7615f8296e",
+      "trace_sha256": "735ae240a974aba9d2d62a5f95705f285d0aa000248097fcbef085c27e9ab79a"
+    },
+    {
+      "archive_bytes": 9769,
+      "archive_sha256": "bd4e6ed9980c9f81510ff6671ad2f8126d0dd1367923e151105850a7b1e8f6a0",
+      "exit_status": 0,
+      "manifest_sha256": "2ba03955d4d0e96523d021127ac84fd74dcfac8311de59f74a77d0cb6e87ab1d",
+      "mode": "resources",
+      "passed": true,
+      "records": 24667,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 90,
+      "stdout_sha256": "451ff7055edb8bb3a4d471b55b13c72e1cd967a2df691a3a2109d1eb0fe93235",
+      "trace_sha256": "6634a08c8cff4fdaedb06ab85d113a796bebee1f4dd0a4ff56d7e32e8805abd2"
+    },
+    {
+      "archive_bytes": 6755,
+      "archive_sha256": "b570820e3f0265f8b17b230fbd55160ff244acb78352b9f79982a083e53d6b35",
+      "exit_status": 0,
+      "manifest_sha256": "73da877b7d44dc3dce1997b84ce433e3eb5212119cb8cd3759b747c24bb2b3ff",
+      "mode": "stdlib",
+      "passed": true,
+      "records": 24576,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 76,
+      "stdout_sha256": "e78e95c4c06a1abbe0d8ec436d8c2f855e18bb7f227bbc5a0c04b1273610d4db",
+      "trace_sha256": "2d007dab8401ff6363a4617b04fbff61dfd3d587387a2f275e7134d57a1d3eca"
+    },
+    {
+      "archive_bytes": 5561,
+      "archive_sha256": "ddd9a059df433e3bc20573a999b27757614bc707af9d516db4eaa2c07e1d58cc",
+      "exit_status": 1,
+      "manifest_sha256": "bde629cc91f15aa5d83ea6b9e9fe8e7a36d6fbaceeda936a17f9e8c7bc223c37",
+      "mode": "app-error",
+      "passed": true,
+      "records": 24617,
+      "stderr_bytes": 43,
+      "stderr_sha256": "d87612f6dfb5b982f077b82b52a6561ae3744db5ac55adbbfcae96b3a19780a7",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "cd2cfd361a44018c06c600cd815dad6fc3e8cbec4515306fe00f4347c58c9627"
+    },
+    {
+      "archive_bytes": 5555,
+      "archive_sha256": "3766feda08788b0945f625ee4ac2da522d5ee44fbaf94b8af0d91a18bfd1baa7",
+      "exit_status": 1,
+      "manifest_sha256": "68722c17c75aaed1768c6e9a27672769ac2bbcf8c8b07c55f17e74f7b94e39e4",
+      "mode": "syntax",
+      "passed": true,
+      "records": 24576,
+      "stderr_bytes": 42,
+      "stderr_sha256": "ebcf731dfae5d8d98344fb477e2748d32e61fc75f8b154ee6dbfdd3334fe989c",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "dee006d7b0b10010f697822f9ad0fc90e06387f66aa42eb98d27458c9e04dddc"
+    },
+    {
+      "archive_bytes": 5530,
+      "archive_sha256": "bb93ac4200c04793dff3069d0326de426d28bbb483fefa9cc972441ab71c3bc6",
+      "exit_status": 1,
+      "manifest_sha256": "4e6a1d622c32ab6b6b2579e2baf887abe395f769942755c071f26168d263707b",
+      "mode": "nul",
+      "passed": true,
+      "records": 24578,
+      "stderr_bytes": 69,
+      "stderr_sha256": "6c7a35b1b3410ee5eb5f25a2d1a13ce48037d5137d584f61cb424b88f35d92e7",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "1e843a81f9459ed88debacd2a25454582b479cf92072e80d3f54cb8030d661ce"
+    },
+    {
+      "archive_bytes": 6488,
+      "archive_sha256": "26e2bfcd458c8bc5f092970754a61caa166a1a3b8487cae4581c048e9a32f207",
+      "exit_status": 1,
+      "manifest_sha256": "946cca1a3a1e2973fdb341f689d1413d8871398ae6fa6d95bea2a7e5ecfc4012",
+      "mode": "corrupt-source",
+      "passed": true,
+      "records": 149,
+      "stderr_bytes": 70,
+      "stderr_sha256": "d606b27c114e2a7ef99613b0008585d9e407528e79ec62e7df8456ffac52e400",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "fcee4b2d8aaddf11eda1d5814c0a4c257bcdf87566b74c301be1698ca85cc063"
+    },
+    {
+      "archive_bytes": 6518,
+      "archive_sha256": "dfce2ecd8694c5c448ec30f987d029a4a7c43d090baaec6588751e57d419d377",
+      "exit_status": 1,
+      "manifest_sha256": "97358d27b5900a80f54383f9a7e015d48117066044e7a343f4a8d82fc28fd015",
+      "mode": "missing-source",
+      "passed": true,
+      "records": 23195,
+      "stderr_bytes": 147,
+      "stderr_sha256": "6ff97d27e8a0b54795ea6a42c5c5e99990fb6435d490e05a1d2a726b71bc2876",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "b5b635b50ab0b6c9175b14d802bd98289f7b7749cb2e192e71e56c67311ba838"
+    },
+    {
+      "archive_bytes": 6514,
+      "archive_sha256": "966b84c1ea965d98db65b379ac96d601ad6e1ea1dfc3bcadca7e17878dbabdae",
+      "exit_status": 1,
+      "manifest_sha256": "e95a47a63da22cfb72e75bdbc1935c2c0bd98924b9a6b4e3f3db0637785ff67f",
+      "mode": "wrong-source",
+      "passed": true,
+      "records": 23200,
+      "stderr_bytes": 124,
+      "stderr_sha256": "88a31428f68b81e5b4b482574ec72a73e5064b70503f0263fd21a80e73f164ba",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "8014bfdba9262a996cb9576d5514dc1dd8754ce2aa1e063566cc543e17c8d444"
+    },
+    {
+      "archive_bytes": 6510,
+      "archive_sha256": "02ab4c997ce5d1c1e0f62d03961c6d57e2f85fa4cad224fcfc7d90c2f579fe24",
+      "exit_status": 1,
+      "manifest_sha256": "e1b56c85a8217ce223af2774553d76c9d6a1a70e289db9ccc0b69706339bfc53",
+      "mode": "deep-cache",
+      "passed": true,
+      "records": 1324,
+      "stderr_bytes": 190,
+      "stderr_sha256": "7adf92d6b04e2e02664faa6cf97427e0f24a3434e965c1425f602983b94c04cb",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "37fa2280a7591dbb342fd5fa960575598c34831bde10b1cbd5f301ba751d95da"
+    },
+    {
+      "archive_bytes": 6518,
+      "archive_sha256": "fec16b6e701cfa976a0538bcb2aac726800a6962d7c1847ee66904c7662901b3",
+      "exit_status": 1,
+      "manifest_sha256": "dee991ff2558ebd15c9952af24fda8d44056d025dc8921cac833680ea1a757cd",
+      "mode": "startup-native",
+      "passed": true,
+      "records": 1479,
+      "stderr_bytes": 182,
+      "stderr_sha256": "81061c21698ad37ce23bf97fa666eb939b597e74ebdf15861edbb073df30d061",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "d87460714aaf5ec6d2bf8b9ee3ede92721a1e6904e179591a7666e7f5fd215fc"
+    },
+    {
+      "archive_bytes": 6522,
+      "archive_sha256": "e3dc75d8cd17d10829893b0ff3419131b653f71738561836fefa5d4626b1b648",
+      "exit_status": 1,
+      "manifest_sha256": "4a4bde872e7a32cb759c510f2efbedab18cf74329e15902b041a510a477337aa",
+      "mode": "startup-bytecode",
+      "passed": true,
+      "records": 1490,
+      "stderr_bytes": 155,
+      "stderr_sha256": "1b817e7c9c15cf55c468f42d5323ff20e36bff208e9103121e9358946430bd13",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "5aa3164d6566b4a94a0617e4af09f0eaf6cc1c2552be73c91f519c7f38f07bde"
+    },
+    {
+      "archive_bytes": 6520,
+      "archive_sha256": "2549df9196418a59c29abcbda76baeeb9826248f0eec663634076e04898b709f",
+      "exit_status": 1,
+      "manifest_sha256": "f52ba538e14e36f1d653cdf81a398edfbc8d42c3ed94809b585d5499a1527358",
+      "mode": "missing-library",
+      "passed": true,
+      "records": 1604,
+      "stderr_bytes": 135,
+      "stderr_sha256": "bfcd7d71449b94d6f6adacbe504c2d308501d977a08d2db37f3206ddd8f3f8bb",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trace_sha256": "5da9e59bf5748edb3373cee86d1b28e16e4825483d649b5fd51995867731645a"
+    }
+  ],
+  "capture_branch": "codex/a7-host-source-apps",
+  "capture_metadata_sha256": "fecf9ed2c6cf62291ced8b1489c0d34a7c327cf75e27114f2145ef624e77415e",
+  "capture_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+  "capture_status": "",
+  "checker_sha256": {
+    "check-linux-python-bootstrap-trace.py": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+    "check-linux-python-extension-trace.py": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+    "check-linux-python-host-import-trace.py": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+    "check-linux-python-host-source-app-trace.py": "8cd3ace31941fb8e2bd53a2756f15639812a5dff7bbd99accc75322fa7d3aea5",
+    "check-linux-python-host-trace.py": "499a3ca1eed789837cf56a73574115913d9c7d3bd8d081ce2a26974bc3b497fe",
+    "check-linux-python-import-trace.py": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed",
+    "check-linux-python-runner-trace.py": "3374d5d7da7ee28704ae03ae10b897a0e4aa3442020eb67eb8fa29f91b111635",
+    "check-linux-python-source-app-trace.py": "6a31b6841399fceba2c639cee751261d73c5b6369ecc88813afa4ba0129ef69a"
+  },
+  "command": [
+    "target/python-host-source-app-trace-audit-final.py",
+    "--capture",
+    "target/python-host-source-apps-final-capture",
+    "--build",
+    "target/python-host-source-apps-final-build",
+    "--require-clean-capture",
+    "--output",
+    "target/python-host-source-app-checks/product-trace-audit.json"
+  ],
+  "elapsed_seconds": 366.595,
+  "empty_stdlib_sources": 24,
+  "mutation_count": 567,
+  "mutations": [
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "minimal",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "minimal",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "minimal",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "minimal",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "minimal",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "minimal",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "minimal",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "minimal",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "minimal",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 145: host metadata precedes complete archive verification/closure",
+      "mode": "minimal",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: host source workload inherited stream identity differs",
+      "mode": "minimal",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "minimal",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: fixture writes must succeed with their full requested count",
+      "mode": "minimal",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24623: require the expected nonreturning fixture exit",
+      "mode": "minimal",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24624: completion disagrees with expected fixture exit",
+      "mode": "minimal",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24624: operation follows exit or has an incomplete result",
+      "mode": "minimal",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unexpected openat argument count",
+      "mode": "minimal",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unexpected openat argument count",
+      "mode": "minimal",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved OS, Python-source or filesystem read path",
+      "mode": "minimal",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved OS, Python-source or filesystem read path",
+      "mode": "minimal",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved OS, Python-source or filesystem read path",
+      "mode": "minimal",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved syscall mkdir",
+      "mode": "minimal",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved syscall clone3",
+      "mode": "minimal",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: execve differs from the exact product workload",
+      "mode": "minimal",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unapproved syscall socket",
+      "mode": "minimal",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: host provider must not create a memfd or use bundled fallback",
+      "mode": "minimal",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24060: selected library alias precedes complete source snapshots",
+      "mode": "minimal",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22892: post-read metadata must follow complete file bytes and EOF",
+      "mode": "minimal",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22893: source read lacks live metadata/phase or continues after EOF",
+      "mode": "minimal",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22893: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "minimal",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22892: post-read metadata must follow complete file bytes and EOF",
+      "mode": "minimal",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22892: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "minimal",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22895: snapshots must be sequential after six startup verifications",
+      "mode": "minimal",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22891: read count exceeds its bounded successful role",
+      "mode": "minimal",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4201: post-read metadata must follow complete file bytes and EOF",
+      "mode": "minimal",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4201: source bytes exceed their pinned identity",
+      "mode": "minimal",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4201: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "minimal",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1171: startup exclusion must follow all caches and fail once",
+      "mode": "minimal",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4315: checked open lacks its own fresh pre-open no-follow path query",
+      "mode": "minimal",
+      "mutation": "fresh snapshot pre-stat omitted despite prior startup metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 1309: installed directory entries differ from prepared source inventory",
+      "mode": "minimal",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2502: post-read metadata must follow complete file bytes and EOF",
+      "mode": "minimal",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2502: post-read metadata must follow complete file bytes and EOF",
+      "mode": "minimal",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24069: loaded library descriptor must remain pinned",
+      "mode": "minimal",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24069: retained host source/directory lease closes before runtime loading",
+      "mode": "minimal",
+      "mutation": "all six startup owners close before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24070: one alias metadata query must follow its exact header",
+      "mode": "minimal",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24072: stock mapping lacks coherent reservation base",
+      "mode": "minimal",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24076: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "minimal",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24078: loader alias closes before complete stock setup",
+      "mode": "minimal",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24129: Python query precedes image mappings/alias closure",
+      "mode": "minimal",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24303: source parser remap differs from observed live anonymous backing",
+      "mode": "minimal",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24316: publication precedes complete initialized or rejection boundary",
+      "mode": "minimal",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24073: first selected stock mapping must be the pinned RX operation",
+      "mode": "minimal",
+      "mutation": "selected segments swap RX and RW roles at retained bases",
+      "rejected": true
+    },
+    {
+      "error": "line 24073: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "minimal",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: successful application output must precede retained owner release",
+      "mode": "minimal",
+      "mutation": "all262 retained leases close before success stdout",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: operation replaces/unmaps/protects the live selected image",
+      "mode": "minimal",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24317: unexpected additional thread query",
+      "mode": "minimal",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24303: source parser remap differs from observed live anonymous backing",
+      "mode": "minimal",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "resources",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "resources",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "resources",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "resources",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 200: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "resources",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 176: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "resources",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 202: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "resources",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 199: unexpected additional process or thread",
+      "mode": "resources",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 202: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "resources",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 217: host metadata precedes complete archive verification/closure",
+      "mode": "resources",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: host source workload inherited stream identity differs",
+      "mode": "resources",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 199: publication precedes complete initialized or rejection boundary",
+      "mode": "resources",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: fixture writes must succeed with their full requested count",
+      "mode": "resources",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24666: require the expected nonreturning fixture exit",
+      "mode": "resources",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24667: completion disagrees with expected fixture exit",
+      "mode": "resources",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24667: operation follows exit or has an incomplete result",
+      "mode": "resources",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unexpected openat argument count",
+      "mode": "resources",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unexpected openat argument count",
+      "mode": "resources",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved OS, Python-source or filesystem read path",
+      "mode": "resources",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved OS, Python-source or filesystem read path",
+      "mode": "resources",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved OS, Python-source or filesystem read path",
+      "mode": "resources",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved syscall mkdir",
+      "mode": "resources",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved syscall clone3",
+      "mode": "resources",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: execve differs from the exact product workload",
+      "mode": "resources",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unapproved syscall socket",
+      "mode": "resources",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: host provider must not create a memfd or use bundled fallback",
+      "mode": "resources",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24125: selected library alias precedes complete source snapshots",
+      "mode": "resources",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22960: post-read metadata must follow complete file bytes and EOF",
+      "mode": "resources",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22961: source read lacks live metadata/phase or continues after EOF",
+      "mode": "resources",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22961: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "resources",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22960: post-read metadata must follow complete file bytes and EOF",
+      "mode": "resources",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22960: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "resources",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22963: snapshots must be sequential after six startup verifications",
+      "mode": "resources",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22959: read count exceeds its bounded successful role",
+      "mode": "resources",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4273: post-read metadata must follow complete file bytes and EOF",
+      "mode": "resources",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4273: source bytes exceed their pinned identity",
+      "mode": "resources",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4273: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "resources",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1243: startup exclusion must follow all caches and fail once",
+      "mode": "resources",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1255: unapproved installed directory enumeration",
+      "mode": "resources",
+      "mutation": "startup native exclusion omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1381: installed directory entries differ from prepared source inventory",
+      "mode": "resources",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2574: post-read metadata must follow complete file bytes and EOF",
+      "mode": "resources",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2574: post-read metadata must follow complete file bytes and EOF",
+      "mode": "resources",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24134: loaded library descriptor must remain pinned",
+      "mode": "resources",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24134: retained host source/directory lease closes before runtime loading",
+      "mode": "resources",
+      "mutation": "startup source owner closes before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24135: one alias metadata query must follow its exact header",
+      "mode": "resources",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24137: stock mapping lacks coherent reservation base",
+      "mode": "resources",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24141: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "resources",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24143: loader alias closes before complete stock setup",
+      "mode": "resources",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24194: Python query precedes image mappings/alias closure",
+      "mode": "resources",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24363: source parser remap differs from observed live anonymous backing",
+      "mode": "resources",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24380: publication precedes complete initialized or rejection boundary",
+      "mode": "resources",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24138: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "resources",
+      "mutation": "selected mapping changes returned address",
+      "rejected": true
+    },
+    {
+      "error": "line 24138: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "resources",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: operation replaces/unmaps/protects the live selected image",
+      "mode": "resources",
+      "mutation": "live image unmapped",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: operation replaces/unmaps/protects the live selected image",
+      "mode": "resources",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24381: unexpected additional thread query",
+      "mode": "resources",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24363: source parser remap differs from observed live anonymous backing",
+      "mode": "resources",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "stdlib",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "stdlib",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "stdlib",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "stdlib",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 127: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "stdlib",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 104: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "stdlib",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 130: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "stdlib",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 126: unexpected additional process or thread",
+      "mode": "stdlib",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 130: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "stdlib",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 135: host metadata precedes complete archive verification/closure",
+      "mode": "stdlib",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: host source workload inherited stream identity differs",
+      "mode": "stdlib",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 126: publication precedes complete initialized or rejection boundary",
+      "mode": "stdlib",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: fixture writes must succeed with their full requested count",
+      "mode": "stdlib",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24575: require the expected nonreturning fixture exit",
+      "mode": "stdlib",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24576: completion disagrees with expected fixture exit",
+      "mode": "stdlib",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24576: operation follows exit or has an incomplete result",
+      "mode": "stdlib",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unexpected openat argument count",
+      "mode": "stdlib",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unexpected openat argument count",
+      "mode": "stdlib",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved OS, Python-source or filesystem read path",
+      "mode": "stdlib",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved OS, Python-source or filesystem read path",
+      "mode": "stdlib",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved OS, Python-source or filesystem read path",
+      "mode": "stdlib",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved syscall mkdir",
+      "mode": "stdlib",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved syscall clone3",
+      "mode": "stdlib",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: execve differs from the exact product workload",
+      "mode": "stdlib",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unapproved syscall socket",
+      "mode": "stdlib",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: host provider must not create a memfd or use bundled fallback",
+      "mode": "stdlib",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24041: selected library alias precedes complete source snapshots",
+      "mode": "stdlib",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22876: post-read metadata must follow complete file bytes and EOF",
+      "mode": "stdlib",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22877: source read lacks live metadata/phase or continues after EOF",
+      "mode": "stdlib",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22877: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "stdlib",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22876: post-read metadata must follow complete file bytes and EOF",
+      "mode": "stdlib",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22876: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "stdlib",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22879: snapshots must be sequential after six startup verifications",
+      "mode": "stdlib",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22875: read count exceeds its bounded successful role",
+      "mode": "stdlib",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: post-read metadata must follow complete file bytes and EOF",
+      "mode": "stdlib",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: source bytes exceed their pinned identity",
+      "mode": "stdlib",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "stdlib",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1161: startup exclusion must follow all caches and fail once",
+      "mode": "stdlib",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1173: unapproved installed directory enumeration",
+      "mode": "stdlib",
+      "mutation": "startup native exclusion omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1299: installed directory entries differ from prepared source inventory",
+      "mode": "stdlib",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2492: post-read metadata must follow complete file bytes and EOF",
+      "mode": "stdlib",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2492: post-read metadata must follow complete file bytes and EOF",
+      "mode": "stdlib",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24050: loaded library descriptor must remain pinned",
+      "mode": "stdlib",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24050: retained host source/directory lease closes before runtime loading",
+      "mode": "stdlib",
+      "mutation": "startup source owner closes before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24051: one alias metadata query must follow its exact header",
+      "mode": "stdlib",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24053: stock mapping lacks coherent reservation base",
+      "mode": "stdlib",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24057: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "stdlib",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24059: loader alias closes before complete stock setup",
+      "mode": "stdlib",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24110: Python query precedes image mappings/alias closure",
+      "mode": "stdlib",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24272: source parser remap differs from observed live anonymous backing",
+      "mode": "stdlib",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24289: publication precedes complete initialized or rejection boundary",
+      "mode": "stdlib",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24054: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "stdlib",
+      "mutation": "selected mapping changes returned address",
+      "rejected": true
+    },
+    {
+      "error": "line 24054: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "stdlib",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: operation replaces/unmaps/protects the live selected image",
+      "mode": "stdlib",
+      "mutation": "live image unmapped",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: operation replaces/unmaps/protects the live selected image",
+      "mode": "stdlib",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: unexpected additional thread query",
+      "mode": "stdlib",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24272: source parser remap differs from observed live anonymous backing",
+      "mode": "stdlib",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "app-error",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "app-error",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "app-error",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "app-error",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 126: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "app-error",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 104: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "app-error",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 128: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "app-error",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 125: unexpected additional process or thread",
+      "mode": "app-error",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 128: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "app-error",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 133: host metadata precedes complete archive verification/closure",
+      "mode": "app-error",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: host source workload inherited stream identity differs",
+      "mode": "app-error",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 125: publication precedes complete initialized or rejection boundary",
+      "mode": "app-error",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: fixture writes must succeed with their full requested count",
+      "mode": "app-error",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24616: require the expected nonreturning fixture exit",
+      "mode": "app-error",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24617: completion disagrees with expected fixture exit",
+      "mode": "app-error",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24617: operation follows exit or has an incomplete result",
+      "mode": "app-error",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unexpected openat argument count",
+      "mode": "app-error",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unexpected openat argument count",
+      "mode": "app-error",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved OS, Python-source or filesystem read path",
+      "mode": "app-error",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved OS, Python-source or filesystem read path",
+      "mode": "app-error",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved OS, Python-source or filesystem read path",
+      "mode": "app-error",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved syscall mkdir",
+      "mode": "app-error",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved syscall clone3",
+      "mode": "app-error",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: execve differs from the exact product workload",
+      "mode": "app-error",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: unapproved syscall socket",
+      "mode": "app-error",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: host provider must not create a memfd or use bundled fallback",
+      "mode": "app-error",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24049: selected library alias precedes complete source snapshots",
+      "mode": "app-error",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22881: post-read metadata must follow complete file bytes and EOF",
+      "mode": "app-error",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22882: source read lacks live metadata/phase or continues after EOF",
+      "mode": "app-error",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22882: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "app-error",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22881: post-read metadata must follow complete file bytes and EOF",
+      "mode": "app-error",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22881: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "app-error",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22884: snapshots must be sequential after six startup verifications",
+      "mode": "app-error",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22880: read count exceeds its bounded successful role",
+      "mode": "app-error",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4189: post-read metadata must follow complete file bytes and EOF",
+      "mode": "app-error",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4189: source bytes exceed their pinned identity",
+      "mode": "app-error",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4189: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "app-error",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1159: startup exclusion must follow all caches and fail once",
+      "mode": "app-error",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1171: unapproved installed directory enumeration",
+      "mode": "app-error",
+      "mutation": "startup native exclusion omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1297: installed directory entries differ from prepared source inventory",
+      "mode": "app-error",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2490: post-read metadata must follow complete file bytes and EOF",
+      "mode": "app-error",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2490: post-read metadata must follow complete file bytes and EOF",
+      "mode": "app-error",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24058: loaded library descriptor must remain pinned",
+      "mode": "app-error",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24058: retained host source/directory lease closes before runtime loading",
+      "mode": "app-error",
+      "mutation": "startup source owner closes before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24059: one alias metadata query must follow its exact header",
+      "mode": "app-error",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24061: stock mapping lacks coherent reservation base",
+      "mode": "app-error",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24065: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "app-error",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24067: loader alias closes before complete stock setup",
+      "mode": "app-error",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24118: Python query precedes image mappings/alias closure",
+      "mode": "app-error",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24288: source parser remap differs from observed live anonymous backing",
+      "mode": "app-error",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24307: retained host owners close before complete initialized observations",
+      "mode": "app-error",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24062: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "app-error",
+      "mutation": "selected mapping changes returned address",
+      "rejected": true
+    },
+    {
+      "error": "line 24062: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "app-error",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: operation replaces/unmaps/protects the live selected image",
+      "mode": "app-error",
+      "mutation": "live image unmapped",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: operation replaces/unmaps/protects the live selected image",
+      "mode": "app-error",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24611: Python startup observation precedes image readiness",
+      "mode": "app-error",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24288: source parser remap differs from observed live anonymous backing",
+      "mode": "app-error",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "syntax",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "syntax",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "syntax",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "syntax",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 127: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "syntax",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 104: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "syntax",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 130: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "syntax",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 126: unexpected additional process or thread",
+      "mode": "syntax",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 130: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "syntax",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 135: host metadata precedes complete archive verification/closure",
+      "mode": "syntax",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: host source workload inherited stream identity differs",
+      "mode": "syntax",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 126: publication precedes complete initialized or rejection boundary",
+      "mode": "syntax",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: fixture writes must succeed with their full requested count",
+      "mode": "syntax",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24575: require the expected nonreturning fixture exit",
+      "mode": "syntax",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24576: completion disagrees with expected fixture exit",
+      "mode": "syntax",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24576: operation follows exit or has an incomplete result",
+      "mode": "syntax",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unexpected openat argument count",
+      "mode": "syntax",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unexpected openat argument count",
+      "mode": "syntax",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved OS, Python-source or filesystem read path",
+      "mode": "syntax",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved OS, Python-source or filesystem read path",
+      "mode": "syntax",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved OS, Python-source or filesystem read path",
+      "mode": "syntax",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved syscall mkdir",
+      "mode": "syntax",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved syscall clone3",
+      "mode": "syntax",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: execve differs from the exact product workload",
+      "mode": "syntax",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: unapproved syscall socket",
+      "mode": "syntax",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: host provider must not create a memfd or use bundled fallback",
+      "mode": "syntax",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24045: selected library alias precedes complete source snapshots",
+      "mode": "syntax",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22880: post-read metadata must follow complete file bytes and EOF",
+      "mode": "syntax",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22881: source read lacks live metadata/phase or continues after EOF",
+      "mode": "syntax",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22881: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "syntax",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22880: post-read metadata must follow complete file bytes and EOF",
+      "mode": "syntax",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22880: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "syntax",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22883: snapshots must be sequential after six startup verifications",
+      "mode": "syntax",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22879: read count exceeds its bounded successful role",
+      "mode": "syntax",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: post-read metadata must follow complete file bytes and EOF",
+      "mode": "syntax",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: source bytes exceed their pinned identity",
+      "mode": "syntax",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4190: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "syntax",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1161: startup exclusion must follow all caches and fail once",
+      "mode": "syntax",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1173: unapproved installed directory enumeration",
+      "mode": "syntax",
+      "mutation": "startup native exclusion omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1299: installed directory entries differ from prepared source inventory",
+      "mode": "syntax",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2492: post-read metadata must follow complete file bytes and EOF",
+      "mode": "syntax",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2492: post-read metadata must follow complete file bytes and EOF",
+      "mode": "syntax",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24054: loaded library descriptor must remain pinned",
+      "mode": "syntax",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24054: retained host source/directory lease closes before runtime loading",
+      "mode": "syntax",
+      "mutation": "startup source owner closes before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24055: one alias metadata query must follow its exact header",
+      "mode": "syntax",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24057: stock mapping lacks coherent reservation base",
+      "mode": "syntax",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24061: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "syntax",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24063: loader alias closes before complete stock setup",
+      "mode": "syntax",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24114: Python query precedes image mappings/alias closure",
+      "mode": "syntax",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24273: source parser remap differs from observed live anonymous backing",
+      "mode": "syntax",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24288: retained host owners close before complete initialized observations",
+      "mode": "syntax",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24058: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "syntax",
+      "mutation": "selected mapping changes returned address",
+      "rejected": true
+    },
+    {
+      "error": "line 24058: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "syntax",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: operation replaces/unmaps/protects the live selected image",
+      "mode": "syntax",
+      "mutation": "live image unmapped",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: operation replaces/unmaps/protects the live selected image",
+      "mode": "syntax",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24570: Python startup observation precedes image readiness",
+      "mode": "syntax",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24273: source parser remap differs from observed live anonymous backing",
+      "mode": "syntax",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "nul",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "nul",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "nul",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "nul",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 126: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "nul",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 104: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "nul",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 129: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "nul",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 125: unexpected additional process or thread",
+      "mode": "nul",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 129: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "nul",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 133: host metadata precedes complete archive verification/closure",
+      "mode": "nul",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: host source workload inherited stream identity differs",
+      "mode": "nul",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 125: publication precedes complete initialized or rejection boundary",
+      "mode": "nul",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: fixture writes must succeed with their full requested count",
+      "mode": "nul",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 24577: require the expected nonreturning fixture exit",
+      "mode": "nul",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 24578: completion disagrees with expected fixture exit",
+      "mode": "nul",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 24578: operation follows exit or has an incomplete result",
+      "mode": "nul",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unexpected openat argument count",
+      "mode": "nul",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unexpected openat argument count",
+      "mode": "nul",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved OS, Python-source or filesystem read path",
+      "mode": "nul",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved OS, Python-source or filesystem read path",
+      "mode": "nul",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved OS, Python-source or filesystem read path",
+      "mode": "nul",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved syscall mkdir",
+      "mode": "nul",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved syscall clone3",
+      "mode": "nul",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: execve differs from the exact product workload",
+      "mode": "nul",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: unapproved syscall socket",
+      "mode": "nul",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: host provider must not create a memfd or use bundled fallback",
+      "mode": "nul",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 24040: selected library alias precedes complete source snapshots",
+      "mode": "nul",
+      "mutation": "unused pinned source snapshot omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22875: post-read metadata must follow complete file bytes and EOF",
+      "mode": "nul",
+      "mutation": "snapshot EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22876: source read lacks live metadata/phase or continues after EOF",
+      "mode": "nul",
+      "mutation": "snapshot EOF duplicated",
+      "rejected": true
+    },
+    {
+      "error": "line 22876: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "nul",
+      "mutation": "snapshot post-read metadata omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 22875: post-read metadata must follow complete file bytes and EOF",
+      "mode": "nul",
+      "mutation": "snapshot metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22875: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "nul",
+      "mutation": "snapshot close before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 22878: snapshots must be sequential after six startup verifications",
+      "mode": "nul",
+      "mutation": "snapshot source descriptor remains open",
+      "rejected": true
+    },
+    {
+      "error": "line 22874: read count exceeds its bounded successful role",
+      "mode": "nul",
+      "mutation": "snapshot returns one extra source byte",
+      "rejected": true
+    },
+    {
+      "error": "line 4188: post-read metadata must follow complete file bytes and EOF",
+      "mode": "nul",
+      "mutation": "empty pinned source EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 4188: source bytes exceed their pinned identity",
+      "mode": "nul",
+      "mutation": "empty pinned source returns data",
+      "rejected": true
+    },
+    {
+      "error": "line 4188: snapshot descriptor closes before complete identity/EOF/metadata",
+      "mode": "nul",
+      "mutation": "empty source closes before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 1159: startup exclusion must follow all caches and fail once",
+      "mode": "nul",
+      "mutation": "unused deep cache check omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1171: unapproved installed directory enumeration",
+      "mode": "nul",
+      "mutation": "startup native exclusion omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1297: installed directory entries differ from prepared source inventory",
+      "mode": "nul",
+      "mutation": "startup directory inventory omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2490: post-read metadata must follow complete file bytes and EOF",
+      "mode": "nul",
+      "mutation": "library hash EOF omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 2490: post-read metadata must follow complete file bytes and EOF",
+      "mode": "nul",
+      "mutation": "library metadata before EOF",
+      "rejected": true
+    },
+    {
+      "error": "line 24049: loaded library descriptor must remain pinned",
+      "mode": "nul",
+      "mutation": "library descriptor closes before loading",
+      "rejected": true
+    },
+    {
+      "error": "line 24049: retained host source/directory lease closes before runtime loading",
+      "mode": "nul",
+      "mutation": "startup source owner closes before loader",
+      "rejected": true
+    },
+    {
+      "error": "line 24050: one alias metadata query must follow its exact header",
+      "mode": "nul",
+      "mutation": "alias header omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24052: stock mapping lacks coherent reservation base",
+      "mode": "nul",
+      "mutation": "reservation omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24056: second selected stock mapping must be coherent pinned RW setup",
+      "mode": "nul",
+      "mutation": "guard omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24058: loader alias closes before complete stock setup",
+      "mode": "nul",
+      "mutation": "BSS omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24109: Python query precedes image mappings/alias closure",
+      "mode": "nul",
+      "mutation": "RELRO omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24272: source parser remap differs from observed live anonymous backing",
+      "mode": "nul",
+      "mutation": "entropy omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24290: retained host owners close before complete initialized observations",
+      "mode": "nul",
+      "mutation": "gettid omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 24053: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "nul",
+      "mutation": "selected mapping changes returned address",
+      "rejected": true
+    },
+    {
+      "error": "line 24053: selected host file mapping contradicts pinned GNU image facts",
+      "mode": "nul",
+      "mutation": "selected mapping writable executable",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: operation replaces/unmaps/protects the live selected image",
+      "mode": "nul",
+      "mutation": "live image unmapped",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: operation replaces/unmaps/protects the live selected image",
+      "mode": "nul",
+      "mutation": "anonymous returned image overlap",
+      "rejected": true
+    },
+    {
+      "error": "line 24572: Python startup observation precedes image readiness",
+      "mode": "nul",
+      "mutation": "extra thread observation",
+      "rejected": true
+    },
+    {
+      "error": "line 24272: source parser remap differs from observed live anonymous backing",
+      "mode": "nul",
+      "mutation": "source parser growth omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "corrupt-source",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "corrupt-source",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "corrupt-source",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "corrupt-source",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "corrupt-source",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "corrupt-source",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "corrupt-source",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "corrupt-source",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "corrupt-source",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 143: host source workload inherited stream identity differs",
+      "mode": "corrupt-source",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "corrupt-source",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 143: fixture writes must succeed with their full requested count",
+      "mode": "corrupt-source",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 148: require the expected nonreturning fixture exit",
+      "mode": "corrupt-source",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 149: completion disagrees with expected fixture exit",
+      "mode": "corrupt-source",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 149: operation follows exit or has an incomplete result",
+      "mode": "corrupt-source",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unexpected openat argument count",
+      "mode": "corrupt-source",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unexpected openat argument count",
+      "mode": "corrupt-source",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved OS, Python-source or filesystem read path",
+      "mode": "corrupt-source",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved OS, Python-source or filesystem read path",
+      "mode": "corrupt-source",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved OS, Python-source or filesystem read path",
+      "mode": "corrupt-source",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved syscall mkdir",
+      "mode": "corrupt-source",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved syscall clone3",
+      "mode": "corrupt-source",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 143: execve differs from the exact product workload",
+      "mode": "corrupt-source",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 143: unapproved syscall socket",
+      "mode": "corrupt-source",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 143: host provider must not create a memfd or use bundled fallback",
+      "mode": "corrupt-source",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-source",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-source",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-source",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "missing-source",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-source",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-source",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-source",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "missing-source",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "missing-source",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 145: host metadata precedes complete archive verification/closure",
+      "mode": "missing-source",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: host source workload inherited stream identity differs",
+      "mode": "missing-source",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "missing-source",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: fixture writes must succeed with their full requested count",
+      "mode": "missing-source",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: require the expected nonreturning fixture exit",
+      "mode": "missing-source",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 23195: completion disagrees with expected fixture exit",
+      "mode": "missing-source",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 23195: operation follows exit or has an incomplete result",
+      "mode": "missing-source",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: validation resumes after its observed prerequisite failure",
+      "mode": "missing-source",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: validation resumes after its observed prerequisite failure",
+      "mode": "missing-source",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: validation resumes after its observed prerequisite failure",
+      "mode": "missing-source",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: validation resumes after its observed prerequisite failure",
+      "mode": "missing-source",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: validation resumes after its observed prerequisite failure",
+      "mode": "missing-source",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: unapproved syscall mkdir",
+      "mode": "missing-source",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: unapproved syscall clone3",
+      "mode": "missing-source",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: execve differs from the exact product workload",
+      "mode": "missing-source",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: unapproved syscall socket",
+      "mode": "missing-source",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 23189: host provider must not create a memfd or use bundled fallback",
+      "mode": "missing-source",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "wrong-source",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "wrong-source",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "wrong-source",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "wrong-source",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "wrong-source",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "wrong-source",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "wrong-source",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "wrong-source",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "wrong-source",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 145: host metadata precedes complete archive verification/closure",
+      "mode": "wrong-source",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: host source workload inherited stream identity differs",
+      "mode": "wrong-source",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "wrong-source",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: fixture writes must succeed with their full requested count",
+      "mode": "wrong-source",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 23199: require the expected nonreturning fixture exit",
+      "mode": "wrong-source",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 23200: completion disagrees with expected fixture exit",
+      "mode": "wrong-source",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 23200: operation follows exit or has an incomplete result",
+      "mode": "wrong-source",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: validation resumes after its observed prerequisite failure",
+      "mode": "wrong-source",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: validation resumes after its observed prerequisite failure",
+      "mode": "wrong-source",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: validation resumes after its observed prerequisite failure",
+      "mode": "wrong-source",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: validation resumes after its observed prerequisite failure",
+      "mode": "wrong-source",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: validation resumes after its observed prerequisite failure",
+      "mode": "wrong-source",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: unapproved syscall mkdir",
+      "mode": "wrong-source",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: unapproved syscall clone3",
+      "mode": "wrong-source",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: execve differs from the exact product workload",
+      "mode": "wrong-source",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: unapproved syscall socket",
+      "mode": "wrong-source",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 23194: host provider must not create a memfd or use bundled fallback",
+      "mode": "wrong-source",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "deep-cache",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "deep-cache",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "deep-cache",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "deep-cache",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "deep-cache",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "deep-cache",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 141: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "deep-cache",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "deep-cache",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 141: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "deep-cache",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 147: host metadata precedes complete archive verification/closure",
+      "mode": "deep-cache",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: host source workload inherited stream identity differs",
+      "mode": "deep-cache",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "deep-cache",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: fixture writes must succeed with their full requested count",
+      "mode": "deep-cache",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 1323: require the expected nonreturning fixture exit",
+      "mode": "deep-cache",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 1324: completion disagrees with expected fixture exit",
+      "mode": "deep-cache",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 1324: operation follows exit or has an incomplete result",
+      "mode": "deep-cache",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: validation resumes after its observed prerequisite failure",
+      "mode": "deep-cache",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: validation resumes after its observed prerequisite failure",
+      "mode": "deep-cache",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: validation resumes after its observed prerequisite failure",
+      "mode": "deep-cache",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: validation resumes after its observed prerequisite failure",
+      "mode": "deep-cache",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: validation resumes after its observed prerequisite failure",
+      "mode": "deep-cache",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: unapproved syscall mkdir",
+      "mode": "deep-cache",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: unapproved syscall clone3",
+      "mode": "deep-cache",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: execve differs from the exact product workload",
+      "mode": "deep-cache",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: unapproved syscall socket",
+      "mode": "deep-cache",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 1318: host provider must not create a memfd or use bundled fallback",
+      "mode": "deep-cache",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-native",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-native",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-native",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "startup-native",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-native",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-native",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-native",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "startup-native",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "startup-native",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 145: host metadata precedes complete archive verification/closure",
+      "mode": "startup-native",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: host source workload inherited stream identity differs",
+      "mode": "startup-native",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "startup-native",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: fixture writes must succeed with their full requested count",
+      "mode": "startup-native",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 1478: require the expected nonreturning fixture exit",
+      "mode": "startup-native",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 1479: completion disagrees with expected fixture exit",
+      "mode": "startup-native",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 1479: operation follows exit or has an incomplete result",
+      "mode": "startup-native",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: validation resumes after its observed prerequisite failure",
+      "mode": "startup-native",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: validation resumes after its observed prerequisite failure",
+      "mode": "startup-native",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: validation resumes after its observed prerequisite failure",
+      "mode": "startup-native",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: validation resumes after its observed prerequisite failure",
+      "mode": "startup-native",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: validation resumes after its observed prerequisite failure",
+      "mode": "startup-native",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: unapproved syscall mkdir",
+      "mode": "startup-native",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: unapproved syscall clone3",
+      "mode": "startup-native",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: execve differs from the exact product workload",
+      "mode": "startup-native",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: unapproved syscall socket",
+      "mode": "startup-native",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 1473: host provider must not create a memfd or use bundled fallback",
+      "mode": "startup-native",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-bytecode",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-bytecode",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "startup-bytecode",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "startup-bytecode",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-bytecode",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-bytecode",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 141: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "startup-bytecode",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: unexpected additional process or thread",
+      "mode": "startup-bytecode",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 141: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "startup-bytecode",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 147: host metadata precedes complete archive verification/closure",
+      "mode": "startup-bytecode",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: host source workload inherited stream identity differs",
+      "mode": "startup-bytecode",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 138: publication precedes complete initialized or rejection boundary",
+      "mode": "startup-bytecode",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: fixture writes must succeed with their full requested count",
+      "mode": "startup-bytecode",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 1489: require the expected nonreturning fixture exit",
+      "mode": "startup-bytecode",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 1490: completion disagrees with expected fixture exit",
+      "mode": "startup-bytecode",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 1490: operation follows exit or has an incomplete result",
+      "mode": "startup-bytecode",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: validation resumes after its observed prerequisite failure",
+      "mode": "startup-bytecode",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: validation resumes after its observed prerequisite failure",
+      "mode": "startup-bytecode",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: validation resumes after its observed prerequisite failure",
+      "mode": "startup-bytecode",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: validation resumes after its observed prerequisite failure",
+      "mode": "startup-bytecode",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: validation resumes after its observed prerequisite failure",
+      "mode": "startup-bytecode",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: unapproved syscall mkdir",
+      "mode": "startup-bytecode",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: unapproved syscall clone3",
+      "mode": "startup-bytecode",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: execve differs from the exact product workload",
+      "mode": "startup-bytecode",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: unapproved syscall socket",
+      "mode": "startup-bytecode",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 1484: host provider must not create a memfd or use bundled fallback",
+      "mode": "startup-bytecode",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-library",
+      "mutation": "alternate executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-library",
+      "mutation": "extra application argument",
+      "rejected": true
+    },
+    {
+      "error": "line 1: execve differs from the exact product workload",
+      "mode": "missing-library",
+      "mutation": "archive path substitution",
+      "rejected": true
+    },
+    {
+      "error": "complete selected process/readiness/exit required",
+      "mode": "missing-library",
+      "mutation": "missing readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 138: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-library",
+      "mutation": "duplicate readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 116: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-library",
+      "mutation": "readiness before final metadata",
+      "rejected": true
+    },
+    {
+      "error": "line 139: readiness must follow exact metadata admission before all payload/host reads",
+      "mode": "missing-library",
+      "mutation": "payload before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 137: unexpected additional process or thread",
+      "mode": "missing-library",
+      "mutation": "extra PID",
+      "rejected": true
+    },
+    {
+      "error": "line 139: unknown, closed, deleted or unannotated read descriptor",
+      "mode": "missing-library",
+      "mutation": "archive closes before payload verification",
+      "rejected": true
+    },
+    {
+      "error": "line 146: host metadata precedes complete archive verification/closure",
+      "mode": "missing-library",
+      "mutation": "payload read omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: host source workload inherited stream identity differs",
+      "mode": "missing-library",
+      "mutation": "output path substitution",
+      "rejected": true
+    },
+    {
+      "error": "line 137: publication precedes complete initialized or rejection boundary",
+      "mode": "missing-library",
+      "mutation": "publication before readiness",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: fixture writes must succeed with their full requested count",
+      "mode": "missing-library",
+      "mutation": "failed output write",
+      "rejected": true
+    },
+    {
+      "error": "line 1603: require the expected nonreturning fixture exit",
+      "mode": "missing-library",
+      "mutation": "wrong exit group",
+      "rejected": true
+    },
+    {
+      "error": "line 1604: completion disagrees with expected fixture exit",
+      "mode": "missing-library",
+      "mutation": "wrong process completion",
+      "rejected": true
+    },
+    {
+      "error": "line 1604: operation follows exit or has an incomplete result",
+      "mode": "missing-library",
+      "mutation": "poll after exit_group",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: validation resumes after its observed prerequisite failure",
+      "mode": "missing-library",
+      "mutation": "failed temporary create",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: validation resumes after its observed prerequisite failure",
+      "mode": "missing-library",
+      "mutation": "failed O_TMPFILE",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: validation resumes after its observed prerequisite failure",
+      "mode": "missing-library",
+      "mutation": "failed virtual source fallback",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: validation resumes after its observed prerequisite failure",
+      "mode": "missing-library",
+      "mutation": "failed host source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: validation resumes after its observed prerequisite failure",
+      "mode": "missing-library",
+      "mutation": "failed native source lure",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: unapproved syscall mkdir",
+      "mode": "missing-library",
+      "mutation": "failed cache creation",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: unapproved syscall clone3",
+      "mode": "missing-library",
+      "mutation": "failed subprocess",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: execve differs from the exact product workload",
+      "mode": "missing-library",
+      "mutation": "failed extra executable",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: unapproved syscall socket",
+      "mode": "missing-library",
+      "mutation": "failed network",
+      "rejected": true
+    },
+    {
+      "error": "line 1598: host provider must not create a memfd or use bundled fallback",
+      "mode": "missing-library",
+      "mutation": "bundled fallback attempt",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata inventory differs",
+      "mode": "minimal",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "prefix-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "discovery-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "minimal",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "minimal",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "minimal",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata identity differs",
+      "mode": "minimal",
+      "mutation": "false-size",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata inventory differs",
+      "mode": "stdlib",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "prefix-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "discovery-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "stdlib",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "stdlib",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "stdlib",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata identity differs",
+      "mode": "stdlib",
+      "mutation": "false-size",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata inventory differs",
+      "mode": "corrupt-source",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "prefix-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "discovery-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "corrupt-source",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata identity differs",
+      "mode": "corrupt-source",
+      "mutation": "false-size",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata inventory differs",
+      "mode": "missing-source",
+      "mutation": "schema-bool",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "debug-int",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "prefix-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "discovery-lie",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "missing-application",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "false-app-hash",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "missing-source",
+      "mutation": "false-readiness",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "missing-source",
+      "mutation": "false-manifest-digest",
+      "rejected": true
+    },
+    {
+      "error": "retained host source application/provider/target differs",
+      "mode": "missing-source",
+      "mutation": "false-target",
+      "rejected": true
+    },
+    {
+      "error": "retained host source metadata identity differs",
+      "mode": "missing-source",
+      "mutation": "false-size",
+      "rejected": true
+    },
+    {
+      "error": "line 142: publication precedes complete initialized or rejection boundary",
+      "mode": "corrupt-source",
+      "mutation": "corrupt selected bytes omitted",
+      "rejected": true
+    },
+    {
+      "error": "line 141: CRC rejection lacks exact selected corrupt source read",
+      "mode": "corrupt-source",
+      "mutation": "corrupt byte substituted",
+      "rejected": true
+    },
+    {
+      "error": "line 144: publication precedes complete initialized or rejection boundary",
+      "mode": "corrupt-source",
+      "mutation": "corrupt read repeats",
+      "rejected": true
+    },
+    {
+      "error": "retained metadata differs from actual archive",
+      "mode": "corrupt-source",
+      "mutation": "false corrupt offset",
+      "rejected": true
+    }
+  ],
+  "passed": true,
+  "rejected_count": 567,
+  "repository_revision": "dd6274f9def358ce562ba229f79e14cc2fe6c818",
+  "repository_status": "",
+  "script_sha256": "c6f7a69454dc6ad96308a2d24d86a09de922974de9825b5985ad8add003e2939",
+  "source_inventory_sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+  "stdlib_bytes": 39158056,
+  "stdlib_sources": 2174
+}
