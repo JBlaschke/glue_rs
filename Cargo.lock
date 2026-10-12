@@ -113,6 +113,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "glue-ipc"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
 name = "glue-linux-memfd-probe"
 version = "0.1.0"
 dependencies = [
@@ -212,6 +219,13 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+]
+
+[[package]]
+name = "glue-worker-protocol-fixture"
+version = "0.1.0"
+dependencies = [
+ "glue-ipc",
 ]
 
 [[package]]

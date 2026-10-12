@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `442d9eb`.
+The earlier feature work and evidence were merged into `main` at `aae69ef`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -25,6 +25,7 @@ Further implementation continues on separate feature branches.
 | A7 bundled Python source applications | `codex/a7-python-source-apps` / `d3ddac3` (from merged `90c4a10`; evidence bundle follows) | Experimental bounded source applications; controlled GNU Linux arm64 observation | Mac/Linux 366/367 workspace tests and Clippy; 87 GNU Python/probe and 14 runner tests; 238 policy, 16 importer and 7 byte-entry tests; all six new and 42 regression traces pass/replay; 34 new and 30 existing CLI controls match; 198 hostile source-app edits reject |
 | A7 explicit-host Python source applications | `codex/a7-host-source-apps` / `dd6274f` (from merged `cb3cae4`) | Experimental bounded host source applications; controlled GNU Linux arm64 observation | Full pinned snapshot and startup guards; Mac/Linux 381/382 tests and Clippy; 102 GNU Python/probe and 14 runner tests; 261 policy and 11 host protocol tests (2 Mac skips); all 13 new and 48 regression traces pass/replay; 51 new/34 bundled/30 original controls match; all 567 hostile edits reject |
 | A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` / `7a8e32c` (from merged `442d9eb`) | Experimental stock install-only host applications; controlled GNU Linux arm64 observation | Exact 1,037-source/three-cache prerequisites; complete provider audit; Mac/Linux 395/396 tests and Clippy; 116 GNU Python/probe and 14 runner tests; 288 policies; all 16 new/61 regression traces pass/replay; 60/51/34/30 product controls match; all 894 hostile edits reject |
+| A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
 
 ## Gate status
 
@@ -360,6 +361,16 @@ product controls agree; all 894 hostile actual-trace edits reject. The C bridge
 and selected GNU library mapping implementation remain unchanged. Broader host
 installations, runtime versions and package/platform compatibility remain open.
 
+The A9 foundation captured from clean `42197bb` freezes bounded version-0
+messages, integer tags and controller ordering. Independent byte vectors and
+real anonymous-pipe tests cover values, errors, cancellation/draining and
+crash-versus-framing EOF. Mac/Linux source workspaces pass 432/433 tests and
+Clippy for both Lua profiles; both optimized IPC suites pass all 37 tests.
+The [retained evidence](evidence/worker-protocol-2026-10-12/README.md) includes
+the full Linux pipe-test trace, source/artifact identities and validation logs.
+No product/runtime worker or cross-language invocation is implemented; G4
+remains open. See [decision 0020](decisions/0020-worker-message-protocol.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -375,3 +386,9 @@ Extend complete runtime traces beyond the controlled arm64
 cell. The Linux native Lua vertical slice exercises the G2 fixture on its
 observed cell; it does not establish the four-platform prerequisite or general
 package compatibility.
+
+In parallel, A9 now has a bounded message codec and controller connection ledger.
+Continue with private inherited protocol pipes and launcher re-execution,
+worker-side cancellation races, clocks/queue budgets and actual runtime bindings.
+The synthetic fixture reserves its own stdin/stdout for protocol; it does not
+establish product worker execution or close G4.

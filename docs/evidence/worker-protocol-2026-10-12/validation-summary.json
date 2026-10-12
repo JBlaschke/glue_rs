@@ -1,0 +1,26 @@
+{
+  "captured_date": "2026-10-12",
+  "cross_language_execution_observed": false,
+  "implementation_commit": "42197bbbe6116fae4683e4fa21f441757c675244",
+  "linux_pipe2_successes": 18,
+  "linux_synthetic_peer_exit_statuses": [
+    0,
+    17,
+    17,
+    17,
+    1,
+    0
+  ],
+  "linux_traced_test_status": 0,
+  "runtime_worker_integration_observed": false,
+  "schema_version": 0,
+  "source_status": "clean",
+  "tests": {
+    "linux-ipc-release-tests.txt": 37,
+    "linux-lua55-tests.txt": 433,
+    "linux-workspace-tests.txt": 432,
+    "mac-ipc-release-tests.txt": 37,
+    "mac-lua55-tests.txt": 433,
+    "mac-workspace-tests.txt": 432
+  }
+}
