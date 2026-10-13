@@ -26,7 +26,7 @@ Further implementation continues on separate feature branches.
 | A7 explicit-host Python source applications | `codex/a7-host-source-apps` / `dd6274f` (from merged `cb3cae4`) | Experimental bounded host source applications; controlled GNU Linux arm64 observation | Full pinned snapshot and startup guards; Mac/Linux 381/382 tests and Clippy; 102 GNU Python/probe and 14 runner tests; 261 policy and 11 host protocol tests (2 Mac skips); all 13 new and 48 regression traces pass/replay; 51 new/34 bundled/30 original controls match; all 567 hostile edits reject |
 | A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` / `7a8e32c` (from merged `442d9eb`) | Experimental stock install-only host applications; controlled GNU Linux arm64 observation | Exact 1,037-source/three-cache prerequisites; complete provider audit; Mac/Linux 395/396 tests and Clippy; 116 GNU Python/probe and 14 runner tests; 288 policies; all 16 new/61 regression traces pass/replay; 60/51/34/30 product controls match; all 894 hostile edits reject |
 | A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
-| A7 Python distribution metadata | `codex/a7-python-distribution-metadata` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac source workspaces pass 441/442 tests and Clippy; 32 metadata adapter tests; development GNU execution passes the same metadata app with bundled/full-host/install-only runtimes and all six pre-provider RECORD/CRC controls; clean retained capture follows |
+| A7 Python distribution metadata | `codex/a7-python-distribution-metadata` / `80c4b33` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac/Linux 441/442 workspace tests and Clippy; 125 optimized GNU Python/probe and 14 runner tests; 32 adapter and 227 Python policy tests; all nine new/35 source-profile regression traces pass/replay; 42 new CLI controls agree; all 189 hostile edits reject |
 
 ## Gate status
 
@@ -371,6 +371,20 @@ The [retained evidence](evidence/worker-protocol-2026-10-12/README.md) includes
 the full Linux pipe-test trace, source/artifact identities and validation logs.
 No product/runtime worker or cross-language invocation is implemented; G4
 remains open. See [decision 0020](decisions/0020-worker-message-protocol.md).
+
+The [clean metadata evidence](evidence/pbs-linux-arm64-python-metadata-2026-10-13/README.md)
+retains nine new and 35 fresh source-profile regression traces from `80c4b33`,
+all replayed. Three metadata-aware build identities expose bounded `.dist-info`
+through stock public metadata APIs, including plugin loading and virtual RECORD
+files. Malformed RECORD paths and CRC damage reject before provider acquisition;
+actual physical host metadata lures remain invisible. All 42 new product controls
+agree, 6,615 valid archive members verify independently, and all 189 hostile
+trace edits reject. Mac/Linux workspaces pass 441/442 tests and Clippy; optimized
+GNU builds pass 125 Python/probe and 14 runner tests. Metadata/importer/entry
+protocols pass 32/16/7; the Python policy suite passes 227 on both interpreters.
+The legacy importer, C boundary and selected GNU library mapping files remain
+unchanged. Generic wheel/venv ingestion and wider package/provider/platform
+compatibility remain open. See [decision 0021](decisions/0021-python-distribution-metadata.md).
 
 ## Next critical-path assignments
 

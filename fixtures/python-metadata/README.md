@@ -58,3 +58,6 @@ within the existing application budgets, and exact canonical version spelling.
 Generic wheel/venv ingestion, editable installs, `.pth`, external script paths,
 `.egg-info`, version resolution and arbitrary native wheels remain pending.
 See [decision 0021](../../docs/decisions/0021-python-distribution-metadata.md).
+The [clean GNU Linux evidence](../../docs/evidence/pbs-linux-arm64-python-metadata-2026-10-13/README.md)
+retains all nine metadata traces and 35 source-profile regressions, together
+with independent payload and hostile-trace audits.

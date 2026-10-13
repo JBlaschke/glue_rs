@@ -28,6 +28,9 @@ The registry contains:
 | Arbitrary admitted ID with the bundled-source-apps-v1 build identity | Bundled, sealed library | None |
 | Arbitrary admitted ID with the host-source-apps-v1 build identity | Explicit immutable host library/startup paths; full pinned source snapshot | None |
 | Arbitrary admitted ID with the host-install-source-apps-v1 build identity | Explicit immutable host paths; install-only source snapshot and three pinned startup caches | None |
+| Arbitrary admitted ID with the bundled-metadata-apps-v1 build identity | Bundled source applications with bounded distribution metadata | None |
+| Arbitrary admitted ID with the host-metadata-apps-v1 build identity | Full-source host applications with bounded distribution metadata | None |
+| Arbitrary admitted ID with the host-install-metadata-apps-v1 build identity | Install-only host applications with bounded distribution metadata | None |
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |

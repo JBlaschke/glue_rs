@@ -1,0 +1,106 @@
+[
+     {
+          "Id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+          "Digest": "sha256:c3aa290549c5ba0e63aec9de61fc10b6e4bd59e89c0c3f72bb270dd426eedeba",
+          "RepoTags": [
+               "localhost/glue-linux-probe:rust-1.88.0"
+          ],
+          "RepoDigests": [
+               "localhost/glue-linux-probe@sha256:c3aa290549c5ba0e63aec9de61fc10b6e4bd59e89c0c3f72bb270dd426eedeba"
+          ],
+          "Parent": "305065024da6d586f030591815c48d43ed73bfdd122b2c81d382b93228fb8ff9",
+          "Comment": "debuerreotype 0.15",
+          "Created": "2026-10-08T19:41:37.840326257Z",
+          "Config": {
+               "Env": [
+                    "PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                    "RUSTUP_HOME=/usr/local/rustup",
+                    "CARGO_HOME=/usr/local/cargo",
+                    "RUST_VERSION=1.88.0"
+               ],
+               "Cmd": [
+                    "bash"
+               ],
+               "Labels": {
+                    "io.buildah.version": "1.45.0",
+                    "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+               }
+          },
+          "Version": "",
+          "Author": "",
+          "Architecture": "arm64",
+          "Os": "linux",
+          "Size": 821940221,
+          "VirtualSize": 821940221,
+          "GraphDriver": {
+               "Name": "overlay",
+               "Data": {
+                    "LowerDir": "/var/lib/containers/storage/overlay/36f61b8d50c095a82e4c1f32f1903c6a8193e0c3cc9e4cb677b83d8a2bcd2798/diff:/var/lib/containers/storage/overlay/7cc537fb796f4f9a923323171137a719903677bb711e794fb608bb1a570a4042/diff:/var/lib/containers/storage/overlay/dd97e58b4e812b247f3cd261fa7eac247b7c5896b8e34d9474762678cae7774d/diff",
+                    "UpperDir": "/var/lib/containers/storage/overlay/13fc5d20fbe900d07a0668ba6627c60681b7ab840b710319588eed3c88a7a92a/diff",
+                    "WorkDir": "/var/lib/containers/storage/overlay/13fc5d20fbe900d07a0668ba6627c60681b7ab840b710319588eed3c88a7a92a/work"
+               }
+          },
+          "RootFS": {
+               "Type": "layers",
+               "Layers": [
+                    "sha256:dd97e58b4e812b247f3cd261fa7eac247b7c5896b8e34d9474762678cae7774d",
+                    "sha256:f0617f8a7f8051c232128df38e1593c709b813a2a2aadeb90e366f23eb5fac0a",
+                    "sha256:bb0744c8b77d4c3b25e7490e3bd09dae56b139f91e1f37c11078f3eaef629535",
+                    "sha256:561a59a8bac73f00e442a631ae6a7c35ca12f16f7c1e7c5ad92d367018b62aaa"
+               ]
+          },
+          "Labels": {
+               "io.buildah.version": "1.45.0",
+               "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "Annotations": {
+               "com.docker.official-images.bashbrew.arch": "arm64v8",
+               "org.opencontainers.image.base.digest": "sha256:93717e495a1029ba94b9b4a5768cf14d5376077d26cfad3354cbe70be27c2b1d",
+               "org.opencontainers.image.base.name": "docker.io/library/rust:1.88.0-slim-bookworm",
+               "org.opencontainers.image.created": "2026-10-08T19:41:37.840326257Z",
+               "org.opencontainers.image.revision": "9ba2805c3642783b50436e140f5eaa9ecf173054",
+               "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust.git#9ba2805c3642783b50436e140f5eaa9ecf173054:stable/bookworm/slim",
+               "org.opencontainers.image.url": "https://hub.docker.com/_/rust",
+               "org.opencontainers.image.version": "1-slim-bookworm"
+          },
+          "ManifestType": "application/vnd.oci.image.manifest.v1+json",
+          "User": "",
+          "History": [
+               {
+                    "created": "2025-06-26T18:18:04Z",
+                    "created_by": "# debian.sh --arch 'arm64' out/ 'bookworm' '@1753056000'",
+                    "comment": "debuerreotype 0.15"
+               },
+               {
+                    "created": "2025-06-26T18:18:04Z",
+                    "created_by": "LABEL org.opencontainers.image.source=https://github.com/rust-lang/docker-rust",
+                    "comment": "buildkit.dockerfile.v0",
+                    "empty_layer": true
+               },
+               {
+                    "created": "2025-06-26T18:18:04Z",
+                    "created_by": "ENV RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin RUST_VERSION=1.88.0",
+                    "comment": "buildkit.dockerfile.v0",
+                    "empty_layer": true
+               },
+               {
+                    "created": "2025-06-26T18:18:04Z",
+                    "created_by": "RUN /bin/sh -c set -eux;     apt-get update;     apt-get install -y --no-install-recommends         ca-certificates         gcc         libc6-dev         wget         ;     dpkgArch=\"$(dpkg --print-architecture)\";     case \"${dpkgArch##*-}\" in         amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c' ;;         armhf) rustArch='armv7-unknown-linux-gnueabihf'; rustupSha256='3b8daab6cc3135f2cd4b12919559e6adaee73a2fbefb830fadf0405c20231d61' ;;         arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c' ;;         i386) rustArch='i686-unknown-linux-gnu'; rustupSha256='a5db2c4b29d23e9b318b955dd0337d6b52e93933608469085c924e0d05b1df1f' ;;         ppc64el) rustArch='powerpc64le-unknown-linux-gnu'; rustupSha256='acd89c42b47c93bd4266163a7b05d3f26287d5148413c0d47b2e8a7aa67c9dc0' ;;         s390x) rustArch='s390x-unknown-linux-gnu'; rustupSha256='726b7fd5d8805e73eab4a024a2889f8859d5a44e36041abac0a2436a52d42572' ;;         *) echo >&2 \"unsupported architecture: ${dpkgArch}\"; exit 1 ;;     esac;     url=\"https://static.rust-lang.org/rustup/archive/1.28.2/${rustArch}/rustup-init\";     wget \"$url\";     echo \"${rustupSha256} *rustup-init\" | sha256sum -c -;     chmod +x rustup-init;     ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch};     rm rustup-init;     chmod -R a+w $RUSTUP_HOME $CARGO_HOME;     rustup --version;     cargo --version;     rustc --version;     apt-get remove -y --auto-remove         wget         ;     rm -rf /var/lib/apt/lists/*; # buildkit",
+                    "comment": "buildkit.dockerfile.v0"
+               },
+               {
+                    "created": "2026-10-08T18:57:28.171799052Z",
+                    "created_by": "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends strace=6.1-0.1 && rm -rf /var/lib/apt/lists/*",
+                    "comment": "FROM docker.io/library/rust:1.88.0-slim-bookworm"
+               },
+               {
+                    "created": "2026-10-08T19:41:38.177909641Z",
+                    "created_by": "/bin/sh -c rustup component add clippy --toolchain 1.88.0",
+                    "comment": "FROM localhost/glue-linux-probe:rust-1.88.0"
+               }
+          ],
+          "NamesHistory": [
+               "localhost/glue-linux-probe:rust-1.88.0"
+          ]
+     }
+]

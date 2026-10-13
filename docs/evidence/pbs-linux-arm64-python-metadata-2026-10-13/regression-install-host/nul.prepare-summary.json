@@ -1,0 +1,24 @@
+{
+  "app_id": "nul.source",
+  "application": {
+    "app/embedded-nul.py": {
+      "compression": "stored",
+      "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+      "size": 22
+    }
+  },
+  "application_bytes": 22,
+  "application_files": 1,
+  "cache_inventory": {
+    "sha256": "f14f8825bfa9a853f083733bee21c04cfbab6f509a00f72ca434e2096f643af8",
+    "size": 825
+  },
+  "component": "nul",
+  "entry": "app/embedded-nul.py",
+  "prefix": "/build-target/host Python install source apps",
+  "schema_version": 0,
+  "source_inventory": {
+    "sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+    "size": 155575
+  }
+}

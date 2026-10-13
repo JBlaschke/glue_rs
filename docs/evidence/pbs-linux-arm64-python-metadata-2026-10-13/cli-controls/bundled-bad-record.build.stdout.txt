@@ -1,0 +1,2 @@
+Built /build-target/relocated Python metadata/bundled-bad-record.glue: 2186 resources, 83092039 archive bytes, 112883303 uncompressed bytes
+Archive SHA-256: c248e5cc11a50c63f89e8bf1c52031d6ac05fa9d7f7af5c8aae2f4b0b4a1155f

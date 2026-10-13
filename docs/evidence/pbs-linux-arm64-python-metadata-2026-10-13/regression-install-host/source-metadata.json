@@ -1,0 +1,987 @@
+{
+  "archives": {
+    "app-error": {
+      "app_id": "failing.source",
+      "application": {
+        "app/jobs/fail.py": {
+          "compression": "stored",
+          "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+          "size": 59
+        }
+      },
+      "bytes": 5585,
+      "component": "fail",
+      "entry": "app/jobs/fail.py",
+      "manifest_bytes": 1141,
+      "manifest_sha256": "eeabb3c5fe599341baeabd3f3a1824ecf265ad0c97e922091ae3bee4a3de1e8b",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 1406,
+        "archive_read_bytes": 1563,
+        "ranges_sha256": "9601f66cb3c5c9d57921f4d53f79021e8c35de781da4e7636cc17556022c4348"
+      },
+      "sha256": "aa1093d52fc3f24018d9800c56a23439279c53e6c828b2b5074a797b7a54f228",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 5389
+    },
+    "corrupt-source": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6512,
+      "component": "launch",
+      "corrupt_offset": 2156,
+      "entry": "app/launch.py",
+      "manifest_bytes": 1280,
+      "manifest_sha256": "a9bdc65cd924927b2c4f640af0869b1832fa530939578805dd602e993ef6cd75",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2244,
+        "archive_read_bytes": 1864,
+        "ranges_sha256": "f139c6ab37d2c4cf6c7d75b69f472b6ae371b9037967083f79a836c833017786"
+      },
+      "sha256": "65a0ee1b3995572a63501d9c1354a35bbcdb2dd5d821bca6378ebff59973ba44",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6227
+    },
+    "deep-cache": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6534,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1302,
+      "manifest_sha256": "ed9cc263a5ea78c5ba81a14d2018549bab48f7fbe3bca93be5ce1e5b7763e334",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps deep-cache/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps deep-cache/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2266,
+        "archive_read_bytes": 1886,
+        "ranges_sha256": "799e149af156a9c786d6d36b25be1d964264aa457b3ac73a10e2084e66e3540b"
+      },
+      "sha256": "8ff6b6ec1e220789284026ec646a3e109d857db4043a9e693d302fbcdf382ec6",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6249
+    },
+    "extra-cache": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6536,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1304,
+      "manifest_sha256": "09b0633dea5ef292fa995ac0057a8d7c73a875ed00baeee35c2d36b76090c5fa",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps extra-cache/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps extra-cache/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2268,
+        "archive_read_bytes": 1888,
+        "ranges_sha256": "72799df163da020a7985277f1a530f24d12b80c54f18d1effcb48c16730b91ec"
+      },
+      "sha256": "acb193ea95bd3b7bb10ab4d51240e5753e87ab3182604936880a7efe87c39e3d",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6251
+    },
+    "minimal": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6512,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1280,
+      "manifest_sha256": "a9bdc65cd924927b2c4f640af0869b1832fa530939578805dd602e993ef6cd75",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2244,
+        "archive_read_bytes": 1864,
+        "ranges_sha256": "f139c6ab37d2c4cf6c7d75b69f472b6ae371b9037967083f79a836c833017786"
+      },
+      "sha256": "9e0ea575020252467eaf2aa81aa76efafbdbeb16e371f254de117db52d5cf975",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6227
+    },
+    "missing-cache": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6540,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1308,
+      "manifest_sha256": "74ea34d6c43160916d59125ff486a21f68ddd861fd8f5ef4e873b3149412f1d3",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps missing-cache/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps missing-cache/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2272,
+        "archive_read_bytes": 1892,
+        "ranges_sha256": "9fdfca5c03a34530a25b4e6d21dc8a590c148bcfe8867e3f2d097b7a22494338"
+      },
+      "sha256": "5df8f4a9a3dd66a99ec9e8570dcc2b839f4b8d5928b75fa04a52b10b853eefcb",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6255
+    },
+    "missing-library": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6544,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1312,
+      "manifest_sha256": "bc72892c7b9d2b715be91fec191303f0593a9a7d09491471546d7fb2c88f8b9e",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps missing-library/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps missing-library/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2276,
+        "archive_read_bytes": 1896,
+        "ranges_sha256": "f1b2c66f0e02c3d4c226b0b65827f9a6a7b76c4728b870d12484d02b679f7b31"
+      },
+      "sha256": "d168faedae651ecd6a61690e520400629a050353cb85672c6cba679b291a1eef",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6259
+    },
+    "missing-source": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6542,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1310,
+      "manifest_sha256": "568101ec17cf5555cd5e8bdae0ce529859c17b442fac0b1c046bdb09f48660cc",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps missing-source/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps missing-source/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2274,
+        "archive_read_bytes": 1894,
+        "ranges_sha256": "f79f98e45474b81adbbd11dbb08fdbfad69279c5a5b07a0ac654b41336f48c00"
+      },
+      "sha256": "0a4374f83b825e3f8cddc17275a4fefbe65ca75d298e5ccb8eae85c7992eb8cc",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6257
+    },
+    "nul": {
+      "app_id": "nul.source",
+      "application": {
+        "app/embedded-nul.py": {
+          "compression": "stored",
+          "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+          "size": 22
+        }
+      },
+      "bytes": 5554,
+      "component": "nul",
+      "entry": "app/embedded-nul.py",
+      "manifest_bytes": 1141,
+      "manifest_sha256": "3ec705cfebf04abe35648ca784afbe101d4274a62a578dd56cca43fdf3ff6667",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 1372,
+        "archive_read_bytes": 1569,
+        "ranges_sha256": "9400443386ac1d7849d1229f04b1eee3b2691fbf1d7520c2fa2011f1e75f6f75"
+      },
+      "sha256": "ecf49e2fc59d0b6be3cc38f11fcdad6d214abd27e6ea463810c8231b1146c377",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 5355
+    },
+    "resources": {
+      "app_id": "daily.report",
+      "application": {
+        "app/python/report_data/__init__.py": {
+          "compression": "stored",
+          "sha256": "89e06ad2e2929dea441f54af293b1c7821ec96d9a9381a0aec8c1a9ee026451d",
+          "size": 26
+        },
+        "app/python/report_data/answer.py": {
+          "compression": "stored",
+          "sha256": "200a2dfcd924e06463c2cf770dc0b94dc57e4225dc0db8a84ad2912910a89e26",
+          "size": 81
+        },
+        "app/python/report_data/assets/binary.bin": {
+          "compression": "stored",
+          "sha256": "27279180881062e729fe01cf5a43b43652a7608246863f7714036191e54a3f4e",
+          "size": 4
+        },
+        "app/python/report_data/assets/message.txt": {
+          "compression": "stored",
+          "sha256": "e9478f62d7fa9bf6d253cd7e4129b4a0ad0c97025c8a8d0b04dfdc48dd650353",
+          "size": 16
+        },
+        "app/python/report_parts/assets/part.txt": {
+          "compression": "stored",
+          "sha256": "4281ef15452913e09aa213310952b195aeb8cb01fca8a66eb513ed2fb660294b",
+          "size": 17
+        },
+        "app/python/report_parts/extra.py": {
+          "compression": "stored",
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/tasks/report's [daily].py": {
+          "compression": "stored",
+          "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0",
+          "size": 2023
+        }
+      },
+      "bytes": 9793,
+      "component": "report",
+      "entry": "app/tasks/report's [daily].py",
+      "manifest_bytes": 2072,
+      "manifest_sha256": "b4d3889dbb87fcdf89204e703efe8caf72c2270eb1b41cd11b61ec910cb40cd4",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 4987,
+        "archive_read_bytes": 3652,
+        "ranges_sha256": "75bebc53a019508ad59d9d2da27c29ca5e686996b380066b52091374935063bf"
+      },
+      "sha256": "7cb47576f8c9de5f94e421afbd81148ae3b0e82e657a9892ed98ce5b11352527",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 8970
+    },
+    "startup-bytecode": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6546,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1314,
+      "manifest_sha256": "2d8eb108d4b92eb31504b0a9bd530d43e9a38cdd4ce80870c10a91ea7a47fdf4",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps startup-bytecode/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps startup-bytecode/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2278,
+        "archive_read_bytes": 1898,
+        "ranges_sha256": "98d9be2be1e446b67a107e196f94c824626d223fe1bbcb7d64723431dabc914f"
+      },
+      "sha256": "781d72fe4867832c86964244ccfdfc44c1044579ae9589abfffd218558296ac8",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6261
+    },
+    "startup-native": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6542,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1310,
+      "manifest_sha256": "eb39351e591735ff17569915feaf35a91e8cc6c6392d540c988dcf95a9bceed1",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps startup-native/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps startup-native/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2274,
+        "archive_read_bytes": 1894,
+        "ranges_sha256": "f79f98e45474b81adbbd11dbb08fdbfad69279c5a5b07a0ac654b41336f48c00"
+      },
+      "sha256": "f42c21272905229512196bc61131b3a507a21b1fdde0d248a4733f00546a4ba1",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6257
+    },
+    "stdlib": {
+      "app_id": "stdlib.source",
+      "application": {
+        "app/tasks/stdlib.py": {
+          "compression": "stored",
+          "sha256": "5632df70b6569c873b7d25487ea069d6383d1436b4692c7a4b4dddea94284d08",
+          "size": 1236
+        }
+      },
+      "bytes": 6779,
+      "component": "stdlib",
+      "entry": "app/tasks/stdlib.py",
+      "manifest_bytes": 1152,
+      "manifest_sha256": "3778a74515b9e6b118f6591aeedfece0b50d4597f5237a403a568b3d495e710f",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2597,
+        "archive_read_bytes": 1580,
+        "ranges_sha256": "bcf88b932464362194b0e7027c3ffba331defffef63781c32ad57ef3cb488e09"
+      },
+      "sha256": "44b3c9a74e45372da7d3dcab696a3fd46b44bb82b5ec003007c903abfcbffb03",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6580
+    },
+    "syntax": {
+      "app_id": "syntax.source",
+      "application": {
+        "app/jobs/invalid.py": {
+          "compression": "stored",
+          "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+          "size": 38
+        }
+      },
+      "bytes": 5579,
+      "component": "syntax",
+      "entry": "app/jobs/invalid.py",
+      "manifest_bytes": 1150,
+      "manifest_sha256": "19e92a06c0dcd3cee7f9ea1f309ac1f783c049f6255ccb119d9a84bec0a107d5",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 1397,
+        "archive_read_bytes": 1578,
+        "ranges_sha256": "aafe0cce2c2862eb653f1da4e5488fc658484d4c47afaa730549b4752458e38c"
+      },
+      "sha256": "97f807888b2b15ec821b2da7dfea8e047958ce02efbdff3f5166a374d6237dad",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 5380
+    },
+    "wrong-cache": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6536,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1304,
+      "manifest_sha256": "a9a7ec8ede0946864bf23cc688d3f0277d295bf0a825df9ed4c8433835ddf08a",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps wrong-cache/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps wrong-cache/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2268,
+        "archive_read_bytes": 1888,
+        "ranges_sha256": "72799df163da020a7985277f1a530f24d12b80c54f18d1effcb48c16730b91ec"
+      },
+      "sha256": "c9bcd041fc5b0ce05c7b946f83102bdec652172472e94d70a83bef20a828625b",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6251
+    },
+    "wrong-source": {
+      "app_id": "minimal.source",
+      "application": {
+        "app/launch.py": {
+          "compression": "stored",
+          "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+          "size": 673
+        },
+        "app/python/simple_value.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 6538,
+      "component": "launch",
+      "entry": "app/launch.py",
+      "manifest_bytes": 1306,
+      "manifest_sha256": "4600c9aa3d331ce31d5046128613f4a91e74b6d19f1529ff7ba8684526b604cd",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-source-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python install source apps wrong-source/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python install source apps wrong-source/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 2270,
+        "archive_read_bytes": 1890,
+        "ranges_sha256": "26aff0b8ded52c8de16d2349132fc3220abdc762a3aba941ca8d3508bad4bffd"
+      },
+      "sha256": "8197add0bff520ffa343978f279d379734b7f7d69667276279df6f43db3de534",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 6253
+    }
+  },
+  "schema_version": 0
+}

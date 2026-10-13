@@ -1,0 +1,29 @@
+{
+  "app_id": "minimal.source",
+  "application": {
+    "app/launch.py": {
+      "compression": "stored",
+      "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+      "size": 673
+    },
+    "app/python/simple_value.py": {
+      "compression": "stored",
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    }
+  },
+  "application_bytes": 685,
+  "application_files": 2,
+  "cache_inventory": {
+    "sha256": "f14f8825bfa9a853f083733bee21c04cfbab6f509a00f72ca434e2096f643af8",
+    "size": 825
+  },
+  "component": "launch",
+  "entry": "app/launch.py",
+  "prefix": "/build-target/host Python install source apps startup-native",
+  "schema_version": 0,
+  "source_inventory": {
+    "sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+    "size": 155575
+  }
+}

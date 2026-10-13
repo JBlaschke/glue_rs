@@ -1,0 +1,265 @@
+{
+  "archive_count": 9,
+  "archives": {
+    "bundled": {
+      "archive_sha256": "7aad0135fde800afd094ab7eaa7a7995bb2ceda8324fd88d75fadce7068e3514",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 2186,
+      "verified_uncompressed_bytes": 112883317
+    },
+    "bundled-bad-record": {
+      "archive_sha256": "c248e5cc11a50c63f89e8bf1c52031d6ac05fa9d7f7af5c8aae2f4b0b4a1155f",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 2186,
+      "verified_uncompressed_bytes": 112883303
+    },
+    "bundled-corrupt-metadata": {
+      "archive_sha256": "2cdbc1ecc7b83dd200a99d36911ae715f58e63caa799daba95b682ab69b2b709",
+      "deliberately_corrupt_members": 1,
+      "verified_members": 2185,
+      "verified_uncompressed_bytes": 112883075
+    },
+    "host": {
+      "archive_sha256": "9272750e8d6ef5f994e42c2adb985b87e4c9403f1a530ac534ccd2900ad5fe0d",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 10,
+      "verified_uncompressed_bytes": 21770
+    },
+    "host-bad-record": {
+      "archive_sha256": "104f48f9e419e3db430da223e8b3ea233932e313ecfdced101d5c55e6aa1d454",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 10,
+      "verified_uncompressed_bytes": 21756
+    },
+    "host-corrupt-metadata": {
+      "archive_sha256": "1cf529d8209318351ad121754c94313dbffdb7429cd2060a79bf4af7faeb2a0f",
+      "deliberately_corrupt_members": 1,
+      "verified_members": 9,
+      "verified_uncompressed_bytes": 21528
+    },
+    "install-host": {
+      "archive_sha256": "018eb52802d00b7a55ab20640f7e14a988f2fae94a70923f82f33d05ad566aaa",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 10,
+      "verified_uncompressed_bytes": 21770
+    },
+    "install-host-bad-record": {
+      "archive_sha256": "ce256adf34868d8e2a9f4c29bfdd1e05ea84220a2e9713dc607a720fc7c6cb98",
+      "deliberately_corrupt_members": 0,
+      "verified_members": 10,
+      "verified_uncompressed_bytes": 21756
+    },
+    "install-host-corrupt-metadata": {
+      "archive_sha256": "f0d158bb84e0cbad492fa74fec2c0c79a2fa11026df46fa360022624de12b20e",
+      "deliberately_corrupt_members": 1,
+      "verified_members": 9,
+      "verified_uncompressed_bytes": 21528
+    }
+  },
+  "checked_artifact_hashes": 10,
+  "cli_control_count": 36,
+  "cli_controls": {
+    "bundled-bad-record.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "bundled-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled-bad-record.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c48f16316f2a6a01e91d6eb851912e24e41ce2eaa5c7e3263038e6a81e496e56"
+    },
+    "bundled-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "9fef2a55d403ccddd5cf3588164c1f108c0147d4bc08c01330b92fc8ca79379e"
+    },
+    "bundled-corrupt-metadata.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "bundled-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled-corrupt-metadata.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "af0f397797f1ad759dc3aee5f2eedbac71069ff3045ac3f6ecbbd88b3c1cbcfe"
+    },
+    "bundled-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bundled.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "bundled.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "af0f397797f1ad759dc3aee5f2eedbac71069ff3045ac3f6ecbbd88b3c1cbcfe"
+    },
+    "bundled.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a20757d14cd047c8644e29e8ac89198b8d5d98c1e9dba4970641c42f3df86c71"
+    },
+    "host-bad-record.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "host-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host-bad-record.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "8f20010e02cb16c53406cc17aa2315160670293c7ffeaf27f8986afd0c10f630"
+    },
+    "host-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "bb4489bdfed91ae40d62e34f5bb767aa9a36297115c51408bcaf9ce6b457fcd6"
+    },
+    "host-corrupt-metadata.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "host-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host-corrupt-metadata.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1f14766d0ed9e05861405ec201e262298531291545cfdf41cedfd9503f8835e3"
+    },
+    "host-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "host.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "host.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1f14766d0ed9e05861405ec201e262298531291545cfdf41cedfd9503f8835e3"
+    },
+    "host.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "4a0e44930da86e650f536dd0eb7144a3768327e2bf6879d4a9ac9826793cd0d4"
+    },
+    "install-host-bad-record.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "install-host-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host-bad-record.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2c368052ace1b01d6afc767a13f44caf1b5c28bc7633bbed1d72d04ded0b1b3c"
+    },
+    "install-host-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "bb4489bdfed91ae40d62e34f5bb767aa9a36297115c51408bcaf9ce6b457fcd6"
+    },
+    "install-host-corrupt-metadata.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "install-host-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host-corrupt-metadata.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "21048f37acde82e226d46473dded94b1677d8722a995c926d05eb9ad59f028a4"
+    },
+    "install-host-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "install-host.cat": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a"
+    },
+    "install-host.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host.inspect": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "21048f37acde82e226d46473dded94b1677d8722a995c926d05eb9ad59f028a4"
+    },
+    "install-host.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "4a0e44930da86e650f536dd0eb7144a3768327e2bf6879d4a9ac9826793cd0d4"
+    }
+  },
+  "control_differences": {
+    "bundled": {
+      "bad_record_changed_csv_cells": 1,
+      "crc_changed_archive_bytes": 1,
+      "crc_changed_offset": 340034
+    },
+    "host": {
+      "bad_record_changed_csv_cells": 1,
+      "crc_changed_archive_bytes": 1,
+      "crc_changed_offset": 4808
+    },
+    "install-host": {
+      "bad_record_changed_csv_cells": 1,
+      "crc_changed_archive_bytes": 1,
+      "crc_changed_offset": 4822
+    }
+  },
+  "metadata_helper_sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+  "schema_version": 0,
+  "source_clean": true,
+  "source_revision": "80c4b33698d7f9c6caa54f8c8afcc69ff6faa2ee",
+  "verified_members": 6615
+}

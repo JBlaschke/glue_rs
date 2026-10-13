@@ -1,0 +1,2 @@
+Built /build-target/relocated Python host source apps/startup-bytecode.glue: 3 resources, 6522 archive bytes, 14195 uncompressed bytes
+Archive SHA-256: e3dc75d8cd17d10829893b0ff3419131b653f71738561836fefa5d4626b1b648

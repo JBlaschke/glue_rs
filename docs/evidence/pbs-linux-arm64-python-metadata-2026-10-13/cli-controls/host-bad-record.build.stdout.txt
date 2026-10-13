@@ -1,0 +1,2 @@
+Built /build-target/relocated Python metadata/host-bad-record.glue: 10 resources, 13467 archive bytes, 21756 uncompressed bytes
+Archive SHA-256: 104f48f9e419e3db430da223e8b3ea233932e313ecfdced101d5c55e6aa1d454

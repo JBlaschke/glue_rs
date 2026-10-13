@@ -1,0 +1,15 @@
+[
+     {
+          "Name": "glue-install-host-source-app-12896",
+          "Driver": "local",
+          "Mountpoint": "/var/lib/containers/storage/volumes/glue-install-host-source-app-12896/_data",
+          "CreatedAt": "2026-10-13T09:38:44.858003395+01:00",
+          "Labels": {},
+          "Scope": "local",
+          "Options": {},
+          "MountCount": 0,
+          "NeedsCopyUp": true,
+          "NeedsChown": true,
+          "LockNumber": 18
+     }
+]

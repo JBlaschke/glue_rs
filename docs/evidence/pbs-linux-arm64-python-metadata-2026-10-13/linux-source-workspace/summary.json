@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "lua54": {
+      "clippy": "pass with -D warnings",
+      "clippy_log": "linux-lua54-clippy.txt",
+      "tests_log": "linux-lua54-tests.txt",
+      "tests_passed": 441,
+      "warnings": []
+    },
+    "lua55": {
+      "clippy": "pass with -D warnings",
+      "clippy_log": "linux-lua55-clippy.txt",
+      "tests_log": "linux-lua55-tests.txt",
+      "tests_passed": 442,
+      "warnings": []
+    }
+  },
+  "environment": [
+    "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "Linux 7.1.4-200.fc44.aarch64 #1 SMP PREEMPT_DYNAMIC Sat Jul 18 19:16:11 UTC 2026 aarch64 GNU/Linux",
+    "cargo 1.88.0 (873a06493 2025-05-10)",
+    "clippy 0.1.88 (6b00bc3880 2025-06-23)"
+  ],
+  "fresh_independent_cargo_target": true,
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "network": "none",
+  "source_and_vendor_read_only": true,
+  "source_branch": "codex/a7-python-distribution-metadata",
+  "source_clean_before_after": true,
+  "source_revision": "80c4b33698d7f9c6caa54f8c8afcc69ff6faa2ee"
+}
