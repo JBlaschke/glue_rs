@@ -6,6 +6,12 @@ applications and the existing exact source/resource and registered-native
 declaration profiles for stock CPython
 3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64.
 General installation discovery and native package compatibility remain pending.
+Separate metadata-aware source profiles add public `importlib.metadata`
+discovery for bounded application `.dist-info` inventories. They validate
+identities, canonical RECORD paths, ownership, hashes and sizes before provider
+acquisition, then expose metadata and files through the immutable resource
+callbacks. The legacy importer and source profiles retain their existing pins.
+See [the metadata fixture](../../fixtures/python-metadata/README.md).
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact

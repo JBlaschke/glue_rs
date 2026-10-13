@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `aae69ef`.
+The earlier feature work and evidence were merged into `main` at `6cd8f96`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -26,6 +26,7 @@ Further implementation continues on separate feature branches.
 | A7 explicit-host Python source applications | `codex/a7-host-source-apps` / `dd6274f` (from merged `cb3cae4`) | Experimental bounded host source applications; controlled GNU Linux arm64 observation | Full pinned snapshot and startup guards; Mac/Linux 381/382 tests and Clippy; 102 GNU Python/probe and 14 runner tests; 261 policy and 11 host protocol tests (2 Mac skips); all 13 new and 48 regression traces pass/replay; 51 new/34 bundled/30 original controls match; all 567 hostile edits reject |
 | A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` / `7a8e32c` (from merged `442d9eb`) | Experimental stock install-only host applications; controlled GNU Linux arm64 observation | Exact 1,037-source/three-cache prerequisites; complete provider audit; Mac/Linux 395/396 tests and Clippy; 116 GNU Python/probe and 14 runner tests; 288 policies; all 16 new/61 regression traces pass/replay; 60/51/34/30 product controls match; all 894 hostile edits reject |
 | A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
+| A7 Python distribution metadata | `codex/a7-python-distribution-metadata` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac source workspaces pass 441/442 tests and Clippy; 32 metadata adapter tests; development GNU execution passes the same metadata app with bundled/full-host/install-only runtimes and all six pre-provider RECORD/CRC controls; clean retained capture follows |
 
 ## Gate status
 
@@ -392,3 +393,8 @@ Continue with private inherited protocol pipes and launcher re-execution,
 worker-side cancellation races, clocks/queue budgets and actual runtime bindings.
 The synthetic fixture reserves its own stdin/stdout for protocol; it does not
 establish product worker execution or close G4.
+
+The user prefers completing Python work before starting Node. Continue A7/A10
+with package compatibility and build-time ingestion after metadata admission;
+A8 remains unimplemented. Python's remaining platform/native/provider work is
+still required; metadata support does not close those gates.

@@ -5,7 +5,8 @@
 
 use super::{
     ExecutionError, extension_profile, host_import_profile, host_source_app_profile,
-    import_profile, install_host_source_app_profile, platform, source_app_profile,
+    import_profile, install_host_source_app_profile, metadata_profile, platform,
+    source_app_profile,
 };
 use glue_format::{ArchiveLimits, Manifest, RuntimeAbi};
 
@@ -17,6 +18,9 @@ pub(crate) enum Kind {
     BundledSourceApp,
     HostSourceApp,
     InstallHostSourceApp,
+    BundledMetadataApp,
+    HostMetadataApp,
+    InstallHostMetadataApp,
 }
 
 /// An admitted profile, tied to the manifest from which it was selected.
@@ -38,6 +42,13 @@ impl ControlledProfile {
             Kind::BundledSourceApp => "pinned bundled Python source application",
             Kind::HostSourceApp => "pinned explicit-host Python source application",
             Kind::InstallHostSourceApp => "pinned install-only host Python source application",
+            Kind::BundledMetadataApp => "pinned bundled Python distribution metadata application",
+            Kind::HostMetadataApp => {
+                "pinned explicit-host Python distribution metadata application"
+            }
+            Kind::InstallHostMetadataApp => {
+                "pinned install-only host Python distribution metadata application"
+            }
         }
     }
 }
@@ -92,6 +103,18 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             install_host_source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
             Kind::InstallHostSourceApp
         }
+        _ if runtime.build_id == metadata_profile::BUNDLED_BUILD_ID => {
+            metadata_profile::admit_bundled(manifest).map_err(ExecutionError::failed)?;
+            Kind::BundledMetadataApp
+        }
+        _ if runtime.build_id == metadata_profile::HOST_BUILD_ID => {
+            metadata_profile::admit_host(manifest).map_err(ExecutionError::failed)?;
+            Kind::HostMetadataApp
+        }
+        _ if runtime.build_id == metadata_profile::INSTALL_BUILD_ID => {
+            metadata_profile::admit_install_host(manifest).map_err(ExecutionError::failed)?;
+            Kind::InstallHostMetadataApp
+        }
         _ => {
             return Err(ExecutionError::unsupported(
                 "Python execution requires a supported pinned PBS source-application or controlled fixture profile",
@@ -114,9 +137,15 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
         .map_err(|error| ExecutionError::failed(error.to_string()))?;
     let component = &manifest.components[&manifest.entrypoint];
     let runtime = &manifest.runtimes[&component.runtime];
-    if runtime.build_id != source_app_profile::BUILD_ID
-        && runtime.build_id != host_source_app_profile::BUILD_ID
-        && runtime.build_id != install_host_source_app_profile::BUILD_ID
+    if ![
+        source_app_profile::BUILD_ID,
+        host_source_app_profile::BUILD_ID,
+        install_host_source_app_profile::BUILD_ID,
+        metadata_profile::BUNDLED_BUILD_ID,
+        metadata_profile::HOST_BUILD_ID,
+        metadata_profile::INSTALL_BUILD_ID,
+    ]
+    .contains(&runtime.build_id.as_str())
     {
         return Ok(None);
     }
@@ -125,6 +154,10 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
         Kind::BundledSourceApp => Ok(Some(source_app_profile::limits())),
         Kind::HostSourceApp => Ok(Some(host_source_app_profile::limits())),
         Kind::InstallHostSourceApp => Ok(Some(install_host_source_app_profile::limits())),
+        Kind::BundledMetadataApp => Ok(Some(metadata_profile::limits_bundled())),
+        Kind::HostMetadataApp | Kind::InstallHostMetadataApp => {
+            Ok(Some(metadata_profile::limits_host()))
+        }
         _ => Err(ExecutionError::failed(
             "source application build identity conflicts with a reserved fixture",
         )),

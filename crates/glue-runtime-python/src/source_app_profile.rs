@@ -25,6 +25,7 @@ pub(super) const MAX_ENTRY_BYTES: u64 = 64 * 1024;
 pub(super) const FROZEN_SIZE: u64 = 139_523;
 pub(super) const FROZEN_SHA: &str =
     "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7";
+pub(super) type ArchivePreparation = fn(&mut BTreeMap<String, Vec<u8>>) -> Result<Vec<u8>, String>;
 const RESERVED_APP_IDS: [&str; 5] = [
     "stock-pbs-bootstrap",
     "stock-pbs-host-startup",
@@ -245,11 +246,21 @@ pub(super) fn admit_application(
     )),
     allow(dead_code)
 )]
-pub(super) fn read_archive(mut archive: Archive<File>) -> Result<import_profile::Payload, String> {
+pub(super) fn read_archive(archive: Archive<File>) -> Result<import_profile::Payload, String> {
+    read_archive_with(archive, admit, |_| Ok(Vec::new()))
+}
+
+/// Extended profiles verify their extra archive bytes before native provider
+/// inspection, while the historical reader keeps its unchanged bootstrap.
+pub(super) fn read_archive_with(
+    mut archive: Archive<File>,
+    admission: fn(&Manifest) -> Result<(), String>,
+    prepare: ArchivePreparation,
+) -> Result<import_profile::Payload, String> {
     archive
         .check_limits(limits())
         .map_err(|error| error.to_string())?;
-    admit(archive.manifest())?;
+    admission(archive.manifest())?;
     let app_id = archive.manifest().app_id.clone();
     let entry = archive.manifest().components[&archive.manifest().entrypoint]
         .entry_point
@@ -265,6 +276,7 @@ pub(super) fn read_archive(mut archive: Archive<File>) -> Result<import_profile:
         );
     }
     drop(archive);
+    let extra_bootstrap = prepare(&mut resources)?;
     let library = resources
         .remove(LIBRARY)
         .ok_or("source app pinned runtime is missing")?;
@@ -274,9 +286,10 @@ pub(super) fn read_archive(mut archive: Archive<File>) -> Result<import_profile:
             .remove(STDLIB)
             .ok_or("source app pinned startup is missing")?,
     )?;
-    let bootstrap = resources
+    let mut bootstrap = resources
         .remove(import_profile::IMPORTER)
         .ok_or("source app pinned importer is missing")?;
+    bootstrap.extend(extra_bootstrap);
     Ok(import_profile::Payload {
         library,
         bundle,

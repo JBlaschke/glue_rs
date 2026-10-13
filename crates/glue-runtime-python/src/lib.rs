@@ -36,6 +36,7 @@ mod install_host_source_app_profile;
 ))]
 #[allow(unsafe_code)]
 mod linux;
+mod metadata_profile;
 mod source_app_profile;
 mod source_entry;
 
@@ -126,6 +127,17 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::BundledMetadataApp => linux::run_imports(
+                metadata_profile::read_bundled(archive).map_err(ExecutionError::failed)?,
+                None,
+                false,
+            ),
+            profile::Kind::HostMetadataApp => linux::run_host_source_app(
+                metadata_profile::read_host(archive).map_err(ExecutionError::failed)?,
+            ),
+            profile::Kind::InstallHostMetadataApp => linux::run_install_host_source_app(
+                metadata_profile::read_install_host(archive).map_err(ExecutionError::failed)?,
+            ),
             profile::Kind::InstallHostSourceApp => linux::run_install_host_source_app(
                 install_host_source_app_profile::read_archive(archive)
                     .map_err(ExecutionError::failed)?,

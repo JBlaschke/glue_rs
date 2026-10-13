@@ -1,0 +1,2 @@
+[glue.archive.plugins]
+answer = glue_meta_demo:plugin

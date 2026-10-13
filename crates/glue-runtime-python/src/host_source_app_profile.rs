@@ -157,8 +157,18 @@ pub(super) fn read_archive(archive: Archive<File>) -> Result<Payload, String> {
 }
 
 pub(super) fn read_archive_with(
+    archive: Archive<File>,
+    admission: fn(&Manifest) -> Result<host::Config, String>,
+) -> Result<Payload, String> {
+    read_archive_prepared(archive, admission, |_| Ok(Vec::new()))
+}
+
+/// Extra archive-only checks run after integrity verification and before the
+/// payload can be passed to host acquisition. Legacy profiles append no bytes.
+pub(super) fn read_archive_prepared(
     mut archive: Archive<File>,
     admission: fn(&Manifest) -> Result<host::Config, String>,
+    prepare: source_app_profile::ArchivePreparation,
 ) -> Result<Payload, String> {
     archive
         .check_limits(limits())
@@ -179,12 +189,14 @@ pub(super) fn read_archive_with(
         );
     }
     drop(archive);
+    let extra_bootstrap = prepare(&mut resources)?;
     let mut bootstrap = PRELUDE.to_vec();
     bootstrap.extend(
         resources
             .remove(import_profile::IMPORTER)
             .ok_or("host source app pinned importer is missing")?,
     );
+    bootstrap.extend(extra_bootstrap);
     Ok(Payload {
         config,
         app_id,
