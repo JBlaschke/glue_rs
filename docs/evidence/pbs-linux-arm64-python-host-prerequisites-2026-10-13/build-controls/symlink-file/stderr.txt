@@ -1,0 +1,1 @@
+glue: resource "glue_meta_demo/data/message,one.txt" at "/evidence/build-controls/symlink-file/venv/lib/python3.13/site-packages/glue_meta_demo/data/message,one.txt": symlink input components are forbidden

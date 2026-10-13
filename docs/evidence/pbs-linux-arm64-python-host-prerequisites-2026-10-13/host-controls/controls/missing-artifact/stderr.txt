@@ -1,0 +1,1 @@
+glue: host-full python-host requires --pbs-full

@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-oracle-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--pbs-full",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final-scratch/host-full-artifact-symlink/input",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final-scratch/host-full-artifact-symlink/prefix",
+  "--json"
+]

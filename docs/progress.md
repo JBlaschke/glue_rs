@@ -29,6 +29,7 @@ Further implementation continues on separate feature branches.
 | A7 Python distribution metadata | `codex/a7-python-distribution-metadata` / `80c4b33` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac/Linux 441/442 workspace tests and Clippy; 125 optimized GNU Python/probe and 14 runner tests; 32 adapter and 227 Python policy tests; all nine new/35 source-profile regression traces pass/replay; 42 new CLI controls agree; all 189 hostile edits reject |
 | A7/A10 Python installed-package ingestion | `codex/a7-python-venv-ingestion` / `35dae52` (from merged `6afed9a`) | Experimental source-only build adapter with explicit provider template | Mac/Linux source workspaces 452/453 tests and Clippy; Mac packaging workspace 465; 33 pack/129 GNU Python/16 runner tests; 235 Python policies; real offline pip installation; Mac/GNU both input modes and all 30 hostile build controls pass; all six new/nine metadata regression traces pass/replay; 27 product controls and 126 hostile trace mutations pass/reject |
 | A7/A10 Python runtime templates | `codex/a7-python-runtime-templates` / `3d15bf9`, checker strengthening `525da19` (from merged `c0ddaa4`) | Experimental portable preparation of the three pinned metadata providers | Mac/GNU source workspaces 460/461 tests and Clippy; Mac packaging workspace 482; optimized GNU 135 Python/41 pack/19 CLI tests; both builders pass eight template generations, 45 hostile controls and three installed-package builds; all six runtime traces replay under unchanged policy and retain prior archive hashes; 27 product controls and 126 hostile mutations pass/reject; strengthened oracle passes 21 tests on Mac/stock GNU |
+| A7/A10 Python host prerequisites | `codex/a7-python-host-prerequisites` / `42c5abe`, strict evidence checks `3f3f31a` (from merged `c4a901e`) | Experimental product preparation of both admitted host prerequisite trees | Mac/GNU source workspaces 476/477 tests and Clippy; Mac packaging workspace 506; optimized GNU 142 Python/49 pack/21 CLI tests; both builders pass four generations and 63 hostile controls; two complete preparation/six runtime traces pass/replay; 46 oracle/241 policy tests; 27 product checks and 149 hostile trace mutations pass/reject; [evidence](evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md) |
 
 ## Gate status
 
@@ -418,6 +419,22 @@ from `525da19` passes all 21 tests and actual/compressed trace replays. Product
 runtime installation, uv discovery, version selection and broader package/native
 compatibility remain open; preparation does not close runtime/platform gates.
 
+The [clean host-prerequisite evidence](evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md)
+adds `glue python-host` for both pinned PBS host projections on Unix builders.
+Complete artifact inspection and selected payload identities precede exclusive
+publication; all files/directories receive fixed permissions and mtimes, and
+provenance records complete/selected/omitted inventory facts. Mac/GNU each pass
+four preparations and 63 hostile controls, while a closed 46-test process oracle
+checks two complete native preparation traces. Six runtime traces and all 149
+hostile mutations pass/reject; all archive hashes retain their previous identity.
+An isolated strict adapter derives the install-only root's 191 entries from the
+exact source/cache pins, replacing the prior complete stock tree's 193 for this
+workload only. Historical policies, product runtime/loader/helper bodies and
+template bodies remain unchanged. The 241-test policy suite and independent
+27-command/4,427-member product audit pass. Complete installation/discovery,
+version selection and broader package/native/platform compatibility remain open.
+See [decision 0024](decisions/0024-python-host-prerequisites.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -442,6 +459,6 @@ establish product worker execution or close G4.
 
 The user prefers completing Python work before starting Node. Continue A7/A10
 with real-package compatibility and runtime installation/selection beyond the
-explicit pinned template preparer and bounded installed-package adapter;
+explicit pinned template/prerequisite preparers and bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is
 still required; metadata support does not close those gates.

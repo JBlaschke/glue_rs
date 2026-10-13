@@ -1,0 +1,9 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-oracle-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final/controls/missing-artifact/prefix",
+  "--json"
+]

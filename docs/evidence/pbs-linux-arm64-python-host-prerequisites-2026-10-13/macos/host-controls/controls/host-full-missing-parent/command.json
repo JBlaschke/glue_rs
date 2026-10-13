@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-oracle-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--pbs-full",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final/controls/host-full-missing-parent/absent/prefix",
+  "--json"
+]

@@ -1,0 +1,12 @@
+{
+  "audit_identity": {
+    "sha256": "5c031c9c55759cd0cfc9701a69433c23747c179048cfba8bc52f5fa727a71c64",
+    "size": 7036
+  },
+  "compressed_capture_replay_exit_status": 0,
+  "normal_traces": 6,
+  "raw_and_compressed_audits_equal": true,
+  "rejected_mutations": 149,
+  "schema_version": 0,
+  "source_revision": "3f3f31a18b59c664dda2dee36d409029c06dfc9f"
+}

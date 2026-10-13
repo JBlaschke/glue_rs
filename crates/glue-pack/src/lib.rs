@@ -8,6 +8,9 @@
 pub mod python;
 
 #[cfg(feature = "python")]
+pub mod python_host;
+
+#[cfg(feature = "python")]
 pub mod python_template;
 
 use glue_format::{

@@ -1,0 +1,31 @@
+{
+  "excluded_from_rust_binding": [
+    "fixtures/python-host-prerequisites/README.md",
+    "fixtures/python-host-prerequisites/run-linux.sh",
+    "fixtures/python-host-prerequisites/test_audit.py",
+    "fixtures/python-host-prerequisites/test_prepare.py"
+  ],
+  "excluded_markdown_documents": [
+    "crates/glue-pack/README.md",
+    "crates/glue-runtime-python/README.md",
+    "fixtures/lua-linked/README.md",
+    "fixtures/native/lua-linux/README.md",
+    "fixtures/native/macos-macho/README.md",
+    "fixtures/python-bootstrap/README.md",
+    "fixtures/python-extensions/README.md",
+    "fixtures/python-host-imports/README.md",
+    "fixtures/python-host-source-apps/README.md",
+    "fixtures/python-host/README.md",
+    "fixtures/python-imports/README.md",
+    "fixtures/python-install-host-source-apps/README.md",
+    "fixtures/python-metadata/README.md",
+    "fixtures/python-pbs/README.md",
+    "fixtures/python-runner/README.md",
+    "fixtures/python-runtime-templates/README.md",
+    "fixtures/python-source-apps/README.md",
+    "fixtures/python-venv-ingestion/README.md",
+    "fixtures/resources/README.md",
+    "fixtures/worker-protocol/README.md"
+  ],
+  "purpose": "pre-commit Rust workspace validation; new standalone Python/shell fixture scripts are validated separately"
+}

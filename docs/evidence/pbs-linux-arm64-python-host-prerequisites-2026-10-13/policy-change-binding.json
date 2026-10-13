@@ -1,0 +1,38 @@
+{
+  "all_product_crates_unchanged": true,
+  "followup_files": {
+    "docs/decisions/0024-python-host-prerequisites.md": {
+      "sha256": "2ef5900d51d0653235610ceeb0bfed1edbb4205768f680f0ca540bfac96933e4",
+      "size": 5279
+    },
+    "fixtures/python-host-prerequisites/README.md": {
+      "sha256": "612b28cc966d7cbb41df34847592dfc9f9db57b28a47f64e4f9a3289c45505a3",
+      "size": 8710
+    },
+    "fixtures/python-host-prerequisites/run-linux.sh": {
+      "sha256": "80203f3a094e14e1682365f3dced70cfbd62ead0d759197325ca7c10fadc3925",
+      "size": 17218
+    },
+    "fixtures/python-host-prerequisites/test_audit.py": {
+      "sha256": "951cc0b94f4fc8acff1ec793e1b27800ef4346b9513f2f63c7c2e112a06aa6cb",
+      "size": 32068
+    },
+    "fixtures/python-host-prerequisites/test_prepare.py": {
+      "sha256": "5d0e0729d079691c5d30b8bcfbe66ff1de79ce51229b0b7b25bd6aedf1789933",
+      "size": 40322
+    },
+    "scripts/check-linux-python-host-prerequisites-trace.py": {
+      "sha256": "cd7cae2155abde5acbf9f3522a849f14aee5df235540a0272c3748c247013690",
+      "size": 6348
+    },
+    "scripts/test_linux_python_host_prerequisites_trace.py": {
+      "sha256": "5e21b3b49689f037aa01c375cfdd7dae33ed537a8757c312ffb196cb5f77aa09",
+      "size": 14926
+    }
+  },
+  "identical_prior_validation_inputs": 263,
+  "native_capture_revision": "3f3f31a18b59c664dda2dee36d409029c06dfc9f",
+  "product_implementation": "42c5abed05f85cd2b6525346af397288d4c13e93",
+  "schema_version": 0,
+  "scope": "Follow-up changes only new standalone fixture checks, isolated trace adapter and documentation. All prior Mac/GNU Rust validation inputs remain identical; final preparation/policy checks are captured separately."
+}

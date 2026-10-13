@@ -1,0 +1,16 @@
+glue stock PBS Python bootstrap boundary provenance v1
+This is local build evidence, not a complete artifact fingerprint.
+boundary=glue-python-bootstrap-c-boundary-4
+api_revision=4
+python_api_export_count=29
+source=CPython 3.13.16 / PBS 20261009 / conventional GIL / non-debug
+TARGET="aarch64-unknown-linux-gnu"
+pbs_bootstrap_feature=false
+boundary_compiled=false
+HOST=Some("aarch64-unknown-linux-gnu")
+PROFILE=Some("release")
+OPT_LEVEL=Some("3")
+DEBUG=Some("false")
+RUSTC=Some("rustc")
+RUSTFLAGS=None
+CARGO_ENCODED_RUSTFLAGS=Some("")

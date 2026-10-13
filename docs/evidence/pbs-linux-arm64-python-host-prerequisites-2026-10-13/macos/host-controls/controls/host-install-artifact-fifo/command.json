@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-oracle-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--pbs-install-only",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final-scratch/host-install-artifact-fifo/input",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final-scratch/host-install-artifact-fifo/prefix",
+  "--json"
+]
