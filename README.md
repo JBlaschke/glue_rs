@@ -31,18 +31,33 @@ CPython 3.13.16 headers at build time.
 ## Build from installed Python packages
 
 Build with `--features python-pack` for portable packaging, or `python-pbs` for
-the existing GNU Linux arm64 execution support. Select an admitted metadata
-provider manifest and its input root explicitly; the template fixes the runtime,
-target and provider bytes independently of the venv. Application input contains
-an `app/` subtree, including the selected entry. For example:
+the existing GNU Linux arm64 execution support. Prepare a provider template with
+`python-template`; it fixes the runtime, target and provider bytes independently
+of the venv. Application input contains an `app/` subtree, including the selected
+entry. For example:
 
 ```sh
 cargo build --locked -p glue-runner --features python-pack
+target/debug/glue python-template --provider bundled \
+  --pbs-full PINNED_FULL.tar.zst --frozen-bootstrap PINNED_BOOTSTRAP.json \
+  --output target/python-provider --json
 target/debug/glue build-python \
-  --provider-template PROVIDER_MANIFEST --provider-root PROVIDER_INPUT_ROOT \
+  --provider-template target/python-provider/manifest.json \
+  --provider-root target/python-provider/root \
   --app APPLICATION_DIR --venv VENV_DIR --app-id my.application \
   --entry app/main.py --output target/my-application.glue --json
 ```
+
+The bundled template accepts the exact CPython 3.13.16 / PBS `20261009` GNU Linux
+arm64 full archive and the [retained frozen startup bundle](docs/evidence/pbs-linux-arm64-python-venv-2026-10-13/freeze-bundle.json).
+It verifies both inputs and preserves the pinned library and 2,174 source files.
+Preparation works on Mac without executing the target interpreter. Use
+`--provider host-full --host-prefix /absolute/target/prefix` or
+`--provider host-install --host-prefix /absolute/target/prefix` instead to declare
+the exact full or install-only host prerequisite. Host preparation does not
+inspect or install that prefix; execution verifies the actual installation.
+`provenance.json` and JSON stdout record these distinctions and all resource
+identities. The output parent must exist and the output directory must be new.
 
 Use `--site-packages PACKAGE_DIR` instead of `--venv` for an explicit installed
 package directory. Venv convenience mode accepts the conventional
@@ -57,8 +72,9 @@ for archive paths; bytecode and recognized generated console/gui wrappers are
 omitted and reported. Native files, editables, `.pth` hooks, escaping paths and
 unowned files reject before output creation. `--json` records input identities,
 distribution identities, omissions and final archive hashes. The command still
-requires a prepared provider template; automated runtime selection and general
-package compatibility remain later work. See the
+uses the explicitly prepared provider template; automated runtime/version
+selection, runtime installation and general package compatibility remain later
+work. See the [runtime-template fixture](fixtures/python-runtime-templates/README.md),
 [offline venv fixture](fixtures/python-venv-ingestion/README.md) and
 [ingestion contract](docs/decisions/0022-python-installed-package-ingestion.md).
 

@@ -28,6 +28,7 @@ Further implementation continues on separate feature branches.
 | A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
 | A7 Python distribution metadata | `codex/a7-python-distribution-metadata` / `80c4b33` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac/Linux 441/442 workspace tests and Clippy; 125 optimized GNU Python/probe and 14 runner tests; 32 adapter and 227 Python policy tests; all nine new/35 source-profile regression traces pass/replay; 42 new CLI controls agree; all 189 hostile edits reject |
 | A7/A10 Python installed-package ingestion | `codex/a7-python-venv-ingestion` / `35dae52` (from merged `6afed9a`) | Experimental source-only build adapter with explicit provider template | Mac/Linux source workspaces 452/453 tests and Clippy; Mac packaging workspace 465; 33 pack/129 GNU Python/16 runner tests; 235 Python policies; real offline pip installation; Mac/GNU both input modes and all 30 hostile build controls pass; all six new/nine metadata regression traces pass/replay; 27 product controls and 126 hostile trace mutations pass/reject |
+| A7/A10 Python runtime templates | `codex/a7-python-runtime-templates` (from merged `c0ddaa4`; implementation commit follows) | Experimental portable preparation of the three pinned metadata providers | Mac workspaces 460/461 source and 482 packaging tests with Clippy; eight template generations, 45 hostile controls and three installed-package builds pass on Mac and development GNU Linux; clean native capture and retained evidence pending |
 
 ## Gate status
 
@@ -428,7 +429,7 @@ The synthetic fixture reserves its own stdin/stdout for protocol; it does not
 establish product worker execution or close G4.
 
 The user prefers completing Python work before starting Node. Continue A7/A10
-with real-package compatibility and product runtime-template provisioning after
-the bounded installed-package adapter;
+with real-package compatibility and runtime installation/selection beyond the
+explicit pinned template preparer and bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is
 still required; metadata support does not close those gates.

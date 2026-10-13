@@ -17,6 +17,10 @@ const HELP: &str = "glue — experimental archive packager
 
 Usage:
   glue build --manifest MANIFEST --root INPUT_DIR --output APP.glue
+  glue python-template --provider bundled --pbs-full FULL.tar.zst
+    --frozen-bootstrap BUNDLE.json --output DIR [--json]
+  glue python-template --provider (host-full | host-install)
+    --host-prefix PREFIX --output DIR [--json]
   glue build-python --provider-template MANIFEST --provider-root DIR --app DIR
     (--venv VENV | --site-packages DIR) --output APP.glue
     [--app-id ID] [--entry app/main.py] [--json]
@@ -54,6 +58,11 @@ enum Command {
         output: PathBuf,
         json: bool,
     },
+    PythonTemplate {
+        input: TemplateOptions,
+        output: PathBuf,
+        json: bool,
+    },
     Standalone,
     Inspect {
         path: PathBuf,
@@ -67,6 +76,12 @@ enum Command {
     ExplainSize(PathBuf),
     Doctor(Option<PathBuf>),
     Run(PathBuf),
+}
+
+enum TemplateOptions {
+    Bundled { full: PathBuf, frozen: PathBuf },
+    HostFull(String),
+    HostInstall(String),
 }
 
 enum Selection {
@@ -159,6 +174,7 @@ fn parse(args: Vec<OsString>) -> Result<Command> {
     match name {
         "build" => parse_build(args),
         "build-python" => parse_build_python(args),
+        "python-template" => parse_python_template(args),
         "inspect" => {
             let mut path = None;
             let mut json = false;
@@ -299,6 +315,80 @@ fn parse_build_python(args: &[OsString]) -> Result<Command> {
     })
 }
 
+fn parse_python_template(args: &[OsString]) -> Result<Command> {
+    let mut provider = None;
+    let mut full = None;
+    let mut frozen = None;
+    let mut prefix = None;
+    let mut output = None;
+    let mut json = false;
+    let mut args = args.iter();
+    while let Some(arg) = args.next() {
+        if arg == "--json" {
+            if json {
+                return Err("duplicate python-template option --json".into());
+            }
+            json = true;
+            continue;
+        }
+        let slot = match arg.to_str() {
+            Some("--provider") => &mut provider,
+            Some("--pbs-full") => &mut full,
+            Some("--frozen-bootstrap") => &mut frozen,
+            Some("--host-prefix") => &mut prefix,
+            Some("--output") => &mut output,
+            _ => return Err(format!("unexpected python-template argument {arg:?}").into()),
+        };
+        if slot.is_some() {
+            return Err(format!("duplicate python-template option {arg:?}").into());
+        }
+        *slot = Some(
+            args.next()
+                .filter(|value| !is_option(value))
+                .ok_or_else(|| format!("{arg:?} requires a value"))?
+                .clone(),
+        );
+    }
+    let provider = provider.ok_or("python-template requires --provider")?;
+    let input = match provider.to_str() {
+        Some("bundled") => {
+            if prefix.is_some() {
+                return Err("bundled python-template does not accept --host-prefix".into());
+            }
+            TemplateOptions::Bundled {
+                full: PathBuf::from(full.ok_or("bundled python-template requires --pbs-full")?),
+                frozen: PathBuf::from(
+                    frozen.ok_or("bundled python-template requires --frozen-bootstrap")?,
+                ),
+            }
+        }
+        Some("host-full" | "host-install") => {
+            if full.is_some() || frozen.is_some() {
+                return Err("host python-template does not accept PBS or frozen inputs".into());
+            }
+            let prefix = prefix
+                .ok_or("host python-template requires --host-prefix")?
+                .into_string()
+                .map_err(|_| "host prefix must be UTF-8")?;
+            if provider == "host-full" {
+                TemplateOptions::HostFull(prefix)
+            } else {
+                TemplateOptions::HostInstall(prefix)
+            }
+        }
+        _ => {
+            return Err(
+                "python-template provider must be bundled, host-full or host-install".into(),
+            );
+        }
+    };
+    Ok(Command::PythonTemplate {
+        input,
+        output: PathBuf::from(output.ok_or("python-template requires --output")?),
+        json,
+    })
+}
+
 fn one_path(args: &[OsString], command: &str) -> Result<PathBuf> {
     if args.len() != 1 || is_option(&args[0]) {
         return Err(format!("{command} requires exactly one archive path").into());
@@ -399,6 +489,46 @@ fn execute(command: Command) -> Result<ExitCode> {
                     json,
                 );
                 eprintln!("glue: installed Python package builds require --features python-pack");
+                return Ok(ExitCode::from(2));
+            }
+        }
+        Command::PythonTemplate {
+            input,
+            output,
+            json,
+        } => {
+            #[cfg(feature = "python-pack")]
+            {
+                use glue_pack::python_template::TemplateInput;
+                let selected = match &input {
+                    TemplateOptions::Bundled { full, frozen } => {
+                        TemplateInput::Bundled { full, frozen }
+                    }
+                    TemplateOptions::HostFull(prefix) => TemplateInput::HostFull { prefix },
+                    TemplateOptions::HostInstall(prefix) => TemplateInput::HostInstall { prefix },
+                };
+                let report = glue_pack::python_template::prepare(selected, &output)?;
+                if json {
+                    let mut stdout = io::stdout().lock();
+                    serde_json::to_writer(&mut stdout, &report)?;
+                    stdout.write_all(b"\n")?;
+                } else {
+                    println!("Prepared Python runtime template at {}", output.display());
+                    println!("Use its manifest.json and root/ with glue build-python");
+                }
+            }
+            #[cfg(not(feature = "python-pack"))]
+            {
+                match input {
+                    TemplateOptions::Bundled { full, frozen } => {
+                        let _ = (full, frozen);
+                    }
+                    TemplateOptions::HostFull(prefix) | TemplateOptions::HostInstall(prefix) => {
+                        let _ = prefix;
+                    }
+                }
+                let _ = (output, json);
+                eprintln!("glue: Python runtime templates require --features python-pack");
                 return Ok(ExitCode::from(2));
             }
         }
