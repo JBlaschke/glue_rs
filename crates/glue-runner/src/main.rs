@@ -21,6 +21,10 @@ Usage:
     --frozen-bootstrap BUNDLE.json --output DIR [--json]
   glue python-template --provider (host-full | host-install)
     --host-prefix PREFIX --output DIR [--json]
+  glue python-host --provider host-full --pbs-full FULL.tar.zst
+    --output PREFIX [--json]
+  glue python-host --provider host-install --pbs-install-only INSTALL.tar.gz
+    --output PREFIX [--json]
   glue build-python --provider-template MANIFEST --provider-root DIR --app DIR
     (--venv VENV | --site-packages DIR) --output APP.glue
     [--app-id ID] [--entry app/main.py] [--json]
@@ -63,6 +67,11 @@ enum Command {
         output: PathBuf,
         json: bool,
     },
+    PythonHost {
+        input: HostOptions,
+        output: PathBuf,
+        json: bool,
+    },
     Standalone,
     Inspect {
         path: PathBuf,
@@ -82,6 +91,11 @@ enum TemplateOptions {
     Bundled { full: PathBuf, frozen: PathBuf },
     HostFull(String),
     HostInstall(String),
+}
+
+enum HostOptions {
+    Full(PathBuf),
+    Install(PathBuf),
 }
 
 enum Selection {
@@ -175,6 +189,7 @@ fn parse(args: Vec<OsString>) -> Result<Command> {
         "build" => parse_build(args),
         "build-python" => parse_build_python(args),
         "python-template" => parse_python_template(args),
+        "python-host" => parse_python_host(args),
         "inspect" => {
             let mut path = None;
             let mut json = false;
@@ -389,6 +404,64 @@ fn parse_python_template(args: &[OsString]) -> Result<Command> {
     })
 }
 
+fn parse_python_host(args: &[OsString]) -> Result<Command> {
+    let mut provider = None;
+    let mut full = None;
+    let mut install = None;
+    let mut output = None;
+    let mut json = false;
+    let mut args = args.iter();
+    while let Some(arg) = args.next() {
+        if arg == "--json" {
+            if json {
+                return Err("duplicate python-host option --json".into());
+            }
+            json = true;
+            continue;
+        }
+        let slot = match arg.to_str() {
+            Some("--provider") => &mut provider,
+            Some("--pbs-full") => &mut full,
+            Some("--pbs-install-only") => &mut install,
+            Some("--output") => &mut output,
+            _ => return Err(format!("unexpected python-host argument {arg:?}").into()),
+        };
+        if slot.is_some() {
+            return Err(format!("duplicate python-host option {arg:?}").into());
+        }
+        *slot = Some(
+            args.next()
+                .filter(|value| !is_option(value))
+                .ok_or_else(|| format!("{arg:?} requires a value"))?
+                .clone(),
+        );
+    }
+    let input = match provider.ok_or("python-host requires --provider")?.to_str() {
+        Some("host-full") => {
+            if install.is_some() {
+                return Err("host-full python-host does not accept --pbs-install-only".into());
+            }
+            HostOptions::Full(PathBuf::from(
+                full.ok_or("host-full python-host requires --pbs-full")?,
+            ))
+        }
+        Some("host-install") => {
+            if full.is_some() {
+                return Err("host-install python-host does not accept --pbs-full".into());
+            }
+            HostOptions::Install(PathBuf::from(
+                install.ok_or("host-install python-host requires --pbs-install-only")?,
+            ))
+        }
+        _ => return Err("python-host provider must be host-full or host-install".into()),
+    };
+    Ok(Command::PythonHost {
+        input,
+        output: PathBuf::from(output.ok_or("python-host requires --output")?),
+        json,
+    })
+}
+
 fn one_path(args: &[OsString], command: &str) -> Result<PathBuf> {
     if args.len() != 1 || is_option(&args[0]) {
         return Err(format!("{command} requires exactly one archive path").into());
@@ -529,6 +602,45 @@ fn execute(command: Command) -> Result<ExitCode> {
                 }
                 let _ = (output, json);
                 eprintln!("glue: Python runtime templates require --features python-pack");
+                return Ok(ExitCode::from(2));
+            }
+        }
+        Command::PythonHost {
+            input,
+            output,
+            json,
+        } => {
+            #[cfg(feature = "python-pack")]
+            {
+                use glue_pack::python_host::HostInput;
+                let selected = match &input {
+                    HostOptions::Full(artifact) => HostInput::Full { artifact },
+                    HostOptions::Install(artifact) => HostInput::Install { artifact },
+                };
+                let report = glue_pack::python_host::prepare(selected, &output)?;
+                if json {
+                    let mut stdout = io::stdout().lock();
+                    serde_json::to_writer(&mut stdout, &report)?;
+                    stdout.write_all(b"\n")?;
+                } else {
+                    println!(
+                        "Prepared pinned host Python prerequisites at {}",
+                        output.display()
+                    );
+                    println!("Use this prefix with glue python-template for its host provider");
+                }
+            }
+            #[cfg(not(feature = "python-pack"))]
+            {
+                match input {
+                    HostOptions::Full(artifact) | HostOptions::Install(artifact) => {
+                        let _ = artifact;
+                    }
+                }
+                let _ = (output, json);
+                eprintln!(
+                    "glue: host Python prerequisite preparation requires --features python-pack"
+                );
                 return Ok(ExitCode::from(2));
             }
         }

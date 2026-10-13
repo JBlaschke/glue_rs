@@ -7,6 +7,7 @@ use crate::{metadata_profile, profile};
 use glue_format::{ArchiveLimits, Manifest, ResourceSpec, digest};
 use std::collections::BTreeMap;
 
+pub mod host_prerequisites;
 pub mod template;
 
 /// Admit an exact metadata-profile template on any builder platform.

@@ -59,6 +59,27 @@ inspect or install that prefix; execution verifies the actual installation.
 `provenance.json` and JSON stdout record these distinctions and all resource
 identities. The output parent must exist and the output directory must be new.
 
+Prepare the admitted host prerequisites with `python-host` when needed:
+
+```sh
+target/debug/glue python-host --provider host-install \
+  --pbs-install-only PINNED_INSTALL_ONLY.tar.gz \
+  --output "$PWD/target/python-host" --json
+target/debug/glue python-template --provider host-install \
+  --host-prefix /absolute/deployment/python-host \
+  --output target/host-provider --json
+```
+
+Use `--provider host-full --pbs-full PINNED_FULL.tar.zst` for the full-source
+profile. Unix builders, including Mac, can prepare both GNU-target trees without
+executing Python. The output contains the pinned embedding library and exact
+source/cache prerequisites, plus provenance; it omits the executable, headers
+and other unselected stock contents. Files receive mode `0444`, directories
+`0555`, and mtimes the fixed stock epoch. Keep the deployed tree on immutable
+storage at the template's declared prefix. Preparation protects existing outputs
+and requires an absolute admitted prefix with an existing parent. See the
+[host-prerequisite fixture](fixtures/python-host-prerequisites/README.md).
+
 Use `--site-packages PACKAGE_DIR` instead of `--venv` for an explicit installed
 package directory. Venv convenience mode accepts the conventional
 `lib/python3.13/site-packages` layout with system site-packages disabled. It reads
@@ -73,7 +94,7 @@ omitted and reported. Native files, editables, `.pth` hooks, escaping paths and
 unowned files reject before output creation. `--json` records input identities,
 distribution identities, omissions and final archive hashes. The command still
 uses the explicitly prepared provider template; automated runtime/version
-selection, runtime installation and general package compatibility remain later
+selection, general runtime installation and package compatibility remain later
 work. See the [runtime-template fixture](fixtures/python-runtime-templates/README.md),
 [offline venv fixture](fixtures/python-venv-ingestion/README.md) and
 [ingestion contract](docs/decisions/0022-python-installed-package-ingestion.md).

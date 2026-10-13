@@ -45,6 +45,14 @@ The unchanged installed-package runtime policy checks all six valid/CRC-damage
 traces in the relocated, read-only GNU Linux arm64 cell. Mac preparation of these
 Linux-target templates establishes portable input processing, not Mac execution.
 
+The [host-prerequisite fixture](../fixtures/python-host-prerequisites/README.md)
+replaces historical host installer calls with `glue python-host`. Independent
+oracles verify every published file, mode, mtime and inventory/provenance field.
+Complete preparation traces distinguish writing the admitted library from reading
+or mapping it for execution. The same six-mode runtime policy tests the resulting
+full/install-only trees on immutable GNU Linux storage; Mac preparation supplies
+cross-target byte/metadata evidence.
+
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with
 the matching stock producer at build time, removes that installation and its

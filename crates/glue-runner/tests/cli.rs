@@ -276,6 +276,77 @@ fn python_template_declares_host_inputs_without_discovery_and_preserves_existing
     assert_eq!(tree_snapshot(&temp.0), before);
 }
 
+#[test]
+fn python_host_requires_one_provider_specific_artifact() {
+    let temp = TestDir::new();
+    let output = temp.0.join("new host prerequisites");
+    for options in [
+        vec![
+            arg("--provider"),
+            arg("bundled"),
+            arg("--pbs-full"),
+            arg("absent"),
+        ],
+        vec![arg("--provider"), arg("host-full")],
+        vec![
+            arg("--provider"),
+            arg("host-install"),
+            arg("--pbs-full"),
+            arg("absent"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-full"),
+            arg("--pbs-full"),
+            arg("absent"),
+            arg("--pbs-install-only"),
+            arg("other"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-full"),
+            arg("--pbs-full"),
+            arg("absent"),
+            arg("--json"),
+            arg("--json"),
+        ],
+    ] {
+        let mut command = vec![arg("python-host"), arg("--output"), output.as_os_str()];
+        command.extend(options);
+        let result = temp.run(&command);
+        assert_status(&result, 1);
+        assert!(result.stdout.is_empty());
+        assert!(!output.exists());
+    }
+}
+
+#[test]
+fn python_host_reports_capability_or_invalid_prefix_without_mutation() {
+    let temp = TestDir::new();
+    let sentinel = temp.0.join("sentinel");
+    fs::write(&sentinel, b"preserve existing state").unwrap();
+    let before = tree_snapshot(&temp.0);
+    let result = temp.run(&[
+        arg("python-host"),
+        arg("--provider"),
+        arg("host-install"),
+        arg("--pbs-install-only"),
+        arg("missing artifact.tar.gz"),
+        arg("--output"),
+        arg("relative prefix"),
+        arg("--json"),
+    ]);
+    #[cfg(feature = "python-pack")]
+    assert_status(&result, 1);
+    #[cfg(not(feature = "python-pack"))]
+    {
+        assert_status(&result, 2);
+        assert!(diagnostic(&result).contains("--features python-pack"));
+    }
+    assert!(result.stdout.is_empty());
+    assert_eq!(tree_snapshot(&temp.0), before);
+}
+
 fn tree_snapshot(root: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
     fn visit(root: &Path, directory: &Path, result: &mut BTreeMap<PathBuf, Option<Vec<u8>>>) {
         for entry in fs::read_dir(directory).unwrap() {
