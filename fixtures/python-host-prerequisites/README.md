@@ -123,14 +123,20 @@ python3 fixtures/python-host-prerequisites/test_prepare.py \
 ```
 
 The preparation process audit requires one builder execution and rejects child
-creation and network attempts. Native conformance capture for this new product
+creation, network activity and acquisition of a target runtime. Native conformance capture for this new product
 step is pending. The harness below replaces historical host-installer fixture
 calls with product preparation, audits both published prerequisite trees and
 preparation traces, and builds the existing genuine installed-package application
 through all three product-generated templates. It removes build-only inputs,
 then captures the existing six runtime modes with an unprivileged user, no
 network and read-only runtime storage. The existing installed-package trace
-policy and previous archive identities remain the execution comparison.
+policy and previous archive identities remain the execution comparison. The
+isolated host-prerequisite checker preserves the original policy and changes
+only the install-only root enumeration expectation to the exact 191 entries
+derived from its source/cache pins. The complete stock tree had two additional
+unselected entries, `LICENSE.txt` and `lib-dynload`; full-host enumeration remains
+192. Extra or missing entries reject, as do the inherited cache, loader, ownership,
+archive, CRC, process and no-extraction violations.
 
 ```sh
 sh fixtures/python-host-prerequisites/run-linux.sh \

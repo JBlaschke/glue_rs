@@ -66,5 +66,16 @@ three-provider native fixture, then replay its unchanged six-mode runtime policy
 and compare archive identities to prior evidence. Retain complete traces,
 provenance and independent checks without duplicating large payload trees in Git.
 
+The existing install-only trace workload used a complete upstream installation.
+Its stdlib-root enumeration contains 193 entries including dot entries. The
+new declared source/cache projection has 191: `LICENSE.txt` and `lib-dynload`
+are omitted along with other unselected stock content. Use an isolated strict
+trace adapter that derives the 191 count from the exact checked-in source/cache
+inventory and changes only the two metadata-host enumeration predicates for
+this workload. The original policy files and their 193-entry expectation remain
+unchanged. All archive, loader, startup, cache, descriptor, output, CRC and
+no-extraction checks stay in force; extra/missing directory entries must reject.
+The full-source projection already matches its existing 192-entry workload.
+
 General installation/discovery, uv-tree ingestion, version selection, broader
 package/native/platform compatibility and release gates remain separate work.

@@ -242,9 +242,9 @@ podman run --rm --network none --read-only --read-only-tmpfs=false --tmpfs /tmp:
     --workdir /build-target/runtime-empty "$image" sh -c \
     'chmod 000 /tmp; exec setpriv --reuid=65534 --regid=65534 --clear-groups --no-new-privs sh /build-target/runtime-commands.sh --run'
 if test "$development" = false; then
-    python3 scripts/check-linux-python-venv-trace.py --emit-metadata "$build/relocated Python metadata" "$evidence/source-metadata.json"
+    python3 scripts/check-linux-python-host-prerequisites-trace.py --emit-metadata "$build/relocated Python metadata" "$evidence/source-metadata.json"
     for mode in $modes; do
-        python3 scripts/check-linux-python-venv-trace.py "$evidence/$mode.trace.txt" --mode "$mode" \
+        python3 scripts/check-linux-python-host-prerequisites-trace.py "$evidence/$mode.trace.txt" --mode "$mode" \
             --stdout-file "$evidence/$mode.stdout.txt" --stderr-file "$evidence/$mode.stderr.txt" \
             --metadata-file "$evidence/source-metadata.json" --archive-file "$build/relocated Python metadata/$mode.glue" > "$evidence/$mode.trace-check.txt"
     done

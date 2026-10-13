@@ -276,8 +276,8 @@ class ProcessTraceTests(unittest.TestCase):
     LIBRARY = PREFIX + '/lib/libpython3.13.so.1.0'
     VALID = [
         '1234 execve("/build-target/glue", ["/build-target/glue", "python-host", "--provider", "host-full", "--pbs-full", "/input/full.tar.zst", "--output", "/build-target/host Python metadata", "--json"], 0xffff /* 5 vars */) = 0\n',
-        '1234 openat(AT_FDCWD</builder>, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</lib/aarch64-linux-gnu/libc.so.6>\n',
-        '1234 mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, 3</lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xffff\n',
+        '1234 openat(AT_FDCWD</builder>, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/aarch64-linux-gnu/libc.so.6>\n',
+        '1234 mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xffff\n',
         '1234 +++ exited with 0 +++\n',
     ]
 
@@ -322,7 +322,7 @@ class ProcessTraceTests(unittest.TestCase):
         self.check(self.VALID[:1] + ['1234 ' + call + '\n' for call in calls] + self.VALID[1:])
         with self.assertRaisesRegex(ValueError, 'owned-directory'):
             self.check(self.VALID[:1] + ['1234 ' + calls[1] + '\n'] + self.VALID[1:])
-        with self.assertRaisesRegex(ValueError, 'acquired Python interpreter'):
+        with self.assertRaisesRegex(ValueError, 'acquired/read/mapped owned publication output'):
             self.check(self.VALID[:1] + ['1234 ' + call + '\n' for call in calls[:2]] + ['1234 read(4<' + directory + '>, \"\", 1) = -1 EISDIR\n'] + self.VALID[1:])
 
     def test_failed_and_successful_child_network_or_memfd_attempts_reject(self):
@@ -343,7 +343,7 @@ class ProcessTraceTests(unittest.TestCase):
     def test_omitted_descriptor_annotation_cannot_hide_later_acquisition(self):
         opened = '1234 openat(AT_FDCWD</builder>, ' + json.dumps(self.LIBRARY) + ', O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 4<' + self.LIBRARY + '>\n'
         for call in ('read(4, \"\", 1) = -1 EBADF', 'mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, 4, 0) = -1 EPERM', 'dup(4) = -1 EPERM', 'fcntl(4, F_DUPFD, 5) = -1 EPERM'):
-            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'acquired/read/mapped'):
+            with self.subTest(call=call), self.assertRaises(ValueError):
                 self.check(self.VALID[:1] + [opened, '1234 ' + call + '\n'] + self.VALID[1:])
         self.check(self.VALID[:1] + [opened, '1234 fstat(4, {}) = 0\n', '1234 write(4, \"x\", 1) = 1\n', '1234 close(4) = 0\n', '1234 read(4, \"\", 1) = -1 EBADF\n'] + self.VALID[1:])
 
@@ -389,7 +389,7 @@ class ProcessTraceTests(unittest.TestCase):
         for call in (
                 'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xabc000',
                 'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE, -1, 0) = -1 EINVAL',
-                'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, 3</lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xabc000',
+                'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xabc000',
                 'mmap2(NULL, 4096, PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = -1 EPERM'):
             with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'anonymous executable mapping'):
                 self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
@@ -404,13 +404,13 @@ class ProcessTraceTests(unittest.TestCase):
 
     def test_system_file_execution_and_nonexecutable_heap_protections_pass(self):
         calls = [
-            'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xabc000',
+            'mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xabc000',
             'mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xdef000',
             'mprotect(0xabc000, 4096, PROT_READ) = 0',
             'pkey_mprotect(0xdef000, 4096, PROT_READ|PROT_WRITE, 0) = 0',
-            'read(3</input/full.tar.zst>, \"PROT_EXEC MAP_ANONYMOUS\", 23) = 23',
+            'read(5</input/full.tar.zst>, \"PROT_EXEC MAP_ANONYMOUS\", 23) = 23',
         ]
-        self.check(self.VALID[:1] + ['1234 ' + call + '\n' for call in calls] + self.VALID[1:])
+        self.check(self.VALID[:2] + ['1234 ' + call + '\n' for call in calls] + self.VALID[2:])
 
     def test_truncated_binary_buffers_do_not_truncate_syscall_boundaries(self):
         calls = [
@@ -423,6 +423,94 @@ class ProcessTraceTests(unittest.TestCase):
                      self.VALID[0].replace('"/build-target/host Python metadata"', '"/build-target/host Python meta"...')):
             with self.subTest(line=line), self.assertRaisesRegex(ValueError, 'truncated/malformed'):
                 self.check([line] + self.VALID[1:])
+
+    def test_renamed_foreign_runtime_executable_mapping_rejects(self):
+        opened = '1234 openat(AT_FDCWD</builder>, "/tmp/renamed-runtime.so", O_RDONLY|O_CLOEXEC) = 4</tmp/renamed-runtime.so>\n'
+        for descriptor in ('4</tmp/renamed-runtime.so>', '4'):
+            call = '1234 mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE, ' + descriptor + ', 0) = 0xabc000\n'
+            with self.subTest(descriptor=descriptor), self.assertRaisesRegex(ValueError, 'outside exact system loader inventory'):
+                self.check(self.VALID[:1] + [opened, call] + self.VALID[1:])
+
+    def test_file_creation_outside_prefix_and_unknown_descriptor_write_reject(self):
+        for call in (
+                'openat(AT_FDCWD</builder>, "/tmp/copied-runtime.bin", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 4</tmp/copied-runtime.bin>',
+                'write(4</tmp/copied-runtime.bin>, "runtime", 7) = 7',
+                'write(4, "runtime", 7) = 7',
+                'write(4<' + self.PREFIX + '/not-opened.py>, "runtime", 7) = 7',
+                'openat(AT_FDCWD</builder>, "' + self.PREFIX + '/../escape.bin", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 4',
+                'openat(3</tmp>, "copied-runtime.bin", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 4'):
+            with self.subTest(call=call), self.assertRaises(ValueError):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_path_and_descriptor_mutations_cannot_escape_prefix(self):
+        for call in (
+                'mkdirat(AT_FDCWD</builder>, "/tmp/escape", 0777) = 0',
+                'chmod("/tmp/escape", 0444) = 0',
+                'rename("' + self.PREFIX + '/library", "/tmp/escape") = 0',
+                'unlink("/tmp/escape") = 0',
+                'rmdir("/tmp/unrelated") = 0',
+                'symlink("/tmp/external", "' + self.PREFIX + '/alias") = 0',
+                'utimensat(AT_FDCWD</builder>, "/tmp/escape", NULL, 0) = 0',
+                'fchmod(4</tmp/escape>, 0444) = 0',
+                'utimensat(4</tmp/escape>, NULL, [UTIME_OMIT, {tv_sec=1704067200, tv_nsec=0}], 0) = 0'):
+            with self.subTest(call=call), self.assertRaises(ValueError):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_all_owned_directory_and_file_reads_are_tracked_without_annotations(self):
+        directory = self.PREFIX + '/lib/python3.13'
+        file = directory + '/codecs.py'
+        directory_open = ['1234 mkdirat(AT_FDCWD</builder>, ' + json.dumps(directory) + ', 0777) = 0\n',
+                          '1234 openat(AT_FDCWD</builder>, ' + json.dumps(directory) + ', O_RDONLY|O_CLOEXEC) = 4<' + directory + '>\n']
+        file_open = ['1234 openat(AT_FDCWD</builder>, ' + json.dumps(file) + ', O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 4<' + file + '>\n']
+        for opened in (directory_open, file_open):
+            for call in ('read(4, "", 1) = -1 EISDIR', 'pread64(4, "", 1, 0) = 0',
+                         'getdents64(4, 0xabc000 /* 1 entries */, 32768) = 32',
+                         'mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, 4, 0) = -1 EPERM'):
+                with self.subTest(opened=opened, call=call), self.assertRaisesRegex(ValueError, 'acquired/read/mapped owned publication output'):
+                    self.check(self.VALID[:1] + opened + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_original_stdout_stderr_writes_pass_and_reassignment_rejects(self):
+        self.check(self.VALID[:1] + ['1234 write(1, "report", 6) = 6\n',
+                                   '1234 write(2</evidence/stderr.txt>, "diagnostic", 10) = 10\n'] + self.VALID[1:])
+        for calls in (
+                ['close(1) = 0', 'openat(AT_FDCWD</builder>, "' + self.PREFIX + '/replacement", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 1'],
+                ['close(1) = 0', 'write(1, "runtime", 7) = 7'],
+                ['dup2(4, 1) = 1'], ['dup3(4, 2, O_CLOEXEC) = 2'],
+                ['close_range(0, 4294967295, 0) = 0'],
+                ['fcntl(4, F_DUPFD, 1) = 1'], ['fcntl(4, F_DUPFD_CLOEXEC, 2) = 2']):
+            with self.subTest(calls=calls), self.assertRaises(ValueError):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n' for call in calls] + self.VALID[1:])
+
+    def test_system_mapping_requires_observed_matching_open_owner(self):
+        call = '1234 mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE, 4</usr/lib/aarch64-linux-gnu/libc.so.6>, 0) = 0xabc000\n'
+        with self.assertRaisesRegex(ValueError, 'outside exact system loader inventory'):
+            self.check(self.VALID[:1] + [call] + self.VALID[1:])
+        foreign = '1234 openat(AT_FDCWD</builder>, "/tmp/renamed-runtime.so", O_RDONLY|O_CLOEXEC) = 4</tmp/renamed-runtime.so>\n'
+        with self.assertRaisesRegex(ValueError, 'annotation differs from remembered open owner'):
+            self.check(self.VALID[:1] + [foreign, call] + self.VALID[1:])
+
+    def test_unclassified_kernel_mutation_and_descriptor_acquisition_rejects(self):
+        for call in ('mount(\"/tmp/source\", \"/tmp/target\", NULL, 0, NULL) = 0',
+                     'pivot_root(\"/tmp/newroot\", \"/tmp/oldroot\") = 0',
+                     'pidfd_getfd(5, 4, 0) = 6', 'ioctl(1, TIOCSTI, \"x\") = 0'):
+            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'unclassified syscall'):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_shared_writable_file_mappings_reject_even_if_failed(self):
+        opened = '1234 openat(AT_FDCWD</builder>, \"/input/full.tar.zst\", O_RDONLY|O_CLOEXEC) = 4</input/full.tar.zst>\n'
+        for descriptor in ('4</input/full.tar.zst>', '4'):
+            for kind in ('mmap', 'mmap2'):
+                for flags in ('MAP_SHARED', 'MAP_SHARED_VALIDATE'):
+                    call = kind + '(NULL, 4096, PROT_READ|PROT_WRITE, ' + flags + ', ' + descriptor + ', 0) = -1 EACCES'
+                    with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'shared writable file mapping'):
+                        self.check(self.VALID[:1] + [opened, '1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_empty_path_mutation_and_readonly_publication_alias_reject(self):
+        for call in (
+                'utimensat(AT_FDCWD</outside>, \"\", NULL, AT_EMPTY_PATH) = 0',
+                'openat(AT_FDCWD</builder>, \"/alias/runtime\", O_RDONLY|O_CLOEXEC) = 4<' + self.LIBRARY + '>'):
+            with self.subTest(call=call), self.assertRaises(ValueError):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
 
     def test_truncated_file_path_arguments_reject(self):
         for call in (

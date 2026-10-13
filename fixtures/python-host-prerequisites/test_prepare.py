@@ -438,24 +438,44 @@ def audit_process_trace(path, program):
         lines = stream.readlines()
     require(lines, 'process trace is empty')
     pid, output, cwd, exits, execs = None, None, None, 0, 0
-    library_descriptors = {}
-    created_directories = set()
+    descriptors_by_number, created_directories, created_files = {}, set(), set()
+    stdio_live = {0, 1, 2}
+    executable_system_files = {'/usr/lib/aarch64-linux-gnu/' + name
+                               for name in ('libm.so.6', 'libgcc_s.so.1', 'libc.so.6')}
     forbidden = {'clone', 'clone3', 'fork', 'vfork', 'execveat', 'memfd_create', 'socket', 'socketpair',
                  'connect', 'accept', 'accept4', 'bind', 'listen', 'sendto', 'sendmsg', 'sendmmsg',
                  'recvfrom', 'recvmsg', 'recvmmsg', 'shutdown', 'getsockname', 'getpeername',
-                 'setsockopt', 'getsockopt', 'socketcall', 'io_uring_setup', 'io_uring_register', 'io_uring_enter'}
+                 'setsockopt', 'getsockopt', 'socketcall', 'io_uring_setup', 'io_uring_register', 'io_uring_enter',
+                 'dup', 'dup2', 'dup3', 'close_range', 'sendfile', 'sendfile64', 'copy_file_range', 'splice', 'tee', 'vmsplice'}
     quoted = re.compile(r'"((?:[^"\\]|\\.)*)"')
-    annotated = re.compile(r'(?:AT_FDCWD|\d+)<([^<>]*)>')
+    annotated = re.compile(r'(AT_FDCWD|\d+)<([^<>]*)>')
     library = re.compile(r'libpython(?:\d+(?:\.\d+)*)?d?(?:\.so(?:\.\d+)*|\.dylib|\.dll|\.a|\.lib)\Z')
     interpreter = re.compile(r'python(?:\d+(?:\.\d+)*)?(?:\.exe)?\Z')
-    path_calls = {'open', 'openat', 'openat2', 'creat', 'stat', 'lstat', 'newfstatat', 'statx',
-                  'access', 'faccessat', 'faccessat2', 'mkdir', 'mkdirat', 'chmod', 'fchmodat',
-                  'fchmodat2', 'chown', 'lchown', 'fchownat', 'utime', 'utimes', 'utimensat',
-                  'unlink', 'unlinkat', 'rename', 'renameat', 'renameat2', 'readlink', 'readlinkat',
-                  'symlink', 'symlinkat', 'link', 'linkat', 'chdir', 'execve', 'execveat'}
+    opens = {'open', 'openat', 'openat2', 'creat'}
+    writes = {'write', 'writev', 'pwrite64', 'pwritev', 'pwritev2'}
+    path_mutations = {'mkdir', 'mkdirat', 'chmod', 'fchmodat', 'fchmodat2', 'chown', 'lchown', 'fchownat',
+                      'utime', 'utimes', 'utimensat', 'futimesat', 'unlink', 'unlinkat', 'rmdir', 'rename', 'renameat',
+                      'renameat2', 'symlink', 'symlinkat', 'link', 'linkat', 'truncate', 'truncate64',
+                      'mknod', 'mknodat', 'setxattr', 'lsetxattr', 'removexattr', 'lremovexattr'}
+    descriptor_mutations = {'fchmod', 'fchown', 'ftruncate', 'ftruncate64', 'fallocate',
+                            'fsetxattr', 'fremovexattr', 'utimensat', 'futimesat'}
+    path_calls = opens | path_mutations | {'stat', 'lstat', 'newfstatat', 'statx', 'access', 'faccessat',
+                                         'faccessat2', 'readlink', 'readlinkat', 'chdir', 'execve', 'execveat'}
     publication_metadata = {'stat', 'lstat', 'newfstatat', 'statx', 'fstat', 'chmod', 'fchmod',
                             'fchmodat', 'fchmodat2', 'utime', 'utimes', 'utimensat', 'futimesat',
-                            'close', 'write', 'writev', 'pwrite64', 'pwritev', 'pwritev2', 'fsync', 'fdatasync'}
+                            'close', 'fsync', 'fdatasync'}
+
+    # This audit is bound to the recorded GNU arm64 producer cell. Unclassified
+    # kernel operations cannot establish zero network/mutation/acquisition facts.
+    allowed_syscalls = path_calls | descriptor_mutations | writes | publication_metadata | {
+        'execve', 'read', 'readv', 'pread64', 'preadv', 'preadv2', 'getdents64', 'lseek',
+        'fcntl', 'fcntl64', 'fchdir', 'brk', 'mmap', 'mmap2', 'munmap', 'mprotect', 'pkey_mprotect',
+        'prlimit64', 'set_tid_address', 'set_robust_list', 'rseq', 'getrandom',
+        'sched_getaffinity', 'rt_sigaction', 'sigaltstack', 'ppoll', 'exit_group'}
+
+    def inside_prefix(value):
+        return value == output or value.startswith(output + '/')
+
     for line in lines:
         record = re.fullmatch(r'(\d+)\s+(.+)\n?', line)
         require(record is not None, 'process trace record lacks numbered PID: ' + line.strip())
@@ -468,7 +488,8 @@ def audit_process_trace(path, program):
         match = re.match(r'([A-Za-z_][A-Za-z_0-9]*)\(', body)
         if match:
             name = match.group(1)
-            require(name not in forbidden, 'preparation attempted child creation/network/acquisition: ' + line.strip())
+            require(name not in forbidden, 'preparation attempted child creation/network/acquisition/descriptor reassignment: ' + line.strip())
+            require(name in allowed_syscalls, 'process trace contains unclassified syscall outside preparation audit: ' + line.strip())
             if name == 'execve':
                 parsed = re.fullmatch(r'execve\(("(?:[^"\\]|\\.)*"), \[(.*)\], .*\)\s*=\s*0\s*', body)
                 require(parsed is not None, 'builder execve is malformed/failed')
@@ -484,76 +505,113 @@ def audit_process_trace(path, program):
                 require(execs == 1, 'process trace contains additional execve')
                 continue
             require(execs == 1, 'process syscall precedes builder execve')
-            # Binary read/write buffers can contain literal descriptor-shaped
-            # text. Only annotations outside quoted payload/path strings are
-            # process descriptor evidence; preserve offsets for relative paths.
+            # Ignore descriptor-shaped text and NUL bytes inside binary buffers.
+            # Preserve offsets so relative path arguments retain their real base.
             unquoted = quoted.sub(lambda item: ' ' * len(item.group(0)), body)
-            syscall_arguments = annotated.sub('', unquoted)
+            syscall_arguments = annotated.sub(lambda item: item.group(1), unquoted)
+            require(not (name in {'fcntl', 'fcntl64'} and re.search(r'\bF_DUPFD(?:_CLOEXEC)?\b', syscall_arguments)),
+                    'preparation attempted descriptor reassignment')
             if name in {'mprotect', 'pkey_mprotect'}:
                 require('PROT_EXEC' not in syscall_arguments, 'preparation attempted to grant executable memory protection')
-            if name in {'mmap', 'mmap2'} and 'PROT_EXEC' in syscall_arguments:
-                arguments = syscall_arguments[syscall_arguments.index('(') + 1:].split(',')
-                anonymous = 'MAP_ANONYMOUS' in syscall_arguments or (len(arguments) >= 5 and arguments[4].strip() == '-1')
-                require(not anonymous, 'preparation attempted anonymous executable mapping')
-            descriptors = [(item.start(), normalized_trace_path(decode_trace_string(item.group(1)).removesuffix(' (deleted)')))
+            descriptors = [(item.start(), item.group(1), normalized_trace_path(decode_trace_string(item.group(2)).removesuffix(' (deleted)')))
                            for item in annotated.finditer(unquoted)]
+            result_start = body.rfind(' = ')
+            argument_descriptors = [(position, number, value) for position, number, value in descriptors
+                                    if result_start < 0 or position < result_start]
+            for _, number, value in argument_descriptors:
+                if number != 'AT_FDCWD' and int(number) in descriptors_by_number:
+                    require(value == descriptors_by_number[int(number)]['path'], 'descriptor annotation differs from remembered open owner')
             observed_cwd = re.search(r'AT_FDCWD<([^<>]*)>', unquoted)
             if observed_cwd is not None:
                 cwd = normalized_trace_path(decode_trace_string(observed_cwd.group(1)))
-            paths = [value for _, value in descriptors]
-            # Remember exclusive publication descriptors as well as inspecting
-            # strace -yy annotations. Removing an annotation cannot hide a later
-            # read, mmap, duplication or other acquisition through that FD.
-            first_descriptor = re.match(r'[A-Za-z_][A-Za-z_0-9]*\((\d+)(?:<[^<>]*>)?[,)]', body)
-            if first_descriptor and int(first_descriptor.group(1)) in library_descriptors:
-                paths.append(library_descriptors[int(first_descriptor.group(1))])
+            first = re.match(r'[A-Za-z_][A-Za-z_0-9]*\((\d+)(?:<[^<>]*>)?[,)]', body)
+            first_number = int(first.group(1)) if first else None
+            first_owner = descriptors_by_number.get(first_number)
+            paths = [value for _, _, value in descriptors]
+            if first_owner:
+                paths.append(first_owner['path'])
+            mapped_number, mapped_owner = None, None
             if name in {'mmap', 'mmap2'}:
-                mmap_descriptor = re.match(r'mmap2?\([^,]*,[^,]*,[^,]*,[^,]*,\s*(\d+)(?:<[^<>]*>)?,', body)
-                if mmap_descriptor and int(mmap_descriptor.group(1)) in library_descriptors:
-                    paths.append(library_descriptors[int(mmap_descriptor.group(1))])
+                arguments = syscall_arguments[syscall_arguments.index('(') + 1:].split(',')
+                require(len(arguments) >= 6 and re.fullmatch(r'\s*-?\d+\s*', arguments[4]), 'mapping descriptor arguments differ')
+                mapped_number = int(arguments[4])
+                mapped_owner = descriptors_by_number.get(mapped_number)
+                shared_writable = ('PROT_WRITE' in syscall_arguments and
+                                   re.search(r'\bMAP_SHARED(?:_VALIDATE)?\b', syscall_arguments) is not None and
+                                   mapped_number >= 0 and 'MAP_ANONYMOUS' not in syscall_arguments)
+                require(not shared_writable, 'preparation attempted shared writable file mapping')
+                if mapped_owner:
+                    paths.append(mapped_owner['path'])
+                if 'PROT_EXEC' in syscall_arguments:
+                    anonymous = 'MAP_ANONYMOUS' in syscall_arguments or mapped_number == -1
+                    require(not anonymous, 'preparation attempted anonymous executable mapping')
+                    require(mapped_owner is not None and not mapped_owner['publication'] and
+                            mapped_owner['path'] in executable_system_files,
+                            'preparation attempted executable mapping outside exact system loader inventory')
             strings = []
             if name in path_calls:
-                require(re.search(r'\"(?:[^\"\\]|\\.)*\"\s*\.\.\.', body) is None,
+                require(re.search(r'"(?:[^"\\]|\\.)*"\s*\.\.\.', body) is None,
                         'process trace file path/string argument is truncated')
                 for item in quoted.finditer(body):
                     value = normalized_trace_path(decode_trace_string(item.group(1)))
-                    preceding = [value for position, value in descriptors if position < item.start() and value.startswith('/')]
+                    preceding = [value for position, _, value in argument_descriptors if position < item.start() and value.startswith('/')]
                     base = preceding[-1] if preceding else cwd
-                    resolved = normalized_trace_path(posixpath.join(base, value)) if base and value and not value.startswith('/') else value
+                    resolved = normalized_trace_path(posixpath.join(base, value)) if base and not value.startswith('/') else value
                     paths.append(resolved)
                     strings.append(resolved)
+            flags = set(re.findall(r'\bO_[A-Z0-9_]+\b', syscall_arguments))
+            write_open = name == 'creat' or bool(flags & {'O_WRONLY', 'O_RDWR', 'O_CREAT', 'O_TRUNC', 'O_APPEND', 'O_TMPFILE'})
+            if name in opens:
+                require(strings, 'open lacks complete path argument')
+                if write_open:
+                    require(inside_prefix(strings[0]), 'preparation write-capable open escapes declared output prefix')
+                    require(flags == {'O_WRONLY', 'O_CREAT', 'O_EXCL', 'O_CLOEXEC'}, 'publication was not an exclusive write')
+                elif inside_prefix(strings[0]):
+                    require(strings[0] in created_directories and flags == {'O_RDONLY', 'O_CLOEXEC'},
+                            'preparation read Python path without owned-directory evidence')
+            if name in path_mutations:
+                require(all(inside_prefix(value) for value in strings if value), 'preparation pathname mutation escapes declared output prefix')
+                require(bool(strings) or (first_owner is not None and first_owner['publication']),
+                        'preparation pathname mutation lacks owned output path/descriptor')
+            if name in descriptor_mutations and first_number is not None:
+                require(first_owner is not None and first_owner['publication'], 'preparation mutates an unowned descriptor')
+            if name in writes:
+                require(first_number is not None, 'write lacks explicit descriptor')
+                require((first_number in {1, 2} and first_number in stdio_live) or
+                        (first_owner is not None and first_owner['publication'] and first_owner['kind'] == 'file'),
+                        'preparation writes through unowned or reassigned descriptor')
             for value in paths:
                 basename = posixpath.basename(value).removeprefix('memfd:')
                 if library.fullmatch(basename):
                     require(value == output + '/lib/libpython3.13.so.1.0', 'preparation looked up foreign Python library')
-                    if name in {'open', 'openat', 'openat2'}:
-                        flags = set(re.findall(r'\bO_[A-Z0-9_]+\b', annotated.sub('', unquoted)))
-                        require(flags == {'O_WRONLY', 'O_CREAT', 'O_EXCL', 'O_CLOEXEC'}, 'library publication was not an exclusive write')
-                    else:
-                        require(name in publication_metadata, 'preparation acquired/read/mapped target Python library: ' + line.strip())
                 if interpreter.fullmatch(basename):
                     require(value in {output, output + '/lib/python3.13'}, 'preparation looked up target Python interpreter')
-                    if name in {'mkdir', 'mkdirat'}:
-                        require(re.search(r'=\s*0\s*$', body), 'preparation failed to create owned Python directory')
-                    elif name in {'open', 'openat', 'openat2'}:
-                        flags = set(re.findall(r'\bO_[A-Z0-9_]+\b', annotated.sub('', unquoted)))
-                        require(value in created_directories and flags == {'O_RDONLY', 'O_CLOEXEC'},
-                                'preparation read Python path without owned-directory evidence')
-                    else:
-                        require(value in created_directories and name in publication_metadata,
-                                'preparation acquired Python interpreter through an owned directory path')
+                if inside_prefix(value) and name not in opens | {'mkdir', 'mkdirat'}:
+                    permitted = name in publication_metadata or (name in writes and value in created_files)
+                    require(permitted, 'preparation acquired/read/mapped owned publication output: ' + line.strip())
             if name in {'mkdir', 'mkdirat'} and re.search(r'=\s*0\s*$', body) and strings:
                 created_directories.add(strings[0])
-            if name in {'open', 'openat', 'openat2'} and output + '/lib/libpython3.13.so.1.0' in paths:
+            if name in opens:
                 result_fd = re.search(r'=\s*(\d+)(?:<[^<>]*>)?\s*$', body)
                 if result_fd:
-                    library_descriptors[int(result_fd.group(1))] = output + '/lib/libpython3.13.so.1.0'
-            if name == 'close' and first_descriptor and re.search(r'=\s*0\s*$', body):
-                library_descriptors.pop(int(first_descriptor.group(1)), None)
+                    number = int(result_fd.group(1))
+                    require(number > 2 and number not in descriptors_by_number, 'successful open reassigns an existing or original standard descriptor')
+                    returned = [value for position, descriptor, value in descriptors if position > result_start and descriptor == str(number)]
+                    opened = returned[-1] if returned else strings[0]
+                    publication = inside_prefix(strings[0])
+                    require(publication == inside_prefix(opened), 'read-only open aliases a publication output')
+                    require(not publication or opened == strings[0], 'publication descriptor aliases its declared output path')
+                    kind = 'file' if write_open else 'directory' if publication else 'input'
+                    descriptors_by_number[number] = {'path': opened, 'publication': publication, 'kind': kind}
+                    if publication and kind == 'file':
+                        created_files.add(opened)
+            if name == 'close' and first_number is not None and re.search(r'=\s*0\s*$', body):
+                descriptors_by_number.pop(first_number, None)
+                stdio_live.discard(first_number)
             if name == 'chdir' and re.search(r'=\s*0\s*$', body) and strings:
                 cwd = strings[0]
-            if name == 'fchdir' and re.search(r'=\s*0\s*$', body) and descriptors:
-                cwd = descriptors[0][1]
+            if name == 'fchdir' and re.search(r'=\s*0\s*$', body) and argument_descriptors:
+                cwd = argument_descriptors[0][2]
         else:
             require(body == '+++ exited with 0 +++' or (body.startswith('--- ') and body.endswith(' ---')),
                     'unrecognized process trace record: ' + line.strip())
@@ -563,6 +621,8 @@ def audit_process_trace(path, program):
     return {'schema_version': 0, 'execve_count': execs, 'successful_exit_count': exits,
             'child_creation_count': 0, 'network_count': 0, 'runtime_acquisition_count': 0,
             'target_library_read_count': 0, 'target_library_mapping_count': 0,
+            'publication_output_read_mapping_count': 0, 'outside_prefix_mutation_count': 0,
+            'descriptor_reassignment_count': 0, 'unclassified_syscall_count': 0, 'executable_system_mapping_inventory': sorted(executable_system_files),
             'anonymous_executable_mapping_count': 0, 'executable_memory_protection_grant_count': 0,
             'trace_identity': file_identity(path), 'program': program, 'prefix': output}
 
