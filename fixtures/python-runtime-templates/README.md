@@ -89,11 +89,13 @@ python3 fixtures/python-runtime-templates/test_templates.py \
 python3 fixtures/python-runtime-templates/test_audit.py
 ```
 
-`test_audit.py` contains thirteen oracle and process-audit regression tests.
-The process audit requires one successful builder execution, rejects child
-creation and network attempts, and rejects any lookup of the declared target
-host prefix or target Python library. The Linux harness records these preparation
-traces separately from application execution.
+`test_audit.py` contains twenty-one oracle and process-audit regression tests.
+The process audit requires one PID and one complete builder execution, rejects
+child creation and network attempts, and checks absolute, working-directory and
+fd-relative paths for target host/runtime lookup. It permits exclusive creation
+of the declared bundled library output, while rejecting library/interpreter
+acquisition. The Linux harness records these preparation traces separately from
+application execution.
 
 ```sh
 sh fixtures/python-runtime-templates/run-linux.sh \

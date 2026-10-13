@@ -61,7 +61,7 @@ class IndependentOracleTests(unittest.TestCase):
 class ProcessTraceTests(unittest.TestCase):
     PROGRAM = '/build-target/glue'
     VALID = [
-        '1234 execve("/build-target/glue", ["/build-target/glue", "python-template", "--provider", "host-full"], 0xffff /* 5 vars */) = 0\n',
+        '1234 execve("/build-target/glue", ["/build-target/glue", "python-template", "--provider", "host-full", "--host-prefix", "/unavailable/Python", "--output", "/build-target/template"], 0xffff /* 5 vars */) = 0\n',
         '1234 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3\n',
         '1234 newfstatat(AT_FDCWD, "/evidence", {st_mode=S_IFDIR|0755}, 0) = 0\n',
         '1234 +++ exited with 0 +++\n',
@@ -84,7 +84,7 @@ class ProcessTraceTests(unittest.TestCase):
                 self.check(self.VALID[:1] + ['1234 ' + syscall + '() = -1 EPERM\n'] + self.VALID[1:])
 
     def test_network_attempts_reject_even_if_failed(self):
-        for syscall in ('socket', 'connect', 'sendto', 'recvmsg'):
+        for syscall in ('socket', 'connect', 'sendto', 'recvmsg', 'sendmmsg', 'recvmmsg', 'getsockopt'):
             with self.subTest(syscall=syscall), self.assertRaisesRegex(ValueError, 'child creation/network'):
                 self.check(self.VALID[:1] + ['1234 ' + syscall + '() = -1 EPERM\n'] + self.VALID[1:])
 
@@ -113,6 +113,92 @@ class ProcessTraceTests(unittest.TestCase):
         for lines in ([self.VALID[0].replace('= 0', '= -1 ENOENT')], self.VALID[:1] + ['1234 +++ killed by SIGSEGV +++\n']):
             with self.assertRaises(ValueError):
                 self.check(lines)
+
+    def test_cwd_and_relative_cwd_provider_lookups_reject(self):
+        for calls in (
+                ['chdir("/unavailable/Python") = 0'],
+                ['chdir("/unavailable") = 0', 'chdir("Python") = 0'],
+                ['fchdir(3</unavailable>) = 0', 'openat(AT_FDCWD, "Python/codecs.py", O_RDONLY) = 4'],
+                ['chdir("/unavailable") = 0', 'newfstatat(AT_FDCWD, "./Python/codecs.py", {}, 0) = -1 ENOENT']):
+            with self.subTest(calls=calls), self.assertRaisesRegex(ValueError, 'looked up target provider'):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n' for call in calls] + self.VALID[1:])
+
+    def test_descriptor_relative_and_descriptor_only_provider_lookups_reject(self):
+        for call in (
+                'openat(3</unavailable/Python>, "codecs.py", O_RDONLY) = 4',
+                'openat(3</unavailable>, "Python/codecs.py", O_RDONLY) = 4',
+                'newfstatat(3</unavailable/Python/codecs.py>, "", {}, AT_EMPTY_PATH) = 0',
+                'fstat(3</unavailable/Python/codecs.py>, {}) = 0',
+                'readlink("/alias", "/unavailable/Python/lib", 4096) = 23'):
+            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'looked up target provider'):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_mutating_calls_and_normalized_absolute_provider_paths_reject(self):
+        for call in (
+                'mkdir("/unavailable/Python", 0777) = -1 EEXIST',
+                'unlink("/unavailable/Python/codecs.py") = -1 EPERM',
+                'rename("/builder/input", "/unavailable/Python/output") = -1 EPERM',
+                'chmod("/unavailable/Python/codecs.py", 0444) = -1 EPERM',
+                'utimensat(AT_FDCWD, "/unavailable/Python/codecs.py", NULL, 0) = -1 EPERM',
+                'openat(AT_FDCWD, "/unavailable/./Python/codecs.py", O_RDONLY) = 3',
+                'openat(AT_FDCWD, "//unavailable/other/../Python/codecs.py", O_RDONLY) = 3'):
+            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'looked up target provider'):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:])
+
+    def test_target_library_and_interpreter_lookups_reject_without_host_prefix(self):
+        for call in (
+                'openat(AT_FDCWD, "/other/libpython3.13.so.1.0", O_RDONLY) = 3',
+                'newfstatat(AT_FDCWD, "/other/libpython3.13.so.1.0", {}, 0) = 0',
+                'openat(AT_FDCWD, "lib/libpython3.13.so.1.0", O_RDONLY) = 3',
+                'newfstatat(3</other/libpython3.13.so.1.0>, "", {}, AT_EMPTY_PATH) = 0',
+                'openat(AT_FDCWD, "/other/bin/python3.13", O_RDONLY) = 3',
+                'access("/other/bin/python", X_OK) = 0',
+                'fstat(3</other/bin/python3.13>, {}) = 0'):
+            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'looked up target Python'):
+                self.check(self.VALID[:1] + ['1234 ' + call + '\n'] + self.VALID[1:], None)
+
+    def test_only_exclusive_publication_library_write_is_allowed(self):
+        library = '/build-target/template/root/python/libpython3.13.so.1.0'
+        allowed = '1234 openat(AT_FDCWD</builder>, "' + library + '", O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0666) = 3<' + library + '>\n'
+        self.check(self.VALID[:1] + [allowed] + self.VALID[1:], None)
+        self.check(self.VALID[:1] + [
+            '1234 mkdirat(AT_FDCWD</builder>, "/build-target/template/root/python", 0777) = 0\n',
+            '1234 statx(AT_FDCWD</builder>, "/build-target/template/root/python", 0, 0, {}) = 0\n'] + self.VALID[1:], None)
+        for call in (
+                allowed.replace('O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC', 'O_RDONLY|O_CLOEXEC'),
+                allowed.replace('O_EXCL|', ''),
+                allowed.replace('O_WRONLY|', 'O_RDWR|O_WRONLY|'),
+                allowed.replace('/build-target/template/root/python/', '/other/output/'),
+                '1234 newfstatat(AT_FDCWD, "' + library + '", {}, 0) = 0\n'):
+            with self.subTest(call=call), self.assertRaisesRegex(ValueError, 'looked up target Python library'):
+                self.check(self.VALID[:1] + [call] + self.VALID[1:], None)
+        flags_in_path = '/O_WRONLY-O_CREAT-O_EXCL-O_CLOEXEC/template'
+        trace = [line.replace('/build-target/template', flags_in_path) for line in self.VALID]
+        with self.assertRaisesRegex(ValueError, 'looked up target Python library'):
+            self.check(trace[:1] + [
+                '1234 openat(AT_FDCWD, "' + flags_in_path + '/root/python/libpython3.13.so.1.0", O_RDONLY) = 3\n'] + trace[1:], None)
+
+    def test_c_escaped_provider_paths_cannot_bypass_lookup_policy(self):
+        for path in (r'/unavailable/\120ython/codecs.py', r'/unavailable/\x50ython/codecs.py'):
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, 'looked up target provider'):
+                self.check(self.VALID[:1] + ['1234 openat(AT_FDCWD, "' + path + '", O_RDONLY) = 3\n'] + self.VALID[1:])
+        with self.assertRaisesRegex(ValueError, 'unknown process trace string escape'):
+            self.check(self.VALID[:1] + [r'1234 openat(AT_FDCWD, "/unavailable/\qPython", O_RDONLY) = 3' + '\n'] + self.VALID[1:])
+
+    def test_foreign_pid_and_records_after_exit_reject(self):
+        with self.assertRaisesRegex(ValueError, 'another PID'):
+            self.check(self.VALID[:1] + ['98765 newfstatat(AT_FDCWD, "/builder", {}, 0) = 0\n'] + self.VALID[1:])
+        with self.assertRaisesRegex(ValueError, 'after builder exit'):
+            self.check(self.VALID + [self.VALID[1]])
+
+    def test_unfinished_resumed_and_truncated_exec_boundaries_reject(self):
+        for first in (
+                self.VALID[0].replace(' = 0', ' <unfinished ...>'),
+                '1234 <... execve resumed>) = 0\n',
+                self.VALID[0].replace('"--json"', '...').replace('"--output"', '...'),
+                self.VALID[0].replace('"python-template"', '"build-python", "--label", "python-template"')):
+            with self.subTest(first=first), self.assertRaises(ValueError):
+                self.check([first] + self.VALID[1:])
 
 
 if __name__ == '__main__':

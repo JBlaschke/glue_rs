@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import posixpath
 import re
 import shutil
 import stat
@@ -505,36 +506,133 @@ def audit(args):
     return summary
 
 
+def decode_trace_string(value):
+    """Decode strace's C string escapes, including octal and hexadecimal bytes."""
+    result, position = [], 0
+    escapes = {'a': '\a', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t',
+               'v': '\v', '\\': '\\', '"': '"', "'": "'"}
+    while position < len(value):
+        character = value[position]
+        position += 1
+        if character != '\\':
+            result.append(character)
+            continue
+        require(position < len(value), 'unterminated process trace string escape')
+        escaped = value[position]
+        position += 1
+        if escaped in escapes:
+            result.append(escapes[escaped])
+        elif escaped in '01234567':
+            digits = escaped
+            while position < len(value) and len(digits) < 3 and value[position] in '01234567':
+                digits += value[position]
+                position += 1
+            result.append(chr(int(digits, 8)))
+        elif escaped == 'x':
+            digits = value[position:position + 2]
+            require(len(digits) == 2 and re.fullmatch('[0-9a-fA-F]{2}', digits),
+                    'invalid process trace hexadecimal escape')
+            result.append(chr(int(digits, 16)))
+            position += 2
+        else:
+            raise ValueError('unknown process trace string escape: \\' + escaped)
+    return ''.join(result)
+
+
+def normalized_trace_path(value):
+    require('\0' not in value, 'process trace path contains NUL')
+    if value.startswith('/'):
+        # Linux treats repeated leading slashes as the same root.
+        return '/' + posixpath.normpath(value).lstrip('/')
+    return value
+
+
 def audit_process_trace(path, program, host_prefix=None):
     opener = gzip.open if str(path).endswith('.gz') else open
     with opener(path, 'rt', encoding='utf-8') as stream:
         lines = stream.readlines()
     require(lines, 'process trace is empty')
-    execs, exits = [], 0
-    forbidden = {'clone', 'clone3', 'fork', 'vfork', 'execveat', 'socket', 'socketpair', 'connect', 'accept', 'accept4', 'bind', 'listen', 'sendto', 'sendmsg', 'recvfrom', 'recvmsg'}
-    file_calls = {'open', 'openat', 'openat2', 'stat', 'lstat', 'newfstatat', 'statx', 'access', 'faccessat', 'faccessat2', 'readlink', 'readlinkat'}
+    execs, exits, pid, output, cwd = [], 0, None, None, None
+    forbidden = {'clone', 'clone3', 'fork', 'vfork', 'execveat', 'socket', 'socketpair', 'connect',
+                 'accept', 'accept4', 'bind', 'listen', 'sendto', 'sendmsg', 'sendmmsg',
+                 'recvfrom', 'recvmsg', 'recvmmsg', 'shutdown', 'getsockname', 'getpeername',
+                 'setsockopt', 'getsockopt'}
+    quoted = re.compile(r'"((?:[^"\\]|\\.)*)"')
+    annotated = re.compile(r'(?:AT_FDCWD|\d+)<([^<>]*)>')
+    library = re.compile(r'libpython(?:\d+(?:\.\d+)*)?d?(?:\.so(?:\.\d+)*|\.dylib|\.dll|\.a|\.lib)\Z')
+    interpreter = re.compile(r'python(?:\d+(?:\.\d+)*)?(?:\.exe)?\Z')
+    directory_calls = {'mkdir', 'mkdirat', 'stat', 'lstat', 'newfstatat', 'statx',
+                       'access', 'faccessat', 'faccessat2'}
     for line in lines:
-        match = re.search(r'(?<![A-Za-z_])([A-Za-z_][A-Za-z_0-9]*)\(', line)
+        record = re.fullmatch(r'(\d+)\s+(.+)\n?', line)
+        require(record is not None, 'process trace record lacks a numbered PID: ' + line.strip())
+        if pid is None:
+            pid = record.group(1)
+        require(record.group(1) == pid, 'process trace contains another PID: ' + line.strip())
+        require(exits == 0, 'process trace contains records after builder exit')
+        body = record.group(2)
+        require('<unfinished ...>' not in body and ' resumed>' not in body,
+                'process trace contains unfinished/resumed syscall boundaries: ' + line.strip())
+        match = re.match(r'([A-Za-z_][A-Za-z_0-9]*)\(', body)
         if match:
             name = match.group(1)
             require(name not in forbidden, 'build process attempted child creation/network: ' + line.strip())
             if name == 'execve':
-                match_exec = re.search(r'execve\(("(?:[^"\\]|\\.)*"), \[(.*)\], .*\)\s*=\s*0\s*$', line)
+                match_exec = re.fullmatch(r'execve\(("(?:[^"\\]|\\.)*"), \[(.*)\], .*\)\s*=\s*0\s*', body)
                 require(match_exec is not None, 'build process execve is malformed/failed: ' + line.strip())
-                executable = json.loads(match_exec.group(1))
-                arguments = match_exec.group(2)
-                require(executable == program and '"python-template"' in arguments,
+                executable = decode_trace_string(match_exec.group(1)[1:-1])
+                raw_arguments = match_exec.group(2)
+                arguments = [decode_trace_string(item.group(1)) for item in quoted.finditer(raw_arguments)]
+                require(re.fullmatch(r'\s*(?:,\s*)*', quoted.sub('', raw_arguments)) is not None,
+                        'build process execve arguments are truncated/malformed')
+                require(executable == program and len(arguments) >= 2 and
+                        arguments[:2] == [program, 'python-template'],
                         'build process executed an unexpected command: ' + line.strip())
+                require(arguments.count('--output') == 1 and arguments.index('--output') + 1 < len(arguments),
+                        'build process execve lacks one explicit output directory')
+                output = normalized_trace_path(arguments[arguments.index('--output') + 1])
+                require(output.startswith('/'), 'process audit requires an absolute output directory')
                 execs.append(executable)
-            if name in file_calls:
-                paths = re.findall(r'"((?:[^"\\]|\\.)*)"', line)
-                for value in paths:
-                    decoded = json.loads('"' + value + '"')
-                    require(not (host_prefix is not None and (decoded == host_prefix or decoded.startswith(host_prefix + '/'))),
-                            'template generation looked up target provider: ' + line.strip())
-        if '+++ exited with 0 +++' in line:
+                continue
+            require(len(execs) == 1, 'process trace syscall precedes builder execve')
+            descriptors = [(item.start(), normalized_trace_path(decode_trace_string(item.group(1)).removesuffix(' (deleted)')))
+                           for item in annotated.finditer(body)]
+            observed_cwd = re.search(r'AT_FDCWD<([^<>]*)>', body)
+            if observed_cwd is not None:
+                cwd = normalized_trace_path(decode_trace_string(observed_cwd.group(1)))
+            paths = [value for _, value in descriptors]
+            string_paths = []
+            for item in quoted.finditer(body):
+                value = normalized_trace_path(decode_trace_string(item.group(1)))
+                preceding = [value for position, value in descriptors if position < item.start() and value.startswith('/')]
+                base = preceding[-1] if preceding else cwd
+                resolved = normalized_trace_path(posixpath.join(base, value)) if base and value and not value.startswith('/') else value
+                paths.append(resolved)
+                string_paths.append(resolved)
+            for value in paths:
+                require(not (host_prefix is not None and (value == host_prefix or value.startswith(host_prefix + '/'))),
+                        'template generation looked up target provider: ' + line.strip())
+                basename = posixpath.basename(value).removeprefix('memfd:')
+                if library.fullmatch(basename):
+                    allowed_output = output + '/root/python/libpython3.13.so.1.0'
+                    flags = set(re.findall(r'\bO_[A-Z0-9_]+\b', quoted.sub('', annotated.sub('', body))))
+                    require(name in {'open', 'openat', 'openat2'} and value == allowed_output and
+                            flags == {'O_WRONLY', 'O_CREAT', 'O_EXCL', 'O_CLOEXEC'},
+                            'template generation looked up target Python library: ' + line.strip())
+                if interpreter.fullmatch(basename):
+                    require(value == output + '/root/python' and name in directory_calls,
+                            'template generation looked up target Python interpreter: ' + line.strip())
+            if name == 'chdir' and re.search(r'=\s*0\s*$', body) and string_paths:
+                cwd = string_paths[0]
+            if name == 'fchdir' and re.search(r'=\s*0\s*$', body) and descriptors:
+                cwd = descriptors[0][1]
+        else:
+            require(re.fullmatch(r'\+\+\+ exited with 0 \+\+\+', body) is not None or
+                    (body.startswith('--- ') and body.endswith(' ---')),
+                    'unrecognized process trace record: ' + line.strip())
+        if body == '+++ exited with 0 +++':
             exits += 1
-        require('+++ killed by ' not in line, 'build process was killed')
+        require('+++ killed by ' not in body, 'build process was killed')
     require(len(execs) == 1 and exits == 1, 'build process trace must contain exactly one successful execve and exit')
     return {'schema_version': 0, 'execve_count': len(execs), 'successful_exit_count': exits,
             'child_creation_count': 0, 'network_count': 0, 'target_provider_lookup_count': 0,
