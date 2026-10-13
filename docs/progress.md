@@ -1,6 +1,6 @@
 # Implementation progress
 
-The earlier feature work and evidence were merged into `main` at `6cd8f96`.
+The earlier feature work and evidence were merged into `main` at `6afed9a`.
 Further implementation continues on separate feature branches.
 
 | Step | Branch | State | Evidence |
@@ -27,6 +27,7 @@ Further implementation continues on separate feature branches.
 | A7 install-only host Python source applications | `codex/a7-install-only-host-source-apps` / `7a8e32c` (from merged `442d9eb`) | Experimental stock install-only host applications; controlled GNU Linux arm64 observation | Exact 1,037-source/three-cache prerequisites; complete provider audit; Mac/Linux 395/396 tests and Clippy; 116 GNU Python/probe and 14 runner tests; 288 policies; all 16 new/61 regression traces pass/replay; 60/51/34/30 product controls match; all 894 hostile edits reject |
 | A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
 | A7 Python distribution metadata | `codex/a7-python-distribution-metadata` / `80c4b33` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac/Linux 441/442 workspace tests and Clippy; 125 optimized GNU Python/probe and 14 runner tests; 32 adapter and 227 Python policy tests; all nine new/35 source-profile regression traces pass/replay; 42 new CLI controls agree; all 189 hostile edits reject |
+| A7/A10 Python installed-package ingestion | `codex/a7-python-venv-ingestion` / `35dae52` (from merged `6afed9a`) | Experimental source-only build adapter with explicit provider template | Mac/Linux source workspaces 452/453 tests and Clippy; Mac packaging workspace 465; 33 pack/129 GNU Python/16 runner tests; 235 Python policies; real offline pip installation; Mac/GNU both input modes and all 30 hostile build controls pass; all six new/nine metadata regression traces pass/replay; 27 product controls and 126 hostile trace mutations pass/reject |
 
 ## Gate status
 
@@ -386,6 +387,24 @@ The legacy importer, C boundary and selected GNU library mapping files remain
 unchanged. Generic wheel/venv ingestion and wider package/provider/platform
 compatibility remain open. See [decision 0021](decisions/0021-python-distribution-metadata.md).
 
+The [clean installed-package evidence](evidence/pbs-linux-arm64-python-venv-2026-10-13/README.md)
+retains six new and nine fresh metadata-profile regression traces from `35dae52`,
+all replayed. `glue build-python` normalizes a complete source-only package tree
+or conventional Python 3.13 venv against an explicit admitted provider template.
+It verifies original RECORD ownership/integrity, preserves retained bytes and
+reports omitted caches/generated wrappers and deterministic RECORD rewriting.
+A genuine offline pip installation exercises all three providers. Mac/GNU
+controls pass both input modes and all 30 hostile cases; the Mac venv interpreter
+target is absent, and three GNU build process traces show no child/interpreter
+execution. Independent checks verify 4,427 valid members, three CRC controls,
+27 product commands and all transformation reports; all 126 hostile trace
+mutations reject. Workspaces pass 452/453 tests and Clippy, the Mac packaging
+workspace passes 465, optimized GNU suites pass 129 Python/33 pack/16 runner,
+and Python policies pass 235 on both interpreters. Runtime/helper/loader bodies
+are unchanged. General runtime-template provisioning, package compatibility,
+dependency solving and native/platform support remain open. See
+[decision 0022](decisions/0022-python-installed-package-ingestion.md).
+
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
@@ -409,6 +428,7 @@ The synthetic fixture reserves its own stdin/stdout for protocol; it does not
 establish product worker execution or close G4.
 
 The user prefers completing Python work before starting Node. Continue A7/A10
-with package compatibility and build-time ingestion after metadata admission;
+with real-package compatibility and product runtime-template provisioning after
+the bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is
 still required; metadata support does not close those gates.

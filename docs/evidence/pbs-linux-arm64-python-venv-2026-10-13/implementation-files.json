@@ -1,0 +1,146 @@
+{
+  "Cargo.lock": {
+    "sha256": "71dc39f42d4590b25c40a325935b9aeee407aad558160655a80c12f8178ca5f4",
+    "size": 10413
+  },
+  "README.md": {
+    "sha256": "823d3cb56d302c24061d37316c52ca0d6ae201a5ba72d59f7769f3254f0fe386",
+    "size": 25214
+  },
+  "crates/glue-pack/Cargo.toml": {
+    "sha256": "d8b98e73fbdcbc1fc3eeffda729a60cd0c2dbc62899ee61ddc33ee463e28d748",
+    "size": 494
+  },
+  "crates/glue-pack/README.md": {
+    "sha256": "27d7e997bdaaf6e0a0b2b9eb932a552d583bb4d82359ff883d3e367d4498850e",
+    "size": 2049
+  },
+  "crates/glue-pack/src/lib.rs": {
+    "sha256": "9d68c5a4cc0d7a1588ca630313309d6c50adc3475b5c19f976c136dcdf0647f8",
+    "size": 24563
+  },
+  "crates/glue-pack/src/python.rs": {
+    "sha256": "7d6e1a9d6b45630dbc13d997d8f66b53d6403703ebba2278364832ef7c6ec1a9",
+    "size": 55708
+  },
+  "crates/glue-runner/Cargo.toml": {
+    "sha256": "2ad514cd107e49add0c5ca81c363c029af9aae437136483f351f6444126291f9",
+    "size": 711
+  },
+  "crates/glue-runner/src/main.rs": {
+    "sha256": "270a1ca783ad371eb417312e55be754937e075d6c391726c61dc1e37d86b47d1",
+    "size": 24103
+  },
+  "crates/glue-runner/tests/cli.rs": {
+    "sha256": "08faca9fa9711acb64714a10822a9fdf7ff40940a75243504c88e75b545b5008",
+    "size": 26996
+  },
+  "crates/glue-runtime-python/README.md": {
+    "sha256": "7a82dbf46c3ecc2167a46dbcf200acddb0735f419eb85be4878363a3443c6aa4",
+    "size": 8531
+  },
+  "crates/glue-runtime-python/src/lib.rs": {
+    "sha256": "418ecc82f259bf7b5961fb05f22dab839e5adf0cbf65b8f5f2cc50711508a9fe",
+    "size": 31603
+  },
+  "crates/glue-runtime-python/src/metadata_profile.rs": {
+    "sha256": "c0025b15ea5763113c670ec91d72543a06b5502af96366b9cf2e05822b222aa9",
+    "size": 39550
+  },
+  "crates/glue-runtime-python/src/packaging.rs": {
+    "sha256": "690f176684b603df4d73c478da25540212d8d41a6706b7cc18ac732183e6a907",
+    "size": 12648
+  },
+  "docs/decisions/0022-python-installed-package-ingestion.md": {
+    "sha256": "a05c91c099a1399d961e42dd8e597d68e8f348c005a4e5fbfa43ab844e50e0ad",
+    "size": 5576
+  },
+  "docs/progress.md": {
+    "sha256": "31ccdfa1dd5a772ff4fb2a83ea70528683f62cf0f53261f9fb38b35ac4d7deb1",
+    "size": 35822
+  },
+  "fixtures/python-venv-ingestion/README.md": {
+    "sha256": "5f189d97b49d68bb10dfbd7e7b6528f6a8eec3b058478890d371adefc18729a7",
+    "size": 3344
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/main.py": {
+    "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+    "size": 2191
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+    "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+    "size": 4
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+    "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+    "size": 242
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+    "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+    "size": 872
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+    "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+    "size": 95
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+    "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+    "size": 112
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+    "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+    "size": 35
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo/__init__.py": {
+    "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+    "size": 256
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo/data/message,one.txt": {
+    "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+    "size": 26
+  },
+  "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_namespace/part.py": {
+    "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+    "size": 12
+  },
+  "fixtures/python-venv-ingestion/expected-inventory.json": {
+    "sha256": "0e71cd8a0ce8db649334894032a03b3706b2faa9a421fad71ab44631e7be702f",
+    "size": 1837
+  },
+  "fixtures/python-venv-ingestion/glue_meta_demo-1.2.3-py3-none-any.whl": {
+    "sha256": "ac1701dbdecd3883432a32a1a79204a9c89186fc11554596b3d326010bd5be3a",
+    "size": 2674
+  },
+  "fixtures/python-venv-ingestion/prepare.py": {
+    "sha256": "8fc1bb038f26f683e2bf33988e59440b3e6993f987445aa39b04d1d3f6a8c647",
+    "size": 10202
+  },
+  "fixtures/python-venv-ingestion/run-linux.sh": {
+    "sha256": "239ce01c9ad574f1f28f64e9128adb50fb0d315dc75402b38b2fa5a43905d7f8",
+    "size": 14924
+  },
+  "fixtures/python-venv-ingestion/test_build.py": {
+    "sha256": "952eaf162ec273690f4dd9349b1ab686b5586533ec1df6a2e594117bdb265603",
+    "size": 12413
+  },
+  "fixtures/python-venv-ingestion/test_prepare.py": {
+    "sha256": "cc94aa7e631992b7d081b76cdfe3251b45bc538af25b430fe74870ce28965cc2",
+    "size": 3584
+  },
+  "fixtures/python-venv-ingestion/wheel-provenance.json": {
+    "sha256": "638427e18c208df7d386ea9c74ff1a713cae5b96bcb5a8b187319b94a56ee779",
+    "size": 2798
+  },
+  "scripts/check-linux-python-venv-trace.py": {
+    "sha256": "a9cd081fc383a260d2c286331c6eccc30ae34332b54f3b93124a46b9d78def3b",
+    "size": 10322
+  },
+  "scripts/test_linux_python_venv_trace.py": {
+    "sha256": "2b384335882a81dd53bd7ceb0eb3ac926f9246dda15d6d6b4cebe21ab75ba3c1",
+    "size": 14900
+  }
+}

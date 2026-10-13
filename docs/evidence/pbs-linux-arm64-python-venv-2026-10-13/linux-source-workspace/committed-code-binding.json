@@ -1,0 +1,6 @@
+{
+  "capture_kind": "pre-commit source workspace validation on identical code",
+  "differences": [],
+  "implementation": "35dae5247ab4ce964a72025ab68f6cea2af42b3a",
+  "verified_files": 70
+}

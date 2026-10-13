@@ -1,0 +1,15 @@
+ M Cargo.lock
+ M README.md
+ M crates/glue-pack/Cargo.toml
+ M crates/glue-pack/src/lib.rs
+ M crates/glue-runner/Cargo.toml
+ M crates/glue-runner/src/main.rs
+ M crates/glue-runner/tests/cli.rs
+ M crates/glue-runtime-python/src/lib.rs
+ M crates/glue-runtime-python/src/metadata_profile.rs
+?? crates/glue-pack/src/python.rs
+?? crates/glue-runtime-python/src/packaging.rs
+?? docs/decisions/0022-python-installed-package-ingestion.md
+?? fixtures/python-venv-ingestion/
+?? scripts/check-linux-python-venv-trace.py
+?? scripts/test_linux_python_venv_trace.py

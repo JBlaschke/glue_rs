@@ -4,6 +4,9 @@
 //! discovers, installs, downloads or executes missing dependencies, and it is
 //! separate from the runtime's read-only archive reader.
 
+#[cfg(feature = "python")]
+pub mod python;
+
 use glue_format::{
     Archive, ArchiveError, ArchiveLimits, FormatError, MAX_MANIFEST_BYTES, Manifest, ResourcePath,
     digest, write_archive,
@@ -31,7 +34,7 @@ impl Default for PackLimits {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct BuildReport {
     pub archive_bytes: u64,
     pub resource_count: usize,
@@ -115,6 +118,35 @@ pub fn build_with_policy(
     build_admitted(manifest_path, root, output, manifest_bytes, policy)
 }
 
+/// Build an already-owned, complete input inventory.
+///
+/// The caller admits its language/provider policy separately. This function
+/// validates the manifest, all input budgets and identities, and the generated
+/// archive before opening `output` with `create_new`. It reads no input files.
+/// An output write failure can leave a partial file, as for [`build`].
+pub fn build_owned(
+    manifest: &Manifest,
+    resources: BTreeMap<String, Vec<u8>>,
+    output: &Path,
+    limits: PackLimits,
+) -> Result<BuildReport, PackError> {
+    let source = Path::new("<owned manifest>");
+    let manifest_bytes = manifest
+        .to_json()
+        .map_err(|source_error| PackError::Manifest {
+            path: source.to_owned(),
+            source: source_error,
+        })?;
+    check_limit(
+        "manifest bytes",
+        manifest_bytes.len() as u64,
+        limits.archive_limits.max_manifest_bytes,
+    )?;
+    let total = resource_budget(manifest, Path::new("<owned inputs>"), limits)?;
+    // write_archive verifies the exact map, lengths and hashes before encoding.
+    publish(manifest, &resources, source, output, limits, total)
+}
+
 fn build_admitted(
     manifest_path: &Path,
     root: &Path,
@@ -134,32 +166,7 @@ fn build_admitted(
     )?;
     let root = canonical_root(root)?;
     // Check the entire input budget before allocating any resource payload.
-    check_limit(
-        "resource count",
-        manifest.resources.len() as u64,
-        limits.archive_limits.max_entries,
-    )?;
-    let mut total = 0_u64;
-    for (path, spec) in &manifest.resources {
-        check_limit(
-            "resource bytes",
-            spec.size,
-            limits.archive_limits.max_entry_bytes,
-        )?;
-        total = total
-            .checked_add(spec.size)
-            .ok_or_else(|| PackError::Resource {
-                resource: path.clone(),
-                path: root.join(path),
-                reason: "declared input size overflows u64".to_owned(),
-            })?;
-        check_limit("input bytes", total, limits.max_input_bytes)?;
-        check_limit(
-            "total resource bytes",
-            total,
-            limits.archive_limits.max_total_uncompressed_bytes,
-        )?;
-    }
+    let total = resource_budget(&manifest, &root, limits)?;
     let mut resources = BTreeMap::new();
     for (path, spec) in &manifest.resources {
         let input = resource_file(&root, path)?;
@@ -217,7 +224,48 @@ fn build_admitted(
         }
         resources.insert(path.clone(), bytes);
     }
-    let archive_bytes = write_archive(Cursor::new(Vec::new()), &manifest, &resources)?.into_inner();
+    publish(&manifest, &resources, manifest_path, output, limits, total)
+}
+
+fn resource_budget(manifest: &Manifest, root: &Path, limits: PackLimits) -> Result<u64, PackError> {
+    check_limit(
+        "resource count",
+        manifest.resources.len() as u64,
+        limits.archive_limits.max_entries,
+    )?;
+    let mut total = 0_u64;
+    for (path, spec) in &manifest.resources {
+        check_limit(
+            "resource bytes",
+            spec.size,
+            limits.archive_limits.max_entry_bytes,
+        )?;
+        total = total
+            .checked_add(spec.size)
+            .ok_or_else(|| PackError::Resource {
+                resource: path.clone(),
+                path: root.join(path),
+                reason: "declared input size overflows u64".to_owned(),
+            })?;
+        check_limit("input bytes", total, limits.max_input_bytes)?;
+        check_limit(
+            "total resource bytes",
+            total,
+            limits.archive_limits.max_total_uncompressed_bytes,
+        )?;
+    }
+    Ok(total)
+}
+
+fn publish(
+    manifest: &Manifest,
+    resources: &BTreeMap<String, Vec<u8>>,
+    manifest_path: &Path,
+    output: &Path,
+    limits: PackLimits,
+    total: u64,
+) -> Result<BuildReport, PackError> {
+    let archive_bytes = write_archive(Cursor::new(Vec::new()), manifest, resources)?.into_inner();
     let mut generated =
         Archive::open_with_limits(Cursor::new(&archive_bytes), limits.archive_limits)?;
     generated.verify_all()?;
@@ -368,4 +416,281 @@ fn resource_error(resource: &str, path: &Path, reason: impl Into<String>) -> Pac
 }
 fn input_io(resource: &str, path: &Path, action: &str, source: io::Error) -> PackError {
     resource_error(resource, path, format!("{action}: {source}"))
+}
+
+#[cfg(test)]
+mod owned_tests {
+    use super::*;
+    use serde_json::json;
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    struct Fixture {
+        directory: PathBuf,
+        manifest: Manifest,
+        resources: BTreeMap<String, Vec<u8>>,
+    }
+
+    impl Fixture {
+        fn new() -> Self {
+            static NEXT: AtomicU64 = AtomicU64::new(0);
+            let directory = std::env::temp_dir().join(format!(
+                "glue-owned-inputs-{}-{}",
+                std::process::id(),
+                NEXT.fetch_add(1, Ordering::Relaxed)
+            ));
+            fs::create_dir(&directory).unwrap();
+            let resources = BTreeMap::from([
+                ("app/main.lua".into(), b"return 42\n".to_vec()),
+                ("app/data,one.txt".into(), b"archive data\n".to_vec()),
+            ]);
+            let specifications: BTreeMap<_, _> = resources
+                .iter()
+                .map(|(key, bytes)| {
+                    (
+                        key,
+                        json!({"size": bytes.len(), "sha256": digest(bytes), "compression": "deflate"}),
+                    )
+                })
+                .collect();
+            let manifest = Manifest::from_json(
+                &serde_json::to_vec(&json!({
+                    "schema_version": 0, "app_id": "owned.inputs", "entrypoint": "main",
+                    "targets": {"mac": {"os": "macos", "arch": "aarch64", "minimum_os_version": "14.0",
+                        "abi": {"family": "darwin"}, "page_sizes": [4096], "cpu_features": []}},
+                    "resources": specifications,
+                    "runtimes": {"lua": {"target": "mac", "build_id": "test-lua",
+                        "abi": {"language": "lua", "version": {"major": 5, "minor": 4, "patch": 8},
+                            "integer_bits": 64, "number": "float64"},
+                        "provisioning": {"mode": "host", "runtime_library": "/test/liblua.dylib",
+                            "stdlib": "/test/lua", "discovery": "explicit_paths"}, "required_features": []}},
+                    "components": {"main": {"runtime": "lua", "entry_point": "app/main.lua", "native_modules": []}},
+                    "native_modules": {}, "host_imports": {},
+                }))
+                .unwrap(),
+            )
+            .unwrap();
+            Self {
+                directory,
+                manifest,
+                resources,
+            }
+        }
+
+        fn output(&self, name: &str) -> PathBuf {
+            self.directory.join(name)
+        }
+    }
+
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            fs::remove_dir_all(&self.directory).unwrap();
+        }
+    }
+
+    #[test]
+    fn owned_and_filesystem_inputs_produce_identical_archives_and_reports() {
+        let fixture = Fixture::new();
+        let root = fixture.output("source");
+        fs::create_dir_all(root.join("app")).unwrap();
+        for (key, bytes) in &fixture.resources {
+            fs::write(root.join(key), bytes).unwrap();
+        }
+        let manifest_path = fixture.output("manifest.json");
+        fs::write(&manifest_path, fixture.manifest.to_json().unwrap()).unwrap();
+        let file_output = fixture.output("files.glue");
+        let owned_output = fixture.output("owned.glue");
+        let file_report = build(&manifest_path, &root, &file_output).unwrap();
+        let owned_report = build_owned(
+            &fixture.manifest,
+            fixture.resources.clone(),
+            &owned_output,
+            PackLimits::default(),
+        )
+        .unwrap();
+        assert_eq!(owned_report, file_report);
+        assert_eq!(
+            fs::read(file_output).unwrap(),
+            fs::read(&owned_output).unwrap()
+        );
+        let bytes = fs::read(owned_output).unwrap();
+        assert_eq!(owned_report.archive_sha256, digest(&bytes));
+        let serialized = serde_json::to_value(&owned_report).unwrap();
+        assert_eq!(serialized["archive_sha256"], owned_report.archive_sha256);
+        assert_eq!(serialized["resource_count"], 2);
+        let mut archive = Archive::open(Cursor::new(bytes)).unwrap();
+        for (key, expected) in &fixture.resources {
+            assert_eq!(archive.read_resource(key).unwrap(), *expected);
+        }
+    }
+
+    #[test]
+    fn owned_input_identity_and_inventory_failures_finish_before_publication() {
+        let fixture = Fixture::new();
+        for mode in 0..5 {
+            let mut resources = fixture.resources.clone();
+            match mode {
+                0 => {
+                    resources.remove("app/data,one.txt");
+                }
+                1 => {
+                    resources.insert("app/undeclared.txt".into(), Vec::new());
+                }
+                2 => {
+                    resources.get_mut("app/main.lua").unwrap()[0] ^= 1;
+                }
+                3 => {
+                    resources.get_mut("app/main.lua").unwrap().push(0);
+                }
+                _ => {
+                    let bytes = resources.remove("app/data,one.txt").unwrap();
+                    resources.insert("app/substituted.txt".into(), bytes);
+                }
+            }
+            let absent = fixture.output(&format!("absent-{mode}.glue"));
+            assert!(
+                build_owned(
+                    &fixture.manifest,
+                    resources.clone(),
+                    &absent,
+                    PackLimits::default()
+                )
+                .is_err()
+            );
+            assert!(!absent.exists());
+            let existing = fixture.output(&format!("existing-{mode}.glue"));
+            fs::write(&existing, b"preserve user content").unwrap();
+            assert!(
+                build_owned(
+                    &fixture.manifest,
+                    resources,
+                    &existing,
+                    PackLimits::default()
+                )
+                .is_err()
+            );
+            assert_eq!(fs::read(existing).unwrap(), b"preserve user content");
+        }
+    }
+
+    #[test]
+    fn owned_declaration_and_generated_archive_limits_finish_before_publication() {
+        let fixture = Fixture::new();
+        let limits = [
+            PackLimits {
+                max_input_bytes: 1,
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_manifest_bytes: 1,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_entry_bytes: 1,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_total_uncompressed_bytes: 1,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_entries: 1,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_archive_bytes: 1,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+            PackLimits {
+                archive_limits: ArchiveLimits {
+                    max_compressed_entry_bytes: 0,
+                    ..ArchiveLimits::default()
+                },
+                ..PackLimits::default()
+            },
+        ];
+        for (number, limits) in limits.into_iter().enumerate() {
+            let output = fixture.output(&format!("bounded-{number}.glue"));
+            assert!(
+                build_owned(
+                    &fixture.manifest,
+                    fixture.resources.clone(),
+                    &output,
+                    limits
+                )
+                .is_err()
+            );
+            assert!(!output.exists());
+        }
+        let mut invalid = fixture.manifest.clone();
+        invalid.schema_version = 99;
+        let output = fixture.output("invalid.glue");
+        assert!(matches!(
+            build_owned(
+                &invalid,
+                fixture.resources.clone(),
+                &output,
+                PackLimits::default()
+            ),
+            Err(PackError::Manifest { .. })
+        ));
+        assert!(!output.exists());
+    }
+
+    #[test]
+    fn owned_valid_input_preserves_existing_outputs() {
+        let fixture = Fixture::new();
+        let output = fixture.output("existing.glue");
+        fs::write(&output, b"existing output").unwrap();
+        assert!(
+            build_owned(
+                &fixture.manifest,
+                fixture.resources.clone(),
+                &output,
+                PackLimits::default()
+            )
+            .is_err()
+        );
+        assert_eq!(fs::read(output).unwrap(), b"existing output");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn owned_valid_input_does_not_follow_output_symlinks() {
+        let fixture = Fixture::new();
+        let original = fixture.output("original");
+        fs::write(&original, b"preserve original").unwrap();
+        let output = fixture.output("output-link.glue");
+        std::os::unix::fs::symlink(&original, &output).unwrap();
+        assert!(
+            build_owned(
+                &fixture.manifest,
+                fixture.resources.clone(),
+                &output,
+                PackLimits::default()
+            )
+            .is_err()
+        );
+        assert_eq!(fs::read(original).unwrap(), b"preserve original");
+        assert!(
+            fs::symlink_metadata(output)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+    }
 }

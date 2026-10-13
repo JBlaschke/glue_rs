@@ -17,6 +17,9 @@ const HELP: &str = "glue — experimental archive packager
 
 Usage:
   glue build --manifest MANIFEST --root INPUT_DIR --output APP.glue
+  glue build-python --provider-template MANIFEST --provider-root DIR --app DIR
+    (--venv VENV | --site-packages DIR) --output APP.glue
+    [--app-id ID] [--entry app/main.py] [--json]
   glue inspect APP.glue [--json]
   glue verify APP.glue
   glue cat APP.glue RESOURCE
@@ -29,6 +32,7 @@ Optional builds also support controlled Linux native Lua and exact PBS Python
 profiles. General Python/Node applications and standalone executables remain
 pending. See fixtures/lua-linked and fixtures/python-runner for admitted profiles.
 Existing build outputs are never overwritten.
+Source-only installed Python package builds require --features python-pack.
 ";
 
 enum Command {
@@ -38,6 +42,17 @@ enum Command {
         manifest: PathBuf,
         root: PathBuf,
         output: PathBuf,
+    },
+    BuildPython {
+        provider_template: PathBuf,
+        provider_root: PathBuf,
+        application: PathBuf,
+        packages: PathBuf,
+        venv: bool,
+        app_id: String,
+        entry: String,
+        output: PathBuf,
+        json: bool,
     },
     Standalone,
     Inspect {
@@ -143,6 +158,7 @@ fn parse(args: Vec<OsString>) -> Result<Command> {
     }
     match name {
         "build" => parse_build(args),
+        "build-python" => parse_build_python(args),
         "inspect" => {
             let mut path = None;
             let mut json = false;
@@ -219,6 +235,70 @@ fn is_option(value: &OsStr) -> bool {
     value.to_str().is_some_and(|value| value.starts_with('-'))
 }
 
+fn parse_build_python(args: &[OsString]) -> Result<Command> {
+    let mut provider_template = None;
+    let mut provider_root = None;
+    let mut application = None;
+    let mut packages = None;
+    let mut venv = false;
+    let mut app_id = None;
+    let mut entry = None;
+    let mut output = None;
+    let mut json = false;
+    let mut args = args.iter();
+    while let Some(arg) = args.next() {
+        if arg == "--json" {
+            if json {
+                return Err("duplicate build-python option --json".into());
+            }
+            json = true;
+            continue;
+        }
+        let slot = match arg.to_str() {
+            Some("--provider-template") => &mut provider_template,
+            Some("--provider-root") => &mut provider_root,
+            Some("--app") => &mut application,
+            Some("--venv") => {
+                venv = true;
+                &mut packages
+            }
+            Some("--site-packages") => &mut packages,
+            Some("--app-id") => &mut app_id,
+            Some("--entry") => &mut entry,
+            Some("--output") => &mut output,
+            _ => return Err(format!("unexpected build-python argument {arg:?}").into()),
+        };
+        if slot.is_some() {
+            return Err(format!("duplicate or conflicting build-python option {arg:?}").into());
+        }
+        *slot = Some(
+            args.next()
+                .filter(|value| !is_option(value))
+                .ok_or_else(|| format!("{arg:?} requires a value"))?
+                .clone(),
+        );
+    }
+    Ok(Command::BuildPython {
+        provider_template: PathBuf::from(
+            provider_template.ok_or("build-python requires --provider-template")?,
+        ),
+        provider_root: PathBuf::from(provider_root.ok_or("build-python requires --provider-root")?),
+        application: PathBuf::from(application.ok_or("build-python requires --app")?),
+        packages: PathBuf::from(packages.ok_or("build-python requires --venv or --site-packages")?),
+        venv,
+        app_id: app_id
+            .unwrap_or_else(|| OsString::from("python.application"))
+            .into_string()
+            .map_err(|_| "application identity must be UTF-8")?,
+        entry: entry
+            .unwrap_or_else(|| OsString::from("app/main.py"))
+            .into_string()
+            .map_err(|_| "entry identity must be UTF-8")?,
+        output: PathBuf::from(output.ok_or("build-python requires --output")?),
+        json,
+    })
+}
+
 fn one_path(args: &[OsString], command: &str) -> Result<PathBuf> {
     if args.len() != 1 || is_option(&args[0]) {
         return Err(format!("{command} requires exactly one archive path").into());
@@ -257,6 +337,70 @@ fn execute(command: Command) -> Result<ExitCode> {
                 report.uncompressed_bytes,
             );
             println!("Archive SHA-256: {}", report.archive_sha256);
+        }
+        Command::BuildPython {
+            provider_template,
+            provider_root,
+            application,
+            packages,
+            venv,
+            app_id,
+            entry,
+            output,
+            json,
+        } => {
+            #[cfg(feature = "python-pack")]
+            {
+                use glue_pack::python::{PackageInput, PythonBuildOptions};
+                let report = glue_pack::python::build(
+                    PythonBuildOptions {
+                        provider_template: &provider_template,
+                        provider_root: &provider_root,
+                        application: &application,
+                        packages: if venv {
+                            PackageInput::Venv(&packages)
+                        } else {
+                            PackageInput::SitePackages(&packages)
+                        },
+                        app_id: &app_id,
+                        entry: &entry,
+                    },
+                    &output,
+                )?;
+                if json {
+                    let mut stdout = io::stdout().lock();
+                    serde_json::to_writer(&mut stdout, &report)?;
+                    stdout.write_all(b"\n")?;
+                } else {
+                    println!(
+                        "Built {}: {} resources, {} archive bytes, {} uncompressed bytes",
+                        output.display(),
+                        report.build.resource_count,
+                        report.build.archive_bytes,
+                        report.build.uncompressed_bytes,
+                    );
+                    println!("Archive SHA-256: {}", report.build.archive_sha256);
+                    println!(
+                        "Normalized installed Python packages; use --json for the transformation report"
+                    );
+                }
+            }
+            #[cfg(not(feature = "python-pack"))]
+            {
+                let _ = (
+                    provider_template,
+                    provider_root,
+                    application,
+                    packages,
+                    venv,
+                    app_id,
+                    entry,
+                    output,
+                    json,
+                );
+                eprintln!("glue: installed Python package builds require --features python-pack");
+                return Ok(ExitCode::from(2));
+            }
         }
         Command::Standalone => {
             eprintln!(

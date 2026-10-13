@@ -1,0 +1,8 @@
+Metadata-Version: 2.3
+Name: Glue.Meta-Demo
+Version: 1.2.3
+Summary: Archive distribution metadata fixture
+Requires-Dist: Glue-Optional>=1; extra == "test"
+Provides-Extra: test
+
+Distribution metadata and resources stay in the verified archive.

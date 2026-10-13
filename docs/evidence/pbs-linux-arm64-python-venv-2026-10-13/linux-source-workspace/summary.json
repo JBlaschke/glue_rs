@@ -1,0 +1,32 @@
+{
+  "capture": "dirty development source workspace",
+  "checks": {
+    "linux-lua55-clippy": {
+      "exit_status": "0",
+      "failed": 0,
+      "passed": 0,
+      "test_suites": 0
+    },
+    "linux-lua55-tests": {
+      "exit_status": "0",
+      "failed": 0,
+      "passed": 453,
+      "test_suites": 31
+    },
+    "linux-workspace-clippy": {
+      "exit_status": "0",
+      "failed": 0,
+      "passed": 0,
+      "test_suites": 0
+    },
+    "linux-workspace-tests": {
+      "exit_status": "0",
+      "failed": 0,
+      "passed": 452,
+      "test_suites": 31
+    }
+  },
+  "functional_code_changed_during_check": [],
+  "image": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "source_revision": "6afed9a3efb8803ec964b8178c26f6d46cd257d7"
+}

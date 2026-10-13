@@ -1,0 +1,19 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-venv-mac-build/debug/glue",
+  "build-python",
+  "--provider-template",
+  "target/python-venv-mac-controls/manifest.json",
+  "--provider-root",
+  "target/python-venv-mac-controls/provider-root",
+  "--app",
+  "target/python-venv-mac-controls/audit-clean/metadata-bound/application",
+  "--venv",
+  "target/python-venv-mac-controls/audit-clean/metadata-bound/venv",
+  "--app-id",
+  "distribution.metadata",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "target/python-venv-mac-controls/audit-clean/metadata-bound/application.glue",
+  "--json"
+]

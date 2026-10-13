@@ -12,6 +12,10 @@ identities, canonical RECORD paths, ownership, hashes and sizes before provider
 acquisition, then expose metadata and files through the immutable resource
 callbacks. The legacy importer and source profiles retain their existing pins.
 See [the metadata fixture](../../fixtures/python-metadata/README.md).
+The portable `packaging` facade admits metadata provider templates and checks
+owned application contents for the build-time installed-package adapter. It
+shares the runtime's identity/RECORD policy without acquiring a provider or
+initializing Python; see [decision 0022](../../docs/decisions/0022-python-installed-package-ingestion.md).
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact

@@ -27,8 +27,8 @@ pub(super) const INSTALL_BUILD_ID: &str =
 const VARIANT: &str = "pgo+lto-full/bundled-metadata-apps-v1";
 const ROOT: &str = "app/python/";
 const MAX_DISTRIBUTIONS: usize = 64;
-const MAX_METADATA: u64 = 64 * 1024;
-const MAX_RECORD: u64 = 256 * 1024;
+pub(super) const MAX_METADATA: u64 = 64 * 1024;
+pub(super) const MAX_RECORD: u64 = 256 * 1024;
 const MAX_ROWS: usize = 1024;
 
 pub(super) fn limits_bundled() -> ArchiveLimits {
@@ -132,7 +132,7 @@ fn version(version: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn folder_identity(directory: &str) -> Result<(String, &str), String> {
+pub(super) fn folder_identity(directory: &str) -> Result<(String, &str), String> {
     let stem = directory
         .strip_suffix(".dist-info")
         .ok_or("distribution directory is missing .dist-info suffix")?;
@@ -245,7 +245,7 @@ fn text<'a>(files: &'a BTreeMap<String, Vec<u8>>, key: &str) -> Result<&'a str, 
     .map_err(|_| format!("distribution metadata is not UTF-8: {key}"))
 }
 
-fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
+pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
     let mut name = None;
     let mut release = None;
     let mut previous_identity = false;
@@ -299,7 +299,7 @@ fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
 
 /// Strict CSV keeps quoted commas and doubled quotes without treating malformed
 /// quoting, blank rows or extra columns as a different record interpretation.
-fn record_rows(record: &str) -> Result<Vec<[String; 3]>, String> {
+pub(super) fn record_rows(record: &str) -> Result<Vec<[String; 3]>, String> {
     #[derive(Clone, Copy, PartialEq)]
     enum State {
         Start,
@@ -369,7 +369,7 @@ fn finish_row(rows: &mut Vec<[String; 3]>, row: Vec<String>) -> Result<(), Strin
     Ok(())
 }
 
-fn record_hash(bytes: &[u8]) -> String {
+pub(super) fn record_hash(bytes: &[u8]) -> String {
     const ALPHABET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
     let digest = Sha256::digest(bytes);
     let mut encoded = String::with_capacity(43);
@@ -391,7 +391,7 @@ fn record_hash(bytes: &[u8]) -> String {
     format!("sha256={encoded}")
 }
 
-fn verify_contents(files: &BTreeMap<String, Vec<u8>>) -> Result<(), String> {
+pub(super) fn verify_contents(files: &BTreeMap<String, Vec<u8>>) -> Result<(), String> {
     let directories = directories(files.iter().map(|(key, bytes)| (key, bytes.len() as u64)))?;
     let mut names = BTreeSet::new();
     let mut owned = BTreeSet::new();

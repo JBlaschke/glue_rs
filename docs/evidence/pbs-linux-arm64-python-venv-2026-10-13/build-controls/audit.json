@@ -1,0 +1,419 @@
+{
+  "hostile_controls": 30,
+  "results": {
+    "absolute": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: invalid installed RECORD path: invalid resource path \"/unavailable/absolute.py\": empty, absolute or traversal components are forbidden\n"
+    },
+    "ambiguous-layout": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: ambiguous or free-threaded venv Python layout\n"
+    },
+    "application-collision": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed package collides with an explicit application file: app/python/glue_meta_demo/__init__.py\n"
+    },
+    "bad-sha256": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD SHA-256 differs for glue_meta_demo/__init__.py\n"
+    },
+    "bad-size": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD size differs for glue_meta_demo/__init__.py\n"
+    },
+    "byte-budget": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: build exceeds application bytes: 8392880 > 8388608\n"
+    },
+    "cache-native": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: native installed inputs are unsupported: glue_meta_demo/__pycache__/native.so\n"
+    },
+    "duplicate-cache": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD contains duplicate paths\n"
+    },
+    "duplicate-row": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD contains duplicate paths\n"
+    },
+    "duplicate-wrapper": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD contains duplicate paths\n"
+    },
+    "editable": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: editable installed distributions are unsupported\n"
+    },
+    "egg-info": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed path hooks and legacy editable/egg layouts are unsupported: legacy.egg-info\n"
+    },
+    "entry-bound": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: source app entry exceeds 64 KiB\n"
+    },
+    "existing-output": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: create archive \"/evidence/build-controls/existing-output/application.glue\": File exists (os error 17)\n"
+    },
+    "explicit-site-packages": {
+      "exit_status": 0,
+      "output": {
+        "application_files": 11,
+        "archive_bytes": 15068,
+        "archive_sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92"
+      },
+      "report": {
+        "build": {
+          "archive_bytes": 15068,
+          "archive_sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92",
+          "manifest_sha256": "f85255f2d89cf2755d08c86fabe5a0fc7d934ece4ac9ae0ea9f928de0c0dfdbe",
+          "resource_count": 13,
+          "uncompressed_bytes": 22207
+        },
+        "distributions": [
+          {
+            "directory": "glue_meta_demo-1.2.3.dist-info",
+            "name": "glue-meta-demo",
+            "original_record_bytes": 1077,
+            "original_record_sha256": "b8ca0173113021c9d84653a3b1b9095315220b442a1f31c30653bb1d203c3296",
+            "retained_files": 10,
+            "version": "1.2.3"
+          }
+        ],
+        "inputs": [
+          {
+            "path": "app/main.py",
+            "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+            "size": 2191,
+            "source": "application"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/INSTALLER",
+            "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+            "size": 4,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/METADATA",
+            "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+            "size": 242,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/RECORD",
+            "sha256": "b8ca0173113021c9d84653a3b1b9095315220b442a1f31c30653bb1d203c3296",
+            "size": 1077,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/REQUESTED",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/WHEEL",
+            "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+            "size": 95,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/entry_points.txt",
+            "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+            "size": 112,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/top_level.txt",
+            "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+            "size": 35,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo/__init__.py",
+            "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+            "size": 256,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo/data/message,one.txt",
+            "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+            "size": 26,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_namespace/part.py",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12,
+            "source": "packages"
+          },
+          {
+            "path": "python/archive-importer.py",
+            "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+            "size": 13510,
+            "source": "provider"
+          },
+          {
+            "path": "python/archive-metadata.py",
+            "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+            "size": 4852,
+            "source": "provider"
+          },
+          {
+            "path": "manifest.json",
+            "sha256": "21048f37acde82e226d46473dded94b1677d8722a995c926d05eb9ad59f028a4",
+            "size": 2407,
+            "source": "template"
+          }
+        ],
+        "omissions": [
+          {
+            "path": "../../../bin/glue-meta-demo",
+            "reason": "generated_entry_point_wrapper"
+          },
+          {
+            "path": "glue_meta_demo/__pycache__/__init__.cpython-313.pyc",
+            "reason": "bytecode_or_cache"
+          },
+          {
+            "path": "glue_meta_namespace/__pycache__/part.cpython-313.pyc",
+            "reason": "bytecode_or_cache"
+          }
+        ],
+        "package_input": "site_packages"
+      }
+    },
+    "malformed-csv": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: distribution RECORD contains an unterminated CSV quote\n"
+    },
+    "metadata-bound": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: build exceeds installed metadata bytes: 65778 > 65536\n"
+    },
+    "missing": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed RECORD references a missing file: glue_meta_demo/__init__.py\n"
+    },
+    "missing-metadata-row": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed file has no RECORD owner: glue_meta_demo-1.2.3.dist-info/WHEEL\n"
+    },
+    "native": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: native installed inputs are unsupported: glue_meta_demo/native.so\n"
+    },
+    "pth": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed path hooks and legacy editable/egg layouts are unsupported: path-hook.pth\n"
+    },
+    "shared-ownership": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed distributions share RECORD ownership\n"
+    },
+    "symlink-directory": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: resource \"glue_meta_demo/data\" at \"/evidence/build-controls/symlink-directory/venv/lib/python3.13/site-packages/glue_meta_demo/data\": symlink input components are forbidden\n"
+    },
+    "symlink-file": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: resource \"glue_meta_demo/data/message,one.txt\" at \"/evidence/build-controls/symlink-file/venv/lib/python3.13/site-packages/glue_meta_demo/data/message,one.txt\": symlink input components are forbidden\n"
+    },
+    "system-site-packages": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: venv requires include-system-site-packages = false\n"
+    },
+    "traversal": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: invalid installed RECORD path: invalid resource path \"../escape.py\": empty, absolute or traversal components are forbidden\n"
+    },
+    "unknown-wrapper": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: invalid installed RECORD path: invalid resource path \"../../../bin/not-declared\": empty, absolute or traversal components are forbidden\n"
+    },
+    "unrecorded": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed file has no RECORD owner: glue_meta_demo/unrecorded.txt\n"
+    },
+    "venv": {
+      "exit_status": 0,
+      "output": {
+        "application_files": 11,
+        "archive_bytes": 15068,
+        "archive_sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92"
+      },
+      "report": {
+        "build": {
+          "archive_bytes": 15068,
+          "archive_sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92",
+          "manifest_sha256": "f85255f2d89cf2755d08c86fabe5a0fc7d934ece4ac9ae0ea9f928de0c0dfdbe",
+          "resource_count": 13,
+          "uncompressed_bytes": 22207
+        },
+        "distributions": [
+          {
+            "directory": "glue_meta_demo-1.2.3.dist-info",
+            "name": "glue-meta-demo",
+            "original_record_bytes": 1077,
+            "original_record_sha256": "b8ca0173113021c9d84653a3b1b9095315220b442a1f31c30653bb1d203c3296",
+            "retained_files": 10,
+            "version": "1.2.3"
+          }
+        ],
+        "inputs": [
+          {
+            "path": "app/main.py",
+            "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+            "size": 2191,
+            "source": "application"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/INSTALLER",
+            "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+            "size": 4,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/METADATA",
+            "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+            "size": 242,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/RECORD",
+            "sha256": "b8ca0173113021c9d84653a3b1b9095315220b442a1f31c30653bb1d203c3296",
+            "size": 1077,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/REQUESTED",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/WHEEL",
+            "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+            "size": 95,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/entry_points.txt",
+            "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+            "size": 112,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo-1.2.3.dist-info/top_level.txt",
+            "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+            "size": 35,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo/__init__.py",
+            "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+            "size": 256,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_demo/data/message,one.txt",
+            "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+            "size": 26,
+            "source": "packages"
+          },
+          {
+            "path": "glue_meta_namespace/part.py",
+            "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+            "size": 12,
+            "source": "packages"
+          },
+          {
+            "path": "python/archive-importer.py",
+            "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+            "size": 13510,
+            "source": "provider"
+          },
+          {
+            "path": "python/archive-metadata.py",
+            "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+            "size": 4852,
+            "source": "provider"
+          },
+          {
+            "path": "manifest.json",
+            "sha256": "21048f37acde82e226d46473dded94b1677d8722a995c926d05eb9ad59f028a4",
+            "size": 2407,
+            "source": "template"
+          },
+          {
+            "path": "pyvenv.cfg",
+            "sha256": "50eeaad9dcc2c8ac22f1bcdac772dd215568131b1553e6f1d4e2a18c0f48a0ff",
+            "size": 246,
+            "source": "venv"
+          }
+        ],
+        "omissions": [
+          {
+            "path": "../../../bin/glue-meta-demo",
+            "reason": "generated_entry_point_wrapper"
+          },
+          {
+            "path": "glue_meta_demo/__pycache__/__init__.cpython-313.pyc",
+            "reason": "bytecode_or_cache"
+          },
+          {
+            "path": "glue_meta_namespace/__pycache__/part.cpython-313.pyc",
+            "reason": "bytecode_or_cache"
+          }
+        ],
+        "package_input": "venv"
+      }
+    },
+    "wheel-platlib": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: WHEEL requires version 1.0, Root-Is-Purelib: true and compatible tags\n"
+    },
+    "wheel-wrong-tag": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: WHEEL requires compatible py3/py313-none-any tags\n"
+    },
+    "wrong-python-version": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: venv convenience mode requires conventional Python 3.13.x\n"
+    }
+  },
+  "schema_version": 0,
+  "valid_builds": 2
+}

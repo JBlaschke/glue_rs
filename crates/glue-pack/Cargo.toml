@@ -5,8 +5,15 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
+[features]
+default = []
+python = ["dep:glue-runtime-python", "dep:serde_json"]
+
 [dependencies]
 glue-format.workspace = true
+glue-runtime-python = { workspace = true, optional = true }
+serde.workspace = true
+serde_json = { workspace = true, optional = true }
 thiserror.workspace = true
 
 [dev-dependencies]

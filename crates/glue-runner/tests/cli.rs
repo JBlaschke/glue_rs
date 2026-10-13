@@ -103,6 +103,77 @@ fn assert_status(output: &Output, expected: i32) {
     );
 }
 
+#[test]
+fn python_build_rejects_conflicting_and_duplicate_inputs_before_publication() {
+    let temp = TestDir::new();
+    let output = temp.0.join("untouched.glue");
+    for extra in [
+        vec![
+            arg("--venv"),
+            arg("venv"),
+            arg("--site-packages"),
+            arg("packages"),
+        ],
+        vec![
+            arg("--site-packages"),
+            arg("packages"),
+            arg("--site-packages"),
+            arg("again"),
+        ],
+        vec![arg("--venv"), arg("venv"), arg("--json"), arg("--json")],
+    ] {
+        let mut args = vec![
+            arg("build-python"),
+            arg("--provider-template"),
+            arg("missing.json"),
+            arg("--provider-root"),
+            arg("missing provider"),
+            arg("--app"),
+            arg("missing app"),
+            arg("--output"),
+            output.as_os_str(),
+        ];
+        args.extend(extra);
+        let result = temp.run(&args);
+        assert_status(&result, 1);
+        assert!(diagnostic(&result).contains("duplicate"));
+        assert!(!output.exists());
+    }
+}
+
+#[test]
+fn python_build_reports_capability_or_template_failure_without_input_discovery() {
+    let temp = TestDir::new();
+    let output = temp.0.join("preserved.glue");
+    fs::write(&output, b"existing output").unwrap();
+    let result = temp.run(&[
+        arg("build-python"),
+        arg("--provider-template"),
+        fixture().join("manifest.json").as_os_str(),
+        arg("--provider-root"),
+        arg("missing provider"),
+        arg("--app"),
+        arg("missing app"),
+        arg("--venv"),
+        arg("missing venv"),
+        arg("--output"),
+        output.as_os_str(),
+        arg("--json"),
+    ]);
+    #[cfg(feature = "python-pack")]
+    {
+        assert_status(&result, 1);
+        assert!(diagnostic(&result).contains("packaging profile:"));
+    }
+    #[cfg(not(feature = "python-pack"))]
+    {
+        assert_status(&result, 2);
+        assert!(diagnostic(&result).contains("--features python-pack"));
+    }
+    assert!(result.stdout.is_empty());
+    assert_eq!(fs::read(&output).unwrap(), b"existing output");
+}
+
 fn tree_snapshot(root: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
     fn visit(root: &Path, directory: &Path, result: &mut BTreeMap<PathBuf, Option<Vec<u8>>>) {
         for entry in fs::read_dir(directory).unwrap() {

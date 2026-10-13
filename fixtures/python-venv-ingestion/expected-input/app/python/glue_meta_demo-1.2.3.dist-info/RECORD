@@ -1,0 +1,10 @@
+glue_meta_demo-1.2.3.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+glue_meta_demo-1.2.3.dist-info/METADATA,sha256=zuI0ThglJqTIWFa_p9FSCx3YCcSe_tBri7mTlyjo26s,242
+glue_meta_demo-1.2.3.dist-info/RECORD,,
+glue_meta_demo-1.2.3.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+glue_meta_demo-1.2.3.dist-info/WHEEL,sha256=lCbxITfaUIBQ1xjjyyQZyjHuKMXmFHXJyGQYvKFAZ0Y,95
+glue_meta_demo-1.2.3.dist-info/entry_points.txt,sha256=iGHGYjsZi01NgdEFTP3EOfv9En26U5y-5orUUOS9Lfk,112
+glue_meta_demo-1.2.3.dist-info/top_level.txt,sha256=twc95X7DnFJ0zThoBCtXFRZXbEvSBvUIKBXHpk46aLk,35
+glue_meta_demo/__init__.py,sha256=MwKNoJOybaYiFHJCRc1lZZRD0qwH1cjdopR119y-_FA,256
+"glue_meta_demo/data/message,one.txt",sha256=HPFhQq6ynRSlpoZYPUI6EGu_Gx6v5molkNc9D2ndaSg,26
+glue_meta_namespace/part.py,sha256=CndQInRPZMNShj8WXy4SWJhBmZm8V8gyBHcgNtDvay4,12

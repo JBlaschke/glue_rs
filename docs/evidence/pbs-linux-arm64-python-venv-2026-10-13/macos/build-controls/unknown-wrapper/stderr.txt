@@ -1,0 +1,1 @@
+glue: packaging profile: invalid installed RECORD path: invalid resource path "../../../bin/not-declared": empty, absolute or traversal components are forbidden

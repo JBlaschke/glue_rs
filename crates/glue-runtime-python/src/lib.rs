@@ -5,6 +5,7 @@
 //! process life; the synchronous executor owns one interpreter lifecycle.
 #![deny(unsafe_code)]
 
+pub mod packaging;
 #[allow(unsafe_code)]
 mod platform;
 pub mod profile;

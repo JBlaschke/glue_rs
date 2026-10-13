@@ -1,0 +1,5 @@
+[glue.archive.plugins]
+answer = glue_meta_demo:plugin
+
+[console_scripts]
+glue-meta-demo = glue_meta_demo:plugin
