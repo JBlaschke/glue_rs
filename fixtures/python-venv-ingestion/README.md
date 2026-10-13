@@ -59,3 +59,9 @@ The real pip installation is build-time evidence preparation. The product
 normalizer executes no input interpreter, installer, activation hook or package
 code. General wheel installation, dependency solving, native dependencies and
 additional target/provider cells remain outside this fixture.
+
+Run `sh fixtures/python-venv-ingestion/run-linux.sh` for a clean native capture
+using the cached pinned offline Linux image and runtime inputs. The
+[retained evidence](../../docs/evidence/pbs-linux-arm64-python-venv-2026-10-13/README.md)
+includes all six installed-package traces, nine metadata regressions, independent
+build controls, process traces and payload/transformation audits.

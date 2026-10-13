@@ -1,0 +1,1 @@
+glue: resource "glue_meta_demo/data" at "/Users/johannes.blaschke/Developer/glue_rs/target/python-venv-mac-controls/audit-clean/symlink-directory/venv/lib/python3.13/site-packages/glue_meta_demo/data": symlink input components are forbidden

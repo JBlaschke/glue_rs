@@ -1,0 +1,3 @@
+   Compiling glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Checking glue-pack v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pack)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.62s
