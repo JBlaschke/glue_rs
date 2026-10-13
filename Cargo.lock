@@ -150,6 +150,8 @@ name = "glue-pack"
 version = "0.1.0"
 dependencies = [
  "glue-format",
+ "glue-runtime-python",
+ "serde",
  "serde_json",
  "thiserror",
 ]

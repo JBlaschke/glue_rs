@@ -18,13 +18,49 @@ cross-language calls remain pending; see
 Separate pinned Python metadata profiles expose application `.dist-info`
 through `importlib.metadata`, including plugin entry points and virtual RECORD
 file reads. They reuse the bundled/full-host/install-only providers; see
-[the metadata fixture](fixtures/python-metadata/README.md). Generic venv/wheel
-ingestion remains pending.
+[the metadata fixture](fixtures/python-metadata/README.md). The opt-in
+`build-python` adapter packages a bounded source-only installed package tree or
+Python 3.13 venv against an admitted runtime template, without running the input
+interpreter. General wheel installation and native-package ingestion remain pending.
 An opt-in GNU Linux arm64 profile also runs a controlled native Lua closure
 through sealed executable memfds in `glue run`. The optional `python-pbs` build
 also routes the exact controlled PBS source/resource and registered-native profiles
 through `glue doctor` and `glue run`; it requires GNU Linux arm64 and verified
 CPython 3.13.16 headers at build time.
+
+## Build from installed Python packages
+
+Build with `--features python-pack` for portable packaging, or `python-pbs` for
+the existing GNU Linux arm64 execution support. Select an admitted metadata
+provider manifest and its input root explicitly; the template fixes the runtime,
+target and provider bytes independently of the venv. Application input contains
+an `app/` subtree, including the selected entry. For example:
+
+```sh
+cargo build --locked -p glue-runner --features python-pack
+target/debug/glue build-python \
+  --provider-template PROVIDER_MANIFEST --provider-root PROVIDER_INPUT_ROOT \
+  --app APPLICATION_DIR --venv VENV_DIR --app-id my.application \
+  --entry app/main.py --output target/my-application.glue --json
+```
+
+Use `--site-packages PACKAGE_DIR` instead of `--venv` for an explicit installed
+package directory. Venv convenience mode accepts the conventional
+`lib/python3.13/site-packages` layout with system site-packages disabled. It reads
+configuration and package files; it does not activate the environment, execute
+its interpreter, install dependencies or resolve them. The complete package
+inventory must be source-only and fit the existing 1,024-file / 8 MiB application
+limits. Seeded pip/setuptools environments are not silently pruned.
+
+Source, data and metadata bytes are preserved. RECORD is verified and rewritten
+for archive paths; bytecode and recognized generated console/gui wrappers are
+omitted and reported. Native files, editables, `.pth` hooks, escaping paths and
+unowned files reject before output creation. `--json` records input identities,
+distribution identities, omissions and final archive hashes. The command still
+requires a prepared provider template; automated runtime selection and general
+package compatibility remain later work. See the
+[offline venv fixture](fixtures/python-venv-ingestion/README.md) and
+[ingestion contract](docs/decisions/0022-python-installed-package-ingestion.md).
 
 ## Try linked Lua
 

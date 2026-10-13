@@ -10,7 +10,8 @@ default = ["lua54"]
 lua54 = ["glue-runtime-lua/lua54"]
 lua55 = ["glue-runtime-lua/lua55"]
 linux-native = ["glue-runtime-lua/linux-native"]
-python-pbs = ["dep:glue-runtime-python", "glue-runtime-python/pbs-bootstrap"]
+python-pack = ["glue-pack/python"]
+python-pbs = ["python-pack", "dep:glue-runtime-python", "glue-runtime-python/pbs-bootstrap"]
 
 [[bin]]
 name = "glue"

@@ -1,0 +1,49 @@
+{
+  "files": {
+    "app/main.py": {
+      "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+      "size": 2191
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+      "size": 4
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+      "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+      "size": 242
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+      "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+      "size": 872
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+      "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+      "size": 95
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+      "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+      "size": 112
+    },
+    "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+      "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+      "size": 35
+    },
+    "app/python/glue_meta_demo/__init__.py": {
+      "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+      "size": 256
+    },
+    "app/python/glue_meta_demo/data/message,one.txt": {
+      "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+      "size": 26
+    },
+    "app/python/glue_meta_namespace/part.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    }
+  },
+  "schema_version": 0
+}
