@@ -1,0 +1,1 @@
+{"child_creation_count": 0, "execve_count": 1, "host_prefix": "/build-target/host Python metadata", "network_count": 0, "program": "/build-target/release/glue", "schema_version": 0, "successful_exit_count": 1, "target_provider_lookup_count": 0, "trace_identity": {"sha256": "b1797bf288cbe45a7baf628e55247e8f780ec4e5053e7fb976dc68ca6387ba1c", "size": 773}}

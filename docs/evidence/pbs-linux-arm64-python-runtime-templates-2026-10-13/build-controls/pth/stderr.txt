@@ -1,0 +1,1 @@
+glue: packaging profile: installed path hooks and legacy editable/egg layouts are unsupported: path-hook.pth

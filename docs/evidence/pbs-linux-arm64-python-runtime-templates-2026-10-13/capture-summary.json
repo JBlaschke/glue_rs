@@ -1,0 +1,179 @@
+{
+  "application_build_process_traces": 3,
+  "runtime": {
+    "bundled": {
+      "archive": {
+        "sha256": "91606d059a37c4baa50693b4b801d183d052c78cdc4c1437291713a1b9d3e754",
+        "size": 83093626
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "14343fd53bfbe6fdbac4c5c8d8d2719fa2086ea140b528f81eea6972b7fd2f7f",
+        "size": 71
+      },
+      "trace": {
+        "records": 33442,
+        "sha256": "aa99853aa198b163a87eb476df3521d8a2859a17f22b47d19c6142bab3b95cf2",
+        "size": 6508748
+      }
+    },
+    "bundled-corrupt-metadata": {
+      "archive": {
+        "sha256": "19024ce7099b6305d0126ae8f39d73f4da7fe1727a7f5755a5f4814f582ff2a9",
+        "size": 83093626
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+        "size": 94
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 26411,
+        "sha256": "2e94efc451a9c54a18f800f6fdc36a81855c767ba43d99fb279bb2f6c8ae5f6e",
+        "size": 3605461
+      }
+    },
+    "host": {
+      "archive": {
+        "sha256": "d8c9201efc87fdf2db6cbe8ef5ac4a82a7062540b2398cc98d2d7a011170a1d9",
+        "size": 15054
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "14343fd53bfbe6fdbac4c5c8d8d2719fa2086ea140b528f81eea6972b7fd2f7f",
+        "size": 71
+      },
+      "trace": {
+        "records": 24724,
+        "sha256": "5bcf261d194535b29b47de6185b3128c2390d6a8239b193f0667538d93482b5c",
+        "size": 6561977
+      }
+    },
+    "host-corrupt-metadata": {
+      "archive": {
+        "sha256": "96ddff1629a248daf9fee47ab3a0c367dae7c64e58892ef2cdac8a25fa67d2e8",
+        "size": 15054
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+        "size": 94
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 271,
+        "sha256": "44a03a0a07d3e0218d41afe8f0017a8a3acf65cd5d180afa45103674a3c4e64f",
+        "size": 33529
+      }
+    },
+    "install-host": {
+      "archive": {
+        "sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92",
+        "size": 15068
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "14343fd53bfbe6fdbac4c5c8d8d2719fa2086ea140b528f81eea6972b7fd2f7f",
+        "size": 71
+      },
+      "trace": {
+        "records": 12947,
+        "sha256": "af108cbd6203774207881e51f6bfdad9151e98246a966c95dc40bf130d326536",
+        "size": 3656787
+      }
+    },
+    "install-host-corrupt-metadata": {
+      "archive": {
+        "sha256": "39a3367fe8379d9efb0b2aab4b31ace1eb7612be2faf3da70a28daec2c37655a",
+        "size": 15068
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+        "size": 94
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 285,
+        "sha256": "4332fb6a1ba2435f295440287b847265bb946ba93cd241e087dac14421e93aa7",
+        "size": 35776
+      }
+    }
+  },
+  "runtime_traces": 6,
+  "schema_version": 0,
+  "source_revision": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "strengthened_compressed_template_process_replays": {
+    "bundled": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": null,
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0,
+      "trace_identity": {
+        "sha256": "a8c40bbd6d36c1155195a00adbc11d2a26f0705ba801e94cd1c49f6bea8cde07",
+        "size": 33447
+      }
+    },
+    "host": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": "/build-target/host Python metadata",
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0,
+      "trace_identity": {
+        "sha256": "b1797bf288cbe45a7baf628e55247e8f780ec4e5053e7fb976dc68ca6387ba1c",
+        "size": 773
+      }
+    },
+    "install-host": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": "/build-target/install Python metadata",
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0,
+      "trace_identity": {
+        "sha256": "ff5991f03ae35f7af815a3232df8a51da193bc3102c817ee0d6478d63e880fcf",
+        "size": 774
+      }
+    }
+  },
+  "template_process_file_network_traces": 3
+}

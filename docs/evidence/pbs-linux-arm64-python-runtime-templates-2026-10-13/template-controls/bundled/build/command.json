@@ -1,0 +1,19 @@
+[
+  "/build-target/release/glue",
+  "build-python",
+  "--provider-template",
+  "/build-target/template-control-scratch/bundled/template/manifest.json",
+  "--provider-root",
+  "/build-target/template-control-scratch/bundled/template/root",
+  "--app",
+  "/host-build/installed-packages/application",
+  "--venv",
+  "/host-build/installed-packages/venv",
+  "--app-id",
+  "distribution.metadata",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/build-target/template-control-scratch/bundled/application.glue",
+  "--json"
+]

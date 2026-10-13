@@ -1,0 +1,1 @@
+glue: read template input "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/controls/frozen-symlink/frozen.json": template input must be a regular file and cannot be a symlink

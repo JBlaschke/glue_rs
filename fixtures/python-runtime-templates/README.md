@@ -115,8 +115,10 @@ an unprivileged user and read-only runtime storage. The unchanged six-mode
 installed-package trace policy checks those captures.
 
 The [capture report](../../docs/evidence/pbs-linux-arm64-python-runtime-templates-2026-10-13/README.md)
-is planned for this increment; capture and retained-result verification are
-currently pending. The fixture invocations above describe checks to run, rather
-than claiming their results. General runtime/version selection, installation,
+retains the clean Mac/GNU template controls and six GNU runtime traces from
+`3d15bf9`, plus replay with the strengthened checker from `525da19`. All eight
+generations, 45 hostile controls and three application builds pass on both
+builders. All six runtime traces replay under the unchanged policy; all 126
+hostile trace mutations reject. General runtime/version selection, installation,
 native-package support and additional target/provider compatibility remain
 separate work.

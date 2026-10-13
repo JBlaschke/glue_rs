@@ -28,7 +28,7 @@ Further implementation continues on separate feature branches.
 | A9 worker-message foundation | `codex/a9-worker-protocol` / `42197bb` (from merged `aae69ef`) | Experimental codec and controller ledger; synthetic workers | Mac/Linux source workspaces pass 432/433 tests for Lua 5.4/5.5 and Clippy; 37 optimized IPC/ledger/real-pipe tests per platform; complete Linux trace confirms 18 anonymous pipes, six synthetic child launches and exact crash/truncation controls; [evidence](evidence/worker-protocol-2026-10-12/README.md) |
 | A7 Python distribution metadata | `codex/a7-python-distribution-metadata` / `80c4b33` (from merged `6cd8f96`) | Experimental bounded `.dist-info` applications through all three providers | Mac/Linux 441/442 workspace tests and Clippy; 125 optimized GNU Python/probe and 14 runner tests; 32 adapter and 227 Python policy tests; all nine new/35 source-profile regression traces pass/replay; 42 new CLI controls agree; all 189 hostile edits reject |
 | A7/A10 Python installed-package ingestion | `codex/a7-python-venv-ingestion` / `35dae52` (from merged `6afed9a`) | Experimental source-only build adapter with explicit provider template | Mac/Linux source workspaces 452/453 tests and Clippy; Mac packaging workspace 465; 33 pack/129 GNU Python/16 runner tests; 235 Python policies; real offline pip installation; Mac/GNU both input modes and all 30 hostile build controls pass; all six new/nine metadata regression traces pass/replay; 27 product controls and 126 hostile trace mutations pass/reject |
-| A7/A10 Python runtime templates | `codex/a7-python-runtime-templates` (from merged `c0ddaa4`; implementation commit follows) | Experimental portable preparation of the three pinned metadata providers | Mac workspaces 460/461 source and 482 packaging tests with Clippy; eight template generations, 45 hostile controls and three installed-package builds pass on Mac and development GNU Linux; clean native capture and retained evidence pending |
+| A7/A10 Python runtime templates | `codex/a7-python-runtime-templates` / `3d15bf9`, checker strengthening `525da19` (from merged `c0ddaa4`) | Experimental portable preparation of the three pinned metadata providers | Mac/GNU source workspaces 460/461 tests and Clippy; Mac packaging workspace 482; optimized GNU 135 Python/41 pack/19 CLI tests; both builders pass eight template generations, 45 hostile controls and three installed-package builds; all six runtime traces replay under unchanged policy and retain prior archive hashes; 27 product controls and 126 hostile mutations pass/reject; strengthened oracle passes 21 tests on Mac/stock GNU |
 
 ## Gate status
 
@@ -405,6 +405,18 @@ and Python policies pass 235 on both interpreters. Runtime/helper/loader bodies
 are unchanged. General runtime-template provisioning, package compatibility,
 dependency solving and native/platform support remain open. See
 [decision 0022](decisions/0022-python-installed-package-ingestion.md).
+
+The [clean runtime-template evidence](evidence/pbs-linux-arm64-python-runtime-templates-2026-10-13/README.md)
+retains portable Mac preparation and six GNU runtime traces from `3d15bf9`.
+`glue python-template` now supplies `build-python` directly with the pinned
+bundled library/source/frozen inputs or explicit unverified full/install-only
+host declarations. Eight successful generations, 45 hostile controls and three
+genuine installed-package builds pass on both builders. Every resulting archive
+retains its previous byte identity, and runtime/helper/loader bodies and the
+six-mode trace policy are unchanged. The strengthened preparation-process oracle
+from `525da19` passes all 21 tests and actual/compressed trace replays. Product
+runtime installation, uv discovery, version selection and broader package/native
+compatibility remain open; preparation does not close runtime/platform gates.
 
 ## Next critical-path assignments
 

@@ -1,0 +1,13 @@
+[
+  "/build-target/release/glue",
+  "python-template",
+  "--provider",
+  "bundled",
+  "--pbs-full",
+  "/build-target/template-control-scratch/controls/full-missing/input.tar.zst",
+  "--frozen-bootstrap",
+  "/build-target/freeze-bundle.json",
+  "--output",
+  "/evidence/template-controls/controls/full-missing/template",
+  "--json"
+]

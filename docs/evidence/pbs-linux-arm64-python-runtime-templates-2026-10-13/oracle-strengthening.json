@@ -1,0 +1,28 @@
+{
+  "actual_preparation_replays": 3,
+  "changed_files": {
+    "fixtures/python-runtime-templates/README.md": {
+      "sha256": "cda2242f40e4f27eee7dff20e11ab5cd7fcf211074b57712a6c1b4918b39e05e",
+      "size": 7007
+    },
+    "fixtures/python-runtime-templates/test_audit.py": {
+      "sha256": "af038401e07727faefcf48a34d9c506e7de4505ddd8e835ae1b32e12c2502a25",
+      "size": 12465
+    },
+    "fixtures/python-runtime-templates/test_templates.py": {
+      "sha256": "6c4813ab9b580a9dc76b5c3cd24eaba3d534bf0416ff435c3a68e639b71b373c",
+      "size": 38135
+    }
+  },
+  "checker_improvements": [
+    "cwd and descriptor relative paths",
+    "normalized and escaped target paths",
+    "target Python library/interpreter acquisition",
+    "one PID and complete execution boundaries",
+    "exclusive output library publication only"
+  ],
+  "checker_revision": "525da1994b6735db10b2aba3abece3946daec52c",
+  "oracle_tests": 21,
+  "product_capture_revision": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "product_code_unchanged": true
+}

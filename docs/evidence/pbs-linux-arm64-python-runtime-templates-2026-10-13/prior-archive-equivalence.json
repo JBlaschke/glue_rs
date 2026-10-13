@@ -1,0 +1,31 @@
+{
+  "all_six_archives_byte_identical": true,
+  "archives": {
+    "bundled": {
+      "sha256": "91606d059a37c4baa50693b4b801d183d052c78cdc4c1437291713a1b9d3e754",
+      "size": 83093626
+    },
+    "bundled-corrupt-metadata": {
+      "sha256": "19024ce7099b6305d0126ae8f39d73f4da7fe1727a7f5755a5f4814f582ff2a9",
+      "size": 83093626
+    },
+    "host": {
+      "sha256": "d8c9201efc87fdf2db6cbe8ef5ac4a82a7062540b2398cc98d2d7a011170a1d9",
+      "size": 15054
+    },
+    "host-corrupt-metadata": {
+      "sha256": "96ddff1629a248daf9fee47ab3a0c367dae7c64e58892ef2cdac8a25fa67d2e8",
+      "size": 15054
+    },
+    "install-host": {
+      "sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92",
+      "size": 15068
+    },
+    "install-host-corrupt-metadata": {
+      "sha256": "39a3367fe8379d9efb0b2aab4b31ace1eb7612be2faf3da70a28daec2c37655a",
+      "size": 15068
+    }
+  },
+  "implementation": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "prior_implementation": "35dae5247ab4ce964a72025ab68f6cea2af42b3a"
+}

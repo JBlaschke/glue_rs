@@ -1,0 +1,9 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "python-template",
+  "--provider",
+  "host-full",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final/controls/missing-host-prefix/template",
+  "--json"
+]

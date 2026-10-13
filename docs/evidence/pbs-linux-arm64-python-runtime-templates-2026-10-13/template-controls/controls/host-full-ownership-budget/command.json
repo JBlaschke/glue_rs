@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-template",
+  "--provider",
+  "host-full",
+  "--host-prefix",
+  "/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a",
+  "--output",
+  "/evidence/template-controls/controls/host-full-ownership-budget/template",
+  "--json"
+]

@@ -1,0 +1,5 @@
+   Compiling glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+   Compiling glue-runtime-python v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-python)
+    Checking glue-python-bootstrap-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/python-bootstrap)
+    Checking glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.88s

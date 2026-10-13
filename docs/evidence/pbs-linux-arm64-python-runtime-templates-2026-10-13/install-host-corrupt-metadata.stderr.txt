@@ -1,0 +1,1 @@
+glue: resource "app/python/glue_meta_demo-1.2.3.dist-info/METADATA" failed CRC32 verification

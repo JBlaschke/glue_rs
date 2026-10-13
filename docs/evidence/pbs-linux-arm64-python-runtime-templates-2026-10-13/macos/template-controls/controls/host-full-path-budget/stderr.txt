@@ -1,0 +1,1 @@
+glue: packaging profile: host paths must be canonical absolute ASCII paths of at most 4096 bytes without control characters or backslashes

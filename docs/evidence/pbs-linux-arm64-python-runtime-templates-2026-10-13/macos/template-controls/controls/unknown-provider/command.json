@@ -1,0 +1,9 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "python-template",
+  "--provider",
+  "future",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final/controls/unknown-provider/template",
+  "--json"
+]

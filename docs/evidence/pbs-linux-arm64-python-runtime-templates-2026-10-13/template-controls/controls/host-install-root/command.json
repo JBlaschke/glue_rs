@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-template",
+  "--provider",
+  "host-install",
+  "--host-prefix",
+  "/",
+  "--output",
+  "/evidence/template-controls/controls/host-install-root/template",
+  "--json"
+]

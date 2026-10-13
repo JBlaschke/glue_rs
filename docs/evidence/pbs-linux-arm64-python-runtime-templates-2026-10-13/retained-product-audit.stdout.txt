@@ -1,0 +1,1 @@
+Independent product audit passed: 27 CLI controls; 4427 verified members; 3 intentional CRC failures; three single-process builds

@@ -1,0 +1,7 @@
+[
+  "/build-target/release/glue",
+  "python-template",
+  "--output",
+  "/evidence/template-controls/controls/missing-provider/template",
+  "--json"
+]

@@ -1,0 +1,1 @@
+glue: packaging profile: installed RECORD contains duplicate paths

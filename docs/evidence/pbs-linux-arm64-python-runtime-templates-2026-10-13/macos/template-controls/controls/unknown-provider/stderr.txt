@@ -1,0 +1,1 @@
+glue: python-template provider must be bundled, host-full or host-install
