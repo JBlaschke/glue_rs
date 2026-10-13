@@ -1,0 +1,58 @@
+{
+  "mac_oracle": {
+    "command": "python3 fixtures/python-host-prerequisites/test_audit.py -v",
+    "exit_status": 0,
+    "log": {
+      "sha256": "c88cbd189c78661ac744672dfdfebe5b9f6ba7b7f1cd2c1bb1b5e5d4ced30176",
+      "size": 6841
+    },
+    "tests": 46
+  },
+  "mac_policy_suite": {
+    "command": "python3 -m unittest discover -s scripts -p 'test_linux_python*trace.py' -v",
+    "exit_status": 0,
+    "log": {
+      "sha256": "05e49eb748ab28ea2ba2e9f3b15854f0209c1a11ce316cd7fae5f19fb1e9373e",
+      "size": 342
+    },
+    "tests": 241
+  },
+  "new_checker_files": {
+    "fixtures/python-host-prerequisites/test_audit.py": {
+      "sha256": "951cc0b94f4fc8acff1ec793e1b27800ef4346b9513f2f63c7c2e112a06aa6cb",
+      "size": 32068
+    },
+    "fixtures/python-host-prerequisites/test_prepare.py": {
+      "sha256": "5d0e0729d079691c5d30b8bcfbe66ff1de79ce51229b0b7b25bd6aedf1789933",
+      "size": 40322
+    },
+    "scripts/check-linux-python-host-prerequisites-trace.py": {
+      "sha256": "cd7cae2155abde5acbf9f3522a849f14aee5df235540a0272c3748c247013690",
+      "size": 6348
+    },
+    "scripts/test_linux_python_host_prerequisites_trace.py": {
+      "sha256": "5e21b3b49689f037aa01c375cfdd7dae33ed537a8757c312ffb196cb5f77aa09",
+      "size": 14926
+    }
+  },
+  "schema_version": 0,
+  "source_revision": "3f3f31a18b59c664dda2dee36d409029c06dfc9f",
+  "stock_oracle": {
+    "command": "/build-target/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-host-prerequisites/test_audit.py",
+    "exit_status": 0,
+    "log": {
+      "sha256": "2b36d893f5289dfc665ae6ace83289457459787c5548e16e4f2d2ff7835a4d1a",
+      "size": 6841
+    },
+    "tests": 46
+  },
+  "stock_policy_suite": {
+    "command": "/producer/bin/python3.13 -I -S -B -m unittest discover -s /workspace/scripts -p 'test_linux_python*trace.py' -v",
+    "exit_status": 0,
+    "log": {
+      "sha256": "4b95686759f563373e2614b6746f7cc4c64e4844d361c7cfc034d5030738cea2",
+      "size": 46752
+    },
+    "tests": 241
+  }
+}

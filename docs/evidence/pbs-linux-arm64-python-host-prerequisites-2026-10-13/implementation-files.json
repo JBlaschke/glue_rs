@@ -1,0 +1,74 @@
+{
+  "README.md": {
+    "sha256": "1f8cc4a6b0028390a129ccc044a92fb2e93e7aeeac46174adb1806889851d75c",
+    "size": 27401
+  },
+  "crates/glue-pack/src/lib.rs": {
+    "sha256": "e8433f60e71583a17b7bf7fd41121af28faef0d00898dcabbca042f11306e094",
+    "size": 24665
+  },
+  "crates/glue-pack/src/python_host.rs": {
+    "sha256": "99a14ffb09c91882d566e14cce50cddbc676b924457f67e62cb4d2404280080a",
+    "size": 20495
+  },
+  "crates/glue-pbs/src/lib.rs": {
+    "sha256": "ba3a83f1a1e5a72825ce0fdc5af0106f2acf22991943750483d219da53957aad",
+    "size": 16282
+  },
+  "crates/glue-runner/src/main.rs": {
+    "sha256": "567d9ee08e4d7be57bfb40a75846b2c2859f249ac55105a254af679d315a1e11",
+    "size": 33180
+  },
+  "crates/glue-runner/tests/cli.rs": {
+    "sha256": "7a82740e102de64c0fd43953224f9c25f2076a33b0f4ec81b93fbde521b59f94",
+    "size": 32445
+  },
+  "crates/glue-runtime-python/README.md": {
+    "sha256": "f644febf2ac4e7d16d81a2a80c966a0868ff6cc327b95e26a01983aafc7ebb17",
+    "size": 9456
+  },
+  "crates/glue-runtime-python/src/packaging.rs": {
+    "sha256": "cdb423e05d28d2680521e7cc74d52cbd9f888f130c6f3063c79b5fc3358b584f",
+    "size": 12695
+  },
+  "crates/glue-runtime-python/src/packaging/host_prerequisites.rs": {
+    "sha256": "46709ddabe547d61b9772ee3aabe7137b4f4e54fcb72f67839d4959093436cc5",
+    "size": 26662
+  },
+  "docs/decisions/0024-python-host-prerequisites.md": {
+    "sha256": "2ef5900d51d0653235610ceeb0bfed1edbb4205768f680f0ca540bfac96933e4",
+    "size": 5279
+  },
+  "docs/fixtures.md": {
+    "sha256": "ca99bd31650fdcbd145888a9ae9d9a06b9c20f7615fb14e5a3e23852ccfa3b59",
+    "size": 6238
+  },
+  "docs/progress.md": {
+    "sha256": "e8293081619347145da8d26c363fd091b44242116039ecd7ac094e0b012cb123",
+    "size": 39255
+  },
+  "fixtures/python-host-prerequisites/README.md": {
+    "sha256": "612b28cc966d7cbb41df34847592dfc9f9db57b28a47f64e4f9a3289c45505a3",
+    "size": 8710
+  },
+  "fixtures/python-host-prerequisites/run-linux.sh": {
+    "sha256": "80203f3a094e14e1682365f3dced70cfbd62ead0d759197325ca7c10fadc3925",
+    "size": 17218
+  },
+  "fixtures/python-host-prerequisites/test_audit.py": {
+    "sha256": "951cc0b94f4fc8acff1ec793e1b27800ef4346b9513f2f63c7c2e112a06aa6cb",
+    "size": 32068
+  },
+  "fixtures/python-host-prerequisites/test_prepare.py": {
+    "sha256": "5d0e0729d079691c5d30b8bcfbe66ff1de79ce51229b0b7b25bd6aedf1789933",
+    "size": 40322
+  },
+  "scripts/check-linux-python-host-prerequisites-trace.py": {
+    "sha256": "cd7cae2155abde5acbf9f3522a849f14aee5df235540a0272c3748c247013690",
+    "size": 6348
+  },
+  "scripts/test_linux_python_host_prerequisites_trace.py": {
+    "sha256": "5e21b3b49689f037aa01c375cfdd7dae33ed537a8757c312ffb196cb5f77aa09",
+    "size": 14926
+  }
+}

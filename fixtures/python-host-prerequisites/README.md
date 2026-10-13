@@ -123,8 +123,11 @@ python3 fixtures/python-host-prerequisites/test_prepare.py \
 ```
 
 The preparation process audit requires one builder execution and rejects child
-creation, network activity and acquisition of a target runtime. Native conformance capture for this new product
-step is pending. The harness below replaces historical host-installer fixture
+creation, network activity and acquisition of a target runtime. The
+[clean Mac/GNU evidence](../../docs/evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md)
+retains four generations and 63 hostile controls on each builder, two complete
+preparation traces, six runtime traces and all compressed replays. The oracle
+passes 46 tests on Mac and stock GNU Python. The harness below replaces historical host-installer fixture
 calls with product preparation, audits both published prerequisite trees and
 preparation traces, and builds the existing genuine installed-package application
 through all three product-generated templates. It removes build-only inputs,

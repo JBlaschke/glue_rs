@@ -26,7 +26,8 @@ provenance for `build-python`. See [decision 0023](../../docs/decisions/0023-pyt
 source and cache projections as owned bytes from pinned artifacts. `glue
 python-host` publishes these embedding prerequisites on Unix builders with fixed
 permissions and mtimes, without executing Python. Complete installations and uv
-discovery remain separate work. See [decision 0024](../../docs/decisions/0024-python-host-prerequisites.md).
+discovery remain separate work. See [decision 0024](../../docs/decisions/0024-python-host-prerequisites.md)
+and the [Mac/GNU preparation and execution evidence](../../docs/evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md).
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact

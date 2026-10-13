@@ -1,0 +1,28 @@
+{
+  "binary": {
+    "identity": {
+      "sha256": "3df3be2084f3fae6e51bbc977e3b40db8a232ef9180e8ccd8983c0f1108a24e4",
+      "size": 12942168
+    },
+    "path": "target/python-host-oracle-build/debug/glue"
+  },
+  "command": [
+    "python3",
+    "-B",
+    "fixtures/python-host-prerequisites/test_prepare.py",
+    "--glue",
+    "target/python-host-oracle-build/debug/glue",
+    "--full",
+    "target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+    "--install",
+    "target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+    "--output",
+    "target/python-host-mac-final",
+    "--scratch",
+    "target/python-host-mac-final-scratch"
+  ],
+  "exit_status": 0,
+  "implementation": "42c5abed05f85cd2b6525346af397288d4c13e93",
+  "source_diff": "",
+  "source_status": ""
+}

@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--pbs-full",
+  "/workspace/target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+  "--output",
+  "/evidence/host-controls/controls/host-full-parent-file/parent/prefix",
+  "--json"
+]

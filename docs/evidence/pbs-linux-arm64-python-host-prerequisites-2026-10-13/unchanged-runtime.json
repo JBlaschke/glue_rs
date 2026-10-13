@@ -1,0 +1,67 @@
+{
+  "byte_identical_files": {
+    "crates/glue-runtime-python/boundary/bridge.c": {
+      "sha256": "ec0adf72446d0244580273a18bdbaa7ece417eba10deb95b4bbbf5bd2517f917",
+      "size": 51676
+    },
+    "crates/glue-runtime-python/boundary/bridge.h": {
+      "sha256": "4dcf6f595e8ecfa8ca578e0d928a16d664189fcc4f1053f7d3fab3f03d7b4d17",
+      "size": 7240
+    },
+    "crates/glue-runtime-python/src/host.rs": {
+      "sha256": "3f2d526a8c4823cdee4fa071542578808c25f08d8ea6a44bb10cff1ec8d5fd7f",
+      "size": 82846
+    },
+    "crates/glue-runtime-python/src/host_source_app_profile.rs": {
+      "sha256": "c13b75c7b53cd337296b8d530719da0219ed4f70a512518edef6f0858ef892ff",
+      "size": 16163
+    },
+    "crates/glue-runtime-python/src/install_host_source_app_profile.rs": {
+      "sha256": "a6dbd0abba5555b8330ec0fb43ad08e78f62620e10210792004a78984cf93777",
+      "size": 8776
+    },
+    "crates/glue-runtime-python/src/linux.rs": {
+      "sha256": "4600916a214bfa59702f584a876fe36ab941cf2ee9e980ac9ee1a6466d5f6545",
+      "size": 29027
+    },
+    "crates/glue-runtime-python/src/metadata_profile.rs": {
+      "sha256": "c0025b15ea5763113c670ec91d72543a06b5502af96366b9cf2e05822b222aa9",
+      "size": 39550
+    },
+    "crates/glue-runtime-python/src/native_linux.rs": {
+      "sha256": "47dd154d97289ee471f708ddaf1523f6e64feda4c0c81a432d69561ff2d3d375",
+      "size": 8728
+    },
+    "crates/glue-runtime-python/src/packaging/template.rs": {
+      "sha256": "56a45c77cdc032e72b485054e3185bafc6e0d1f3a908e39424814de8e84d948d",
+      "size": 20996
+    },
+    "crates/glue-runtime-python/src/profile.rs": {
+      "sha256": "afc01520d67c04d12546ad14366ca75e46f9c650945278b9c1dccf55fc8bcfc2",
+      "size": 12859
+    },
+    "crates/glue-runtime-python/src/source_app_profile.rs": {
+      "sha256": "6fec2c565faa03792ad76059551462f03664707c841926585a5d27c25dade8f3",
+      "size": 24080
+    },
+    "fixtures/python-imports/bootstrap.py": {
+      "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+      "size": 13510
+    },
+    "fixtures/python-metadata/bootstrap.py": {
+      "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+      "size": 4852
+    },
+    "scripts/check-linux-python-metadata-trace.py": {
+      "sha256": "79c0a677318b9a64b8f022f0fe74edaf9e886364a48664136f7e6fa49ee07928",
+      "size": 27672
+    },
+    "scripts/check-linux-python-venv-trace.py": {
+      "sha256": "a9cd081fc383a260d2c286331c6eccc30ae34332b54f3b93124a46b9d78def3b",
+      "size": 10322
+    }
+  },
+  "implementation": "3f3f31a18b59c664dda2dee36d409029c06dfc9f",
+  "parent": "c4a901e",
+  "product_implementation": "42c5abed05f85cd2b6525346af397288d4c13e93"
+}

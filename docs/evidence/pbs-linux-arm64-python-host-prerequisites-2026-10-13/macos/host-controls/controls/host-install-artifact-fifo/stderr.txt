@@ -1,0 +1,1 @@
+glue: read host artifact "/Users/johannes.blaschke/Developer/glue_rs/target/python-host-mac-final-scratch/host-install-artifact-fifo/input": host artifact must be a regular file and cannot be a symlink

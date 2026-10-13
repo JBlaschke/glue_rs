@@ -1,0 +1,7 @@
+{
+  "differences": [],
+  "implementation": "42c5abed05f85cd2b6525346af397288d4c13e93",
+  "kind": "pre-commit Rust workspace checks on identical code",
+  "scope": "excludes new standalone fixture scripts and Markdown; independently checked by fixture capture and doc-link audit",
+  "verified_files": 263
+}

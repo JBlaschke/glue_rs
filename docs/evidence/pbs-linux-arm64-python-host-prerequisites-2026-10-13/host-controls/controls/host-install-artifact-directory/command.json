@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--pbs-install-only",
+  "/build-target/host-control-scratch/host-install-artifact-directory/input",
+  "--output",
+  "/build-target/host-control-scratch/host-install-artifact-directory/prefix",
+  "--json"
+]

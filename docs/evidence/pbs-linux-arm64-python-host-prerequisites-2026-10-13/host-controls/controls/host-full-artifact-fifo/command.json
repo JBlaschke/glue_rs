@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--pbs-full",
+  "/build-target/host-control-scratch/host-full-artifact-fifo/input",
+  "--output",
+  "/build-target/host-control-scratch/host-full-artifact-fifo/prefix",
+  "--json"
+]

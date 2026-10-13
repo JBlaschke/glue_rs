@@ -1,0 +1,9 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "future",
+  "--output",
+  "/evidence/host-controls/controls/unknown-provider/prefix",
+  "--json"
+]
