@@ -36,6 +36,15 @@ Python startup must use actual stock PBS and compatible host libraries, import
 its own bundled producer. Node and Lua fixtures must use the actual runtimes;
 synthetic workers prove protocol behavior only.
 
+The [product runtime-template fixture](../fixtures/python-runtime-templates/README.md)
+prepares all three pinned providers through `glue python-template`, checks exact
+resource/provenance identities and publication protection, then builds the same
+genuine offline-installed application through `glue build-python`. Template
+process/file/network traces distinguish host declarations from discovery.
+The unchanged installed-package runtime policy checks all six valid/CRC-damage
+traces in the relocated, read-only GNU Linux arm64 cell. Mac preparation of these
+Linux-target templates establishes portable input processing, not Mac execution.
+
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with
 the matching stock producer at build time, removes that installation and its

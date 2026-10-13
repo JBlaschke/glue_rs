@@ -1,0 +1,13 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "python-template",
+  "--provider",
+  "host-full",
+  "--provider",
+  "host-install",
+  "--host-prefix",
+  "/unavailable/Python",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final/controls/duplicate-provider/template",
+  "--json"
+]

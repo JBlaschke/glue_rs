@@ -174,6 +174,108 @@ fn python_build_reports_capability_or_template_failure_without_input_discovery()
     assert_eq!(fs::read(&output).unwrap(), b"existing output");
 }
 
+#[test]
+fn python_template_rejects_invalid_provider_option_combinations_without_outputs() {
+    let temp = TestDir::new();
+    let output = temp.0.join("must remain absent");
+    for args in [
+        vec![
+            arg("--provider"),
+            arg("bundled"),
+            arg("--pbs-full"),
+            arg("missing.tar"),
+            arg("--frozen-bootstrap"),
+            arg("missing.json"),
+            arg("--host-prefix"),
+            arg("/wrong"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-full"),
+            arg("--host-prefix"),
+            arg("/not-installed"),
+            arg("--pbs-full"),
+            arg("missing.tar"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-install"),
+            arg("--host-prefix"),
+            arg("/not-installed"),
+            arg("--json"),
+            arg("--json"),
+        ],
+        vec![arg("--provider"), arg("unknown")],
+    ] {
+        let mut command = vec![arg("python-template"), arg("--output"), output.as_os_str()];
+        command.extend(args);
+        let result = temp.run(&command);
+        assert_status(&result, 1);
+        assert!(result.stdout.is_empty());
+        assert!(!output.exists());
+    }
+}
+
+#[test]
+fn python_template_reports_capability_or_prefix_rejection_without_publication() {
+    let temp = TestDir::new();
+    let output = temp.0.join("protected template");
+    fs::create_dir(&output).unwrap();
+    fs::write(output.join("sentinel"), b"preserve existing tree").unwrap();
+    let before = tree_snapshot(&temp.0);
+    let result = temp.run(&[
+        arg("python-template"),
+        arg("--provider"),
+        arg("host-full"),
+        arg("--host-prefix"),
+        arg("/"),
+        arg("--output"),
+        output.as_os_str(),
+        arg("--json"),
+    ]);
+    #[cfg(feature = "python-pack")]
+    assert_status(&result, 1);
+    #[cfg(not(feature = "python-pack"))]
+    {
+        assert_status(&result, 2);
+        assert!(diagnostic(&result).contains("--features python-pack"));
+    }
+    assert!(result.stdout.is_empty());
+    assert_eq!(tree_snapshot(&temp.0), before);
+}
+
+#[cfg(feature = "python-pack")]
+#[test]
+fn python_template_declares_host_inputs_without_discovery_and_preserves_existing_trees() {
+    let temp = TestDir::new();
+    let output = temp.0.join("declared host template");
+    let command = [
+        arg("python-template"),
+        arg("--provider"),
+        arg("host-install"),
+        arg("--host-prefix"),
+        arg("/not-installed/glue-test-Python"),
+        arg("--output"),
+        output.as_os_str(),
+        arg("--json"),
+    ];
+    let result = temp.run(&command);
+    assert_status(&result, 0);
+    assert!(result.stderr.is_empty());
+    let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+    assert_eq!(report["provider"], "host-install");
+    let manifest = Manifest::from_json(&fs::read(output.join("manifest.json")).unwrap()).unwrap();
+    assert_eq!(manifest.app_id, "python.runtime.template");
+    assert_eq!(manifest.entrypoint, "launch");
+    assert_eq!(manifest.resources.len(), 3);
+    assert!(output.join("provenance.json").is_file());
+    let before = tree_snapshot(&temp.0);
+    let repeated = temp.run(&command);
+    assert_status(&repeated, 1);
+    assert!(repeated.stdout.is_empty());
+    assert_eq!(tree_snapshot(&temp.0), before);
+}
+
 fn tree_snapshot(root: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
     fn visit(root: &Path, directory: &Path, result: &mut BTreeMap<PathBuf, Option<Vec<u8>>>) {
         for entry in fs::read_dir(directory).unwrap() {

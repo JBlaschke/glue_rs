@@ -16,6 +16,12 @@ The portable `packaging` facade admits metadata provider templates and checks
 owned application contents for the build-time installed-package adapter. It
 shares the runtime's identity/RECORD policy without acquiring a provider or
 initializing Python; see [decision 0022](../../docs/decisions/0022-python-installed-package-ingestion.md).
+Its `packaging::template` constructors prepare the exact bundled metadata profile
+from pinned PBS/frozen inputs or declare full/install-only host prerequisites
+from an explicit prefix. The bundled constructor verifies the complete frozen
+identity before reading PBS; host constructors perform no filesystem discovery.
+`glue python-template` stages the resulting manifest, owned resources and
+provenance for `build-python`. See [decision 0023](../../docs/decisions/0023-python-runtime-templates.md).
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact

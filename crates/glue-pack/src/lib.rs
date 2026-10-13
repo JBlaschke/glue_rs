@@ -7,6 +7,9 @@
 #[cfg(feature = "python")]
 pub mod python;
 
+#[cfg(feature = "python")]
+pub mod python_template;
+
 use glue_format::{
     Archive, ArchiveError, ArchiveLimits, FormatError, MAX_MANIFEST_BYTES, Manifest, ResourcePath,
     digest, write_archive,

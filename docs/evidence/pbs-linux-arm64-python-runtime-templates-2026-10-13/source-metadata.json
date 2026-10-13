@@ -1,0 +1,673 @@
+{
+  "archives": {
+    "bundled": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 83093626,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 338108,
+      "manifest_sha256": "aa82451e1ed0874edb6a268374454440fe7fab9d78231ee0eac0e433ae5bf750",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-metadata-apps-v1",
+        "provisioning": {
+          "mode": "bundled",
+          "provider": "python_build_standalone",
+          "runtime_library": "python/libpython3.13.so.1.0",
+          "source": {
+            "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+            "release": "20261009",
+            "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+            "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+            "variant": "pgo+lto-full/bundled-metadata-apps-v1"
+          },
+          "stdlib": "python/frozen.json"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 82861288,
+        "archive_read_bytes": 753176,
+        "ranges_sha256": "848d40466d98ed725dbefcac03a08d4ad76704ecf6f3536a35f11b076d816371"
+      },
+      "sha256": "91606d059a37c4baa50693b4b801d183d052c78cdc4c1437291713a1b9d3e754",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 82868611
+    },
+    "bundled-corrupt-metadata": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 83093626,
+      "component": "launch",
+      "corrupt_offset": 340629,
+      "crc_read_offsets": {
+        "app/main.py": 338233,
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": 340525,
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": 340629
+      },
+      "entry": "app/main.py",
+      "manifest_bytes": 338108,
+      "manifest_sha256": "aa82451e1ed0874edb6a268374454440fe7fab9d78231ee0eac0e433ae5bf750",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-bundled-metadata-apps-v1",
+        "provisioning": {
+          "mode": "bundled",
+          "provider": "python_build_standalone",
+          "runtime_library": "python/libpython3.13.so.1.0",
+          "source": {
+            "artifact": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+            "release": "20261009",
+            "revision": "ccc07c40c2731bfb459c119f2388f65a5a470de6",
+            "sha256": "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca",
+            "variant": "pgo+lto-full/bundled-metadata-apps-v1"
+          },
+          "stdlib": "python/frozen.json"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 82861288,
+        "archive_read_bytes": 753176,
+        "ranges_sha256": "848d40466d98ed725dbefcac03a08d4ad76704ecf6f3536a35f11b076d816371"
+      },
+      "sha256": "19024ce7099b6305d0126ae8f39d73f4da7fe1727a7f5755a5f4814f582ff2a9",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 82868611
+    },
+    "host": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 15054,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 2882,
+      "manifest_sha256": "c96ff879ae24043880b35d5231fb5cd7633bff78031e237bf640a8bddcc60f41",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python metadata/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python metadata/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 11968,
+        "archive_read_bytes": 5584,
+        "ranges_sha256": "fb696936e312f04114e54c233325e4588884d8d2a878752e79498dec019574a0"
+      },
+      "sha256": "d8c9201efc87fdf2db6cbe8ef5ac4a82a7062540b2398cc98d2d7a011170a1d9",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 13630
+    },
+    "host-corrupt-metadata": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 15054,
+      "component": "launch",
+      "corrupt_offset": 5403,
+      "crc_read_offsets": {
+        "app/main.py": 3007,
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": 5299,
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": 5403
+      },
+      "entry": "app/main.py",
+      "manifest_bytes": 2882,
+      "manifest_sha256": "c96ff879ae24043880b35d5231fb5cd7633bff78031e237bf640a8bddcc60f41",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/host Python metadata/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/host Python metadata/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 11968,
+        "archive_read_bytes": 5584,
+        "ranges_sha256": "fb696936e312f04114e54c233325e4588884d8d2a878752e79498dec019574a0"
+      },
+      "sha256": "96ddff1629a248daf9fee47ab3a0c367dae7c64e58892ef2cdac8a25fa67d2e8",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 13630
+    },
+    "install-host": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 15068,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 2896,
+      "manifest_sha256": "f85255f2d89cf2755d08c86fabe5a0fc7d934ece4ac9ae0ea9f928de0c0dfdbe",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/install Python metadata/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/install Python metadata/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 11982,
+        "archive_read_bytes": 5598,
+        "ranges_sha256": "0f9541da0e5cc320aefe84103acd33b14d6291050280e06f0ee24d185ec24234"
+      },
+      "sha256": "cda39021d7c56c6abbf356b453d796bcec67443816eef118fd84e96431325b92",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 13644
+    },
+    "install-host-corrupt-metadata": {
+      "app_id": "distribution.metadata",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+          "size": 2191
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+          "compression": "stored",
+          "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+          "size": 4
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+          "size": 242
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+          "size": 872
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+          "compression": "stored",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+          "compression": "stored",
+          "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+          "size": 95
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+          "compression": "stored",
+          "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+          "size": 112
+        },
+        "app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+          "compression": "stored",
+          "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+          "size": 35
+        },
+        "app/python/glue_meta_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+          "size": 256
+        },
+        "app/python/glue_meta_demo/data/message,one.txt": {
+          "compression": "stored",
+          "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+          "size": 26
+        },
+        "app/python/glue_meta_namespace/part.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        }
+      },
+      "bytes": 15068,
+      "component": "launch",
+      "corrupt_offset": 5417,
+      "crc_read_offsets": {
+        "app/main.py": 3021,
+        "app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": 5313,
+        "app/python/glue_meta_demo-1.2.3.dist-info/METADATA": 5417
+      },
+      "entry": "app/main.py",
+      "manifest_bytes": 2896,
+      "manifest_sha256": "f85255f2d89cf2755d08c86fabe5a0fc7d934ece4ac9ae0ea9f928de0c0dfdbe",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/install Python metadata/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/install Python metadata/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 11982,
+        "archive_read_bytes": 5598,
+        "ranges_sha256": "0f9541da0e5cc320aefe84103acd33b14d6291050280e06f0ee24d185ec24234"
+      },
+      "sha256": "39a3367fe8379d9efb0b2aab4b31ace1eb7612be2faf3da70a28daec2c37655a",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 13644
+    }
+  },
+  "schema_version": 0
+}

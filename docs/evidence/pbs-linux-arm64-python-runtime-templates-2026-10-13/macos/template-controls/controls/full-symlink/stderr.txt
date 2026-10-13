@@ -1,0 +1,1 @@
+glue: read template input "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/controls/full-symlink/input.tar.zst": template input must be a regular file and cannot be a symlink

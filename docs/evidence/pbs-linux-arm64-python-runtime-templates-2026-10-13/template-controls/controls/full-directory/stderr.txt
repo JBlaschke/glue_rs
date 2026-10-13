@@ -1,0 +1,1 @@
+glue: read template input "/build-target/template-control-scratch/controls/full-directory/input.tar.zst": template input must be a regular file and cannot be a symlink

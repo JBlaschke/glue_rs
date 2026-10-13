@@ -1,0 +1,33 @@
+{
+  "implementation": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "post_capture_commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "target/python-template-product-audit.py",
+        "--repo",
+        ".",
+        "--capture",
+        "target/python-template-final",
+        "--archives",
+        "target/python-template-final-build/relocated Python metadata",
+        "--output",
+        "target/python-template-final/product-audit.json"
+      ],
+      "exit_status": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "scripts/test_linux_python_venv_trace.py",
+        "--audit-capture",
+        "target/python-template-final",
+        "target/python-template-final/hostile-trace-audit.json"
+      ],
+      "exit_status": 0
+    }
+  ],
+  "runtime_policy": "unchanged scripts/check-linux-python-venv-trace.py"
+}

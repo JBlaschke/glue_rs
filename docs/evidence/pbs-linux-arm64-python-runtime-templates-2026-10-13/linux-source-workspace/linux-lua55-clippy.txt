@@ -1,0 +1,5 @@
+   Compiling glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua)
+   Compiling glue-runtime-python v0.1.0 (/workspace/crates/glue-runtime-python)
+   Compiling glue-runner v0.1.0 (/workspace/crates/glue-runner)
+    Checking glue-python-bootstrap-probe v0.1.0 (/workspace/spikes/python-bootstrap)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.86s

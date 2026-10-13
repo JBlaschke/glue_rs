@@ -1,0 +1,19 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "build-python",
+  "--provider-template",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/host-full/template/manifest.json",
+  "--provider-root",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/host-full/template/root",
+  "--app",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-venv-mac-controls/prepared/application",
+  "--venv",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-venv-mac-controls/prepared/venv",
+  "--app-id",
+  "distribution.metadata",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/host-full/application.glue",
+  "--json"
+]

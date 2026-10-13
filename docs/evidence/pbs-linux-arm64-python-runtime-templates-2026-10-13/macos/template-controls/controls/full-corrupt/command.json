@@ -1,0 +1,13 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/debug/glue",
+  "python-template",
+  "--provider",
+  "bundled",
+  "--pbs-full",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final-scratch/controls/full-corrupt/input.tar.zst",
+  "--frozen-bootstrap",
+  "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-venv-2026-10-13/freeze-bundle.json",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-template-mac-final/controls/full-corrupt/template",
+  "--json"
+]

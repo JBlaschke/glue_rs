@@ -1,0 +1,40 @@
+{
+  "checker_revision": "525da1994b6735db10b2aba3abece3946daec52c",
+  "command_with_repository_mount_placeholder": [
+    "podman",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--tmpfs",
+    "/tmp:rw,size=256m",
+    "--mount",
+    "type=bind,source=REPOSITORY,destination=/workspace,ro",
+    "--mount",
+    "type=bind,source=target/python-template-final-build/producer,destination=/producer,ro",
+    "--mount",
+    "type=bind,source=target/python-template-final,destination=/evidence",
+    "--workdir",
+    "/workspace",
+    "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "sh",
+    "-c",
+    "/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-runtime-templates/test_audit.py > /evidence/strong-template-oracle-tests.txt 2>&1 && /producer/bin/python3.13 -I -S -B -m unittest discover -s /workspace/scripts -p \"test_linux_python*.py\" > /evidence/stock-python-policy-tests.txt 2>&1"
+  ],
+  "exit_status": 0,
+  "mac_oracle_command": [
+    "python3",
+    "-B",
+    "fixtures/python-runtime-templates/test_audit.py"
+  ],
+  "mac_oracle_exit_status": 0,
+  "mac_oracle_tests": 21,
+  "product_capture_revision": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "stock_oracle_tests": 21,
+  "stock_producer_executable": {
+    "sha256": "1abe8738dd82558ba7884a0dd00bb8e9561ad0b85a3ddd3d755999c2dd878d45",
+    "size": 73325136
+  },
+  "stock_runtime_policy_tests": 235
+}

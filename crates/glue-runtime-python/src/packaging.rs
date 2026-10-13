@@ -7,6 +7,8 @@ use crate::{metadata_profile, profile};
 use glue_format::{ArchiveLimits, Manifest, ResourceSpec, digest};
 use std::collections::BTreeMap;
 
+pub mod template;
+
 /// Admit an exact metadata-profile template on any builder platform.
 pub fn validate_template(manifest: &Manifest) -> Result<ArchiveLimits, String> {
     let selected = profile::validate(manifest).map_err(|error| error.to_string())?;

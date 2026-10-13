@@ -1,0 +1,62 @@
+{
+  "README.md": {
+    "sha256": "2617102f49480cf25fa978512505f934bb534991e0121076216b75ffd327f92f",
+    "size": 26318
+  },
+  "crates/glue-pack/src/lib.rs": {
+    "sha256": "631225e4d6f93088e7a45dd66494bbc31c391ba248550ace9632aea1723eb6c9",
+    "size": 24616
+  },
+  "crates/glue-pack/src/python_template.rs": {
+    "sha256": "85c2b42583ec06eaf7d91d5bb94eecf2b60b9f680a4969b9a6847316948e3011",
+    "size": 18380
+  },
+  "crates/glue-runner/src/main.rs": {
+    "sha256": "f7a3439ad8b8e271571c8fa1c7392fca96d58bf202aa237aac3cff1a5b133097",
+    "size": 29105
+  },
+  "crates/glue-runner/tests/cli.rs": {
+    "sha256": "7426e5c49fa1845d228b288804a7c3ea745e89b97d28183a20ebbfeb6eee0812",
+    "size": 30376
+  },
+  "crates/glue-runtime-python/README.md": {
+    "sha256": "f5e3e5cd4257cb60a87ebd32653b1fac6871ddcf6e651a3393e44b567e1b3ac5",
+    "size": 9030
+  },
+  "crates/glue-runtime-python/src/packaging.rs": {
+    "sha256": "da548f192fef65d712d44b94e90ef16a7bc7ab6415e6566a7ac3089bc956b53d",
+    "size": 12667
+  },
+  "crates/glue-runtime-python/src/packaging/template.rs": {
+    "sha256": "56a45c77cdc032e72b485054e3185bafc6e0d1f3a908e39424814de8e84d948d",
+    "size": 20996
+  },
+  "docs/decisions/0023-python-runtime-templates.md": {
+    "sha256": "df525fc541db36f4f2de7e22f95db71215506f39054b0edcbdc8d1da6ae0bc26",
+    "size": 4380
+  },
+  "docs/fixtures.md": {
+    "sha256": "396e64fa5b1bdbe4739735abb6da72ffa4fc6a037501e1152edab8ef9edfd0f8",
+    "size": 5715
+  },
+  "docs/progress.md": {
+    "sha256": "7448aca3d44979fa86ca84503ad05716d887d14b23179c90774195cd4f32d168",
+    "size": 37685
+  },
+  "fixtures/python-runtime-templates/README.md": {
+    "sha256": "6723f194f0945ade8c21f419f68fa1936618e417bd849604e0f134fd2cc1b4ca",
+    "size": 6867
+  },
+  "fixtures/python-runtime-templates/run-linux.sh": {
+    "sha256": "8655f5d8b3e07a95551a669f2d5d0b986fe57c74945c35da66b2673686c837d0",
+    "size": 16519
+  },
+  "fixtures/python-runtime-templates/test_audit.py": {
+    "sha256": "1f8dfbe0fba76f02f2c5581295bf6dbbc5d676d2eb4b4ce1fb90af31ac5e1c2a",
+    "size": 6183
+  },
+  "fixtures/python-runtime-templates/test_templates.py": {
+    "sha256": "4122afde9af7e2b6e00cd0606f72661db0e33d000ba2aada7760b6c8ef00fd29",
+    "size": 32402
+  }
+}

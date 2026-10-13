@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "path": "target/debug/glue",
+    "sha256": "2b09b097977fb28b0bb8bd186a416adfcffd2eee563161fe30cbc73cfbd21c14",
+    "size": 12091976
+  },
+  "command": [
+    "python3",
+    "-B",
+    "fixtures/python-runtime-templates/test_templates.py",
+    "--glue",
+    "target/debug/glue",
+    "--full",
+    "target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-pgo+lto-full.tar.zst",
+    "--frozen",
+    "docs/evidence/pbs-linux-arm64-python-venv-2026-10-13/freeze-bundle.json",
+    "--prepared",
+    "target/python-venv-mac-controls/prepared",
+    "--output",
+    "target/python-template-mac-final",
+    "--scratch",
+    "target/python-template-mac-final-scratch"
+  ],
+  "exit_status": 0,
+  "implementation": "3d15bf9a5a8d300e17afe45dd00d2d83a930f5e9",
+  "inputs": "genuine offline installed Linux fixture; target venv interpreter is absent on Mac",
+  "source_diff": "",
+  "source_status": ""
+}
