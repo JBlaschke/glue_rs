@@ -6,6 +6,12 @@ applications and the existing exact source/resource and registered-native
 declaration profiles for stock CPython
 3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64.
 General installation discovery and native package compatibility remain pending.
+Separate metadata-aware source profiles add public `importlib.metadata`
+discovery for bounded application `.dist-info` inventories. They validate
+identities, canonical RECORD paths, ownership, hashes and sizes before provider
+acquisition, then expose metadata and files through the immutable resource
+callbacks. The legacy importer and source profiles retain their existing pins.
+See [the metadata fixture](../../fixtures/python-metadata/README.md).
 
 The runner enables execution with `--features python-pbs`; the crate feature
 is `pbs-bootstrap`. Default runner builds need no Python headers. On the exact
@@ -22,6 +28,9 @@ The registry contains:
 | Arbitrary admitted ID with the bundled-source-apps-v1 build identity | Bundled, sealed library | None |
 | Arbitrary admitted ID with the host-source-apps-v1 build identity | Explicit immutable host library/startup paths; full pinned source snapshot | None |
 | Arbitrary admitted ID with the host-install-source-apps-v1 build identity | Explicit immutable host paths; install-only source snapshot and three pinned startup caches | None |
+| Arbitrary admitted ID with the bundled-metadata-apps-v1 build identity | Bundled source applications with bounded distribution metadata | None |
+| Arbitrary admitted ID with the host-metadata-apps-v1 build identity | Full-source host applications with bounded distribution metadata | None |
+| Arbitrary admitted ID with the host-install-metadata-apps-v1 build identity | Install-only host applications with bounded distribution metadata | None |
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |

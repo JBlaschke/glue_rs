@@ -1,0 +1,24 @@
+{
+  "app_id": "stdlib.source",
+  "application": {
+    "app/tasks/stdlib.py": {
+      "compression": "stored",
+      "sha256": "5632df70b6569c873b7d25487ea069d6383d1436b4692c7a4b4dddea94284d08",
+      "size": 1236
+    }
+  },
+  "application_bytes": 1236,
+  "application_files": 1,
+  "cache_inventory": {
+    "sha256": "f14f8825bfa9a853f083733bee21c04cfbab6f509a00f72ca434e2096f643af8",
+    "size": 825
+  },
+  "component": "stdlib",
+  "entry": "app/tasks/stdlib.py",
+  "prefix": "/build-target/host Python install source apps",
+  "schema_version": 0,
+  "source_inventory": {
+    "sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+    "size": 155575
+  }
+}

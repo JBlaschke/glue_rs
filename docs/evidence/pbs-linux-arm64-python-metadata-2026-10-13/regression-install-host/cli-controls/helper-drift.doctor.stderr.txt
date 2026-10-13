@@ -1,0 +1,1 @@
+glue: source app provider inventory, identity or compression differs from fixed pins

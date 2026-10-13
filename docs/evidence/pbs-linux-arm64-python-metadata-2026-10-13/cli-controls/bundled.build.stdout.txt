@@ -1,0 +1,2 @@
+Built /build-target/relocated Python metadata/bundled.glue: 2186 resources, 83092053 archive bytes, 112883317 uncompressed bytes
+Archive SHA-256: 7aad0135fde800afd094ab7eaa7a7995bb2ceda8324fd88d75fadce7068e3514

@@ -1,0 +1,16 @@
+610fc75aeda9b9a621eb825174b71825e9961191571f4015c344f5e60d2752f9  /build-target/relocated Python host source apps/glue
+ddd9a059df433e3bc20573a999b27757614bc707af9d516db4eaa2c07e1d58cc  /build-target/relocated Python host source apps/app-error.glue
+26e2bfcd458c8bc5f092970754a61caa166a1a3b8487cae4581c048e9a32f207  /build-target/relocated Python host source apps/corrupt-source.glue
+02ab4c997ce5d1c1e0f62d03961c6d57e2f85fa4cad224fcfc7d90c2f579fe24  /build-target/relocated Python host source apps/deep-cache.glue
+d4412cc6e4eed55d958cd5cd6e52459d51e8fe309657ef65144a86c97be040ef  /build-target/relocated Python host source apps/helper-drift.glue
+9924ef3c70138e9e11e68b2ee7b478b9592ad4b08850f2ac34b3e290f0f0d07e  /build-target/relocated Python host source apps/minimal.glue
+2549df9196418a59c29abcbda76baeeb9826248f0eec663634076e04898b709f  /build-target/relocated Python host source apps/missing-library.glue
+dfce2ecd8694c5c448ec30f987d029a4a7c43d090baaec6588751e57d419d377  /build-target/relocated Python host source apps/missing-source.glue
+bb93ac4200c04793dff3069d0326de426d28bbb483fefa9cc972441ab71c3bc6  /build-target/relocated Python host source apps/nul.glue
+781b5dd373926ab5db9286a3387e8844a1c5eb0d72a56e74e56a1587295f6298  /build-target/relocated Python host source apps/outside-entry.glue
+bd4e6ed9980c9f81510ff6671ad2f8126d0dd1367923e151105850a7b1e8f6a0  /build-target/relocated Python host source apps/resources.glue
+e3dc75d8cd17d10829893b0ff3419131b653f71738561836fefa5d4626b1b648  /build-target/relocated Python host source apps/startup-bytecode.glue
+fec16b6e701cfa976a0538bcb2aac726800a6962d7c1847ee66904c7662901b3  /build-target/relocated Python host source apps/startup-native.glue
+b570820e3f0265f8b17b230fbd55160ff244acb78352b9f79982a083e53d6b35  /build-target/relocated Python host source apps/stdlib.glue
+3766feda08788b0945f625ee4ac2da522d5ee44fbaf94b8af0d91a18bfd1baa7  /build-target/relocated Python host source apps/syntax.glue
+966b84c1ea965d98db65b379ac96d601ad6e1ea1dfc3bcadca7e17878dbabdae  /build-target/relocated Python host source apps/wrong-source.glue

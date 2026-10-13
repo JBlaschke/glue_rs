@@ -1,0 +1,147 @@
+{
+  "builds": {
+    "bundled": {
+      "archive_bytes": 83092053,
+      "exit_status": 0,
+      "resources": 2186,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "d5f0fe67ae5e78ab691f416dcc7fcf5dc236934894c06dae68cee5bbdd189706",
+      "uncompressed_bytes": 112883317
+    },
+    "bundled-bad-record": {
+      "archive_bytes": 83092039,
+      "exit_status": 0,
+      "resources": 2186,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3e1c3a8bde603215aebbdfdf027490f72246d7298275ddef9700e8ef4561b0d0",
+      "uncompressed_bytes": 112883303
+    },
+    "host": {
+      "archive_bytes": 13481,
+      "exit_status": 0,
+      "resources": 10,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1b29bce383040e0ce2a3011721ba2fb8d6ff063c62a1bcd1f74fe2b6dd698ee3",
+      "uncompressed_bytes": 21770
+    },
+    "host-bad-record": {
+      "archive_bytes": 13467,
+      "exit_status": 0,
+      "resources": 10,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "089916c7dbc16986453d5e2eeb1f849b149c1a500fe1be24b5ac6f660857fe99",
+      "uncompressed_bytes": 21756
+    },
+    "install-host": {
+      "archive_bytes": 13495,
+      "exit_status": 0,
+      "resources": 10,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "58385dce6401e22ec559446d1e409b93cc66c447868a422e076651eab0fdb10a",
+      "uncompressed_bytes": 21770
+    },
+    "install-host-bad-record": {
+      "archive_bytes": 13481,
+      "exit_status": 0,
+      "resources": 10,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c88b4802505a19c79fb21ea7dfac225fbba5fde06f20c4b7b3ab5917b8da3f75",
+      "uncompressed_bytes": 21756
+    }
+  },
+  "checked_build_controls": 6,
+  "checked_exact_read_only_reports": 18,
+  "read_only_reports": {
+    "bundled-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "9fef2a55d403ccddd5cf3588164c1f108c0147d4bc08c01330b92fc8ca79379e"
+    },
+    "bundled-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bundled.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c1e41b4972d603a9a5c18bfd0e4577b909885642b07204e0d9ec845623c1faea"
+    },
+    "bundled.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a20757d14cd047c8644e29e8ac89198b8d5d98c1e9dba4970641c42f3df86c71"
+    },
+    "host-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "bb4489bdfed91ae40d62e34f5bb767aa9a36297115c51408bcaf9ce6b457fcd6"
+    },
+    "host-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "host.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "89eb0ccd723ac032e498b14f82fb2cc766be0fc1287600de24ea97998c82217d"
+    },
+    "host.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "4a0e44930da86e650f536dd0eb7144a3768327e2bf6879d4a9ac9826793cd0d4"
+    },
+    "install-host-bad-record.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host-bad-record.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "bb4489bdfed91ae40d62e34f5bb767aa9a36297115c51408bcaf9ce6b457fcd6"
+    },
+    "install-host-corrupt-metadata.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host-corrupt-metadata.verify": {
+      "exit_status": 1,
+      "stderr_sha256": "8e69098ed5fdeaa8115ca7cb1ec58a839154e18c713546126a42c65ea5de8ac6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "install-host.doctor": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6a820a41fc550e99a8936f4bd9872f9ccfc17ab30a126cac30f0506042278218"
+    },
+    "install-host.verify": {
+      "exit_status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "4a0e44930da86e650f536dd0eb7144a3768327e2bf6879d4a9ac9826793cd0d4"
+    }
+  },
+  "schema_version": 0
+}
