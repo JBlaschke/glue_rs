@@ -1,0 +1,3 @@
+GLUE_PYTHON_NATIVE_LIFECYCLE_PASS instances=5 collected=2 retained=3 create_retry=2 exec_retry=2
+GLUE_PYTHON_NATIVE_LIFECYCLE_ATEXIT_PASS retained=3
+GLUE_PYTHON_NATIVE_LIFECYCLE_FINALIZE_PASS allocated=5 freed=5 released=5 owned=0

@@ -1,0 +1,2 @@
+PASS exact native lifecycle trace: host-host
+Trace checks passed: complete immutable archive and five-image native admission, exact provider mappings before Python initialization, isolated imports and finalization, exact diagnostics and exit, no mutation, fallback or extra process

@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-extension-trace.py",
+    "target/python-native-lifecycle-old-regression/missing-host-image.trace.txt",
+    "--mode",
+    "missing-host-image",
+    "--stdout-file",
+    "target/python-native-lifecycle-old-regression/missing-host-image.stdout.txt",
+    "--stderr-file",
+    "target/python-native-lifecycle-old-regression/missing-host-image.stderr.txt",
+    "--native-metadata-file",
+    "target/python-native-lifecycle-old-regression/native-metadata.json",
+    "--archive-file",
+    "target/python-extensions-final-build/relocated Python extensions/missing-host-image.glue"
+  ],
+  "exit_status": 0
+}

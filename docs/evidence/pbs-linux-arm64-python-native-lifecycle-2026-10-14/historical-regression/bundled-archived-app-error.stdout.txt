@@ -1,0 +1,2 @@
+PASS Python=3.13.16 imports=archive packages=archive namespaces=archive resources=streams answer=42
+GLUE_PYTHON_EXTENSIONS_PASS single=42 multi=44 retry=2 dependency=42

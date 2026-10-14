@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-extension-trace.py",
+    "target/python-native-lifecycle-old-regression/host-archived-app-error.trace.txt",
+    "--mode",
+    "host-archived-app-error",
+    "--stdout-file",
+    "target/python-native-lifecycle-old-regression/host-archived-app-error.stdout.txt",
+    "--stderr-file",
+    "target/python-native-lifecycle-old-regression/host-archived-app-error.stderr.txt",
+    "--native-metadata-file",
+    "target/python-native-lifecycle-old-regression/native-metadata.json",
+    "--archive-file",
+    "target/python-extensions-final-build/relocated Python extensions/host-archived.glue"
+  ],
+  "exit_status": 0
+}

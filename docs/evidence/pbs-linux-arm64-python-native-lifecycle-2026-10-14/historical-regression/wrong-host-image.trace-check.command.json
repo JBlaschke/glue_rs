@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-extension-trace.py",
+    "target/python-native-lifecycle-old-regression/wrong-host-image.trace.txt",
+    "--mode",
+    "wrong-host-image",
+    "--stdout-file",
+    "target/python-native-lifecycle-old-regression/wrong-host-image.stdout.txt",
+    "--stderr-file",
+    "target/python-native-lifecycle-old-regression/wrong-host-image.stderr.txt",
+    "--native-metadata-file",
+    "target/python-native-lifecycle-old-regression/native-metadata.json",
+    "--archive-file",
+    "target/python-extensions-final-build/relocated Python extensions/wrong-host-image.glue"
+  ],
+  "exit_status": 0
+}

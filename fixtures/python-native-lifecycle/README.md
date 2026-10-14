@@ -58,6 +58,12 @@ root. The execution container is offline, unprivileged and read-only, with the
 repository, producer interpreter, compiler headers and staging absent. Complete
 syscall traces and artifact identities support independent policy replay.
 
+The [clean capture](../../docs/evidence/pbs-linux-arm64-python-native-lifecycle-2026-10-14/README.md)
+from `9b1c386` passes all eleven cases and all 33 hostile trace controls. The
+unchanged historical native checker also passes all eleven old cases with the
+same launcher bytes. The record includes native ELF images, manifest frames,
+complete compressed traces and source/artifact bindings.
+
 The [historical native profile](../python-extensions/README.md) retains its exact
 five-image inventory and public imports. This separate profile keeps the API4
 29-export boundary and public `PyImport_AppendInittab` protocol. Arbitrary wheels,
