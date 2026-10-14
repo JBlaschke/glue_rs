@@ -7,7 +7,10 @@ use super::{
     BuildReport, PackError, PackLimits, build_owned, canonical_root, check_limit, input_io,
     io_error, read_manifest, resource_error, resource_file,
 };
-use glue_format::{Compression, MAX_MANIFEST_BYTES, Manifest, ResourcePath, ResourceSpec, digest};
+use glue_format::{
+    Compression, MAX_MANIFEST_BYTES, Manifest, ResourcePath, ResourceSpec, RuntimeAbi,
+    RuntimeVersion, digest,
+};
 use glue_runtime_python::packaging;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -124,7 +127,10 @@ pub fn build(
         resources.insert(key, bytes);
     }
 
-    let normalized = normalize_packages(&package_root, package_inventory, &mut budget)?;
+    let RuntimeAbi::Python { version, .. } = &template.runtimes["python"].abi else {
+        unreachable!("template admission established the pinned Python runtime")
+    };
+    let normalized = normalize_packages(&package_root, package_inventory, &mut budget, version)?;
     for (path, bytes) in normalized.files {
         let key = format!("app/python/{path}");
         if resources.insert(key.clone(), bytes).is_some() {
@@ -146,6 +152,31 @@ pub fn build(
         application_specs,
     )
     .map_err(PackError::Profile)?;
+
+    // Explicit application files can supply distributions in addition to the
+    // installed input. Check their combined owned METADATA before reading any
+    // provider resources; full content validation still follows those reads.
+    for (path, bytes) in &resources {
+        let Some((directory, member)) = path
+            .strip_prefix("app/python/")
+            .and_then(|relative| relative.split_once('/'))
+        else {
+            continue;
+        };
+        if directory.ends_with(".dist-info") && member == "METADATA" {
+            check_limit(
+                "distribution METADATA bytes",
+                bytes.len() as u64,
+                MAX_METADATA,
+            )?;
+            let metadata = std::str::from_utf8(bytes).map_err(|_| {
+                PackError::Profile(format!("distribution METADATA is not UTF-8: {path}"))
+            })?;
+            packaging::validate_requires_python(metadata, version).map_err(|error| {
+                PackError::Profile(format!("distribution {directory}: {error}"))
+            })?;
+        }
+    }
 
     let provider_root = canonical_root(options.provider_root)?;
     let mut total = resources
@@ -544,6 +575,7 @@ fn normalize_packages(
     root: &Path,
     inventory: BTreeMap<String, u64>,
     budget: &mut ApplicationBudget,
+    version: &RuntimeVersion,
 ) -> Result<NormalizedPackages, PackError> {
     let mut files = BTreeMap::new();
     let mut inputs = Vec::new();
@@ -590,9 +622,10 @@ fn normalize_packages(
     let mut distributions = Vec::new();
     for directory in directories {
         let prefix = format!("{directory}/");
-        let (name, version) =
-            packaging::metadata_identity(metadata_text(&files, &format!("{prefix}METADATA"))?)
-                .map_err(PackError::Profile)?;
+        let metadata = metadata_text(&files, &format!("{prefix}METADATA"))?;
+        packaging::validate_requires_python(metadata, version)
+            .map_err(|error| PackError::Profile(format!("distribution {directory}: {error}")))?;
+        let (name, version) = packaging::metadata_identity(metadata).map_err(PackError::Profile)?;
         let (folder_name, folder_version) =
             packaging::folder_identity(&directory).map_err(PackError::Profile)?;
         if name != folder_name || version != folder_version {
@@ -1140,6 +1173,130 @@ mod tests {
                 .inputs
                 .iter()
                 .any(|input| input.source == "venv" && input.path == "pyvenv.cfg")
+        );
+    }
+
+    #[test]
+    fn python_requirements_follow_the_template_and_preserve_publication() {
+        for requirement in [
+            ">=3.14",
+            "!=3.13.*",
+            "==3.13",
+            "~=3.13.17",
+            "===3.13.16",
+            ">=3.13rc1",
+            "",
+            "(>=3.9",
+            ">=18446744073709551616",
+            ">=3.9\n <4",
+            ">=3.9\nRequires-Python: <4",
+        ] {
+            let fixture = Fixture::new();
+            fs::write(
+                fixture.packages.join(format!("{DIST}/METADATA")),
+                format!("Name: Test.Demo\nVersion: 1.0\nRequires-Python: {requirement}\n"),
+            )
+            .unwrap();
+            fixture.rewrite_record();
+            // The requirement fails before looking up provider resources.
+            fs::remove_dir_all(&fixture.provider).unwrap();
+            let error = fixture.absent_and_existing_fail();
+            assert!(
+                error.contains("Requires-Python"),
+                "{requirement:?}: {error}"
+            );
+        }
+        for requirement in [">=3.9", "(>=3.10,<4)", "~=3.13", "==3.13.*"] {
+            let fixture = Fixture::new();
+            let metadata =
+                format!("Name: Test.Demo\nVersion: 1.0\nRequires-Python: {requirement}\n")
+                    .into_bytes();
+            fs::write(fixture.packages.join(format!("{DIST}/METADATA")), &metadata).unwrap();
+            fixture.rewrite_record();
+            let output = fixture.output("requirements.glue");
+            fixture.build(&output).unwrap();
+            let mut archive = Archive::open(File::open(output).unwrap()).unwrap();
+            assert_eq!(
+                archive
+                    .read_resource(&format!("app/python/{DIST}/METADATA"))
+                    .unwrap(),
+                metadata
+            );
+        }
+    }
+
+    #[test]
+    fn venv_python_requirement_is_checked_without_executing_its_interpreter() {
+        let fixture = Fixture::new();
+        fs::write(
+            fixture.packages.join(format!("{DIST}/METADATA")),
+            b"Name: Test.Demo\nVersion: 1.0\nRequires-Python: >=3.14\n",
+        )
+        .unwrap();
+        fixture.rewrite_record();
+        let venv = fixture.directory.join("venv");
+        fs::create_dir_all(venv.join("lib/python3.13")).unwrap();
+        fs::rename(&fixture.packages, venv.join("lib/python3.13/site-packages")).unwrap();
+        fs::write(venv.join("pyvenv.cfg"), "home = /absent\ninclude-system-site-packages = false\nversion = 3.13.16\nexecutable = /never/executed/python3.13\n").unwrap();
+        let output = fixture.output("venv-incompatible.glue");
+        let error = build(fixture.options(PackageInput::Venv(&venv)), &output).unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("excludes selected CPython 3.13.16")
+        );
+        assert!(!output.exists());
+    }
+
+    #[test]
+    fn explicit_application_requirements_reject_before_provider_reads_and_publication() {
+        for metadata in [
+            b"Name: Application.Only\nVersion: 1\nRequires-Python: >=3.14\n".as_slice(),
+            b"Name: Application.Only\nVersion: 1\nRequires-Python: >=3.9\n\xff",
+        ] {
+            let fixture = Fixture::new();
+            write_member(
+                &fixture.application,
+                "app/python/application_only-1.dist-info/METADATA",
+                metadata,
+            );
+            write_member(
+                &fixture.application,
+                "app/python/application_only-1.dist-info/RECORD",
+                b"application_only-1.dist-info/METADATA,,\napplication_only-1.dist-info/RECORD,,\n",
+            );
+            fs::remove_dir_all(&fixture.provider).unwrap();
+            let error = fixture.absent_and_existing_fail();
+            assert!(
+                error.contains("Requires-Python") || error.contains("not UTF-8"),
+                "{error}"
+            );
+        }
+    }
+
+    #[test]
+    fn combined_requirement_checks_leave_nested_metadata_named_assets_opaque() {
+        let fixture = Fixture::new();
+        let directory = "app/python/application_only-1.dist-info";
+        write_member(
+            &fixture.application,
+            &format!("{directory}/METADATA"),
+            b"Name: Application.Only\nVersion: 1\nRequires-Python: >=3.9\n",
+        );
+        write_member(
+            &fixture.application,
+            &format!("{directory}/licenses/METADATA"),
+            b"\xffRequires-Python: >=4\0",
+        );
+        write_member(&fixture.application, &format!("{directory}/RECORD"), b"application_only-1.dist-info/METADATA,,\napplication_only-1.dist-info/licenses/METADATA,,\napplication_only-1.dist-info/RECORD,,\n");
+        let output = fixture.output("combined.glue");
+        fixture.build(&output).unwrap();
+        let mut archive = Archive::open(File::open(output).unwrap()).unwrap();
+        assert_eq!(
+            archive
+                .read_resource(&format!("{directory}/licenses/METADATA"))
+                .unwrap(),
+            b"\xffRequires-Python: >=4\0"
         );
     }
 

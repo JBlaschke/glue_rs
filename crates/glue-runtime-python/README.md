@@ -11,6 +11,12 @@ discovery for bounded application `.dist-info` inventories. They validate
 identities, canonical RECORD paths, ownership, hashes and sizes before provider
 acquisition, then expose metadata and files through the immutable resource
 callbacks. The legacy importer and source profiles retain their existing pins.
+`Requires-Python` is admitted against the selected pinned version using the
+bounded numeric release subset in
+[decision 0025](../../docs/decisions/0025-python-real-package-compatibility.md).
+Duplicate/folded, unsupported or unsatisfied fields reject. The same portable
+check applies to installed packages and explicit application metadata before
+builder provider reads or publication.
 See [the metadata fixture](../../fixtures/python-metadata/README.md).
 The portable `packaging` facade admits metadata provider templates and checks
 owned application contents for the build-time installed-package adapter. It
