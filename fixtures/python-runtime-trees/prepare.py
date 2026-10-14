@@ -303,8 +303,9 @@ def controls(args):
     output.mkdir()
     write_json(output / 'selected-input-audit.json', source)
     binary = regular_identity(glue, 256 * 1024 * 1024)[0]
-    temporary_parent = '/private/tmp' if sys.platform == 'darwin' else '/tmp'
-    scratch = Path(tempfile.mkdtemp(prefix='grt-', dir=temporary_parent))
+    # Selected clones use hardlinks, so scratch must share the installed input's
+    # filesystem. It is a fresh sibling, outside the selected installation root.
+    scratch = Path(tempfile.mkdtemp(prefix='grt-', dir=root.parent))
     results, successes = {}, {}
     sentinel = b'existing runtime-tree output must remain unchanged\n'
 
@@ -346,6 +347,16 @@ def controls(args):
                  'source-symlink', 'ancestor-symlink', 'source-fifo', 'modified-uv-source', 'wrong-uv-root',
                  'overlap-child', 'overlap-parent-alias', 'existing-file', 'existing-directory', 'existing-symlink',
                  'wrong-provider', 'mixed-artifact-input', 'relative-root', 'duplicate-tree-option']
+        case_probe = scratch / 'CaseProbe'
+        case_probe.mkdir()
+        alias_probe = scratch / 'caseprobe'
+        case_alias_supported = alias_probe.exists() and case_probe.samefile(alias_probe)
+        skipped = {}
+        if case_alias_supported:
+            cases.append('case-alias-overlap')
+        else:
+            skipped['case-alias-overlap'] = {'status': 'skipped', 'reason': 'fixture filesystem is case-sensitive'}
+        case_probe.rmdir()
         for name in cases:
             evidence = output / name
             evidence.mkdir()
@@ -387,6 +398,11 @@ def controls(args):
                 alias = scratch / 'parent-alias'; alias.symlink_to(tree, target_is_directory=True)
                 prefix = alias / 'publication'; arguments = command(tree, prefix)
                 (tree / LIBRARY).unlink()
+            elif name == 'case-alias-overlap':
+                alias = tree.with_name(tree.name.upper())
+                require(alias.samefile(tree), 'case alias no longer identifies the owned selected tree')
+                prefix = tree / 'publication'
+                arguments = command(alias, prefix)
             elif name == 'existing-file':
                 prefix.write_bytes(sentinel); before = identity(sentinel)
             elif name == 'existing-directory':
@@ -411,8 +427,8 @@ def controls(args):
                 (evidence / 'sentinel.txt').write_bytes(protected.read_bytes())
             else:
                 require(not prefix.exists() and not prefix.is_symlink(), 'hostile input created an output: ' + name)
-            if name.startswith('overlap-'):
-                require(b'overlap' in result.stderr.lower(), 'overlap was not rejected before the missing library read')
+            if name.startswith('overlap-') or name == 'case-alias-overlap':
+                require(b'overlap' in result.stderr.lower(), 'physical input/output overlap was not rejected')
             results[name] = {'exit_status': result.returncode, 'diagnostic': result.stderr.decode('utf-8'),
                              'output_protected': True, 'output_before': before, 'output_after': before,
                              'input_interpreters_absent': not (tree / 'bin').exists()}
@@ -424,6 +440,7 @@ def controls(args):
         report = {'schema_version': 0, 'glue': binary, 'input_audit': identity((output / 'selected-input-audit.json').read_bytes()),
                   'valid_preparations': len(successes), 'hostile_controls': len(results), 'successes': successes,
                   'results': results, 'source_selected_files_unchanged': True,
+                  'skipped_controls': skipped, 'case_alias_control_executed': case_alias_supported,
                   'source_selected_file_modes_times_unchanged': True,
                   'large_payload_trees_retained': False, 'input_interpreter_executions': 0}
         write_json(output / 'audit.json', report)

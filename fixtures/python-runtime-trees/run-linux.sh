@@ -53,7 +53,9 @@ if test "${1:-}" = --build; then
             host) selected=host-full; prefix="$host_prefix"; set -- --provider host-full --pbs-full "/workspace/target/pbs-inspection/$full" ;;
             install-host) selected=host-install; prefix="$install_prefix"; set -- --provider host-install --runtime-tree "$tree_root" ;;
         esac
-        strace -f -s 512 -yy -e trace=all -o "/evidence/$provider.host-process.trace.txt" \
+        trace_verbose=
+        if test "$provider" = install-host; then trace_verbose=-v; fi
+        strace -f $trace_verbose -s 512 -yy -e trace=all -o "/evidence/$provider.host-process.trace.txt" \
             /build-target/release/glue python-host "$@" --output "$prefix" --json \
             > "/evidence/$provider.host-report.json" 2> "/evidence/$provider.host.stderr.txt"
         printf '0\n' > "/evidence/$provider.host.exit-status.txt"

@@ -26,7 +26,9 @@ size, consume its exact bytes and EOF, and verify its identity before publicatio
 Input backing bytes and the output parent must stay stable during preparation;
 descriptor ownership does not freeze writable files. Reject overlapping input
 and output trees, including a symlinked output-parent alias, before payload reads.
-Existing output protection and fixed 0444/0555/1704067200 publication semantics
+Compare the retained input-root device/inode with every resolved output-parent
+ancestor before selected reads, so case-insensitive and mount aliases cannot
+bypass containment admission. Existing output protection and fixed 0444/0555/1704067200 publication semantics
 are the same as artifact preparation.
 
 Two exact selected-content layouts are admitted. The stock layout uses every

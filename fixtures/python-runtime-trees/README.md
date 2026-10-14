@@ -62,14 +62,18 @@ python3 -B fixtures/python-runtime-trees/test_prepare.py
 
 Five valid preparations cover genuine uv, a repeated preparation, a selected
 stock tree, a quoted relocated uv root, and ignored unselected FIFO/native
-alias/cache contents. Nineteen hostile commands cover missing/corrupt/oversized
+alias/cache contents. Nineteen portable hostile commands cover missing/corrupt/oversized
 selected files, selected symlink ancestors and leaves, FIFO sources, modified
 sysconfig/root values, input/output overlap, existing file/directory/symlink
-outputs, provider conflicts and invalid parser combinations. Overlap cases also
-remove the library to prove rejection precedes selected payload reads. Existing
+outputs, provider conflicts and invalid parser combinations. A twentieth command
+uses a valid stock tree and case aliases on a case-insensitive filesystem to
+verify physical overlap rejection; case-sensitive builders record its explicit
+skip. The other overlap cases also remove the library to prove rejection
+precedes selected payload reads. Existing
 sentinels and original selected input bytes, file modes and mtimes are checked
 afterward. The fixture retains bounded receipts and complete selected identities
-and 512-byte input prefixes; it deletes its own large scratch trees without
+and 512-byte input prefixes. Its fresh scratch directory is a sibling of the
+managed input on the same filesystem; it deletes only its own scratch trees without
 following aliases or chmodding shared input hardlinks.
 
 `test_process.py` audits the complete product preparation trace against the

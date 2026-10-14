@@ -97,8 +97,7 @@ pub fn prepare(input: HostInput<'_>, output: &Path) -> Result<HostReport, PackEr
             })?;
             let limits = host_prerequisites::installed_tree_input_limits(root_text)
                 .map_err(PackError::Profile)?;
-            installed_tree::reject_overlap(root, output)?;
-            let files = installed_tree::read(root, &limits)?;
+            let files = installed_tree::read_for_output(root, output, &limits)?;
             host_prerequisites::installed_tree(root_text, files).map_err(PackError::Profile)?
         }
     };

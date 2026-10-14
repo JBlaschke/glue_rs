@@ -12,7 +12,10 @@ use std::{
     io::Read,
     os::{
         fd::{AsRawFd, FromRawFd},
-        unix::{ffi::OsStrExt, fs::OpenOptionsExt},
+        unix::{
+            ffi::OsStrExt,
+            fs::{MetadataExt, OpenOptionsExt},
+        },
     },
     path::{Component, Path, PathBuf},
 };
@@ -61,6 +64,7 @@ pub(super) fn reject_overlap(root: &Path, output: &Path) -> Result<(), PackError
 /// At most four descriptors are live here: the retained installation root,
 /// the current selected ancestor, its replacement, and a selected leaf. No
 /// directory inventory, unselected leaf or executable alias is opened.
+#[cfg(test)]
 pub(super) fn read(
     root: &Path,
     limits: &BTreeMap<String, u64>,
@@ -68,6 +72,42 @@ pub(super) fn read(
     validate_limits(limits)?;
     let directory = open_root(root)?;
     read_selected(&directory, root, limits)
+}
+
+/// Retain the same no-follow root through physical containment admission and
+/// selected reads. Path spelling alone does not identify directories on a
+/// case-insensitive filesystem or through mount aliases.
+pub(super) fn read_for_output(
+    root: &Path,
+    output: &Path,
+    limits: &BTreeMap<String, u64>,
+) -> Result<BTreeMap<String, Vec<u8>>, PackError> {
+    reject_overlap(root, output)?;
+    validate_limits(limits)?;
+    let directory = open_root(root)?;
+    reject_identity_overlap(&directory, root, output)?;
+    read_selected(&directory, root, limits)
+}
+
+fn reject_identity_overlap(directory: &File, root: &Path, output: &Path) -> Result<(), PackError> {
+    let source = directory
+        .metadata()
+        .map_err(|source| io_error("stat installed runtime root", root, source))?;
+    let parent = output
+        .parent()
+        .ok_or_else(|| PackError::Profile("installed runtime output has no parent".into()))?;
+    let parent = fs::canonicalize(parent)
+        .map_err(|source| io_error("resolve host output parent", parent, source))?;
+    for ancestor in parent.ancestors() {
+        let destination = fs::metadata(ancestor)
+            .map_err(|source| io_error("stat host output ancestor", ancestor, source))?;
+        if (source.dev(), source.ino()) == (destination.dev(), destination.ino()) {
+            return Err(PackError::Profile(
+                "installed runtime input and output trees must not overlap".into(),
+            ));
+        }
+    }
+    Ok(())
 }
 
 fn validate_limits(limits: &BTreeMap<String, u64>) -> Result<(), PackError> {
@@ -378,6 +418,29 @@ mod tests {
         assert!(reject_overlap(&root, &alias.join("output")).is_err());
         assert!(reject_overlap(&root, &fixture.0.join("sibling")).is_ok());
         assert!(!root.join("output").exists());
+    }
+
+    #[test]
+    fn physical_containment_is_checked_before_missing_payloads() {
+        let fixture = Fixture::new();
+        let root = fixture.0.join("CaseInput");
+        fs::create_dir(&root).unwrap();
+        let directory = open_root(&root).unwrap();
+        assert!(reject_identity_overlap(&directory, &root, &root.join("output")).is_err());
+        assert!(reject_identity_overlap(&directory, &root, &fixture.0.join("sibling")).is_ok());
+        // Default Mac filesystems accept this spelling as the same directory.
+        // On case-sensitive builders the direct identity assertions still run.
+        let alias = fixture.0.join("caseinput");
+        if alias.is_dir() {
+            let error = read_for_output(
+                &alias,
+                &root.join("output"),
+                &BTreeMap::from([("missing-payload".into(), 1)]),
+            )
+            .unwrap_err();
+            assert!(error.to_string().contains("must not overlap"), "{error}");
+            assert!(!root.join("output").exists());
+        }
     }
 
     #[test]

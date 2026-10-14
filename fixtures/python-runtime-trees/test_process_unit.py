@@ -30,9 +30,12 @@ def fixture():
     def emit(value):
         records.append('42  ' + value + '\n')
     emit('execve("/glue", [' + ', '.join(quoted(value.encode()) for value in expected.command) + '], 0x123 /* 1 var */) = 0')
+    emit('statx(AT_FDCWD</workspace>, "/output", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW, STATX_ALL, 0x123) = -1 ENOENT (No such file or directory)')
     emit('openat(AT_FDCWD</workspace>, "/", O_RDONLY|O_NOFOLLOW|O_DIRECTORY|O_CLOEXEC) = 3</>')
     emit('openat(3</>, "input", O_RDONLY|O_NOFOLLOW|O_DIRECTORY|O_CLOEXEC) = 4</input>')
     emit('close(3</>) = 0')
+    emit('statx(4</input>, "", AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH, STATX_ALL, {stx_mode=S_IFDIR|0755, stx_size=4096, stx_ino=100, stx_dev_major=1, stx_dev_minor=1}) = 0')
+    emit('statx(AT_FDCWD</workspace>, "/", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mode=S_IFDIR|0755, stx_size=4096, stx_ino=1, stx_dev_major=1, stx_dev_minor=1}) = 0')
     for path, payload in sorted(payloads.items()):
         emit('openat(4</input>, "lib", O_RDONLY|O_NOFOLLOW|O_DIRECTORY|O_CLOEXEC) = 3</input/lib>')
         emit('openat(3</input/lib>, ' + quoted(Path(path).name.encode()) + ', O_RDONLY|O_NOFOLLOW|O_NONBLOCK|O_CLOEXEC) = 5</input/' + path + '>')
@@ -133,6 +136,19 @@ class ProcessPolicyTests(unittest.TestCase):
         index = next(index for index, line in enumerate(self.lines) if 'mkdirat(' in line)
         early = self.lines[index]
         self.reject(self.lines[:4] + [early] + self.lines[4:index] + self.lines[index + 1:])
+
+    def test_overlap_identity_probes_precede_selected_descendants(self):
+        for needle in ('statx(4</input>, ""', 'statx(AT_FDCWD</workspace>, "/"'):
+            index = next(index for index, line in enumerate(self.lines) if needle in line)
+            self.reject(self.lines[:index] + self.lines[index + 1:])
+        index = next(index for index, line in enumerate(self.lines) if '-1 ENOENT ' in line)
+        self.reject(self.lines[:index] + self.lines[index + 1:])
+        self.reject(self.replace('stx_ino=1, stx_dev_major=1', 'stx_ino=100, stx_dev_major=1'))
+        self.reject(self.replace('statx(4</input>, ""', 'statx(3</>, ""'))
+        self.reject(self.replace(', stx_ino=100, stx_dev_major=1, stx_dev_minor=1', ', ...'))
+        self.reject(self.replace('stx_ino=100,', 'stx_ino=100, stx_ino=200,'))
+        index = next(index for index, line in enumerate(self.lines) if 'statx(AT_FDCWD</workspace>, "/"' in line)
+        self.reject(self.lines[:index] + [self.lines[index]] + self.lines[index:])
 
     def test_publication_exclusive_inventory_and_no_alias(self):
         self.reject(self.replace('O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC', 'O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC'))

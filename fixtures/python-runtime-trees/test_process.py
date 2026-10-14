@@ -288,6 +288,17 @@ class Audit:
             self.input_open_order.extend(expected.root + '/' + '/'.join(parts[:index]) for index in range(1, len(parts) + 1))
         self.input_open_index = 0
         self.creation_order = sorted(expected.inputs) + ['provenance.json']
+        self.overlap_root_stat = False
+        self.overlap_parent_stats = []
+        self.overlap_root_identity = None
+        self.overlap_identity_values_visible = True
+        self.overlap_parent_order = []
+        parent = posixpath.dirname(expected.prefix)
+        while True:
+            self.overlap_parent_order.append(parent)
+            if parent == '/':
+                break
+            parent = posixpath.dirname(parent)
 
     def relative(self, path, root):
         require(path.startswith(root + '/'), 'descriptor is outside its expected tree')
@@ -359,6 +370,8 @@ class Audit:
             require(returned == value and len(args) == 3, 'input open aliases its declared path')
             relative = value[len(self.expected.root) + 1:] if value.startswith(self.expected.root + '/') else None
             leaf = relative in self.expected.inputs
+            if value.startswith(self.expected.root + '/'):
+                self.complete_overlap_preflight()
             require(opened_flags == (LEAF_FLAGS if leaf else DIRECTORY_FLAGS), 'input open lacks exact no-follow directory/leaf flags')
             if value != '/':
                 base_number, _ = descriptor(args[0])
@@ -414,8 +427,17 @@ class Audit:
             return
         require(result == '0', 'unexpected stat result')
         if string(args[1]) == '':
-            _, owner = self.owner(args[0], {'input-file', 'system'})
+            _, owner = self.owner(args[0], {'input-file', 'input-directory', 'system'})
             metadata = args[4] if name == 'statx' else args[2]
+            if owner.kind == 'input-directory':
+                require(name == 'statx' and owner.path == self.expected.root and not self.overlap_root_stat and
+                        self.input_open_index == len(self.root_ancestors) and
+                        args[2] == 'AT_STATX_SYNC_AS_STAT|AT_EMPTY_PATH' and args[3] == 'STATX_ALL' and
+                        'S_IFDIR|' in metadata, 'directory stat is not the one retained-root overlap preflight')
+                self.overlap_root_stat = True
+                self.overlap_root_identity = self.directory_identity(metadata)
+                require(self.overlap_root_identity is not None, 'retained-root device/inode identity requires verbose strace metadata')
+                return
             require('S_IFREG|' in metadata, 'selected/system open is not a regular file')
             size = re.search(r'\b(?:stx_size|st_size)=(\d+)', metadata)
             require(size is not None, 'metadata omits regular-file size')
@@ -430,7 +452,41 @@ class Audit:
         else:
             value = self.resolved(args[0], string(args[1]))
             require(value in self.parent_ancestors, 'metadata lookup is outside admitted output parent ancestry')
-            require('S_IFDIR|' in (args[4] if name == 'statx' else args[2]), 'output parent metadata is not a directory')
+            metadata = args[4] if name == 'statx' else args[2]
+            require('S_IFDIR|' in metadata, 'output parent metadata is not a directory')
+            if self.input_open_index:
+                if self.selected_opened:
+                    self.complete_inputs()
+                    require(value == posixpath.dirname(self.expected.prefix) and not self.created_dirs,
+                            'extra parent metadata probe outside publication admission')
+                else:
+                    require(self.overlap_root_stat and name == 'statx' and
+                            len(self.overlap_parent_stats) < len(self.overlap_parent_order) and
+                            value == self.overlap_parent_order[len(self.overlap_parent_stats)] and
+                            args[2] == 'AT_STATX_SYNC_AS_STAT' and args[3] == 'STATX_ALL',
+                            'output ancestry identity probes are missing/reordered/duplicated')
+                    identity = self.directory_identity(metadata)
+                    require(identity is not None, 'output-parent device/inode identity requires verbose strace metadata')
+                    require(identity != self.overlap_root_identity, 'output parent ancestor aliases the retained input root')
+                    self.overlap_parent_stats.append(value)
+
+    def directory_identity(self, metadata):
+        fields = []
+        for field in ('stx_dev_major', 'stx_dev_minor', 'stx_ino'):
+            matches = re.findall(r'\b' + field + r'=(0x[0-9a-f]+|\d+)(?=\s*[,}])', metadata)
+            require(len(matches) <= 1, 'duplicate directory device/inode identity field')
+            fields.append(matches[0] if matches else None)
+        if all(fields):
+            values = tuple(int(field, 0 if field.startswith('0x') else 10) for field in fields)
+            require(values[0] < 2**32 and values[1] < 2**32 and values[2] < 2**64,
+                    'directory device/inode field exceeds its kernel type')
+            return values
+        require(not any(fields), 'partially printed directory identity cannot establish preflight comparison')
+        return None
+
+    def complete_overlap_preflight(self):
+        require(self.output_absence_probes == 1 and self.overlap_root_stat and self.overlap_parent_stats == self.overlap_parent_order,
+                'selected traversal starts before complete retained-root/output-ancestry identity preflight')
 
     def transfer(self, name, args, result):
         require(len(args) == 3 and re.fullmatch(r'\d+', args[2]) is not None and re.fullmatch(r'\d+', result) is not None,
@@ -580,7 +636,7 @@ class Audit:
             require(len(args) == 3 and args[2] in ('PROT_NONE', 'PROT_READ', 'PROT_READ|PROT_WRITE') and result == '0',
                     'mprotect grants executable/unclassified memory')
         elif name in ('readlink', 'readlinkat'):
-            require(len(args) == (3 if name == 'readlink' else 4) and self.input_open_index == 0 and
+            require(len(args) == (3 if name == 'readlink' else 4) and self.selected_opened == 0 and not self.created_dirs and
                     (string(args[0]) if name == 'readlink' else self.resolved(args[0], string(args[1]))) in self.parent_ancestors and
                     result.startswith('-1 EINVAL '), 'readlink is outside ordinary nonalias output parent resolution')
         elif name == 'faccessat':
@@ -643,6 +699,7 @@ class Audit:
     def finish(self):
         require(self.execs == self.exits == self.exit_groups == 1, 'complete trace lacks one executable and successful exit')
         self.complete_inputs()
+        self.complete_overlap_preflight()
         self.complete_publication()
         if self.expected.require_system_reads:
             require(self.system_closed == SYSTEM_LIBRARIES | {'/etc/ld.so.cache', '/proc/' + str(self.pid) + '/maps'},
@@ -657,6 +714,10 @@ class Audit:
                 'published_directories': len(self.finished_dirs), 'published_bytes': self.output_bytes,
                 'maximum_live_input_owners': self.max_input_owners, 'stdout_bytes': self.stdout_bytes,
                 'initial_output_absence_probe_count': self.output_absence_probes,
+                'retained_input_root_identity_probe_count': int(self.overlap_root_stat),
+                'canonical_output_parent_ancestor_probe_count': len(self.overlap_parent_stats),
+                'overlap_identity_preflight_before_selected_reads': True,
+                'directory_identity_values_visible_and_distinct': self.overlap_identity_values_visible,
                 'child_creation_count': 0, 'network_count': 0, 'outside_prefix_mutation_count': 0,
                 'unselected_input_read_count': 0, 'input_output_mapping_count': 0,
                 'selected_regular_size_eof_restat_close_verified': True,
@@ -704,6 +765,11 @@ def hostile_controls(lines, expected):
     input_restat = input_eof + 1
     require(' statx(' in lines[input_restat] and selected in lines[input_restat], 'genuine input EOF is not followed by its restat')
     input_close = input_restat + 1
+    overlap_root = first(lambda line: ' statx(' in line and '<' + expected.root + '>' in line and 'S_IFDIR|' in line)
+    absent_output = first(lambda line: ' statx(' in line and '"' + expected.prefix + '"' in line and '-1 ENOENT ' in line)
+    overlap_parents = [index for index in range(overlap_root + 1, input_open)
+                       if ' statx(AT_FDCWD<' in lines[index] and 'S_IFDIR|' in lines[index]]
+    require(overlap_parents, 'genuine trace lacks output-parent identity probes')
     directory_open = first(lambda line: ' openat(' in line and 'O_DIRECTORY' in line)
     first_mkdir = first(lambda line: ' mkdirat(' in line)
     output_open = first(lambda line: ' openat(' in line and 'O_WRONLY' in line)
@@ -750,6 +816,21 @@ def hostile_controls(lines, expected):
     modified('leaf-can-block-fifo', input_open, '|O_NONBLOCK', '')
     modified('directory-follows-symlinks', directory_open, '|O_NOFOLLOW', '')
     modified('directory-not-required', directory_open, '|O_DIRECTORY', '')
+    removed('missing-initial-absent-output-probe', absent_output)
+    removed('missing-retained-root-identity-probe', overlap_root)
+    modified('root-identity-probe-not-directory', overlap_root, 'S_IFDIR|', 'S_IFREG|')
+    modified('root-identity-probe-not-empty-path', overlap_root, 'AT_EMPTY_PATH', 'AT_SYMLINK_NOFOLLOW')
+    removed('missing-output-parent-identity-probe', overlap_parents[-1])
+    cases['duplicated-output-parent-identity-probe'] = lines[:overlap_parents[0]] + [lines[overlap_parents[0]]] + lines[overlap_parents[0]:]
+    modified('output-parent-identity-probe-not-directory', overlap_parents[0], 'S_IFDIR|', 'S_IFREG|')
+    if 'stx_ino=' in lines[overlap_root]:
+        changed = list(lines)
+        parent = overlap_parents[0]
+        for field in ('stx_dev_major', 'stx_dev_minor', 'stx_ino'):
+            original = re.search(r'\b' + field + r'=(?:0x[0-9a-f]+|\d+)', lines[overlap_root])
+            require(original is not None, 'verbose root directory identity is incomplete')
+            changed[parent] = re.sub(r'\b' + field + r'=(?:0x[0-9a-f]+|\d+)', original.group(0), changed[parent])
+        cases['output-parent-identity-aliases-retained-root'] = changed
     returned_leaf = lines[input_open].split(' = ')[-1].strip()
     leaf_number = returned_leaf.split('<')[0]
     leaf_path = returned_leaf[returned_leaf.index('<') + 1:-1]
