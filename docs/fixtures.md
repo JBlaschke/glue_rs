@@ -75,6 +75,15 @@ input contents are outside inspection, and default stripped uv builds are separa
 The [clean capture](evidence/pbs-linux-arm64-python-runtime-trees-2026-10-14/README.md)
 retains complete preparation/runtime traces and independent compressed replays.
 
+The [stripped-host fixture](../fixtures/python-stripped-host/README.md) compares
+the separately authenticated stock stripped install-only artifact with the
+unstripped input. Complete inventories, selected source/cache bytes and allocated
+ELF contents support a distinct `host-install-stripped` metadata profile. Its
+portable preparation audit verifies all 1,041 output files and original inventory
+provenance; the native fixture covers explicit image selection, source/metadata/
+resource execution and rejection before loading. Stock selected trees are admitted;
+relocated uv stripped sysconfig and uv's default catalog remain separate work.
+
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with
 the matching stock producer at build time, removes that installation and its

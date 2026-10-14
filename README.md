@@ -92,10 +92,21 @@ This reads the same 1,041 pinned files without running the input interpreter.
 It accepts the exact stock layout or the tested uv 0.12.23 layout from an
 explicitly configured unstripped PBS installation. For that uv layout, it
 records and restores the one relocated sysconfig source to the stock embedding
-configuration. Other versions or stripped libraries require separate support.
+configuration. Other versions require separate support.
 The report distinguishes selected tree inspection from archive inspection;
 unselected files are neither read nor copied. Input and output trees must not
 overlap. See the [installed-runtime-tree fixture](fixtures/python-runtime-trees/README.md).
+
+For the separately pinned PBS `20261009` CPython 3.13.16 GNU Linux arm64
+`install_only_stripped` image, use `--provider host-install-stripped` in both
+commands. It accepts the exact stripped archive with `--pbs-install-only`, or
+its stock selected tree with `--runtime-tree`. Its library is 22,177,832 bytes;
+the source and three cache prerequisites match the unstripped provider. Both
+profiles verify their own library identity and reject the opposite image.
+Stripped tree input currently requires stock sysconfig; the uv normalization
+above belongs to the tested unstripped input. This is an explicit PBS pin and
+does not admit uv's default catalog or select another version. See the
+[stripped-host fixture](fixtures/python-stripped-host/README.md).
 
 Use `--site-packages PACKAGE_DIR` instead of `--venv` for an explicit installed
 package directory. Venv convenience mode accepts the conventional

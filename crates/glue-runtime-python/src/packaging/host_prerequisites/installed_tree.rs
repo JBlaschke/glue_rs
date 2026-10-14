@@ -25,9 +25,21 @@ pub struct InstalledTreeProvenance {
 /// Bound every selected read without consulting the input filesystem.
 /// The one relocatable sysconfig source may have either exact admitted spelling.
 pub fn installed_tree_input_limits(root: &str) -> Result<BTreeMap<String, u64>, String> {
-    validate_prefix(root, HostProvider::InstallOnly)?;
-    let expected = expected(HostProvider::InstallOnly)?;
-    let uv = uv_source(root, &expected)?;
+    input_limits(root, HostProvider::InstallOnly)
+}
+
+pub fn installed_stripped_tree_input_limits(root: &str) -> Result<BTreeMap<String, u64>, String> {
+    input_limits(root, HostProvider::InstallOnlyStripped)
+}
+
+fn input_limits(root: &str, provider: HostProvider) -> Result<BTreeMap<String, u64>, String> {
+    validate_prefix(root, provider)?;
+    let expected = expected(provider)?;
+    let uv = if provider == HostProvider::InstallOnly {
+        uv_source(root, &expected)?
+    } else {
+        STOCK.to_vec()
+    };
     let mut limits: BTreeMap<_, _> = expected
         .files
         .into_iter()
@@ -44,10 +56,26 @@ pub fn installed_tree_input_limits(root: &str) -> Result<BTreeMap<String, u64>, 
 /// Publish stock embedding bytes after an explicitly reported uv normalization.
 pub fn installed_tree(
     root: &str,
+    files: BTreeMap<String, Vec<u8>>,
+) -> Result<HostPrerequisites, String> {
+    installed_tree_for(root, HostProvider::InstallOnly, files)
+}
+
+/// The stripped tree currently admits stock sysconfig bytes only.
+pub fn installed_stripped_tree(
+    root: &str,
+    files: BTreeMap<String, Vec<u8>>,
+) -> Result<HostPrerequisites, String> {
+    installed_tree_for(root, HostProvider::InstallOnlyStripped, files)
+}
+
+fn installed_tree_for(
+    root: &str,
+    provider: HostProvider,
     mut files: BTreeMap<String, Vec<u8>>,
 ) -> Result<HostPrerequisites, String> {
-    validate_prefix(root, HostProvider::InstallOnly)?;
-    let expected = expected(HostProvider::InstallOnly)?;
+    validate_prefix(root, provider)?;
+    let expected = expected(provider)?;
     if files.len() != expected.files.len() || files.keys().ne(expected.files.keys()) {
         return Err("installed-tree prerequisite inventory differs from its fixed profile".into());
     }
@@ -55,21 +83,24 @@ pub fn installed_tree(
     let input = &files[SYSCONFIG];
     let normalized = if input == STOCK {
         false
-    } else if input == &uv {
+    } else if provider == HostProvider::InstallOnly && input == &uv {
         true
     } else {
+        if provider == HostProvider::InstallOnlyStripped {
+            return Err("stripped installed-tree sysconfig differs from fixed stock bytes".into());
+        }
         return Err(
             "installed-tree sysconfig differs from stock or the exact uv 0.12.23 layout".into(),
         );
     };
-    let tree = tree_provenance(root, normalized, &uv, &expected)?;
+    let tree = tree_provenance_for(provider, root, normalized, &uv, &expected)?;
     if normalized {
         files.insert(SYSCONFIG.into(), STOCK.to_vec());
     }
     validate_owned_files(&files, &expected.files)?;
     let owned = HostPrerequisites {
         files,
-        provenance: provenance(&tree, &expected)?,
+        provenance: provenance_for(provider, &tree, &expected)?,
     };
     validate_contents(&owned)?;
     Ok(owned)
@@ -102,23 +133,43 @@ fn uv_source(root: &str, expected: &Expected) -> Result<Vec<u8>, String> {
         .into_bytes())
 }
 
+#[cfg(test)]
 fn tree_provenance(
     root: &str,
     normalized: bool,
     uv: &[u8],
     expected: &Expected,
 ) -> Result<InstalledTreeProvenance, String> {
+    tree_provenance_for(HostProvider::InstallOnly, root, normalized, uv, expected)
+}
+
+fn tree_provenance_for(
+    provider: HostProvider,
+    root: &str,
+    normalized: bool,
+    uv: &[u8],
+    expected: &Expected,
+) -> Result<InstalledTreeProvenance, String> {
     let pins = Pins::from_json(PINS)?;
+    if provider == HostProvider::InstallOnlyStripped && normalized {
+        return Err("stripped installed trees require stock sysconfig bytes".into());
+    }
     Ok(InstalledTreeProvenance {
         input_root: root.into(),
         input_layout: if normalized {
             "uv-0.12.23-sysconfig"
+        } else if provider == HostProvider::InstallOnlyStripped {
+            "stock-install-only-stripped"
         } else {
             "stock-install-only"
         }
         .into(),
         inspection_scope: "selected-prerequisites-only".into(),
-        expected_artifact: artifact_identity(pins.install_only),
+        expected_artifact: artifact_identity(if provider == HostProvider::InstallOnlyStripped {
+            crate::stripped_host::artifact_pin()
+        } else {
+            pins.install_only
+        }),
         sysconfig_input: identity(if normalized { uv } else { STOCK }),
         sysconfig_output: expected.files[SYSCONFIG].clone(),
         sysconfig_normalized: normalized,
@@ -130,23 +181,34 @@ fn tree_provenance(
     })
 }
 
-pub(super) fn provenance(
+#[cfg(test)]
+fn provenance(
     tree: &InstalledTreeProvenance,
     expected: &Expected,
 ) -> Result<HostPrerequisiteProvenance, String> {
-    validate_prefix(&tree.input_root, HostProvider::InstallOnly)?;
+    provenance_for(HostProvider::InstallOnly, tree, expected)
+}
+
+pub(super) fn provenance_for(
+    provider: HostProvider,
+    tree: &InstalledTreeProvenance,
+    expected: &Expected,
+) -> Result<HostPrerequisiteProvenance, String> {
+    validate_prefix(&tree.input_root, provider)?;
     let uv = uv_source(&tree.input_root, expected)?;
-    if tree != &tree_provenance(&tree.input_root, tree.sysconfig_normalized, &uv, expected)? {
+    if tree
+        != &tree_provenance_for(
+            provider,
+            &tree.input_root,
+            tree.sysconfig_normalized,
+            &uv,
+            expected,
+        )?
+    {
         return Err("installed-tree provenance differs from its exact selected layout".into());
     }
-    let facts = artifact_facts(HostProvider::InstallOnly);
-    let mut result = super::provenance(
-        HostProvider::InstallOnly,
-        expected,
-        facts.0,
-        facts.1,
-        facts.2,
-    )?;
+    let facts = artifact_facts(provider);
+    let mut result = super::provenance(provider, expected, facts.0, facts.1, facts.2)?;
     result.artifact = None;
     result.artifact_entries = None;
     result.artifact_payload_bytes = None;
@@ -240,5 +302,43 @@ mod tests {
                 .unwrap_err()
                 .contains("inventory")
         );
+    }
+
+    #[test]
+    fn stripped_tree_uses_its_own_library_bound_and_stock_only_sysconfig_contract() {
+        let root = "/selected stripped Python";
+        let limits = installed_stripped_tree_input_limits(root).unwrap();
+        assert_eq!(limits.len(), 1041);
+        assert_eq!(limits[LIBRARY], crate::stripped_host::LIBRARY_SIZE);
+        assert_eq!(limits[SYSCONFIG], STOCK.len() as u64);
+        let expected = expected(HostProvider::InstallOnlyStripped).unwrap();
+        let uv = uv_source(root, &expected).unwrap();
+        assert!(
+            tree_provenance_for(
+                HostProvider::InstallOnlyStripped,
+                root,
+                true,
+                &uv,
+                &expected
+            )
+            .is_err()
+        );
+        let tree = tree_provenance_for(
+            HostProvider::InstallOnlyStripped,
+            root,
+            false,
+            &uv,
+            &expected,
+        )
+        .unwrap();
+        let report = provenance_for(HostProvider::InstallOnlyStripped, &tree, &expected).unwrap();
+        assert_eq!(tree.input_layout, "stock-install-only-stripped");
+        assert_eq!(
+            tree.expected_artifact.sha256,
+            crate::stripped_host::ARTIFACT_SHA256
+        );
+        assert_eq!(report.selected_bytes, 38_093_257);
+        assert_eq!(report.artifact, None);
+        assert!(provenance_for(HostProvider::InstallOnly, &tree, &expected).is_err());
     }
 }

@@ -40,6 +40,7 @@ mod linux;
 mod metadata_profile;
 mod source_app_profile;
 mod source_entry;
+mod stripped_host;
 
 use bundle::Bundle;
 use glue_format::*;
@@ -139,6 +140,12 @@ pub fn execute(
             profile::Kind::InstallHostMetadataApp => linux::run_install_host_source_app(
                 metadata_profile::read_install_host(archive).map_err(ExecutionError::failed)?,
             ),
+            profile::Kind::StrippedInstallHostMetadataApp => {
+                linux::run_stripped_install_host_metadata_app(
+                    metadata_profile::read_stripped_install_host(archive)
+                        .map_err(ExecutionError::failed)?,
+                )
+            }
             profile::Kind::InstallHostSourceApp => linux::run_install_host_source_app(
                 install_host_source_app_profile::read_archive(archive)
                     .map_err(ExecutionError::failed)?,
