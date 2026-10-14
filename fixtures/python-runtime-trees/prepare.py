@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import errno
 import hashlib
 import importlib.util
 import json
@@ -264,15 +265,26 @@ def remove_owned_tree(root):
     shutil.rmtree(root)
 
 
-def clone_selected(source, destination, uv=False):
+def clone_selected(source, destination, uv=False, *, copy_files=False):
     destination.mkdir()
     for relative in selected_contract():
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         if relative == SYSCONFIG:
             target.write_bytes(uv_sysconfig(destination) if uv else (HERE / 'stock-sysconfig.py').read_bytes())
+        elif copy_files:
+            shutil.copyfile(source / relative, target, follow_symlinks=False)
         else:
-            os.link(source / relative, target)
+            try:
+                os.link(source / relative, target)
+            except OSError as error:
+                if error.errno not in {errno.EXDEV, errno.EACCES, errno.EPERM, errno.ENOTSUP, errno.EOPNOTSUPP}:
+                    raise
+                # The destination is fresh and fixture-owned. Detach only its
+                # possible partial leaf; never remove or chmod the source.
+                if target.exists() or target.is_symlink():
+                    target.unlink()
+                shutil.copyfile(source / relative, target, follow_symlinks=False)
     return destination
 
 
@@ -303,9 +315,11 @@ def controls(args):
     output.mkdir()
     write_json(output / 'selected-input-audit.json', source)
     binary = regular_identity(glue, 256 * 1024 * 1024)[0]
-    # Selected clones use hardlinks, so scratch must share the installed input's
-    # filesystem. It is a fresh sibling, outside the selected installation root.
-    scratch = Path(tempfile.mkdtemp(prefix='grt-', dir=root.parent))
+    # Linux-local scratch permits FIFO controls even when the genuine input is
+    # on VirtioFS. Copy the selected base once; subsequent links are fixture-owned.
+    temporary_parent = args.scratch_parent if args.scratch_parent is not None else Path(
+        '/private/tmp' if sys.platform == 'darwin' else '/tmp')
+    scratch = Path(tempfile.mkdtemp(prefix='grt-', dir=temporary_parent))
     results, successes = {}, {}
     sentinel = b'existing runtime-tree output must remain unchanged\n'
 
@@ -314,13 +328,14 @@ def controls(args):
                 '--output', str(prefix), '--json']
 
     try:
-        ignored = clone_selected(root, scratch / 'ignored-unselected')
+        owned_base = clone_selected(root, scratch / 'owned-base', copy_files=True)
+        ignored = clone_selected(owned_base, scratch / 'ignored-unselected')
         (ignored / 'unselected-native.so').symlink_to(scratch / 'never-read-native-image')
         os.mkfifo(ignored / 'unselected-fifo')
         (ignored / 'lib/python3.13/unselected-extra.pyc').write_bytes(b'not an admitted bytecode cache')
         for name, tree in [('genuine-uv', root), ('genuine-uv-repeat', root),
-                           ('stock-selected', clone_selected(root, scratch / 'stock')),
-                           ('relocated-uv-quotes', clone_selected(root, scratch / 'uv \'"root', True)),
+                           ('stock-selected', clone_selected(owned_base, scratch / 'stock')),
+                           ('relocated-uv-quotes', clone_selected(owned_base, scratch / 'uv \'"root', True)),
                            ('ignored-unselected', ignored)]:
             evidence = output / name
             evidence.mkdir()
@@ -360,7 +375,7 @@ def controls(args):
         for name in cases:
             evidence = output / name
             evidence.mkdir()
-            tree = clone_selected(root, scratch / name, name in ('modified-uv-source', 'wrong-uv-root'))
+            tree = clone_selected(owned_base, scratch / name, name in ('modified-uv-source', 'wrong-uv-root'))
             prefix = scratch / (name + '-prefix')
             arguments = command(tree, prefix)
             before = None
@@ -525,6 +540,7 @@ def main():
     control.add_argument('--runtime-tree', required=True, type=Path)
     control.add_argument('--glue', required=True, type=Path)
     control.add_argument('--output', required=True, type=Path)
+    control.add_argument('--scratch-parent', type=Path)
     args = parser.parse_args()
     try:
         if args.mode == 'install':

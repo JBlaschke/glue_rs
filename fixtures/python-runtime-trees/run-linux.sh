@@ -34,6 +34,8 @@ if test "${1:-}" = --build; then
     /build-target/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-source-apps/test_entry.py > /evidence/entry-protocol-tests.txt 2>&1
     /build-target/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-runtime-trees/test_prepare.py > /evidence/runtime-tree-oracle-tests.txt 2>&1
     /build-target/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-runtime-trees/test_process_unit.py > /evidence/runtime-tree-process-tests.txt 2>&1
+    cp /build-target/release/glue /host-build/fixture-glue
+    chmod 0555 /host-build/fixture-glue
     mkdir "$relocated" /build-target/runtime-empty /build-target/staging /evidence/cli-controls
     /build-target/producer/bin/python3.13 -I -S -B /workspace/fixtures/python-runtime-trees/prepare.py install \
         --uv /workspace/target/uv-runtime-tree-downloads/uv \

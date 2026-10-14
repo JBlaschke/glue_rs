@@ -168,6 +168,30 @@ class SelectedInputTests(unittest.TestCase):
         self.assertEqual(stat.S_IMODE(original.lstat().st_mode), 0o444)
         self.assertFalse(owned.exists())
 
+    def test_owned_base_copy_never_hardlinks_or_changes_original_input(self):
+        before = {name: ((self.root / name).stat().st_ino, (self.root / name).stat().st_nlink,
+                         (self.root / name).stat().st_mode, (self.root / name).stat().st_mtime_ns)
+                  for name in self.payloads}
+        with patch.object(C.os, 'link', side_effect=AssertionError('original input must not be linked')):
+            copied = C.clone_selected(self.root, self.root / 'owned-base', copy_files=True)
+        for name, payload in self.payloads.items():
+            self.assertEqual((copied / name).read_bytes(), payload)
+            self.assertNotEqual((copied / name).stat().st_ino, before[name][0])
+            self.assertEqual(((self.root / name).stat().st_ino, (self.root / name).stat().st_nlink,
+                              (self.root / name).stat().st_mode, (self.root / name).stat().st_mtime_ns), before[name])
+
+    def test_link_copy_fallback_detaches_partial_destination_and_preserves_source(self):
+        for code in [C.errno.EXDEV, C.errno.EACCES, C.errno.EPERM, C.errno.ENOTSUP]:
+            def failed_link(source, destination):
+                Path(destination).write_bytes(b'partial destination')
+                raise OSError(code, 'forced unsupported link')
+            with patch.object(C.os, 'link', side_effect=failed_link):
+                copied = C.clone_selected(self.root, self.root / ('fallback-' + str(code)))
+            for name, payload in self.payloads.items():
+                self.assertEqual((copied / name).read_bytes(), payload)
+                self.assertEqual((self.root / name).read_bytes(), payload)
+                self.assertEqual((self.root / name).stat().st_nlink, 1)
+
 
 class PublicationTests(unittest.TestCase):
     def setUp(self):

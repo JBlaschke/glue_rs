@@ -72,9 +72,13 @@ skip. The other overlap cases also remove the library to prove rejection
 precedes selected payload reads. Existing
 sentinels and original selected input bytes, file modes and mtimes are checked
 afterward. The fixture retains bounded receipts and complete selected identities
-and 512-byte input prefixes. Its fresh scratch directory is a sibling of the
-managed input on the same filesystem; it deletes only its own scratch trees without
-following aliases or chmodding shared input hardlinks.
+and 512-byte input prefixes. It copies one selected base into fresh native
+temporary storage so FIFO controls work independently of shared input filesystems.
+Subsequent clones link only to this owned base, with a copy fallback when links
+are unavailable; the original input is never hardlinked or chmodded. With native
+temporary-filesystem links, the peak scratch payload is below 180 MiB;
+copy-only fallback storage can require more. `--scratch-parent` can select another ordinary
+temporary directory. Cleanup removes only the fixture's own scratch trees.
 
 `test_process.py` audits the complete product preparation trace against the
 independently verified selected inputs. `run-linux.sh` runs preparation and the
