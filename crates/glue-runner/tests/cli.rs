@@ -277,7 +277,7 @@ fn python_template_declares_host_inputs_without_discovery_and_preserves_existing
 }
 
 #[test]
-fn python_host_requires_one_provider_specific_artifact() {
+fn python_host_requires_one_provider_specific_input() {
     let temp = TestDir::new();
     let output = temp.0.join("new host prerequisites");
     for options in [
@@ -288,11 +288,41 @@ fn python_host_requires_one_provider_specific_artifact() {
             arg("absent"),
         ],
         vec![arg("--provider"), arg("host-full")],
+        vec![arg("--provider"), arg("host-install")],
         vec![
             arg("--provider"),
             arg("host-install"),
             arg("--pbs-full"),
             arg("absent"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-full"),
+            arg("--pbs-full"),
+            arg("absent"),
+            arg("--runtime-tree"),
+            arg("tree"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-install"),
+            arg("--pbs-install-only"),
+            arg("absent"),
+            arg("--runtime-tree"),
+            arg("tree"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-install"),
+            arg("--runtime-tree"),
+            arg("tree"),
+            arg("--runtime-tree"),
+            arg("other"),
+        ],
+        vec![
+            arg("--provider"),
+            arg("host-install"),
+            arg("--runtime-tree"),
         ],
         vec![
             arg("--provider"),
@@ -345,6 +375,38 @@ fn python_host_reports_capability_or_invalid_prefix_without_mutation() {
     }
     assert!(result.stdout.is_empty());
     assert_eq!(tree_snapshot(&temp.0), before);
+}
+
+#[test]
+fn installed_runtime_tree_reports_capability_or_prefix_rejection_without_mutation() {
+    let temp = TestDir::new();
+    let sentinel = temp.0.join("sentinel");
+    fs::write(&sentinel, b"preserve installed tree state").unwrap();
+    let before = tree_snapshot(&temp.0);
+    for root in ["missing runtime root", "/unavailable/runtime-tree"] {
+        let result = temp.run(&[
+            arg("python-host"),
+            arg("--provider"),
+            arg("host-install"),
+            arg("--runtime-tree"),
+            arg(root),
+            arg("--output"),
+            arg("relative prefix"),
+            arg("--json"),
+        ]);
+        #[cfg(feature = "python-pack")]
+        {
+            assert_status(&result, 1);
+            assert!(diagnostic(&result).contains("canonical absolute ASCII paths"));
+        }
+        #[cfg(not(feature = "python-pack"))]
+        {
+            assert_status(&result, 2);
+            assert!(diagnostic(&result).contains("--features python-pack"));
+        }
+        assert!(result.stdout.is_empty());
+        assert_eq!(tree_snapshot(&temp.0), before);
+    }
 }
 
 fn tree_snapshot(root: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {

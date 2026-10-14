@@ -80,6 +80,23 @@ storage at the template's declared prefix. Preparation protects existing outputs
 and requires an absolute admitted prefix with an existing parent. See the
 [host-prerequisite fixture](fixtures/python-host-prerequisites/README.md).
 
+An explicit installed runtime tree can supply the install-only prerequisites:
+
+```sh
+target/debug/glue python-host --provider host-install \
+  --runtime-tree /absolute/pinned/python-installation \
+  --output "$PWD/target/python-host" --json
+```
+
+This reads the same 1,041 pinned files without running the input interpreter.
+It accepts the exact stock layout or the tested uv 0.12.23 layout from an
+explicitly configured unstripped PBS installation. For that uv layout, it
+records and restores the one relocated sysconfig source to the stock embedding
+configuration. Other versions or stripped libraries require separate support.
+The report distinguishes selected tree inspection from archive inspection;
+unselected files are neither read nor copied. Input and output trees must not
+overlap. See the [installed-runtime-tree fixture](fixtures/python-runtime-trees/README.md).
+
 Use `--site-packages PACKAGE_DIR` instead of `--venv` for an explicit installed
 package directory. Venv convenience mode accepts the conventional
 `lib/python3.13/site-packages` layout with system site-packages disabled. It reads

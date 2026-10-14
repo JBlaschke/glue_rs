@@ -151,6 +151,7 @@ version = "0.1.0"
 dependencies = [
  "glue-format",
  "glue-runtime-python",
+ "libc",
  "serde",
  "serde_json",
  "thiserror",
