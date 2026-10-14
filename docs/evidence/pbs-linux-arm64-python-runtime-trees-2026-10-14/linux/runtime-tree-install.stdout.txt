@@ -1,0 +1,1 @@
+{"input_interpreters_removed": true, "input_layout": "uv-0.12.23", "provenance": "/host-build/runtime-tree-install/installation-provenance.json", "root": "/host-build/runtime-tree-install/install/cpython-3.13.16-linux-aarch64-gnu", "selected_files": 1041, "selected_input_bytes": 89480671}

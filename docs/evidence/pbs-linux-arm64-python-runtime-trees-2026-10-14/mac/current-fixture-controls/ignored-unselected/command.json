@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/private/tmp/grt-usz2qemc/ignored-unselected",
+  "--output",
+  "/private/tmp/grt-usz2qemc/ignored-unselected-prefix",
+  "--json"
+]

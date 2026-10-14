@@ -1,0 +1,27 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.149
+   Compiling thiserror v2.0.18
+   Compiling serde_core v1.0.228
+   Compiling libc v0.2.190
+   Compiling serde v1.0.228
+   Compiling syn v2.0.119
+    Checking cpufeatures v0.3.1
+    Checking sha2 v0.11.0
+   Compiling glue-runtime-lua v0.1.0 (/workspace/crates/glue-runtime-lua)
+   Compiling glue-runner v0.1.0 (/workspace/crates/glue-runner)
+   Compiling thiserror-impl v2.0.18
+   Compiling serde_derive v1.0.228
+   Compiling glue-runtime-python v0.1.0 (/workspace/crates/glue-runtime-python)
+    Checking glue-ipc v0.1.0 (/workspace/crates/glue-ipc)
+    Checking glue-worker-protocol-fixture v0.1.0 (/workspace/fixtures/worker-protocol)
+    Checking glue-format v0.1.0 (/workspace/crates/glue-format)
+    Checking glue-pbs v0.1.0 (/workspace/crates/glue-pbs)
+    Checking glue-resources v0.1.0 (/workspace/crates/glue-resources)
+    Checking glue-pack v0.1.0 (/workspace/crates/glue-pack)
+    Checking glue-macos-macho-probe v0.1.0 (/workspace/spikes/macos-macho)
+    Checking glue-native v0.1.0 (/workspace/crates/glue-native)
+    Checking glue-linux-memfd-probe v0.1.0 (/workspace/spikes/linux-memfd)
+    Checking glue-python-bootstrap-probe v0.1.0 (/workspace/spikes/python-bootstrap)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.24s

@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "relative-runtime-root",
+  "--output",
+  "/private/tmp/grt-usz2qemc/relative-root-prefix",
+  "--json"
+]

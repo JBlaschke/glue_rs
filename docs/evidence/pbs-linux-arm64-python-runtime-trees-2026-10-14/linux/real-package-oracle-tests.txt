@@ -1,0 +1,26 @@
+test_complete_normalized_archive_and_original_input_attestation_pass (__main__.ArchiveOracleTests.test_complete_normalized_archive_and_original_input_attestation_pass) ... ok
+test_crc_damage_and_trailing_framing_reject (__main__.ArchiveOracleTests.test_crc_damage_and_trailing_framing_reject) ... ok
+test_extra_manifest_schema_and_wrong_abi_types_reject (__main__.ArchiveOracleTests.test_extra_manifest_schema_and_wrong_abi_types_reject) ... ok
+test_extra_report_and_nested_schema_fields_reject (__main__.ArchiveOracleTests.test_extra_report_and_nested_schema_fields_reject) ... ok
+test_manifest_boolean_or_float_resource_sizes_reject_with_valid_framing (__main__.ArchiveOracleTests.test_manifest_boolean_or_float_resource_sizes_reject_with_valid_framing) ... ok
+test_report_boolean_and_float_size_forgery_rejects (__main__.ArchiveOracleTests.test_report_boolean_and_float_size_forgery_rejects) ... ok
+test_report_hash_cannot_substitute_for_upstream_bytes (__main__.ArchiveOracleTests.test_report_hash_cannot_substitute_for_upstream_bytes) ... ok
+test_report_omission_distribution_and_input_forgery_reject (__main__.ArchiveOracleTests.test_report_omission_distribution_and_input_forgery_reject) ... ok
+test_unknown_missing_duplicate_and_extra_input_paths_reject (__main__.ArchiveOracleTests.test_unknown_missing_duplicate_and_extra_input_paths_reject) ... ok
+test_cache_header_source_timestamp_or_size_rejects (__main__.InstalledOwnershipTests.test_cache_header_source_timestamp_or_size_rejects) ... ok
+test_changed_upstream_payload_and_consistent_record_still_reject (__main__.InstalledOwnershipTests.test_changed_upstream_payload_and_consistent_record_still_reject) ... ok
+test_missing_or_duplicate_record_owner_rejects (__main__.InstalledOwnershipTests.test_missing_or_duplicate_record_owner_rejects) ... ok
+test_projection_works_without_an_interpreter_and_without_subprocesses (__main__.InstalledOwnershipTests.test_projection_works_without_an_interpreter_and_without_subprocesses) ... ok
+test_unowned_file_or_link_rejects (__main__.InstalledOwnershipTests.test_unowned_file_or_link_rejects) ... ok
+test_wrapper_hash_and_existing_output_protection (__main__.InstalledOwnershipTests.test_wrapper_hash_and_existing_output_protection) ... ok
+test_exact_upstream_artifacts_and_independent_inventory (__main__.PinAndProjectionTests.test_exact_upstream_artifacts_and_independent_inventory) ... ok
+test_golden_render_and_full_tokens_are_bound_into_app (__main__.PinAndProjectionTests.test_golden_render_and_full_tokens_are_bound_into_app) ... ok
+test_json_and_member_paths_reject_ambiguous_inputs (__main__.PinAndProjectionTests.test_json_and_member_paths_reject_ambiguous_inputs) ... ok
+test_record_rewrite_sorts_quotes_and_excludes_its_own_digest (__main__.PinAndProjectionTests.test_record_rewrite_sorts_quotes_and_excludes_its_own_digest) ... ok
+test_typed_equality_distinguishes_bool_float_and_nested_sizes (__main__.PinAndProjectionTests.test_typed_equality_distinguishes_bool_float_and_nested_sizes) ... ok
+test_wheel_corruption_or_symlink_rejects_before_payload_oracle (__main__.PinAndProjectionTests.test_wheel_corruption_or_symlink_rejects_before_payload_oracle) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.167s
+
+OK

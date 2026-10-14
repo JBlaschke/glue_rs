@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "relative-runtime-root",
+  "--output",
+  "/tmp/grt-cvl0fw1y/relative-root-prefix",
+  "--json"
+]

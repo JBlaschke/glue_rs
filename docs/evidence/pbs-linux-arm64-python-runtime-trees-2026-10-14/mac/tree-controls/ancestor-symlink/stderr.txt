@@ -1,0 +1,1 @@
+glue: open installed runtime input "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/ancestor-symlink/lib/python3.13/encodings": Not a directory (os error 20)

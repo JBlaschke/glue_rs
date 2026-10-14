@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/tmp/grt-cvl0fw1y/source-symlink",
+  "--output",
+  "/tmp/grt-cvl0fw1y/source-symlink-prefix",
+  "--json"
+]

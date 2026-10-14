@@ -1,0 +1,13 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/tmp/grt-cvl0fw1y/mixed-artifact-input",
+  "--output",
+  "/tmp/grt-cvl0fw1y/mixed-artifact-input-prefix",
+  "--json",
+  "--pbs-install-only",
+  "/tmp/grt-cvl0fw1y/not-consulted.tar.gz"
+]

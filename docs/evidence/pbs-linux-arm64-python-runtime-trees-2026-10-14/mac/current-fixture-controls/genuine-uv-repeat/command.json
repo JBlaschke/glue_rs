@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-input/install/cpython-3.13.16-linux-aarch64-gnu",
+  "--output",
+  "/private/tmp/grt-usz2qemc/genuine-uv-repeat-prefix",
+  "--json"
+]

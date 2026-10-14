@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/host-build/runtime-tree-install/install/cpython-3.13.16-linux-aarch64-gnu",
+  "--output",
+  "/tmp/grt-cvl0fw1y/genuine-uv-prefix",
+  "--json"
+]

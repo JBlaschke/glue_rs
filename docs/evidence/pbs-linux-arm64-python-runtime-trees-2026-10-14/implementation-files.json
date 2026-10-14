@@ -1,0 +1,93 @@
+{
+  "commit": "a52424ce6c18e7a7c88398a248d89897b8aa36eb",
+  "files": {
+    "Cargo.lock": {
+      "sha256": "b07727244adacd5c0005b27ec2b192fa7528806434e00071614bc3f7d8ac94bf",
+      "size": 10422
+    },
+    "README.md": {
+      "sha256": "ecec05c593565f896820510d4e744d59f64f67078ceadeff114fbffaab21da21",
+      "size": 28962
+    },
+    "crates/glue-pack/Cargo.toml": {
+      "sha256": "038e4bafb3f4683440890a8d29f434a7d2e9ca121d17fbe417f22bbdc236f079",
+      "size": 589
+    },
+    "crates/glue-pack/src/python_host.rs": {
+      "sha256": "5c3e99a4c3b5f8e92469f1b311bd9a4c06fd9a744fc9ea20628f277fe6ab9328",
+      "size": 23294
+    },
+    "crates/glue-pack/src/python_host/installed_tree.rs": {
+      "sha256": "24c5026d8db72d03bf13d8a2d97d940c2808e881e0db58c026984715fa0a45dd",
+      "size": 18401
+    },
+    "crates/glue-runner/src/main.rs": {
+      "sha256": "12c44d9b1334528ddc91de7fc20a86cc984be344bd20057abf6b9a842b22f6e8",
+      "size": 33838
+    },
+    "crates/glue-runner/tests/cli.rs": {
+      "sha256": "000410a107b25f7d141c7308ea4f7f5b142ebab68934c67d93507147e3afcef9",
+      "size": 34360
+    },
+    "crates/glue-runtime-python/src/packaging/host_prerequisites.rs": {
+      "sha256": "f6944278867be0aaba5e799dda972e8a52065bc91f39532e439b0ebe37084cd1",
+      "size": 27569
+    },
+    "crates/glue-runtime-python/src/packaging/host_prerequisites/installed_tree.rs": {
+      "sha256": "ecf0d648c24a6260e0d0efd9970ca79bfc3468c7976d4b625905afc9ebb54d6a",
+      "size": 9421
+    },
+    "docs/decisions/0026-python-installed-runtime-trees.md": {
+      "sha256": "f8e91fc9f7e933f29319fb0e3a4dd72380b8bb9b28fb587be95b2130bc23ea75",
+      "size": 4901
+    },
+    "docs/fixtures.md": {
+      "sha256": "be9a47ff070a39f747c72a3ef2ef6eaa9d36099611e4ecf3bd61a3fd43fc9af9",
+      "size": 7666
+    },
+    "docs/progress.md": {
+      "sha256": "d32bcd69e80c334c03641c9ad78e97a33685b03299a6cd5b526e148acd76442a",
+      "size": 43122
+    },
+    "fixtures/python-runtime-trees/README.md": {
+      "sha256": "882c79f7140d19e93244a074c63178ba7dc4efdebd51a9d158962252b442734b",
+      "size": 5910
+    },
+    "fixtures/python-runtime-trees/prepare.py": {
+      "sha256": "14d23f19bd3a23625a7ded6c8dfc16b75b6b20ba563c31311dc5a1e633a63f08",
+      "size": 34016
+    },
+    "fixtures/python-runtime-trees/run-linux.sh": {
+      "sha256": "94d5978ed37b7d06cd52a5ba5e45a7b10cadc4e4b0b4b4f0a88cb3681b4173cf",
+      "size": 21945
+    },
+    "fixtures/python-runtime-trees/stock-sysconfig.py": {
+      "sha256": "2f1efec1bde90579ce80b849b755f7347a83705e73bfedeb25e947b617d25347",
+      "size": 51570
+    },
+    "fixtures/python-runtime-trees/test_prepare.py": {
+      "sha256": "e2f4b8807f2f354a1b3583bbd6ab041eabb68c44c86ef87fb78cafdba3341ff5",
+      "size": 15319
+    },
+    "fixtures/python-runtime-trees/test_process.py": {
+      "sha256": "9a70838cc46415938214b6b5a02e1a1a19466d3b4f7b7b1b27ab82d00fdde866",
+      "size": 55856
+    },
+    "fixtures/python-runtime-trees/test_process_unit.py": {
+      "sha256": "569a0df2ec2aacda860e614c7271330fd6e5e779e8b2642e966f0f1b1409f0e9",
+      "size": 12148
+    },
+    "fixtures/python-runtime-trees/uv-0.12.23-adjustments.json": {
+      "sha256": "e5e220295f6a3fe9522f91487be90729cd4c52fccd19c38593a22f85f579fb09",
+      "size": 14907
+    },
+    "fixtures/python-runtime-trees/uv-0.12.23-sysconfig.py.in": {
+      "sha256": "ac2bdd1c0d98d36a508b19006c7485e0100585ff3703f090dab6b075017f11fb",
+      "size": 51552
+    },
+    "fixtures/python-runtime-trees/uv-pins.json": {
+      "sha256": "526321377b8682b580e255b940e89d1e3d10aa64d7ac8c9e8f457375cacd9a48",
+      "size": 639
+    }
+  }
+}

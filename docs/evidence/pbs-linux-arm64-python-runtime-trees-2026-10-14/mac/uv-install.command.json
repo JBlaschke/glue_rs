@@ -1,0 +1,13 @@
+[
+  "/usr/local/bin/python3",
+  "-B",
+  "/Users/johannes.blaschke/Developer/glue_rs/fixtures/python-runtime-trees/prepare.py",
+  "install",
+  "--uv",
+  "/opt/homebrew/Cellar/uv/0.12.23/bin/uv",
+  "--pbs-install-only",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/pbs-inspection/cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input",
+  "--remove-bin"
+]

@@ -1,0 +1,26 @@
+test_exact_bundled_inventory_and_budgets (__main__.IndependentOracleTests.test_exact_bundled_inventory_and_budgets) ... ok
+test_file_hash_oracle_enforces_bound_and_type (__main__.IndependentOracleTests.test_file_hash_oracle_enforces_bound_and_type) ... ok
+test_host_contract_only_packages_two_helpers (__main__.IndependentOracleTests.test_host_contract_only_packages_two_helpers) ... ok
+test_json_oracle_rejects_duplicate_and_nonfinite_data (__main__.IndependentOracleTests.test_json_oracle_rejects_duplicate_and_nonfinite_data) ... ok
+test_root_inventory_rejects_external_link (__main__.IndependentOracleTests.test_root_inventory_rejects_external_link) ... ok
+test_additional_exec_or_different_program_reject (__main__.ProcessTraceTests.test_additional_exec_or_different_program_reject) ... ok
+test_c_escaped_provider_paths_cannot_bypass_lookup_policy (__main__.ProcessTraceTests.test_c_escaped_provider_paths_cannot_bypass_lookup_policy) ... ok
+test_child_creation_rejects (__main__.ProcessTraceTests.test_child_creation_rejects) ... ok
+test_cwd_and_relative_cwd_provider_lookups_reject (__main__.ProcessTraceTests.test_cwd_and_relative_cwd_provider_lookups_reject) ... ok
+test_descriptor_relative_and_descriptor_only_provider_lookups_reject (__main__.ProcessTraceTests.test_descriptor_relative_and_descriptor_only_provider_lookups_reject) ... ok
+test_failed_exec_and_killed_builder_reject (__main__.ProcessTraceTests.test_failed_exec_and_killed_builder_reject) ... ok
+test_foreign_pid_and_records_after_exit_reject (__main__.ProcessTraceTests.test_foreign_pid_and_records_after_exit_reject) ... ok
+test_missing_process_boundaries_reject (__main__.ProcessTraceTests.test_missing_process_boundaries_reject) ... ok
+test_mutating_calls_and_normalized_absolute_provider_paths_reject (__main__.ProcessTraceTests.test_mutating_calls_and_normalized_absolute_provider_paths_reject) ... ok
+test_network_attempts_reject_even_if_failed (__main__.ProcessTraceTests.test_network_attempts_reject_even_if_failed) ... ok
+test_one_builder_exec_without_provider_lookup_passes (__main__.ProcessTraceTests.test_one_builder_exec_without_provider_lookup_passes) ... ok
+test_only_exclusive_publication_library_write_is_allowed (__main__.ProcessTraceTests.test_only_exclusive_publication_library_write_is_allowed) ... ok
+test_other_path_under_common_ancestor_can_be_builder_output (__main__.ProcessTraceTests.test_other_path_under_common_ancestor_can_be_builder_output) ... ok
+test_target_library_and_interpreter_lookups_reject_without_host_prefix (__main__.ProcessTraceTests.test_target_library_and_interpreter_lookups_reject_without_host_prefix) ... ok
+test_target_library_and_prefix_lookup_reject (__main__.ProcessTraceTests.test_target_library_and_prefix_lookup_reject) ... ok
+test_unfinished_resumed_and_truncated_exec_boundaries_reject (__main__.ProcessTraceTests.test_unfinished_resumed_and_truncated_exec_boundaries_reject) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.016s
+
+OK

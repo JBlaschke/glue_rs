@@ -1,0 +1,1 @@
+{"absent_output_controls": 16, "existing_output_controls": 16, "hostile_controls": 32, "hostile_variants": 8, "provider_absent_controls": 32, "valid_builds": 2}

@@ -1,0 +1,13 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/private/tmp/grt-usz2qemc/mixed-artifact-input",
+  "--output",
+  "/private/tmp/grt-usz2qemc/mixed-artifact-input-prefix",
+  "--json",
+  "--pbs-install-only",
+  "/private/tmp/grt-usz2qemc/not-consulted.tar.gz"
+]

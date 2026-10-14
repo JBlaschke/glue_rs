@@ -72,6 +72,8 @@ output files, including one exactly admitted sysconfig normalization. Complete
 preparation traces check selected-only descriptor reads and publication order;
 the existing real-package runtime matrix and policies remain unchanged. Unselected
 input contents are outside inspection, and default stripped uv builds are separate.
+The [clean capture](evidence/pbs-linux-arm64-python-runtime-trees-2026-10-14/README.md)
+retains complete preparation/runtime traces and independent compressed replays.
 
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with

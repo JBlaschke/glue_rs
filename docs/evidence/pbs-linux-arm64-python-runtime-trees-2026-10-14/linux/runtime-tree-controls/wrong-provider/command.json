@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-full",
+  "--runtime-tree",
+  "/tmp/grt-cvl0fw1y/wrong-provider",
+  "--output",
+  "/tmp/grt-cvl0fw1y/wrong-provider-prefix",
+  "--json"
+]
