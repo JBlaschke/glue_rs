@@ -1,0 +1,19 @@
+[
+  "/build-target/release/glue",
+  "build-python",
+  "--provider-template",
+  "/build-target/staging/install-host/manifest.json",
+  "--provider-root",
+  "/tmp/glue-requirements-h2a59w6l/deliberately-absent-provider",
+  "--app",
+  "/tmp/glue-requirements-h2a59w6l/application",
+  "--venv",
+  "/tmp/glue-requirements-h2a59w6l/venv",
+  "--app-id",
+  "python.real-packages",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/evidence/requirement-controls/wildcard-exclusion.venv.absent-output/protected-output.glue",
+  "--json"
+]

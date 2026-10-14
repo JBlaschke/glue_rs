@@ -76,3 +76,6 @@ readiness, loader, snapshot/cache, descriptor, process, network and no-extractio
 checks. This is evidence for these packages and this cell, rather than general
 package/platform compatibility or a sandbox claim. See
 [decision 0025](../../docs/decisions/0025-python-real-package-compatibility.md).
+The [clean Mac/GNU evidence](../../docs/evidence/pbs-linux-arm64-python-real-packages-2026-10-14/README.md)
+retains all six complete runtime traces, independent build/requirement controls,
+source bindings and compressed replays.

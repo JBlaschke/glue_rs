@@ -1,0 +1,2 @@
+Actual metadata trace audit passed: 6 normal traces; 126 hostile mutations rejected
+Actual real-package trace audit passed: 6 normal traces; 229 hostile mutations rejected

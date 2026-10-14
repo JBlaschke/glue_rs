@@ -1,0 +1,19 @@
+[
+  "/build-target/release/glue",
+  "build-python",
+  "--provider-template",
+  "/build-target/staging/install-host/manifest.json",
+  "--provider-root",
+  "/build-target/staging/install-host/root",
+  "--app",
+  "/tmp/glue-requirements-compatible-geuoyiud/application",
+  "--venv",
+  "/tmp/glue-requirements-compatible-geuoyiud/venv",
+  "--app-id",
+  "python.real-packages",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/tmp/glue-requirements-compatible-geuoyiud/compatible.glue",
+  "--json"
+]

@@ -1,0 +1,7 @@
+{
+  "differences": [],
+  "implementation": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "schema_version": 0,
+  "scope": "Pre-commit Rust workspace checks on identical code, including existing test fixtures. New standalone corpus/trace scripts and Markdown are checked separately.",
+  "verified_files": 264
+}

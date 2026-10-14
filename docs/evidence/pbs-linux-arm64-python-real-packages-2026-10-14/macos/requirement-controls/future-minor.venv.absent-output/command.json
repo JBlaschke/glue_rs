@@ -1,0 +1,19 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-real-package-oracle-build/debug/glue",
+  "build-python",
+  "--provider-template",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-real-package-mac-clean/templates/install-host/manifest.json",
+  "--provider-root",
+  "/var/folders/_1/4wfvp9l93ln8l9rfqbv8qm_w0000gp/T/glue-requirements-frhu4q4q/deliberately-absent-provider",
+  "--app",
+  "/var/folders/_1/4wfvp9l93ln8l9rfqbv8qm_w0000gp/T/glue-requirements-frhu4q4q/application",
+  "--venv",
+  "/var/folders/_1/4wfvp9l93ln8l9rfqbv8qm_w0000gp/T/glue-requirements-frhu4q4q/venv",
+  "--app-id",
+  "python.real-packages",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-real-package-mac-clean-requirements/future-minor.venv.absent-output/protected-output.glue",
+  "--json"
+]

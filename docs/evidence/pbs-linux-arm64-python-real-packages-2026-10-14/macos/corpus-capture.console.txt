@@ -1,0 +1,1 @@
+Mac: three templates, three builds and independent archive audits passed with all venv interpreters absent

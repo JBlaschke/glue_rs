@@ -1,0 +1,38 @@
+{
+  "actual_builds": 3,
+  "binary": {
+    "sha256": "9c6c9dc08146704444f1e178fe1a53866a7c90d2029832f5eb8e4f0729bca336",
+    "size": 13012408
+  },
+  "independent_archive_audits": 3,
+  "native_build_archives_equal": {
+    "bundled": {
+      "archive_bytes": 83591962,
+      "archive_sha256": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+      "manifest_sha256": "707babdddc2cb1f7e414de1d8e05ece05992d35695129bab5f7be6922eba1e20",
+      "resource_count": 2330,
+      "uncompressed_bytes": 113331104
+    },
+    "host": {
+      "archive_bytes": 513390,
+      "archive_sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+      "manifest_sha256": "e75176ac44898db94c145ccade6c95d7075621a376f76f00ad5e04f6be1d20af",
+      "resource_count": 154,
+      "uncompressed_bytes": 469557
+    },
+    "install-host": {
+      "archive_bytes": 513404,
+      "archive_sha256": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765",
+      "manifest_sha256": "016ac5d17e414077bc7aa7004b9f3514ebf73558a6a74117d05249751520b364",
+      "resource_count": 154,
+      "uncompressed_bytes": 469557
+    }
+  },
+  "native_capture_source_revision": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "product_revision": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "projection_input_interpreters_absent": true,
+  "schema_version": 0,
+  "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_status": "",
+  "venv_interpreter_directory_absent": true
+}

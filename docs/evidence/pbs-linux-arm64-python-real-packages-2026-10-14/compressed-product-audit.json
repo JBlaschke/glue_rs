@@ -1,0 +1,223 @@
+{
+  "archive_identities": {
+    "bundled": {
+      "sha256": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+      "size": 83591962
+    },
+    "bundled-corrupt-entry": {
+      "sha256": "204a7abefb316be2e09dbd20ba75b41441c9b19519c7f5ef4a7ffe3d3d585112",
+      "size": 83591962
+    },
+    "host": {
+      "sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+      "size": 513390
+    },
+    "host-corrupt-entry": {
+      "sha256": "44540b21cd7d582ee0fc0d9dc3c2bec0e7e2258672ea3b718ed8a5190a3bd6e1",
+      "size": 513390
+    },
+    "install-host": {
+      "sha256": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765",
+      "size": 513404
+    },
+    "install-host-corrupt-entry": {
+      "sha256": "6fac0b66c92241c0d2a3942f85b6e060b1571d010aef34442e8daa75cc2ea63a",
+      "size": 513404
+    }
+  },
+  "artifacts": {
+    "bundled-corrupt-entry.glue": "204a7abefb316be2e09dbd20ba75b41441c9b19519c7f5ef4a7ffe3d3d585112",
+    "bundled.glue": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+    "glue": "d8442a25b5e4fd5f40309dc872f6f33f11f5e898e5419af2f4c054b9732c8c8a",
+    "host-corrupt-entry.glue": "44540b21cd7d582ee0fc0d9dc3c2bec0e7e2258672ea3b718ed8a5190a3bd6e1",
+    "host.glue": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+    "install-host-corrupt-entry.glue": "6fac0b66c92241c0d2a3942f85b6e060b1571d010aef34442e8daa75cc2ea63a",
+    "install-host.glue": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765"
+  },
+  "build_processes": {
+    "bundled": {
+      "child_processes": 0,
+      "execs": 1,
+      "interpreter_execs": 0,
+      "pids": 1,
+      "process_records": 3,
+      "trace_sha256": "264f846e4442f3d90530ba74c42e5b44c45841e5f339761627495be72a79d721"
+    },
+    "host": {
+      "child_processes": 0,
+      "execs": 1,
+      "interpreter_execs": 0,
+      "pids": 1,
+      "process_records": 3,
+      "trace_sha256": "88360ff73ea1c5ca09eff63d537af8ae364e7f380e586514343cf958282023a4"
+    },
+    "install-host": {
+      "child_processes": 0,
+      "execs": 1,
+      "interpreter_execs": 0,
+      "pids": 1,
+      "process_records": 3,
+      "trace_sha256": "7d6fed1e0be2187eec29158261ef179bbc85e55af9bda174d96472db66764476"
+    }
+  },
+  "clean_source_capture": true,
+  "cli": {
+    "bundled-corrupt-entry.cat": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "bundled-corrupt-entry.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "bundled-corrupt-entry.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "bundled-corrupt-entry.verify": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "bundled.build": {
+      "exit_status": 0,
+      "independent_report_verified": true
+    },
+    "bundled.cat": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "bundled.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "bundled.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "bundled.verify": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host-corrupt-entry.cat": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "host-corrupt-entry.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host-corrupt-entry.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host-corrupt-entry.verify": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "host.build": {
+      "exit_status": 0,
+      "independent_report_verified": true
+    },
+    "host.cat": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "host.verify": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host-corrupt-entry.cat": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "install-host-corrupt-entry.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host-corrupt-entry.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host-corrupt-entry.verify": {
+      "exact_output_verified": true,
+      "exit_status": 1
+    },
+    "install-host.build": {
+      "exit_status": 0,
+      "independent_report_verified": true
+    },
+    "install-host.cat": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host.doctor": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host.inspect": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    },
+    "install-host.verify": {
+      "exact_output_verified": true,
+      "exit_status": 0
+    }
+  },
+  "cli_controls": 27,
+  "intentional_crc_failures": 3,
+  "schema_version": 0,
+  "source_revision": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "valid_archive_audits": {
+    "bundled": {
+      "all_resource_bytes_verified": true,
+      "application_bytes": 451195,
+      "application_file_count": 152,
+      "archive_identity": {
+        "sha256": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+        "size": 83591962
+      },
+      "complete_archive_resource_count": 2330,
+      "distribution_count": 3,
+      "omitted_bytecode_files": 110,
+      "omitted_console_scripts": 1,
+      "schema_version": 0
+    },
+    "host": {
+      "all_resource_bytes_verified": true,
+      "application_bytes": 451195,
+      "application_file_count": 152,
+      "archive_identity": {
+        "sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+        "size": 513390
+      },
+      "complete_archive_resource_count": 154,
+      "distribution_count": 3,
+      "omitted_bytecode_files": 110,
+      "omitted_console_scripts": 1,
+      "schema_version": 0
+    },
+    "install-host": {
+      "all_resource_bytes_verified": true,
+      "application_bytes": 451195,
+      "application_file_count": 152,
+      "archive_identity": {
+        "sha256": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765",
+        "size": 513404
+      },
+      "complete_archive_resource_count": 154,
+      "distribution_count": 3,
+      "omitted_bytecode_files": 110,
+      "omitted_console_scripts": 1,
+      "schema_version": 0
+    }
+  },
+  "verified_members": 5273
+}

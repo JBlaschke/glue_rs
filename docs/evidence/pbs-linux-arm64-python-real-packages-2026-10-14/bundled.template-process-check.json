@@ -1,0 +1,1 @@
+{"child_creation_count": 0, "execve_count": 1, "host_prefix": null, "network_count": 0, "program": "/build-target/release/glue", "schema_version": 0, "successful_exit_count": 1, "target_provider_lookup_count": 0, "trace_identity": {"sha256": "8e8597e3508b88067a404f90c58b57cef57aef26ed5d7add8ff08c3a28bcea46", "size": 1241929}}

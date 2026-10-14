@@ -30,7 +30,7 @@ Further implementation continues on separate feature branches.
 | A7/A10 Python installed-package ingestion | `codex/a7-python-venv-ingestion` / `35dae52` (from merged `6afed9a`) | Experimental source-only build adapter with explicit provider template | Mac/Linux source workspaces 452/453 tests and Clippy; Mac packaging workspace 465; 33 pack/129 GNU Python/16 runner tests; 235 Python policies; real offline pip installation; Mac/GNU both input modes and all 30 hostile build controls pass; all six new/nine metadata regression traces pass/replay; 27 product controls and 126 hostile trace mutations pass/reject |
 | A7/A10 Python runtime templates | `codex/a7-python-runtime-templates` / `3d15bf9`, checker strengthening `525da19` (from merged `c0ddaa4`) | Experimental portable preparation of the three pinned metadata providers | Mac/GNU source workspaces 460/461 tests and Clippy; Mac packaging workspace 482; optimized GNU 135 Python/41 pack/19 CLI tests; both builders pass eight template generations, 45 hostile controls and three installed-package builds; all six runtime traces replay under unchanged policy and retain prior archive hashes; 27 product controls and 126 hostile mutations pass/reject; strengthened oracle passes 21 tests on Mac/stock GNU |
 | A7/A10 Python host prerequisites | `codex/a7-python-host-prerequisites` / `42c5abe`, strict evidence checks `3f3f31a` (from merged `c4a901e`) | Experimental product preparation of both admitted host prerequisite trees | Mac/GNU source workspaces 476/477 tests and Clippy; Mac packaging workspace 506; optimized GNU 142 Python/49 pack/21 CLI tests; both builders pass four generations and 63 hostile controls; two complete preparation/six runtime traces pass/replay; 46 oracle/241 policy tests; 27 product checks and 149 hostile trace mutations pass/reject; [evidence](evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md) |
-| A7/A10 Real Python package compatibility | `codex/a7-python-real-packages` (from merged `fce3dad`; implementation commit follows) | Experimental Requires-Python admission and three unmodified upstream pure-Python wheels | Mac/GNU source workspaces 484/485 and Clippy; Mac packaging workspace 518; optimized GNU 150 Python/53 pack/21 CLI; development matrix passes three providers and three first-entry CRC rejections; 32 requirement controls/two compatible builds; 21 oracle/253 policy tests and 229 hostile trace mutations; final clean native capture and retention follow |
+| A7/A10 Real Python package compatibility | `codex/a7-python-real-packages` / `e525db8` (from merged `fce3dad`) | Experimental Requires-Python admission and three unmodified upstream pure-Python wheels | Mac/GNU source workspaces 484/485 and Clippy; Mac packaging workspace 518; optimized GNU 150 Python/53 pack/21 CLI; clean matrix passes three providers and three first-entry CRC rejections; both builders pass 32 requirement controls/two compatible builds; 21 oracle/253 policy tests and 229 hostile mutations; 27 product commands/5,273 valid members; [evidence](evidence/pbs-linux-arm64-python-real-packages-2026-10-14/README.md) |
 
 ## Gate status
 
@@ -435,6 +435,22 @@ template bodies remain unchanged. The 241-test policy suite and independent
 27-command/4,427-member product audit pass. Complete installation/discovery,
 version selection and broader package/native/platform compatibility remain open.
 See [decision 0024](decisions/0024-python-host-prerequisites.md).
+
+The [clean real-package evidence](evidence/pbs-linux-arm64-python-real-packages-2026-10-14/README.md)
+uses unmodified markdown-it-py 4.2.0, mdit-py-plugins 0.6.1 and mdurl 0.1.2 wheels.
+Stock offline pip installs 261 files; the independently verified projection
+retains 152 application resources, omits 110 caches/one generated wrapper and
+rewrites only RECORD. Ordinary stock Python and all three archive providers agree
+on rendering/tokens, real metadata, resources/licenses and a loaded console
+callable. Mac/GNU each pass 32 requirement rejection commands and two compatible
+builds, with provider files/input interpreters absent and existing outputs
+protected. Shared Requires-Python admission rejects incompatible/unsupported
+release constraints before provider reads/publication; explicit application
+metadata receives the same early check. Six complete runtime traces replay;
+all 229 hostile mutations reject. Historical policies/C/helper/loader bodies
+remain unchanged; narrowly scoped new predicates cover five failed terminal
+queries and one install-only anonymous growth/release. See
+[decision 0025](decisions/0025-python-real-package-compatibility.md).
 
 ## Next critical-path assignments
 

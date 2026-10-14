@@ -1,0 +1,1 @@
+Trace checks passed: exact real-package inventory, provider and entry outcomes; virtual source/metadata/resources; closed loader and host snapshots; no extraction, fallback or extra process

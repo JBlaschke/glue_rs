@@ -1,0 +1,192 @@
+{
+  "byte_identical_files": {
+    "crates/glue-runtime-python/boundary/bridge.c": {
+      "sha256": "ec0adf72446d0244580273a18bdbaa7ece417eba10deb95b4bbbf5bd2517f917",
+      "size": 51676
+    },
+    "crates/glue-runtime-python/boundary/bridge.h": {
+      "sha256": "4dcf6f595e8ecfa8ca578e0d928a16d664189fcc4f1053f7d3fab3f03d7b4d17",
+      "size": 7240
+    },
+    "crates/glue-runtime-python/build.rs": {
+      "sha256": "c6038e563fd631c6cbfd126144aad68b8aa7b1c27df20d2b4e23c40d79a3aadb",
+      "size": 9201
+    },
+    "crates/glue-runtime-python/src/bundle.rs": {
+      "sha256": "5982b10d2af4ccf5f9a461b45392ba44ea10f0b8440f819963e302093427d0e0",
+      "size": 28214
+    },
+    "crates/glue-runtime-python/src/extension_profile.rs": {
+      "sha256": "98c1f01bd9702414554bf30a9fd784364a6391b9906a910a229373f5d21eb849",
+      "size": 33185
+    },
+    "crates/glue-runtime-python/src/host.rs": {
+      "sha256": "3f2d526a8c4823cdee4fa071542578808c25f08d8ea6a44bb10cff1ec8d5fd7f",
+      "size": 82846
+    },
+    "crates/glue-runtime-python/src/host_import_profile.rs": {
+      "sha256": "4e50db801aa65e14280d62d481fdb9f096bbe5f6caa6969d262302a0a6f50c36",
+      "size": 13392
+    },
+    "crates/glue-runtime-python/src/host_source_app_profile.rs": {
+      "sha256": "c13b75c7b53cd337296b8d530719da0219ed4f70a512518edef6f0858ef892ff",
+      "size": 16163
+    },
+    "crates/glue-runtime-python/src/import_profile.rs": {
+      "sha256": "0c00890c0ba376d1881675de3757de9718e7ea27452f2cf95e45c90b8d48c18a",
+      "size": 14481
+    },
+    "crates/glue-runtime-python/src/imports.rs": {
+      "sha256": "cb10f9b5a3ccace64361052c4510bae788ab6ab52bdb9c3332596745f3fee05c",
+      "size": 17606
+    },
+    "crates/glue-runtime-python/src/install_host_source_app_profile.rs": {
+      "sha256": "a6dbd0abba5555b8330ec0fb43ad08e78f62620e10210792004a78984cf93777",
+      "size": 8776
+    },
+    "crates/glue-runtime-python/src/lib.rs": {
+      "sha256": "418ecc82f259bf7b5961fb05f22dab839e5adf0cbf65b8f5f2cc50711508a9fe",
+      "size": 31603
+    },
+    "crates/glue-runtime-python/src/linux.rs": {
+      "sha256": "4600916a214bfa59702f584a876fe36ab941cf2ee9e980ac9ee1a6466d5f6545",
+      "size": 29027
+    },
+    "crates/glue-runtime-python/src/native_linux.rs": {
+      "sha256": "47dd154d97289ee471f708ddaf1523f6e64feda4c0c81a432d69561ff2d3d375",
+      "size": 8728
+    },
+    "crates/glue-runtime-python/src/packaging/host_prerequisites.rs": {
+      "sha256": "46709ddabe547d61b9772ee3aabe7137b4f4e54fcb72f67839d4959093436cc5",
+      "size": 26662
+    },
+    "crates/glue-runtime-python/src/packaging/template.rs": {
+      "sha256": "56a45c77cdc032e72b485054e3185bafc6e0d1f3a908e39424814de8e84d948d",
+      "size": 20996
+    },
+    "crates/glue-runtime-python/src/platform.rs": {
+      "sha256": "261c9394fdf411d01c694d1bac6749d5558a60cf20c99bab54a0e25f134f4e73",
+      "size": 12117
+    },
+    "crates/glue-runtime-python/src/profile.rs": {
+      "sha256": "afc01520d67c04d12546ad14366ca75e46f9c650945278b9c1dccf55fc8bcfc2",
+      "size": 12859
+    },
+    "crates/glue-runtime-python/src/source_app_profile.rs": {
+      "sha256": "6fec2c565faa03792ad76059551462f03664707c841926585a5d27c25dade8f3",
+      "size": 24080
+    },
+    "crates/glue-runtime-python/src/source_entry.rs": {
+      "sha256": "359b48439341fc8f5482e402fae07760d9af39f3f301dee07fad447b1dcf47ad",
+      "size": 3088
+    },
+    "fixtures/python-imports/bootstrap.py": {
+      "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+      "size": 13510
+    },
+    "fixtures/python-metadata/bootstrap.py": {
+      "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+      "size": 4852
+    },
+    "scripts/check-linux-python-bootstrap-trace.py": {
+      "sha256": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+      "size": 25485
+    },
+    "scripts/check-linux-python-extension-trace.py": {
+      "sha256": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+      "size": 50345
+    },
+    "scripts/check-linux-python-host-import-trace.py": {
+      "sha256": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+      "size": 45026
+    },
+    "scripts/check-linux-python-host-prerequisites-trace.py": {
+      "sha256": "cd7cae2155abde5acbf9f3522a849f14aee5df235540a0272c3748c247013690",
+      "size": 6348
+    },
+    "scripts/check-linux-python-host-source-app-trace.py": {
+      "sha256": "8cd3ace31941fb8e2bd53a2756f15639812a5dff7bbd99accc75322fa7d3aea5",
+      "size": 55351
+    },
+    "scripts/check-linux-python-host-trace.py": {
+      "sha256": "499a3ca1eed789837cf56a73574115913d9c7d3bd8d081ce2a26974bc3b497fe",
+      "size": 37043
+    },
+    "scripts/check-linux-python-import-trace.py": {
+      "sha256": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed",
+      "size": 33961
+    },
+    "scripts/check-linux-python-install-host-source-app-trace.py": {
+      "sha256": "985b93b64b27fb443fa835e229e5069bbaac7e6018a9c59246fd0dd8ec26fea8",
+      "size": 61043
+    },
+    "scripts/check-linux-python-metadata-trace.py": {
+      "sha256": "79c0a677318b9a64b8f022f0fe74edaf9e886364a48664136f7e6fa49ee07928",
+      "size": 27672
+    },
+    "scripts/check-linux-python-runner-trace.py": {
+      "sha256": "3374d5d7da7ee28704ae03ae10b897a0e4aa3442020eb67eb8fa29f91b111635",
+      "size": 20321
+    },
+    "scripts/check-linux-python-source-app-trace.py": {
+      "sha256": "6a31b6841399fceba2c639cee751261d73c5b6369ecc88813afa4ba0129ef69a",
+      "size": 29029
+    },
+    "scripts/check-linux-python-venv-trace.py": {
+      "sha256": "a9cd081fc383a260d2c286331c6eccc30ae34332b54f3b93124a46b9d78def3b",
+      "size": 10322
+    },
+    "scripts/test_linux_python_bootstrap_trace.py": {
+      "sha256": "15d36fc6720727205996f0df73e504c85e8848f5b2b5c054f12b00eb0d9b2f3a",
+      "size": 18113
+    },
+    "scripts/test_linux_python_extension_trace.py": {
+      "sha256": "1b36dd3929ff083f37392ee707908ef7732d632c6a9b21cf8f5a17ca2d3d88f5",
+      "size": 28696
+    },
+    "scripts/test_linux_python_host_import_trace.py": {
+      "sha256": "435678313fd4fde7a7286917b8d859d569484f59bc29533ffaa128939126990c",
+      "size": 21747
+    },
+    "scripts/test_linux_python_host_prerequisites_trace.py": {
+      "sha256": "5e21b3b49689f037aa01c375cfdd7dae33ed537a8757c312ffb196cb5f77aa09",
+      "size": 14926
+    },
+    "scripts/test_linux_python_host_source_app_trace.py": {
+      "sha256": "2e30579365ad03cd0c0875d7e6dee3531051240a1c6b7a6943d8a78f3a62bec7",
+      "size": 28243
+    },
+    "scripts/test_linux_python_host_trace.py": {
+      "sha256": "376b990e59e65391891f1feb696117d131d7f91b43189650027def575db599ad",
+      "size": 23995
+    },
+    "scripts/test_linux_python_import_trace.py": {
+      "sha256": "fd26d2a38191c376d81e4022fdd63ebb7a8c982253ecc0af95bb5c5f3c9c1e85",
+      "size": 29316
+    },
+    "scripts/test_linux_python_install_host_source_app_trace.py": {
+      "sha256": "127549153e74abb5ec8e397c311a75412974bc8d7392e9cd3a9d5357ee2bf541",
+      "size": 33438
+    },
+    "scripts/test_linux_python_metadata_trace.py": {
+      "sha256": "edd55127b7d513ca282093a9225bb224cf8997f52885ec37af41e11c9ebdd161",
+      "size": 22596
+    },
+    "scripts/test_linux_python_runner_trace.py": {
+      "sha256": "7cfbc1d4bac4770ae1ae3df25b883e75bbca20d9eba095f0f3eb086801f82a3a",
+      "size": 14832
+    },
+    "scripts/test_linux_python_source_app_trace.py": {
+      "sha256": "81a90090c82a77bb06241ec4d621f69cfc9f5190d3aac9073d3ce447dcc6fa17",
+      "size": 28589
+    },
+    "scripts/test_linux_python_venv_trace.py": {
+      "sha256": "2b384335882a81dd53bd7ceb0eb3ac926f9246dda15d6d6b4cebe21ab75ba3c1",
+      "size": 14900
+    }
+  },
+  "implementation": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "parent": "fce3dad",
+  "schema_version": 0,
+  "scope": "C bridge, runtime/private host/native loader/source profile bodies, archive importer/metadata helpers, template bodies and every historical Python trace policy/test. Metadata admission and builder facade intentionally add Requires-Python."
+}

@@ -1,0 +1,221 @@
+{
+  "application_build_process_traces": 3,
+  "complete_host_preparation_traces": 2,
+  "compressed_host_process_replays": {
+    "host": {
+      "anonymous_executable_mapping_count": 0,
+      "child_creation_count": 0,
+      "descriptor_reassignment_count": 0,
+      "executable_memory_protection_grant_count": 0,
+      "executable_system_mapping_inventory": [
+        "/usr/lib/aarch64-linux-gnu/libc.so.6",
+        "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1",
+        "/usr/lib/aarch64-linux-gnu/libm.so.6"
+      ],
+      "execve_count": 1,
+      "network_count": 0,
+      "outside_prefix_mutation_count": 0,
+      "prefix": "/build-target/host Python metadata",
+      "program": "/build-target/release/glue",
+      "publication_output_read_mapping_count": 0,
+      "runtime_acquisition_count": 0,
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_library_mapping_count": 0,
+      "target_library_read_count": 0,
+      "unclassified_syscall_count": 0
+    },
+    "install-host": {
+      "anonymous_executable_mapping_count": 0,
+      "child_creation_count": 0,
+      "descriptor_reassignment_count": 0,
+      "executable_memory_protection_grant_count": 0,
+      "executable_system_mapping_inventory": [
+        "/usr/lib/aarch64-linux-gnu/libc.so.6",
+        "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1",
+        "/usr/lib/aarch64-linux-gnu/libm.so.6"
+      ],
+      "execve_count": 1,
+      "network_count": 0,
+      "outside_prefix_mutation_count": 0,
+      "prefix": "/build-target/install Python metadata",
+      "program": "/build-target/release/glue",
+      "publication_output_read_mapping_count": 0,
+      "runtime_acquisition_count": 0,
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_library_mapping_count": 0,
+      "target_library_read_count": 0,
+      "unclassified_syscall_count": 0
+    }
+  },
+  "compressed_product_audit_exit_status": 0,
+  "compressed_template_process_replays": {
+    "bundled": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": null,
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0
+    },
+    "host": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": "/build-target/host Python metadata",
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0
+    },
+    "install-host": {
+      "child_creation_count": 0,
+      "execve_count": 1,
+      "host_prefix": "/build-target/install Python metadata",
+      "network_count": 0,
+      "program": "/build-target/release/glue",
+      "schema_version": 0,
+      "successful_exit_count": 1,
+      "target_provider_lookup_count": 0
+    }
+  },
+  "mac_actual_builds": 3,
+  "mac_actual_templates": 3,
+  "mac_input_interpreters_absent": true,
+  "native_harness_exit_status": 0,
+  "runtime": {
+    "bundled": {
+      "archive": {
+        "sha256": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+        "size": 83591962
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "cdfaac81082bf8d22ff51cb69841a539de866f9f53e2b60b6caa7539b0f560a7",
+        "size": 129
+      },
+      "trace": {
+        "records": 35421,
+        "sha256": "02065c88dd61444d03941af50be450b2955bff47afad5b23efa405dabce69e4e",
+        "size": 6770022
+      }
+    },
+    "bundled-corrupt-entry": {
+      "archive": {
+        "sha256": "204a7abefb316be2e09dbd20ba75b41441c9b19519c7f5ef4a7ffe3d3d585112",
+        "size": 83591962
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "9cf7d84e3432cb094525fac748d54370537ce9fdeb8cd91e0fde77dd1100ee95",
+        "size": 55
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 28095,
+        "sha256": "4783dce09ce8be307a6bab06304a35c1d3bb5b363d9897129ae2ffafcf6e103c",
+        "size": 3751765
+      }
+    },
+    "host": {
+      "archive": {
+        "sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+        "size": 513390
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "cdfaac81082bf8d22ff51cb69841a539de866f9f53e2b60b6caa7539b0f560a7",
+        "size": 129
+      },
+      "trace": {
+        "records": 26730,
+        "sha256": "48abbf17b72685b3be50141e5f5edd1fba0b4b0a507b2198a69c9ca4d49d69d2",
+        "size": 6816830
+      }
+    },
+    "host-corrupt-entry": {
+      "archive": {
+        "sha256": "44540b21cd7d582ee0fc0d9dc3c2bec0e7e2258672ea3b718ed8a5190a3bd6e1",
+        "size": 513390
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "9cf7d84e3432cb094525fac748d54370537ce9fdeb8cd91e0fde77dd1100ee95",
+        "size": 55
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 1964,
+        "sha256": "55763b99fdc457e648352ba9216e3f0493bb4d43e2fb1fd1cfd138e1938e6b78",
+        "size": 251627
+      }
+    },
+    "install-host": {
+      "archive": {
+        "sha256": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765",
+        "size": 513404
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 0,
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "stdout": {
+        "sha256": "cdfaac81082bf8d22ff51cb69841a539de866f9f53e2b60b6caa7539b0f560a7",
+        "size": 129
+      },
+      "trace": {
+        "records": 14949,
+        "sha256": "0d374e54dafe286af2a642b1aadaa00f18c7a7b099d965d4a06013fe2e578fde",
+        "size": 3927058
+      }
+    },
+    "install-host-corrupt-entry": {
+      "archive": {
+        "sha256": "6fac0b66c92241c0d2a3942f85b6e060b1571d010aef34442e8daa75cc2ea63a",
+        "size": 513404
+      },
+      "compressed_replay_status": 0,
+      "exit_status": 1,
+      "stderr": {
+        "sha256": "9cf7d84e3432cb094525fac748d54370537ce9fdeb8cd91e0fde77dd1100ee95",
+        "size": 55
+      },
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      },
+      "trace": {
+        "records": 1980,
+        "sha256": "3273f669090c88a37bc1502e7c9d1e560f7df12a1e3cb5360b5d8c84763fef62",
+        "size": 267435
+      }
+    }
+  },
+  "runtime_traces": 6,
+  "schema_version": 0,
+  "source_revision": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "template_process_traces": 3
+}

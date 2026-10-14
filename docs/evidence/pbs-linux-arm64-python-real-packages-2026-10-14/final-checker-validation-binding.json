@@ -1,0 +1,43 @@
+{
+  "files": {
+    "fixtures/python-real-packages/application/app/main.py": {
+      "sha256": "2b7f709ce325f060a28c472618a7aee0338d7c2bb7fd1a99ae907c1f0920ee11",
+      "size": 10607
+    },
+    "fixtures/python-real-packages/expected-inventory.json": {
+      "sha256": "4f2f7005f070adddc2ce27b682510507a8e41dc6fb004fd9c8e076aadbeb7a71",
+      "size": 24806
+    },
+    "fixtures/python-real-packages/expected-workload.json": {
+      "sha256": "f0f59c23072e36d1f673a5ee552e3b0f6a31afe0b1c7ef93aab2459e1b731d67",
+      "size": 12706
+    },
+    "fixtures/python-real-packages/prepare.py": {
+      "sha256": "d60a3bab825d250c086d3ab3a357b4c441855bc094148048c7acefb30375acd3",
+      "size": 34778
+    },
+    "fixtures/python-real-packages/test_prepare.py": {
+      "sha256": "b650eaaa803c5aff5a78d51ab5f43c15bcf164d1680d6d574aaa7df8525378c8",
+      "size": 24133
+    },
+    "fixtures/python-real-packages/test_requirements.py": {
+      "sha256": "6dcd3c383f73f0a1017a6529d5894d9f88f4762f80f5231620c2f46aa57e66e5",
+      "size": 20208
+    },
+    "scripts/check-linux-python-real-packages-trace.py": {
+      "sha256": "4efdf05b9c4830ff3f09852c0ba465401625efc6a4f569618ed858e34e491c72",
+      "size": 22803
+    },
+    "scripts/test_linux_python_real_packages_trace.py": {
+      "sha256": "10c349147723e00c6b27a310a44da30839ffe12807f8c45eb16b73b340c0b183",
+      "size": 33430
+    }
+  },
+  "mac_oracle_tests": 21,
+  "mac_policy_tests": 253,
+  "policy_boundary_tests": 12,
+  "schema_version": 0,
+  "source_revision": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "stock_oracle_tests": 21,
+  "stock_policy_tests": 253
+}

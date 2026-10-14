@@ -56,6 +56,15 @@ storage; Mac preparation supplies cross-target byte/metadata evidence. The
 [retained evidence](evidence/pbs-linux-arm64-python-host-prerequisites-2026-10-13/README.md)
 includes two preparation traces, six runtime traces and compressed replays.
 
+The [real-package fixture](../fixtures/python-real-packages/README.md) installs
+three unmodified upstream Markdown parser/plugin wheels with stock offline pip
+and independently audits the resulting source-only projection. It exercises all
+three providers, real metadata/resources/console-callable behavior and early
+Requires-Python rejection for both input forms. The
+[clean evidence](evidence/pbs-linux-arm64-python-real-packages-2026-10-14/README.md)
+retains six runtime traces, complete host preparation traces, process records,
+32 requirement controls per builder and closed trace mutation/replay audits.
+
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with
 the matching stock producer at build time, removes that installation and its

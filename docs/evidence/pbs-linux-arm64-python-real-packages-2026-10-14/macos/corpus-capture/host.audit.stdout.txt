@@ -1,0 +1,1 @@
+{"all_resource_bytes_verified": true, "application_bytes": 451195, "application_file_count": 152, "archive_identity": {"sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd", "size": 513390}, "complete_archive_resource_count": 154, "distribution_count": 3, "omitted_bytecode_files": 110, "omitted_console_scripts": 1, "schema_version": 0}

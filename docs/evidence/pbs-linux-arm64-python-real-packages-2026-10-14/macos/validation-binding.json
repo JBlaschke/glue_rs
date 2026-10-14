@@ -1,0 +1,1065 @@
+{
+  "differences": [],
+  "files": {
+    "Cargo.lock": {
+      "sha256": "71dc39f42d4590b25c40a325935b9aeee407aad558160655a80c12f8178ca5f4",
+      "size": 10413
+    },
+    "Cargo.toml": {
+      "sha256": "4232406d2d8f10ebf5d6e428884cfe41360c22de66bda7e1087382d56b734d12",
+      "size": 1330
+    },
+    "crates/glue-format/Cargo.toml": {
+      "sha256": "bc620eb435a9ba47e533ed7ea38b6332fd585a855cdd53e33e8687755b505974",
+      "size": 350
+    },
+    "crates/glue-format/src/archive.rs": {
+      "sha256": "71c205f617630ce5a4199358601e46c3f1546a81f529187a0f9f2eef68550d25",
+      "size": 28349
+    },
+    "crates/glue-format/src/lib.rs": {
+      "sha256": "dc928dc7de6be115ff03126273ec05bbc80423674c8fd83839c8c21a21f0882d",
+      "size": 1883
+    },
+    "crates/glue-format/src/manifest.rs": {
+      "sha256": "de83a027af29329fa7881043d87950207283a9163a24425e0f478387933eefee",
+      "size": 32360
+    },
+    "crates/glue-format/src/path.rs": {
+      "sha256": "0bc1bc1e56da8cac589f3d89d16f45545ce4703c74b3f7d4ef22eb4b669bee24",
+      "size": 6921
+    },
+    "crates/glue-format/tests/archive.rs": {
+      "sha256": "394a2b0ed8695c149f2ee43f2febfedb875b372953af71c5f0e2b71ba8d3e026",
+      "size": 28471
+    },
+    "crates/glue-format/tests/manifest.rs": {
+      "sha256": "42d51057d3a3f53efef899844331b343c06ba0213088b0173870b58c878565a7",
+      "size": 30050
+    },
+    "crates/glue-format/tests/path_limits.rs": {
+      "sha256": "8943de9be819792187cef2a20890d0dc6b0cf55306b168f8f4b87b65430d492c",
+      "size": 3237
+    },
+    "crates/glue-ipc/Cargo.toml": {
+      "sha256": "6cd57c993e7e40974d96b918a799e7adc078856fe25eaf8b5832b08a03920f5b",
+      "size": 202
+    },
+    "crates/glue-ipc/src/codec.rs": {
+      "sha256": "40438606ff9643e312d63acb0e64c21926e203746ec2e01f0cc5d8d6a0b0ea70",
+      "size": 19435
+    },
+    "crates/glue-ipc/src/lib.rs": {
+      "sha256": "45913e11bb0f3a8cd76b885a8e7d20ddcec2b1d904b71504ef49d5ed8846772c",
+      "size": 4384
+    },
+    "crates/glue-ipc/src/session.rs": {
+      "sha256": "de0e6f832dd4ef0c9d24ef08823d70bd7e25fefef88e33e799bd26e3b7afb525",
+      "size": 14315
+    },
+    "crates/glue-ipc/tests/codec.rs": {
+      "sha256": "e7693a3659020ba119897be56c477af6a1be563c2d6b1ce81aabb86597b0927c",
+      "size": 22394
+    },
+    "crates/glue-native/Cargo.toml": {
+      "sha256": "14135fcb172e2a3588912811c96cbe95dd7541382a92ebff61b6a8d40dac97df",
+      "size": 326
+    },
+    "crates/glue-native/src/closure_tests.rs": {
+      "sha256": "5024a9d3ef9884c283879694635b9ac1ad69cf27b8f1bf229437668d62bd433b",
+      "size": 22175
+    },
+    "crates/glue-native/src/elf.rs": {
+      "sha256": "747b3c7020121e29df2c7c9376f18b143684cd5e60798c68c4a6d1945c0e3fef",
+      "size": 67623
+    },
+    "crates/glue-native/src/lib.rs": {
+      "sha256": "90ade74a2867755519d7d69afef1b818109c64a25906ec6c2198768b43a6b2d3",
+      "size": 25158
+    },
+    "crates/glue-native/src/linux.rs": {
+      "sha256": "16609f827c1ac8a4bcb1c9e0f50918a5758d99106ce96ae511473d453f82c2bf",
+      "size": 16212
+    },
+    "crates/glue-pack/Cargo.toml": {
+      "sha256": "d8b98e73fbdcbc1fc3eeffda729a60cd0c2dbc62899ee61ddc33ee463e28d748",
+      "size": 494
+    },
+    "crates/glue-pack/src/lib.rs": {
+      "sha256": "e8433f60e71583a17b7bf7fd41121af28faef0d00898dcabbca042f11306e094",
+      "size": 24665
+    },
+    "crates/glue-pack/src/python.rs": {
+      "sha256": "a3c158dd02156432996060771c7f408bb41636254290e11c4e86ecb164bfcd14",
+      "size": 62298
+    },
+    "crates/glue-pack/src/python_host.rs": {
+      "sha256": "99a14ffb09c91882d566e14cce50cddbc676b924457f67e62cb4d2404280080a",
+      "size": 20495
+    },
+    "crates/glue-pack/src/python_template.rs": {
+      "sha256": "85c2b42583ec06eaf7d91d5bb94eecf2b60b9f680a4969b9a6847316948e3011",
+      "size": 18380
+    },
+    "crates/glue-pack/tests/pack.rs": {
+      "sha256": "dbbdab173167a983e64a669dbb09fc1f22e0e26bca2adb9b070588cd54e45e77",
+      "size": 15421
+    },
+    "crates/glue-pbs/Cargo.toml": {
+      "sha256": "d4ca4aa82d5aa3cae3df02f52a48897b5838af72d7707f74a4d286c8fe97a57e",
+      "size": 352
+    },
+    "crates/glue-pbs/src/archive.rs": {
+      "sha256": "cb71ed5e7f46056382ffa79f5b049974f85204230d2e2c92d09c9c3cf7622e75",
+      "size": 59262
+    },
+    "crates/glue-pbs/src/compression.rs": {
+      "sha256": "a2dd5f2f440f4f7e2a3e127b19a1b05e938065a10ae23e5c108638ba99870daf",
+      "size": 15372
+    },
+    "crates/glue-pbs/src/lib.rs": {
+      "sha256": "ba3a83f1a1e5a72825ce0fdc5af0106f2acf22991943750483d219da53957aad",
+      "size": 16282
+    },
+    "crates/glue-pbs/src/main.rs": {
+      "sha256": "0f5e08b0c159db5e8d6baf40a81948ff1b259648daaa25f540c65dd05caa97a8",
+      "size": 1446
+    },
+    "crates/glue-pbs/src/metadata.rs": {
+      "sha256": "c43d72d409922260504ad6df19c2f24db25a068f91f20874c1356d2876710227",
+      "size": 30613
+    },
+    "crates/glue-pbs/src/pins.rs": {
+      "sha256": "ad68b8ff903c335f98f8d3dfaf931fc0db147635ec64c14f4cddb735b030484e",
+      "size": 5353
+    },
+    "crates/glue-pbs/src/projection.rs": {
+      "sha256": "59c219ffb30d344f157bcbd105220cf200ef51282f8d4359d8128e7ea77cd113",
+      "size": 9863
+    },
+    "crates/glue-resources/Cargo.toml": {
+      "sha256": "9a508667aa76d30e8282e13e5dc42d93d7b295d0f8fdd9fe081445fe51a4ce02",
+      "size": 285
+    },
+    "crates/glue-resources/src/lib.rs": {
+      "sha256": "4db47eb3a6d30b0ae78f0d1dc39a4df84a864f3a0e367440f253fbd46d7a33a7",
+      "size": 11721
+    },
+    "crates/glue-resources/tests/resources.rs": {
+      "sha256": "cf5adaef0e213b9a2d40fe6edeca7cb019961c9bb6d81a60a7f9fa7382a2f0c1",
+      "size": 13777
+    },
+    "crates/glue-runner/Cargo.toml": {
+      "sha256": "2ad514cd107e49add0c5ca81c363c029af9aae437136483f351f6444126291f9",
+      "size": 711
+    },
+    "crates/glue-runner/build.rs": {
+      "sha256": "aded3b6d27a66223e6fb85e62ed70b753f64f815a6802e71c5f97d801cf3b00e",
+      "size": 789
+    },
+    "crates/glue-runner/src/main.rs": {
+      "sha256": "567d9ee08e4d7be57bfb40a75846b2c2859f249ac55105a254af679d315a1e11",
+      "size": 33180
+    },
+    "crates/glue-runner/tests/cli.rs": {
+      "sha256": "7a82740e102de64c0fd43953224f9c25f2076a33b0f4ec81b93fbde521b59f94",
+      "size": 32445
+    },
+    "crates/glue-runtime-lua/Cargo.toml": {
+      "sha256": "15084170e12b49b649d75d72204cf7a403a70b0ef1a19798a1a771dd5aa308ba",
+      "size": 671
+    },
+    "crates/glue-runtime-lua/build.rs": {
+      "sha256": "0329179634d65b2a5ea2d8d53526cf2a972a3478c33ea9c346328ddca5fb0a40",
+      "size": 7584
+    },
+    "crates/glue-runtime-lua/c/bridge.c": {
+      "sha256": "66b5f0b58f3cf0f368ece3e54a682d7b29568f32c1343534767719b9ffd15f14",
+      "size": 15535
+    },
+    "crates/glue-runtime-lua/c/bridge.h": {
+      "sha256": "0178dd9c4d8cc8b4a10fc7725778e04be458eb24b045f495da8c58c03fbffa8e",
+      "size": 1894
+    },
+    "crates/glue-runtime-lua/native-exports.txt": {
+      "sha256": "9d0c58744cd394ccfbec28b991c0f83d17deeed5b01552014bdafa95e5e315d3",
+      "size": 146
+    },
+    "crates/glue-runtime-lua/src/bootstrap.lua": {
+      "sha256": "5d6d84b6552797dd9d90536198d0dfaa048ea3c872d117c0adb2b6a7588a669d",
+      "size": 6317
+    },
+    "crates/glue-runtime-lua/src/bridge.rs": {
+      "sha256": "f0a24ad6a6b117871d161965bded9ccdef8b2b5f1d8a821d1eef6bae59ccecb8",
+      "size": 25015
+    },
+    "crates/glue-runtime-lua/src/lib.rs": {
+      "sha256": "9716a129d794d2d4256d7d465edc5e1216a87e9d3ad1eb3d99ecc99061bc9161",
+      "size": 10646
+    },
+    "crates/glue-runtime-lua/src/platform.rs": {
+      "sha256": "049f10b0a2e1b159797b6c6c6b05b082402ae28557eed2fab6fd5006b98e425e",
+      "size": 5319
+    },
+    "crates/glue-runtime-lua/src/profile.rs": {
+      "sha256": "aa93b1391c09cfbb306a89491f48ccee521a00a2dd963ea8e2487575350b5132",
+      "size": 28509
+    },
+    "crates/glue-runtime-lua/src/wire.rs": {
+      "sha256": "964994ba77b831e435a4c4838d2b9748549d29e8b9fc7590cceaa68f5bd9ec7c",
+      "size": 11595
+    },
+    "crates/glue-runtime-lua/tests/adapter.rs": {
+      "sha256": "5b698ffecea18886ca4e8175feb1438f8df8d55835ce0391f4e8bfe28947c405",
+      "size": 21603
+    },
+    "crates/glue-runtime-python/Cargo.toml": {
+      "sha256": "ee9f9b3bffc3122579c09b70ed65e1f4ba601ecf35b9b635d4b7252095638d0a",
+      "size": 585
+    },
+    "crates/glue-runtime-python/boundary/bridge.c": {
+      "sha256": "ec0adf72446d0244580273a18bdbaa7ece417eba10deb95b4bbbf5bd2517f917",
+      "size": 51676
+    },
+    "crates/glue-runtime-python/boundary/bridge.h": {
+      "sha256": "4dcf6f595e8ecfa8ca578e0d928a16d664189fcc4f1053f7d3fab3f03d7b4d17",
+      "size": 7240
+    },
+    "crates/glue-runtime-python/build.rs": {
+      "sha256": "c6038e563fd631c6cbfd126144aad68b8aa7b1c27df20d2b4e23c40d79a3aadb",
+      "size": 9201
+    },
+    "crates/glue-runtime-python/src/bundle.rs": {
+      "sha256": "5982b10d2af4ccf5f9a461b45392ba44ea10f0b8440f819963e302093427d0e0",
+      "size": 28214
+    },
+    "crates/glue-runtime-python/src/extension_profile.rs": {
+      "sha256": "98c1f01bd9702414554bf30a9fd784364a6391b9906a910a229373f5d21eb849",
+      "size": 33185
+    },
+    "crates/glue-runtime-python/src/host.rs": {
+      "sha256": "3f2d526a8c4823cdee4fa071542578808c25f08d8ea6a44bb10cff1ec8d5fd7f",
+      "size": 82846
+    },
+    "crates/glue-runtime-python/src/host_import_profile.rs": {
+      "sha256": "4e50db801aa65e14280d62d481fdb9f096bbe5f6caa6969d262302a0a6f50c36",
+      "size": 13392
+    },
+    "crates/glue-runtime-python/src/host_source_app_profile.rs": {
+      "sha256": "c13b75c7b53cd337296b8d530719da0219ed4f70a512518edef6f0858ef892ff",
+      "size": 16163
+    },
+    "crates/glue-runtime-python/src/import_profile.rs": {
+      "sha256": "0c00890c0ba376d1881675de3757de9718e7ea27452f2cf95e45c90b8d48c18a",
+      "size": 14481
+    },
+    "crates/glue-runtime-python/src/imports.rs": {
+      "sha256": "cb10f9b5a3ccace64361052c4510bae788ab6ab52bdb9c3332596745f3fee05c",
+      "size": 17606
+    },
+    "crates/glue-runtime-python/src/install_host_source_app_profile.rs": {
+      "sha256": "a6dbd0abba5555b8330ec0fb43ad08e78f62620e10210792004a78984cf93777",
+      "size": 8776
+    },
+    "crates/glue-runtime-python/src/lib.rs": {
+      "sha256": "418ecc82f259bf7b5961fb05f22dab839e5adf0cbf65b8f5f2cc50711508a9fe",
+      "size": 31603
+    },
+    "crates/glue-runtime-python/src/linux.rs": {
+      "sha256": "4600916a214bfa59702f584a876fe36ab941cf2ee9e980ac9ee1a6466d5f6545",
+      "size": 29027
+    },
+    "crates/glue-runtime-python/src/metadata_profile.rs": {
+      "sha256": "a77a1ff0100ea13c475c8610cbc232125df18a111f0c46cb27df0844fe9eef14",
+      "size": 46574
+    },
+    "crates/glue-runtime-python/src/metadata_profile/requirements.rs": {
+      "sha256": "2997f29d4c8e8e2fee3c7b5a1429e9ed9a151ccce6a89d77eb2b43496f900a84",
+      "size": 8200
+    },
+    "crates/glue-runtime-python/src/native_linux.rs": {
+      "sha256": "47dd154d97289ee471f708ddaf1523f6e64feda4c0c81a432d69561ff2d3d375",
+      "size": 8728
+    },
+    "crates/glue-runtime-python/src/packaging.rs": {
+      "sha256": "8388ddb5d99218528c4df78514d332cb56ec64c1131a30749c92c8bebdfd6987",
+      "size": 14112
+    },
+    "crates/glue-runtime-python/src/packaging/host_prerequisites.rs": {
+      "sha256": "46709ddabe547d61b9772ee3aabe7137b4f4e54fcb72f67839d4959093436cc5",
+      "size": 26662
+    },
+    "crates/glue-runtime-python/src/packaging/template.rs": {
+      "sha256": "56a45c77cdc032e72b485054e3185bafc6e0d1f3a908e39424814de8e84d948d",
+      "size": 20996
+    },
+    "crates/glue-runtime-python/src/platform.rs": {
+      "sha256": "261c9394fdf411d01c694d1bac6749d5558a60cf20c99bab54a0e25f134f4e73",
+      "size": 12117
+    },
+    "crates/glue-runtime-python/src/profile.rs": {
+      "sha256": "afc01520d67c04d12546ad14366ca75e46f9c650945278b9c1dccf55fc8bcfc2",
+      "size": 12859
+    },
+    "crates/glue-runtime-python/src/source_app_profile.rs": {
+      "sha256": "6fec2c565faa03792ad76059551462f03664707c841926585a5d27c25dade8f3",
+      "size": 24080
+    },
+    "crates/glue-runtime-python/src/source_entry.rs": {
+      "sha256": "359b48439341fc8f5482e402fae07760d9af39f3f301dee07fad447b1dcf47ad",
+      "size": 3088
+    },
+    "fixtures/lua-linked/input/app/lib/answer.lua": {
+      "sha256": "786bb264659fe380d512f0f8a06566bf31a7939214b2f1ff00022a93deca46f5",
+      "size": 90
+    },
+    "fixtures/lua-linked/input/app/lib/number.lua": {
+      "sha256": "80714b84ea9a7433474f24cc6779a052fb8e662996ec7d508eb8562d80e09e08",
+      "size": 10
+    },
+    "fixtures/lua-linked/input/app/main.lua": {
+      "sha256": "1f841379d897d3fd9a3046b5b4be6f7e6ed2315f1f4ac25051bf73c8012d43c1",
+      "size": 356
+    },
+    "fixtures/lua-linked/input/assets/message.txt": {
+      "sha256": "aa6d0b5ccf70836b7b813686a1767daab7653416640369a7c6bc09a5d7f766cb",
+      "size": 31
+    },
+    "fixtures/lua-linked/manifest.linux-arm64.json": {
+      "sha256": "b527cbb58fff4378249f3993f9cc840af5f2574ad11d925aaddc057a693e1f25",
+      "size": 2037
+    },
+    "fixtures/lua-linked/manifest.lua55.linux-arm64.json": {
+      "sha256": "8545c436215360389eaa584092112d25cb805fe38a74aea763c75cdf05bb15ca",
+      "size": 2037
+    },
+    "fixtures/lua-linked/manifest.lua55.macos-arm64.json": {
+      "sha256": "f97846c6caeb3b42097bde0248e5527bc34bb3d62c76423fd63557de7ca8f23b",
+      "size": 2005
+    },
+    "fixtures/lua-linked/manifest.macos-arm64.json": {
+      "sha256": "9a5f6e5014f5b465bfb5c9948b55de911cf9263ed7ae59c9a75afbb28ddcfc9e",
+      "size": 2005
+    },
+    "fixtures/lua-linked/run-linux.sh": {
+      "sha256": "fc20099b8a62172738ff9edb569ea20c2e9ab48bf84a75df1acea206d266eb54",
+      "size": 4026
+    },
+    "fixtures/native/linux-memfd/Dockerfile": {
+      "sha256": "c537b43f44f8c8933a8c252fb7af83a246f459d1dc659a80f6ed155be95ab251",
+      "size": 262
+    },
+    "fixtures/native/linux-memfd/baseline.c": {
+      "sha256": "c7e0e2fb37c9bd98136a9a94aa4a228085119c84fd9a7b40c1ff65865a2bddf3",
+      "size": 3199
+    },
+    "fixtures/native/linux-memfd/dependency.c": {
+      "sha256": "934386063f053e475b1d0b70cc348be6a54dbcea2712b03241ef4b48752bfc6d",
+      "size": 124
+    },
+    "fixtures/native/linux-memfd/module.c": {
+      "sha256": "4a992df83ec9359094c0e94899ef9d37a843fc7b7ddec7b5c27cb9198b04902d",
+      "size": 456
+    },
+    "fixtures/native/linux-memfd/run.sh": {
+      "sha256": "86af86fc04527b0adbb26bafe19093ea3efa9251fca7117ff89708e19a51abd5",
+      "size": 4277
+    },
+    "fixtures/native/lua-linux/baseline.c": {
+      "sha256": "3a9a2fb859c9e6a78ce1a6423853d7620c525b2fb1c2199b44337a2ff47d4523",
+      "size": 4767
+    },
+    "fixtures/native/lua-linux/build-fixture.sh": {
+      "sha256": "773925706caab5b7c1a050113622b0be44be761eac9cb6d0a3f25a9f956f39b0",
+      "size": 1413
+    },
+    "fixtures/native/lua-linux/dependency.c": {
+      "sha256": "f9e642d0809b8d0b861e84b17d3c314ecad3143e092b1ad4292f91bb7b5f8bf3",
+      "size": 119
+    },
+    "fixtures/native/lua-linux/input/app/main.lua": {
+      "sha256": "4853b8ab944cf3a05c9f3e9ba4d134f3baa8fd96d023e06409c523816ab2bc97",
+      "size": 1752
+    },
+    "fixtures/native/lua-linux/input/assets/message.txt": {
+      "sha256": "e8a972f5f90bc7fd7b59aaf07f48bd26bc0f2db583e9bc19547a8e702cfad495",
+      "size": 22
+    },
+    "fixtures/native/lua-linux/manifest.sh": {
+      "sha256": "4754314d224577de95a66818f822d36dd1775c1f8bdfce8e742b5f8038975e6c",
+      "size": 1115
+    },
+    "fixtures/native/lua-linux/manifest.template.json": {
+      "sha256": "ff6954dbdce965595222ecbe264aeff2d42a489f0947139fe5ccf25ea9db1370",
+      "size": 2466
+    },
+    "fixtures/native/lua-linux/module.c": {
+      "sha256": "6e6430e3bfdbcc6477a79e3772f96bf15c8e897305833814d1a31ff156f66ddf",
+      "size": 2085
+    },
+    "fixtures/native/lua-linux/reject-linux.sh": {
+      "sha256": "01f1bf8d483e003a75a969af8786e739e7680dc4687454acf96d5004b390b812",
+      "size": 5042
+    },
+    "fixtures/native/lua-linux/run-linux.sh": {
+      "sha256": "b7cde435906cf753cb57e528061a81f100e474ab8b572aa5758b36638dc15fea",
+      "size": 6841
+    },
+    "fixtures/native/macos-macho/allow-jit.plist": {
+      "sha256": "6e07752e0fc84df8618efe7e0eed7d22350def388b45bae282675614d423d559",
+      "size": 247
+    },
+    "fixtures/native/macos-macho/baseline.c": {
+      "sha256": "990a8a3fecea8ccc29b1646dccde624ce09ba454c54f0366fe5566c3a013783e",
+      "size": 2951
+    },
+    "fixtures/native/macos-macho/build-fixture.sh": {
+      "sha256": "34ec849525a09b33310a27a6aae36121e5a58492ae63d3cfcbf4d3fddd932471",
+      "size": 1966
+    },
+    "fixtures/native/macos-macho/capture-inputs.sh": {
+      "sha256": "e34dab4d8011f47ac3ed6887d4ef12cfc831239e83f988fd49035ec4f6c903b9",
+      "size": 3772
+    },
+    "fixtures/native/macos-macho/capture-memory-policy.sh": {
+      "sha256": "9cd1c877bcee5c6f11ab50c915e51b0cb6c9594f0c3faaa3481e030e3648a0b0",
+      "size": 1014
+    },
+    "fixtures/native/macos-macho/capture-rejections.sh": {
+      "sha256": "eac3fed5376bf88d3429050f417a382421285a2d48c3aa9ed1a25a6de73e10a4",
+      "size": 2310
+    },
+    "fixtures/native/macos-macho/capture-signing-controls.sh": {
+      "sha256": "6440a15a31a4ff4dd3233f5cf6bbac055c20fdecf5d4798511c5b0fe50981ed9",
+      "size": 2829
+    },
+    "fixtures/native/macos-macho/capture-trace-availability.sh": {
+      "sha256": "ef0c860108aee08997927e5492404599716558b6fa0952bc6d71a9ca68253fad",
+      "size": 1168
+    },
+    "fixtures/native/macos-macho/check-results.py": {
+      "sha256": "cb05051f6e3ae2ee657dff49141d3e5c04babebc2d6e8fa104b703a4d731c87b",
+      "size": 5796
+    },
+    "fixtures/native/macos-macho/debugger-control.plist": {
+      "sha256": "a39fea2661f3af6e0c115e5b8bc2c6874eb52f4c57163853523b0758228c1265",
+      "size": 308
+    },
+    "fixtures/native/macos-macho/dependency.c": {
+      "sha256": "407416cc81c22ad5c7300b660dbef949fdcc9ab9f7ecc40fc82461ecbcb722f8",
+      "size": 120
+    },
+    "fixtures/native/macos-macho/manifest.py": {
+      "sha256": "c2b74f0252ce1d4ce0ade08695224986d5162f3964259705b4c9dca894dc7df4",
+      "size": 3383
+    },
+    "fixtures/native/macos-macho/memory-policy.c": {
+      "sha256": "915d7732dda0b36b6fee4e0e64db74e35969588b63e7118464c34c0a24c92dbd",
+      "size": 3121
+    },
+    "fixtures/native/macos-macho/module.c": {
+      "sha256": "b4f59193207254772cb6ebec51d7774c0832d08574fcdb613e81e2a97af574d0",
+      "size": 561
+    },
+    "fixtures/native/macos-macho/no-jit.plist": {
+      "sha256": "97704a8960b4facceef54397a08fb5d0a456247c3627359215aa2a27df22656c",
+      "size": 181
+    },
+    "fixtures/native/macos-macho/rejection-inputs.py": {
+      "sha256": "7bfe369fcb9ee9d397b3243d936d8364b06cc6b267c434a73c8fdf488e44c687",
+      "size": 3030
+    },
+    "fixtures/native/macos-macho/run.sh": {
+      "sha256": "c95e035d6b52885c05facd56a34ae38062ac5d9c797d68ba155634541f025238",
+      "size": 4882
+    },
+    "fixtures/native/macos-macho/sign-launcher.sh": {
+      "sha256": "b0490949625197f34d72c682c9933a5b04550b2a083c691bb718112a7e9c4235",
+      "size": 1509
+    },
+    "fixtures/native/macos-macho/tlv.c": {
+      "sha256": "e9d8f669b20a401748f9225ecab256b17a3b7518dab3d9ad41e02f821a58c773",
+      "size": 159
+    },
+    "fixtures/python-bootstrap/app.py": {
+      "sha256": "e8ba0357be86b3d061493c4ec7565c258a1a961033ee8d60fb4fb4f9206a41ed",
+      "size": 1572
+    },
+    "fixtures/python-bootstrap/freeze.py": {
+      "sha256": "d56a0e09d99c334267a384af855c062154edb890bdea142a34c90cda768c50ad",
+      "size": 16637
+    },
+    "fixtures/python-bootstrap/header-pins.json": {
+      "sha256": "e7a2b671368610b58c571f421253deaf67ac91fb0be793d7b0755ced749f0abf",
+      "size": 37290
+    },
+    "fixtures/python-bootstrap/run-linux.sh": {
+      "sha256": "d4219c0bb17f623c514a24cfb17be51f5dfb5cc0a34b07ed700d754dce65d1e3",
+      "size": 9149
+    },
+    "fixtures/python-extensions/app.py": {
+      "sha256": "9208521cc2cbcc68e04b719f178ece5ee23bd0da9a798887edec2620bf7e93a3",
+      "size": 6753
+    },
+    "fixtures/python-extensions/baseline-driver.c": {
+      "sha256": "b174d82003c49614c9ced7cc8d2d1bf1b6063872a246d98169a6c19598d55885",
+      "size": 6352
+    },
+    "fixtures/python-extensions/build-fixture.sh": {
+      "sha256": "dd22e18a5ca5d00f586b58d1c51fe988dfbe6ebd4e0a759050f7c5bb8007a2d7",
+      "size": 2374
+    },
+    "fixtures/python-extensions/dependency.c": {
+      "sha256": "65d5a70edc33b01eee701249387744e7696f041ef4cf16a8e109d9f1d113c7fa",
+      "size": 167
+    },
+    "fixtures/python-extensions/exec-error.c": {
+      "sha256": "80aaf7af02953e0adaedd90a7f88dcf2696edb3ec06af2b85a5e58416fa0378b",
+      "size": 1748
+    },
+    "fixtures/python-extensions/init-error.c": {
+      "sha256": "bed8359460f2864315b4738a32aa7f15dc4ebb020418e51ad74b7a172b4bd417",
+      "size": 1022
+    },
+    "fixtures/python-extensions/multi.c": {
+      "sha256": "789d1cb6339c1dbbc268f650524cd5c51dd39f4893e75a5f51648c5d69226025",
+      "size": 1797
+    },
+    "fixtures/python-extensions/run-linux.sh": {
+      "sha256": "3545c4419affba8ee087c79075156e7052c2a1b01e977cd71b3492a0b9c3d1b2",
+      "size": 13921
+    },
+    "fixtures/python-extensions/single.c": {
+      "sha256": "2cb038537769020062bfbc5e6ce10949aeb4bdd1bb5fa22b192cda495fa4f7f3",
+      "size": 1465
+    },
+    "fixtures/python-host-imports/prepare-controls.py": {
+      "sha256": "18d154153b1d93d379878dbbf3e4e05a048dcab7ef63fb9db640403b4b59d1af",
+      "size": 6178
+    },
+    "fixtures/python-host-imports/run-linux.sh": {
+      "sha256": "2a76d90119e2f6188c048e920ec1559caa9dad6ade5fca6ae0a97b5f39fa6e4a",
+      "size": 10858
+    },
+    "fixtures/python-host-imports/runtime-names.json": {
+      "sha256": "daa8daae25ac462e1489e1a14a6d9fc8ce8091791d3294656d6814b2e55d42ac",
+      "size": 2410
+    },
+    "fixtures/python-host-imports/stdlib-import-pins.json": {
+      "sha256": "3f73bcdba6bdca48bca36e070e82b54b94d6ae80772c1ed83a4a36ba3cd66b1b",
+      "size": 10668
+    },
+    "fixtures/python-host-source-apps/input-stdlib/app/tasks/stdlib.py": {
+      "sha256": "5632df70b6569c873b7d25487ea069d6383d1436b4692c7a4b4dddea94284d08",
+      "size": 1236
+    },
+    "fixtures/python-host-source-apps/prelude.py": {
+      "sha256": "89c6fd07ec27e83baf3af9612caf44e164867d7eff81d957bcaa0c139ccfff00",
+      "size": 455
+    },
+    "fixtures/python-host-source-apps/prepare.py": {
+      "sha256": "c90e1adfbe87ab10dc254febfc12d1eda5980c99307cc7273d215682f4b9b967",
+      "size": 14052
+    },
+    "fixtures/python-host-source-apps/run-linux.sh": {
+      "sha256": "893fe1ba8b89576dcbec68bb1a05c7591a0df66b56aebe39e2a586df19071af3",
+      "size": 15918
+    },
+    "fixtures/python-host-source-apps/test_protocol.py": {
+      "sha256": "3a48b36db37a6012740c6eff559989f89a3701a5e978552fc47c2a05688e1ccd",
+      "size": 17382
+    },
+    "fixtures/python-host/prepare-controls.py": {
+      "sha256": "db42d58601f3e8fcc47e6e246d00c16aecd53958dbb21c1b2b58574de7813936",
+      "size": 5298
+    },
+    "fixtures/python-host/run-linux.sh": {
+      "sha256": "3dac98f19aa0219f7e56a16059cb5b564e0d129658501cde19281ce35a066a44",
+      "size": 10335
+    },
+    "fixtures/python-imports/bootstrap.py": {
+      "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+      "size": 13510
+    },
+    "fixtures/python-imports/input/app/main.py": {
+      "sha256": "0e4b3bce73eaa08e9acbb9aefeae298a1e43fdd1a62148141718d60b7065694f",
+      "size": 9122
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/__init__.py": {
+      "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+      "size": 104
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/answer.py": {
+      "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+      "size": 82
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/broken.py": {
+      "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+      "size": 80
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/bytecode_only.pyc": {
+      "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+      "size": 30
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/cycle_a.py": {
+      "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+      "size": 56
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/cycle_b.py": {
+      "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+      "size": 48
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/data/binary.bin": {
+      "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+      "size": 11
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/data/text.txt": {
+      "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+      "size": 21
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/dependency.py": {
+      "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+      "size": 16
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/encoded.py": {
+      "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+      "size": 32
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/nested/__init__.py": {
+      "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+      "size": 25
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/nested/value.py": {
+      "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+      "size": 11
+    },
+    "fixtures/python-imports/input/app/python/glue_demo/syntax_error.py": {
+      "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+      "size": 52
+    },
+    "fixtures/python-imports/input/app/python/glue_ns/data/info.txt": {
+      "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+      "size": 19
+    },
+    "fixtures/python-imports/input/app/python/glue_ns/part.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "fixtures/python-imports/input/app/python/standalone.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "fixtures/python-imports/run-linux.sh": {
+      "sha256": "a08fe8ddf84caf3ca08f46a79b7bb800aeb97e6181dd5f917993bed84afeb869",
+      "size": 9456
+    },
+    "fixtures/python-imports/stdlib-pins.json": {
+      "sha256": "d088049d2c9936748a1fd6139a9b5634ded6b64934b7df1b02638ab4aa3653c8",
+      "size": 326131
+    },
+    "fixtures/python-imports/test_importer.py": {
+      "sha256": "5bd42828d72e721a7d2b57293f0be0514e519dd3ec5b589a499bcab5028a855b",
+      "size": 17543
+    },
+    "fixtures/python-install-host-source-apps/audit_installation.py": {
+      "sha256": "3b9588529ed0c0b39811f3ea8bca788779c59ab741f1204de9be9d4f26276f9c",
+      "size": 9400
+    },
+    "fixtures/python-install-host-source-apps/cache-pins.json": {
+      "sha256": "f14f8825bfa9a853f083733bee21c04cfbab6f509a00f72ca434e2096f643af8",
+      "size": 825
+    },
+    "fixtures/python-install-host-source-apps/prepare.py": {
+      "sha256": "7c54ca9e2670d7bea0e50270b4929aef7bf2f9216ac131e8c6d889d3961956e6",
+      "size": 21951
+    },
+    "fixtures/python-install-host-source-apps/run-linux.sh": {
+      "sha256": "3af201361ffb1decac4a70c715a692f41a94febe1bbce912d0a761dc404f55c3",
+      "size": 19284
+    },
+    "fixtures/python-install-host-source-apps/source-pins.json": {
+      "sha256": "ef34cc6063aca5cad149d53dd247359b0154a20a99bf5d9a3f6f6423095dccc3",
+      "size": 155575
+    },
+    "fixtures/python-metadata/bootstrap.py": {
+      "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+      "size": 4852
+    },
+    "fixtures/python-metadata/input/app/main.py": {
+      "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+      "size": 2191
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+      "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+      "size": 242
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+      "sha256": "b542c8e86359b0e2af354f5ca3104ce242bc580fe19b98e32d24dec3ceec96f7",
+      "size": 592
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+      "sha256": "1edc8cfdcce8620c3a0052d3562d7629912d80f8ca2bda8e5e9efa76c46d9f9b",
+      "size": 54
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+      "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+      "size": 35
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo/__init__.py": {
+      "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+      "size": 256
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_demo/data/message,one.txt": {
+      "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+      "size": 26
+    },
+    "fixtures/python-metadata/input/app/python/glue_meta_namespace/part.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "fixtures/python-metadata/prepare.py": {
+      "sha256": "7a1151d37eeeb98324cfaecaeeb4efc7b43fce828005f910d05b158aa99748dc",
+      "size": 5060
+    },
+    "fixtures/python-metadata/run-linux.sh": {
+      "sha256": "b1577aacd6dd700d3a4e1f0cb09c86ad70b5cace001fc962ae584fcada81b3eb",
+      "size": 13724
+    },
+    "fixtures/python-metadata/test_protocol.py": {
+      "sha256": "06a571a24f8d146c4a3fbd8f93698cfa86ae49a2fb175ee11cb7211f4a0a9d15",
+      "size": 17449
+    },
+    "fixtures/python-pbs/pins.json": {
+      "sha256": "e53b0131020802ff5cd11bcefe98a185fd3593996eb9a3e5dfe02f3b9133980c",
+      "size": 984
+    },
+    "fixtures/python-runner/run-linux.sh": {
+      "sha256": "eff120239585354763a2e4e1cabf53a88015234ebe2dd460ce5df134c7805a6e",
+      "size": 15590
+    },
+    "fixtures/python-runtime-templates/run-linux.sh": {
+      "sha256": "8655f5d8b3e07a95551a669f2d5d0b986fe57c74945c35da66b2673686c837d0",
+      "size": 16519
+    },
+    "fixtures/python-runtime-templates/test_audit.py": {
+      "sha256": "af038401e07727faefcf48a34d9c506e7de4505ddd8e835ae1b32e12c2502a25",
+      "size": 12465
+    },
+    "fixtures/python-runtime-templates/test_templates.py": {
+      "sha256": "6c4813ab9b580a9dc76b5c3cd24eaba3d534bf0416ff435c3a68e639b71b373c",
+      "size": 38135
+    },
+    "fixtures/python-source-apps/input-error/app/jobs/fail.py": {
+      "sha256": "35087b8a87828d5289c0c2a59176075806c0c503e7a869e8c9837b3ad9eb54f9",
+      "size": 59
+    },
+    "fixtures/python-source-apps/input-minimal/app/launch.py": {
+      "sha256": "8c0f723493cea425bb865ed1f887dac46065cf77162ecba33c73e50aa76b7c44",
+      "size": 673
+    },
+    "fixtures/python-source-apps/input-minimal/app/python/simple_value.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "fixtures/python-source-apps/input-nul/app/embedded-nul.py": {
+      "sha256": "b10cf41a89858936fae2af30677528737c9977fc6b4e64cd53629e78ade06324",
+      "size": 22
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_data/__init__.py": {
+      "sha256": "89e06ad2e2929dea441f54af293b1c7821ec96d9a9381a0aec8c1a9ee026451d",
+      "size": 26
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_data/answer.py": {
+      "sha256": "200a2dfcd924e06463c2cf770dc0b94dc57e4225dc0db8a84ad2912910a89e26",
+      "size": 81
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_data/assets/binary.bin": {
+      "sha256": "27279180881062e729fe01cf5a43b43652a7608246863f7714036191e54a3f4e",
+      "size": 4
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_data/assets/message.txt": {
+      "sha256": "e9478f62d7fa9bf6d253cd7e4129b4a0ad0c97025c8a8d0b04dfdc48dd650353",
+      "size": 16
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_parts/assets/part.txt": {
+      "sha256": "4281ef15452913e09aa213310952b195aeb8cb01fca8a66eb513ed2fb660294b",
+      "size": 17
+    },
+    "fixtures/python-source-apps/input-resources/app/python/report_parts/extra.py": {
+      "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+      "size": 11
+    },
+    "fixtures/python-source-apps/input-resources/app/tasks/report's [daily].py": {
+      "sha256": "99398c06172925aab6248d5cb6dccc6f0ea192528d9516bbb5b50dd2ad8df7b0",
+      "size": 2023
+    },
+    "fixtures/python-source-apps/input-syntax/app/jobs/invalid.py": {
+      "sha256": "82b25c20abe553a517d5f8bd1a5b2a77195ff015dd1a433de58d8933105cd779",
+      "size": 38
+    },
+    "fixtures/python-source-apps/prepare.py": {
+      "sha256": "e550274571e21f21d45109060d28e70300f8b02aa8b8dfdf5e5d62bbc580269f",
+      "size": 9959
+    },
+    "fixtures/python-source-apps/run-linux.sh": {
+      "sha256": "5c13f8f7f2dc14ca0e20e9b86762b8395909e217c011e0ef65adf71cbf03ec65",
+      "size": 14538
+    },
+    "fixtures/python-source-apps/test_entry.py": {
+      "sha256": "1dd259f3903d2850dc6dbe9e03f97fcb758efde031deeda1c7f63d421153911e",
+      "size": 7186
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/main.py": {
+      "sha256": "447b03b6d97a58481174b1ba52e78b21733221d603fe483002b71dd96db3b96a",
+      "size": 2191
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/INSTALLER": {
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+      "size": 4
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/METADATA": {
+      "sha256": "cee2344e182526a4c85856bfa7d1520b1dd809c49efed06b8bb9939728e8dbab",
+      "size": 242
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/RECORD": {
+      "sha256": "bbb0ed2aa74f8fc5ce48b67899e32267f15710dcb86a079237c952c9bbe7064e",
+      "size": 872
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/REQUESTED": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/WHEEL": {
+      "sha256": "9426f12137da508050d718e3cb2419ca31ee28c5e61475c9c86418bca1406746",
+      "size": 95
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/entry_points.txt": {
+      "sha256": "8861c6623b198b4d4d81d1054cfdc439fbfd127dba539cbee68ad450e4bd2df9",
+      "size": 112
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo-1.2.3.dist-info/top_level.txt": {
+      "sha256": "b7073de57ec39c5274cd3868042b571516576c4bd206f5082815c7a64e3a68b9",
+      "size": 35
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo/__init__.py": {
+      "sha256": "33028da093b26da62214724245cd65659443d2ac07d5c8dda29475d7dcbefc50",
+      "size": 256
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_demo/data/message,one.txt": {
+      "sha256": "1cf16142aeb29d14a5a686583d423a106bbf1b1eafe66a2590d73d0f69dd6928",
+      "size": 26
+    },
+    "fixtures/python-venv-ingestion/expected-input/app/python/glue_meta_namespace/part.py": {
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "fixtures/python-venv-ingestion/expected-inventory.json": {
+      "sha256": "0e71cd8a0ce8db649334894032a03b3706b2faa9a421fad71ab44631e7be702f",
+      "size": 1837
+    },
+    "fixtures/python-venv-ingestion/glue_meta_demo-1.2.3-py3-none-any.whl": {
+      "sha256": "ac1701dbdecd3883432a32a1a79204a9c89186fc11554596b3d326010bd5be3a",
+      "size": 2674
+    },
+    "fixtures/python-venv-ingestion/prepare.py": {
+      "sha256": "8fc1bb038f26f683e2bf33988e59440b3e6993f987445aa39b04d1d3f6a8c647",
+      "size": 10202
+    },
+    "fixtures/python-venv-ingestion/run-linux.sh": {
+      "sha256": "239ce01c9ad574f1f28f64e9128adb50fb0d315dc75402b38b2fa5a43905d7f8",
+      "size": 14924
+    },
+    "fixtures/python-venv-ingestion/test_build.py": {
+      "sha256": "952eaf162ec273690f4dd9349b1ab686b5586533ec1df6a2e594117bdb265603",
+      "size": 12413
+    },
+    "fixtures/python-venv-ingestion/test_prepare.py": {
+      "sha256": "cc94aa7e631992b7d081b76cdfe3251b45bc538af25b430fe74870ce28965cc2",
+      "size": 3584
+    },
+    "fixtures/python-venv-ingestion/wheel-provenance.json": {
+      "sha256": "638427e18c208df7d386ea9c74ff1a713cae5b96bcb5a8b187319b94a56ee779",
+      "size": 2798
+    },
+    "fixtures/resources/input/app/main.lua": {
+      "sha256": "9e1288aa012d3c1e4653b36c6ae3db2ecc7f7b6303167a5573e4f5e41878f65d",
+      "size": 25
+    },
+    "fixtures/resources/input/assets/message.txt": {
+      "sha256": "bca9711c82c4ad200caf5a8bc11ebf17c801aa7aef9b139ccb9b48e4e262412d",
+      "size": 32
+    },
+    "fixtures/resources/manifest.json": {
+      "sha256": "d6ad1d12dbe1ecd51d3dfea7cd35faf24bf80192b605a4c5008203ff05e4f8dc",
+      "size": 1382
+    },
+    "fixtures/worker-protocol/Cargo.toml": {
+      "sha256": "ba61ac53adde90851ff171f0c357d4a2afc981834de7398c0b52bcd831b19604",
+      "size": 290
+    },
+    "fixtures/worker-protocol/run-linux.sh": {
+      "sha256": "ab0f70a5af8770b43bf3814e0cb0c894152db003c6642fe7845bfeaa7f1f7554",
+      "size": 3046
+    },
+    "fixtures/worker-protocol/src/main.rs": {
+      "sha256": "bd81321801b54532ea1e7af861e5c0a4ccb69c1ca09de5fcaa0ee79e4422abe7",
+      "size": 3966
+    },
+    "fixtures/worker-protocol/tests/pipes.rs": {
+      "sha256": "804f27997deed3268ee6a49f7ed885742dd126562ca7e070d2a11fdfd3267c41",
+      "size": 9146
+    },
+    "rust-toolchain.toml": {
+      "sha256": "6a3177dca3783745b00765ea571974808dad2644947fc0a8df5927048edf13a5",
+      "size": 86
+    },
+    "scripts/check-linux-lua-trace.py": {
+      "sha256": "7b0b2097893186d234e152eeae71924ee86a597beb0bbc585085e64eb115b67c",
+      "size": 10880
+    },
+    "scripts/check-linux-memfd-trace.py": {
+      "sha256": "5d3c1cf2ed7b908ce42c99f7f3bd50a0a3445a84acd61678421117b325ef2815",
+      "size": 16550
+    },
+    "scripts/check-linux-native-lua-rejections.py": {
+      "sha256": "c69b8354b44ef64ae5e33b817886438aa2e9139b80ba6de3d957d8bcc69bad7d",
+      "size": 11639
+    },
+    "scripts/check-linux-native-lua-trace.py": {
+      "sha256": "1d8635f2bca9908ec3f0ce87cc266bdf37a367d7b1fe4b08f4001a1cd1965965",
+      "size": 11682
+    },
+    "scripts/check-linux-pbs-trace.py": {
+      "sha256": "4c847ff9e9afc5b6ee5909d708aed73dba1604d64ac67ed7c10bf887a968009b",
+      "size": 18633
+    },
+    "scripts/check-linux-python-bootstrap-trace.py": {
+      "sha256": "2d451458c07449498a4b15ead468396fceb4ce6d90a50dcf39aaa616ac46eb17",
+      "size": 25485
+    },
+    "scripts/check-linux-python-extension-trace.py": {
+      "sha256": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+      "size": 50345
+    },
+    "scripts/check-linux-python-host-import-trace.py": {
+      "sha256": "4b1192adcbc0c7fbe051cd5cd70ea9d3acbb3e8a9bf869fce1d7c8e154cc0813",
+      "size": 45026
+    },
+    "scripts/check-linux-python-host-source-app-trace.py": {
+      "sha256": "8cd3ace31941fb8e2bd53a2756f15639812a5dff7bbd99accc75322fa7d3aea5",
+      "size": 55351
+    },
+    "scripts/check-linux-python-host-trace.py": {
+      "sha256": "499a3ca1eed789837cf56a73574115913d9c7d3bd8d081ce2a26974bc3b497fe",
+      "size": 37043
+    },
+    "scripts/check-linux-python-import-trace.py": {
+      "sha256": "5b8a243db70467971b350f98226392bceb61fd8b2e17b960bc9eaff27c8f3aed",
+      "size": 33961
+    },
+    "scripts/check-linux-python-install-host-source-app-trace.py": {
+      "sha256": "985b93b64b27fb443fa835e229e5069bbaac7e6018a9c59246fd0dd8ec26fea8",
+      "size": 61043
+    },
+    "scripts/check-linux-python-metadata-trace.py": {
+      "sha256": "79c0a677318b9a64b8f022f0fe74edaf9e886364a48664136f7e6fa49ee07928",
+      "size": 27672
+    },
+    "scripts/check-linux-python-runner-trace.py": {
+      "sha256": "3374d5d7da7ee28704ae03ae10b897a0e4aa3442020eb67eb8fa29f91b111635",
+      "size": 20321
+    },
+    "scripts/check-linux-python-source-app-trace.py": {
+      "sha256": "6a31b6841399fceba2c639cee751261d73c5b6369ecc88813afa4ba0129ef69a",
+      "size": 29029
+    },
+    "scripts/check-linux-python-venv-trace.py": {
+      "sha256": "a9cd081fc383a260d2c286331c6eccc30ae34332b54f3b93124a46b9d78def3b",
+      "size": 10322
+    },
+    "scripts/run-linux-lua.sh": {
+      "sha256": "7393d261ca4d98dcd78353b3fceda2da5c5438e8918f4c3f3cdd0263cf8d436f",
+      "size": 2970
+    },
+    "scripts/run-linux-memfd.sh": {
+      "sha256": "880a49dd4c7fac3d14b3ec498c5bd70d96c5dab64725bd412c03342654409e54",
+      "size": 1582
+    },
+    "scripts/run-linux-native-lua.sh": {
+      "sha256": "201ab2a9076a5fe2634f9b155343ec2d1a720c40be0c8ba1d8f8a6df726ca0f0",
+      "size": 3562
+    },
+    "scripts/test-linux.sh": {
+      "sha256": "63dbce9b6d7c95edac01dff86d1535b57ec45c59861c55cc5a0e789e907cdcb0",
+      "size": 993
+    },
+    "scripts/test_linux_lua_trace.py": {
+      "sha256": "ab7a00a88d05347dfd9a5b20a15c14d0939e7de568f37f6fe8f51d84cee2b9b4",
+      "size": 11593
+    },
+    "scripts/test_linux_memfd_trace.py": {
+      "sha256": "22b195fe439b45e827deded1f16d6af3abe2eef9f84fc5b4a6f5e41c49bdb9d8",
+      "size": 15021
+    },
+    "scripts/test_linux_native_lua_rejections.py": {
+      "sha256": "f2a2a4b84a33cac125ecd18eba3c457e78b1b43e63fafe504bcb027dd92555e7",
+      "size": 10876
+    },
+    "scripts/test_linux_native_lua_trace.py": {
+      "sha256": "a96510fda40e398da497da913c94314577b24462d68a86af1af3e9f0a3f7ff85",
+      "size": 11934
+    },
+    "scripts/test_linux_pbs_trace.py": {
+      "sha256": "117de5fa18684b991b8dfdd6a9bc9750e9634ba84a0dbb6a3051e5bc9229c45e",
+      "size": 14133
+    },
+    "scripts/test_linux_python_bootstrap_trace.py": {
+      "sha256": "15d36fc6720727205996f0df73e504c85e8848f5b2b5c054f12b00eb0d9b2f3a",
+      "size": 18113
+    },
+    "scripts/test_linux_python_extension_trace.py": {
+      "sha256": "1b36dd3929ff083f37392ee707908ef7732d632c6a9b21cf8f5a17ca2d3d88f5",
+      "size": 28696
+    },
+    "scripts/test_linux_python_host_import_trace.py": {
+      "sha256": "435678313fd4fde7a7286917b8d859d569484f59bc29533ffaa128939126990c",
+      "size": 21747
+    },
+    "scripts/test_linux_python_host_source_app_trace.py": {
+      "sha256": "2e30579365ad03cd0c0875d7e6dee3531051240a1c6b7a6943d8a78f3a62bec7",
+      "size": 28243
+    },
+    "scripts/test_linux_python_host_trace.py": {
+      "sha256": "376b990e59e65391891f1feb696117d131d7f91b43189650027def575db599ad",
+      "size": 23995
+    },
+    "scripts/test_linux_python_import_trace.py": {
+      "sha256": "fd26d2a38191c376d81e4022fdd63ebb7a8c982253ecc0af95bb5c5f3c9c1e85",
+      "size": 29316
+    },
+    "scripts/test_linux_python_install_host_source_app_trace.py": {
+      "sha256": "127549153e74abb5ec8e397c311a75412974bc8d7392e9cd3a9d5357ee2bf541",
+      "size": 33438
+    },
+    "scripts/test_linux_python_metadata_trace.py": {
+      "sha256": "edd55127b7d513ca282093a9225bb224cf8997f52885ec37af41e11c9ebdd161",
+      "size": 22596
+    },
+    "scripts/test_linux_python_runner_trace.py": {
+      "sha256": "7cfbc1d4bac4770ae1ae3df25b883e75bbca20d9eba095f0f3eb086801f82a3a",
+      "size": 14832
+    },
+    "scripts/test_linux_python_source_app_trace.py": {
+      "sha256": "81a90090c82a77bb06241ec4d621f69cfc9f5190d3aac9073d3ce447dcc6fa17",
+      "size": 28589
+    },
+    "scripts/test_linux_python_venv_trace.py": {
+      "sha256": "2b384335882a81dd53bd7ceb0eb3ac926f9246dda15d6d6b4cebe21ab75ba3c1",
+      "size": 14900
+    }
+  },
+  "implementation": "e525db8542886800ff008c300c25bd56e7e3e09a",
+  "schema_version": 0,
+  "scope": "Pre-commit Rust workspace checks on identical code, including existing test fixtures. New standalone corpus/trace scripts and Markdown are checked separately.",
+  "verified_files": 264
+}

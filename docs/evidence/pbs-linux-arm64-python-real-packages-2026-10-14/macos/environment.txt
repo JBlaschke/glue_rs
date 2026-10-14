@@ -1,0 +1,6 @@
+ProductName:		macOS
+ProductVersion:		26.7
+BuildVersion:		25G229
+arm64
+Python 3.15.0
+rustc 1.88.0 (6b00bc388 2025-06-23)
