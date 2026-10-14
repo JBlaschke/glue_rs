@@ -33,6 +33,7 @@ const INSTALL_CACHE_PINS: &[u8] =
 pub enum HostProvider {
     Full,
     InstallOnly,
+    InstallOnlyStripped,
 }
 
 #[derive(Debug)]
@@ -50,6 +51,12 @@ pub struct TemplateProvenance {
     pub host_prefix: Option<String>,
     pub host_prerequisites_verified: bool,
     pub runtime_execution_observed: bool,
+    /// A separate image identity when the selected host image differs from the
+    /// original full-distribution producer described below.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_runtime_image: Option<ContentIdentity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_runtime_artifact: Option<ArtifactIdentity>,
     /// Only bundled construction inspects an upstream artifact.
     pub inspected_artifact: Option<ArtifactIdentity>,
     pub inspected_artifact_entries: Option<usize>,
@@ -196,6 +203,14 @@ pub fn host(prefix: &str, provider: HostProvider) -> Result<RuntimeTemplate, Str
             config.validate_install_source_snapshot_layout()?;
             ("host-install", metadata_profile::INSTALL_BUILD_ID, true)
         }
+        HostProvider::InstallOnlyStripped => {
+            config.validate_install_source_snapshot_layout()?;
+            (
+                "host-install-stripped",
+                metadata_profile::STRIPPED_INSTALL_BUILD_ID,
+                true,
+            )
+        }
     };
     let resources = helper_resources();
     let specs = resources
@@ -217,11 +232,22 @@ pub fn host(prefix: &str, provider: HostProvider) -> Result<RuntimeTemplate, Str
     let manifest = host_source_app_profile::manifest_for_build(
         APP_ID, COMPONENT, APP, specs, &config, build_id,
     )?;
-    finish(
-        manifest,
-        resources,
-        provenance(name, Some(prefix.into()), install)?,
-    )
+    let mut facts = provenance(name, Some(prefix.into()), install)?;
+    if provider == HostProvider::InstallOnlyStripped {
+        facts.selected_runtime_image = Some(ContentIdentity {
+            path: "lib/libpython3.13.so.1.0".into(),
+            size: crate::stripped_host::LIBRARY_SIZE,
+            sha256: crate::stripped_host::LIBRARY_SHA256.into(),
+        });
+        let pin = crate::stripped_host::artifact_pin();
+        facts.selected_runtime_artifact = Some(ArtifactIdentity {
+            filename: pin.filename,
+            size: pin.size,
+            sha256: pin.sha256,
+            url: pin.url,
+        });
+    }
+    finish(manifest, resources, facts)
 }
 
 fn helper_resources() -> BTreeMap<String, Vec<u8>> {
@@ -299,6 +325,8 @@ fn provenance(
         host_prefix,
         host_prerequisites_verified: false,
         runtime_execution_observed: false,
+        selected_runtime_image: None,
+        selected_runtime_artifact: None,
         inspected_artifact: None,
         inspected_artifact_entries: None,
         frozen_bootstrap: None,
@@ -475,6 +503,46 @@ mod tests {
                 .contains("owners")
         );
         host(&"/a".repeat(53), HostProvider::InstallOnly).unwrap();
+    }
+
+    #[test]
+    fn stripped_template_has_a_distinct_image_and_preserves_producer_and_helpers() {
+        let prefix = "/missing declared Python";
+        let old = host(prefix, HostProvider::InstallOnly).unwrap();
+        let new = host(prefix, HostProvider::InstallOnlyStripped).unwrap();
+        assert_eq!(old.resources, new.resources);
+        assert_eq!(old.provenance.producer, new.provenance.producer);
+        assert_eq!(
+            old.provenance.source_inventory,
+            new.provenance.source_inventory
+        );
+        assert_eq!(
+            old.provenance.cache_inventory,
+            new.provenance.cache_inventory
+        );
+        assert_eq!(
+            new.provenance
+                .selected_runtime_image
+                .as_ref()
+                .unwrap()
+                .sha256,
+            crate::stripped_host::LIBRARY_SHA256
+        );
+        assert_eq!(
+            new.provenance
+                .selected_runtime_artifact
+                .as_ref()
+                .unwrap()
+                .sha256,
+            crate::stripped_host::ARTIFACT_SHA256
+        );
+        assert_eq!(
+            new.manifest.runtimes["python"].build_id,
+            metadata_profile::STRIPPED_INSTALL_BUILD_ID
+        );
+        let old_json = serde_json::to_value(old.provenance).unwrap();
+        assert!(old_json.get("selected_runtime_image").is_none());
+        assert!(old_json.get("selected_runtime_artifact").is_none());
     }
 
     #[test]

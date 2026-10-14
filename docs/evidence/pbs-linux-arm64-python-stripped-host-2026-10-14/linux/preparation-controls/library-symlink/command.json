@@ -1,0 +1,11 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install-stripped",
+  "--runtime-tree",
+  "/tmp/glue-stripped-controls-0h1g4z_d/library-symlink",
+  "--output",
+  "/tmp/glue-stripped-controls-0h1g4z_d/library-symlink-output",
+  "--json"
+]

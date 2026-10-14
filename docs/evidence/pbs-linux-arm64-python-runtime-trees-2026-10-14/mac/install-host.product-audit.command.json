@@ -1,0 +1,10 @@
+[
+  "/usr/local/bin/python3",
+  "-B",
+  "/Users/johannes.blaschke/Developer/glue_rs/fixtures/python-real-packages/prepare.py",
+  "audit-build",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/install-host.build.stdout.txt",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/install-host.glue",
+  "--provenance",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/installed-packages/installation-provenance.json"
+]

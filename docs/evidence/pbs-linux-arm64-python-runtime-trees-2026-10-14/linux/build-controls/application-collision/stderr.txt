@@ -1,0 +1,1 @@
+glue: packaging profile: installed package collides with an explicit application file: app/python/glue_meta_demo/__init__.py

@@ -27,8 +27,10 @@ Input backing bytes and the output parent must stay stable during preparation;
 descriptor ownership does not freeze writable files. Reject overlapping input
 and output trees, including a symlinked output-parent alias, before payload reads.
 Compare the retained input-root device/inode with every resolved output-parent
-ancestor before selected reads, so case-insensitive and mount aliases cannot
-bypass containment admission. Existing output protection and fixed 0444/0555/1704067200 publication semantics
+ancestor before selected reads. This detects case aliases and aliases exposing
+the retained input-root identity in that ancestry. General mount topology is not
+inspected: backing input/output trees must be disjoint, including descendant
+mount aliases whose logical ancestry hides the input root. Existing output protection and fixed 0444/0555/1704067200 publication semantics
 are the same as artifact preparation.
 
 Two exact selected-content layouts are admitted. The stock layout uses every

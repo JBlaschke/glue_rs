@@ -1,0 +1,1 @@
+glue: loader override LD_PRELOAD is unsupported

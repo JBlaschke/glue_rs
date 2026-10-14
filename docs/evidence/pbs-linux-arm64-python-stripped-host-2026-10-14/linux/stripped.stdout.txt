@@ -1,0 +1,1 @@
+PASS python-host stdlib=hashlib,decimal,json metadata=1.0 resource=42

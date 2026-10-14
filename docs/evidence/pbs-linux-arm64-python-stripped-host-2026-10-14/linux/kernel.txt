@@ -1,0 +1,1 @@
+Linux 4bf58862e7bb 7.1.4-200.fc44.aarch64 #1 SMP PREEMPT_DYNAMIC Sat Jul 18 19:16:11 UTC 2026 aarch64 GNU/Linux

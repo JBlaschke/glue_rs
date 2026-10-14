@@ -1,0 +1,17 @@
+[
+  "/workspace/target/uv-runtime-tree-downloads/uv",
+  "python",
+  "install",
+  "cpython-3.13.16-linux-aarch64-gnu",
+  "--install-dir",
+  "/host-build/runtime-tree-install/install",
+  "--cache-dir",
+  "/host-build/runtime-tree-install/cache",
+  "--python-downloads-json-url",
+  "/host-build/runtime-tree-install/download-metadata.json",
+  "--no-bin",
+  "--no-registry",
+  "--offline",
+  "--no-config",
+  "--no-progress"
+]

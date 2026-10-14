@@ -90,6 +90,30 @@ impl Pins {
         }
         Ok(())
     }
+
+    /// Validate a separately supplied stripped install artifact against this
+    /// exact producer identity. The original install-only pin is unchanged.
+    pub fn validate_stripped_install(&self, pin: &ArtifactPin) -> Result<(), String> {
+        self.validate()?;
+        let filename = format!(
+            "cpython-{}+{}-{}-install_only_stripped.tar.gz",
+            self.python_version, self.release, self.target_triple
+        );
+        let url = format!(
+            "https://github.com/astral-sh/python-build-standalone/releases/download/{}/{}",
+            self.release,
+            filename.replace('+', "%2B")
+        );
+        if pin.filename != filename
+            || pin.url != url
+            || !hex(&pin.sha256, 64)
+            || pin.size == 0
+            || pin.size > MAX_COMPRESSED_BYTES
+        {
+            return Err("stripped PBS artifact identity, size, URL or SHA-256 is invalid".into());
+        }
+        Ok(())
+    }
 }
 
 fn hex(value: &str, length: usize) -> bool {

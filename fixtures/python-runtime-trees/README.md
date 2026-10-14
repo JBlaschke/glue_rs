@@ -91,3 +91,7 @@ The generic complete-installation and platform release gates remain open.
 Primary references: [uv custom installation catalog](https://docs.astral.sh/uv/reference/environment/#uv_python_downloads_json_url),
 [uv 0.12.23 download metadata](https://github.com/astral-sh/uv/blob/0.12.23/crates/uv-python/download-metadata.json),
 [uv 0.12.23 release](https://github.com/astral-sh/uv/releases/tag/0.12.23).
+
+The [retained clean evidence](../../docs/evidence/pbs-linux-arm64-python-runtime-trees-2026-10-14/README.md)
+contains Mac/GNU preparation audits, complete process/runtime traces, 69 hostile
+trace edits and compressed replay checks.

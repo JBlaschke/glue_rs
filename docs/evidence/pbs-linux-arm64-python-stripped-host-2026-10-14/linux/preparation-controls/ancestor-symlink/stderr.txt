@@ -1,0 +1,1 @@
+glue: open installed runtime input "/tmp/glue-stripped-controls-0h1g4z_d/ancestor-symlink/lib/python3.13": Not a directory (os error 20)

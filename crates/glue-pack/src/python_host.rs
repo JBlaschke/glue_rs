@@ -43,6 +43,8 @@ pub enum HostInput<'a> {
     Full { artifact: &'a Path },
     Install { artifact: &'a Path },
     InstallTree { root: &'a Path },
+    InstallStripped { artifact: &'a Path },
+    InstallStrippedTree { root: &'a Path },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -77,6 +79,9 @@ pub fn prepare(input: HostInput<'_>, output: &Path) -> Result<HostReport, PackEr
     let provider = match input {
         HostInput::Full { .. } => HostProvider::Full,
         HostInput::Install { .. } | HostInput::InstallTree { .. } => HostProvider::InstallOnly,
+        HostInput::InstallStripped { .. } | HostInput::InstallStrippedTree { .. } => {
+            HostProvider::InstallOnlyStripped
+        }
     };
     let prefix = output.to_str().ok_or_else(|| {
         PackError::Profile("host prerequisite prefix must be an absolute UTF-8 ASCII path".into())
@@ -89,16 +94,29 @@ pub fn prepare(input: HostInput<'_>, output: &Path) -> Result<HostReport, PackEr
         HostInput::Install { artifact } => {
             host_prerequisites::install(&mut regular_file(artifact)?).map_err(PackError::Profile)?
         }
-        HostInput::InstallTree { root } => {
+        HostInput::InstallStripped { artifact } => {
+            host_prerequisites::install_stripped(&mut regular_file(artifact)?)
+                .map_err(PackError::Profile)?
+        }
+        HostInput::InstallTree { root } | HostInput::InstallStrippedTree { root } => {
             let root_text = root.to_str().ok_or_else(|| {
                 PackError::Profile(
                     "installed runtime root must be an absolute UTF-8 ASCII path".into(),
                 )
             })?;
-            let limits = host_prerequisites::installed_tree_input_limits(root_text)
-                .map_err(PackError::Profile)?;
+            let limits = (if provider == HostProvider::InstallOnlyStripped {
+                host_prerequisites::installed_stripped_tree_input_limits(root_text)
+            } else {
+                host_prerequisites::installed_tree_input_limits(root_text)
+            })
+            .map_err(PackError::Profile)?;
             let files = installed_tree::read_for_output(root, output, &limits)?;
-            host_prerequisites::installed_tree(root_text, files).map_err(PackError::Profile)?
+            (if provider == HostProvider::InstallOnlyStripped {
+                host_prerequisites::installed_stripped_tree(root_text, files)
+            } else {
+                host_prerequisites::installed_tree(root_text, files)
+            })
+            .map_err(PackError::Profile)?
         }
     };
     publish(owned, output)

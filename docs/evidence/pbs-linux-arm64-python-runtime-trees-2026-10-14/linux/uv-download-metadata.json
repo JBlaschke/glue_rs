@@ -1,0 +1,19 @@
+{
+  "cpython-3.13.16-linux-aarch64-gnu": {
+    "arch": {
+      "family": "aarch64",
+      "variant": null
+    },
+    "build": "20261009",
+    "libc": "gnu",
+    "major": 3,
+    "minor": 13,
+    "name": "cpython",
+    "os": "linux",
+    "patch": 16,
+    "prerelease": null,
+    "sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+    "url": "file:///workspace/target/pbs-inspection/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+    "variant": null
+  }
+}

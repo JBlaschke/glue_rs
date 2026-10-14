@@ -67,9 +67,37 @@ pub fn inspect_install_selected<R: Read + Seek>(
     max_selected_bytes: u64,
 ) -> Result<SelectedInstallInspection, String> {
     pins.validate()?;
+    inspect_install_pin_selected(
+        &pins.install_only,
+        install_input,
+        selection,
+        max_selected_bytes,
+    )
+}
+
+/// Inspect a separately pinned stripped counterpart. This validates the same
+/// complete gzip/tar contract without changing the unstripped pin or claiming
+/// that stripping preserves runtime compatibility.
+pub fn inspect_install_stripped_selected<R: Read + Seek>(
+    pins: &Pins,
+    stripped_pin: &ArtifactPin,
+    install_input: &mut R,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+) -> Result<SelectedInstallInspection, String> {
+    pins.validate_stripped_install(stripped_pin)?;
+    inspect_install_pin_selected(stripped_pin, install_input, selection, max_selected_bytes)
+}
+
+fn inspect_install_pin_selected<R: Read + Seek>(
+    pin: &ArtifactPin,
+    install_input: &mut R,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+) -> Result<SelectedInstallInspection, String> {
     let selected = compression::inspect_selected(
         install_input,
-        &pins.install_only,
+        pin,
         compression::Compression::Gzip,
         &Limits::default(),
         selection,
@@ -83,7 +111,7 @@ pub fn inspect_install_selected<R: Read + Seek>(
         return Err("install-only archive unexpectedly contains PYTHON.json".into());
     }
     Ok(SelectedInstallInspection {
-        artifact: artifact_report(pins.install_only.clone(), selected.inventory),
+        artifact: artifact_report(pin.clone(), selected.inventory),
         files: selected.files,
     })
 }
@@ -334,6 +362,58 @@ mod install_selected_tests {
         );
         assert_eq!(selected.artifact.pin.sha256, pins.install_only.sha256);
         assert_eq!(selected.artifact.decompressed_tar_bytes, 3072);
+    }
+
+    #[test]
+    fn stripped_selection_has_a_separate_pin_and_checks_complete_input() {
+        let payload = gzip(&tar(&[
+            ("python/a", b'0', b"selected", None),
+            ("python/b", b'0', b"unselected", None),
+        ]));
+        let pins = pins(&payload);
+        let mut stripped = pins.install_only.clone();
+        stripped.filename = stripped
+            .filename
+            .replace("install_only", "install_only_stripped");
+        stripped.url = stripped
+            .url
+            .replace("install_only", "install_only_stripped");
+        let selected = inspect_install_stripped_selected(
+            &pins,
+            &stripped,
+            &mut Cursor::new(&payload),
+            &BTreeSet::from(["python/a".into()]),
+            8,
+        )
+        .unwrap();
+        assert_eq!(selected.artifact.pin.filename, stripped.filename);
+        assert_eq!(selected.files["python/a"], b"selected");
+        assert_eq!(
+            selected.artifact.entries["python/b"].sha256,
+            Some(hex_digest(&Sha256::digest(b"unselected")))
+        );
+        assert!(
+            inspect_install_stripped_selected(
+                &pins,
+                &pins.install_only,
+                &mut Cursor::new(&payload),
+                &BTreeSet::new(),
+                0,
+            )
+            .is_err()
+        );
+        stripped.sha256 = "0".repeat(64);
+        assert!(
+            inspect_install_stripped_selected(
+                &pins,
+                &stripped,
+                &mut Cursor::new(&payload),
+                &BTreeSet::new(),
+                0,
+            )
+            .unwrap_err()
+            .contains("SHA-256")
+        );
     }
 
     #[test]

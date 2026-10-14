@@ -1,0 +1,148 @@
+{
+  "input_interpreter_extracted_or_executed": false,
+  "original_selected_bytes_inodes_links_modes_times_unchanged": true,
+  "rejection_count": 20,
+  "rejections": {
+    "ancestor-symlink": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: open installed runtime input \"/tmp/glue-stripped-controls-0h1g4z_d/ancestor-symlink/lib/python3.13\": Not a directory (os error 20)\n"
+    },
+    "corrupt-cache": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/python3.13/encodings/__pycache__/aliases.cpython-313.pyc\n"
+    },
+    "corrupt-library": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/libpython3.13.so.1.0\n"
+    },
+    "duplicate-tree-option": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: duplicate python-host option \"--runtime-tree\"\n"
+    },
+    "existing-directory": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: create host prefix \"/tmp/glue-stripped-controls-0h1g4z_d/existing-directory\": host prefix already exists\n"
+    },
+    "existing-file": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: create host prefix \"/tmp/glue-stripped-controls-0h1g4z_d/existing-file\": host prefix already exists\n"
+    },
+    "existing-symlink": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: create host prefix \"/tmp/glue-stripped-controls-0h1g4z_d/existing-symlink\": host prefix already exists\n"
+    },
+    "library-fifo": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/libpython3.13.so.1.0\n"
+    },
+    "library-symlink": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: open installed runtime input \"/tmp/glue-stripped-controls-0h1g4z_d/library-symlink/lib/libpython3.13.so.1.0\": Too many levels of symbolic links (os error 40)\n"
+    },
+    "missing-cache": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: open installed runtime input \"/tmp/glue-stripped-controls-0h1g4z_d/missing-cache/lib/python3.13/encodings/__pycache__/utf_8.cpython-313.pyc\": No such file or directory (os error 2)\n"
+    },
+    "missing-library": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: open installed runtime input \"/tmp/glue-stripped-controls-0h1g4z_d/missing-library/lib/libpython3.13.so.1.0\": No such file or directory (os error 2)\n"
+    },
+    "mixed-artifact-tree": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: host-install python-host requires exactly one of --pbs-install-only or --runtime-tree\n"
+    },
+    "modified-sysconfig": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: stripped installed-tree sysconfig differs from fixed stock bytes\n"
+    },
+    "opposite-artifact": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: read PBS input: PBS compressed size exceeds its pin\n"
+    },
+    "overlap-child": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed runtime input and output trees must not overlap\n"
+    },
+    "oversized-library": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/libpython3.13.so.1.0\n"
+    },
+    "relative-root": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: host paths must be canonical absolute ASCII paths of at most 4096 bytes without control characters or backslashes\n"
+    },
+    "source-symlink": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: open installed runtime input \"/tmp/glue-stripped-controls-0h1g4z_d/source-symlink/lib/python3.13/json/__init__.py\": Too many levels of symbolic links (os error 40)\n"
+    },
+    "wrong-provider-artifact": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: PBS compressed size/SHA-256 differs from pin cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz\n"
+    },
+    "wrong-provider-tree": {
+      "exit_status": 1,
+      "output_protected": true,
+      "stderr": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/libpython3.13.so.1.0\n"
+    }
+  },
+  "repeated_tree_payload_and_provenance_identical": true,
+  "schema_version": 0,
+  "success_count": 4,
+  "successes": {
+    "artifact": {
+      "file_count": 1041,
+      "payload_bytes": 38093257,
+      "provenance_file": {
+        "path": "provenance.json",
+        "sha256": "9a527fa43ea9712e5ccf86920d807ff5afb3020cd8f1d0d7e139f99c83de0c52",
+        "size": 144834
+      }
+    },
+    "ignored-unselected": {
+      "file_count": 1041,
+      "payload_bytes": 38093257,
+      "provenance_file": {
+        "path": "provenance.json",
+        "sha256": "6c550834ae66a9562787231ad9522f55a7a929e400d7a3372c13088e5e26ec37",
+        "size": 145309
+      }
+    },
+    "tree": {
+      "file_count": 1041,
+      "payload_bytes": 38093257,
+      "provenance_file": {
+        "path": "provenance.json",
+        "sha256": "f6b5a296970f7179e771ede751d7586e546b842382f569074b1285820031e37a",
+        "size": 145295
+      }
+    },
+    "tree-repeat": {
+      "file_count": 1041,
+      "payload_bytes": 38093257,
+      "provenance_file": {
+        "path": "provenance.json",
+        "sha256": "f6b5a296970f7179e771ede751d7586e546b842382f569074b1285820031e37a",
+        "size": 145295
+      }
+    }
+  }
+}

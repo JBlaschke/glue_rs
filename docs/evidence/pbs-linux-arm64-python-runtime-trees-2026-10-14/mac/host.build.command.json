@@ -1,0 +1,19 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "build-python",
+  "--provider-template",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/template-host/manifest.json",
+  "--provider-root",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/template-host/root",
+  "--app",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/installed-packages/application",
+  "--venv",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/installed-packages/venv",
+  "--app-id",
+  "python.real-packages",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/host.glue",
+  "--json"
+]

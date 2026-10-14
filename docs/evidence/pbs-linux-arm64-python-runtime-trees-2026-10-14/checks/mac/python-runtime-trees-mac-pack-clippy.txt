@@ -1,0 +1,22 @@
+    Checking libc v0.2.190
+    Checking serde_core v1.0.228
+    Checking zmij v1.0.23
+    Checking thiserror v2.0.18
+   Compiling cpufeatures v0.3.1
+    Checking glue-ipc v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-ipc)
+   Compiling sha2 v0.11.0
+   Compiling serde_json v1.0.149
+    Checking glue-worker-protocol-fixture v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/fixtures/worker-protocol)
+   Compiling glue-runtime-python v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-python)
+    Checking serde v1.0.228
+    Checking glue-format v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-format)
+    Checking glue-pbs v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pbs)
+    Checking glue-resources v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-resources)
+    Checking glue-linux-memfd-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/linux-memfd)
+    Checking glue-macos-macho-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/macos-macho)
+    Checking glue-native v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-native)
+    Checking glue-runtime-lua v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runtime-lua)
+    Checking glue-pack v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-pack)
+    Checking glue-python-bootstrap-probe v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/spikes/python-bootstrap)
+    Checking glue-runner v0.1.0 (/Users/johannes.blaschke/Developer/glue_rs/crates/glue-runner)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.54s

@@ -1,0 +1,268 @@
+{
+  "case_alias_control_executed": false,
+  "glue": {
+    "sha256": "4b6db00cd2cee844c92e3df879c7a7d2f7b1cf55b6fce291bbc07051647dc362",
+    "size": 5980200
+  },
+  "hostile_controls": 19,
+  "input_audit": {
+    "sha256": "9887bd82b4293a9b9920d410f33e23b3004c84a10ca692ef0a876bf118dbc687",
+    "size": 1249290
+  },
+  "input_interpreter_executions": 0,
+  "large_payload_trees_retained": false,
+  "results": {
+    "ancestor-symlink": {
+      "diagnostic": "glue: open installed runtime input \"/tmp/grt-cvl0fw1y/ancestor-symlink/lib/python3.13/encodings\": Not a directory (os error 20)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "corrupt-cache": {
+      "diagnostic": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/python3.13/encodings/__pycache__/__init__.cpython-313.pyc\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "corrupt-library": {
+      "diagnostic": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/libpython3.13.so.1.0\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "duplicate-tree-option": {
+      "diagnostic": "glue: duplicate python-host option \"--runtime-tree\"\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "existing-directory": {
+      "diagnostic": "glue: create host prefix \"/tmp/grt-cvl0fw1y/existing-directory-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "existing-file": {
+      "diagnostic": "glue: create host prefix \"/tmp/grt-cvl0fw1y/existing-file-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "existing-symlink": {
+      "diagnostic": "glue: create host prefix \"/tmp/grt-cvl0fw1y/existing-symlink-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "missing-cache": {
+      "diagnostic": "glue: open installed runtime input \"/tmp/grt-cvl0fw1y/missing-cache/lib/python3.13/encodings/__pycache__/__init__.cpython-313.pyc\": No such file or directory (os error 2)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "missing-library": {
+      "diagnostic": "glue: open installed runtime input \"/tmp/grt-cvl0fw1y/missing-library/lib/libpython3.13.so.1.0\": No such file or directory (os error 2)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "mixed-artifact-input": {
+      "diagnostic": "glue: host-install python-host requires exactly one of --pbs-install-only or --runtime-tree\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "modified-uv-source": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/python3.13/_sysconfigdata__linux_aarch64-linux-gnu.py\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "overlap-child": {
+      "diagnostic": "glue: packaging profile: installed runtime input and output trees must not overlap\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "overlap-parent-alias": {
+      "diagnostic": "glue: packaging profile: installed runtime input and output trees must not overlap\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "oversized-library": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/libpython3.13.so.1.0\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "relative-root": {
+      "diagnostic": "glue: packaging profile: host paths must be canonical absolute ASCII paths of at most 4096 bytes without control characters or backslashes\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "source-fifo": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/python3.13/abc.py\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "source-symlink": {
+      "diagnostic": "glue: open installed runtime input \"/tmp/grt-cvl0fw1y/source-symlink/lib/python3.13/abc.py\": Too many levels of symbolic links (os error 40)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "wrong-provider": {
+      "diagnostic": "glue: host-full python-host does not accept --pbs-install-only or --runtime-tree\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "wrong-uv-root": {
+      "diagnostic": "glue: packaging profile: installed-tree sysconfig differs from stock or the exact uv 0.12.23 layout\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    }
+  },
+  "schema_version": 0,
+  "skipped_controls": {
+    "case-alias-overlap": {
+      "reason": "fixture filesystem is case-sensitive",
+      "status": "skipped"
+    }
+  },
+  "source_selected_file_modes_times_unchanged": true,
+  "source_selected_files_unchanged": true,
+  "successes": {
+    "genuine-uv": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "008ad73d540894195446048f41ff99f9b70554febc7759fb68ddb63eb2590fea",
+        "size": 145436
+      },
+      "report": {
+        "sha256": "f1989fe5eee32535fb5f112b9fa39d30f7295314eebe05176816aa441b7ba191",
+        "size": 289105
+      }
+    },
+    "genuine-uv-repeat": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "008ad73d540894195446048f41ff99f9b70554febc7759fb68ddb63eb2590fea",
+        "size": 145436
+      },
+      "report": {
+        "sha256": "ce18bc1824b1025abc07b11d875587cb88f01a47bab27691b6c8e2f8e9a9f474",
+        "size": 289112
+      }
+    },
+    "ignored-unselected": {
+      "file_count": 1041,
+      "input_layout": "stock",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "3fe6423713de085924e3e1bff0e906d5b1b7c23b2f79f47862922b2db99fd584",
+        "size": 145245
+      },
+      "report": {
+        "sha256": "93f4e0bbebecb2d5105b5fab0f0fde6b71a2d775d6307be2733e37c9ce9cc461",
+        "size": 288922
+      }
+    },
+    "relocated-uv-quotes": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "43c7297570547113e06b4dc936ad64431cf8361cd9f9ad298bcbddea10c7bd82",
+        "size": 145390
+      },
+      "report": {
+        "sha256": "a606c2b10710dc4bff54134adea39409601cbf218f12e2d279a479d8b908342e",
+        "size": 289068
+      }
+    },
+    "stock-selected": {
+      "file_count": 1041,
+      "input_layout": "stock",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "b80b13f6b71ac108cba8c6e53625933989faa7fdaf11ac35751a41911d682567",
+        "size": 145232
+      },
+      "report": {
+        "sha256": "2c48240a85ebfe4010be7813f283cba4e1f1764ce9ec0caca737edac41fba019",
+        "size": 288905
+      }
+    }
+  },
+  "valid_preparations": 5
+}

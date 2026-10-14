@@ -1,0 +1,13 @@
+[
+  "/build-target/release/glue",
+  "python-host",
+  "--provider",
+  "host-install",
+  "--runtime-tree",
+  "/tmp/grt-cvl0fw1y/duplicate-tree-option",
+  "--output",
+  "/tmp/grt-cvl0fw1y/duplicate-tree-option-prefix",
+  "--json",
+  "--runtime-tree",
+  "/tmp/grt-cvl0fw1y/duplicate-tree-option"
+]

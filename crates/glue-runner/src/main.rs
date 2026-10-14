@@ -19,13 +19,13 @@ Usage:
   glue build --manifest MANIFEST --root INPUT_DIR --output APP.glue
   glue python-template --provider bundled --pbs-full FULL.tar.zst
     --frozen-bootstrap BUNDLE.json --output DIR [--json]
-  glue python-template --provider (host-full | host-install)
+  glue python-template --provider (host-full | host-install | host-install-stripped)
     --host-prefix PREFIX --output DIR [--json]
   glue python-host --provider host-full --pbs-full FULL.tar.zst
     --output PREFIX [--json]
-  glue python-host --provider host-install --pbs-install-only INSTALL.tar.gz
+  glue python-host --provider (host-install | host-install-stripped) --pbs-install-only INSTALL.tar.gz
     --output PREFIX [--json]
-  glue python-host --provider host-install --runtime-tree ROOT
+  glue python-host --provider (host-install | host-install-stripped) --runtime-tree ROOT
     --output PREFIX [--json]
   glue build-python --provider-template MANIFEST --provider-root DIR --app DIR
     (--venv VENV | --site-packages DIR) --output APP.glue
@@ -93,12 +93,15 @@ enum TemplateOptions {
     Bundled { full: PathBuf, frozen: PathBuf },
     HostFull(String),
     HostInstall(String),
+    HostInstallStripped(String),
 }
 
 enum HostOptions {
     Full(PathBuf),
     Install(PathBuf),
     InstallTree(PathBuf),
+    InstallStripped(PathBuf),
+    InstallStrippedTree(PathBuf),
 }
 
 enum Selection {
@@ -380,7 +383,7 @@ fn parse_python_template(args: &[OsString]) -> Result<Command> {
                 ),
             }
         }
-        Some("host-full" | "host-install") => {
+        Some("host-full" | "host-install" | "host-install-stripped") => {
             if full.is_some() || frozen.is_some() {
                 return Err("host python-template does not accept PBS or frozen inputs".into());
             }
@@ -390,13 +393,15 @@ fn parse_python_template(args: &[OsString]) -> Result<Command> {
                 .map_err(|_| "host prefix must be UTF-8")?;
             if provider == "host-full" {
                 TemplateOptions::HostFull(prefix)
+            } else if provider == "host-install-stripped" {
+                TemplateOptions::HostInstallStripped(prefix)
             } else {
                 TemplateOptions::HostInstall(prefix)
             }
         }
         _ => {
             return Err(
-                "python-template provider must be bundled, host-full or host-install".into(),
+                "python-template provider must be bundled, host-full, host-install or host-install-stripped".into(),
             );
         }
     };
@@ -441,7 +446,8 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
                 .clone(),
         );
     }
-    let input = match provider.ok_or("python-host requires --provider")?.to_str() {
+    let provider = provider.ok_or("python-host requires --provider")?;
+    let input = match provider.to_str() {
         Some("host-full") => {
             if install.is_some() || tree.is_some() {
                 return Err(
@@ -453,17 +459,26 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
                 full.ok_or("host-full python-host requires --pbs-full")?,
             ))
         }
-        Some("host-install") => {
+        Some("host-install" | "host-install-stripped") => {
             if full.is_some() {
                 return Err("host-install python-host does not accept --pbs-full".into());
             }
             match (install, tree) {
-                (Some(artifact), None) => HostOptions::Install(PathBuf::from(artifact)),
-                (None, Some(root)) => HostOptions::InstallTree(PathBuf::from(root)),
+                (Some(artifact), None) => if provider == "host-install-stripped" {
+                    HostOptions::InstallStripped(PathBuf::from(artifact))
+                } else { HostOptions::Install(PathBuf::from(artifact)) },
+                (None, Some(root)) => if provider == "host-install-stripped" {
+                    HostOptions::InstallStrippedTree(PathBuf::from(root))
+                } else { HostOptions::InstallTree(PathBuf::from(root)) },
                 _ => return Err("host-install python-host requires exactly one of --pbs-install-only or --runtime-tree".into()),
             }
         }
-        _ => return Err("python-host provider must be host-full or host-install".into()),
+        _ => {
+            return Err(
+                "python-host provider must be host-full, host-install or host-install-stripped"
+                    .into(),
+            );
+        }
     };
     Ok(Command::PythonHost {
         input,
@@ -589,6 +604,9 @@ fn execute(command: Command) -> Result<ExitCode> {
                     }
                     TemplateOptions::HostFull(prefix) => TemplateInput::HostFull { prefix },
                     TemplateOptions::HostInstall(prefix) => TemplateInput::HostInstall { prefix },
+                    TemplateOptions::HostInstallStripped(prefix) => {
+                        TemplateInput::HostInstallStripped { prefix }
+                    }
                 };
                 let report = glue_pack::python_template::prepare(selected, &output)?;
                 if json {
@@ -606,7 +624,9 @@ fn execute(command: Command) -> Result<ExitCode> {
                     TemplateOptions::Bundled { full, frozen } => {
                         let _ = (full, frozen);
                     }
-                    TemplateOptions::HostFull(prefix) | TemplateOptions::HostInstall(prefix) => {
+                    TemplateOptions::HostFull(prefix)
+                    | TemplateOptions::HostInstall(prefix)
+                    | TemplateOptions::HostInstallStripped(prefix) => {
                         let _ = prefix;
                     }
                 }
@@ -627,6 +647,12 @@ fn execute(command: Command) -> Result<ExitCode> {
                     HostOptions::Full(artifact) => HostInput::Full { artifact },
                     HostOptions::Install(artifact) => HostInput::Install { artifact },
                     HostOptions::InstallTree(root) => HostInput::InstallTree { root },
+                    HostOptions::InstallStripped(artifact) => {
+                        HostInput::InstallStripped { artifact }
+                    }
+                    HostOptions::InstallStrippedTree(root) => {
+                        HostInput::InstallStrippedTree { root }
+                    }
                 };
                 let report = glue_pack::python_host::prepare(selected, &output)?;
                 if json {
@@ -646,7 +672,9 @@ fn execute(command: Command) -> Result<ExitCode> {
                 match input {
                     HostOptions::Full(artifact)
                     | HostOptions::Install(artifact)
-                    | HostOptions::InstallTree(artifact) => {
+                    | HostOptions::InstallTree(artifact)
+                    | HostOptions::InstallStripped(artifact)
+                    | HostOptions::InstallStrippedTree(artifact) => {
                         let _ = artifact;
                     }
                 }

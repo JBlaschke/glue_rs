@@ -1,0 +1,1 @@
+glue: open installed runtime input "/tmp/glue-stripped-controls-0h1g4z_d/missing-library/lib/libpython3.13.so.1.0": No such file or directory (os error 2)

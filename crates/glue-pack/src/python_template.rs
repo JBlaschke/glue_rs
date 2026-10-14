@@ -22,6 +22,7 @@ pub enum TemplateInput<'a> {
     Bundled { full: &'a Path, frozen: &'a Path },
     HostFull { prefix: &'a str },
     HostInstall { prefix: &'a str },
+    HostInstallStripped { prefix: &'a str },
 }
 
 /// Identities describe the actual published file bytes, including the JSON LF.
@@ -62,6 +63,9 @@ pub fn prepare(input: TemplateInput<'_>, output: &Path) -> Result<TemplateReport
         TemplateInput::HostFull { prefix } => template::host(prefix, template::HostProvider::Full),
         TemplateInput::HostInstall { prefix } => {
             template::host(prefix, template::HostProvider::InstallOnly)
+        }
+        TemplateInput::HostInstallStripped { prefix } => {
+            template::host(prefix, template::HostProvider::InstallOnlyStripped)
         }
     }
     .map_err(PackError::Profile)?;

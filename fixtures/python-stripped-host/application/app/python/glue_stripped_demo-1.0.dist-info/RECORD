@@ -1,0 +1,4 @@
+stripped_demo/__init__.py,sha256=CndQInRPZMNShj8WXy4SWJhBmZm8V8gyBHcgNtDvay4,12
+stripped_demo/data/value.txt,sha256=CEx5nNVR3R2NXF-aXVk7LpMfXjYSLuXHk8HQihmDnMA,3
+glue_stripped_demo-1.0.dist-info/METADATA,sha256=RLoA_3KSc9HvrN8eRal3ibcYwz7JmRDvPw1SNJ8JntM,90
+glue_stripped_demo-1.0.dist-info/RECORD,,

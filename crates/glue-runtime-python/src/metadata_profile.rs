@@ -26,6 +26,8 @@ pub(super) const BUNDLED_BUILD_ID: &str =
 pub(super) const HOST_BUILD_ID: &str = "pbs-20261009-cpython-3.13.16-pgo-lto-host-metadata-apps-v1";
 pub(super) const INSTALL_BUILD_ID: &str =
     "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1";
+pub(super) const STRIPPED_INSTALL_BUILD_ID: &str =
+    "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1";
 const VARIANT: &str = "pgo+lto-full/bundled-metadata-apps-v1";
 const ROOT: &str = "app/python/";
 const MAX_DISTRIBUTIONS: usize = 64;
@@ -211,6 +213,14 @@ pub(super) fn admit_install_host(manifest: &Manifest) -> Result<host::Config, St
     )?)
 }
 
+pub(super) fn admit_stripped_install_host(manifest: &Manifest) -> Result<host::Config, String> {
+    install_host_source_app_profile::admit(&declaration(
+        manifest,
+        STRIPPED_INSTALL_BUILD_ID,
+        install_host_source_app_profile::BUILD_ID,
+    )?)
+}
+
 pub(super) fn read_bundled(archive: Archive<File>) -> Result<import_profile::Payload, String> {
     source_app_profile::read_archive_with(archive, admit_bundled, prepare)
 }
@@ -225,6 +235,12 @@ pub(super) fn read_install_host(
     archive: Archive<File>,
 ) -> Result<host_source_app_profile::Payload, String> {
     host_source_app_profile::read_archive_prepared(archive, admit_install_host, prepare)
+}
+
+pub(super) fn read_stripped_install_host(
+    archive: Archive<File>,
+) -> Result<host_source_app_profile::Payload, String> {
+    host_source_app_profile::read_archive_prepared(archive, admit_stripped_install_host, prepare)
 }
 
 fn prepare(files: &mut BTreeMap<String, Vec<u8>>) -> Result<Vec<u8>, String> {
@@ -692,6 +708,60 @@ mod tests {
         .unwrap()
     }
 
+    fn stripped_host_manifest(files: &BTreeMap<String, Vec<u8>>) -> Manifest {
+        let mut manifest = host_manifest(files, true);
+        manifest.runtimes.get_mut("python").unwrap().build_id = STRIPPED_INSTALL_BUILD_ID.into();
+        manifest
+    }
+
+    #[test]
+    fn stripped_metadata_admission_is_explicit_and_retains_shared_guards() {
+        let files = contents();
+        let original = host_manifest(&files, true);
+        let stripped = stripped_host_manifest(&files);
+        assert_eq!(
+            admit_stripped_install_host(&stripped).unwrap(),
+            admit_install_host(&original).unwrap()
+        );
+        assert_eq!(stripped.resources, original.resources);
+        assert_eq!(stripped.targets, original.targets);
+        assert!(admit_install_host(&stripped).is_err());
+        assert!(admit_stripped_install_host(&original).is_err());
+        assert!(admit_host(&stripped).is_err());
+        assert!(install_host_source_app_profile::admit(&stripped).is_err());
+        assert!(host_source_app_profile::admit(&stripped).is_err());
+        let selected = profile::validate(&stripped).unwrap();
+        assert_eq!(selected.kind, profile::Kind::StrippedInstallHostMetadataApp);
+        assert!(selected.name().contains("stripped"));
+        assert_eq!(
+            profile::packaging_limits(&stripped).unwrap(),
+            Some(limits_host())
+        );
+        assert_eq!(
+            packaging::validate_template(&stripped).unwrap(),
+            limits_host()
+        );
+
+        let mut drifted = stripped.clone();
+        drifted.resources.get_mut(HELPER).unwrap().sha256 = digest(b"changed helper");
+        assert!(admit_stripped_install_host(&drifted).is_err());
+        assert!(!profile::validate(&drifted).unwrap_err().is_unsupported());
+        let mut drifted = stripped.clone();
+        let Provisioning::Host { stdlib, .. } =
+            &mut drifted.runtimes.get_mut("python").unwrap().provisioning
+        else {
+            unreachable!()
+        };
+        *stdlib = "/opposite/layout/lib/python3.13".into();
+        assert!(admit_stripped_install_host(&drifted).is_err());
+        let mut drifted = stripped;
+        drifted.runtimes.get_mut("python").unwrap().provisioning = bundled_manifest(&files)
+            .runtimes["python"]
+            .provisioning
+            .clone();
+        assert!(admit_stripped_install_host(&drifted).is_err());
+    }
+
     fn bundled_manifest(files: &BTreeMap<String, Vec<u8>>) -> Manifest {
         let mut resources = source_app_profile::fixed_specs().unwrap();
         resources.extend(
@@ -1139,6 +1209,17 @@ mod tests {
             .unwrap();
             Archive::open_with_limits(File::open(path).unwrap(), profile::archive_limits()).unwrap()
         }
+
+        fn stripped_archive(&self, files: &BTreeMap<String, Vec<u8>>) -> Archive<File> {
+            let path = self.0.join("stripped-metadata.glue");
+            write_archive(
+                File::create(&path).unwrap(),
+                &stripped_host_manifest(files),
+                files,
+            )
+            .unwrap();
+            Archive::open_with_limits(File::open(path).unwrap(), profile::archive_limits()).unwrap()
+        }
     }
     impl Drop for Fixture {
         fn drop(&mut self) {
@@ -1209,6 +1290,34 @@ mod tests {
                 .unwrap();
                 assert!(failure.contains("Requires-Python"), "{headers}: {failure}");
             }
+        }
+    }
+
+    #[test]
+    fn stripped_archive_uses_the_same_owned_metadata_and_early_requirement_policy() {
+        let fixture = Fixture::new();
+        let files = contents();
+        let payload = read_stripped_install_host(fixture.stripped_archive(&files)).unwrap();
+        assert_eq!(payload.config.prefix, "/missing Python metadata provider");
+        assert_eq!(payload.resources[METADATA], files[METADATA]);
+        assert_eq!(payload.resources[RECORD], files[RECORD]);
+        assert!(!payload.resources.contains_key(HELPER));
+        let mut expected_bootstrap = host_source_app_profile::PRELUDE.to_vec();
+        expected_bootstrap.extend(import_profile::BOOTSTRAP);
+        expected_bootstrap.extend(BOOTSTRAP);
+        assert_eq!(payload.bootstrap, expected_bootstrap);
+        for headers in [
+            "Requires-Python: >=3.14",
+            "Requires-Python: !=3.13.*",
+            "Requires-Python: >=3.9\nRequires-Python: <4",
+            "Requires-Python: >=3.9\n <4",
+        ] {
+            let incompatible = with_requirement(headers);
+            admit_stripped_install_host(&stripped_host_manifest(&incompatible)).unwrap();
+            let failure = read_stripped_install_host(fixture.stripped_archive(&incompatible))
+                .err()
+                .unwrap();
+            assert!(failure.contains("Requires-Python"), "{headers}: {failure}");
         }
     }
 }

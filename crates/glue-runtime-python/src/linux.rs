@@ -418,6 +418,15 @@ pub(super) fn run_install_host_source_app(
     run_host_source_app_with(payload, host::Config::verify_install_source_snapshot)
 }
 
+pub(super) fn run_stripped_install_host_metadata_app(
+    payload: host_source_app_profile::Payload,
+) -> Result<(), String> {
+    run_host_source_app_with(
+        payload,
+        host::Config::verify_stripped_install_source_snapshot,
+    )
+}
+
 fn run_host_source_app_with(
     mut payload: host_source_app_profile::Payload,
     snapshot_provider: fn(&host::Config) -> Result<host::SourceSnapshot, String>,

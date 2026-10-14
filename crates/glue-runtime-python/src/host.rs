@@ -99,6 +99,26 @@ struct ImportSources<'a> {
     caches: BTreeSet<PathBuf>,
 }
 
+/// Image selection is internal to the exact execution profile. Legacy host
+/// verifiers always select the original unstripped image.
+#[derive(Clone, Copy)]
+enum InstallImage {
+    Unstripped,
+    Stripped,
+}
+
+impl InstallImage {
+    fn identity(self) -> (u64, &'static str) {
+        match self {
+            Self::Unstripped => (LIBRARY_SIZE, RUNTIME_LIBRARY_SHA256),
+            Self::Stripped => (
+                crate::stripped_host::LIBRARY_SIZE,
+                crate::stripped_host::LIBRARY_SHA256,
+            ),
+        }
+    }
+}
+
 impl Config {
     pub(super) fn parse(prefix: &str) -> Result<Self, String> {
         validate_path(prefix)?;
@@ -221,10 +241,23 @@ impl Config {
     /// cache and six startup descriptors, plus deduplicated directory owners,
     /// remain live through finalization. Snapshot sources become owned bytes.
     pub(super) fn verify_install_source_snapshot(&self) -> Result<SourceSnapshot, String> {
+        self.verify_install_source_snapshot_with_image(InstallImage::Unstripped)
+    }
+
+    /// The separate stripped metadata profile retains the same independently
+    /// compared sources/cache layout, but requires its own exact library bytes.
+    pub(super) fn verify_stripped_install_source_snapshot(&self) -> Result<SourceSnapshot, String> {
+        self.verify_install_source_snapshot_with_image(InstallImage::Stripped)
+    }
+
+    fn verify_install_source_snapshot_with_image(
+        &self,
+        image: InstallImage,
+    ) -> Result<SourceSnapshot, String> {
         let layout = self.install_source_snapshot_layout()?;
         let (mut directories, mut caches) =
             install_snapshot_prerequisites(&layout, Path::new(&self.stdlib))?;
-        let mut verified = self.verify_install_startup()?;
+        let mut verified = self.verify_install_startup(image)?;
         let files = snapshot_sources(&layout.sources.files)?;
         verified._sources.append(&mut caches);
         verified._directories.append(&mut directories);
@@ -277,16 +310,13 @@ impl Config {
     // The new cache prerequisite already checked both startup directories.
     // Keep the old verifier unchanged so its historical syscall order and
     // reject-all-cache contract remain available to every older profile.
-    fn verify_install_startup(&self) -> Result<VerifiedHost, String> {
+    fn verify_install_startup(&self, image: InstallImage) -> Result<VerifiedHost, String> {
         let mut directories = open_directories(Path::new(&self.stdlib))?;
         directories.append(&mut open_directories(
             &Path::new(&self.stdlib).join("encodings"),
         )?);
-        let (library, mut library_dirs) = verified_file(
-            Path::new(&self.library),
-            LIBRARY_SIZE,
-            RUNTIME_LIBRARY_SHA256,
-        )?;
+        let (size, sha256) = image.identity();
+        let (library, mut library_dirs) = verified_file(Path::new(&self.library), size, sha256)?;
         directories.append(&mut library_dirs);
         let mut sources = Vec::with_capacity(MODULE_SPECS.len());
         for spec in &MODULE_SPECS {
@@ -1200,6 +1230,49 @@ mod tests {
             over_budget
                 .import_sources(&import_pins("source.py", b"source"))
                 .is_ok()
+        );
+    }
+
+    #[test]
+    fn stripped_snapshot_reuses_bounds_without_accepting_configuration_drift() {
+        let missing = Config::parse("/absent stripped-only Python").unwrap();
+        missing.validate_install_source_snapshot_layout().unwrap();
+        let mut drifted = missing;
+        drifted.library.push('x');
+        assert!(
+            drifted
+                .verify_stripped_install_source_snapshot()
+                .unwrap_err()
+                .contains("fixed installation layout")
+        );
+        let over_budget = Config::parse(&"/a".repeat(62)).unwrap();
+        assert_eq!(
+            over_budget
+                .verify_stripped_install_source_snapshot()
+                .unwrap_err(),
+            "install-only host retained owners exceed 763"
+        );
+        let excessive_directories = Config::parse(&"/a".repeat(154)).unwrap();
+        assert_eq!(
+            excessive_directories
+                .verify_stripped_install_source_snapshot()
+                .unwrap_err(),
+            "host source snapshot directory owners exceed 256"
+        );
+        assert_eq!(
+            InstallImage::Unstripped.identity(),
+            (LIBRARY_SIZE, RUNTIME_LIBRARY_SHA256)
+        );
+        assert_eq!(
+            InstallImage::Stripped.identity(),
+            (
+                crate::stripped_host::LIBRARY_SIZE,
+                crate::stripped_host::LIBRARY_SHA256
+            )
+        );
+        assert_ne!(
+            InstallImage::Unstripped.identity(),
+            InstallImage::Stripped.identity()
         );
     }
 

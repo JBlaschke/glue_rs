@@ -1,0 +1,271 @@
+{
+  "case_alias_control_executed": true,
+  "glue": {
+    "sha256": "1e5f721fc2bf5fa0f1c7497e6c679c54b76961b3a1f8ffffdb9f8997a150311c",
+    "size": 13276408
+  },
+  "hostile_controls": 20,
+  "input_audit": {
+    "sha256": "53b09b112d130a1bfb11bf7c4d7d887b69daa96b19a2b4ae8b142811189845db",
+    "size": 1249347
+  },
+  "input_interpreter_executions": 0,
+  "large_payload_trees_retained": false,
+  "results": {
+    "ancestor-symlink": {
+      "diagnostic": "glue: open installed runtime input \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/ancestor-symlink/lib/python3.13/encodings\": Not a directory (os error 20)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "case-alias-overlap": {
+      "diagnostic": "glue: packaging profile: installed runtime input and output trees must not overlap\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "corrupt-cache": {
+      "diagnostic": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/python3.13/encodings/__pycache__/__init__.cpython-313.pyc\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "corrupt-library": {
+      "diagnostic": "glue: packaging profile: host prerequisite size or SHA-256 differs: lib/libpython3.13.so.1.0\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "duplicate-tree-option": {
+      "diagnostic": "glue: duplicate python-host option \"--runtime-tree\"\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "existing-directory": {
+      "diagnostic": "glue: create host prefix \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/existing-directory-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "existing-file": {
+      "diagnostic": "glue: create host prefix \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/existing-file-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "existing-symlink": {
+      "diagnostic": "glue: create host prefix \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/existing-symlink-prefix\": host prefix already exists\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_before": {
+        "sha256": "7adea4782f6a1a0131c73e6aaab4280a910ea4fd62bddafcbc2ca096e40283ec",
+        "size": 51
+      },
+      "output_protected": true
+    },
+    "missing-cache": {
+      "diagnostic": "glue: open installed runtime input \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/missing-cache/lib/python3.13/encodings/__pycache__/__init__.cpython-313.pyc\": No such file or directory (os error 2)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "missing-library": {
+      "diagnostic": "glue: open installed runtime input \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/missing-library/lib/libpython3.13.so.1.0\": No such file or directory (os error 2)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "mixed-artifact-input": {
+      "diagnostic": "glue: host-install python-host requires exactly one of --pbs-install-only or --runtime-tree\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "modified-uv-source": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/python3.13/_sysconfigdata__linux_aarch64-linux-gnu.py\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "overlap-child": {
+      "diagnostic": "glue: packaging profile: installed runtime input and output trees must not overlap\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "overlap-parent-alias": {
+      "diagnostic": "glue: packaging profile: installed runtime input and output trees must not overlap\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "oversized-library": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/libpython3.13.so.1.0\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "relative-root": {
+      "diagnostic": "glue: packaging profile: host paths must be canonical absolute ASCII paths of at most 4096 bytes without control characters or backslashes\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "source-fifo": {
+      "diagnostic": "glue: packaging profile: installed runtime selected input must be a bounded regular file: lib/python3.13/abc.py\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "source-symlink": {
+      "diagnostic": "glue: open installed runtime input \"/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/source-symlink/lib/python3.13/abc.py\": Too many levels of symbolic links (os error 62)\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "wrong-provider": {
+      "diagnostic": "glue: host-full python-host does not accept --pbs-install-only or --runtime-tree\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    },
+    "wrong-uv-root": {
+      "diagnostic": "glue: packaging profile: installed-tree sysconfig differs from stock or the exact uv 0.12.23 layout\n",
+      "exit_status": 1,
+      "input_interpreters_absent": true,
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true
+    }
+  },
+  "schema_version": 0,
+  "skipped_controls": {},
+  "source_selected_file_modes_times_unchanged": true,
+  "source_selected_files_unchanged": true,
+  "successes": {
+    "genuine-uv": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "5de6de85ae59eb241cd7adc4cdd9ab8d97c77ca60d57837890ba15398291ada2",
+        "size": 145493
+      },
+      "report": {
+        "sha256": "b776184df9edc206031915117bd131bd84c24f15a798bb66a958f91742570b9c",
+        "size": 289255
+      }
+    },
+    "genuine-uv-repeat": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "5de6de85ae59eb241cd7adc4cdd9ab8d97c77ca60d57837890ba15398291ada2",
+        "size": 145493
+      },
+      "report": {
+        "sha256": "f61544037adf9064f6e99a398d078a8b21b8fbe93ee2f60b749c7389368b441b",
+        "size": 289262
+      }
+    },
+    "ignored-unselected": {
+      "file_count": 1041,
+      "input_layout": "stock",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "7455806c9d6c915f1d17795573b8ade2c99970607ff16724e5b7c47b54277e01",
+        "size": 145338
+      },
+      "report": {
+        "sha256": "338250901b2aaad1fef2f5a9c6c5e18e1ea1a8fb0342dd0a4323a3081d7ebb79",
+        "size": 289108
+      }
+    },
+    "relocated-uv-quotes": {
+      "file_count": 1041,
+      "input_layout": "uv-0.12.23",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "83ebdb74d19156fb582421841326baf83fc4edf1e2c8f284fde495d5039c662f",
+        "size": 145483
+      },
+      "report": {
+        "sha256": "dea1457735d5c8cd70d86dccb11d3ce9122eaeef4c58f8400f1468d1ec393b16",
+        "size": 289254
+      }
+    },
+    "stock-selected": {
+      "file_count": 1041,
+      "input_layout": "stock",
+      "interpreter_absent": true,
+      "payload_bytes": 89479393,
+      "provenance": {
+        "sha256": "dcc0a11ea0a75398e7994ded242bd90b6afdbad8c31c2f1d6bcb011a3080d2e0",
+        "size": 145325
+      },
+      "report": {
+        "sha256": "8cf17782e497a730964e875798ffe38f650d1d384e657b857f58247c69cac340",
+        "size": 289091
+      }
+    }
+  },
+  "valid_preparations": 5
+}

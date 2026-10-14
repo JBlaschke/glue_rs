@@ -1,0 +1,17 @@
+[
+  "/opt/homebrew/Cellar/uv/0.12.23/bin/uv",
+  "python",
+  "install",
+  "cpython-3.13.16-linux-aarch64-gnu",
+  "--install-dir",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install",
+  "--cache-dir",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/cache",
+  "--python-downloads-json-url",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/download-metadata.json",
+  "--no-bin",
+  "--no-registry",
+  "--offline",
+  "--no-config",
+  "--no-progress"
+]

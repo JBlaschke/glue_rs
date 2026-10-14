@@ -1,0 +1,194 @@
+{
+  "linux/bundled.manifest.json.gz": {
+    "sha256": "8972616aaa6b05d14aae5e110b01f81b88a9b82e1b9b45c83b038266934153ff",
+    "size": 360513
+  },
+  "linux/bundled.template-provenance.json.gz": {
+    "sha256": "728f84c0495a628fc57885dc080f2d5defe9f4aa8fa3546e55b2cab212cdf506",
+    "size": 337053
+  },
+  "linux/bundled.template.json.gz": {
+    "sha256": "8d4b05a9f7fd9744d3fd0931d1c3ec0187e3c864b9d672892fa43d9b40d9edba",
+    "size": 336487
+  },
+  "linux/freeze-bundle.json.gz": {
+    "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+    "size": 139523
+  },
+  "linux/host.host-provenance.json.gz": {
+    "sha256": "51333416751ea18fb3f654619911e5d2072776d508c6e3966265326d0732fb59",
+    "size": 301217
+  },
+  "linux/host.host-report.json.gz": {
+    "sha256": "c77247d3b77a806d395816ddf3f88b273e075b59b539bcfb6bd0262cd6e1aa04",
+    "size": 601608
+  },
+  "linux/host.host-tree-audit.json.gz": {
+    "sha256": "2c8dc56c8ff6077708f8c4ba8ec7550fd4ba8b89e99907c2cb42e520a934b88e",
+    "size": 736822
+  },
+  "linux/install-host.host-provenance.json.gz": {
+    "sha256": "008ad73d540894195446048f41ff99f9b70554febc7759fb68ddb63eb2590fea",
+    "size": 145436
+  },
+  "linux/install-host.host-tree-audit.json.gz": {
+    "sha256": "b8695ab842d436d48c6075cf3ec0b42587a1949b28663e34b5a05ed43c412f5b",
+    "size": 354356
+  },
+  "linux/installation-provenance.json.gz": {
+    "sha256": "a3474e0891b694034c8fa4b625d276b991d5f114e9fb1531b6391bf95b48c77b",
+    "size": 164598
+  },
+  "linux/runtime-tree-controls/genuine-uv-repeat/provenance.json.gz": {
+    "sha256": "008ad73d540894195446048f41ff99f9b70554febc7759fb68ddb63eb2590fea",
+    "size": 145436
+  },
+  "linux/runtime-tree-controls/genuine-uv-repeat/publication-audit.json.gz": {
+    "sha256": "80bee7660b0d5f39a27de3bc2ac1ff7e7360e05d9ca625a639374b3812ba1f92",
+    "size": 354361
+  },
+  "linux/runtime-tree-controls/genuine-uv/provenance.json.gz": {
+    "sha256": "008ad73d540894195446048f41ff99f9b70554febc7759fb68ddb63eb2590fea",
+    "size": 145436
+  },
+  "linux/runtime-tree-controls/genuine-uv/publication-audit.json.gz": {
+    "sha256": "366814c40e15a372abb7d5a7b1a33aa2df3ac271d0e48cf7b5b2d44736c6606e",
+    "size": 354354
+  },
+  "linux/runtime-tree-controls/ignored-unselected/provenance.json.gz": {
+    "sha256": "3fe6423713de085924e3e1bff0e906d5b1b7c23b2f79f47862922b2db99fd584",
+    "size": 145245
+  },
+  "linux/runtime-tree-controls/ignored-unselected/publication-audit.json.gz": {
+    "sha256": "6ea9870edbf50a0bb8193f562a1e924ad9e70c046cb8c5b169be5b25c9b9f98b",
+    "size": 354091
+  },
+  "linux/runtime-tree-controls/relocated-uv-quotes/provenance.json.gz": {
+    "sha256": "43c7297570547113e06b4dc936ad64431cf8361cd9f9ad298bcbddea10c7bd82",
+    "size": 145390
+  },
+  "linux/runtime-tree-controls/relocated-uv-quotes/publication-audit.json.gz": {
+    "sha256": "534af976c101f925ee69a9a85847bc53d292b2b13499f443b0d645c9998e6f36",
+    "size": 354271
+  },
+  "linux/runtime-tree-controls/selected-input-audit.json.gz": {
+    "sha256": "9887bd82b4293a9b9920d410f33e23b3004c84a10ca692ef0a876bf118dbc687",
+    "size": 1249290
+  },
+  "linux/runtime-tree-controls/stock-selected/provenance.json.gz": {
+    "sha256": "b80b13f6b71ac108cba8c6e53625933989faa7fdaf11ac35751a41911d682567",
+    "size": 145232
+  },
+  "linux/runtime-tree-controls/stock-selected/publication-audit.json.gz": {
+    "sha256": "1947cb63076f09c28f8a2a3504bb288b07984d57a4e27b99a55870611f84180b",
+    "size": 354061
+  },
+  "mac/current-fixture-controls/genuine-uv-repeat/provenance.json.gz": {
+    "sha256": "b6d303318ce027af02b9154e78628c1e552b88a140e98b9b354fec1e0869ce31",
+    "size": 145484
+  },
+  "mac/current-fixture-controls/genuine-uv-repeat/publication-audit.json.gz": {
+    "sha256": "3055717dafb5f25d6c5a84e9df9b2290dbab804dd79c3c52eee611eb19546cf6",
+    "size": 354465
+  },
+  "mac/current-fixture-controls/genuine-uv/provenance.json.gz": {
+    "sha256": "b6d303318ce027af02b9154e78628c1e552b88a140e98b9b354fec1e0869ce31",
+    "size": 145484
+  },
+  "mac/current-fixture-controls/genuine-uv/publication-audit.json.gz": {
+    "sha256": "536f0410747c871e8a14f4bc6a11f1e513acbed71a4225ea509a8da1c5062963",
+    "size": 354458
+  },
+  "mac/current-fixture-controls/ignored-unselected/provenance.json.gz": {
+    "sha256": "3e6b2ff906cec59c3389ec24a5d3841d3d99dea94b11236541a381083f5ea237",
+    "size": 145253
+  },
+  "mac/current-fixture-controls/ignored-unselected/publication-audit.json.gz": {
+    "sha256": "01b82c25084ccb9e203a36d6a3dbdb33798499f129b4a5288fd12e93d7da9e37",
+    "size": 354115
+  },
+  "mac/current-fixture-controls/relocated-uv-quotes/provenance.json.gz": {
+    "sha256": "68abcbc0a7102013b359c24bfc50f602bd65c4387097c19edb41cd8ffd291f2c",
+    "size": 145398
+  },
+  "mac/current-fixture-controls/relocated-uv-quotes/publication-audit.json.gz": {
+    "sha256": "2111f5d60df0f4e0e9848d0fc805bc53cdf14209cf21ebd2a00fb073b663e072",
+    "size": 354295
+  },
+  "mac/current-fixture-controls/selected-input-audit.json.gz": {
+    "sha256": "76f469d8f5a43283ed3b03849280aefe2b79da968c73c25794a860ad775929db",
+    "size": 1249338
+  },
+  "mac/current-fixture-controls/stock-selected/provenance.json.gz": {
+    "sha256": "25948da98042df52ae8d8a7cc494b9ee4155a676d9c3347095b71fc1ae3ef486",
+    "size": 145240
+  },
+  "mac/current-fixture-controls/stock-selected/publication-audit.json.gz": {
+    "sha256": "00ef332f86d5c4166dc1ff45849b0c093abc1dd43b446f53e30bd306d2990033",
+    "size": 354085
+  },
+  "mac/host-audit.json.gz": {
+    "sha256": "95285b5339ffc2a18df4948511d2f1bc7fa415e8b14af87d13f2bb754a90d5ca",
+    "size": 354529
+  },
+  "mac/host-provenance.json.gz": {
+    "sha256": "5de6de85ae59eb241cd7adc4cdd9ab8d97c77ca60d57837890ba15398291ada2",
+    "size": 145493
+  },
+  "mac/templates/bundled/manifest.json.gz": {
+    "sha256": "8d4b05a9f7fd9744d3fd0931d1c3ec0187e3c864b9d672892fa43d9b40d9edba",
+    "size": 336487
+  },
+  "mac/templates/bundled/provenance.json.gz": {
+    "sha256": "728f84c0495a628fc57885dc080f2d5defe9f4aa8fa3546e55b2cab212cdf506",
+    "size": 337053
+  },
+  "mac/tree-controls/genuine-uv-repeat/provenance.json.gz": {
+    "sha256": "5de6de85ae59eb241cd7adc4cdd9ab8d97c77ca60d57837890ba15398291ada2",
+    "size": 145493
+  },
+  "mac/tree-controls/genuine-uv-repeat/publication-audit.json.gz": {
+    "sha256": "e13f85c5da4f2a7b95ad3aba3224bca4a5245406d337fa1c7410d5692c4db3e5",
+    "size": 354568
+  },
+  "mac/tree-controls/genuine-uv/provenance.json.gz": {
+    "sha256": "5de6de85ae59eb241cd7adc4cdd9ab8d97c77ca60d57837890ba15398291ada2",
+    "size": 145493
+  },
+  "mac/tree-controls/genuine-uv/publication-audit.json.gz": {
+    "sha256": "cc066e9853b0267324caa7c80c5bb8a81ff242904733eab4aeec32f12ab127a4",
+    "size": 354561
+  },
+  "mac/tree-controls/ignored-unselected/provenance.json.gz": {
+    "sha256": "7455806c9d6c915f1d17795573b8ade2c99970607ff16724e5b7c47b54277e01",
+    "size": 145338
+  },
+  "mac/tree-controls/ignored-unselected/publication-audit.json.gz": {
+    "sha256": "fa616d53697c5d9d94d18270eec94c9624b345c6bd00496e36aa4e61f2d1752b",
+    "size": 354370
+  },
+  "mac/tree-controls/relocated-uv-quotes/provenance.json.gz": {
+    "sha256": "83ebdb74d19156fb582421841326baf83fc4edf1e2c8f284fde495d5039c662f",
+    "size": 145483
+  },
+  "mac/tree-controls/relocated-uv-quotes/publication-audit.json.gz": {
+    "sha256": "448a5f50d3b09601588735142c0059c856bde0418792857f85456b12b90e10e4",
+    "size": 354550
+  },
+  "mac/tree-controls/selected-input-audit.json.gz": {
+    "sha256": "53b09b112d130a1bfb11bf7c4d7d887b69daa96b19a2b4ae8b142811189845db",
+    "size": 1249347
+  },
+  "mac/tree-controls/stock-selected/provenance.json.gz": {
+    "sha256": "dcc0a11ea0a75398e7994ded242bd90b6afdbad8c31c2f1d6bcb011a3080d2e0",
+    "size": 145325
+  },
+  "mac/tree-controls/stock-selected/publication-audit.json.gz": {
+    "sha256": "ad2ec2b97576366b8e56998cd34ee13e78b109278aa9b9edc365b58cea9a6b4f",
+    "size": 354340
+  },
+  "mac/uv-input/installation-provenance.json.gz": {
+    "sha256": "f290928c6a21949b97a604a0a824d8dc914bfdd519b5de9bd4e3b600f8e40c68",
+    "size": 1261767
+  }
+}

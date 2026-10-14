@@ -1,0 +1,14 @@
+[
+  "/usr/local/bin/python3",
+  "-B",
+  "/Users/johannes.blaschke/Developer/glue_rs/fixtures/python-runtime-trees/prepare.py",
+  "audit-output",
+  "--runtime-tree",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/cpython-3.13.16-linux-aarch64-gnu",
+  "--prefix",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/prepared prefix",
+  "--report",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/host.stdout.txt",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/host-audit.json"
+]

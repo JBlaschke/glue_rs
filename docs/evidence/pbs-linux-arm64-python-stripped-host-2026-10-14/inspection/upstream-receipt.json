@@ -1,0 +1,49 @@
+{
+  "asset": {
+    "browser_download_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+    "content_type": "application/octet-stream",
+    "created_at": "2026-10-09T16:36:12Z",
+    "digest": "sha256:52c6993abd6ac687cceb787ecee83b166271bc06ad80ac9cac82c5d28d3c00bc",
+    "download_count": 35,
+    "id": 625539561,
+    "label": "",
+    "name": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+    "node_id": "RA_kwDOCa0F0M4lSPnp",
+    "size": 29327967,
+    "state": "uploaded",
+    "updated_at": "2026-10-09T16:36:15Z",
+    "uploader": {
+      "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+      "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+      "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+      "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+      "gravatar_id": "",
+      "html_url": "https://github.com/apps/github-actions",
+      "id": 41898282,
+      "login": "github-actions[bot]",
+      "node_id": "MDM6Qm90NDE4OTgyODI=",
+      "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+      "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+      "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+      "site_admin": false,
+      "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+      "type": "Bot",
+      "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+      "user_view_type": "public"
+    },
+    "url": "https://api.github.com/repos/astral-sh/python-build-standalone/releases/assets/625539561"
+  },
+  "cached_SHA256SUMS": {
+    "sha256": "ec040718b168f32a9ffa1ae05eb763f6d21def1110407adb63cf0821acd9c323",
+    "size": 127651
+  },
+  "cached_release_json": {
+    "sha256": "da8f09b6fad5388100f345161ba9bb9278a1fbd9c4efef939840bb3cd1dbbab9",
+    "size": 1896264
+  },
+  "checksum_line": "52c6993abd6ac687cceb787ecee83b166271bc06ad80ac9cac82c5d28d3c00bc  cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+  "checksums_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/SHA256SUMS",
+  "release_url": "https://github.com/astral-sh/python-build-standalone/releases/tag/20261009"
+}

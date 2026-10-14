@@ -1,0 +1,11 @@
+[
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-stripped-host-mac/glue",
+  "python-host",
+  "--provider",
+  "host-install-stripped",
+  "--runtime-tree",
+  "/private/tmp/glue-stripped-controls-708rmatv/ancestor-symlink",
+  "--output",
+  "/private/tmp/glue-stripped-controls-708rmatv/ancestor-symlink-output",
+  "--json"
+]

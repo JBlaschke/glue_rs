@@ -1,0 +1,12 @@
+{
+  "stripped": {
+    "mac_linux_byte_identical": true,
+    "sha256": "7f51ef100404d171a32499fd0ce7d8ee9491320792727fc6071c1a8f429f7125",
+    "size": 10656
+  },
+  "unstripped": {
+    "mac_linux_byte_identical": true,
+    "sha256": "0e34e7535ec5358124feb9c0922ea4b2c1308c01b9ae2d3dbf53f2eacb2c6dce",
+    "size": 10651
+  }
+}

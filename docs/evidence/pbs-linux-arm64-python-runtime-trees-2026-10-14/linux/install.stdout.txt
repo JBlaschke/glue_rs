@@ -1,0 +1,1 @@
+{"application_file_count": 152, "baseline_stdout_identity": {"sha256": "cdfaac81082bf8d22ff51cb69841a539de866f9f53e2b60b6caa7539b0f560a7", "size": 129}, "installed_file_count": 261, "omission_count": 111}

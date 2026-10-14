@@ -15,9 +15,9 @@ pub fn validate_template(manifest: &Manifest) -> Result<ArchiveLimits, String> {
     let selected = profile::validate(manifest).map_err(|error| error.to_string())?;
     match selected.kind {
         profile::Kind::BundledMetadataApp => Ok(metadata_profile::limits_bundled()),
-        profile::Kind::HostMetadataApp | profile::Kind::InstallHostMetadataApp => {
-            Ok(metadata_profile::limits_host())
-        }
+        profile::Kind::HostMetadataApp
+        | profile::Kind::InstallHostMetadataApp
+        | profile::Kind::StrippedInstallHostMetadataApp => Ok(metadata_profile::limits_host()),
         _ => Err("Python package ingestion requires a pinned distribution-metadata profile".into()),
     }
 }

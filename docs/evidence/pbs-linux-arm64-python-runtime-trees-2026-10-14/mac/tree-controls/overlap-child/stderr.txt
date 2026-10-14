@@ -1,0 +1,1 @@
+glue: packaging profile: installed runtime input and output trees must not overlap

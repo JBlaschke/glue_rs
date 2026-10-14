@@ -1,0 +1,4 @@
+Frozen six startup modules with stock CPython 3.13.16; bundle bytes=139523 sha256=6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7
+{"all_directory_modes_times_verified": true, "all_file_bytes_modes_times_verified": true, "directory_count": 204, "directory_mode": 365, "file_count": 2175, "file_mode": 292, "mtime_seconds": 1704067200, "payload_bytes": 112722024, "provenance_file": {"sha256": "51333416751ea18fb3f654619911e5d2072776d508c6e3966265326d0732fb59", "size": 301217}, "provider": "host-full"}
+{"all_directory_modes_times_verified": true, "all_file_bytes_modes_times_verified": true, "directory_count": 103, "file_count": 1041, "input_layout": "uv-0.12.23", "payload_bytes": 89479393}
+Python installed-runtime-tree evidence: /Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-clean-final

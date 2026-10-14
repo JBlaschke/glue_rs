@@ -1,0 +1,57 @@
+{
+  "all_source_inputs_unchanged": true,
+  "excluded_initial_attempt": {
+    "exit_status": 101,
+    "features": [
+      "--no-default-features",
+      "--features",
+      "glue-runtime-lua/lua55"
+    ],
+    "reason": "Runner Lua5.5 test expectation feature omitted; corrected invocation passes without source changes."
+  },
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "lua55_features": [
+    "--no-default-features",
+    "--features",
+    "glue-runner/lua55"
+  ],
+  "network": "none",
+  "results": {
+    "lua54-clippy": {
+      "exit_status": 0,
+      "log": {
+        "sha256": "38dfa9c1ecf06af731e755e3176ac9432b92e24b222792e82e12252f018f62e9",
+        "size": 1848
+      },
+      "passed": 0
+    },
+    "lua54-tests": {
+      "exit_status": 0,
+      "log": {
+        "sha256": "6060fd2af2c748b056d3c426dfba6d92ce572d2237ff3c0d5a01c0ca9cdd1d43",
+        "size": 48234
+      },
+      "passed": 496
+    },
+    "lua55-corrected-clippy": {
+      "exit_status": 0,
+      "log": {
+        "sha256": "5055e85b3452b3384d865c1edbe193237a964793286951afb5f8f33ce81080a2",
+        "size": 375
+      },
+      "passed": 0
+    },
+    "lua55-corrected-tests": {
+      "exit_status": 0,
+      "log": {
+        "sha256": "0060e646ceec1fe8d79864f18071a15049d4982b07705b59566e920c2ae8dc03",
+        "size": 46282
+      },
+      "passed": 497
+    }
+  },
+  "schema_version": 0,
+  "source_head_after": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "source_input_count": 88,
+  "source_mount_read_only": true
+}

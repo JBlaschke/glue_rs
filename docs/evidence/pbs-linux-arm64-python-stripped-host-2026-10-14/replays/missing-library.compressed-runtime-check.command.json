@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-stripped-host-trace.py",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.trace.txt.gz",
+    "--mode",
+    "missing-library",
+    "--stdout-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.stdout.txt",
+    "--stderr-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.stderr.txt",
+    "--metadata-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json",
+    "--archive-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/missing-library.glue"
+  ],
+  "cwd": "/Users/johannes.blaschke/Developer/glue_rs",
+  "exit_status": 0,
+  "implementation_commit": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "inputs": {
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/missing-library.glue": {
+      "sha256": "ca40b4fb7ed97c3e530d9b3f78e5c05ef2468b484d63c982509e7ac25b99d0d0",
+      "size": 10688
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json": {
+      "sha256": "f4db9788ee279883042338a8f093082b3b012d5784c23cafc6ff6293c61211bb",
+      "size": 19526
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.stderr.txt": {
+      "sha256": "80de27ea0e2d3fa91e4062af7a64a8a4af3c7d502a5dbee36446240845150d8a",
+      "size": 132
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/missing-library.trace.txt.gz": {
+      "sha256": "20315ad204775f1d21d293e267ac8eab94354f46fd3aade9b3c655ab4064cbff",
+      "size": 13706
+    },
+    "scripts/check-linux-python-stripped-host-trace.py": {
+      "sha256": "383c0cba1806f1a140fd676526cd04e99589b6b059f081cc04e9353414c68630",
+      "size": 31376
+    }
+  },
+  "stderr": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/missing-library.compressed-runtime-check.stderr.txt",
+  "stdout": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/missing-library.compressed-runtime-check.stdout.txt"
+}

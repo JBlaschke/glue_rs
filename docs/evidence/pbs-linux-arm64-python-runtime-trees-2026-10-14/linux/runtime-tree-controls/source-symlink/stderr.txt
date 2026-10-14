@@ -1,0 +1,1 @@
+glue: open installed runtime input "/tmp/grt-cvl0fw1y/source-symlink/lib/python3.13/abc.py": Too many levels of symbolic links (os error 40)

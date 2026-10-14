@@ -1,0 +1,12 @@
+[
+  "/usr/local/bin/python3",
+  "-B",
+  "/Users/johannes.blaschke/Developer/glue_rs/fixtures/python-runtime-trees/prepare.py",
+  "controls",
+  "--glue",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-build/debug/glue",
+  "--runtime-tree",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/cpython-3.13.16-linux-aarch64-gnu",
+  "--output",
+  "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/tree-controls"
+]

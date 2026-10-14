@@ -21,6 +21,7 @@ pub(crate) enum Kind {
     BundledMetadataApp,
     HostMetadataApp,
     InstallHostMetadataApp,
+    StrippedInstallHostMetadataApp,
 }
 
 /// An admitted profile, tied to the manifest from which it was selected.
@@ -48,6 +49,9 @@ impl ControlledProfile {
             }
             Kind::InstallHostMetadataApp => {
                 "pinned install-only host Python distribution metadata application"
+            }
+            Kind::StrippedInstallHostMetadataApp => {
+                "pinned stripped install-only host Python distribution metadata application"
             }
         }
     }
@@ -115,6 +119,11 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             metadata_profile::admit_install_host(manifest).map_err(ExecutionError::failed)?;
             Kind::InstallHostMetadataApp
         }
+        _ if runtime.build_id == metadata_profile::STRIPPED_INSTALL_BUILD_ID => {
+            metadata_profile::admit_stripped_install_host(manifest)
+                .map_err(ExecutionError::failed)?;
+            Kind::StrippedInstallHostMetadataApp
+        }
         _ => {
             return Err(ExecutionError::unsupported(
                 "Python execution requires a supported pinned PBS source-application or controlled fixture profile",
@@ -144,6 +153,7 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
         metadata_profile::BUNDLED_BUILD_ID,
         metadata_profile::HOST_BUILD_ID,
         metadata_profile::INSTALL_BUILD_ID,
+        metadata_profile::STRIPPED_INSTALL_BUILD_ID,
     ]
     .contains(&runtime.build_id.as_str())
     {
@@ -155,9 +165,9 @@ pub fn packaging_limits(manifest: &Manifest) -> Result<Option<ArchiveLimits>, Ex
         Kind::HostSourceApp => Ok(Some(host_source_app_profile::limits())),
         Kind::InstallHostSourceApp => Ok(Some(install_host_source_app_profile::limits())),
         Kind::BundledMetadataApp => Ok(Some(metadata_profile::limits_bundled())),
-        Kind::HostMetadataApp | Kind::InstallHostMetadataApp => {
-            Ok(Some(metadata_profile::limits_host()))
-        }
+        Kind::HostMetadataApp
+        | Kind::InstallHostMetadataApp
+        | Kind::StrippedInstallHostMetadataApp => Ok(Some(metadata_profile::limits_host())),
         _ => Err(ExecutionError::failed(
             "source application build identity conflicts with a reserved fixture",
         )),

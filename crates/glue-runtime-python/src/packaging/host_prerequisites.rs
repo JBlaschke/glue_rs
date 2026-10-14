@@ -19,7 +19,10 @@ use std::{
 };
 
 mod installed_tree;
-pub use installed_tree::{InstalledTreeProvenance, installed_tree, installed_tree_input_limits};
+pub use installed_tree::{
+    InstalledTreeProvenance, installed_stripped_tree, installed_stripped_tree_input_limits,
+    installed_tree, installed_tree_input_limits,
+};
 
 const LIBRARY: &str = "lib/libpython3.13.so.1.0";
 const STDLIB: &str = "lib/python3.13/";
@@ -78,7 +81,9 @@ pub fn validate_prefix(prefix: &str, provider: HostProvider) -> Result<(), Strin
     let config = host::Config::parse(prefix)?;
     match provider {
         HostProvider::Full => config.validate_source_snapshot_layout(),
-        HostProvider::InstallOnly => config.validate_install_source_snapshot_layout(),
+        HostProvider::InstallOnly | HostProvider::InstallOnlyStripped => {
+            config.validate_install_source_snapshot_layout()
+        }
     }
 }
 
@@ -105,21 +110,39 @@ pub fn install<R: Read + Seek>(input: &mut R) -> Result<HostPrerequisites, Strin
     finish(provider, selected.artifact, selected.files, expected)
 }
 
+/// Inspect the separately pinned stock stripped image without consulting or
+/// executing a target installation. Source/cache expectations remain tied to
+/// their original producer inventory; only the image identity changes.
+pub fn install_stripped<R: Read + Seek>(input: &mut R) -> Result<HostPrerequisites, String> {
+    let provider = HostProvider::InstallOnlyStripped;
+    let expected = expected(provider)?;
+    let pins = Pins::from_json(PINS)?;
+    let selected = glue_pbs::inspect_install_stripped_selected(
+        &pins,
+        &crate::stripped_host::artifact_pin(),
+        input,
+        &selection(provider, &expected.files),
+        MAX_SELECTED_BYTES,
+    )?;
+    finish(provider, selected.artifact, selected.files, expected)
+}
+
 /// Recheck the complete owned map and fixed provenance before publication.
 /// Public callers cannot alter a prerequisite or provider identity silently.
 pub fn validate_contents(owned: &HostPrerequisites) -> Result<(), String> {
     let provider = match owned.provenance.provider.as_str() {
         "host-full" => HostProvider::Full,
         "host-install" => HostProvider::InstallOnly,
+        "host-install-stripped" => HostProvider::InstallOnlyStripped,
         _ => return Err("host prerequisites require an admitted provider".into()),
     };
     let expected = expected(provider)?;
     let provenance = match &owned.provenance.installed_tree {
         Some(tree) => {
-            if provider != HostProvider::InstallOnly {
+            if provider == HostProvider::Full {
                 return Err("installed trees require the host-install provider".into());
             }
-            installed_tree::provenance(tree, &expected)?
+            installed_tree::provenance_for(provider, tree, &expected)?
         }
         None => {
             let facts = artifact_facts(provider);
@@ -149,7 +172,7 @@ fn expected(provider: HostProvider) -> Result<Expected, String> {
             39_158_056,
             bundle::FULL_SHA256,
         ),
-        HostProvider::InstallOnly => (
+        HostProvider::InstallOnly | HostProvider::InstallOnlyStripped => (
             INSTALL_SOURCE_PINS,
             "fixtures/python-install-host-source-apps/source-pins.json",
             1037,
@@ -180,11 +203,20 @@ fn expected(provider: HostProvider) -> Result<Expected, String> {
     files.insert(
         LIBRARY.into(),
         FileIdentity {
-            size: LIBRARY_BYTES,
-            sha256: bundle::RUNTIME_LIBRARY_SHA256.into(),
+            size: if provider == HostProvider::InstallOnlyStripped {
+                crate::stripped_host::LIBRARY_SIZE
+            } else {
+                LIBRARY_BYTES
+            },
+            sha256: if provider == HostProvider::InstallOnlyStripped {
+                crate::stripped_host::LIBRARY_SHA256
+            } else {
+                bundle::RUNTIME_LIBRARY_SHA256
+            }
+            .into(),
         },
     );
-    let cache_inventory = if provider == HostProvider::InstallOnly {
+    let cache_inventory = if provider != HostProvider::Full {
         for (path, spec) in &caches {
             if files
                 .insert(format!("{STDLIB}{path}"), spec.clone())
@@ -202,6 +234,7 @@ fn expected(provider: HostProvider) -> Result<Expected, String> {
     let (expected_count, expected_bytes) = match provider {
         HostProvider::Full => (2175, 112_722_024),
         HostProvider::InstallOnly => (1041, 89_479_393),
+        HostProvider::InstallOnlyStripped => (1041, 38_093_257),
     };
     if files.len() != expected_count || total != expected_bytes || total > MAX_SELECTED_BYTES {
         return Err("host prerequisites differ from the fixed selected-byte budget".into());
@@ -276,7 +309,7 @@ fn inventory(
 fn member_prefix(provider: HostProvider) -> &'static str {
     match provider {
         HostProvider::Full => "python/install/",
-        HostProvider::InstallOnly => "python/",
+        HostProvider::InstallOnly | HostProvider::InstallOnlyStripped => "python/",
     }
 }
 
@@ -316,11 +349,12 @@ fn finish(
         })?;
     let pins = Pins::from_json(PINS)?;
     let pin = match provider {
-        HostProvider::Full => &pins.full,
-        HostProvider::InstallOnly => &pins.install_only,
+        HostProvider::Full => pins.full,
+        HostProvider::InstallOnly => pins.install_only,
+        HostProvider::InstallOnlyStripped => crate::stripped_host::artifact_pin(),
     };
     let facts = artifact_facts(provider);
-    if artifact_identity(artifact.pin.clone()) != artifact_identity(pin.clone())
+    if artifact_identity(artifact.pin.clone()) != artifact_identity(pin)
         || (artifact.entries.len(), regular_files, total) != facts
     {
         return Err("observed host artifact inventory differs from the pinned profile".into());
@@ -407,6 +441,7 @@ fn artifact_facts(provider: HostProvider) -> (usize, usize, u64) {
     match provider {
         HostProvider::Full => (6574, 5525, 395_119_171),
         HostProvider::InstallOnly => (4526, 3478, 182_155_939),
+        HostProvider::InstallOnlyStripped => (4526, 3478, 79_291_731),
     }
 }
 
@@ -424,6 +459,11 @@ fn provenance(
             "host-install",
             metadata_profile::INSTALL_BUILD_ID,
             pins.install_only,
+        ),
+        HostProvider::InstallOnlyStripped => (
+            "host-install-stripped",
+            metadata_profile::STRIPPED_INSTALL_BUILD_ID,
+            crate::stripped_host::artifact_pin(),
         ),
     };
     let selected_bytes = payload_bytes(&expected.files)?;
@@ -509,6 +549,38 @@ mod tests {
                     .all(|path| !path.starts_with("bin/"))
             );
         }
+    }
+
+    #[test]
+    fn stripped_projection_changes_only_library_and_keeps_original_inventory_provenance() {
+        let plain = expected(HostProvider::InstallOnly).unwrap();
+        let stripped = expected(HostProvider::InstallOnlyStripped).unwrap();
+        assert_eq!(stripped.files.len(), 1041);
+        assert_eq!(payload_bytes(&stripped.files).unwrap(), 38_093_257);
+        assert_eq!(stripped.sources, plain.sources);
+        assert_eq!(stripped.caches, plain.caches);
+        assert_eq!(stripped.source_inventory, plain.source_inventory);
+        assert_eq!(stripped.cache_inventory, plain.cache_inventory);
+        assert_ne!(stripped.files[LIBRARY], plain.files[LIBRARY]);
+        let facts = artifact_facts(HostProvider::InstallOnlyStripped);
+        let report = provenance(
+            HostProvider::InstallOnlyStripped,
+            &stripped,
+            facts.0,
+            facts.1,
+            facts.2,
+        )
+        .unwrap();
+        assert_eq!(report.provider, "host-install-stripped");
+        assert_eq!(
+            report.artifact.unwrap().sha256,
+            crate::stripped_host::ARTIFACT_SHA256
+        );
+        assert_eq!(
+            report.source_inventory.artifact_sha256,
+            bundle::INSTALL_ONLY_SHA256
+        );
+        assert_eq!(report.omitted_bytes, Some(41_198_474));
     }
 
     #[test]

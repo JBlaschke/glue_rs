@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/test_linux_python_stripped_host_trace.py"
+  ],
+  "cwd": "/Users/johannes.blaschke/Developer/glue_rs",
+  "exit_status": 0,
+  "implementation_commit": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "inputs": {
+    "scripts/check-linux-python-stripped-host-trace.py": {
+      "sha256": "383c0cba1806f1a140fd676526cd04e99589b6b059f081cc04e9353414c68630",
+      "size": 31376
+    },
+    "scripts/test_linux_python_stripped_host_trace.py": {
+      "sha256": "4405aab0cabb8c1b895654c7699f4a73aeba8429c334e89b156f192545583ac5",
+      "size": 32748
+    }
+  },
+  "stderr": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/runtime-policy-tests.stderr.txt",
+  "stdout": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/runtime-policy-tests.stdout.txt"
+}

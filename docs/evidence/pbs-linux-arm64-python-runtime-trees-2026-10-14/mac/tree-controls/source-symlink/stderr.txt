@@ -1,0 +1,1 @@
+glue: open installed runtime input "/Users/johannes.blaschke/Developer/glue_rs/target/python-runtime-trees-mac-clean/uv-input/install/grt-oqp4o8a3/source-symlink/lib/python3.13/abc.py": Too many levels of symbolic links (os error 62)

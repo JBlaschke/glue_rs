@@ -1,0 +1,23 @@
+ M README.md
+ M crates/glue-pack/src/python_host.rs
+ M crates/glue-pack/src/python_template.rs
+ M crates/glue-pbs/src/lib.rs
+ M crates/glue-pbs/src/pins.rs
+ M crates/glue-runner/src/main.rs
+ M crates/glue-runner/tests/cli.rs
+ M crates/glue-runtime-python/src/host.rs
+ M crates/glue-runtime-python/src/lib.rs
+ M crates/glue-runtime-python/src/linux.rs
+ M crates/glue-runtime-python/src/metadata_profile.rs
+ M crates/glue-runtime-python/src/packaging.rs
+ M crates/glue-runtime-python/src/packaging/host_prerequisites.rs
+ M crates/glue-runtime-python/src/packaging/host_prerequisites/installed_tree.rs
+ M crates/glue-runtime-python/src/packaging/template.rs
+ M crates/glue-runtime-python/src/profile.rs
+ M docs/fixtures.md
+ M docs/progress.md
+?? crates/glue-runtime-python/src/stripped_host.rs
+?? docs/decisions/0027-python-stripped-host-runtime.md
+?? fixtures/python-stripped-host/
+?? scripts/check-linux-python-stripped-host-trace.py
+?? scripts/test_linux_python_stripped_host_trace.py

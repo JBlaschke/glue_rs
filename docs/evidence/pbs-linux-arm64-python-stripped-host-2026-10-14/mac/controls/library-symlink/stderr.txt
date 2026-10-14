@@ -1,0 +1,1 @@
+glue: open installed runtime input "/private/tmp/glue-stripped-controls-708rmatv/library-symlink/lib/libpython3.13.so.1.0": Too many levels of symbolic links (os error 62)

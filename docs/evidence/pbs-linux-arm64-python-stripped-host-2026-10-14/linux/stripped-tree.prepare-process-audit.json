@@ -1,0 +1,40 @@
+{
+  "canonical_output_parent_ancestor_probe_count": 2,
+  "child_creation_count": 0,
+  "directory_identity_values_visible_and_distinct": true,
+  "execve_count": 1,
+  "full_payload_identities_source": "independent selected file audit; abbreviated trace is not a full byte hash",
+  "initial_output_absence_probe_count": 1,
+  "input_layout": "stock-install-only-stripped",
+  "input_output_mapping_count": 0,
+  "input_root": "/host-build/stripped-input",
+  "maximum_live_input_owners": 3,
+  "network_count": 0,
+  "outside_prefix_mutation_count": 0,
+  "overlap_identity_preflight_before_selected_reads": true,
+  "prefix": "/build-target/Python stripped tree",
+  "program": "/build-target/release/glue",
+  "publication_after_complete_input_read_and_close": true,
+  "publication_exclusive_modes_mtimes_closes_verified": true,
+  "published_bytes": 38238537,
+  "published_directories": 103,
+  "published_files": 1042,
+  "report_identity": {
+    "sha256": "8209e41791fea5025c945199df3c25ffa1aabca9151498aad8607d4adcb64c52",
+    "size": 288957
+  },
+  "retained_input_root_identity_probe_count": 1,
+  "schema_version": 0,
+  "selected_input_bytes": 38093257,
+  "selected_input_files": 1041,
+  "selected_regular_size_eof_restat_close_verified": true,
+  "stdout_bytes": 288957,
+  "successful_exit_count": 1,
+  "trace_identity": {
+    "sha256": "aa0ebf60ed3ba8ec11ea0a87a200433e7c5476e02c4cb49852d0c0308c3927ca",
+    "size": 5354280
+  },
+  "trace_string_limit": 512,
+  "unselected_input_read_count": 0,
+  "visible_input_output_prefixes_verified": true
+}

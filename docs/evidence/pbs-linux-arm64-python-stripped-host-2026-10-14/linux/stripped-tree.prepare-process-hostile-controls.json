@@ -1,0 +1,293 @@
+{
+  "all_controls_rejected": true,
+  "controls": {
+    "anonymous-executable-mapping": {
+      "reason": "line 2: anonymous executable/unclassified mapping",
+      "rejected": true
+    },
+    "another-executable": {
+      "reason": "line 2: additional/unexpected/failed executable",
+      "rejected": true
+    },
+    "another-pid": {
+      "reason": "line 115: trace contains another PID or records after exit",
+      "rejected": true
+    },
+    "child-clone": {
+      "reason": "line 2: unclassified syscall (including child/network/alias/mutation): clone",
+      "rejected": true
+    },
+    "descriptor-duplication": {
+      "reason": "line 2: unclassified syscall (including child/network/alias/mutation): dup",
+      "rejected": true
+    },
+    "directory-follows-symlinks": {
+      "reason": "line 105: input open lacks exact no-follow directory/leaf flags",
+      "rejected": true
+    },
+    "directory-freeze-before-files": {
+      "reason": "line 15174: output directory opened before complete files",
+      "rejected": true
+    },
+    "directory-mutation-outside-output": {
+      "reason": "line 15071: directory creation escapes inventory or follows file publication",
+      "rejected": true
+    },
+    "directory-not-required": {
+      "reason": "line 105: input open lacks exact no-follow directory/leaf flags",
+      "rejected": true
+    },
+    "duplicate-created-directory": {
+      "reason": "line 15072: directory creation escapes inventory or follows file publication",
+      "rejected": true
+    },
+    "duplicated-output-parent-identity-probe": {
+      "reason": "line 113: output ancestry identity probes are missing/reordered/duplicated",
+      "rejected": true
+    },
+    "eof-contains-extra-byte": {
+      "reason": "line 119: selected EOF probe is absent or not exactly one byte",
+      "rejected": true
+    },
+    "eof-not-single-byte": {
+      "reason": "line 119: selected EOF probe is absent or not exactly one byte",
+      "rejected": true
+    },
+    "executable-memory-protection": {
+      "reason": "line 2: mprotect grants executable/unclassified memory",
+      "rejected": true
+    },
+    "foreign-process-limit-mutation": {
+      "reason": "line 2: prlimit accesses/mutates another process or unclassified limit",
+      "rejected": true
+    },
+    "foreign-read-family": {
+      "reason": "line 2: open is outside exact ordinary OS read family",
+      "rejected": true
+    },
+    "json-report-written-to-stderr": {
+      "reason": "line 20793: descriptor was not opened or was already closed",
+      "rejected": true
+    },
+    "leaf-can-block-fifo": {
+      "reason": "line 115: input open lacks exact no-follow directory/leaf flags",
+      "rejected": true
+    },
+    "leaf-follows-symlinks": {
+      "reason": "line 115: input open lacks exact no-follow directory/leaf flags",
+      "rejected": true
+    },
+    "leaf-live-fd-reassignment": {
+      "reason": "line 115: open reassigns a live/standard descriptor",
+      "rejected": true
+    },
+    "leaf-result-alias": {
+      "reason": "line 115: input open aliases its declared path",
+      "rejected": true
+    },
+    "missing-created-directory": {
+      "reason": "line 15072: directory parent was not exclusively created",
+      "rejected": true
+    },
+    "missing-eof": {
+      "reason": "line 119: selected restat did not follow complete read and EOF",
+      "rejected": true
+    },
+    "missing-final-json-fragment": {
+      "reason": "line 21083: exit status/stdout total differs",
+      "rejected": true
+    },
+    "missing-first-stat": {
+      "reason": "line 117: selected read is out of order, repeated after EOF, or write-capable",
+      "rejected": true
+    },
+    "missing-initial-absent-output-probe": {
+      "reason": "line 113: selected traversal starts before complete retained-root/output-ancestry identity preflight",
+      "rejected": true
+    },
+    "missing-leaf-close": {
+      "reason": "line 123: open reassigns a live/standard descriptor",
+      "rejected": true
+    },
+    "missing-output-parent-identity-probe": {
+      "reason": "line 113: selected traversal starts before complete retained-root/output-ancestry identity preflight",
+      "rejected": true
+    },
+    "missing-payload-read": {
+      "reason": "line 118: selected payload read total differs",
+      "rejected": true
+    },
+    "missing-restat": {
+      "reason": "line 120: selected close lacks exact regular bytes, EOF and restat",
+      "rejected": true
+    },
+    "missing-retained-directory-close": {
+      "reason": "line 15069: publication precedes complete selected reads/EOF/restats/closes",
+      "rejected": true
+    },
+    "missing-retained-root-identity-probe": {
+      "reason": "line 111: output ancestry identity probes are missing/reordered/duplicated",
+      "rejected": true
+    },
+    "missing-success-exit": {
+      "reason": "complete trace lacks one executable and successful exit",
+      "rejected": true
+    },
+    "missing-system-maps-inventory": {
+      "reason": "complete fixed GNU startup system read/close inventory differs",
+      "rejected": true
+    },
+    "mode-before-stock-timestamp": {
+      "reason": "line 15176: publication mode or timestamp-before-mode order differs",
+      "rejected": true
+    },
+    "network-socket": {
+      "reason": "line 2: unclassified syscall (including child/network/alias/mutation): socket",
+      "rejected": true
+    },
+    "nonregular-selected-leaf": {
+      "reason": "line 116: selected/system open is not a regular file",
+      "rejected": true
+    },
+    "output-parent-identity-aliases-retained-root": {
+      "reason": "line 112: output parent ancestor aliases the retained input root",
+      "rejected": true
+    },
+    "output-parent-identity-probe-not-directory": {
+      "reason": "line 112: output parent metadata is not a directory",
+      "rejected": true
+    },
+    "publication-before-admission": {
+      "reason": "line 115: publication precedes complete selected reads/EOF/restats/closes",
+      "rejected": true
+    },
+    "publication-file-not-closed": {
+      "reason": "line 15178: open reassigns a live/standard descriptor",
+      "rejected": true
+    },
+    "publication-output-read": {
+      "reason": "line 15175: publication write exceeds payload or follows freezing",
+      "rejected": true
+    },
+    "publication-overwrites-existing": {
+      "reason": "line 15174: output directory opened before complete files",
+      "rejected": true
+    },
+    "publication-result-alias": {
+      "reason": "line 15174: publication open aliases its declared output",
+      "rejected": true
+    },
+    "publication-transfer-overflow": {
+      "reason": "line 15175: publication write exceeds payload or follows freezing",
+      "rejected": true
+    },
+    "publication-unselected-file": {
+      "reason": "line 15174: publication open aliases its declared output",
+      "rejected": true
+    },
+    "published-root-not-closed": {
+      "reason": "line 20792: stdout/exit precedes complete frozen publication and descriptor closure",
+      "rejected": true
+    },
+    "read-after-eof": {
+      "reason": "line 120: selected read is out of order, repeated after EOF, or write-capable",
+      "rejected": true
+    },
+    "record-after-exit": {
+      "reason": "line 21086: trace contains another PID or records after exit",
+      "rejected": true
+    },
+    "repeated-leaf-open": {
+      "reason": "line 116: open reassigns a live/standard descriptor",
+      "rejected": true
+    },
+    "root-identity-probe-not-directory": {
+      "reason": "line 110: directory stat is not the one retained-root overlap preflight",
+      "rejected": true
+    },
+    "root-identity-probe-not-empty-path": {
+      "reason": "line 110: directory stat is not the one retained-root overlap preflight",
+      "rejected": true
+    },
+    "selected-input-mapping": {
+      "reason": "line 116: descriptor operation does not fit its owner",
+      "rejected": true
+    },
+    "selected-input-write": {
+      "reason": "line 118: selected read is out of order, repeated after EOF, or write-capable",
+      "rejected": true
+    },
+    "selected-read-fd-alias": {
+      "reason": "line 118: descriptor annotation aliases its remembered owner",
+      "rejected": true
+    },
+    "stdout-before-complete-publication": {
+      "reason": "line 20785: stdout/exit precedes complete frozen publication and descriptor closure",
+      "rejected": true
+    },
+    "stdout-owner-alias": {
+      "reason": "line 20793: stdout owner changed",
+      "rejected": true
+    },
+    "unknown-kernel-operation": {
+      "reason": "line 2: unclassified syscall (including child/network/alias/mutation): pidfd_open",
+      "rejected": true
+    },
+    "unselected-leaf": {
+      "reason": "line 115: input path/order is not the complete pinned selected traversal",
+      "rejected": true
+    },
+    "wrong-directory-mode": {
+      "reason": "line 20376: publication mode or timestamp-before-mode order differs",
+      "rejected": true
+    },
+    "wrong-file-mode": {
+      "reason": "line 15177: publication mode or timestamp-before-mode order differs",
+      "rejected": true
+    },
+    "wrong-input-option": {
+      "reason": "line 1: exec arguments differ from exact tree preparation command",
+      "rejected": true
+    },
+    "wrong-provider": {
+      "reason": "line 1: exec arguments differ from exact tree preparation command",
+      "rejected": true
+    },
+    "wrong-selected-size": {
+      "reason": "line 116: selected stat size/count differs",
+      "rejected": true
+    },
+    "wrong-stock-mtime": {
+      "reason": "line 15176: publication timestamp differs from stock fixed epoch",
+      "rejected": true
+    },
+    "wrong-stock-nanoseconds": {
+      "reason": "line 15176: publication timestamp differs from stock fixed epoch",
+      "rejected": true
+    },
+    "wrong-visible-input-prefix": {
+      "reason": "line 118: visible transfer bytes differ from independent audit",
+      "rejected": true
+    },
+    "wrong-visible-json-report": {
+      "reason": "line 20793: visible transfer bytes differ from independent audit",
+      "rejected": true
+    },
+    "wrong-visible-output-prefix": {
+      "reason": "line 15175: visible transfer bytes differ from independent audit",
+      "rejected": true
+    }
+  },
+  "hostile_controls": 69,
+  "rejected_controls": 69,
+  "report_identity": {
+    "sha256": "8209e41791fea5025c945199df3c25ffa1aabca9151498aad8607d4adcb64c52",
+    "size": 288957
+  },
+  "schema_version": 0,
+  "source": "mutations of the complete successful captured trace",
+  "trace_identity": {
+    "sha256": "aa0ebf60ed3ba8ec11ea0a87a200433e7c5476e02c4cb49852d0c0308c3927ca",
+    "size": 5354280
+  }
+}

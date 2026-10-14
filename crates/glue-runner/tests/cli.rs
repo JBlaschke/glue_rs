@@ -276,6 +276,36 @@ fn python_template_declares_host_inputs_without_discovery_and_preserves_existing
     assert_eq!(tree_snapshot(&temp.0), before);
 }
 
+#[cfg(feature = "python-pack")]
+#[test]
+fn stripped_host_template_selects_a_separate_profile_without_runtime_lookup() {
+    let temp = TestDir::new();
+    let output = temp.0.join("stripped host template");
+    let result = temp.run(&[
+        arg("python-template"),
+        arg("--provider"),
+        arg("host-install-stripped"),
+        arg("--host-prefix"),
+        arg("/not-installed/stripped-Python"),
+        arg("--output"),
+        output.as_os_str(),
+        arg("--json"),
+    ]);
+    assert_status(&result, 0);
+    assert!(result.stderr.is_empty());
+    let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+    assert_eq!(report["provider"], "host-install-stripped");
+    assert_eq!(
+        report["provenance"]["selected_runtime_image"]["size"],
+        22_177_832
+    );
+    let manifest = Manifest::from_json(&fs::read(output.join("manifest.json")).unwrap()).unwrap();
+    assert_eq!(
+        manifest.runtimes["python"].build_id,
+        "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1"
+    );
+}
+
 #[test]
 fn python_host_requires_one_provider_specific_input() {
     let temp = TestDir::new();

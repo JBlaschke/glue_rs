@@ -1,0 +1,43 @@
+{
+  "archives": {
+    "bundled": {
+      "sha256": "363e7eb3027a65277e8acba9a91a0f62ecfd589fb584ddecd55f400482774d70",
+      "size": 83591962
+    },
+    "host": {
+      "sha256": "242792b2e45452f16d13a5e7aea127caed1a9cb9b936099df96640854bc5f8cd",
+      "size": 513390
+    },
+    "install-host": {
+      "sha256": "472b1d1dda51383f2f969cac333aed5cb0f82c24a57f27b720a6ece6dc7cb765",
+      "size": 513404
+    }
+  },
+  "input_interpreter_directory_absent": true,
+  "launcher": {
+    "sha256": "1e5f721fc2bf5fa0f1c7497e6c679c54b76961b3a1f8ffffdb9f8997a150311c",
+    "size": 13276408
+  },
+  "package_interpreter_directory_absent": true,
+  "same_previous_archives": true,
+  "source": {
+    "branch": "codex/a7-python-installed-runtime-trees",
+    "commit": "801cbf60a33bb0568324432092091844cf62c008",
+    "diff": "",
+    "status": ""
+  },
+  "templates": {
+    "bundled": {
+      "sha256": "8d4b05a9f7fd9744d3fd0931d1c3ec0187e3c864b9d672892fa43d9b40d9edba",
+      "size": 336487
+    },
+    "host": {
+      "sha256": "80f0a92f301877db521301ce6e30a47fe7391aa7541f44123d82d4b45c2f2864",
+      "size": 1261
+    },
+    "install-host": {
+      "sha256": "2f39b54ad2dacd994900632f30c972dc7fbb4f6a02ce39aa3728655aff2b1a6d",
+      "size": 1275
+    }
+  }
+}
