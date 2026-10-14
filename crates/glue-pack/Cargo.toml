@@ -7,11 +7,12 @@ license.workspace = true
 
 [features]
 default = []
-python = ["dep:glue-runtime-python", "dep:serde_json"]
+python = ["dep:glue-runtime-python", "dep:serde_json", "dep:libc"]
 
 [dependencies]
 glue-format.workspace = true
 glue-runtime-python = { workspace = true, optional = true }
+libc = { workspace = true, optional = true }
 serde.workspace = true
 serde_json = { workspace = true, optional = true }
 thiserror.workspace = true
@@ -19,5 +20,8 @@ thiserror.workspace = true
 [dev-dependencies]
 serde_json.workspace = true
 
-[lints]
-workspace = true
+[lints.rust]
+unsafe_code = "deny"
+
+[lints.clippy]
+all = "warn"

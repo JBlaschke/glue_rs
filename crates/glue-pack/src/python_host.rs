@@ -1,6 +1,6 @@
 //! Build-time publication of the two exact pinned Python host prerequisite trees.
 //!
-//! Preparation inspects an explicit artifact and owns every admitted byte before
+//! Preparation inspects an explicit artifact or installed tree and owns every admitted byte before
 //! publication. It never runs Python or discovers an installation. These trees
 //! contain embedding prerequisites, rather than complete Python installations.
 
@@ -10,6 +10,10 @@ use glue_runtime_python::packaging::host_prerequisites::{
 };
 use serde::Serialize;
 use std::{collections::BTreeMap, path::Path};
+
+#[cfg(unix)]
+#[allow(unsafe_code)]
+mod installed_tree;
 
 #[cfg(unix)]
 use super::{check_limit, io_error};
@@ -38,6 +42,7 @@ const STOCK_MTIME_SECONDS: u64 = 1_704_067_200;
 pub enum HostInput<'a> {
     Full { artifact: &'a Path },
     Install { artifact: &'a Path },
+    InstallTree { root: &'a Path },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -69,20 +74,33 @@ pub struct HostReport {
 /// created tree and never removes or replaces unrelated paths.
 #[cfg(unix)]
 pub fn prepare(input: HostInput<'_>, output: &Path) -> Result<HostReport, PackError> {
-    let (artifact, provider) = match input {
-        HostInput::Full { artifact } => (artifact, HostProvider::Full),
-        HostInput::Install { artifact } => (artifact, HostProvider::InstallOnly),
+    let provider = match input {
+        HostInput::Full { .. } => HostProvider::Full,
+        HostInput::Install { .. } | HostInput::InstallTree { .. } => HostProvider::InstallOnly,
     };
     let prefix = output.to_str().ok_or_else(|| {
         PackError::Profile("host prerequisite prefix must be an absolute UTF-8 ASCII path".into())
     })?;
     host_prerequisites::validate_prefix(prefix, provider).map_err(PackError::Profile)?;
-    let mut input = regular_file(artifact)?;
-    let owned = match provider {
-        HostProvider::Full => host_prerequisites::full(&mut input),
-        HostProvider::InstallOnly => host_prerequisites::install(&mut input),
-    }
-    .map_err(PackError::Profile)?;
+    let owned = match input {
+        HostInput::Full { artifact } => {
+            host_prerequisites::full(&mut regular_file(artifact)?).map_err(PackError::Profile)?
+        }
+        HostInput::Install { artifact } => {
+            host_prerequisites::install(&mut regular_file(artifact)?).map_err(PackError::Profile)?
+        }
+        HostInput::InstallTree { root } => {
+            let root_text = root.to_str().ok_or_else(|| {
+                PackError::Profile(
+                    "installed runtime root must be an absolute UTF-8 ASCII path".into(),
+                )
+            })?;
+            let limits = host_prerequisites::installed_tree_input_limits(root_text)
+                .map_err(PackError::Profile)?;
+            let files = installed_tree::read_for_output(root, output, &limits)?;
+            host_prerequisites::installed_tree(root_text, files).map_err(PackError::Profile)?
+        }
+    };
     publish(owned, output)
 }
 
@@ -322,6 +340,51 @@ mod tests {
     }
 
     #[test]
+    fn installed_tree_prefix_admission_and_invalid_inputs_preserve_outputs() {
+        let fixture = Fixture::new();
+        let base = fs::canonicalize(&fixture.0).unwrap();
+        let missing = base.join("missing runtime");
+        assert!(matches!(
+            prepare(
+                HostInput::InstallTree { root: &missing },
+                Path::new("relative output")
+            ),
+            Err(PackError::Profile(_))
+        ));
+        let absent = base.join("absent output");
+        let existing = base.join("existing output");
+        fs::create_dir(&existing).unwrap();
+        fs::write(existing.join("sentinel"), b"preserved tree state").unwrap();
+        let relative = Path::new("relative runtime");
+        for root in [&missing, relative] {
+            for output in [&absent, &existing] {
+                assert!(prepare(HostInput::InstallTree { root }, output).is_err());
+            }
+        }
+        assert!(!absent.exists());
+        assert_eq!(
+            fs::read(existing.join("sentinel")).unwrap(),
+            b"preserved tree state"
+        );
+        assert_eq!(fs::read_dir(existing).unwrap().count(), 1);
+    }
+
+    #[test]
+    fn installed_tree_overlap_precedes_selected_payload_access() {
+        let fixture = Fixture::new();
+        let base = fs::canonicalize(&fixture.0).unwrap();
+        let root = base.join("input runtime");
+        fs::create_dir(&root).unwrap();
+        let alias = base.join("input alias");
+        std::os::unix::fs::symlink(&root, &alias).unwrap();
+        for output in [root.join("new prefix"), alias.join("new prefix"), base] {
+            let error = prepare(HostInput::InstallTree { root: &root }, &output).unwrap_err();
+            assert!(error.to_string().contains("must not overlap"), "{error}");
+            assert_eq!(fs::read_dir(&root).unwrap().count(), 0);
+        }
+    }
+
+    #[test]
     fn directory_and_symlink_artifacts_are_rejected_before_publication() {
         let fixture = Fixture::new();
         let directory = fixture.path("artifact directory");
@@ -380,18 +443,18 @@ mod tests {
                 schema_version: 0,
                 provider: "host-full".into(),
                 files: BTreeMap::new(),
-                artifact: template::ArtifactIdentity {
+                artifact: Some(template::ArtifactIdentity {
                     filename: "invalid-artifact".into(),
                     size: 0,
                     sha256: digest(b""),
                     url: "https://example.invalid".into(),
-                },
-                artifact_entries: 0,
-                artifact_payload_bytes: 0,
+                }),
+                artifact_entries: Some(0),
+                artifact_payload_bytes: Some(0),
                 selected_files: 0,
                 selected_bytes: 0,
-                omitted_files: 0,
-                omitted_bytes: 0,
+                omitted_files: Some(0),
+                omitted_bytes: Some(0),
                 source_inventory: facts.source_inventory,
                 cache_inventory: None,
                 profile_build_id: declared.manifest.runtimes["python"].build_id.clone(),
@@ -401,6 +464,7 @@ mod tests {
                 runtime_execution_observed: false,
                 is_complete_python_installation: false,
                 stock_mtime_seconds: STOCK_MTIME_SECONDS,
+                installed_tree: None,
             },
         };
         let output = fixture.path("prefix");
@@ -533,6 +597,9 @@ mod non_unix_tests {
             },
             HostInput::Install {
                 artifact: Path::new("missing artifact"),
+            },
+            HostInput::InstallTree {
+                root: Path::new("missing runtime root"),
             },
         ] {
             let error = prepare(input, Path::new("relative output")).unwrap_err();

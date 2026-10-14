@@ -1,0 +1,17 @@
+{
+  "archive": {
+    "filename": "uv-aarch64-unknown-linux-gnu.tar.gz",
+    "sha256": "6524bd338177ed50d035d39354e12545e993bbeba2ecbddf0480c5b3a81d313f",
+    "size": 18965616,
+    "url": "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-aarch64-unknown-linux-gnu.tar.gz"
+  },
+  "binary": {
+    "path": "uv",
+    "sha256": "ed797a095bf9aea58135fa7081c290e51a14cfd3a7b1f24e55cb1d1a0c1007b0",
+    "size": 41366376
+  },
+  "checksum_url": "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-aarch64-unknown-linux-gnu.tar.gz.sha256",
+  "schema_version": 0,
+  "target": "aarch64-unknown-linux-gnu",
+  "version": "0.12.23"
+}

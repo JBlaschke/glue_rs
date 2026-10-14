@@ -18,6 +18,9 @@ use std::{
     io::{Read, Seek},
 };
 
+mod installed_tree;
+pub use installed_tree::{InstalledTreeProvenance, installed_tree, installed_tree_input_limits};
+
 const LIBRARY: &str = "lib/libpython3.13.so.1.0";
 const STDLIB: &str = "lib/python3.13/";
 const LIBRARY_BYTES: u64 = 73_563_968;
@@ -45,16 +48,19 @@ pub struct HostPrerequisiteProvenance {
     pub schema_version: u32,
     pub provider: String,
     pub files: BTreeMap<String, FileIdentity>,
-    pub artifact: ArtifactIdentity,
+    pub artifact: Option<ArtifactIdentity>,
     /// Includes regular files, directories and links in the complete artifact.
-    pub artifact_entries: usize,
+    pub artifact_entries: Option<usize>,
     /// Sum of every regular payload size in the complete artifact.
-    pub artifact_payload_bytes: u64,
+    pub artifact_payload_bytes: Option<u64>,
     pub selected_files: usize,
     pub selected_bytes: u64,
     /// Counts unselected regular files, excluding directory and link entries.
-    pub omitted_files: usize,
-    pub omitted_bytes: u64,
+    pub omitted_files: Option<usize>,
+    pub omitted_bytes: Option<u64>,
+    /// Present only for selected installed-tree inspection, not tar inspection.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installed_tree: Option<InstalledTreeProvenance>,
     pub source_inventory: InventoryIdentity,
     pub cache_inventory: Option<InventoryIdentity>,
     pub profile_build_id: String,
@@ -108,8 +114,18 @@ pub fn validate_contents(owned: &HostPrerequisites) -> Result<(), String> {
         _ => return Err("host prerequisites require an admitted provider".into()),
     };
     let expected = expected(provider)?;
-    let facts = artifact_facts(provider);
-    let provenance = provenance(provider, &expected, facts.0, facts.1, facts.2)?;
+    let provenance = match &owned.provenance.installed_tree {
+        Some(tree) => {
+            if provider != HostProvider::InstallOnly {
+                return Err("installed trees require the host-install provider".into());
+            }
+            installed_tree::provenance(tree, &expected)?
+        }
+        None => {
+            let facts = artifact_facts(provider);
+            provenance(provider, &expected, facts.0, facts.1, facts.2)?
+        }
+    };
     if owned.provenance != provenance {
         return Err("host prerequisite provenance differs from its fixed profile".into());
     }
@@ -415,17 +431,22 @@ fn provenance(
         schema_version: 0,
         provider: name.into(),
         files: expected.files.clone(),
-        artifact: artifact_identity(pin),
-        artifact_entries: entries,
-        artifact_payload_bytes: total,
+        artifact: Some(artifact_identity(pin)),
+        artifact_entries: Some(entries),
+        artifact_payload_bytes: Some(total),
         selected_files: expected.files.len(),
         selected_bytes,
-        omitted_files: regular_files
-            .checked_sub(expected.files.len())
-            .ok_or("host artifact contains too few regular files")?,
-        omitted_bytes: total
-            .checked_sub(selected_bytes)
-            .ok_or("host artifact contains too few payload bytes")?,
+        omitted_files: Some(
+            regular_files
+                .checked_sub(expected.files.len())
+                .ok_or("host artifact contains too few regular files")?,
+        ),
+        omitted_bytes: Some(
+            total
+                .checked_sub(selected_bytes)
+                .ok_or("host artifact contains too few payload bytes")?,
+        ),
+        installed_tree: None,
         source_inventory: expected.source_inventory.clone(),
         cache_inventory: expected.cache_inventory.clone(),
         profile_build_id: build_id.into(),
@@ -614,8 +635,8 @@ mod tests {
             let first = provenance(provider, &expected, facts.0, facts.1, facts.2).unwrap();
             let repeated = provenance(provider, &expected, facts.0, facts.1, facts.2).unwrap();
             assert_eq!(first, repeated);
-            assert_eq!(first.selected_files + first.omitted_files, facts.1);
-            assert_eq!(first.selected_bytes + first.omitted_bytes, facts.2);
+            assert_eq!(first.selected_files + first.omitted_files.unwrap(), facts.1);
+            assert_eq!(first.selected_bytes + first.omitted_bytes.unwrap(), facts.2);
             assert_eq!(first.files, expected.files);
             assert!(!first.full_install_pairing_observed);
             assert!(!first.runtime_execution_observed);
@@ -643,10 +664,10 @@ mod tests {
                 0 => altered.runtime_execution_observed = true,
                 1 => altered.full_install_pairing_observed = true,
                 2 => altered.is_complete_python_installation = true,
-                3 => altered.artifact.sha256 = "0".repeat(64),
-                4 => altered.artifact_payload_bytes += 1,
-                5 => altered.artifact_entries += 1,
-                6 => altered.omitted_files += 1,
+                3 => altered.artifact.as_mut().unwrap().sha256 = "0".repeat(64),
+                4 => *altered.artifact_payload_bytes.as_mut().unwrap() += 1,
+                5 => *altered.artifact_entries.as_mut().unwrap() += 1,
+                6 => *altered.omitted_files.as_mut().unwrap() += 1,
                 7 => altered.source_inventory.files += 1,
                 8 => altered.cache_inventory.as_mut().unwrap().identity.sha256 = "0".repeat(64),
                 9 => altered.stock_mtime_seconds += 1,

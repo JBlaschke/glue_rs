@@ -25,6 +25,8 @@ Usage:
     --output PREFIX [--json]
   glue python-host --provider host-install --pbs-install-only INSTALL.tar.gz
     --output PREFIX [--json]
+  glue python-host --provider host-install --runtime-tree ROOT
+    --output PREFIX [--json]
   glue build-python --provider-template MANIFEST --provider-root DIR --app DIR
     (--venv VENV | --site-packages DIR) --output APP.glue
     [--app-id ID] [--entry app/main.py] [--json]
@@ -96,6 +98,7 @@ enum TemplateOptions {
 enum HostOptions {
     Full(PathBuf),
     Install(PathBuf),
+    InstallTree(PathBuf),
 }
 
 enum Selection {
@@ -408,6 +411,7 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
     let mut provider = None;
     let mut full = None;
     let mut install = None;
+    let mut tree = None;
     let mut output = None;
     let mut json = false;
     let mut args = args.iter();
@@ -423,6 +427,7 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
             Some("--provider") => &mut provider,
             Some("--pbs-full") => &mut full,
             Some("--pbs-install-only") => &mut install,
+            Some("--runtime-tree") => &mut tree,
             Some("--output") => &mut output,
             _ => return Err(format!("unexpected python-host argument {arg:?}").into()),
         };
@@ -438,8 +443,11 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
     }
     let input = match provider.ok_or("python-host requires --provider")?.to_str() {
         Some("host-full") => {
-            if install.is_some() {
-                return Err("host-full python-host does not accept --pbs-install-only".into());
+            if install.is_some() || tree.is_some() {
+                return Err(
+                    "host-full python-host does not accept --pbs-install-only or --runtime-tree"
+                        .into(),
+                );
             }
             HostOptions::Full(PathBuf::from(
                 full.ok_or("host-full python-host requires --pbs-full")?,
@@ -449,9 +457,11 @@ fn parse_python_host(args: &[OsString]) -> Result<Command> {
             if full.is_some() {
                 return Err("host-install python-host does not accept --pbs-full".into());
             }
-            HostOptions::Install(PathBuf::from(
-                install.ok_or("host-install python-host requires --pbs-install-only")?,
-            ))
+            match (install, tree) {
+                (Some(artifact), None) => HostOptions::Install(PathBuf::from(artifact)),
+                (None, Some(root)) => HostOptions::InstallTree(PathBuf::from(root)),
+                _ => return Err("host-install python-host requires exactly one of --pbs-install-only or --runtime-tree".into()),
+            }
         }
         _ => return Err("python-host provider must be host-full or host-install".into()),
     };
@@ -616,6 +626,7 @@ fn execute(command: Command) -> Result<ExitCode> {
                 let selected = match &input {
                     HostOptions::Full(artifact) => HostInput::Full { artifact },
                     HostOptions::Install(artifact) => HostInput::Install { artifact },
+                    HostOptions::InstallTree(root) => HostInput::InstallTree { root },
                 };
                 let report = glue_pack::python_host::prepare(selected, &output)?;
                 if json {
@@ -633,7 +644,9 @@ fn execute(command: Command) -> Result<ExitCode> {
             #[cfg(not(feature = "python-pack"))]
             {
                 match input {
-                    HostOptions::Full(artifact) | HostOptions::Install(artifact) => {
+                    HostOptions::Full(artifact)
+                    | HostOptions::Install(artifact)
+                    | HostOptions::InstallTree(artifact) => {
                         let _ = artifact;
                     }
                 }

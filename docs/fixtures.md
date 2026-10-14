@@ -65,6 +65,14 @@ Requires-Python rejection for both input forms. The
 retains six runtime traces, complete host preparation traces, process records,
 32 requirement controls per builder and closed trace mutation/replay audits.
 
+The [installed-runtime-tree fixture](../fixtures/python-runtime-trees/README.md)
+uses a genuine, explicitly configured offline uv installation as selected input
+to `glue python-host --runtime-tree`. Independent audits bind all 1,041 input and
+output files, including one exactly admitted sysconfig normalization. Complete
+preparation traces check selected-only descriptor reads and publication order;
+the existing real-package runtime matrix and policies remain unchanged. Unselected
+input contents are outside inspection, and default stripped uv builds are separate.
+
 The [stock PBS bootstrap fixture](../fixtures/python-bootstrap/README.md) targets
 the inspected GNU Linux arm64 library. It compiles pinned startup sources with
 the matching stock producer at build time, removes that installation and its
