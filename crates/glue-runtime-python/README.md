@@ -56,6 +56,7 @@ The registry contains:
 | `stock-pbs-archive-imports` | Bundled, sealed library | None |
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
+| `stock-pbs-native-lifecycle` | Either provider above | Separate four-image lifecycle closure, archived or explicit immutable host files |
 
 Source applications declare their own entry, modules and assets below `app/`;
 importable sources live below `app/python/`. Runtime, importer, frozen startup
@@ -70,6 +71,13 @@ five-image dependency/API/ELF contract using declared image hashes. Those hashes
 identify bytes; they are not fixed compiled fixture pins or a safety guarantee
 for native C. It uses stock `BuiltinImporter` registration metadata and does
 not provide extension-file discovery.
+
+The separate native lifecycle profile admits three custom-create roots and an
+integer-only ledger dependency, with its own finite public import set. After the
+C boundary returns from interpreter finalization, the pinned ledger must report
+complete cleanup for the controlled workload; passing checks preserve the
+original application result. The historical native profile performs no ledger
+calls. See [the lifecycle fixture](../../fixtures/python-native-lifecycle/README.md).
 
 Open an archive once, validate its declarations, then pass that same owner into
 execution:

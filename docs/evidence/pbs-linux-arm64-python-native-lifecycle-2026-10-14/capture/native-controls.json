@@ -1,0 +1,24 @@
+{
+  "files": {
+    "glue_native_create_error.so": {
+      "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+      "size": 69968
+    },
+    "glue_native_lifecycle.so": {
+      "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+      "size": 69960
+    },
+    "glue_native_lifecycle_exec_error.so": {
+      "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+      "size": 69976
+    },
+    "libglue_python_lifecycle.so": {
+      "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+      "size": 67552
+    }
+  },
+  "flipped_offset": 0,
+  "missing_image": "/build-target/host Python native lifecycle missing-host-image/libglue_python_lifecycle.so",
+  "schema_version": 0,
+  "wrong_image": "/build-target/host Python native lifecycle wrong-host-image/glue_native_lifecycle.so"
+}

@@ -1,0 +1,127 @@
+{
+  "disposable_volume_removed_after_evidence_export": true,
+  "expected_app_errors": 4,
+  "historical_input_archives": {
+    "bundled-archived": {
+      "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+      "size": 83438354
+    },
+    "bundled-host": {
+      "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+      "size": 83094831
+    },
+    "corrupt-native": {
+      "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+      "size": 83438354
+    },
+    "host-archived": {
+      "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+      "size": 359787
+    },
+    "host-host": {
+      "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+      "size": 16264
+    },
+    "missing-host-image": {
+      "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+      "size": 83094926
+    },
+    "wrong-host-image": {
+      "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+      "size": 83094916
+    }
+  },
+  "historical_metadata_sha256": "dede6d5da8fea742d9479511485c9658ec737fce0c29a3bb693046441a0a6e56",
+  "historical_probe_commands_metadata_unchanged": true,
+  "isolated_runtime_files_equal_original_cache_except_replacement_probe": 98,
+  "modes": {
+    "bundled-archived": {
+      "status": 0,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6912379,
+      "trace_records": 33681,
+      "trace_sha256": "32cbce473ea613eb7753ebedd334d0cf76520bcb5fab43ebe6773fe3d2add967"
+    },
+    "bundled-archived-app-error": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6913501,
+      "trace_records": 33695,
+      "trace_sha256": "c050546dacc5fa6210b9f25e5503f81602fff03dc95e8603b39ee2455a8f0883"
+    },
+    "bundled-host": {
+      "status": 0,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6820508,
+      "trace_records": 33798,
+      "trace_sha256": "683e4fb32f3465d07c273b44361a1899ec894cfb7a8fa626634617dadf7f1dae"
+    },
+    "bundled-host-app-error": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6820803,
+      "trace_records": 33798,
+      "trace_sha256": "db4a8498895c9f0ba7f2023d354032c772e60aa524a5bbc133fda87263f9cdba"
+    },
+    "corrupt-native": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 3422054,
+      "trace_records": 26563,
+      "trace_sha256": "b6ab1bda1a0478434ef25c9af944d84318eff3477eac511b405630c206bd0bfd"
+    },
+    "host-archived": {
+      "status": 0,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 1599973,
+      "trace_records": 5873,
+      "trace_sha256": "e553149d39cd33cbea347ee36390014d97d357a9db4d67c2870a6080d859aa82"
+    },
+    "host-archived-app-error": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 1601040,
+      "trace_records": 5886,
+      "trace_sha256": "309f9e79735b5529cd65371afeba1630900d22a6d4d6792efec9d3161aabb8da"
+    },
+    "host-host": {
+      "status": 0,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 1639445,
+      "trace_records": 5991,
+      "trace_sha256": "9dcf33e4a8e20a5adce869ec20239326b21151cd65f27c5d422953f829390689"
+    },
+    "host-host-app-error": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 1639788,
+      "trace_records": 5992,
+      "trace_sha256": "6e59595108cd8e4a7f69b2870b5595decbd90943074cdfdfbc8e159f38d53628"
+    },
+    "missing-host-image": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6929064,
+      "trace_records": 33361,
+      "trace_sha256": "7cab89bd5e394220f50414d6bde0154f25e6ea1331155aad715ea168211b152b"
+    },
+    "wrong-host-image": {
+      "status": 1,
+      "strict_policy_exit_status": 0,
+      "trace_bytes": 6879057,
+      "trace_records": 33413,
+      "trace_sha256": "5e372a750f19fd1e0d33431818720150bae570173bd4101e140fe9874e8168f4"
+    }
+  },
+  "normal_successes": 4,
+  "offline_unprivileged_readonly_runtime": true,
+  "policy_path": "scripts/check-linux-python-extension-trace.py",
+  "policy_sha256": "f2d83695a1897e5a7fa1c2d12758abab401066164a9c6430d313556c1f3b8d78",
+  "preload_rejections": 3,
+  "producer_headers_compiler_repo_or_staging_mounted": false,
+  "replacement_probe_identity_matches_bound_input": true,
+  "runtime_inputs_unchanged_after_run": true,
+  "schema_version": 0,
+  "strict_historical_replays": 11,
+  "unchanged_policy_at_git_revision": true
+}

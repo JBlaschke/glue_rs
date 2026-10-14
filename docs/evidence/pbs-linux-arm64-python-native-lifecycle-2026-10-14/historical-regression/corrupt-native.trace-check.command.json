@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-extension-trace.py",
+    "target/python-native-lifecycle-old-regression/corrupt-native.trace.txt",
+    "--mode",
+    "corrupt-native",
+    "--stdout-file",
+    "target/python-native-lifecycle-old-regression/corrupt-native.stdout.txt",
+    "--stderr-file",
+    "target/python-native-lifecycle-old-regression/corrupt-native.stderr.txt",
+    "--native-metadata-file",
+    "target/python-native-lifecycle-old-regression/native-metadata.json",
+    "--archive-file",
+    "target/python-extensions-final-build/relocated Python extensions/corrupt-native.glue"
+  ],
+  "exit_status": 0
+}

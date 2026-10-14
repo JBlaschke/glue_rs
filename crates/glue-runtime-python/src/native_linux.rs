@@ -74,18 +74,53 @@ fn sealed_file(name: &str, bytes: &[u8]) -> Result<File, String> {
     Ok(file)
 }
 
+type LedgerFunction =
+    unsafe extern "C" fn(libc::c_long, libc::c_long, libc::c_long) -> libc::c_long;
+
+struct Ledger(LedgerFunction);
+
+impl Ledger {
+    fn check_after_finalization(&self) -> Result<(), String> {
+        // SAFETY: the profile admits this exact pure-C signature/export, verifies
+        // its loader owner, and pins its image. These operations use no Python
+        // object, Python API, allocation or interpreter-owned pointer.
+        let checked = unsafe { (self.0)(11, 0, 0) };
+        let totals = [1, 2, 3, 4].map(|field| unsafe { (self.0)(10, 0, field) });
+        if checked != 0 || totals != [5, 5, 0, 5] {
+            return Err(format!(
+                "native lifecycle post-finalization ledger differs: check={checked}, totals={totals:?}"
+            ));
+        }
+        println!(
+            "GLUE_PYTHON_NATIVE_LIFECYCLE_FINALIZE_PASS allocated=5 freed=5 released=5 owned=0"
+        );
+        Ok(())
+    }
+}
+
 pub(super) struct Registrations {
     _names: Vec<CString>,
     pub records: Vec<ExtensionRecord>,
+    ledger: Option<Ledger>,
+}
+
+impl Registrations {
+    pub(super) fn finish(&self, result: Result<(), String>) -> Result<(), String> {
+        if let Some(ledger) = &self.ledger {
+            ledger.check_after_finalization()?;
+        }
+        result
+    }
 }
 
 pub(super) fn load(
+    profile: extension_profile::Profile,
     images: &mut [extension_profile::Image],
     runtime_handle: *mut libc::c_void,
     runtime_base: usize,
 ) -> Result<Registrations, String> {
     let mut runtime = BTreeMap::new();
-    for name in extension_profile::PYTHON_IMPORTS {
+    for &name in profile.python_imports() {
         absent_global(name)?;
         let pointer = symbol(runtime_handle, name)?;
         if owner(pointer)? != runtime_base {
@@ -153,7 +188,7 @@ pub(super) fn load(
                     *pointer
                 } else {
                     let (dependency_handle, dependency_base) = loaded
-                        .get(extension_profile::DEPENDENCY)
+                        .get(profile.dependency())
                         .ok_or("native dependency is not loaded first")?;
                     let pointer = symbol(*dependency_handle, &entry.name)?;
                     if owner(pointer)? != *dependency_base {
@@ -180,10 +215,11 @@ pub(super) fn load(
     }
     // Verify local visibility again after every root has been mapped. A matching
     // SONAME alone is insufficient; all actual function AND data slots matched.
-    for name in extension_profile::PYTHON_IMPORTS {
+    for &name in profile.python_imports() {
         absent_global(name)?;
     }
-    let names: Vec<_> = extension_profile::ROOTS
+    let names: Vec<_> = profile
+        .roots()
         .iter()
         .map(|name| CString::new(*name).unwrap())
         .collect();
@@ -207,8 +243,33 @@ pub(super) fn load(
             initializer: pointer as *const libc::c_void,
         });
     }
+    let ledger = if profile == extension_profile::Profile::Lifecycle {
+        let (handle, base) = loaded[profile.dependency()];
+        let image = images
+            .iter()
+            .find(|image| image.name == profile.dependency())
+            .ok_or("missing lifecycle ledger image")?;
+        let entry = image
+            .facts
+            .symbol(profile.dependency_export())
+            .ok_or("missing admitted lifecycle ledger export")?;
+        let pointer = symbol(handle, profile.dependency_export())?;
+        if pointer != address(base, entry.value)? || owner(pointer)? != base {
+            return Err("native lifecycle ledger ownership differs".into());
+        }
+        absent_global(profile.dependency_export())?;
+        // SAFETY: only the private lifecycle profile can select this reviewed
+        // three-long signature. ELF admission/relocation and loader ownership
+        // checks establish its exact function address; the image stays pinned.
+        Some(Ledger(unsafe {
+            std::mem::transmute::<usize, LedgerFunction>(pointer)
+        }))
+    } else {
+        None
+    };
     Ok(Registrations {
         _names: names,
         records,
+        ledger,
     })
 }

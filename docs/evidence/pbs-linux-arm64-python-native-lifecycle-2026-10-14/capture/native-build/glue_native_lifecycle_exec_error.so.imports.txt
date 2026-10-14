@@ -1,0 +1,13 @@
+                 U PyErr_SetString
+                 U PyExc_RuntimeError
+                 U PyList_New
+                 U PyList_SetItem
+                 U PyLong_FromLong
+                 U PyModuleDef_Init
+                 U PyModule_AddIntConstant
+                 U PyModule_GetState
+                 U PyModule_NewObject
+                 U PyObject_GetAttrString
+                 U Py_DecRef
+                 U Py_IncRef
+                 U glue_python_lifecycle_ledger
