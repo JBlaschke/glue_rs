@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-stripped-host-trace.py",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.trace.txt.gz",
+    "--mode",
+    "corrupt-library",
+    "--stdout-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.stdout.txt",
+    "--stderr-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.stderr.txt",
+    "--metadata-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json",
+    "--archive-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/corrupt-library.glue"
+  ],
+  "cwd": "/Users/johannes.blaschke/Developer/glue_rs",
+  "exit_status": 0,
+  "implementation_commit": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "inputs": {
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/corrupt-library.glue": {
+      "sha256": "1a5c6f6be8ba8ce319949969d393ad4f168e65a98e1eb916409fd7109ca9c090",
+      "size": 10688
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json": {
+      "sha256": "f4db9788ee279883042338a8f093082b3b012d5784c23cafc6ff6293c61211bb",
+      "size": 19526
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.stderr.txt": {
+      "sha256": "2f7447d532bef0a302c2202f20d53de58f4c58487f419db7bffb5a0082e2a12b",
+      "size": 111
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/corrupt-library.trace.txt.gz": {
+      "sha256": "a1c568b7971a9bf626901e1a6de438463c4de4f312edc7f543a5121f8ea6635f",
+      "size": 72013
+    },
+    "scripts/check-linux-python-stripped-host-trace.py": {
+      "sha256": "383c0cba1806f1a140fd676526cd04e99589b6b059f081cc04e9353414c68630",
+      "size": 31376
+    }
+  },
+  "stderr": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/corrupt-library.compressed-runtime-check.stderr.txt",
+  "stdout": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/corrupt-library.compressed-runtime-check.stdout.txt"
+}

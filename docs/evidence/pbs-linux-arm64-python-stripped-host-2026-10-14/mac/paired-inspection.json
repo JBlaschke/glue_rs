@@ -1,0 +1,1954 @@
+{
+  "changed_records": {
+    "python/bin/python3.13": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "1abe8738dd82558ba7884a0dd00bb8e9561ad0b85a3ddd3d755999c2dd878d45",
+        "size": 73325136,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "80d40a5f8b0fcbf9f636d720edcf620b34906ed27b4a1994f9b9ac46a09ee126",
+        "size": 22205472,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/itcl4.3.8/libtcl9itcl4.3.8.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "fe89e35e75db9ac950fb5409e73debd7397f4f5b923fb901c8d7a86d3c7ad212",
+        "size": 358720,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "cf2c204c54ab3abf03563b1d0471b5e495bf91433ec0bfce0fbbfcbbf33621b7",
+        "size": 357776,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/libpython3.13.so.1.0": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+        "size": 73563968,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/libpython3.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "0a909a0752b7716f02f5b50634392ce86ced9d6917220e465e005e8061b8f02e",
+        "size": 131576,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "a587c7028b3829f1334ac7868a970dbb0a3d9eaffda67fd2c7138ce78ef25f8f",
+        "size": 135096,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/libtcl9.0.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "e28c4dae76ffc31023d794af2cbebce15c0715215fe4a996c2572d8eb02327a9",
+        "size": 2432328,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "73a4ffa571e5359e58191b10e0ee741366cd5e9171361da52bf5622dcecac75e",
+        "size": 2406360,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/libtcl9tk9.0.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "9e766aee61fd796f68eadf61c531fb68bfad4b6b546764b139ce5ec547c9d850",
+        "size": 3213336,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "6658e7133638e0cca0c61de846d5b0b09beda4b7dc6e7157bd9162081514744b",
+        "size": 3199696,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/lib-dynload/_dbm.cpython-313-aarch64-linux-gnu.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "26b884f246e114d1d2824aec0409c540730e2f059960cc4946429b170660a97e",
+        "size": 1793504,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "a03e6b419800990fba4440c5237ec477104ba8c098a897bb0344dd2364b4ecf2",
+        "size": 1714576,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/lib-dynload/_tkinter.cpython-313-aarch64-linux-gnu.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "b733c5df812acf74d9cb0edef0773f1c8da9173c203b5067d3f5829a73c16de5",
+        "size": 401576,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 509,
+        "mtime": 1704067200,
+        "sha256": "470f6874b4599373d0dee57aabcc67f39e5bd7ceec708f3eaf05f764d4f8f264",
+        "size": 159728,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/t32.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "6b4195e640a85ac32eb6f9628822a622057df1e459df7c17a12f97aeabc9415b",
+        "size": 97792,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "5fd873e09786a1eaabaa44261e9e30609d88745da040ebb702c1a5069ab345ca",
+        "size": 97792,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/t64-arm.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "ebc4c06b7d95e74e315419ee7e88e1d0f71e9e9477538c00a93a9ff8c66a6cfc",
+        "size": 182784,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "81f7936c6d05cadd4a185bb9a8a64abe9a72c937ad979ea5afe672de59123fcc",
+        "size": 182784,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/t64.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "81a618f21cb87db9076134e70388b6e9cb7c2106739011b6a51772d22cae06b7",
+        "size": 108032,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "acd47a82dc01132e3b8414f683c2e117c18aedbf650a370249fe9fdbc445cda1",
+        "size": 108032,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/w32.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "47872cc77f8e18cf642f868f23340a468e537e64521d9a3a416c8b84384d064b",
+        "size": 91648,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "f27b3724964ff524e837374847d2856f7d10a884516fc34200d0a2332a739789",
+        "size": 91648,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/w64-arm.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "c5dc9884a8f458371550e09bd396e5418bf375820a31b9899f6499bf391c7b2e",
+        "size": 168448,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "f6704d3a1022f69ad6b7e604a927d00ce2f9dae515bfad5a7df9a2e3e4bd2448",
+        "size": 168448,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/python3.13/site-packages/pip/_vendor/distlib/w64.exe": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "7a319ffaba23a017d7b1e18ba726ba6c54c53d6446db55f92af53c279894f8ad",
+        "size": 101888,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "55b21889fd3d28799b834fba3d29482e7aa1b0519864b790e3914af7cdda666b",
+        "size": 101888,
+        "type": "file",
+        "uid": 0
+      }
+    },
+    "python/lib/thread3.0.6/libtcl9thread3.0.6.so": {
+      "original": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "7d4475091f40b27462c1e56ee463ffedc0d3a9c8b1e08644e7e2ffece560cb92",
+        "size": 144928,
+        "type": "file",
+        "uid": 0
+      },
+      "stripped": {
+        "gid": 0,
+        "linkname": "",
+        "mode": 436,
+        "mtime": 1704067200,
+        "sha256": "35ad8677aa55d5ded6b2164106bc818010d2c6aa0262b04e125f66aadf212611",
+        "size": 144328,
+        "type": "file",
+        "uid": 0
+      }
+    }
+  },
+  "complete_path_type_mode_time_owner_link_parity": true,
+  "execution_observed": false,
+  "load_segment_comparison": [
+    {
+      "changed_offsets": [
+        40,
+        41,
+        42,
+        43,
+        60,
+        62
+      ],
+      "changes": [
+        {
+          "offset": 40,
+          "original": 64,
+          "stripped": 168
+        },
+        {
+          "offset": 41,
+          "original": 117,
+          "stripped": 96
+        },
+        {
+          "offset": 42,
+          "original": 98,
+          "stripped": 82
+        },
+        {
+          "offset": 43,
+          "original": 4,
+          "stripped": 1
+        },
+        {
+          "offset": 60,
+          "original": 40,
+          "stripped": 30
+        },
+        {
+          "offset": 62,
+          "original": 39,
+          "stripped": 29
+        }
+      ],
+      "load_index": 0,
+      "original": {
+        "sha256": "7630c5316a7f1fdf844b340217b16675cd1c95d70446e2022040f46ccc688a02",
+        "size": 18153048
+      },
+      "stripped": {
+        "sha256": "71507717e51821c18c3b814afef92718aca1485753fbb601e323736fff14d826",
+        "size": 18153048
+      }
+    },
+    {
+      "changed_offsets": [],
+      "changes": [],
+      "load_index": 1,
+      "original": {
+        "sha256": "df571279b86a869536c84092966c22bfbe61831c56b6f46a412ce5031ace9657",
+        "size": 1690064
+      },
+      "stripped": {
+        "sha256": "df571279b86a869536c84092966c22bfbe61831c56b6f46a412ce5031ace9657",
+        "size": 1690064
+      }
+    }
+  ],
+  "original_artifact": {
+    "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only.tar.gz",
+    "sha256": "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+    "size": 57626877,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only.tar.gz"
+  },
+  "original_elf": {
+    "allocated_sections": {
+      ".PyRuntime": {
+        "address": 19603320,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19603320,
+        "sha256": "b8682c5b87187e4430920b0f8f1dfbec1c7a859776eff485f835006442417bb4",
+        "size": 283424,
+        "type": 1
+      },
+      ".bss": {
+        "address": 19886784,
+        "alignment": 64,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19886744,
+        "sha256": null,
+        "size": 537040,
+        "type": 8
+      },
+      ".data": {
+        "address": 19202048,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19202048,
+        "sha256": "fa958d93c802af90ecf3c416bd15405aff822a6168035a84d9d9f42149f7df13",
+        "size": 401268,
+        "type": 1
+      },
+      ".data.rel.ro": {
+        "address": 18196736,
+        "alignment": 64,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 18196736,
+        "sha256": "8a608dd43e5f6dc59014f8cd491f3917d7d02f049a7d7f3d8b994193ddb42b2e",
+        "size": 987544,
+        "type": 1
+      },
+      ".dynamic": {
+        "address": 19184280,
+        "alignment": 8,
+        "entry_size": 16,
+        "flags": 3,
+        "offset": 19184280,
+        "sha256": "d567cc8b3ab20bcfffd7a38b19aafa795daaf29c808a0744acc32b79aa56121b",
+        "size": 592,
+        "type": 6
+      },
+      ".dynstr": {
+        "address": 70272,
+        "alignment": 1,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 70272,
+        "sha256": "f1ecee209910b8971892ae4f2ed6a4324d095e2becbff47290fb229533b36ee0",
+        "size": 41818,
+        "type": 3
+      },
+      ".dynsym": {
+        "address": 13776,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 2,
+        "offset": 13776,
+        "sha256": "59639fae12aa01da9e21293007c02387f86325b0c02172b4efe0e2b761e9d32d",
+        "size": 56496,
+        "type": 11
+      },
+      ".eh_frame": {
+        "address": 16543128,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 16543128,
+        "sha256": "22ae1214f221f8f1dafa5c196c2d52357e2763a0ac51bcd5b7f56236c577c3c6",
+        "size": 1609920,
+        "type": 1
+      },
+      ".eh_frame_hdr": {
+        "address": 16310852,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 16310852,
+        "sha256": "b43523cdf391acb53fbbee6cf10f2c3350ab481c738df6808e17f2340afa33b8",
+        "size": 232276,
+        "type": 1
+      },
+      ".fini": {
+        "address": 12335688,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 12335688,
+        "sha256": "27a4135f0ef448195b3aaba32a661f2d0e290090b19501c7b4274d71cf655f69",
+        "size": 16,
+        "type": 1
+      },
+      ".fini_array": {
+        "address": 18196728,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 18196728,
+        "sha256": "3013823e66ec803910515e997019b052707d3c7a39f686df91179832fb192286",
+        "size": 8,
+        "type": 15
+      },
+      ".gnu.hash": {
+        "address": 552,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 552,
+        "sha256": "729d0222c4653f4f7eebd030aefc78fbfc019c659b6f2e90302e33c496e96dc3",
+        "size": 13220,
+        "type": 1879048182
+      },
+      ".gnu.version": {
+        "address": 112090,
+        "alignment": 2,
+        "entry_size": 2,
+        "flags": 2,
+        "offset": 112090,
+        "sha256": "fdd905f20cd8d469e2156d0360fbd352a604e998decff89e1783db2ad9ddba84",
+        "size": 4708,
+        "type": 1879048191
+      },
+      ".gnu.version_r": {
+        "address": 116800,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 116800,
+        "sha256": "dc386cb4a1f457abe92a501e4ced037e0e0a0d2ba23a164d455261497982dae0",
+        "size": 224,
+        "type": 1879048190
+      },
+      ".got": {
+        "address": 19184872,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 19184872,
+        "sha256": "628341f8b5b1a2a517096bb03f49b64b7ed3293afe0c6280a2acb15a7bc43133",
+        "size": 17160,
+        "type": 1
+      },
+      ".init": {
+        "address": 1567440,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1567440,
+        "sha256": "c8d86944741d37635639b8b5751d13bcf182c488ae74a7f8e7f4be6faab03c97",
+        "size": 20,
+        "type": 1
+      },
+      ".init_array": {
+        "address": 18196688,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 18196688,
+        "sha256": "dcf51353ac3902eef534dcd82b2e742714fc081ffdcf781f3d41cc7385f3eff8",
+        "size": 40,
+        "type": 14
+      },
+      ".note.gnu.build-id": {
+        "address": 512,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 512,
+        "sha256": "dc1df6bcab8dc6c52368427ce8505b31a2de5739b965cd83f3ba5bef1ec9e4cb",
+        "size": 36,
+        "type": 7
+      },
+      ".plt": {
+        "address": 1567472,
+        "alignment": 16,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1567472,
+        "sha256": "087766131b430e752052eefb44cb8cb36c44bd8f932a832b31f61ed8d4a46cf9",
+        "size": 21232,
+        "type": 1
+      },
+      ".rela.dyn": {
+        "address": 117024,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 2,
+        "offset": 117024,
+        "sha256": "0b03c75c908a1d271f3988075a5a584465ff1a50ca8c093789a5dce993e96ed2",
+        "size": 1418520,
+        "type": 4
+      },
+      ".rela.plt": {
+        "address": 1535544,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 66,
+        "offset": 1535544,
+        "sha256": "2f82af76e125c4b493e1c55500697b9dac644400a50efb580d407169c1335f58",
+        "size": 31896,
+        "type": 4
+      },
+      ".rodata": {
+        "address": 12337152,
+        "alignment": 4096,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 12337152,
+        "sha256": "3eb300588d29ea008ff935e53d8d0d9609af2d33bdab680969e6c0fddf17b08d",
+        "size": 3973700,
+        "type": 1
+      },
+      ".tbss": {
+        "address": 18196688,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 1027,
+        "offset": 18196688,
+        "sha256": null,
+        "size": 24,
+        "type": 8
+      },
+      ".tdata": {
+        "address": 18196680,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 1027,
+        "offset": 18196680,
+        "sha256": "67906bd5b83c17516dd5474a37e5e04a30a560627863c22ab8154923dfb7618a",
+        "size": 8,
+        "type": 1
+      },
+      ".text": {
+        "address": 1589248,
+        "alignment": 16384,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1589248,
+        "sha256": "e13e8573cb9b03b9567a07efe65f164fa8f7473fcae675cde2000f31af4fd247",
+        "size": 10746440,
+        "type": 1
+      }
+    },
+    "api_exports": {
+      "PyBytes_FromStringAndSize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 404,
+        "value": 3398136
+      },
+      "PyCFunction_NewEx": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 20,
+        "value": 1860640
+      },
+      "PyConfig_Clear": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1024,
+        "value": 5831148
+      },
+      "PyConfig_InitIsolatedConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 80,
+        "value": 2284708
+      },
+      "PyConfig_SetString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 244,
+        "value": 5832172
+      },
+      "PyDict_SetItemString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 204,
+        "value": 5076904
+      },
+      "PyErr_Clear": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 140,
+        "value": 2232148
+      },
+      "PyErr_GetRaisedException": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 48,
+        "value": 2231972
+      },
+      "PyErr_SetString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 52,
+        "value": 2230896
+      },
+      "PyExc_RuntimeError": {
+        "info": 17,
+        "other": 0,
+        "section_name": ".data",
+        "size": 8,
+        "value": 19557688
+      },
+      "PyImport_AddModuleRef": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 168,
+        "value": 2274576
+      },
+      "PyImport_AppendInittab": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 76,
+        "value": 2276620
+      },
+      "PyImport_FrozenModules": {
+        "info": 17,
+        "other": 0,
+        "section_name": ".bss",
+        "size": 8,
+        "value": 20392104
+      },
+      "PyImport_GetModuleDict": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 72,
+        "value": 2274320
+      },
+      "PyModule_GetDict": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 148,
+        "value": 5128760
+      },
+      "PyModule_New": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 140,
+        "value": 1862232
+      },
+      "PyObject_Str": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1100,
+        "value": 1865744
+      },
+      "PyPreConfig_InitIsolatedConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 36,
+        "value": 2410972
+      },
+      "PyRun_StringFlags": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 372,
+        "value": 5947292
+      },
+      "PyStatus_Exception": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2284116
+      },
+      "PyStatus_IsExit": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2284088
+      },
+      "PyUnicode_AsUTF8AndSize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1040,
+        "value": 1993824
+      },
+      "PyWideStringList_Append": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 5830716
+      },
+      "Py_DecRef": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 16,
+        "value": 1866884
+      },
+      "Py_FinalizeEx": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 16,
+        "value": 2418240
+      },
+      "Py_GetVersion": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 168,
+        "value": 5799512
+      },
+      "Py_InitializeFromConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 3160,
+        "value": 5886784
+      },
+      "Py_IsInitialized": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2413768
+      },
+      "Py_PreInitialize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2415124
+      }
+    },
+    "build_ids": [
+      "fbf6fa338674db682e574c6f46cb8db54fbb4221"
+    ],
+    "dynamic_entries": [
+      [
+        1,
+        41693
+      ],
+      [
+        1,
+        41703
+      ],
+      [
+        1,
+        41719
+      ],
+      [
+        1,
+        41730
+      ],
+      [
+        1,
+        41741
+      ],
+      [
+        1,
+        41754
+      ],
+      [
+        1,
+        41764
+      ],
+      [
+        14,
+        41786
+      ],
+      [
+        12,
+        1567440
+      ],
+      [
+        13,
+        12335688
+      ],
+      [
+        25,
+        18196688
+      ],
+      [
+        27,
+        40
+      ],
+      [
+        26,
+        18196728
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        1879047925,
+        552
+      ],
+      [
+        5,
+        70272
+      ],
+      [
+        6,
+        13776
+      ],
+      [
+        10,
+        41818
+      ],
+      [
+        11,
+        24
+      ],
+      [
+        3,
+        19184872
+      ],
+      [
+        2,
+        31896
+      ],
+      [
+        20,
+        7
+      ],
+      [
+        23,
+        1535544
+      ],
+      [
+        7,
+        117024
+      ],
+      [
+        8,
+        1418520
+      ],
+      [
+        9,
+        24
+      ],
+      [
+        24,
+        0
+      ],
+      [
+        1879048187,
+        1
+      ],
+      [
+        1879048190,
+        116800
+      ],
+      [
+        1879048191,
+        7
+      ],
+      [
+        1879048176,
+        112090
+      ],
+      [
+        1879048185,
+        53446
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "header": {
+      "ehsize": 64,
+      "entry": 0,
+      "flags": 0,
+      "machine": 183,
+      "phentsize": 56,
+      "phnum": 8,
+      "phoff": 64,
+      "shentsize": 64,
+      "shnum": 40,
+      "shoff": 73561408,
+      "shstrndx": 39,
+      "type": 3,
+      "version": 1
+    },
+    "needed": [
+      "libm.so.6",
+      "libpthread.so.0",
+      "librt.so.1",
+      "libdl.so.2",
+      "libutil.so.1",
+      "libc.so.6",
+      "ld-linux-aarch64.so.1"
+    ],
+    "program_headers": [
+      {
+        "address": 0,
+        "alignment": 65536,
+        "file_size": 18153048,
+        "flags": 5,
+        "memory_size": 18153048,
+        "offset": 0,
+        "physical_address": 0,
+        "type": 1
+      },
+      {
+        "address": 18196680,
+        "alignment": 65536,
+        "file_size": 1690064,
+        "flags": 6,
+        "memory_size": 2227144,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 1
+      },
+      {
+        "address": 19184280,
+        "alignment": 8,
+        "file_size": 592,
+        "flags": 6,
+        "memory_size": 592,
+        "offset": 19184280,
+        "physical_address": 19184280,
+        "type": 2
+      },
+      {
+        "address": 512,
+        "alignment": 4,
+        "file_size": 36,
+        "flags": 4,
+        "memory_size": 36,
+        "offset": 512,
+        "physical_address": 512,
+        "type": 4
+      },
+      {
+        "address": 18196680,
+        "alignment": 8,
+        "file_size": 8,
+        "flags": 4,
+        "memory_size": 32,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 7
+      },
+      {
+        "address": 16310852,
+        "alignment": 4,
+        "file_size": 232276,
+        "flags": 4,
+        "memory_size": 232276,
+        "offset": 16310852,
+        "physical_address": 16310852,
+        "type": 1685382480
+      },
+      {
+        "address": 0,
+        "alignment": 16,
+        "file_size": 0,
+        "flags": 6,
+        "memory_size": 0,
+        "offset": 0,
+        "physical_address": 0,
+        "type": 1685382481
+      },
+      {
+        "address": 18196680,
+        "alignment": 1,
+        "file_size": 1005368,
+        "flags": 4,
+        "memory_size": 1005368,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 1685382482
+      }
+    ],
+    "section_names": [
+      "",
+      ".PyRuntime",
+      ".bss",
+      ".comment",
+      ".data",
+      ".data.rel.ro",
+      ".debug_abbrev",
+      ".debug_aranges",
+      ".debug_info",
+      ".debug_line",
+      ".debug_line_str",
+      ".debug_loc",
+      ".debug_loclists",
+      ".debug_ranges",
+      ".debug_rnglists",
+      ".debug_str",
+      ".dynamic",
+      ".dynstr",
+      ".dynsym",
+      ".eh_frame",
+      ".eh_frame_hdr",
+      ".fini",
+      ".fini_array",
+      ".gnu.hash",
+      ".gnu.version",
+      ".gnu.version_r",
+      ".got",
+      ".init",
+      ".init_array",
+      ".note.gnu.build-id",
+      ".plt",
+      ".rela.dyn",
+      ".rela.plt",
+      ".rodata",
+      ".shstrtab",
+      ".strtab",
+      ".symtab",
+      ".tbss",
+      ".tdata",
+      ".text"
+    ],
+    "soname": "libpython3.13.so.1.0"
+  },
+  "original_inventory": {
+    "entries": 4526,
+    "regular_payload_bytes": 182155939,
+    "types": {
+      "file": 3478,
+      "symlink": 1048
+    }
+  },
+  "original_library": {
+    "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+    "size": 73563968
+  },
+  "schema_version": 0,
+  "selected_source_cache_bytes": 15915425,
+  "selected_source_cache_files": 1040,
+  "selected_source_cache_pin_parity": true,
+  "stripped_artifact": {
+    "filename": "cpython-3.13.16+20261009-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+    "sha256": "52c6993abd6ac687cceb787ecee83b166271bc06ad80ac9cac82c5d28d3c00bc",
+    "size": 29327967,
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16%2B20261009-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz"
+  },
+  "stripped_elf": {
+    "allocated_sections": {
+      ".PyRuntime": {
+        "address": 19603320,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19603320,
+        "sha256": "b8682c5b87187e4430920b0f8f1dfbec1c7a859776eff485f835006442417bb4",
+        "size": 283424,
+        "type": 1
+      },
+      ".bss": {
+        "address": 19886784,
+        "alignment": 64,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19886744,
+        "sha256": null,
+        "size": 537040,
+        "type": 8
+      },
+      ".data": {
+        "address": 19202048,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 19202048,
+        "sha256": "fa958d93c802af90ecf3c416bd15405aff822a6168035a84d9d9f42149f7df13",
+        "size": 401268,
+        "type": 1
+      },
+      ".data.rel.ro": {
+        "address": 18196736,
+        "alignment": 64,
+        "entry_size": 0,
+        "flags": 3,
+        "offset": 18196736,
+        "sha256": "8a608dd43e5f6dc59014f8cd491f3917d7d02f049a7d7f3d8b994193ddb42b2e",
+        "size": 987544,
+        "type": 1
+      },
+      ".dynamic": {
+        "address": 19184280,
+        "alignment": 8,
+        "entry_size": 16,
+        "flags": 3,
+        "offset": 19184280,
+        "sha256": "d567cc8b3ab20bcfffd7a38b19aafa795daaf29c808a0744acc32b79aa56121b",
+        "size": 592,
+        "type": 6
+      },
+      ".dynstr": {
+        "address": 70272,
+        "alignment": 1,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 70272,
+        "sha256": "f1ecee209910b8971892ae4f2ed6a4324d095e2becbff47290fb229533b36ee0",
+        "size": 41818,
+        "type": 3
+      },
+      ".dynsym": {
+        "address": 13776,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 2,
+        "offset": 13776,
+        "sha256": "59639fae12aa01da9e21293007c02387f86325b0c02172b4efe0e2b761e9d32d",
+        "size": 56496,
+        "type": 11
+      },
+      ".eh_frame": {
+        "address": 16543128,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 16543128,
+        "sha256": "22ae1214f221f8f1dafa5c196c2d52357e2763a0ac51bcd5b7f56236c577c3c6",
+        "size": 1609920,
+        "type": 1
+      },
+      ".eh_frame_hdr": {
+        "address": 16310852,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 16310852,
+        "sha256": "b43523cdf391acb53fbbee6cf10f2c3350ab481c738df6808e17f2340afa33b8",
+        "size": 232276,
+        "type": 1
+      },
+      ".fini": {
+        "address": 12335688,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 12335688,
+        "sha256": "27a4135f0ef448195b3aaba32a661f2d0e290090b19501c7b4274d71cf655f69",
+        "size": 16,
+        "type": 1
+      },
+      ".fini_array": {
+        "address": 18196728,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 18196728,
+        "sha256": "3013823e66ec803910515e997019b052707d3c7a39f686df91179832fb192286",
+        "size": 8,
+        "type": 15
+      },
+      ".gnu.hash": {
+        "address": 552,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 552,
+        "sha256": "729d0222c4653f4f7eebd030aefc78fbfc019c659b6f2e90302e33c496e96dc3",
+        "size": 13220,
+        "type": 1879048182
+      },
+      ".gnu.version": {
+        "address": 112090,
+        "alignment": 2,
+        "entry_size": 2,
+        "flags": 2,
+        "offset": 112090,
+        "sha256": "fdd905f20cd8d469e2156d0360fbd352a604e998decff89e1783db2ad9ddba84",
+        "size": 4708,
+        "type": 1879048191
+      },
+      ".gnu.version_r": {
+        "address": 116800,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 116800,
+        "sha256": "dc386cb4a1f457abe92a501e4ced037e0e0a0d2ba23a164d455261497982dae0",
+        "size": 224,
+        "type": 1879048190
+      },
+      ".got": {
+        "address": 19184872,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 19184872,
+        "sha256": "628341f8b5b1a2a517096bb03f49b64b7ed3293afe0c6280a2acb15a7bc43133",
+        "size": 17160,
+        "type": 1
+      },
+      ".init": {
+        "address": 1567440,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1567440,
+        "sha256": "c8d86944741d37635639b8b5751d13bcf182c488ae74a7f8e7f4be6faab03c97",
+        "size": 20,
+        "type": 1
+      },
+      ".init_array": {
+        "address": 18196688,
+        "alignment": 8,
+        "entry_size": 8,
+        "flags": 3,
+        "offset": 18196688,
+        "sha256": "dcf51353ac3902eef534dcd82b2e742714fc081ffdcf781f3d41cc7385f3eff8",
+        "size": 40,
+        "type": 14
+      },
+      ".note.gnu.build-id": {
+        "address": 512,
+        "alignment": 4,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 512,
+        "sha256": "dc1df6bcab8dc6c52368427ce8505b31a2de5739b965cd83f3ba5bef1ec9e4cb",
+        "size": 36,
+        "type": 7
+      },
+      ".plt": {
+        "address": 1567472,
+        "alignment": 16,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1567472,
+        "sha256": "087766131b430e752052eefb44cb8cb36c44bd8f932a832b31f61ed8d4a46cf9",
+        "size": 21232,
+        "type": 1
+      },
+      ".rela.dyn": {
+        "address": 117024,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 2,
+        "offset": 117024,
+        "sha256": "0b03c75c908a1d271f3988075a5a584465ff1a50ca8c093789a5dce993e96ed2",
+        "size": 1418520,
+        "type": 4
+      },
+      ".rela.plt": {
+        "address": 1535544,
+        "alignment": 8,
+        "entry_size": 24,
+        "flags": 66,
+        "offset": 1535544,
+        "sha256": "2f82af76e125c4b493e1c55500697b9dac644400a50efb580d407169c1335f58",
+        "size": 31896,
+        "type": 4
+      },
+      ".rodata": {
+        "address": 12337152,
+        "alignment": 4096,
+        "entry_size": 0,
+        "flags": 2,
+        "offset": 12337152,
+        "sha256": "3eb300588d29ea008ff935e53d8d0d9609af2d33bdab680969e6c0fddf17b08d",
+        "size": 3973700,
+        "type": 1
+      },
+      ".tbss": {
+        "address": 18196688,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 1027,
+        "offset": 18196688,
+        "sha256": null,
+        "size": 24,
+        "type": 8
+      },
+      ".tdata": {
+        "address": 18196680,
+        "alignment": 8,
+        "entry_size": 0,
+        "flags": 1027,
+        "offset": 18196680,
+        "sha256": "67906bd5b83c17516dd5474a37e5e04a30a560627863c22ab8154923dfb7618a",
+        "size": 8,
+        "type": 1
+      },
+      ".text": {
+        "address": 1589248,
+        "alignment": 16384,
+        "entry_size": 0,
+        "flags": 6,
+        "offset": 1589248,
+        "sha256": "e13e8573cb9b03b9567a07efe65f164fa8f7473fcae675cde2000f31af4fd247",
+        "size": 10746440,
+        "type": 1
+      }
+    },
+    "api_exports": {
+      "PyBytes_FromStringAndSize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 404,
+        "value": 3398136
+      },
+      "PyCFunction_NewEx": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 20,
+        "value": 1860640
+      },
+      "PyConfig_Clear": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1024,
+        "value": 5831148
+      },
+      "PyConfig_InitIsolatedConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 80,
+        "value": 2284708
+      },
+      "PyConfig_SetString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 244,
+        "value": 5832172
+      },
+      "PyDict_SetItemString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 204,
+        "value": 5076904
+      },
+      "PyErr_Clear": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 140,
+        "value": 2232148
+      },
+      "PyErr_GetRaisedException": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 48,
+        "value": 2231972
+      },
+      "PyErr_SetString": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 52,
+        "value": 2230896
+      },
+      "PyExc_RuntimeError": {
+        "info": 17,
+        "other": 0,
+        "section_name": ".data",
+        "size": 8,
+        "value": 19557688
+      },
+      "PyImport_AddModuleRef": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 168,
+        "value": 2274576
+      },
+      "PyImport_AppendInittab": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 76,
+        "value": 2276620
+      },
+      "PyImport_FrozenModules": {
+        "info": 17,
+        "other": 0,
+        "section_name": ".bss",
+        "size": 8,
+        "value": 20392104
+      },
+      "PyImport_GetModuleDict": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 72,
+        "value": 2274320
+      },
+      "PyModule_GetDict": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 148,
+        "value": 5128760
+      },
+      "PyModule_New": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 140,
+        "value": 1862232
+      },
+      "PyObject_Str": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1100,
+        "value": 1865744
+      },
+      "PyPreConfig_InitIsolatedConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 36,
+        "value": 2410972
+      },
+      "PyRun_StringFlags": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 372,
+        "value": 5947292
+      },
+      "PyStatus_Exception": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2284116
+      },
+      "PyStatus_IsExit": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2284088
+      },
+      "PyUnicode_AsUTF8AndSize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 1040,
+        "value": 1993824
+      },
+      "PyWideStringList_Append": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 5830716
+      },
+      "Py_DecRef": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 16,
+        "value": 1866884
+      },
+      "Py_FinalizeEx": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 16,
+        "value": 2418240
+      },
+      "Py_GetVersion": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 168,
+        "value": 5799512
+      },
+      "Py_InitializeFromConfig": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 3160,
+        "value": 5886784
+      },
+      "Py_IsInitialized": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2413768
+      },
+      "Py_PreInitialize": {
+        "info": 18,
+        "other": 0,
+        "section_name": ".text",
+        "size": 28,
+        "value": 2415124
+      }
+    },
+    "build_ids": [
+      "fbf6fa338674db682e574c6f46cb8db54fbb4221"
+    ],
+    "dynamic_entries": [
+      [
+        1,
+        41693
+      ],
+      [
+        1,
+        41703
+      ],
+      [
+        1,
+        41719
+      ],
+      [
+        1,
+        41730
+      ],
+      [
+        1,
+        41741
+      ],
+      [
+        1,
+        41754
+      ],
+      [
+        1,
+        41764
+      ],
+      [
+        14,
+        41786
+      ],
+      [
+        12,
+        1567440
+      ],
+      [
+        13,
+        12335688
+      ],
+      [
+        25,
+        18196688
+      ],
+      [
+        27,
+        40
+      ],
+      [
+        26,
+        18196728
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        1879047925,
+        552
+      ],
+      [
+        5,
+        70272
+      ],
+      [
+        6,
+        13776
+      ],
+      [
+        10,
+        41818
+      ],
+      [
+        11,
+        24
+      ],
+      [
+        3,
+        19184872
+      ],
+      [
+        2,
+        31896
+      ],
+      [
+        20,
+        7
+      ],
+      [
+        23,
+        1535544
+      ],
+      [
+        7,
+        117024
+      ],
+      [
+        8,
+        1418520
+      ],
+      [
+        9,
+        24
+      ],
+      [
+        24,
+        0
+      ],
+      [
+        1879048187,
+        1
+      ],
+      [
+        1879048190,
+        116800
+      ],
+      [
+        1879048191,
+        7
+      ],
+      [
+        1879048176,
+        112090
+      ],
+      [
+        1879048185,
+        53446
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "header": {
+      "ehsize": 64,
+      "entry": 0,
+      "flags": 0,
+      "machine": 183,
+      "phentsize": 56,
+      "phnum": 8,
+      "phoff": 64,
+      "shentsize": 64,
+      "shnum": 30,
+      "shoff": 22175912,
+      "shstrndx": 29,
+      "type": 3,
+      "version": 1
+    },
+    "needed": [
+      "libm.so.6",
+      "libpthread.so.0",
+      "librt.so.1",
+      "libdl.so.2",
+      "libutil.so.1",
+      "libc.so.6",
+      "ld-linux-aarch64.so.1"
+    ],
+    "program_headers": [
+      {
+        "address": 0,
+        "alignment": 65536,
+        "file_size": 18153048,
+        "flags": 5,
+        "memory_size": 18153048,
+        "offset": 0,
+        "physical_address": 0,
+        "type": 1
+      },
+      {
+        "address": 18196680,
+        "alignment": 65536,
+        "file_size": 1690064,
+        "flags": 6,
+        "memory_size": 2227144,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 1
+      },
+      {
+        "address": 19184280,
+        "alignment": 8,
+        "file_size": 592,
+        "flags": 6,
+        "memory_size": 592,
+        "offset": 19184280,
+        "physical_address": 19184280,
+        "type": 2
+      },
+      {
+        "address": 512,
+        "alignment": 4,
+        "file_size": 36,
+        "flags": 4,
+        "memory_size": 36,
+        "offset": 512,
+        "physical_address": 512,
+        "type": 4
+      },
+      {
+        "address": 18196680,
+        "alignment": 8,
+        "file_size": 8,
+        "flags": 4,
+        "memory_size": 32,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 7
+      },
+      {
+        "address": 16310852,
+        "alignment": 4,
+        "file_size": 232276,
+        "flags": 4,
+        "memory_size": 232276,
+        "offset": 16310852,
+        "physical_address": 16310852,
+        "type": 1685382480
+      },
+      {
+        "address": 0,
+        "alignment": 16,
+        "file_size": 0,
+        "flags": 6,
+        "memory_size": 0,
+        "offset": 0,
+        "physical_address": 0,
+        "type": 1685382481
+      },
+      {
+        "address": 18196680,
+        "alignment": 1,
+        "file_size": 1005368,
+        "flags": 4,
+        "memory_size": 1005368,
+        "offset": 18196680,
+        "physical_address": 18196680,
+        "type": 1685382482
+      }
+    ],
+    "section_names": [
+      "",
+      ".PyRuntime",
+      ".bss",
+      ".comment",
+      ".data",
+      ".data.rel.ro",
+      ".dynamic",
+      ".dynstr",
+      ".dynsym",
+      ".eh_frame",
+      ".eh_frame_hdr",
+      ".fini",
+      ".fini_array",
+      ".gnu.hash",
+      ".gnu.version",
+      ".gnu.version_r",
+      ".got",
+      ".init",
+      ".init_array",
+      ".note.gnu.build-id",
+      ".plt",
+      ".rela.dyn",
+      ".rela.plt",
+      ".rodata",
+      ".shstrtab",
+      ".strtab",
+      ".symtab",
+      ".tbss",
+      ".tdata",
+      ".text"
+    ],
+    "soname": "libpython3.13.so.1.0"
+  },
+  "stripped_inventory": {
+    "entries": 4526,
+    "regular_payload_bytes": 79291731,
+    "types": {
+      "file": 3478,
+      "symlink": 1048
+    }
+  },
+  "stripped_library": {
+    "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+    "size": 22177832
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "all88_compiled_inputs_match_committed_source": true,
+  "binding": "all files in source-inputs.json equal git show source_revision:path and current working bytes",
+  "file_count": 88,
+  "schema_version": 0,
+  "source_revision": "aef2f71af60b8f96b289af6cba6328763817a52f"
+}

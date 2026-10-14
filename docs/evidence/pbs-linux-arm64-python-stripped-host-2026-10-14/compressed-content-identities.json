@@ -1,0 +1,145 @@
+{
+  "decompressed": {
+    "checks/linux-source/lua54-tests.txt.gz": {
+      "sha256": "6060fd2af2c748b056d3c426dfba6d92ce572d2237ff3c0d5a01c0ca9cdd1d43",
+      "size": 48234
+    },
+    "checks/linux-source/lua55-corrected-tests.txt.gz": {
+      "sha256": "0060e646ceec1fe8d79864f18071a15049d4982b07705b59566e920c2ae8dc03",
+      "size": 46282
+    },
+    "checks/linux-source/source-diff.patch.gz": {
+      "sha256": "8ff810b37979cd51bf37b1b140da4bce02b048f969ef1c575872594904008132",
+      "size": 64204
+    },
+    "checks/mac/python-stripped-host-mac-clean-feature-tests.txt.gz": {
+      "sha256": "8831dfe2fe863fe62777c6d88546ad8ecce6e26686afdbb1cea2ea4e968c8bf0",
+      "size": 53955
+    },
+    "checks/mac/python-stripped-host-mac-clean-lua55-tests.txt.gz": {
+      "sha256": "914f6d24565616c66fd9b96c4d59047c3e9953b1692ebdb90cba5e3e47cb7692",
+      "size": 47692
+    },
+    "checks/mac/python-stripped-host-mac-source-tests.txt.gz": {
+      "sha256": "f6120245a59044037b68e1e4bc53a8a729ad67a3c05154efabaa5948930935bc",
+      "size": 49601
+    },
+    "inspection/stripped-inventory.json.gz": {
+      "sha256": "d3beb4972bb9a3a86f9daa74f43db02c483ba456fadd7273f8b3ff6d35fad4b4",
+      "size": 1103271
+    },
+    "inspection/unstripped-inventory.json.gz": {
+      "sha256": "441ead5c4787166b5709b6f631c7eb1d49d687ecb9baa5151b5d3c97e01a1071",
+      "size": 1103271
+    },
+    "linux/corrupt-entry.trace.txt.gz": {
+      "sha256": "702686428dfd5c47cdf1187c8f765b0ce3315af5ae484743280a393e72594a87",
+      "size": 23598
+    },
+    "linux/corrupt-library.build-process.trace.txt.gz": {
+      "sha256": "374c6e052a87c45effc99d3a604b996d878398b1ca3545de26fd8d9da737ad6f",
+      "size": 403
+    },
+    "linux/corrupt-library.template.trace.txt.gz": {
+      "sha256": "1522eb9e66938a3a3b4da899ea6f505a4d1b5ece351c183887b2e4b700cd57af",
+      "size": 20930
+    },
+    "linux/corrupt-library.trace.txt.gz": {
+      "sha256": "f11c5b4c1715384d3647dedbebd3e9c2dbb66dca0cb211189286f5233d278036",
+      "size": 497211
+    },
+    "linux/missing-library.build-process.trace.txt.gz": {
+      "sha256": "9c6ae106c7c7233794a808bd9bbb86d5c8a271a709fe36145cd9fbc600a5c9cf",
+      "size": 403
+    },
+    "linux/missing-library.template.trace.txt.gz": {
+      "sha256": "06592102db59fed202f1a8b6576db2b291a57042c67521fbd492284903a0d9f2",
+      "size": 20929
+    },
+    "linux/missing-library.trace.txt.gz": {
+      "sha256": "544d0fff1ff32500be32fb5ef02ea83bc9a2b169ce019abf937fa8c92ee0673f",
+      "size": 249961
+    },
+    "linux/pack-tests.txt.gz": {
+      "sha256": "51bb6c750a37cc446c26398e4c1a68ba1f7b8a413b5b317ffaaf6cd6bc9e5b61",
+      "size": 6367
+    },
+    "linux/preload.trace.txt.gz": {
+      "sha256": "6a61853ecbf5f763e48290d494b72f9cfddefa61f950df56bb65079e96988cff",
+      "size": 34893
+    },
+    "linux/python-tests.txt.gz": {
+      "sha256": "b716c32b9251e7a89ac4c0c242f4fddc602cb092604d4683559284f19787db39",
+      "size": 17559
+    },
+    "linux/runner-tests.txt.gz": {
+      "sha256": "2ae5e4c6d26a41045f91fa0756fb498ea561243acd77466fe623c7ce9b6d81e3",
+      "size": 2615
+    },
+    "linux/stripped-tree.prepare.trace.txt.gz": {
+      "sha256": "aa0ebf60ed3ba8ec11ea0a87a200433e7c5476e02c4cb49852d0c0308c3927ca",
+      "size": 5354280
+    },
+    "linux/stripped.build-process.trace.txt.gz": {
+      "sha256": "e535491922f036b82cfe5e10882222256ebab37c52388ca9182de3469f490ddb",
+      "size": 382
+    },
+    "linux/stripped.prepare.trace.txt.gz": {
+      "sha256": "3c4648fde86d0989c4fabca5eed444a78f4832997a3cb04ea4cd0c512f1064ba",
+      "size": 7904404
+    },
+    "linux/stripped.template.trace.txt.gz": {
+      "sha256": "f7d7be49f5ab01fd39fbb0ce434917a8d7205a0dda06ef7325bcce277956e785",
+      "size": 20683
+    },
+    "linux/stripped.trace.txt.gz": {
+      "sha256": "0a2d80f7247b4102a7d0cc87f9c6f1f982da74c5087d10fd7855515ada3a47f9",
+      "size": 3096076
+    },
+    "linux/unstripped.build-process.trace.txt.gz": {
+      "sha256": "d7bf8bf185870bfa36937a5c940c12e129347d12135cef6e40ef86ec995782be",
+      "size": 388
+    },
+    "linux/unstripped.prepare.trace.txt.gz": {
+      "sha256": "02be25d0568617d2abfff84a1cfca1b5b26b08a60e262719588f3b2ce4e68068",
+      "size": 13876965
+    },
+    "linux/unstripped.template.trace.txt.gz": {
+      "sha256": "6c80e9c24997fca1126432bd7bbc39dc470943ed3c2bbd1ce66aca646b2777c3",
+      "size": 20340
+    },
+    "linux/unstripped.trace.txt.gz": {
+      "sha256": "29351f8e378e7dd2fdcc081b560314e539da5b6cd9b7ceb30d37c16b52625a28",
+      "size": 3634661
+    },
+    "linux/vendor.stderr.txt.gz": {
+      "sha256": "d128092a9e85a66daf37f357a2b277c8ff0ef560084a6086716670e3a0cc74e5",
+      "size": 8356
+    },
+    "linux/wrong-library.build-process.trace.txt.gz": {
+      "sha256": "6645e7fc1276e3641638149cf78ad2ac259f507b41ce6e48d35a232f4a3f2788",
+      "size": 397
+    },
+    "linux/wrong-library.template.trace.txt.gz": {
+      "sha256": "5103fb562fa0d8f70a71e388f4f2f0aa099d0f0533546226264102b337e0a380",
+      "size": 20975
+    },
+    "linux/wrong-library.trace.txt.gz": {
+      "sha256": "dbe1b54f0561fab94752cf0238502dedbabfffdf6a404b49fd52bb545226fd32",
+      "size": 249096
+    },
+    "linux/wrong-profile.build-process.trace.txt.gz": {
+      "sha256": "d49f080fc4efc90181568d6e7055b7699399ec573bd7c28ac20ea55a240f7ade",
+      "size": 397
+    },
+    "linux/wrong-profile.template.trace.txt.gz": {
+      "sha256": "2085cb078047beb61e8d60d33914721e5ac8e33098cc7624bc2a77f00ece3a21",
+      "size": 20551
+    },
+    "linux/wrong-profile.trace.txt.gz": {
+      "sha256": "7ccc67de87dad3248b99437bde65ea164e2d4d8b6fd4aaa6b8dbdfb67c7ada48",
+      "size": 235752
+    }
+  },
+  "schema_version": 0
+}

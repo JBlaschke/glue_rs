@@ -1,0 +1,1 @@
+glue: packaging profile: stripped installed-tree sysconfig differs from fixed stock bytes

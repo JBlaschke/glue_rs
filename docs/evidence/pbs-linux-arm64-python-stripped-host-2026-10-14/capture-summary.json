@@ -1,0 +1,22 @@
+{
+  "archive_comparison": {
+    "stripped": {
+      "mac_linux_byte_identical": true,
+      "sha256": "7f51ef100404d171a32499fd0ce7d8ee9491320792727fc6071c1a8f429f7125",
+      "size": 10656
+    },
+    "unstripped": {
+      "mac_linux_byte_identical": true,
+      "sha256": "0e34e7535ec5358124feb9c0922ea4b2c1308c01b9ae2d3dbf53f2eacb2c6dce",
+      "size": 10651
+    }
+  },
+  "branch": "codex/a7-python-stripped-host",
+  "image_id": "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+  "implementation_commit": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "large_runtime_artifacts_retained": false,
+  "launcher_binary_or_runtime_images_retained": false,
+  "native_capture_clean": true,
+  "schema_version": 0,
+  "small_application_archives_retained": true
+}

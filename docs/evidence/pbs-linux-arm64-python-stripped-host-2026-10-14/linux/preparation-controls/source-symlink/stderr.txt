@@ -1,0 +1,1 @@
+glue: open installed runtime input "/tmp/glue-stripped-controls-0h1g4z_d/source-symlink/lib/python3.13/json/__init__.py": Too many levels of symbolic links (os error 40)

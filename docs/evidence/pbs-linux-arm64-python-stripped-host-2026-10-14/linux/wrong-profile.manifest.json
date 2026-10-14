@@ -1,0 +1,89 @@
+{
+  "app_id": "python.stripped-host",
+  "components": {
+    "launch": {
+      "entry_point": "app/main.py",
+      "native_modules": [],
+      "runtime": "python"
+    }
+  },
+  "entrypoint": "launch",
+  "host_imports": {},
+  "native_modules": {},
+  "resources": {
+    "app/main.py": {
+      "compression": "stored",
+      "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+      "size": 1320
+    },
+    "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+      "compression": "stored",
+      "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+      "size": 90
+    },
+    "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+      "compression": "stored",
+      "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+      "size": 300
+    },
+    "app/python/stripped_demo/__init__.py": {
+      "compression": "stored",
+      "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+      "size": 12
+    },
+    "app/python/stripped_demo/data/value.txt": {
+      "compression": "stored",
+      "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "size": 3
+    },
+    "python/archive-importer.py": {
+      "compression": "deflate",
+      "sha256": "7001318a2554b3800c1abbda6b114c6d0e5d6fed56788dc54727d2637ed2f43f",
+      "size": 13510
+    },
+    "python/archive-metadata.py": {
+      "compression": "deflate",
+      "sha256": "3e39d544468ddb014fb19c14347e4ea5ab85c01188213e556aff5f1ed3c3d4bd",
+      "size": 4852
+    }
+  },
+  "runtimes": {
+    "python": {
+      "abi": {
+        "debug": false,
+        "gil": "conventional",
+        "language": "python",
+        "version": {
+          "major": 3,
+          "minor": 13,
+          "patch": 16
+        }
+      },
+      "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1",
+      "provisioning": {
+        "discovery": "explicit_paths",
+        "mode": "host",
+        "runtime_library": "/build-target/Python stripped host/lib/libpython3.13.so.1.0",
+        "stdlib": "/build-target/Python stripped host/lib/python3.13"
+      },
+      "required_features": [],
+      "target": "linux-arm64"
+    }
+  },
+  "schema_version": 0,
+  "targets": {
+    "linux-arm64": {
+      "abi": {
+        "family": "glibc",
+        "minimum_version": "2.36"
+      },
+      "arch": "aarch64",
+      "cpu_features": [],
+      "minimum_os_version": "7.1.4",
+      "os": "linux",
+      "page_sizes": [
+        4096
+      ]
+    }
+  }
+}

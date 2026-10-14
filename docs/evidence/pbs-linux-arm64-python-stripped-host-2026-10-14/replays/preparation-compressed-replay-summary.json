@@ -1,0 +1,66 @@
+{
+  "complete_compressed_replays": 2,
+  "rejected_compressed_mutations": 90,
+  "replays": {
+    "stripped-hostile": {
+      "compressed_receipt": "replays/stripped.compressed-process-hostile-controls.json",
+      "compressed_trace_identity": {
+        "sha256": "9ff62824a2cc9fffb000be8f14db88e60c5748156d83e71bd6ba0760b11b6825",
+        "size": 2993637
+      },
+      "exit_status": 0,
+      "raw_receipt": "linux/stripped.prepare-process-hostile-controls.json",
+      "raw_trace_identity": {
+        "sha256": "3c4648fde86d0989c4fabca5eed444a78f4832997a3cb04ea4cd0c512f1064ba",
+        "size": 7904404
+      },
+      "rejected_mutations": 21,
+      "semantic_json_identical_excluding_only_trace_identity": true
+    },
+    "stripped-normal": {
+      "compressed_receipt": "replays/stripped.compressed-process-audit.json",
+      "compressed_trace_identity": {
+        "sha256": "9ff62824a2cc9fffb000be8f14db88e60c5748156d83e71bd6ba0760b11b6825",
+        "size": 2993637
+      },
+      "exit_status": 0,
+      "raw_receipt": "linux/stripped.prepare-process-audit.json",
+      "raw_trace_identity": {
+        "sha256": "3c4648fde86d0989c4fabca5eed444a78f4832997a3cb04ea4cd0c512f1064ba",
+        "size": 7904404
+      },
+      "semantic_json_identical_excluding_only_trace_identity": true
+    },
+    "stripped-tree-hostile": {
+      "compressed_receipt": "replays/stripped-tree.compressed-process-hostile-controls.json",
+      "compressed_trace_identity": {
+        "sha256": "6ad76529559e9cb3d2ae7129653893ab706ffc81a9b3587ab4e614d5c7388db5",
+        "size": 533236
+      },
+      "exit_status": 0,
+      "raw_receipt": "linux/stripped-tree.prepare-process-hostile-controls.json",
+      "raw_trace_identity": {
+        "sha256": "aa0ebf60ed3ba8ec11ea0a87a200433e7c5476e02c4cb49852d0c0308c3927ca",
+        "size": 5354280
+      },
+      "rejected_mutations": 69,
+      "semantic_json_identical_excluding_only_trace_identity": true
+    },
+    "stripped-tree-normal": {
+      "compressed_receipt": "replays/stripped-tree.compressed-process-audit.json",
+      "compressed_trace_identity": {
+        "sha256": "6ad76529559e9cb3d2ae7129653893ab706ffc81a9b3587ab4e614d5c7388db5",
+        "size": 533236
+      },
+      "exit_status": 0,
+      "raw_receipt": "linux/stripped-tree.prepare-process-audit.json",
+      "raw_trace_identity": {
+        "sha256": "aa0ebf60ed3ba8ec11ea0a87a200433e7c5476e02c4cb49852d0c0308c3927ca",
+        "size": 5354280
+      },
+      "semantic_json_identical_excluding_only_trace_identity": true
+    }
+  },
+  "schema_version": 0,
+  "source_revision": "aef2f71af60b8f96b289af6cba6328763817a52f"
+}

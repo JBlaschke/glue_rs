@@ -1,0 +1,1 @@
+Actual stripped-host trace audit passed: 7 normal traces; 350 hostile mutations rejected

@@ -1,0 +1,51 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "scripts/check-linux-python-stripped-host-trace.py",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.trace.txt.gz",
+    "--mode",
+    "stripped",
+    "--stdout-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.stdout.txt",
+    "--stderr-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.stderr.txt",
+    "--metadata-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json",
+    "--archive-file",
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/stripped.glue"
+  ],
+  "cwd": "/Users/johannes.blaschke/Developer/glue_rs",
+  "exit_status": 0,
+  "implementation_commit": "aef2f71af60b8f96b289af6cba6328763817a52f",
+  "inputs": {
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/archives/stripped.glue": {
+      "sha256": "7f51ef100404d171a32499fd0ce7d8ee9491320792727fc6071c1a8f429f7125",
+      "size": 10656
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/archive-metadata.json": {
+      "sha256": "f4db9788ee279883042338a8f093082b3b012d5784c23cafc6ff6293c61211bb",
+      "size": 19526
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.stdout.txt": {
+      "sha256": "7d6fc6c4836b2c88f5b9a25a6e6193cf294340ba00964f84d12ec96a38dc488b",
+      "size": 70
+    },
+    "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/linux/stripped.trace.txt.gz": {
+      "sha256": "f205d00548654678b5bed7c114a556eb7d9fba23eb5fa9cbba219f0902b89040",
+      "size": 312525
+    },
+    "scripts/check-linux-python-stripped-host-trace.py": {
+      "sha256": "383c0cba1806f1a140fd676526cd04e99589b6b059f081cc04e9353414c68630",
+      "size": 31376
+    }
+  },
+  "stderr": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/stripped.compressed-runtime-check.stderr.txt",
+  "stdout": "docs/evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/replays/stripped.compressed-runtime-check.stdout.txt"
+}

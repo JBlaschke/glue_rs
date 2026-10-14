@@ -1,0 +1,566 @@
+{
+  "archives": {
+    "corrupt-entry": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10656,
+      "component": "launch",
+      "corrupt_offset": 2033,
+      "entry": "app/main.py",
+      "manifest_bytes": 1908,
+      "manifest_sha256": "863f78470a18d9466f2cf93cb791a60f14af33c567c55cd19957f7830de64e90",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8270,
+        "archive_read_bytes": 3306,
+        "ranges_sha256": "7ed0e03d9d8c2402004bdc7f487f95a20feec996594ce64f1f122753151718cc"
+      },
+      "runtime_image": {
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832
+      },
+      "sha256": "82cc2b8ee9d67dda8584448c7d590fe339aec1a0b335753cab6726cbe9842f7d",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9932
+    },
+    "corrupt-library": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10688,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1940,
+      "manifest_sha256": "280733045e7ff52fbfd0485eb3f980fc4351fe6ae269c89ed5611ce78a7f7e92",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host corrupt-library/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host corrupt-library/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8302,
+        "archive_read_bytes": 3338,
+        "ranges_sha256": "2dab9bf1b0fd4963f712ded0f8f5ec1c69352ea0ba0ff1aa10fb0faaf5d4f70c"
+      },
+      "runtime_image": {
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832
+      },
+      "sha256": "1a5c6f6be8ba8ce319949969d393ad4f168e65a98e1eb916409fd7109ca9c090",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9964
+    },
+    "missing-library": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10688,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1940,
+      "manifest_sha256": "6a69e241592759a658e8450cf11634596fe55eba771750dd9032280cf66fbb8d",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host missing-library/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host missing-library/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8302,
+        "archive_read_bytes": 3338,
+        "ranges_sha256": "2dab9bf1b0fd4963f712ded0f8f5ec1c69352ea0ba0ff1aa10fb0faaf5d4f70c"
+      },
+      "runtime_image": {
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832
+      },
+      "sha256": "ca40b4fb7ed97c3e530d9b3f78e5c05ef2468b484d63c982509e7ac25b99d0d0",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9964
+    },
+    "stripped": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10656,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1908,
+      "manifest_sha256": "863f78470a18d9466f2cf93cb791a60f14af33c567c55cd19957f7830de64e90",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8270,
+        "archive_read_bytes": 3306,
+        "ranges_sha256": "7ed0e03d9d8c2402004bdc7f487f95a20feec996594ce64f1f122753151718cc"
+      },
+      "runtime_image": {
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832
+      },
+      "sha256": "7f51ef100404d171a32499fd0ce7d8ee9491320792727fc6071c1a8f429f7125",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9932
+    },
+    "unstripped": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10651,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1903,
+      "manifest_sha256": "e058359e18e28c0202867e71d8c783224aced9859ac0207152249270b5b5988a",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python unstripped host/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python unstripped host/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8265,
+        "archive_read_bytes": 3301,
+        "ranges_sha256": "238fc8196efa36627d25079436f4c8c7259eee240d1aa2b308f3092f5379cbe1"
+      },
+      "runtime_image": {
+        "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+        "size": 73563968
+      },
+      "sha256": "0e34e7535ec5358124feb9c0922ea4b2c1308c01b9ae2d3dbf53f2eacb2c6dce",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9927
+    },
+    "wrong-library": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10684,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1936,
+      "manifest_sha256": "04d215a6df252fc91602adb046b555710cd2efb1615f49449a74f827c5a98c4a",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-stripped-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host wrong-library/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host wrong-library/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8298,
+        "archive_read_bytes": 3334,
+        "ranges_sha256": "73c8a034b48fa696d0e5624faf9799f1ee44d7f00fa6523898a68701722a8206"
+      },
+      "runtime_image": {
+        "sha256": "327af7e7114d339222b4fa8af954207c78a3b382f1edda667f16a48c89dfaf75",
+        "size": 22177832
+      },
+      "sha256": "6be95833b34b71feab86bafaea8413579575fa18531b611bfc5a7fc2c6f35907",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9960
+    },
+    "wrong-profile": {
+      "app_id": "python.stripped-host",
+      "application": {
+        "app/main.py": {
+          "compression": "stored",
+          "sha256": "8ef16eb02268541428eb40edf8f542ebc9483a4d872fd9562c6e6d200586b706",
+          "size": 1320
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/METADATA": {
+          "compression": "stored",
+          "sha256": "44ba00ff729273d1efacdf1e45a97789b718c33ec99910ef3f0d52349f099ed3",
+          "size": 90
+        },
+        "app/python/glue_stripped_demo-1.0.dist-info/RECORD": {
+          "compression": "stored",
+          "sha256": "4a88208219d74e8d8ce9cdff0ce5439cea37e9dcc5423731c31a3075d0bd9798",
+          "size": 300
+        },
+        "app/python/stripped_demo/__init__.py": {
+          "compression": "stored",
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/stripped_demo/data/value.txt": {
+          "compression": "stored",
+          "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+          "size": 3
+        }
+      },
+      "bytes": 10647,
+      "component": "launch",
+      "entry": "app/main.py",
+      "manifest_bytes": 1899,
+      "manifest_sha256": "ebeab55210dcb9c4fddafe9d39b010dc6bb7a262a415c0e7b4578d7ac79c3e67",
+      "provider": {
+        "abi": {
+          "debug": false,
+          "gil": "conventional",
+          "language": "python",
+          "version": {
+            "major": 3,
+            "minor": 13,
+            "patch": 16
+          }
+        },
+        "build_id": "pbs-20261009-cpython-3.13.16-pgo-lto-host-install-metadata-apps-v1",
+        "provisioning": {
+          "discovery": "explicit_paths",
+          "mode": "host",
+          "runtime_library": "/build-target/Python stripped host/lib/libpython3.13.so.1.0",
+          "stdlib": "/build-target/Python stripped host/lib/python3.13"
+        },
+        "required_features": [],
+        "target": "linux-arm64"
+      },
+      "readiness": {
+        "archive_cursor": 8261,
+        "archive_read_bytes": 3297,
+        "ranges_sha256": "96b82dee52353604d9238c585c2a29c01e79dd4bf9260183bf934885402fddad"
+      },
+      "runtime_image": {
+        "sha256": "42be968275d5be2d9e632ec9ef6790dd2c10f1d4a710ad1028fc2b687242f219",
+        "size": 73563968
+      },
+      "sha256": "675d78fb0f9c1a6dee4aa1a8db3beb7eaf2bfc2d419beee67f7a463312fbd078",
+      "target": {
+        "abi": {
+          "family": "glibc",
+          "minimum_version": "2.36"
+        },
+        "arch": "aarch64",
+        "cpu_features": [],
+        "minimum_os_version": "7.1.4",
+        "os": "linux",
+        "page_sizes": [
+          4096
+        ]
+      },
+      "zip_directory_offset": 9923
+    }
+  },
+  "schema_version": 0
+}
