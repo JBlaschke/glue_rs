@@ -33,6 +33,7 @@ Further implementation continues on separate feature branches.
 | A7/A10 Real Python package compatibility | `codex/a7-python-real-packages` / `e525db8` (from merged `fce3dad`) | Experimental Requires-Python admission and three unmodified upstream pure-Python wheels | Mac/GNU source workspaces 484/485 and Clippy; Mac packaging workspace 518; optimized GNU 150 Python/53 pack/21 CLI; clean matrix passes three providers and three first-entry CRC rejections; both builders pass 32 requirement controls/two compatible builds; 21 oracle/253 policy tests and 229 hostile mutations; 27 product commands/5,273 valid members; [evidence](evidence/pbs-linux-arm64-python-real-packages-2026-10-14/README.md) |
 | A7/A10 Pinned installed Python runtime trees | `codex/a7-python-installed-runtime-trees` / `b8fdbd1`, identity fix `801cbf6`, fixture staging `6b4499c` (merged `a52424c`) | Experimental selected-tree admission; controlled GNU Linux arm64 observation | Mac/GNU source 489/490 and Clippy; Mac packaging 533; GNU 154 Python/63 packaging/22 CLI; five valid preparations per builder, Mac20/GNU19 hostile controls; 24 tree/15 process-oracle/253 policy tests; all six raw/compressed runtime traces pass and archives retain previous hashes; 69 actual preparation mutations reject; [evidence](evidence/pbs-linux-arm64-python-runtime-trees-2026-10-14/README.md) |
 | A7/A10 Pinned stripped host Python | `codex/a7-python-stripped-host` / `aef2f71` (stacked on runtime-tree evidence `421b24f`) | Experimental separate host-install metadata image; controlled GNU Linux arm64 observation | Mac packaging workspace 541 and source workspaces 496/497, Clippy clean; GNU optimized Python160/pack63/CLI23 and Clippy; four valid/twenty hostile preparations per builder; 20 preparation/23 process/5 runtime/11 trace units; seven native runtime traces pass; all 350 runtime/69 tree/21 artifact trace mutations reject; independent paired tar/ELF inspection and identical 1,037 sources/three caches; 38,093,257-byte prerequisites; [evidence](evidence/pbs-linux-arm64-python-stripped-host-2026-10-14/README.md) |
+| A7 Registered Python native lifecycle | `codex/a7-python-native-lifecycle` (from merged `3f6bf8f`) | Experimental separate custom-create/owned-state profile; controlled GNU Linux arm64 observation | Mac/GNU source workspaces 501/502 and Clippy; Mac packaging 546; GNU optimized Python165 and Clippy; independent stock baseline and seven ledger controls pass; four provider cells and four app-error cases report five states freed/five references released after finalization; three invalid-native controls reject |
 
 ## Gate status
 
@@ -477,8 +478,10 @@ worker-side cancellation races, clocks/queue budgets and actual runtime bindings
 The synthetic fixture reserves its own stdin/stdout for protocol; it does not
 establish product worker execution or close G4.
 
-The user prefers completing Python work before starting Node. Continue A7/A10
-with native-package compatibility and runtime installation/selection beyond the
+The user prefers completing Python work before starting Node. The separate native
+lifecycle profile now covers custom creation and owned-state GC/finalization.
+Continue A7/A10 with native-package compatibility beyond reviewed registered
+initializers, and runtime installation/selection beyond the
 explicit pinned template/prerequisite preparers, selected installed-runtime-tree
 input and bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is

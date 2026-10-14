@@ -171,6 +171,11 @@ pub fn execute(
                 extension_profile::read_archive(archive).map_err(ExecutionError::failed)?,
                 false,
             ),
+            profile::Kind::NativeLifecycle => linux::run_extensions(
+                extension_profile::read_archive_for(extension_profile::Profile::Lifecycle, archive)
+                    .map_err(ExecutionError::failed)?,
+                false,
+            ),
         }
         .map_err(ExecutionError::failed)
     }
@@ -221,6 +226,8 @@ pub mod experimental {
                         | "run-host-imports-negative"
                         | "run-extensions"
                         | "run-extensions-negative"
+                        | "run-native-lifecycle"
+                        | "run-native-lifecycle-negative"
                 )
             })
         {
@@ -641,6 +648,20 @@ fn dispatch_experiment(args: &[std::ffi::OsString]) -> Result<(), String> {
             args[4].to_str().unwrap_or(""),
             Path::new(&args[5]),
         )
+    } else if mode == "prepare-native-lifecycle" && args.len() == 6 {
+        extension_profile::prepare_for(
+            extension_profile::Profile::Lifecycle,
+            Path::new(&args[2]),
+            Path::new(&args[3]),
+            args[4].to_str().unwrap_or(""),
+            Path::new(&args[5]),
+        )
+    } else if mode == "corrupt-native-lifecycle" && args.len() == 4 {
+        extension_profile::corrupt_for(
+            extension_profile::Profile::Lifecycle,
+            Path::new(&args[2]),
+            Path::new(&args[3]),
+        )
     } else if mode == "corrupt-extensions" && args.len() == 4 {
         extension_profile::corrupt(Path::new(&args[2]), Path::new(&args[3]))
     } else if mode == "corrupt-host-imports" && args.len() == 4 {
@@ -659,10 +680,12 @@ fn dispatch_experiment(args: &[std::ffi::OsString]) -> Result<(), String> {
             | "run-host-imports-negative"
             | "run-extensions"
             | "run-extensions-negative"
+            | "run-native-lifecycle"
+            | "run-native-lifecycle-negative"
     ) {
         execute_experiment(mode, args)
     } else {
-        Err("usage: glue-python-bootstrap-probe prepare-extensions BASE NATIVE_DIRECTORY archived|host OUTPUT | run-extensions ARCHIVE | run-extensions-negative ARCHIVE app-error | corrupt-extensions INPUT OUTPUT | prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | prepare-host-imports FULL PREFIX OUTPUT | corrupt-host-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error | run-host-imports ARCHIVE | run-host-imports-negative ARCHIVE app-error".into())
+        Err("usage: glue-python-bootstrap-probe prepare-native-lifecycle BASE NATIVE_DIRECTORY archived|host OUTPUT | run-native-lifecycle ARCHIVE | run-native-lifecycle-negative ARCHIVE app-error | corrupt-native-lifecycle INPUT OUTPUT | prepare-extensions BASE NATIVE_DIRECTORY archived|host OUTPUT | run-extensions ARCHIVE | run-extensions-negative ARCHIVE app-error | corrupt-extensions INPUT OUTPUT | prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | prepare-host-imports FULL PREFIX OUTPUT | corrupt-host-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error | run-host-imports ARCHIVE | run-host-imports-negative ARCHIVE app-error".into())
     }
 }
 
@@ -674,6 +697,22 @@ fn dispatch_experiment(args: &[std::ffi::OsString]) -> Result<(), String> {
     glue_python_boundary
 ))]
 fn execute_experiment(mode: &str, args: &[std::ffi::OsString]) -> Result<(), String> {
+    if matches!(
+        mode,
+        "run-native-lifecycle" | "run-native-lifecycle-negative"
+    ) {
+        let negative = mode == "run-native-lifecycle-negative";
+        if args.len() != if negative { 4 } else { 3 } || (negative && args[3] != "app-error") {
+            return Err("wrong registered native lifecycle fixture arguments".into());
+        }
+        return linux::run_extensions(
+            extension_profile::read_for(
+                extension_profile::Profile::Lifecycle,
+                Path::new(&args[2]),
+            )?,
+            negative,
+        );
+    }
     if matches!(mode, "run-extensions" | "run-extensions-negative") {
         let negative = mode == "run-extensions-negative";
         if args.len() != if negative { 4 } else { 3 } || (negative && args[3] != "app-error") {

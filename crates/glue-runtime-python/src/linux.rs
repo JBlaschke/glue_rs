@@ -493,7 +493,7 @@ pub(super) fn run_extensions(
     match payload.runtime {
         extension_profile::Runtime::Bundled { library, bundle } => {
             let (api, handle, base) = load_api_with_handle(runtime_file(&library, None)?)?;
-            let registrations = native::load(&mut payload.images, handle, base)?;
+            let registrations = native::load(payload.profile, &mut payload.images, handle, base)?;
             let names: Vec<_> = bundle
                 .modules
                 .iter()
@@ -516,7 +516,7 @@ pub(super) fn run_extensions(
                     is_package: i32::from(module.is_package),
                 })
                 .collect();
-            invoke_archive(
+            let result = invoke_archive(
                 &api,
                 ArchiveStartup::Frozen(&records),
                 ArchiveApplication {
@@ -526,7 +526,8 @@ pub(super) fn run_extensions(
                 },
                 negative,
                 &registrations.records,
-            )
+            );
+            registrations.finish(result)
         }
         extension_profile::Runtime::Host(config) => {
             let verified = config.verify_imports(&host_import_profile::source_specs()?)?;
@@ -535,8 +536,8 @@ pub(super) fn run_extensions(
             let stdlib = CString::new(verified.config.stdlib.as_str())
                 .map_err(|_| "host stdlib contains NUL")?;
             let (api, handle, base) = load_api_with_handle(verified.library)?;
-            let registrations = native::load(&mut payload.images, handle, base)?;
-            invoke_archive(
+            let registrations = native::load(payload.profile, &mut payload.images, handle, base)?;
+            let result = invoke_archive(
                 &api,
                 ArchiveStartup::Host(&prefix, &stdlib),
                 ArchiveApplication {
@@ -546,7 +547,8 @@ pub(super) fn run_extensions(
                 },
                 negative,
                 &registrations.records,
-            )
+            );
+            registrations.finish(result)
         }
     }
 }

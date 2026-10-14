@@ -1,0 +1,36 @@
+#ifndef GLUE_PYTHON_LIFECYCLE_LEDGER_H
+#define GLUE_PYTHON_LIFECYCLE_LEDGER_H
+
+/* Integer-only ABI. The dependency owns no Python pointers or allocations. */
+#define GLUE_LIFECYCLE_RECORDS 8
+#define GLUE_LIFECYCLE_INIT 1
+#define GLUE_LIFECYCLE_CREATE 2
+#define GLUE_LIFECYCLE_CREATED 3
+#define GLUE_LIFECYCLE_ALLOCATE 4
+#define GLUE_LIFECYCLE_OWN 5
+#define GLUE_LIFECYCLE_TRAVERSE 6
+#define GLUE_LIFECYCLE_CLEAR 7
+#define GLUE_LIFECYCLE_RELEASE 8
+#define GLUE_LIFECYCLE_FREE 9
+#define GLUE_LIFECYCLE_QUERY 10
+#define GLUE_LIFECYCLE_CHECK 11
+
+#define GLUE_LIFECYCLE_ALLOCATIONS 1
+#define GLUE_LIFECYCLE_FREES 2
+#define GLUE_LIFECYCLE_OWNED 3
+#define GLUE_LIFECYCLE_RELEASES 4
+#define GLUE_LIFECYCLE_INITS 5
+#define GLUE_LIFECYCLE_CREATES 6
+#define GLUE_LIFECYCLE_CREATED_OBJECTS 7
+#define GLUE_LIFECYCLE_TRAVERSALS 8
+#define GLUE_LIFECYCLE_CLEARS 9
+#define GLUE_LIFECYCLE_ERRORS 10
+#define GLUE_LIFECYCLE_LAST_ID 11
+
+__attribute__((visibility("default"))) long
+glue_python_lifecycle_ledger(long op, long root, long instance);
+
+#define GLUE_LIFECYCLE_FINALIZE_MARKER \
+    "GLUE_PYTHON_NATIVE_LIFECYCLE_FINALIZE_PASS allocated=5 freed=5 released=5 owned=0\n"
+
+#endif

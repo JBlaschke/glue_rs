@@ -316,12 +316,18 @@ The [clean native capture](docs/evidence/pbs-linux-arm64-python-extensions-2026-
 passes eleven matrix/control traces and twenty-two earlier Python regressions
 from implementation `b784c99`, with all 37 hostile trace edits rejected.
 
+The separate [native lifecycle fixture](fixtures/python-native-lifecycle/README.md)
+adds custom creation, owned reference cycles, GC callbacks and retry after
+creation/execution failures. A private integer-only ledger verifies cleanup after
+actual interpreter finalization, through the same four runtime/native provider
+combinations. An independent stock registration driver checks the same lifecycle.
+
 ## Run the pinned Python profiles
 
 The launcher feature is `python-pbs`; the shared executor's build feature is
 `pbs-bootstrap`. The registry admits bounded bundled and explicit-host source applications,
 the two exact bundled/explicit-host source/resource fixtures and the
-registered-native declaration profile with four independent runtime/native
+registered-native declaration profiles with four independent runtime/native
 provider combinations. The source profile accepts application-owned entries,
 modules and assets while retaining the exact runtime, startup and stdlib pins.
 See the [source application staging/build workflow](fixtures/python-source-apps/README.md).
