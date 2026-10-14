@@ -1,0 +1,1 @@
+glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python "!=3.13.*" excludes selected CPython 3.13.16

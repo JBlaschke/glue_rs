@@ -4,7 +4,7 @@
 //! provider, start an interpreter or inspect a host Python installation.
 
 use crate::{metadata_profile, profile};
-use glue_format::{ArchiveLimits, Manifest, ResourceSpec, digest};
+use glue_format::{ArchiveLimits, Manifest, ResourceSpec, RuntimeVersion, digest};
 use std::collections::BTreeMap;
 
 pub mod host_prerequisites;
@@ -79,6 +79,16 @@ pub fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
         return Err("distribution METADATA exceeds 64 KiB".into());
     }
     metadata_profile::metadata_identity(metadata)
+}
+
+/// Admit the bounded release-only Requires-Python field for an already selected
+/// runtime version. Missing fields impose no constraint. This does not select or
+/// discover a runtime, resolve dependencies or execute an interpreter.
+pub fn validate_requires_python(metadata: &str, target: &RuntimeVersion) -> Result<(), String> {
+    if metadata.len() as u64 > metadata_profile::MAX_METADATA {
+        return Err("distribution METADATA exceeds 64 KiB".into());
+    }
+    metadata_profile::validate_requires_python(metadata, target)
 }
 
 /// Parse a distribution directory's normalized name and exact version.
@@ -328,5 +338,34 @@ mod tests {
         assert!(record_rows(&"file,,\n".repeat(1025)).is_err());
         assert!(metadata_identity("Name: customer\nName: other\nVersion: 1\n").is_err());
         assert!(record_rows("\"bad\"quote,,\n").is_err());
+    }
+
+    #[test]
+    fn public_python_requirements_use_the_supplied_admitted_version_and_bounds() {
+        let metadata = "Name: Customer\nVersion: 1\nRequires-Python: >=3.14\n";
+        let target = RuntimeVersion {
+            major: 3,
+            minor: 13,
+            patch: 16,
+        };
+        assert!(
+            validate_requires_python(metadata, &target)
+                .unwrap_err()
+                .contains("3.13.16")
+        );
+        let future = RuntimeVersion {
+            major: 3,
+            minor: 14,
+            patch: 0,
+        };
+        validate_requires_python(metadata, &future).unwrap();
+        assert!(
+            validate_requires_python(
+                &"x".repeat(metadata_profile::MAX_METADATA as usize + 1),
+                &target
+            )
+            .unwrap_err()
+            .contains("64 KiB")
+        );
     }
 }

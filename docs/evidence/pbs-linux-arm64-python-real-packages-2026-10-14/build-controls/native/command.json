@@ -1,0 +1,19 @@
+[
+  "/build-target/release/glue",
+  "build-python",
+  "--provider-template",
+  "/build-target/staging/install-host/manifest.json",
+  "--provider-root",
+  "/build-target/staging/install-host/root",
+  "--app",
+  "/evidence/build-controls/native/application",
+  "--venv",
+  "/evidence/build-controls/native/venv",
+  "--app-id",
+  "distribution.metadata",
+  "--entry",
+  "app/main.py",
+  "--output",
+  "/evidence/build-controls/native/application.glue",
+  "--json"
+]

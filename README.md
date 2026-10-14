@@ -88,6 +88,16 @@ its interpreter, install dependencies or resolve them. The complete package
 inventory must be source-only and fit the existing 1,024-file / 8 MiB application
 limits. Seeded pip/setuptools environments are not silently pruned.
 
+Distribution `Requires-Python` fields are checked against the selected runtime
+before provider files are read or an output is created, including metadata in
+the explicit application tree. The admitted subset supports bounded numeric
+release comparisons, comma-conjoined ranges, equality/inequality `.*` prefixes
+and `~=` compatible releases. Missing fields impose no extra constraint;
+duplicate, folded, empty, incompatible or unsupported specifiers reject.
+This validates the pinned version and does not select or download another one.
+The [real-package fixture](fixtures/python-real-packages/README.md) exercises
+unmodified Markdown parser/plugin wheels through all three providers.
+
 Source, data and metadata bytes are preserved. RECORD is verified and rewritten
 for archive paths; bytecode and recognized generated console/gui wrappers are
 omitted and reported. Native files, editables, `.pth` hooks, escaping paths and

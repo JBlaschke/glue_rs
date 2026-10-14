@@ -1,0 +1,7 @@
+{
+  "exit_status": 0,
+  "raw_compressed_audits_equal": true,
+  "rejected_mutations": 229,
+  "schema_version": 0,
+  "source_revision": "e525db8542886800ff008c300c25bd56e7e3e09a"
+}

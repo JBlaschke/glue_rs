@@ -1,0 +1,94 @@
+{
+  "README.md": {
+    "sha256": "3d3ce040d1467a283216709f3a54dfdbbc2f4efbe7140aee23f7a3ede1852127",
+    "size": 28087
+  },
+  "crates/glue-pack/src/python.rs": {
+    "sha256": "a3c158dd02156432996060771c7f408bb41636254290e11c4e86ecb164bfcd14",
+    "size": 62298
+  },
+  "crates/glue-runtime-python/README.md": {
+    "sha256": "8c3b981c688e74a421ca3943108941137f7aadf0df1adfae9de675cb65962703",
+    "size": 9978
+  },
+  "crates/glue-runtime-python/src/metadata_profile.rs": {
+    "sha256": "a77a1ff0100ea13c475c8610cbc232125df18a111f0c46cb27df0844fe9eef14",
+    "size": 46574
+  },
+  "crates/glue-runtime-python/src/metadata_profile/requirements.rs": {
+    "sha256": "2997f29d4c8e8e2fee3c7b5a1429e9ed9a151ccce6a89d77eb2b43496f900a84",
+    "size": 8200
+  },
+  "crates/glue-runtime-python/src/packaging.rs": {
+    "sha256": "8388ddb5d99218528c4df78514d332cb56ec64c1131a30749c92c8bebdfd6987",
+    "size": 14112
+  },
+  "docs/decisions/0025-python-real-package-compatibility.md": {
+    "sha256": "1500d707a430b5820d6975977cb93056cb136aa13504f0766e8329ef7787cc8c",
+    "size": 4433
+  },
+  "docs/progress.md": {
+    "sha256": "df8b4ea3d80f94df46df3034a95477d100fae01013701531e8f381833728f1bf",
+    "size": 41227
+  },
+  "fixtures/python-real-packages/README.md": {
+    "sha256": "077e47cd1f9cd8ccc7fe0316aea914b840efda653cede12c8b6ea51a2fc024f8",
+    "size": 4467
+  },
+  "fixtures/python-real-packages/application/app/main.py": {
+    "sha256": "2b7f709ce325f060a28c472618a7aee0338d7c2bb7fd1a99ae907c1f0920ee11",
+    "size": 10607
+  },
+  "fixtures/python-real-packages/expected-inventory.json": {
+    "sha256": "4f2f7005f070adddc2ce27b682510507a8e41dc6fb004fd9c8e076aadbeb7a71",
+    "size": 24806
+  },
+  "fixtures/python-real-packages/expected-workload.json": {
+    "sha256": "f0f59c23072e36d1f673a5ee552e3b0f6a31afe0b1c7ef93aab2459e1b731d67",
+    "size": 12706
+  },
+  "fixtures/python-real-packages/expected.stdout.txt": {
+    "sha256": "cdfaac81082bf8d22ff51cb69841a539de866f9f53e2b60b6caa7539b0f560a7",
+    "size": 129
+  },
+  "fixtures/python-real-packages/prepare.py": {
+    "sha256": "d60a3bab825d250c086d3ab3a357b4c441855bc094148048c7acefb30375acd3",
+    "size": 34778
+  },
+  "fixtures/python-real-packages/run-linux.sh": {
+    "sha256": "609ad496da48dd2a32171e64e27440c3ba406b6d3bca0903f4ace1683fb477ae",
+    "size": 18559
+  },
+  "fixtures/python-real-packages/test_prepare.py": {
+    "sha256": "b650eaaa803c5aff5a78d51ab5f43c15bcf164d1680d6d574aaa7df8525378c8",
+    "size": 24133
+  },
+  "fixtures/python-real-packages/test_requirements.py": {
+    "sha256": "6dcd3c383f73f0a1017a6529d5894d9f88f4762f80f5231620c2f46aa57e66e5",
+    "size": 20208
+  },
+  "fixtures/python-real-packages/wheel-pins.json": {
+    "sha256": "485b1c442c958a71d33a16dad40008ca33bfb77dbfdaa9a8e1731000303147dd",
+    "size": 1418
+  },
+  "fixtures/python-real-packages/wheels/markdown_it_py-4.2.0-py3-none-any.whl": {
+    "sha256": "9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a",
+    "size": 91687
+  },
+  "fixtures/python-real-packages/wheels/mdit_py_plugins-0.6.1-py3-none-any.whl": {
+    "sha256": "214c82fb2ac524472ab6a5bcab1de80f73b50443e187f401bfd77efbc7c6481d",
+    "size": 66663
+  },
+  "fixtures/python-real-packages/wheels/mdurl-0.1.2-py3-none-any.whl": {
+    "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+    "size": 9979
+  },
+  "scripts/check-linux-python-real-packages-trace.py": {
+    "sha256": "4efdf05b9c4830ff3f09852c0ba465401625efc6a4f569618ed858e34e491c72",
+    "size": 22803
+  },
+  "scripts/test_linux_python_real_packages_trace.py": {
+    "sha256": "10c349147723e00c6b27a310a44da30839ffe12807f8c45eb16b73b340c0b183",
+    "size": 33430
+  }
+}

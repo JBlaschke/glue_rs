@@ -1,0 +1,748 @@
+{
+  "absent_output_controls": 16,
+  "compatible": {
+    "explicit-site-packages": {
+      "all_resources": 154,
+      "application_files": 152,
+      "archive": {
+        "sha256": "0b37d8cd706b1b4f4041490355360d0523a705cd0ed3d1f6b3cdd2e159cdd053",
+        "size": 513436
+      },
+      "metadata": {
+        "sha256": "d45e31269de868f006e2c1ea1517f9a85b8b44cb7f3dd1f7dc2d5a452f5b9f57",
+        "size": 1670
+      },
+      "normalized_record": {
+        "sha256": "7a7d4f374a028ee5d2c5269ca141d14884562f5a32f430e6c5a506ea31f154d5",
+        "size": 958
+      }
+    },
+    "venv": {
+      "all_resources": 154,
+      "application_files": 152,
+      "archive": {
+        "sha256": "0b37d8cd706b1b4f4041490355360d0523a705cd0ed3d1f6b3cdd2e159cdd053",
+        "size": 513436
+      },
+      "metadata": {
+        "sha256": "d45e31269de868f006e2c1ea1517f9a85b8b44cb7f3dd1f7dc2d5a452f5b9f57",
+        "size": 1670
+      },
+      "normalized_record": {
+        "sha256": "7a7d4f374a028ee5d2c5269ca141d14884562f5a32f430e6c5a506ea31f154d5",
+        "size": 958
+      }
+    }
+  },
+  "compatible_requirement": " ( >=3.10, <4, !=3.12.*, ~=3.13.16 ) ",
+  "existing_output_controls": 16,
+  "glue": {
+    "sha256": "9c6c9dc08146704444f1e178fe1a53866a7c90d2029832f5eb8e4f0729bca336",
+    "size": 13012408
+  },
+  "hostile_controls": 32,
+  "hostile_variants": 8,
+  "input_modes": [
+    "venv",
+    "explicit-site-packages"
+  ],
+  "package_copies_retained": false,
+  "prepared": {
+    "application_files": 152,
+    "installed_files": 261,
+    "original_mdurl_metadata": {
+      "sha256": "b53b29d48f499367053fda3c81e7ce27d2558380ebbf83e66023b02eb7ddd25d",
+      "size": 1638
+    },
+    "original_mdurl_record": {
+      "sha256": "9deca92eaca198c3ed0410f6fb741b709009355766778fbc1a5f34baf0a48466",
+      "size": 1238
+    },
+    "provenance": {
+      "sha256": "3446f34105c2f6236d0b7d0361a829ed1953e6b4f3478e536a8141aef568c70e",
+      "size": 164598
+    }
+  },
+  "provider_absent_controls": 32,
+  "results": {
+    "duplicate.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has duplicate Requires-Python headers\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "8d8fd1c1f9aaf0ccd1ed4a64a32e40bd5b9949f84263c078234f1851ea6668fd",
+        "size": 1658
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5288a1d621a616d1da7a2dbfe9f1ea7891b3becca373bfca8a78bd71d24d1540",
+        "size": 1219
+      }
+    },
+    "duplicate.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has duplicate Requires-Python headers\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "8d8fd1c1f9aaf0ccd1ed4a64a32e40bd5b9949f84263c078234f1851ea6668fd",
+        "size": 1658
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5288a1d621a616d1da7a2dbfe9f1ea7891b3becca373bfca8a78bd71d24d1540",
+        "size": 1219
+      }
+    },
+    "duplicate.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has duplicate Requires-Python headers\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "8d8fd1c1f9aaf0ccd1ed4a64a32e40bd5b9949f84263c078234f1851ea6668fd",
+        "size": 1658
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5288a1d621a616d1da7a2dbfe9f1ea7891b3becca373bfca8a78bd71d24d1540",
+        "size": 1219
+      }
+    },
+    "duplicate.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has duplicate Requires-Python headers\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "8d8fd1c1f9aaf0ccd1ed4a64a32e40bd5b9949f84263c078234f1851ea6668fd",
+        "size": 1658
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5288a1d621a616d1da7a2dbfe9f1ea7891b3becca373bfca8a78bd71d24d1540",
+        "size": 1219
+      }
+    },
+    "empty.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python must contain a nonempty release specifier\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "4825508f933688a816ec65d4f36496523a448359e85e5b49bcfca02d795088b9",
+        "size": 1633
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "3aacab76eedc7f1c27d7480a6f64ec9fc1183fd91fb63d989fbb7e8dfdcba1d8",
+        "size": 1219
+      }
+    },
+    "empty.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python must contain a nonempty release specifier\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "4825508f933688a816ec65d4f36496523a448359e85e5b49bcfca02d795088b9",
+        "size": 1633
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "3aacab76eedc7f1c27d7480a6f64ec9fc1183fd91fb63d989fbb7e8dfdcba1d8",
+        "size": 1219
+      }
+    },
+    "empty.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python must contain a nonempty release specifier\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "4825508f933688a816ec65d4f36496523a448359e85e5b49bcfca02d795088b9",
+        "size": 1633
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "3aacab76eedc7f1c27d7480a6f64ec9fc1183fd91fb63d989fbb7e8dfdcba1d8",
+        "size": 1219
+      }
+    },
+    "empty.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python must contain a nonempty release specifier\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "4825508f933688a816ec65d4f36496523a448359e85e5b49bcfca02d795088b9",
+        "size": 1633
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "3aacab76eedc7f1c27d7480a6f64ec9fc1183fd91fb63d989fbb7e8dfdcba1d8",
+        "size": 1219
+      }
+    },
+    "explicit-application.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "application",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "72eb91bd1f4add78f185484cc8149d2504a37533500e1f9801c407a7c11c9396",
+        "size": 958
+      }
+    },
+    "explicit-application.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "application",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "72eb91bd1f4add78f185484cc8149d2504a37533500e1f9801c407a7c11c9396",
+        "size": 958
+      }
+    },
+    "explicit-application.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "application",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "72eb91bd1f4add78f185484cc8149d2504a37533500e1f9801c407a7c11c9396",
+        "size": 958
+      }
+    },
+    "explicit-application.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "application",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "72eb91bd1f4add78f185484cc8149d2504a37533500e1f9801c407a7c11c9396",
+        "size": 958
+      }
+    },
+    "folded.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has a folded Requires-Python header\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "1082fce068ebc0e03df00f00a24e468c778ea52fb0b1536ff46c8d93d27540e9",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "42c9f3985b6a42856c60ddcf3c4a6a6c5c5aec7b5e4a4fd62025ad7063472ad0",
+        "size": 1219
+      }
+    },
+    "folded.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has a folded Requires-Python header\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "1082fce068ebc0e03df00f00a24e468c778ea52fb0b1536ff46c8d93d27540e9",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "42c9f3985b6a42856c60ddcf3c4a6a6c5c5aec7b5e4a4fd62025ad7063472ad0",
+        "size": 1219
+      }
+    },
+    "folded.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has a folded Requires-Python header\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "1082fce068ebc0e03df00f00a24e468c778ea52fb0b1536ff46c8d93d27540e9",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "42c9f3985b6a42856c60ddcf3c4a6a6c5c5aec7b5e4a4fd62025ad7063472ad0",
+        "size": 1219
+      }
+    },
+    "folded.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: distribution METADATA has a folded Requires-Python header\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "1082fce068ebc0e03df00f00a24e468c778ea52fb0b1536ff46c8d93d27540e9",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "42c9f3985b6a42856c60ddcf3c4a6a6c5c5aec7b5e4a4fd62025ad7063472ad0",
+        "size": 1219
+      }
+    },
+    "future-minor.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "006da9af630a4f89b17e592713513ce6f094d198550782134864f277c85da21e",
+        "size": 1219
+      }
+    },
+    "future-minor.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "006da9af630a4f89b17e592713513ce6f094d198550782134864f277c85da21e",
+        "size": 1219
+      }
+    },
+    "future-minor.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "006da9af630a4f89b17e592713513ce6f094d198550782134864f277c85da21e",
+        "size": 1219
+      }
+    },
+    "future-minor.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \">=3.14\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "0b42e5c47886c0fb3b8b90ac1798e1d3a786b020f44d4aca492aa95a25865c24",
+        "size": 1639
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "006da9af630a4f89b17e592713513ce6f094d198550782134864f277c85da21e",
+        "size": 1219
+      }
+    },
+    "patch-exclusion.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.16\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "c57954b92884604c85d9dd42c8b0232e52fa6da458137aeeb451508fc50144f5",
+        "size": 1642
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5cf45521ec8db63ef1c5d34f6e7369ec23705c567f8b18f2e0805ecf6fdba424",
+        "size": 1219
+      }
+    },
+    "patch-exclusion.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.16\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "c57954b92884604c85d9dd42c8b0232e52fa6da458137aeeb451508fc50144f5",
+        "size": 1642
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5cf45521ec8db63ef1c5d34f6e7369ec23705c567f8b18f2e0805ecf6fdba424",
+        "size": 1219
+      }
+    },
+    "patch-exclusion.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.16\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "c57954b92884604c85d9dd42c8b0232e52fa6da458137aeeb451508fc50144f5",
+        "size": 1642
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5cf45521ec8db63ef1c5d34f6e7369ec23705c567f8b18f2e0805ecf6fdba424",
+        "size": 1219
+      }
+    },
+    "patch-exclusion.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.16\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "c57954b92884604c85d9dd42c8b0232e52fa6da458137aeeb451508fc50144f5",
+        "size": 1642
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "5cf45521ec8db63ef1c5d34f6e7369ec23705c567f8b18f2e0805ecf6fdba424",
+        "size": 1219
+      }
+    },
+    "unsupported.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python supports only one to three decimal release components; prerelease, dev, post, local, epoch and arbitrary-equality syntax are unsupported\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "84c05d58329a9986df644180a321cefcb4287afbb101d1bbb33de59ebef3fdb2",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "4c93ba18d5139e224ab11f10e85e073f137c2c5c87d02ef6cd878336370b1879",
+        "size": 1219
+      }
+    },
+    "unsupported.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python supports only one to three decimal release components; prerelease, dev, post, local, epoch and arbitrary-equality syntax are unsupported\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "84c05d58329a9986df644180a321cefcb4287afbb101d1bbb33de59ebef3fdb2",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "4c93ba18d5139e224ab11f10e85e073f137c2c5c87d02ef6cd878336370b1879",
+        "size": 1219
+      }
+    },
+    "unsupported.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python supports only one to three decimal release components; prerelease, dev, post, local, epoch and arbitrary-equality syntax are unsupported\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "84c05d58329a9986df644180a321cefcb4287afbb101d1bbb33de59ebef3fdb2",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "4c93ba18d5139e224ab11f10e85e073f137c2c5c87d02ef6cd878336370b1879",
+        "size": 1219
+      }
+    },
+    "unsupported.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python supports only one to three decimal release components; prerelease, dev, post, local, epoch and arbitrary-equality syntax are unsupported\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "84c05d58329a9986df644180a321cefcb4287afbb101d1bbb33de59ebef3fdb2",
+        "size": 1643
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "4c93ba18d5139e224ab11f10e85e073f137c2c5c87d02ef6cd878336370b1879",
+        "size": 1219
+      }
+    },
+    "wildcard-exclusion.explicit-site-packages.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.*\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "73ad7d13d40200c97c4f4aad9405369ed584c6799b39257f5927b907ccdcdc70",
+        "size": 1641
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "d6c0928b112f4fb014db8312259fce0fd7b37e1c7e4af66928aa6d2f6496c922",
+        "size": 1219
+      }
+    },
+    "wildcard-exclusion.explicit-site-packages.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.*\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "73ad7d13d40200c97c4f4aad9405369ed584c6799b39257f5927b907ccdcdc70",
+        "size": 1641
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "d6c0928b112f4fb014db8312259fce0fd7b37e1c7e4af66928aa6d2f6496c922",
+        "size": 1219
+      }
+    },
+    "wildcard-exclusion.venv.absent-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.*\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "73ad7d13d40200c97c4f4aad9405369ed584c6799b39257f5927b907ccdcdc70",
+        "size": 1641
+      },
+      "metadata_origin": "installed-package",
+      "output_after": null,
+      "output_before": null,
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "d6c0928b112f4fb014db8312259fce0fd7b37e1c7e4af66928aa6d2f6496c922",
+        "size": 1219
+      }
+    },
+    "wildcard-exclusion.venv.existing-output": {
+      "diagnostic": "glue: packaging profile: distribution mdurl-0.1.2.dist-info: Requires-Python \"!=3.13.*\" excludes selected CPython 3.13.16\n",
+      "exit_status": 1,
+      "interpreter_directories_absent": true,
+      "metadata": {
+        "sha256": "73ad7d13d40200c97c4f4aad9405369ed584c6799b39257f5927b907ccdcdc70",
+        "size": 1641
+      },
+      "metadata_origin": "installed-package",
+      "output_after": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_before": {
+        "sha256": "256b4764e36be4ef659326b97a7d57cddf7d3d8ba9370decf249a970f3bdeaa5",
+        "size": 42
+      },
+      "output_protected": true,
+      "provider_root_absent": true,
+      "record": {
+        "sha256": "d6c0928b112f4fb014db8312259fce0fd7b37e1c7e4af66928aa6d2f6496c922",
+        "size": 1219
+      }
+    }
+  },
+  "schema_version": 0,
+  "successful_archives_retained": false,
+  "template": {
+    "sha256": "2f39b54ad2dacd994900632f30c972dc7fbb4f6a02ce39aa3728655aff2b1a6d",
+    "size": 1275
+  },
+  "valid_builds": 2
+}

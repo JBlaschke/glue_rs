@@ -1,0 +1,22 @@
+{
+  "/build-target/host Python metadata": {
+    "lib/python3.13/site-packages/glue_real_package_physical_lure-99.dist-info/METADATA": {
+      "sha256": "2c12c1f82541b69e5500e51c82083645eaf3f3d2cfa896400cca31c5f6cf234d",
+      "size": 72
+    },
+    "lib/python3.13/site-packages/markdown_it_py-999.dist-info/METADATA": {
+      "sha256": "4956df6a19d9fc2f46dfcc0b4c553ee46332d157d350bc4ccc24de06d0890ad6",
+      "size": 56
+    }
+  },
+  "/build-target/install Python metadata": {
+    "lib/python3.13/site-packages/glue_real_package_physical_lure-99.dist-info/METADATA": {
+      "sha256": "2c12c1f82541b69e5500e51c82083645eaf3f3d2cfa896400cca31c5f6cf234d",
+      "size": 72
+    },
+    "lib/python3.13/site-packages/markdown_it_py-999.dist-info/METADATA": {
+      "sha256": "4956df6a19d9fc2f46dfcc0b4c553ee46332d157d350bc4ccc24de06d0890ad6",
+      "size": 56
+    }
+  }
+}

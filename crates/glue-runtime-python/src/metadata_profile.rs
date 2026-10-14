@@ -16,6 +16,8 @@
 use super::*;
 use sha2::{Digest, Sha256};
 
+mod requirements;
+
 pub(super) const HELPER: &str = "python/archive-metadata.py";
 pub(super) const BOOTSTRAP: &[u8] =
     include_bytes!("../../../fixtures/python-metadata/bootstrap.py");
@@ -245,10 +247,18 @@ fn text<'a>(files: &'a BTreeMap<String, Vec<u8>>, key: &str) -> Result<&'a str, 
     .map_err(|_| format!("distribution metadata is not UTF-8: {key}"))
 }
 
-pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
+struct MetadataHeaders<'a> {
+    name: String,
+    release: String,
+    requires_python: Option<&'a str>,
+}
+
+fn metadata_headers(metadata: &str) -> Result<MetadataHeaders<'_>, String> {
     let mut name = None;
     let mut release = None;
+    let mut requires_python = None;
     let mut previous_identity = false;
+    let mut previous_requirement = false;
     let mut saw_header = false;
     for raw in metadata.split('\n') {
         let line = raw.strip_suffix('\r').unwrap_or(raw);
@@ -259,6 +269,9 @@ pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), Stri
             break;
         }
         if line.starts_with([' ', '\t']) {
+            if previous_requirement {
+                return Err("distribution METADATA has a folded Requires-Python header".into());
+            }
             if previous_identity || !saw_header {
                 return Err(
                     "distribution METADATA has a folded identity header or orphan continuation"
@@ -277,8 +290,10 @@ pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), Stri
         {
             return Err("distribution METADATA contains an invalid header name".into());
         }
+        let raw_value = value;
         let value = value.trim_matches([' ', '\t']);
         previous_identity = key.eq_ignore_ascii_case("Name") || key.eq_ignore_ascii_case("Version");
+        previous_requirement = key.eq_ignore_ascii_case("Requires-Python");
         saw_header = true;
         if key.eq_ignore_ascii_case("Name") {
             if name.replace(normalized_name(value)?).is_some() {
@@ -289,12 +304,36 @@ pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), Stri
             if release.replace(value.to_owned()).is_some() {
                 return Err("distribution METADATA has duplicate Version headers".into());
             }
+        } else if previous_requirement {
+            // One ordinary space separates a header name from its field value.
+            // Further spaces belong to the bounded specifier value; do not
+            // trim them before the requirement parser applies its byte cap.
+            let value = raw_value.strip_prefix(' ').unwrap_or(raw_value);
+            if requires_python.replace(value).is_some() {
+                return Err("distribution METADATA has duplicate Requires-Python headers".into());
+            }
         }
     }
-    Ok((
-        name.ok_or("distribution METADATA is missing Name")?,
-        release.ok_or("distribution METADATA is missing Version")?,
-    ))
+    Ok(MetadataHeaders {
+        name: name.ok_or("distribution METADATA is missing Name")?,
+        release: release.ok_or("distribution METADATA is missing Version")?,
+        requires_python,
+    })
+}
+
+pub(super) fn metadata_identity(metadata: &str) -> Result<(String, String), String> {
+    let headers = metadata_headers(metadata)?;
+    Ok((headers.name, headers.release))
+}
+
+pub(super) fn validate_requires_python(
+    metadata: &str,
+    target: &glue_format::RuntimeVersion,
+) -> Result<(), String> {
+    if let Some(value) = metadata_headers(metadata)?.requires_python {
+        requirements::validate(value, target)?;
+    }
+    Ok(())
 }
 
 /// Strict CSV keeps quoted commas and doubled quotes without treating malformed
@@ -393,12 +432,32 @@ pub(super) fn record_hash(bytes: &[u8]) -> String {
 
 pub(super) fn verify_contents(files: &BTreeMap<String, Vec<u8>>) -> Result<(), String> {
     let directories = directories(files.iter().map(|(key, bytes)| (key, bytes.len() as u64)))?;
+    let target: Vec<_> = bundle::PYTHON_VERSION
+        .split('.')
+        .map(str::parse::<u16>)
+        .collect::<Result<_, _>>()
+        .map_err(|_| "pinned Python version is not a three-component release")?;
+    if target.len() != 3 {
+        return Err("pinned Python version is not a three-component release".into());
+    }
+    let target = glue_format::RuntimeVersion {
+        major: target[0],
+        minor: target[1],
+        patch: target[2],
+    };
     let mut names = BTreeSet::new();
     let mut owned = BTreeSet::new();
     for directory in directories {
         let prefix = format!("{ROOT}{directory}/");
         let metadata_key = format!("{prefix}METADATA");
-        let (name, release) = metadata_identity(text(files, &metadata_key)?)?;
+        let metadata = text(files, &metadata_key)?;
+        let headers = metadata_headers(metadata)?;
+        let name = headers.name;
+        let release = headers.release;
+        if let Some(value) = headers.requires_python {
+            requirements::validate(value, &target)
+                .map_err(|error| format!("distribution {directory}: {error}"))?;
+        }
         let (folder_name, folder_release) = folder_identity(&directory)?;
         if name != folder_name || release != folder_release {
             return Err(format!(
@@ -512,6 +571,103 @@ mod tests {
         record.push_str(&format!("{DIRECTORY}/RECORD,,\r\n"));
         files.insert(RECORD.into(), record.into_bytes());
         files
+    }
+
+    fn with_requirement(headers: &str) -> BTreeMap<String, Vec<u8>> {
+        let mut files = contents();
+        files.insert(
+            METADATA.into(),
+            format!("Name: Customer.Demo\nVersion: 1.2\n{headers}\n\nDescription\n").into_bytes(),
+        );
+        // Optional RECORD hashes are independent of Python compatibility; leave
+        // the changed metadata row un-hashed so the test reaches that policy.
+        let rows = record_rows(text(&files, RECORD).unwrap()).unwrap();
+        let record = rows
+            .into_iter()
+            .map(|[path, hash, size]| {
+                let (hash, size) = if path == format!("{DIRECTORY}/METADATA") {
+                    (String::new(), String::new())
+                } else {
+                    (hash, size)
+                };
+                format!("\"{}\",{hash},{size}\n", path.replace('"', "\"\""))
+            })
+            .collect::<String>();
+        files.insert(RECORD.into(), record.into_bytes());
+        files
+    }
+
+    #[test]
+    fn requires_python_headers_are_single_unfolded_bounded_values() {
+        let target = glue_format::RuntimeVersion {
+            major: 3,
+            minor: 13,
+            patch: 16,
+        };
+        for headers in [
+            "",
+            "Requires-Python: >=3.9",
+            "requires-python: ( >=3.9, <4 )",
+            "Summary: unrelated\n Requires-Python: >=4",
+        ] {
+            validate_requires_python(
+                &format!("Name: Customer\nVersion: 1\n{headers}\n\nRequires-Python: >=4"),
+                &target,
+            )
+            .unwrap();
+        }
+        for headers in [
+            "Requires-Python: >=3.9\nrequires-python: >=3.9",
+            "Requires-Python: >=3.9,\n <4",
+            "Requires-Python: >=3.9\n\t<4",
+            "Requires-Python:",
+            "Requires-Python:   ",
+            "Requires-Python:\t>=3.9",
+        ] {
+            let error = validate_requires_python(
+                &format!("Name: Customer\nVersion: 1\n{headers}\n"),
+                &target,
+            )
+            .unwrap_err();
+            assert!(error.contains("Requires-Python"), "{headers}: {error}");
+        }
+        let maximum = format!(">=3{}", " ".repeat(253));
+        validate_requires_python(
+            &format!("Name: Customer\nVersion: 1\nRequires-Python: {maximum}\n"),
+            &target,
+        )
+        .unwrap();
+        assert!(
+            validate_requires_python(
+                &format!("Name: Customer\nVersion: 1\nRequires-Python: {maximum} \n"),
+                &target
+            )
+            .unwrap_err()
+            .contains("256")
+        );
+    }
+
+    #[test]
+    fn shared_content_admission_applies_requirements_without_changing_record_bytes() {
+        for headers in [
+            "",
+            "Requires-Python: >=3.10",
+            "Requires-Python: ~=3.13",
+            "Requires-Python: ==3.13.*",
+        ] {
+            verify_contents(&with_requirement(headers)).unwrap();
+        }
+        for headers in [
+            "Requires-Python: >=3.14",
+            "Requires-Python: ==3.13",
+            "Requires-Python: ~=3.14",
+            "Requires-Python: >=3.9\nRequires-Python: <4",
+            "Requires-Python: >=3.9\n <4",
+            "Requires-Python: ===3.13.16",
+        ] {
+            let error = verify_contents(&with_requirement(headers)).unwrap_err();
+            assert!(error.contains("Requires-Python"), "{headers}: {error}");
+        }
     }
 
     fn host_manifest(files: &BTreeMap<String, Vec<u8>>, install: bool) -> Manifest {
@@ -1021,6 +1177,38 @@ mod tests {
             .err()
             .unwrap();
             assert!(failure.contains("missing metadata member"), "{failure}");
+        }
+    }
+
+    #[test]
+    fn archived_requirements_reject_before_any_host_provider_access() {
+        let fixture = Fixture::new();
+        for install in [false, true] {
+            for headers in [
+                "Requires-Python: >=3.14",
+                "Requires-Python: !=3.13.*",
+                "Requires-Python: >=3.9\nRequires-Python: <4",
+                "Requires-Python: >=3.9\n <4",
+            ] {
+                let files = with_requirement(headers);
+                let manifest = host_manifest(&files, install);
+                // Declaration admission and complete container integrity pass;
+                // rejection occurs when owned metadata is read, before the
+                // deliberately absent host installation can be consulted.
+                if install {
+                    admit_install_host(&manifest).unwrap();
+                } else {
+                    admit_host(&manifest).unwrap();
+                }
+                let failure = if install {
+                    read_install_host(fixture.archive(&files, true))
+                } else {
+                    read_host(fixture.archive(&files, false))
+                }
+                .err()
+                .unwrap();
+                assert!(failure.contains("Requires-Python"), "{headers}: {failure}");
+            }
         }
     }
 }
