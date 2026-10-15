@@ -363,3 +363,30 @@ fn explicit_normalization_retains_source_bytes_and_runs_without_source_prefix() 
             .success()
     );
 }
+
+#[test]
+fn dynamic_string_table_may_cross_contiguous_file_backed_loads_but_not_gaps() {
+    let name = format!("lib{}.so", "x".repeat(200));
+    let mut bytes = fixture(&name, Some("libdep.so"), "$ORIGIN");
+    let set = |b: &mut Vec<u8>, p: usize, v: u64| b[p..p + 8].copy_from_slice(&v.to_le_bytes());
+    set(&mut bytes, 64 + 32, 800);
+    set(&mut bytes, 64 + 40, 800);
+    let second = 64 + 3 * 56;
+    bytes[second..second + 4].copy_from_slice(&1u32.to_le_bytes());
+    set(&mut bytes, second + 8, 800);
+    set(&mut bytes, second + 16, 0x1000 + 800);
+    set(&mut bytes, second + 32, 1248);
+    set(&mut bytes, second + 40, 1248);
+    assert_eq!(
+        inspect_bytes(&bytes).unwrap().identity.as_deref(),
+        Some(name.as_str())
+    );
+    let mut gap = bytes.clone();
+    set(&mut gap, second + 16, 0x1000 + 801);
+    assert!(inspect_bytes(&gap).is_err());
+    let mut discontinuous = bytes;
+    set(&mut discontinuous, second + 8, 900);
+    set(&mut discontinuous, second + 32, 1148);
+    set(&mut discontinuous, second + 40, 1148);
+    assert!(inspect_bytes(&discontinuous).is_err());
+}

@@ -88,17 +88,43 @@ pub fn inspect_bytes(bytes: &[u8]) -> Result<NativeFacts> {
         }
     }
     let mapped = |address: u64, size: u64| -> Result<u64> {
-        for (base, offset, length) in &loads {
-            if address >= *base
-                && address
-                    .checked_sub(*base)
-                    .and_then(|n| n.checked_add(size))
-                    .is_some_and(|n| n <= *length)
-            {
-                return Ok(offset + (address - base));
+        let end = address
+            .checked_add(size)
+            .ok_or_else(|| bad("ELF virtual range overflow"))?;
+        let (_, offset, _) = loads
+            .iter()
+            .rev()
+            .find(|(base, _, length)| address >= *base && address - *base < *length)
+            .ok_or_else(|| {
+                bad(format!(
+                    "ELF dynamic address {address:#x} is not file-backed"
+                ))
+            })?;
+        let (base, _, _) = loads
+            .iter()
+            .rev()
+            .find(|(base, _, length)| address >= *base && address - *base < *length)
+            .unwrap();
+        let start = offset
+            .checked_add(address - base)
+            .ok_or_else(|| bad("ELF translated range overflow"))?;
+        let mut current = address;
+        while current < end {
+            let (base, offset, length) = loads
+                .iter()
+                .rev()
+                .find(|(base, _, length)| current >= *base && current - *base < *length)
+                .ok_or_else(|| bad("ELF dynamic table crosses an unmapped/file-unbacked gap"))?;
+            if offset.checked_add(current - base) != start.checked_add(current - address) {
+                return Err(bad("ELF dynamic table crosses noncontiguous file mappings"));
             }
+            current = end.min(
+                base.checked_add(*length)
+                    .ok_or_else(|| bad("ELF load range overflow"))?,
+            );
         }
-        Err(bad("ELF dynamic address is not file-backed"))
+        e.range(start, size)?;
+        Ok(start)
     };
     let (offset, size) = dynamic.ok_or_else(|| bad("ELF image has no dynamic metadata"))?;
     if size % 16 != 0 || size / 16 > 65536 {
