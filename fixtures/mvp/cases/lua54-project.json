@@ -1,0 +1,15 @@
+{
+  "revision": 1,
+  "case": "lua54-project",
+  "reference_kind": "stock",
+  "inputs": [
+    {"source": "fixtures/mvp/lua-projects/first", "destination": "project"},
+    {"source": "fixtures/mvp/lua-projects/reference.lua", "destination": "reference.lua"},
+    {"source": "${GLUE_MVP_LUA54}", "destination": "stock-lua"},
+    {"source": "${GLUE_MVP_HELPERS}/glue-lua54", "destination": "helpers/glue-lua54"}
+  ],
+  "build": {"argv": ["${GLUE_MVP_GLUE}", "build", "lua", "{inputs}/project", "--lua", "5.4", "--helper-dir", "{inputs}/helpers", "--output", "{build}"]},
+  "reference": {"argv": ["{inputs}/stock-lua", "{inputs}/reference.lua", "{inputs}/project", "main.lua", "argument with spaces"]},
+  "arguments": ["argument with spaces"],
+  "expected_exit": 0
+}
