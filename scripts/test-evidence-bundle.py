@@ -316,7 +316,7 @@ class BundleTests(unittest.TestCase):
                 "tag": "evidence/test", "asset": archive_path.name, "size": archive_path.stat().st_size, "sha256": B.digest(archive_path)}))
         tools = self.root / "shell-tools"
         tools.mkdir()
-        for tool in ("wc", "tr", "sed", "head", "mktemp", "rm", "tar", "cut", "grep", "sha256sum", "shasum"):
+        for tool in ("wc", "tr", "sed", "head", "mktemp", "rm", "tar", "gzip", "cut", "grep", "sha256sum", "shasum"):
             executable = shutil.which(tool)
             if executable:
                 (tools / tool).symlink_to(executable)

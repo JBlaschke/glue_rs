@@ -15,6 +15,12 @@ fi
 cargo fmt --all -- --check
 case "${1:-baseline}" in
     baseline)
+        python3 --version
+        python3 scripts/test-evidence-bundle.py -v
+        python3 fixtures/mvp/macos-trace/test_read_capability.py -v
+        # Native SDK/signature controls keep their separate target receipts.
+        python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
+        python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         cargo test --workspace --locked
         cargo clippy --workspace --all-targets --locked -- -D warnings
         ;;
