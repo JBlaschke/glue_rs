@@ -157,6 +157,13 @@ class NormalizedStateTests(unittest.TestCase):
             with self.subTest(change=change), self.assertRaisesRegex(state.StateError, "fork inheritance changed"):
                 unit.event("process-fork", {"parent": "root", "thread": "main", "exec": 0, "call": "fork-a", "child": "child", "pid": 200})
 
+    def test_exec_rejects_changed_descriptor_or_cwd_snapshot_before_success(self):
+        for change in ("fd-flags", "cwd-set"):
+            unit = Units(); unit.thread(); unit.enter("exec-a", "exec")
+            unit.call("change", change, {"fd": 1, "cloexec": True} if change == "fd-flags" else {"object": "other-dir"}, thread="worker")
+            with self.subTest(change=change), self.assertRaisesRegex(state.StateError, "exec inheritance changed"):
+                unit.event("exec-success", {"process": "root", "thread": "main", "exec": 0, "call": "exec-a", "new_exec": 1, "new_thread": "next", "new_tid": 1001, "abandoned_calls": ["exec-a"]})
+
     def test_dup_flags_same_fd_and_exec_close_only_its_descriptors(self):
         unit = Units()
         unit.call("flags", "fd-flags", {"fd": 1, "cloexec": True})
