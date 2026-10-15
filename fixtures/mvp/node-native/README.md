@@ -46,12 +46,47 @@ only copies independently prepared native inputs. Stock Node 24.10.0 exposed a
 mixed-module hook bug; provider discovery rejects that failed capability while
 24.22.0 passes. There is no runtime digest catalog.
 
-All eight shared V02 receipts passed on each tested OS (four cases per major).
-Local evidence, not published release assets:
+Final release validation passed all sixteen shared V02 cases: four cases per
+major on native macOS arm64 and Linux arm64. All eight Linux cases additionally
+passed complete process-tree syscall traces, the no-extraction checker and its
+read-only/create-unlink/denied-write/descendant-write controls. The complete
+macOS tracer is unavailable, so that cell remains unexecuted. Failed or
+interrupted disk-exhaustion attempts were retained separately and excluded.
 
-- Mac: `/private/tmp/glue-v02-node{24,26}-{cjs,esm,resources,native}/receipt.json`
-- Linux: `/private/tmp/glue-node-linux-out/v02-{24.22.0,26.10.0}-node-{cjs,esm,resources,native}/receipt.json`
-- N00: `/private/tmp/glue-node-two-majors-evidence/receipt.json` and
-  `/private/tmp/glue-node-linux-out/n00-receipt/receipt.json`
+The selected macOS development policy is ad-hoc signing. Independently prepared
+copies of the stock Node executable were signed before ingestion; packaging
+preserved those input bytes. Every final Mach-O image passed the separate
+`codesign --verify --strict` policy gate. The unmodified official runtime's
+signature could not be verified on this host; that original failed gate remains
+separate evidence. Developer ID deployment and notarization are unproven.
 
-Final no-extraction process tracing and distribution signing remain R02 checks.
+Exact SHA-256 identities for the final Node acceptance artifacts:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| macOS included launcher | `19a4119d29794f429eae7084566b2db3585612992053958c565e69a9ad202e67` |
+| macOS archive bridge | `1fd132eb9f4715e2d112f28b010e2cd615b429cdaaf3b906b0fe3827ba177194` |
+| macOS ad-hoc Node 24.22.0 input | `badc742a262732fe2e8dd09211ebe8bceaab60c48e10c795506d898b7cb8d91d` |
+| macOS ad-hoc Node 26.10.0 input | `24ca93e297e49c584f301e433cd1ede2ad8deccb7e394ebf339014dd09f833d8` |
+| Linux included launcher | `9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c` |
+| Linux archive bridge | `445d95c45d6e43e821cfb9a8fb3c5036f643a1cd5e4b54b9e6b27a04474d7d51` |
+
+A subsequent Python-only copied-venv builder fix produced Linux launcher
+`8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd`;
+it does not change the Node startup implementation. Node acceptance and R03
+measurements remain scoped to the earlier immutable artifact above.
+
+Local evidence, not raw receipts committed to Git or published release assets:
+
+- Full final matrix and per-case paths: `/private/tmp/glue-node-final-summary.json`.
+- Mac final V02: `/private/tmp/glue-adhoc-v02-{24.22.0,26.10.0}-{node-cjs,node-esm,node-resources,node-native}/receipt.json`.
+- Mac final signature policy: `/private/tmp/glue-node-final-mac-adhoc-signatures.json`.
+- Original official-runtime signature failure: `/private/tmp/glue-node-final-mac-signatures.json`.
+- Linux 24 CJS/ESM/resources: `/private/tmp/glue-node-linux-out/final-v02-24.22.0-node-{cjs,esm,resources}/receipt.json`.
+- Linux 24 native and all 26 cases: `/private/tmp/glue-node-linux-out/final2-v02-{24.22.0,26.10.0}-node-{cjs,esm,resources,native}/receipt.json` (only the cases listed in the full matrix exist).
+- Original N00: `/private/tmp/glue-node-two-majors-evidence/receipt.json` and `/private/tmp/glue-node-linux-out/n00-receipt/receipt.json`.
+
+The final sixteen receipts and retained raw Linux traces were independently
+rechecked with the shared harness checker. R03's Linux Node CJS 10,000-resource
+1/32-rank budget also passed using the included launcher identity above; its
+separate measurement owner retains those receipts.
