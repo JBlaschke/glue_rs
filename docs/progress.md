@@ -1,23 +1,31 @@
 # Implementation progress
 
-## Current direction — 15 October 2026
+## Compact MVP implementation — 15 October 2026
 
-The owner review is distilled into [the revised plan](../PLAN.md),
-[decision 0035](decisions/0035-mvp-delivery-and-runtime-scope.md),
-[MVP contracts](plans/mvp-contract.md), [the task queue](plans/mvp-tasks.md) and
-[memory/expansion gates](plans/memory-roadmap.md). Planning branch:
-`codex/mvp-project-plan`, based on `5bb1ac4`. This update changes documentation
-only; it adds no runtime support and claims no new execution evidence.
-Validation: whitespace/diff checks, local plan-link checks, balanced code fences,
-and the 26-task dependency graph. Runtime tests are not rerun for this plan-only
-change; their prior results remain in the historical record below.
+The 26 cards now have separate `codex/mvp-*` feature branches. The integrated
+review stack is `codex/mvp-r04-docs`; `main` remains unchanged at `6b49cc5`.
+[The task/compatibility ledger](plans/mvp-implementation.md) records all branches,
+executed target/runtime cells, commands and open evidence. No milestone merge or
+release publication was performed.
 
-Current gates M0–M4 are pending. The immediate native-capable MVP uses compact
-deployment, supports Lua 5.4/5.5 and selectable modern Python/Node, and targets
-Linux/macOS. Runtime extraction and automatic user-module recompilation remain
-forbidden. Memory loading, Julia PackageCompiler bundles, mixed-language RPC and
-Windows/BSD have separate later gates. Historical A/G labels below remain a
-record of work under the old plan, not the current dispatch order.
+Implemented: schema-one compact distributions, deterministic atomic builder,
+ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
+modules, stock Python discovery/environment/provider/native paths, stock Node
+CJS/ESM/resources/Node-API, common CLI/config/rebuild, pinned portable CI, shared
+relocated/offline execution, complete extraction oracle and performance harness.
+Historical schema-zero commands and memory experiments remain separate.
+
+The owner chose ad-hoc signing for macOS development acceptance; Developer ID and
+notarization are prerequisites for public binary releases. Current development
+execution covers macOS arm64 and native Linux arm64. Native Linux x86_64 and
+complete macOS process-tree tracing are still required. M1/M2 remain open: no
+missing execution is replaced with a cross-build, snapshot or skipped test.
+
+User instructions and installed tools are in [README](../README.md) and
+[the compact CLI guide](compact-cli.md). Test results, exact runtime versions,
+local evidence locations and host-scoped numeric performance budgets are linked
+from the acceptance ledger. Raw logs/binaries/traces stay outside Git under
+[decision 0030](decisions/0030-evidence-retention.md); publication remains pending.
 
 ## Historical implementation record
 

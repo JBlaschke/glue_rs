@@ -1,44 +1,89 @@
 # glue_rs
 
-A Rust packager and launcher under development for Python, Node.js and Lua apps
-in a read-only archive. The runtime contract forbids payload extraction and
-silent runtime-provider fallback. See [PLAN.md](PLAN.md) for the full design.
+Build a relocatable Linux/macOS distribution from an existing Lua project,
+Python environment or installed Node project. The compact output contains an
+archive for source/resources and a selected runtime plus existing native images.
+The complete output directory is the deployment unit. Execution does not extract
+payloads, install dependencies or compile application modules.
 
-The [revised project plan](PLAN.md) targets a Linux/macOS MVP with simple builders
-for Python/uv environments, Lua 5.4/5.5 directories and installed Node projects.
-Its default delivery is a compact tree prepared at build time: archived source
-and resources plus the selected runtime and existing native libraries. Archive-only
-native loading follows separate memory-mode gates. Both prohibit runtime extraction.
-See [the implementation queue](docs/plans/mvp-tasks.md) for bounded assignments
-and [the MVP contract](docs/plans/mvp-contract.md) for proposed CLI semantics.
-These are planned changes; the commands and restrictions below describe the
-existing experimental implementation.
+The implementation is on the separate `codex/mvp-*` feature branches. `main`
+remains the reviewed planning baseline. See [the 26-task ledger and actual
+acceptance status](docs/plans/mvp-implementation.md). M2 remains open while native
+Linux x86_64 execution and complete macOS tracing are unavailable. The selected
+macOS policy is ad-hoc signing for development; Developer ID and notarization are
+required before public binary releases.
 
-The current implementation packages explicit resources, validates manifest and
-ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
-resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
-5.5.1 source profiles** run archive scripts and resources on matching macOS or GNU
-Linux targets. General native loading, host/archived runtime acquisition,
-general Python/Node compatibility, workers and standalone executables remain pending.
-The archive and manifest are experimental version 0. The historical G0/G1/G2
-labels are superseded by the M0–M4 gates in the revised plan; none of the new
-product gates is claimed complete.
-An experimental worker-message codec and controller ledger are tested through
-synthetic Rust peers over anonymous pipes. Runtime worker execution and
-cross-language calls remain pending; see
-[the protocol fixture](fixtures/worker-protocol/README.md).
-Separate pinned Python metadata profiles expose application `.dist-info`
-through `importlib.metadata`, including plugin entry points and virtual RECORD
-file reads. They reuse the bundled/full-host/install-only providers; see
-[the metadata fixture](fixtures/python-metadata/README.md). The opt-in
-`build-python` adapter packages a bounded source-only installed package tree or
-Python 3.13 venv against an admitted runtime template, without running the input
-interpreter. General wheel installation and native-package ingestion remain pending.
-An opt-in GNU Linux arm64 profile also runs a controlled native Lua closure
-through sealed executable memfds in `glue run`. The optional `python-pbs` build
-also routes the exact controlled PBS source/resource and registered-native profiles
-through `glue doctor` and `glue run`; it requires GNU Linux arm64 and verified
-CPython 3.13.16 headers at build time.
+## Install and build
+
+Use Rust 1.88.0 through Rustup and a C compiler. The installer builds glue-owned
+tools, both Lua helpers and the Node archive bridge:
+
+```sh
+scripts/install-glue.sh /absolute/prefix
+export PATH="/absolute/prefix/bin:$PATH"
+```
+
+Supply already installed dependencies and a matching Python/Node runtime. No
+provider template or hand-written resource inventory is required.
+
+```sh
+mkdir -p dist
+glue build lua ./lua-project --lua 5.4 --entry main.lua --output dist/lua-app
+glue build lua ./lua-project --lua 5.5 --entry main.lua --output dist/lua55-app
+glue build python --project ./python-project --env ./python-project/.venv \
+  --entry main.py --output dist/python-app
+glue build node ./node-project --node /absolute/node/bin/node \
+  --entry dist/main.js --output dist/node-app
+
+./dist/python-app/glue doctor ./dist/python-app/app.glue --json
+./dist/python-app/glue run ./dist/python-app/app.glue -- 'argument with spaces'
+glue inspect dist/python-app/app.glue --json
+glue explain-size dist/python-app/app.glue --json
+glue rebuild dist/python-app/glue.lock.json --output dist/python-rebuilt
+```
+
+Copy the entire output directory to a matching OS/architecture with compatible
+OS, CPU and libc requirements. The included launcher verifies declared payloads
+and host requirements before running. It forwards argv, standard streams,
+signals and exit status directly. Missing payloads are errors.
+
+[CLI/configuration and exact input rules](docs/compact-cli.md) cover module and
+console entries, uv environments, local PBS archives, optional host runtimes,
+normalization, diagnostics, rebuilds and resource limits. [Python
+provider](docs/python-provider.md), [environment inventory](docs/python-inventory.md),
+[native Python](docs/python-native.md), [Node
+provider/resources](crates/glue-runtime-node/README.md), and [native dependency
+collection](docs/native-compact.md) describe their supported interfaces.
+
+## Tested scope and limits
+
+Development execution covers macOS arm64 and native Linux arm64, Lua 5.4.9/5.5.1,
+multiple modern CPython minors/providers, and stock Node 24.22.0/26.10.0. Python's
+native corpus includes NumPy, C++, Rust and CFFI; Node uses prebuilt Node-API
+addons and secondary libraries. Exact versions, commands, receipts and missing
+cells are in [the acceptance record](docs/plans/mvp-implementation.md).
+
+High-level memory delivery is not implemented and fails explicitly. Compact mode
+still opens and hashes deployed native files. Python executable `.pth` hooks,
+editables and extraction-based `as_file` access to archived resources reject;
+Tcl/Tk script-data and general multiprocessing are outside the executed corpus.
+Node exposes a documented read-only fs subset; fd/materialization APIs, V8/NAN
+addons, arbitrary Node-API version-getter code, worker/child bootstrap and module
+URL query/fragment identities are unsupported. Compatible new runtime bytes are
+admitted by capability/ABI checks without editing a digest catalog.
+
+Portable checks use pinned tools via `scripts/ci-portable.sh baseline`, `lua55`
+and `packaging`. Run these suites separately when sharing a Cargo target directory.
+Relocated/offline execution uses `scripts/run-mvp.sh` and
+`scripts/check-mvp-results.py`. Trace, signing and performance gates have their
+own receipts and must not be inferred from skipped portable tests.
+
+## Historical schema-zero reference
+
+The remainder documents the earlier experimental fixture commands. They retain
+their existing version/target restrictions and are independent of the high-level
+compact builders above. Historical memory/native evidence is preserved; it does
+not broaden current MVP acceptance.
 
 ## Build from installed Python packages
 

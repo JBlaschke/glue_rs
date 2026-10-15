@@ -35,7 +35,10 @@ glue build node ./node-project --node /absolute/node/bin/node \
 The output parent must exist and the output directory must be new. Python
 accepts exactly one file/module/console entry, a `--python MAJOR.MINOR[.PATCH]`
 constraint and a matching `--runtime EXECUTABLE_OR_ROOT_OR_LOCAL_PBS_ARCHIVE`.
-A uv-created environment uses the same interface. Node accepts a supplied stock
+A uv-created environment uses the same interface. Environments containing an
+executable `_virtualenv.pth` hook reject by default; the tested uv environment
+uses explicit `--prune app/site/0/_virtualenv.pth`, recorded as an omission.
+Input files remain unchanged. Node accepts a supplied stock
 runtime and optional `--node-version` semver constraint. It checks public hook
 behavior and Node-API capabilities rather than admitting runtime hashes.
 

@@ -1,7 +1,9 @@
 # MVP implementation queue
 
-All tasks below are **pending**, planned against `5bb1ac4` on 15 October 2026.
-This is a dispatchable backlog, not evidence of implementation. Product authority:
+These cards were planned against `5bb1ac4` on 15 October 2026. Their original
+acceptance requirements remain unchanged. See [the implementation ledger](mvp-implementation.md)
+for task branches, actual execution and remaining gates; the cards alone are not
+evidence of completion. Product authority:
 [PLAN.md](../../PLAN.md), [MVP contract](mvp-contract.md),
 [decision 0035](../decisions/0035-mvp-delivery-and-runtime-scope.md).
 

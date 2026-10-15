@@ -1,0 +1,41 @@
+name: Native MVP acceptance
+
+on:
+  push:
+    branches: ['codex/mvp-r04-docs']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mvp-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  linux-x86_64:
+    name: GNU Linux x86_64 / native compact acceptance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GLUE_MVP_CI_ROOT: ${{ runner.temp }}/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install explicit build and trace prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends build-essential ca-certificates curl patchelf python3 strace xz-utils libx11-6 libxext6 libxrender1 libxft2 libxss1 libfontconfig1 libfreetype6
+          rustup toolchain install 1.88.0 --profile minimal
+      - name: Build tools, run offline cases, and measure proposed cost budgets
+        run: bash scripts/ci-mvp-linux.sh
+      - name: Retain receipts, inventories, logs and complete traces
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mvp-native-linux-x86_64-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.GLUE_MVP_CI_ROOT }}/evidence
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9

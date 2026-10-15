@@ -1,7 +1,8 @@
 # glue_rs project plan
 
 Revised 15 October 2026 after the project-owner review. This is the current
-product direction, not a claim that the proposed commands already work.
+product direction. [Implementation and acceptance status](docs/plans/mvp-implementation.md)
+is recorded separately from these requirements.
 Implementation baseline: `5bb1ac4`. This supersedes the 8 October plan's
 four-platform first release, mandatory mixed-language workers, and exact-runtime
 fixture admission as a route to general packaging. Historical G0–G6/A0–A10
@@ -63,8 +64,10 @@ real deliverable for that requirement; it must never silently fall back to files
 
 ## Target workflow
 
-These are proposed commands, not instructions for the current executable.
-The [MVP contract](docs/plans/mvp-contract.md) specifies their semantics.
+These high-level interfaces are implemented on the MVP feature stack. See
+[the CLI guide](docs/compact-cli.md) for prerequisites and [the execution ledger](docs/plans/mvp-implementation.md)
+for commands actually exercised and open target/release gates. The
+[MVP contract](docs/plans/mvp-contract.md) specifies their semantics.
 
 ```sh
 glue build python --env .venv --entry main.py --output dist/my-python-app
