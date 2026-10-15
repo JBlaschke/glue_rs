@@ -1,0 +1,14 @@
+{
+  "revision": 1,
+  "case": "lua55-native",
+  "reference_kind": "stock",
+  "inputs": [
+    {"source": "${GLUE_MVP_LUA55_NATIVE}", "destination": "project"},
+    {"source": "fixtures/mvp/lua-native/reference.lua", "destination": "reference.lua"},
+    {"source": "${GLUE_MVP_LUA55}", "destination": "stock-lua"},
+    {"source": "${GLUE_MVP_HELPERS}/glue-lua55", "destination": "helpers/glue-lua55"}
+  ],
+  "build": {"argv": ["${GLUE_MVP_GLUE}", "build", "lua", "{inputs}/project", "--lua", "5.5", "--helper-dir", "{inputs}/helpers", "--native-abi", "app/module.so=5.5", "--native-abi", "app/failed.so=5.5", "--native-abi", "app/missing.so=5.5", "--native-abi", "app/mismatched.so=5.5", "--output", "{build}"]},
+  "reference": {"argv": ["{inputs}/stock-lua", "{inputs}/reference.lua", "{inputs}/project"]},
+  "expected_exit": 0
+}
