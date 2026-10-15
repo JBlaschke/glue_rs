@@ -1,0 +1,37 @@
+# Independent non-PBS Python 3.14 CI input
+
+`provision-conda.py` prepares a complete prebuilt conda-forge installation before
+any glue build. The checked-in lock contains all 23 package URLs, versions,
+builds, SHA256 and MD5 identities (51,421,065 archive bytes), including CPython
+3.14.8 and libffi 3.7.0. Micromamba 2.3.3 is independently pinned by SHA256.
+
+```sh
+/usr/bin/python3 fixtures/mvp/python-matrix/provision-conda.py \
+  --lock fixtures/mvp/python-matrix/conda-linux-x86_64-3.14.8.lock.json \
+  --work "$ci_root/downloads/python-3.14.8-conda" \
+  --output "$ci_root/runtimes/python-3.14.8" \
+  --evidence "$evidence/provisioning/python-3.14.8-conda"
+```
+
+The helper verifies each downloaded archive before an offline explicit
+installation, records commands and package-manager output, probes conventional
+CPython/ensurepip, then uses the shared execution-input staging helper. It does
+not compile native images or alter the glue builder, launcher or trace oracle.
+Package installation can perform the upstream package's normal prefix setup.
+Only the resulting complete installation is supplied to the existing Python
+source/module/console/native recipes. Keep the additional host native-search
+root: the builder already searches the selected runtime and its `lib` directory.
+
+The lock was cross-resolved as Linux metadata using verified native Mac
+micromamba, with glibc 2.39 as the target virtual package. This is input selection,
+not Linux execution evidence. `--lock` replays the complete closure without
+solving; omitting it deliberately creates a fresh lock requiring independent
+review. No package archives or installed runtime are committed.
+
+The exact libffi package's embedded `info/recipe/build.sh` has SHA256
+`b2264fe2727669e53c25c6bb933cfe9bd0850615bb67ca7cd8d725bd69e7c86c` and
+uses `--disable-exec-static-tramp`. Its embedded recipe identifies feedstock
+commit `dc557589925d228815625e735ff1e63236d5fcd7`. This avoids selecting the
+known PBS static-trampoline configuration; compatibility and absence of
+filesystem code materialization still require the unchanged hosted V02/R02
+checks, including relocation into a path containing spaces.
