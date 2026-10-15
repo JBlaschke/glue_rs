@@ -67,6 +67,59 @@ class ExtractionTests(unittest.TestCase):
         self.trace('1.000000 execve("/payload/glue", ["glue"], 0x0) = 0\n')
         with self.assertRaisesRegex(extraction.TraceError, "no terminal"): self.check()
 
+    def signing_images(self):
+        (self.root / "glue").write_bytes(b"\xcf\xfa\xed\xfefixture")
+        (self.root / "vendor.dylib").write_bytes(b"\xcf\xfa\xed\xfefixture-vendor")
+
+    def signature_tools(self, classes, verification_exit=0, metadata_exit=0, gatekeeper_exit=0):
+        def invoke(argv, **kwargs):
+            if argv[0] == "/usr/sbin/spctl":
+                return SimpleNamespace(returncode=gatekeeper_exit, stdout=b"", stderr=b"assessment")
+            kind = classes[Path(argv[-1]).name]
+            text = {"ad-hoc": b"Signature=adhoc\nTeamIdentifier=not set\n",
+                    "developer-id": b"Authority=Developer ID Application: Existing Vendor (EXAMPLE)\n",
+                    "unknown": b"Signature=unknown\n"}[kind] if "-d" in argv else b""
+            return SimpleNamespace(returncode=metadata_exit if "-d" in argv else verification_exit, stdout=b"", stderr=text)
+        return invoke
+
+    def test_development_policy_accepts_valid_existing_developer_id_and_preserves_classes(self):
+        self.signing_images()
+        classes = {"glue":"ad-hoc", "vendor.dylib":"developer-id"}
+        with patch.object(extraction.subprocess, "run", side_effect=self.signature_tools(classes)) as run:
+            result = extraction.verify_macos(self.root, "ad-hoc")
+        self.assertEqual(result["status"], "passed")
+        self.assertEqual({image["path"]:image["signature"] for image in result["images"]}, classes)
+        self.assertEqual(result["accepted_signature_classes"], ["ad-hoc","developer-id"])
+        self.assertTrue(all(call.args[0][0] == "/usr/bin/codesign" for call in run.call_args_list))
+        self.assertTrue(all("--sign" not in call.args[0] for call in run.call_args_list))
+        self.assertNotIn("gatekeeper", result)
+
+    def test_development_policy_rejects_invalid_unclassified_or_unreadable_signatures(self):
+        self.signing_images()
+        for classes, verification, metadata in [
+            ({"glue":"ad-hoc","vendor.dylib":"developer-id"}, 1, 0),
+            ({"glue":"ad-hoc","vendor.dylib":"unknown"}, 0, 0),
+            ({"glue":"ad-hoc","vendor.dylib":"developer-id"}, 0, 1),
+        ]:
+            with self.subTest(classes=classes, verification=verification, metadata=metadata):
+                with patch.object(extraction.subprocess, "run", side_effect=self.signature_tools(classes,verification,metadata)):
+                    self.assertEqual(extraction.verify_macos(self.root,"ad-hoc")["status"],"failed")
+
+    def test_public_policy_requires_every_developer_id_signature_and_gatekeeper(self):
+        self.signing_images()
+        for classes, gate, expected in [
+            ({"glue":"developer-id","vendor.dylib":"developer-id"},0,"passed"),
+            ({"glue":"ad-hoc","vendor.dylib":"developer-id"},0,"failed"),
+            ({"glue":"developer-id","vendor.dylib":"developer-id"},1,"failed"),
+        ]:
+            with self.subTest(classes=classes,gate=gate):
+                with patch.object(extraction.subprocess,"run",side_effect=self.signature_tools(classes,gatekeeper_exit=gate)):
+                    result=extraction.verify_macos(self.root,"developer-id")
+                self.assertEqual(result["status"],expected)
+                self.assertEqual(result["accepted_signature_classes"],["developer-id"])
+                self.assertIn("not proven",result["notarization"])
+                self.assertEqual(result["gatekeeper"]["exit"],gate)
+
     def test_ad_hoc_policy_never_counts_as_developer_id_or_notarization(self):
         (self.root / "glue").write_bytes(b"\xcf\xfa\xed\xfefixture")
         def codesign(argv, **kwargs):
