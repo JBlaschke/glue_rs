@@ -99,8 +99,9 @@ for dup2 and returned allocation slots for open/dup must be untouched during the
 pending interval; per-slot versions retain close/absence history, so a temporary
 allocation followed by close cannot be mistaken for an unchanged empty slot.
 Relative-open directory anchors and effective cwd versions must also remain
-unchanged; cwd change-and-restore rejects. Fork rejects descriptor-table or process
-cwd changes between its parent-side entry and child birth. Concurrent close/reuse
+unchanged; cwd change-and-restore rejects. Fork and exec reject descriptor-table
+or process cwd changes between entry and child birth / successful exec.
+Concurrent close/reuse
 or even restoration of the same object
 rejects because this model has no observed kernel lookup identity. The entry-time
 binding is a supplied normalized causal-order assumption; a raw adapter cannot

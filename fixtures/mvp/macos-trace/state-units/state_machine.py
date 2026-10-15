@@ -204,9 +204,9 @@ class StateMachine:
             if operation == "cwd-set" or args["object"] is not None: self.object(args["object"], "directory")
         else:
             keys(args, set())
-            if operation == "fork-parent":
-                pending["fork_fd_version"] = process["fd_table_version"]
-                pending["fork_cwd_version"] = process["cwd_version"]
+            if operation in {"fork-parent", "exec"}:
+                pending["inherit_fd_version"] = process["fd_table_version"]
+                pending["inherit_cwd_version"] = process["cwd_version"]
         pending["args"] = dict(args)  # all supported argument values are scalars
         self.call_ids.add(call); thread["pending"] = pending
         self.totals["calls_entered"] += 1
@@ -321,7 +321,7 @@ class StateMachine:
                 call = thread["pending"]
                 require(call is not None and call["call"] == token(data["call"]) and call["operation"] == "fork-parent" and "child" not in call, "fork birth lacks unique pending parent-side call", "pairing")
                 require(thread["cwd"] is None, "fork with thread cwd override is uncalibrated", "unsupported")
-                require(process["fd_table_version"] == call["fork_fd_version"] and process["cwd_version"] == call["fork_cwd_version"],
+                require(process["fd_table_version"] == call["inherit_fd_version"] and process["cwd_version"] == call["inherit_cwd_version"],
                         "fork inheritance changed before normalized child birth", "unsupported")
                 self.add_process(data["child"], data["pid"], process["cwd"], {fd: dict(binding) for fd, binding in process["fds"].items()})
                 call["child"] = data["child"]; self.edges.append([data["parent"], data["child"]])
@@ -330,6 +330,8 @@ class StateMachine:
                 process, thread = self.thread(data["process"], data["thread"], data["exec"])
                 require(thread["pending"] is not None and thread["pending"]["call"] == token(data["call"]) and thread["pending"]["operation"] == "exec", "exec lacks pending call", "pairing")
                 require(thread["cwd"] is None, "exec with thread cwd override is uncalibrated", "unsupported")
+                require(process["fd_table_version"] == thread["pending"]["inherit_fd_version"] and process["cwd_version"] == thread["pending"]["inherit_cwd_version"],
+                        "exec inheritance changed before normalized success", "unsupported")
                 require(number(data["new_exec"]) == process["exec"] + 1, "exec epoch must advance exactly once", "lifecycle")
                 self.retire_threads(data["process"], data["abandoned_calls"], "abandoned-exec")
                 for fd in list(process["fds"]):
