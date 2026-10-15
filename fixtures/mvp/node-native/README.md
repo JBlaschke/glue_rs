@@ -29,7 +29,7 @@ bundles libstdc++/libgcc/libatomic as needed using explicit normalization:
 `GLUE_NODE_TEST_NORMALIZE=1`, and `GLUE_PATCHELF=/path/to/patchelf`. Transformations
 record original/result identities; the input images remain unchanged. Patchelf
 is a separately provisioned test/build prerequisite, never installed by glue.
-No Linux x86_64 or macOS x86_64 execution is claimed.
+Later hosted Linux x86_64 coverage is recorded below; macOS x86_64 remains unexecuted.
 
 Static ELF/Mach-O inspection verifies standard Node-API registration and recognized
 constant-return API-version getters without loading supplied addons. Wrong API
@@ -46,7 +46,7 @@ only copies independently prepared native inputs. Stock Node 24.10.0 exposed a
 mixed-module hook bug; provider discovery rejects that failed capability while
 24.22.0 passes. There is no runtime digest catalog.
 
-Final release validation passed all sixteen shared V02 cases: four cases per
+Earlier release validation passed all sixteen shared V02 cases: four cases per
 major on native macOS arm64 and Linux arm64. All eight Linux cases additionally
 passed complete process-tree syscall traces, the no-extraction checker and its
 read-only/create-unlink/denied-write/descendant-write controls. The complete
@@ -90,3 +90,33 @@ The final sixteen receipts and retained raw Linux traces were independently
 rechecked with the shared harness checker. R03's Linux Node CJS 10,000-resource
 1/32-rank budget also passed using the included launcher identity above; its
 separate measurement owner retains those receipts.
+
+
+Native GNU Linux x86_64 hosted run
+[38796669924](https://github.com/JBlaschke/glue_rs/actions/runs/38796669924)
+subsequently passed all eight Node V02/R02 cases (24.22.0 and 26.10.0,
+CJS/ESM/resources/native), independently replayed from retained receipts and raw
+process-tree traces. Node CJS R03 also passed all empty/baseline/10,000-resource
+variants and first/warm 1/32 ranks. This brings the Node V02 corpus to 24 passing
+cases across macOS arm64, GNU Linux arm64 and native GNU Linux x86_64.
+
+The hosted run explicitly inherits the recorded `traceable-native-syscalls-v1`
+CI seccomp policy for stock references and packaged trees: asynchronous kernel
+I/O returns ENOSYS so the strict syscall oracle can observe file operations.
+This is evidence for that recorded execution environment; unrestricted ring-enabled
+hosts remain unproven. The complete workflow failed on an unrelated Python 3.14
+native input conflict; its Node cases and five R03 reports passed independently.
+
+| Hosted x86_64 artifact | SHA-256 |
+| --- | --- |
+| Included launcher | `80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830` |
+| Archive bridge | `c1643c7ed93a4cc71d6248ca10750d4a989a2deb585fe93e0b831ff3df32447c` |
+| Official Node 24.22.0 input | `67ca5783febb8bf85736c79fcdd92c8d6d465a0eb2a082672bcdfa76a506751c` |
+| Official Node 26.10.0 input | `ab9c8eecf9f82d6693cdc3accced17034065c8d96213b0aa76a7e803d20ae1da` |
+
+[Artifact 12003666300](https://github.com/JBlaschke/glue_rs/actions/runs/38796669924/artifacts/12003666300)
+contains the full receipts/traces; its ZIP SHA256 is
+`9dea9422cefedf9d938164883cb088a82fb3757f6dbc9ed4bfe422ba104d68a8`.
+Local extraction and independent replay summary are
+`/private/tmp/glue-native-x86-evidence-38796669924/independent-replay.json`.
+Raw receipts and traces are not committed to Git.
