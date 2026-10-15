@@ -96,7 +96,7 @@ python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py -v
 
 Exit 0 means supported unit records were classified, including prohibited write
 requests; inspect the `no_output_policy` field. Unsupported/malformed units and
-`--acceptance` exit 1. Input is a regular unlinked file bounded to 1 MiB, 256
+`--acceptance` exit 1. Input is a singly linked regular file bounded to 1 MiB, 256
 records and 8 KiB per line. Tests use synthetic records plus actual standalone
 owned host controls, not fabricated native traces. Guest capture calibration,
 full process/thread/call lifecycle, path/FD provenance and alternate mutation
