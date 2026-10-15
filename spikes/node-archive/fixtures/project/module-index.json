@@ -1,0 +1,16 @@
+{
+  "schema_version":1,"entry":"entry.cjs",
+  "files":{
+    "entry.cjs":{"resource":"entry.cjs","format":"commonjs"},
+    "entry.mjs":{"resource":"entry.mjs","format":"module"},
+    "cached.cjs":{"resource":"cached.cjs","format":"commonjs"},
+    "value.mjs":{"resource":"value.mjs","format":"module"},
+    "config.json":{"resource":"config.json","format":"json"},
+    "node_modules/probe-package/require.cjs":{"resource":"node_modules/probe-package/require.cjs","format":"commonjs"},
+    "node_modules/probe-package/import.mjs":{"resource":"node_modules/probe-package/import.mjs","format":"module"}
+  },
+  "packages":{
+    "":{"name":"probe-app","type":"commonjs","dependencies":{"probe-package":"node_modules/probe-package"}},
+    "node_modules/probe-package":{"name":"probe-package","type":"commonjs","exports":{".":{"import":"./import.mjs","require":"./require.cjs"}},"dependencies":{}}
+  }
+}

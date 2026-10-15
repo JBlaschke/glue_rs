@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://glue.invalid/node-module-index-v1",
+  "title": "Glue logical Node module index v1",
+  "type": "object",
+  "required": ["schema_version", "entry", "files", "packages"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "entry": {"type": "string", "minLength": 1},
+    "files": {"type": "object", "additionalProperties": {"$ref": "#/$defs/file"}},
+    "packages": {"type": "object", "additionalProperties": {"$ref": "#/$defs/package"}}
+  },
+  "$defs": {
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["format"],
+      "properties": {
+        "format": {"enum": ["commonjs", "module", "json", "addon"]},
+        "resource": {"type": "string", "minLength": 1},
+        "deployed": {"type": "string", "minLength": 1},
+        "node_api": {"type": "integer", "minimum": 1}
+      },
+      "oneOf": [
+        {"required": ["resource"], "properties": {"format": {"enum": ["commonjs", "module", "json"]}}, "not": {"required": ["deployed"]}},
+        {"required": ["deployed", "node_api"], "properties": {"format": {"const": "addon"}}, "not": {"required": ["resource"]}}
+      ]
+    },
+    "package": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "type", "dependencies"],
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"enum": ["commonjs", "module"]},
+        "main": {"type": "string"},
+        "exports": {}, "imports": {},
+        "dependencies": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    }
+  }
+}
