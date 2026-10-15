@@ -30,6 +30,16 @@ class ExtractionTests(unittest.TestCase):
         result = self.check()
         self.assertEqual(result["status"], "passed")
         self.assertEqual(result["io"]["read_bytes"], 4)
+        self.assertEqual(result["fds"]["peak_per_process"], 4)
+
+    def test_descriptor_lifecycle_handles_close_ranges_and_exec(self):
+        self.trace(self.root_trace('1.010000 pipe2([3<pipe:[1]>, 4<pipe:[1]>], O_CLOEXEC) = 0\n'
+                                  '1.020000 close_range(3, 4294967295, CLOSE_RANGE_CLOEXEC) = 0\n'
+                                  '1.030000 execve("/payload/helper", ["helper"], 0x0) = 0\n'
+                                  '1.040000 dup(1</evidence/run.stdout>) = 3</evidence/run.stdout>\n'
+                                  '1.050000 close_range(3, ~0U, 0) = 0\n'
+                                  '1.060000 dup(1</evidence/run.stdout>) = 3</evidence/run.stdout>\n'))
+        self.assertEqual(self.check()["fds"]["peak_per_process"], 5)
 
     def test_failed_write_create_unlink_and_shared_map_are_all_rejected(self):
         operations = [

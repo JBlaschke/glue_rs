@@ -255,6 +255,31 @@ def execute(recipe: dict, target: str, output: Path, repository: Path) -> dict:
             argv, cwd, env = command(recipe["prepare"], context)
             commands["prepare"] = run_command("prepare", argv, cwd, env, output, recipe.get("timeout", 120))
             if commands["prepare"]["exit"] != 0: raise HarnessError("fixture preparation failed")
+        if "scale_sources" in recipe:
+            scale = recipe["scale_sources"]
+            count = scale.get("entries")
+            if not isinstance(count, int) or not 1 <= count <= 100_000:
+                raise HarnessError("source scaling needs 1..100000 entries")
+            directory = Path(expand(scale.get("directory", "{inputs}/project/glue_scale_sources"), context))
+            if not directory.resolve().is_relative_to(inputs.resolve()):
+                raise HarnessError("generated scale sources must stay in build inputs")
+            extension = scale.get("extension", "txt")
+            content = {"lua": b"return 0\n", "py": b"value = 0\n", "js": b"module.exports = 0;\n", "txt": b"archived scale resource\n"}.get(extension)
+            if content is None: raise HarnessError("unsupported scale source extension")
+            directory.mkdir(parents=True)
+            for index in range(count):
+                (directory / f"unused_{index:05d}.{extension}").write_bytes(content)
+            receipt["generated_sources"] = {"entries": count, "bytes": count * len(content), "extension": extension}
+        if "empty_entry" in recipe:
+            path = Path(expand(recipe["empty_entry"], context))
+            if not path.resolve().is_relative_to(inputs.resolve()) or not path.is_file():
+                raise HarnessError("empty-runtime entry must be an existing source inside build inputs")
+            if path.suffix == ".lua": content = b"return\n"
+            elif path.suffix == ".py": content = b"pass\n"
+            elif path.suffix in {".js", ".cjs", ".mjs"}: content = b"\n"
+            else: raise HarnessError("empty-runtime entry needs a supported source extension")
+            path.write_bytes(content)
+            receipt["empty_runtime_scope"] = "empty entry; selected input dependency closure preserved"
         before = inventory(inputs)
         (output / "input-inventory.json").write_text(json.dumps(before, sort_keys=True, indent=2) + "\n")
         receipt["input_inventory"] = {"path": "input-inventory.json", **identity(output / "input-inventory.json")}
@@ -268,8 +293,10 @@ def execute(recipe: dict, target: str, output: Path, repository: Path) -> dict:
         status("runtime_reference", commands["reference"]["executed"] and not commands["reference"]["timed_out"] and recipe.get("reference_kind") == "stock")
         built.rename(payload)
         inputs.rename(quarantine)
+        shutil.rmtree(quarantine)
+        receipt["input_copy_disposal"] = "copied inputs deleted after byte-preservation and stock-reference checks, before included execution"
         status("relocated", payload.is_dir() and not built.exists(), path=str(payload))
-        status("input_prefix_absent", not inputs.exists(), original_prefix=str(inputs))
+        status("input_prefix_absent", not inputs.exists() and not quarantine.exists(), original_prefix=str(inputs), copied_alias_absent=not quarantine.exists())
         make_read_only(payload)
         status("payload_read_only", all(path.is_symlink() or path.stat().st_mode & 0o222 == 0 for path in [payload, *payload.rglob("*")]))
         payload_before = inventory(payload)

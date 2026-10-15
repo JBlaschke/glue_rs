@@ -1,0 +1,41 @@
+{
+  "gate": "all listed cases required; missing data and incomplete reports fail",
+  "reports": "CASE/benchmark.json",
+  "revision": 1,
+  "targets": {
+    "aarch64-apple-darwin": {
+      "budgets": [],
+      "reason": "native release timing/size/RSS measured; complete startup syscall trace unavailable",
+      "status": "incomplete"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "budgets": [
+        {
+          "budget": "aarch64-unknown-linux-gnu/lua55-project.json",
+          "case": "lua55-project"
+        },
+        {
+          "budget": "aarch64-unknown-linux-gnu/lua55-native.json",
+          "case": "lua55-native"
+        },
+        {
+          "budget": "aarch64-unknown-linux-gnu/node-cjs.json",
+          "case": "node-cjs"
+        },
+        {
+          "budget": "aarch64-unknown-linux-gnu/python-source-normalized.json",
+          "case": "python-source-normalized"
+        },
+        {
+          "budget": "aarch64-unknown-linux-gnu/python-native-normalized.json",
+          "case": "python-native-normalized"
+        }
+      ]
+    },
+    "x86_64-unknown-linux-gnu": {
+      "budgets": [],
+      "reason": "no native x86_64 execution cell observed",
+      "status": "unavailable"
+    }
+  }
+}
