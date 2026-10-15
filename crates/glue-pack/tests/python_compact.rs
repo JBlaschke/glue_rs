@@ -175,6 +175,18 @@ print(json.dumps({'status':'python-runtime-ok','version':list(sys.version_info[:
         .unwrap()
         .launch
         .clone();
+    if cfg!(target_os = "macos") {
+        let verification = Command::new("/usr/bin/codesign")
+            .args(["--verify", "--strict"])
+            .arg(relocated.join(&launch.executable))
+            .output()
+            .unwrap();
+        assert!(
+            verification.status.success(),
+            "final deployed interpreter signature: {}",
+            String::from_utf8_lossy(&verification.stderr)
+        );
+    }
     let args = launch
         .args
         .iter()

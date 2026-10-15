@@ -229,6 +229,21 @@ fn prepare_impl(
                 provider: DependencyProvider::Runtime,
             });
         }
+        if !environment.runtime.framework.is_empty() {
+            // The stock real framework executable runs without a .app container.
+            // Deploy it as a standalone signed image so final codesign validation
+            // does not infer a bundle resource envelope absent from compact mode.
+            roots.push(NativeSearchRoot {
+                source: environment
+                    .runtime
+                    .executable
+                    .parent()
+                    .ok_or("framework interpreter has no directory")?
+                    .to_owned(),
+                deployed: "runtime/bin".into(),
+                provider: DependencyProvider::Runtime,
+            });
+        }
         roots.extend(super::native::search_roots(
             environment,
             &options.application.project,

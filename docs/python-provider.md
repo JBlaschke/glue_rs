@@ -14,13 +14,19 @@ option; all native edits and re-signing identities are reported by the collector
 Framework discovery chooses the installed real interpreter inside
 `Resources/Python.app/Contents/MacOS/Python`; the usual `bin/pythonX.Y` stub can
 exec an original-prefix app and is unsuitable as the deployed executable.
+With explicit normalization, the real executable deploys as `runtime/bin/Python`.
+This standalone layout permits strict final signature validation without an
+incomplete `.app` bundle resource envelope. The existing core image remains at
+the runtime root, with the executable's dependency rewritten by C04.
 The bootstrap handles frozen-encodings package paths observed in newer stock
 builds, checks the exact interpreter version and rejects prefix fallback before
 application execution. Runtime flags are always `-I -S -B`.
 
 Local PBS full/install-only/stripped archives are inspected with the bounded
 existing tar parser, then staged exclusively at build time. Runtime archives
-have a 1 GiB compressed bound and a 128 MiB retained runtime-member bound (headers,
+have a 1 GiB compressed/staged-runtime bound and a 128 MiB retained-memory bound per
+independently verified selection pass. Larger ordinary full/install-only trees
+are staged in bounded batches (headers,
 static development archives and full-build debug bundles are excluded). Symlink
 aliases resolve to already-validated regular bytes. Full archives select
 `python/install`, install-only inputs select `python`. The source archive identity
@@ -55,7 +61,7 @@ this test alone does not prove no runtime writes or offline isolation.
 `build_with_options` additionally accepts build context recorded in the lock.
 The reserved `glue.expected-runtime` JSON descriptor is compared before atomic
 publication, then removed from recorded options. A mismatch in implementation,
-version, target, ABI or runtime input identities raises `PayloadIntegrity`.
+version, provider, target, ABI or runtime input identities raises `PayloadIntegrity`.
 Public build APIs return stable `Diagnostic` codes; lower-level compatibility
 wrappers retain their prior string-error interface. Runtime version strings keep
 prerelease/build suffixes separately from the numeric ABI tuple.
