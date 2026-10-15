@@ -71,3 +71,13 @@ python3 -m unittest discover -s fixtures/mvp -p 'test_*.py'
 The synthetic tests exercise rejection of input fallback, cache writes, missing
 dependencies, wrong exits, changed bytes, missing offline policy and skipped
 target execution. They do not count as a language/OS product acceptance run.
+
+The optional Linux CI
+[trace environment policy](../../docs/decisions/mvp-v02-ci-trace-environment.md)
+uses `trace_environment.c` to return `ENOSYS` for kernel asynchronous I/O before
+executing a complete case/reference/control or benchmark process tree. Its
+independent probe and `trace_environment.py` retain and verify the helper,
+source and proof identities. This selects a syscall fallback for complete
+tracing; it does not establish unrestricted-host acceptance or provide a
+security sandbox. The combined CI orchestration belongs to the integration
+branch; this V02 branch carries only the helper, evidence checks and tests.
