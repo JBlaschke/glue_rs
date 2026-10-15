@@ -20,7 +20,7 @@ _Static_assert(sizeof(lua_Number) == 8, "Lua number ABI must be float64");
 _Static_assert((lua_Integer)-1 < 0, "Lua integer ABI must be signed");
 _Static_assert(LUA_INT_TYPE == LUA_INT_LONGLONG, "Lua integer type must be long long");
 _Static_assert(LUA_FLOAT_TYPE == LUA_FLOAT_DOUBLE, "Lua number type must be double");
-#ifdef GLUE_LUA_NATIVE
+#if defined(GLUE_LUA_NATIVE) || defined(GLUE_LUA_COMPACT)
 _Static_assert(sizeof(uintptr_t) == sizeof(uint64_t), "Native profile requires 64-bit pointers");
 _Static_assert(sizeof(lua_CFunction) == sizeof(uintptr_t), "Native function pointer representation");
 #endif
@@ -150,13 +150,17 @@ static int push_value(lua_State *L, reply_context *reply, unsigned depth,
         lua_pushinteger(L, (lua_Integer)integer);
         break;
     }
-#ifdef GLUE_LUA_NATIVE
+#if defined(GLUE_LUA_NATIVE) || defined(GLUE_LUA_COMPACT)
     case 5: {
         uint64_t bits = read_u64(L, reply);
         uintptr_t address;
         lua_CFunction initializer;
         if (bits == 0)
             invalid_reply(L);
+#ifndef GLUE_LUA_NATIVE
+        if (!reply->run->compact)
+            invalid_reply(L);
+#endif
         /* This private reply comes only from the preloaded manager's validated
            initializer lease. Bits alone cannot establish an arbitrary address
            is callable. The native profile pins all image handles past close. */
@@ -311,7 +315,7 @@ static int initialize_and_run(lua_State *L) {
 #ifdef GLUE_LUA_NATIVE
     lua_pushboolean(L, 1);
 #else
-    lua_pushboolean(L, 0);
+    lua_pushboolean(L, run->compact);
 #endif
     lua_pushboolean(L, run->compact);
     lua_call(L, 4, 0);

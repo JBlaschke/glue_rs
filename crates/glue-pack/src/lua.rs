@@ -27,6 +27,8 @@ pub struct LuaProjectOptions {
     pub exclusions: Vec<String>,
     /// Logical native root path -> explicitly declared Lua family.
     pub native_abis: BTreeMap<String, String>,
+    pub native_search: Vec<PathBuf>,
+    pub normalize_native_paths: bool,
 }
 
 fn error(code: DiagnosticCode, message: impl Into<String>) -> Diagnostic {
@@ -302,5 +304,108 @@ pub fn build(
 ) -> Result<glue_format::DistributionBuildReport, Diagnostic> {
     let mut options = options.clone();
     options.output = Some(output.to_owned());
-    distribution::build(ingest(&options, limits)?, launcher, output, limits)
+    let mut input = ingest(&options, limits)?;
+    resolve_native(&options, &mut input)?;
+    distribution::build(input, launcher, output, limits)
+}
+
+/// Resolve the already-built native closure while preserving its deployed
+/// layout. This can also be used by an integrator that publishes input itself.
+pub fn resolve_native(
+    options: &LuaProjectOptions,
+    input: &mut DistributionInput,
+) -> Result<(), Diagnostic> {
+    use crate::native::{self, NativeRequest, NativeSearchRoot};
+    use glue_format::DependencyProvider;
+    use std::collections::BTreeSet;
+    if input.native.roots.is_empty() {
+        return Ok(());
+    }
+    let logical_roots = input.native.roots.clone();
+    let mut images = Vec::new();
+    let mut source_by_logical = BTreeMap::new();
+    for (logical, deployed) in &logical_roots {
+        let Some(PayloadSource::File(source)) = input.payloads.get(deployed) else {
+            return Err(error(
+                DiagnosticCode::InvalidConfiguration,
+                format!("native root {logical:?} lacks a file source"),
+            ));
+        };
+        let canonical = fs::canonicalize(source)
+            .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+        source_by_logical.insert(logical.clone(), canonical.clone());
+        images.push(canonical);
+    }
+    let mut search_roots = vec![NativeSearchRoot {
+        source: options.project.clone(),
+        deployed: "native/lua".to_owned(),
+        provider: DependencyProvider::Bundled,
+    }];
+    if let Some(tree) = &options.rocks_tree {
+        let RuntimeAbi::Lua { version, .. } = options.runtime.abi else {
+            unreachable!()
+        };
+        let native_tree = tree.join(format!("lib/lua/5.{}", version.minor));
+        if native_tree.is_dir() {
+            search_roots.push(NativeSearchRoot {
+                source: native_tree,
+                deployed: "native/lua".to_owned(),
+                provider: DependencyProvider::Bundled,
+            });
+        }
+    }
+    for (index, root) in options.native_search.iter().enumerate() {
+        search_roots.push(NativeSearchRoot {
+            source: root.clone(),
+            deployed: format!("native/search/{index}"),
+            provider: DependencyProvider::Bundled,
+        });
+    }
+    let collection = native::collect(&NativeRequest {
+        images,
+        search_roots,
+        target: input.runtime.target.clone(),
+        normalize: options.normalize_native_paths,
+        host_libraries: BTreeSet::new(),
+    })?;
+    let secondary: BTreeSet<_> = collection
+        .inventory
+        .edges
+        .iter()
+        .filter(|edge| {
+            matches!(
+                edge.provider,
+                DependencyProvider::Bundled | DependencyProvider::Runtime
+            )
+        })
+        .map(|edge| edge.resolved.clone())
+        .collect();
+    let mut inventory = collection.inventory;
+    inventory.roots.clear();
+    for (logical, source) in source_by_logical {
+        let deployed = collection.mappings.get(&source).ok_or_else(|| {
+            error(
+                DiagnosticCode::MissingDependency,
+                "native scanner omitted an input image",
+            )
+        })?;
+        if secondary.contains(deployed) && !options.native_abis.contains_key(&logical) {
+            continue;
+        }
+        if !options.native_abis.contains_key(&logical) {
+            return Err(error(
+                DiagnosticCode::RuntimeAbiMismatch,
+                format!(
+                    "Lua native ABI cannot be inferred for {logical:?}; declare its selected Lua family explicitly"
+                ),
+            ));
+        }
+        inventory.roots.insert(logical, deployed.clone());
+    }
+    for deployed in logical_roots.values() {
+        input.payloads.remove(deployed);
+    }
+    input.payloads.extend(collection.payloads);
+    input.native = inventory;
+    Ok(())
 }

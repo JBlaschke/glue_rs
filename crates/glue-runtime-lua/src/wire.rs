@@ -28,6 +28,8 @@ pub(crate) enum Value {
     /// Approved manager token; its native image remains pinned past Lua close.
     #[cfg(feature = "linux-native")]
     NativeFunction(glue_native::NativeInitializer),
+    /// OS-loaded compact helper symbol; its owning manager outlives Lua close.
+    CompactNativeFunction(crate::compact_native::Initializer),
 }
 
 impl Value {
@@ -106,6 +108,12 @@ fn value_length(value: &Value, depth: usize, byte_limit: usize) -> Result<usize,
             }
             checked_length(0, 9, byte_limit)
         }
+        Value::CompactNativeFunction(initializer) => {
+            if initializer.address() == 0 {
+                return Err("native initializer address must not be null".to_owned());
+            }
+            checked_length(0, 9, byte_limit)
+        }
     }
 }
 
@@ -140,6 +148,10 @@ fn write_value(bytes: &mut Vec<u8>, value: &Value) {
         }
         #[cfg(feature = "linux-native")]
         Value::NativeFunction(initializer) => {
+            bytes.push(5);
+            bytes.extend_from_slice(&initializer.address().to_le_bytes());
+        }
+        Value::CompactNativeFunction(initializer) => {
             bytes.push(5);
             bytes.extend_from_slice(&initializer.address().to_le_bytes());
         }

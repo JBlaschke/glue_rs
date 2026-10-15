@@ -203,6 +203,7 @@ dependencies = [
  "cc",
  "glue-format",
  "glue-native",
+ "glue-pack",
  "glue-resources",
  "libc",
  "lua-src",

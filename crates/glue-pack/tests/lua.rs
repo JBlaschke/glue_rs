@@ -63,6 +63,8 @@ impl Directory {
             helper_executable: helper,
             exclusions: Vec::new(),
             native_abis: BTreeMap::new(),
+            native_search: Vec::new(),
+            normalize_native_paths: false,
         }
     }
 }
