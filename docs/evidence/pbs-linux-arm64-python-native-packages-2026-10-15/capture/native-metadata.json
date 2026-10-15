@@ -1,0 +1,1006 @@
+{
+  "archives": {
+    "bundled-archived": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 83377068,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "compression": "stored",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+          "size": 69968
+        },
+        "glue_native_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+          "size": 69960
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "compression": "stored",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+          "size": 69976
+        },
+        "libglue_python_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+          "size": 67552
+        }
+      },
+      "manifest_bytes": 341299,
+      "manifest_sha256": "29d5853cf3aed6a5eed5da46b21cbfcaefa88110293f468213c0ebfb685e24b9",
+      "native": "archived",
+      "runtime": "bundled",
+      "sha256": "7bba260bacea238321af04ef339d7d5bc291d517e3b8ef6cea60b7c7e096d8ec",
+      "zip_directory_offset": 83150883
+    },
+    "bundled-host": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 83097899,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_create_error.so",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c"
+        },
+        "glue_native_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_lifecycle.so",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f"
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_lifecycle_exec_error.so",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2"
+        },
+        "libglue_python_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle/libglue_python_lifecycle.so",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f"
+        }
+      },
+      "manifest_bytes": 340332,
+      "manifest_sha256": "a20138e8b734b338a768472b79af8ccf56a88433f718c30105bdf9f2add9f876",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "4adacfb5e0c83a860f21c2af94bd1a6d84d133e4a09d4f4832e14200f30a33d5",
+      "zip_directory_offset": 82872119
+    },
+    "corrupt-native": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 83377068,
+      "corrupt_native_offset": 558535,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "compression": "stored",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+          "size": 69968
+        },
+        "glue_native_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+          "size": 69960
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "compression": "stored",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+          "size": 69976
+        },
+        "libglue_python_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+          "size": 67552
+        }
+      },
+      "manifest_bytes": 341299,
+      "manifest_sha256": "29d5853cf3aed6a5eed5da46b21cbfcaefa88110293f468213c0ebfb685e24b9",
+      "native": "archived",
+      "runtime": "bundled",
+      "sha256": "89e28fffe87fb75d491135495b1d3554c9a158b1f5e737f540a89415c1d082f1",
+      "zip_directory_offset": 83150883
+    },
+    "host-archived": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 298501,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "compression": "stored",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+          "size": 69968
+        },
+        "glue_native_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+          "size": 69960
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "compression": "stored",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+          "size": 69976
+        },
+        "libglue_python_lifecycle.so": {
+          "compression": "stored",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+          "size": 67552
+        }
+      },
+      "manifest_bytes": 6078,
+      "manifest_sha256": "d7c8610885267f31c5e9fb735249b764191b2352725b829e6b8cc90942bbdc0f",
+      "native": "archived",
+      "runtime": "host",
+      "sha256": "73b4753ce53e2c9b863a230954d30cf1cd8cec78f1cac0a10bcff5fa7058341f",
+      "zip_directory_offset": 295907
+    },
+    "host-host": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 19332,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_create_error.so",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c"
+        },
+        "glue_native_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_lifecycle.so",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f"
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "path": "/build-target/host Python native lifecycle/glue_native_lifecycle_exec_error.so",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2"
+        },
+        "libglue_python_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle/libglue_python_lifecycle.so",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f"
+        }
+      },
+      "manifest_bytes": 5111,
+      "manifest_sha256": "f555ee36c261fd439e54f09a2c29de8d6b40da953a63cb7f589dd638468c3a1f",
+      "native": "host",
+      "runtime": "host",
+      "sha256": "e812b6beb2c0226e6fe59f12eb973bcfe1a55334bbef3ef52adee8c591c5f8c0",
+      "zip_directory_offset": 17143
+    },
+    "missing-host-image": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 83097975,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "path": "/build-target/host Python native lifecycle missing-host-image/glue_native_create_error.so",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c"
+        },
+        "glue_native_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle missing-host-image/glue_native_lifecycle.so",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f"
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "path": "/build-target/host Python native lifecycle missing-host-image/glue_native_lifecycle_exec_error.so",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2"
+        },
+        "libglue_python_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle missing-host-image/libglue_python_lifecycle.so",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f"
+        }
+      },
+      "manifest_bytes": 340408,
+      "manifest_sha256": "5602d39fc31068e9113c79695f2ae40611099b1cdf11c5e588458af122c3a97b",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "a110406943b8c0cc216b044561541077211168bda9271fcdb2fafbc1cfe1631c",
+      "zip_directory_offset": 82872195
+    },
+    "wrong-host-image": {
+      "application": {
+        "app/main.py": {
+          "sha256": "61d10f717e934e7a0a1f28f987df17e97d49015c7ccaae4cfca8257194dd649e",
+          "size": 18754
+        },
+        "app/python/glue_demo/__init__.py": {
+          "sha256": "27b04513ead8342533059e9a8d46b114878ac9e450ee5e1b248566ec5d4b9038",
+          "size": 104
+        },
+        "app/python/glue_demo/answer.py": {
+          "sha256": "d64b06510e86459b77b1eb511fafb91104408aa565d5127137447f2ab43e5e33",
+          "size": 82
+        },
+        "app/python/glue_demo/broken.py": {
+          "sha256": "52245b558e197209c65d84b67e6ef2dcb16f9aabafdf83a238ec27f75d2ac0b7",
+          "size": 80
+        },
+        "app/python/glue_demo/bytecode_only.pyc": {
+          "sha256": "931ab5355458a466bb8bba37d2c8d7a0bf7ca0008d891ae387be746bf9d7c9f3",
+          "size": 30
+        },
+        "app/python/glue_demo/cycle_a.py": {
+          "sha256": "6c6f95e878915459e0b534e292702e38ebb1ffe8b431b64d8907c2125a4857ae",
+          "size": 56
+        },
+        "app/python/glue_demo/cycle_b.py": {
+          "sha256": "a4369978c016d47f15063a9cccf2227f4c5c1be2ff46ba9c6beb666f32e0f666",
+          "size": 48
+        },
+        "app/python/glue_demo/data/binary.bin": {
+          "sha256": "eb0ee1dbca0e93dbbefa6c93cabdbb88b01a8433ff9460c9d272fbaa526418a1",
+          "size": 11
+        },
+        "app/python/glue_demo/data/text.txt": {
+          "sha256": "08bb9f0c0342478c5c9bb4b263ddeb89dc8c5d27dc166b588becc08b2771b30e",
+          "size": 21
+        },
+        "app/python/glue_demo/dependency.py": {
+          "sha256": "2da305ced6727b91c95fab67f567acf269fea032a71ea2c0e23251af08026900",
+          "size": 16
+        },
+        "app/python/glue_demo/encoded.py": {
+          "sha256": "4911a385af4ef68c2d98f8e5e515216c0776337bc607d054abd2a5077200ac0a",
+          "size": 32
+        },
+        "app/python/glue_demo/nested/__init__.py": {
+          "sha256": "eb76618094a48a7bc1e8289d9ca5115fc6a48a3800566b9a742e802e35e61f4c",
+          "size": 25
+        },
+        "app/python/glue_demo/nested/value.py": {
+          "sha256": "88f92d58d9706e16b293aacf471dd930213780b70cbf773d31c716c3e1e84682",
+          "size": 11
+        },
+        "app/python/glue_demo/syntax_error.py": {
+          "sha256": "a59db05b8f427c429471ec6cb7ae9797fa0dcdc5c501eb85f68fc23670985ea5",
+          "size": 52
+        },
+        "app/python/glue_native_pkg/__init__.py": {
+          "sha256": "48085a64e42fb57b7a2ce484eb389cfe1c61b7ca4bafce261aa2e70f187c9c67",
+          "size": 112
+        },
+        "app/python/glue_native_pkg/data/binary.bin": {
+          "sha256": "a36788d73d3a369c8d4134645a343362a667de2c5d7bf002760cf7f1e63f2323",
+          "size": 10
+        },
+        "app/python/glue_native_pkg/data/text.txt": {
+          "sha256": "581cdf67739405f5bd9eb1b47bf87097686b138d61455fc8b436d457944ff83e",
+          "size": 16
+        },
+        "app/python/glue_native_pkg/relative.py": {
+          "sha256": "878998dd35dd34a3e24bd483925f522e2fc7b42a9e3fb65ac5b9afda9ec9ad0c",
+          "size": 107
+        },
+        "app/python/glue_ns/data/info.txt": {
+          "sha256": "3a6efa343a9107c8a8fde38199565accbf668234eaa446b3d7676be1fe5f04a3",
+          "size": 19
+        },
+        "app/python/glue_ns/part.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "app/python/standalone.py": {
+          "sha256": "0a775022744f64c352863f165f2e125898419999bc57c83204772036d0ef6b2e",
+          "size": 12
+        },
+        "python/archive-importer.py": {
+          "sha256": "50e978decd7a65e8dd5a6b6f9297d5e88e67870dad4abd69fbe7762d30a9d88f",
+          "size": 17892
+        }
+      },
+      "bytes": 83097967,
+      "declarations": {
+        "glue_native_create_error.so": {
+          "path": "/build-target/host Python native lifecycle wrong-host-image/glue_native_create_error.so",
+          "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c"
+        },
+        "glue_native_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle wrong-host-image/glue_native_lifecycle.so",
+          "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f"
+        },
+        "glue_native_lifecycle_exec_error.so": {
+          "path": "/build-target/host Python native lifecycle wrong-host-image/glue_native_lifecycle_exec_error.so",
+          "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2"
+        },
+        "libglue_python_lifecycle.so": {
+          "path": "/build-target/host Python native lifecycle wrong-host-image/libglue_python_lifecycle.so",
+          "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f"
+        }
+      },
+      "manifest_bytes": 340400,
+      "manifest_sha256": "913fcaec06647ffd960183901edb1e56456cb00c12c4bb83a634e9744047541f",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "1fbb861a3d0f2e4d24fa4534fb5eaaecfc5b7b2b5b6ccf755f683854a74939b4",
+      "zip_directory_offset": 82872187
+    }
+  },
+  "files": {
+    "glue_native_create_error.so": {
+      "exports": {
+        "PyInit_glue_native_create_error": "function"
+      },
+      "header_256_hex": "7f454c460201010000000000000000000300b7000100000000000000000000004000000000000000900c010000000000000000004000380007004000130012000100000005000000000000000000000000000000000000000000000000000000281a000000000000281a0000000000000000010000000000010000000600000008fe00000000000008fe01000000000008fe010000000000200500000000000020050000000000000000010000000000020000000600000008fe00000000000008fe01000000000008fe0100000000007001000000000000700100000000000008000000000000000400000004000000c801000000000000c801000000000000",
+      "imports": {
+        "PyErr_SetString": "function",
+        "PyExc_RuntimeError": "object",
+        "PyList_New": "function",
+        "PyList_SetItem": "function",
+        "PyLong_FromLong": "function",
+        "PyModuleDef_Init": "function",
+        "PyModule_AddIntConstant": "function",
+        "PyModule_GetState": "function",
+        "PyModule_NewObject": "function",
+        "PyObject_GetAttrString": "function",
+        "Py_DecRef": "function",
+        "Py_IncRef": "function",
+        "glue_python_lifecycle_ledger": "function"
+      },
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 6696,
+          "flags": 5,
+          "memsz": 6696,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 1312,
+          "flags": 6,
+          "memsz": 1312,
+          "offset": 65032,
+          "vaddr": 130568
+        }
+      ],
+      "needed": [
+        "libglue_python_lifecycle.so",
+        "libpython3.13.so.1.0"
+      ],
+      "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+      "size": 69968,
+      "soname": "glue_native_create_error.so"
+    },
+    "glue_native_lifecycle.so": {
+      "exports": {
+        "PyInit_glue_native_lifecycle": "function"
+      },
+      "header_256_hex": "7f454c460201010000000000000000000300b7000100000000000000000000004000000000000000880c010000000000000000004000380007004000130012000100000005000000000000000000000000000000000000000000000000000000181a000000000000181a0000000000000000010000000000010000000600000008fe00000000000008fe01000000000008fe010000000000200500000000000020050000000000000000010000000000020000000600000008fe00000000000008fe01000000000008fe0100000000007001000000000000700100000000000008000000000000000400000004000000c801000000000000c801000000000000",
+      "imports": {
+        "PyErr_SetString": "function",
+        "PyExc_RuntimeError": "object",
+        "PyList_New": "function",
+        "PyList_SetItem": "function",
+        "PyLong_FromLong": "function",
+        "PyModuleDef_Init": "function",
+        "PyModule_AddIntConstant": "function",
+        "PyModule_GetState": "function",
+        "PyModule_NewObject": "function",
+        "PyObject_GetAttrString": "function",
+        "Py_DecRef": "function",
+        "Py_IncRef": "function",
+        "glue_python_lifecycle_ledger": "function"
+      },
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 6680,
+          "flags": 5,
+          "memsz": 6680,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 1312,
+          "flags": 6,
+          "memsz": 1312,
+          "offset": 65032,
+          "vaddr": 130568
+        }
+      ],
+      "needed": [
+        "libglue_python_lifecycle.so",
+        "libpython3.13.so.1.0"
+      ],
+      "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+      "size": 69960,
+      "soname": "glue_native_lifecycle.so"
+    },
+    "glue_native_lifecycle_exec_error.so": {
+      "exports": {
+        "PyInit_glue_native_lifecycle_exec_error": "function"
+      },
+      "header_256_hex": "7f454c460201010000000000000000000300b7000100000000000000000000004000000000000000980c010000000000000000004000380007004000130012000100000005000000000000000000000000000000000000000000000000000000a81a000000000000a81a0000000000000000010000000000010000000600000008fe00000000000008fe01000000000008fe010000000000200500000000000020050000000000000000010000000000020000000600000008fe00000000000008fe01000000000008fe0100000000007001000000000000700100000000000008000000000000000400000004000000c801000000000000c801000000000000",
+      "imports": {
+        "PyErr_SetString": "function",
+        "PyExc_RuntimeError": "object",
+        "PyList_New": "function",
+        "PyList_SetItem": "function",
+        "PyLong_FromLong": "function",
+        "PyModuleDef_Init": "function",
+        "PyModule_AddIntConstant": "function",
+        "PyModule_GetState": "function",
+        "PyModule_NewObject": "function",
+        "PyObject_GetAttrString": "function",
+        "Py_DecRef": "function",
+        "Py_IncRef": "function",
+        "glue_python_lifecycle_ledger": "function"
+      },
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 6824,
+          "flags": 5,
+          "memsz": 6824,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 1312,
+          "flags": 6,
+          "memsz": 1312,
+          "offset": 65032,
+          "vaddr": 130568
+        }
+      ],
+      "needed": [
+        "libglue_python_lifecycle.so",
+        "libpython3.13.so.1.0"
+      ],
+      "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+      "size": 69976,
+      "soname": "glue_native_lifecycle_exec_error.so"
+    },
+    "libglue_python_lifecycle.so": {
+      "exports": {
+        "glue_python_lifecycle_ledger": "function"
+      },
+      "header_256_hex": "7f454c460201010000000000000000000300b7000100000000000000000000004000000000000000e00301000000000000000000400038000700400010000f0001000000050000000000000000000000000000000000000000000000000000009c080000000000009c080000000000000000010000000000010000000600000000ff00000000000000ff01000000000000ff010000000000000100000000000090030000000000000000010000000000020000000600000000ff00000000000000ff01000000000000ff010000000000e000000000000000e00000000000000008000000000000000400000004000000c801000000000000c801000000000000",
+      "imports": {},
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2204,
+          "flags": 5,
+          "memsz": 2204,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 256,
+          "flags": 6,
+          "memsz": 912,
+          "offset": 65280,
+          "vaddr": 130816
+        }
+      ],
+      "needed": [],
+      "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+      "size": 67552,
+      "soname": "libglue_python_lifecycle.so"
+    }
+  },
+  "schema_version": 0
+}

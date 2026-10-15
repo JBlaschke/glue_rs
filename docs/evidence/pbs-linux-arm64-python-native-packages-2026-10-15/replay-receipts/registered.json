@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "scripts/check-linux-python-extension-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/registered/host-host.trace.txt.gz",
+    "--mode",
+    "host-host",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/registered/host-host.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/registered/host-host.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/registered/native-metadata.json",
+    "--archive-bytes",
+    "16264"
+  ],
+  "exit_status": 0,
+  "stdout": "Trace checks passed: complete immutable archive and five-image native admission, exact provider mappings before Python initialization, isolated imports and finalization, exact diagnostics and exit, no mutation, fallback or extra process\n",
+  "stderr": ""
+}

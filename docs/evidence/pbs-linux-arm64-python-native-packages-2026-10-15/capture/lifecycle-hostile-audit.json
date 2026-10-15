@@ -1,0 +1,228 @@
+{
+  "captures": {
+    "bundled-archived": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "bundled-archived",
+      "native_images": 4,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33705
+    },
+    "bundled-archived-app-error": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "bundled-archived-app-error",
+      "native_images": 4,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33708
+    },
+    "bundled-host": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "bundled-host",
+      "native_images": 4,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33794
+    },
+    "bundled-host-app-error": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "bundled-host-app-error",
+      "native_images": 4,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33782
+    },
+    "corrupt-native": {
+      "finalize_marker_verified": false,
+      "ledger_bss_mapping_verified": false,
+      "mode": "corrupt-native",
+      "native_images": 0,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 26604
+    },
+    "host-archived": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "host-archived",
+      "native_images": 4,
+      "parser_growth_and_free_verified": false,
+      "processes": 1,
+      "records": 5911
+    },
+    "host-archived-app-error": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "host-archived-app-error",
+      "native_images": 4,
+      "parser_growth_and_free_verified": false,
+      "processes": 1,
+      "records": 5914
+    },
+    "host-host": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "host-host",
+      "native_images": 4,
+      "parser_growth_and_free_verified": false,
+      "processes": 1,
+      "records": 5997
+    },
+    "host-host-app-error": {
+      "finalize_marker_verified": true,
+      "ledger_bss_mapping_verified": true,
+      "mode": "host-host-app-error",
+      "native_images": 4,
+      "parser_growth_and_free_verified": false,
+      "processes": 1,
+      "records": 6001
+    },
+    "missing-host-image": {
+      "finalize_marker_verified": false,
+      "ledger_bss_mapping_verified": false,
+      "mode": "missing-host-image",
+      "native_images": 0,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33418
+    },
+    "wrong-host-image": {
+      "finalize_marker_verified": false,
+      "ledger_bss_mapping_verified": false,
+      "mode": "wrong-host-image",
+      "native_images": 0,
+      "parser_growth_and_free_verified": true,
+      "processes": 1,
+      "records": 33470
+    }
+  },
+  "controls": [
+    {
+      "control": "missing-ledger-bss",
+      "diagnostic": "line 33566: ledger loader alias closed before its exact BSS tail was zeroed",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "ledger-bss-size",
+      "diagnostic": "line 33566: native lifecycle BSS map differs from the sole owned ledger tail",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "ledger-bss-executable",
+      "diagnostic": "line 33566: native lifecycle BSS map differs from the sole owned ledger tail",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "ledger-bss-foreign-owner",
+      "diagnostic": "line 33566: native lifecycle BSS map differs from the sole owned ledger tail",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "ledger-bss-before-rw",
+      "diagnostic": "line 33565: native lifecycle BSS map differs from the sole owned ledger tail",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "root-historical-gap",
+      "diagnostic": "line 33576: native lifecycle gap guard differs from pinned RX extent and loader order",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "root-rx-span",
+      "diagnostic": "line 33573: native mapping requires exact immutable private segment and fixed-address result",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "changed-native-header",
+      "diagnostic": "line 33558: native lifecycle read differs from the pinned visible ELF header",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "changed-native-population-header",
+      "diagnostic": "line 33542: native lifecycle population differs from the pinned visible ELF header",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "missing-final-ledger",
+      "diagnostic": "native lifecycle closure or final ledger publication is incomplete",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "wrong-final-freed-total",
+      "diagnostic": "line 33700: finalize ledger publication is early, repeated, changed or lacks pinned native owners",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "wrong-final-owned-total",
+      "diagnostic": "line 33700: finalize ledger publication is early, repeated, changed or lacks pinned native owners",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "host-native-source-close-before-final",
+      "diagnostic": "line 5442: native image lifetime ended before process termination",
+      "mode": "host-host",
+      "rejected": true
+    },
+    {
+      "control": "error-missing-final-ledger",
+      "diagnostic": "line 5443: verified host file and ancestor descriptors must outlive app execution",
+      "mode": "host-host-app-error",
+      "rejected": true
+    },
+    {
+      "control": "crc-incomplete-final-native-chunk",
+      "diagnostic": "line 26598: extension diagnostic precedes complete native/runtime admission",
+      "mode": "corrupt-native",
+      "rejected": true
+    },
+    {
+      "control": "wrong-image-control-read-not-mutated",
+      "diagnostic": "line 33452: native lifecycle read differs from the pinned visible ELF header",
+      "mode": "wrong-host-image",
+      "rejected": true
+    },
+    {
+      "control": "packages-parser-growth-size",
+      "diagnostic": "line 92: native package parser growth differs from its exact owned backing",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "packages-missing-parser-free",
+      "diagnostic": "line 33700: native package parser release is not its full grown owner",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "packages-final-before-main",
+      "diagnostic": "line 33697: finalize ledger publication is early, repeated, changed or lacks pinned native owners",
+      "mode": "bundled-archived",
+      "rejected": true
+    },
+    {
+      "control": "packages-final-before-atexit",
+      "diagnostic": "line 33698: finalize ledger publication is early, repeated, changed or lacks pinned native owners",
+      "mode": "bundled-archived",
+      "rejected": true
+    }
+  ],
+  "hostile_trace_controls_rejected": 20,
+  "original_captures_verified": 11,
+  "schema_version": 0
+}

@@ -322,12 +322,18 @@ creation/execution failures. A private integer-only ledger verifies cleanup afte
 actual interpreter finalization, through the same four runtime/native provider
 combinations. An independent stock registration driver checks the same lifecycle.
 
+The [native package-member fixture](fixtures/python-native-packages/README.md)
+uses stock `ExtensionFileLoader` for dotted children of an archive source package.
+Native origins name retained verified descriptors; parent source and resource
+identities remain virtual. This separate profile retains the same native images
+and C boundary while exercising Python's dynamic extension import protocol.
+
 ## Run the pinned Python profiles
 
 The launcher feature is `python-pbs`; the shared executor's build feature is
 `pbs-bootstrap`. The registry admits bounded bundled and explicit-host source applications,
 the two exact bundled/explicit-host source/resource fixtures and the
-registered-native declaration profiles with four independent runtime/native
+registered-native and native-package declaration profiles with four independent runtime/native
 provider combinations. The source profile accepts application-owned entries,
 modules and assets while retaining the exact runtime, startup and stdlib pins.
 See the [source application staging/build workflow](fixtures/python-source-apps/README.md).

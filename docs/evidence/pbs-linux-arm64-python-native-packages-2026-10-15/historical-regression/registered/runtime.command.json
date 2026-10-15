@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "podman",
+    "run",
+    "--rm",
+    "--network=none",
+    "--read-only",
+    "--read-only-tmpfs=false",
+    "--tmpfs",
+    "/tmp:rw,size=1m",
+    "--tmpfs",
+    "/unavailable:ro,mode=000,size=1m",
+    "--mount",
+    "type=volume,source=glue-native-packages-historical-registered-1792049919492914000,destination=/build-target,ro",
+    "--mount",
+    "type=bind,source=/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered,destination=/evidence",
+    "--workdir",
+    "/build-target/runtime-empty",
+    "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "sh",
+    "-c",
+    "chmod 000 /tmp; exec setpriv --reuid=65534 --regid=65534 --clear-groups --no-new-privs sh /build-target/runtime-commands.sh --run"
+  ],
+  "exit_status": 0
+}

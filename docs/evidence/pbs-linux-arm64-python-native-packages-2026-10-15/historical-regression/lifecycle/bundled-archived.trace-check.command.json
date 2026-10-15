@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/Users/johannes.blaschke/Developer/glue_rs/scripts/check-linux-python-native-lifecycle-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/lifecycle/bundled-archived.trace.txt",
+    "--mode",
+    "bundled-archived",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/lifecycle/bundled-archived.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/lifecycle/bundled-archived.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/lifecycle/native-metadata.json",
+    "--archive-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-lifecycle-clean-final-build/relocated Python native lifecycle/bundled-archived.glue"
+  ],
+  "exit_status": 0
+}

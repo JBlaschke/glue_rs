@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "scripts/check-linux-python-native-packages-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/capture/host-host.trace.txt.gz",
+    "--mode",
+    "host-host",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/capture/host-host.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/capture/host-host.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/capture/native-metadata.json",
+    "--archive-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/archives/host-host.glue"
+  ],
+  "exit_status": 0,
+  "stdout": "PASS exact native package trace: host-host\n",
+  "stderr": ""
+}

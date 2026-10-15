@@ -1,0 +1,68 @@
+{
+  "cases": [
+    {
+      "mode": "bundled-archived",
+      "runtime_exit_status": 0,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "bundled-host",
+      "runtime_exit_status": 0,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "host-archived",
+      "runtime_exit_status": 0,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "host-host",
+      "runtime_exit_status": 0,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "bundled-archived-app-error",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "bundled-host-app-error",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "host-archived-app-error",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "host-host-app-error",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "corrupt-native",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "missing-host-image",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    },
+    {
+      "mode": "wrong-host-image",
+      "runtime_exit_status": 1,
+      "trace_check_exit_status": 0
+    }
+  ],
+  "expected_app_errors": 4,
+  "family": "lifecycle",
+  "normal_successes": 4,
+  "only_replacement_probe_differs_from_historical_inputs": true,
+  "post_run_input_hashes_unchanged": true,
+  "preload_rejections": 3,
+  "runtime_cases": 11,
+  "runtime_files": 95,
+  "strict_trace_replays": 11
+}

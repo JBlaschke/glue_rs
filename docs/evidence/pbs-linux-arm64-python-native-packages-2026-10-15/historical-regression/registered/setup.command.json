@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "podman",
+    "run",
+    "--rm",
+    "--network=none",
+    "--read-only",
+    "--read-only-tmpfs=false",
+    "--volume",
+    "glue-native-packages-historical-registered-1792049919492914000:/build-target:rw",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-extensions-final-build:/cached:ro",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-development-build:/new-build:ro",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered:/evidence:rw",
+    "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "sh",
+    "-c",
+    "set -eu; for name in \"runtime-commands.sh\" \"runtime-empty\" \"relocated Python extensions\" \"host Python imports\" \"host Python extensions\" \"host Python extensions missing-host-image\" \"host Python extensions wrong-host-image\"; do cp -a \"/cached/$name\" /build-target/; done; rm \"/build-target/relocated Python extensions/glue-python-bootstrap-probe\"; cp \"/new-build/relocated Python native packages/glue-python-bootstrap-probe\" \"/build-target/relocated Python extensions/glue-python-bootstrap-probe\"; chmod 0555 \"/build-target/relocated Python extensions/glue-python-bootstrap-probe\"; test ! -e /build-target/producer; test ! -e /build-target/include; test ! -e /build-target/native-producer; find /build-target -type f -print0 | sort -z | xargs -0 sha256sum > /evidence/runtime-inputs.sha256; sha256sum --quiet -c /evidence/expected-runtime-inputs.sha256"
+  ],
+  "exit_status": 0
+}

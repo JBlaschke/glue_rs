@@ -26,13 +26,14 @@ pub(super) const FROZEN_SIZE: u64 = 139_523;
 pub(super) const FROZEN_SHA: &str =
     "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7";
 pub(super) type ArchivePreparation = fn(&mut BTreeMap<String, Vec<u8>>) -> Result<Vec<u8>, String>;
-const RESERVED_APP_IDS: [&str; 6] = [
+const RESERVED_APP_IDS: [&str; 7] = [
     "stock-pbs-bootstrap",
     "stock-pbs-host-startup",
     "stock-pbs-archive-imports",
     "stock-pbs-host-archive-imports",
     "stock-pbs-registered-extensions",
     "stock-pbs-native-lifecycle",
+    "stock-pbs-native-packages",
 ];
 
 pub(super) fn limits() -> ArchiveLimits {

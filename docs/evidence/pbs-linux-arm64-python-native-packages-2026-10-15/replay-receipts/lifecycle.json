@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "scripts/check-linux-python-native-lifecycle-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/lifecycle/host-host.trace.txt.gz",
+    "--mode",
+    "host-host",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/lifecycle/host-host.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/lifecycle/host-host.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/docs/evidence/pbs-linux-arm64-python-native-packages-2026-10-15/historical-regression/lifecycle/native-metadata.json"
+  ],
+  "exit_status": 0,
+  "stdout": "PASS exact native lifecycle trace: host-host\n",
+  "stderr": ""
+}

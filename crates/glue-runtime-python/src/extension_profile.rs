@@ -38,6 +38,7 @@ const DEPENDENCY_EXPORT: &str = "glue_python_dependency_answer";
 pub(super) enum Profile {
     V1,
     Lifecycle,
+    PackageImports,
 }
 
 impl Profile {
@@ -45,37 +46,80 @@ impl Profile {
         match self {
             Self::V1 => APP_ID,
             Self::Lifecycle => LIFECYCLE_APP_ID,
+            Self::PackageImports => PACKAGE_APP_ID,
         }
     }
     pub(super) fn roots(self) -> &'static [&'static str] {
         match self {
             Self::V1 => &ROOTS,
-            Self::Lifecycle => &LIFECYCLE_ROOTS,
+            Self::Lifecycle | Self::PackageImports => &LIFECYCLE_ROOTS,
         }
     }
     pub(super) fn dependency(self) -> &'static str {
         match self {
             Self::V1 => DEPENDENCY,
-            Self::Lifecycle => LIFECYCLE_DEPENDENCY,
+            Self::Lifecycle | Self::PackageImports => LIFECYCLE_DEPENDENCY,
         }
     }
     pub(super) fn dependency_export(self) -> &'static str {
         match self {
             Self::V1 => DEPENDENCY_EXPORT,
-            Self::Lifecycle => LIFECYCLE_DEPENDENCY_EXPORT,
+            Self::Lifecycle | Self::PackageImports => LIFECYCLE_DEPENDENCY_EXPORT,
         }
     }
     pub(super) fn python_imports(self) -> &'static [&'static str] {
         match self {
             Self::V1 => &PYTHON_IMPORTS,
-            Self::Lifecycle => &LIFECYCLE_PYTHON_IMPORTS,
+            Self::Lifecycle | Self::PackageImports => &LIFECYCLE_PYTHON_IMPORTS,
         }
     }
     fn application_tail(self) -> &'static [u8] {
         match self {
             Self::V1 => include_bytes!("../../../fixtures/python-extensions/app.py"),
             Self::Lifecycle => include_bytes!("../../../fixtures/python-native-lifecycle/app.py"),
+            Self::PackageImports => {
+                include_bytes!("../../../fixtures/python-native-packages/app.py")
+            }
         }
+    }
+    pub(super) fn package_fullname(self, root: &str) -> Option<String> {
+        (self == Self::PackageImports && self.roots().contains(&root))
+            .then(|| format!("glue_native_pkg.{root}"))
+    }
+    fn extra_resources(self) -> BTreeMap<String, Vec<u8>> {
+        if self != Self::PackageImports {
+            return BTreeMap::new();
+        }
+        macro_rules! file {
+            ($key:literal) => {
+                (
+                    $key.into(),
+                    include_bytes!(concat!(
+                        "../../../fixtures/python-native-packages/input/",
+                        $key
+                    ))
+                    .to_vec(),
+                )
+            };
+        }
+        [
+            file!("app/python/glue_native_pkg/__init__.py"),
+            file!("app/python/glue_native_pkg/relative.py"),
+            file!("app/python/glue_native_pkg/data/text.txt"),
+            file!("app/python/glue_native_pkg/data/binary.bin"),
+        ]
+        .into_iter()
+        .collect()
+    }
+    fn bootstrap(self) -> Vec<u8> {
+        let mut bytes = import_profile::BOOTSTRAP.to_vec();
+        if self == Self::PackageImports {
+            bytes.extend_from_slice(b"\n");
+            bytes.extend_from_slice(include_bytes!(
+                "../../../fixtures/python-native-packages/bootstrap.py"
+            ));
+        }
+        bytes
     }
     fn data_imports(self, name: &str) -> BTreeSet<String> {
         if name == self.dependency() || (self == Self::V1 && name == "glue_native_multi.so") {
@@ -92,10 +136,12 @@ impl Profile {
     fn inspect(self, name: &str, bytes: &[u8]) -> Result<ElfFacts, String> {
         match self {
             Self::V1 => inspect(name, bytes),
-            Self::Lifecycle => inspect_for(self, name, bytes),
+            Self::Lifecycle | Self::PackageImports => inspect_for(self, name, bytes),
         }
     }
 }
+
+pub(super) const PACKAGE_APP_ID: &str = "stock-pbs-native-packages";
 
 pub(super) const LIFECYCLE_APP_ID: &str = "stock-pbs-native-lifecycle";
 pub(super) const LIFECYCLE_DEPENDENCY: &str = "libglue_python_lifecycle.so";
@@ -134,6 +180,14 @@ fn app(profile: Profile) -> Vec<u8> {
     source.extend_from_slice(profile.application_tail());
     source
 }
+fn resource_spec(bytes: &[u8]) -> ResourceSpec {
+    ResourceSpec {
+        size: bytes.len() as u64,
+        sha256: digest(bytes),
+        compression: Compression::Deflate,
+    }
+}
+
 fn app_spec(profile: Profile) -> ResourceSpec {
     let source = app(profile);
     ResourceSpec {
@@ -160,6 +214,15 @@ fn base_manifest(
         .clear();
     for name in profile.names() {
         base.resources.remove(&native_key(&name));
+    }
+    for key in profile.extra_resources().keys() {
+        base.resources.remove(key);
+    }
+    if profile == Profile::PackageImports {
+        base.resources.insert(
+            import_profile::IMPORTER.into(),
+            resource_spec(import_profile::BOOTSTRAP),
+        );
     }
     let bytes = import_profile::app_resources().remove(APP).unwrap();
     base.resources.insert(
@@ -204,7 +267,7 @@ fn overlay(
     {
         return Err(match profile {
             Profile::V1 => "registered native image inventory differs from the five-image profile",
-            Profile::Lifecycle => {
+            Profile::Lifecycle | Profile::PackageImports => {
                 "registered native image inventory differs from the four-image lifecycle profile"
             }
         }
@@ -213,6 +276,15 @@ fn overlay(
     let mut result = base.clone();
     result.app_id = profile.app_id().into();
     result.resources.insert(APP.into(), app_spec(profile));
+    for (key, bytes) in profile.extra_resources() {
+        result.resources.insert(key, resource_spec(&bytes));
+    }
+    if profile == Profile::PackageImports {
+        result.resources.insert(
+            import_profile::IMPORTER.into(),
+            resource_spec(&profile.bootstrap()),
+        );
+    }
     for (name, spec) in specs {
         if spec.size == 0 || spec.size > IMAGE_LIMIT || spec.compression != Compression::Stored {
             return Err(
@@ -488,6 +560,10 @@ pub(super) fn prepare_for(
         );
     }
     resources.insert(APP.into(), app(profile));
+    resources.extend(profile.extra_resources());
+    if profile == Profile::PackageImports {
+        resources.insert(import_profile::IMPORTER.into(), profile.bootstrap());
+    }
     let mut specs = BTreeMap::new();
     for name in profile.names() {
         let bytes = bounded_file(&directory.join(&name), IMAGE_LIMIT)?;
@@ -676,8 +752,12 @@ pub(super) fn read_archive_for(
         .remove(import_profile::IMPORTER)
         .ok_or("missing importer")?;
     let index = imports::Index::new(profile.app_id(), resources)?;
-    let natives = profile.roots().iter().map(|s| (*s).into()).collect();
-    index.reject_external_collisions(&natives)?;
+    if profile == Profile::PackageImports {
+        check_package_index(&index)?;
+    } else {
+        let natives = profile.roots().iter().map(|s| (*s).into()).collect();
+        index.reject_external_collisions(&natives)?;
+    }
     if matches!(runtime, Runtime::Host(_)) {
         index.reject_external_collisions(&host_import_profile::runtime_names()?)?;
     }
@@ -689,6 +769,18 @@ pub(super) fn read_archive_for(
         bootstrap,
         index,
     })
+}
+
+fn check_package_index(index: &imports::Index) -> Result<(), String> {
+    for root in Profile::PackageImports.roots() {
+        let fullname = Profile::PackageImports.package_fullname(root).unwrap();
+        if index.request(format!("resolve\t{fullname}").as_bytes())? != b"blocked\n\n\n" {
+            return Err(
+                "native package member collides with an archive source/package identity".into(),
+            );
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -1260,5 +1352,133 @@ mod tests {
             },
         ];
         assert!(admit_for(Profile::Lifecycle, &drift).is_err());
+    }
+    #[test]
+    fn package_descriptor_reuses_lifecycle_images_with_exact_fullnames_and_new_bytes() {
+        let profile = Profile::PackageImports;
+        assert_eq!(profile.roots(), Profile::Lifecycle.roots());
+        assert_eq!(
+            profile.python_imports(),
+            Profile::Lifecycle.python_imports()
+        );
+        assert_eq!(profile.dependency(), Profile::Lifecycle.dependency());
+        assert_eq!(
+            profile.dependency_export(),
+            Profile::Lifecycle.dependency_export()
+        );
+        assert_eq!(profile.extra_resources().len(), 4);
+        assert!(Profile::V1.extra_resources().is_empty());
+        assert!(Profile::Lifecycle.extra_resources().is_empty());
+        assert_eq!(Profile::V1.bootstrap(), import_profile::BOOTSTRAP);
+        assert_eq!(Profile::Lifecycle.bootstrap(), import_profile::BOOTSTRAP);
+        assert!(profile.bootstrap().starts_with(import_profile::BOOTSTRAP));
+        assert_ne!(profile.bootstrap(), import_profile::BOOTSTRAP);
+        assert_ne!(app(profile), app(Profile::Lifecycle));
+        for root in profile.roots() {
+            assert_eq!(
+                profile.package_fullname(root).unwrap(),
+                format!("glue_native_pkg.{root}")
+            );
+            assert!(Profile::V1.package_fullname(root).is_none());
+            assert!(Profile::Lifecycle.package_fullname(root).is_none());
+        }
+        for name in [
+            "unknown",
+            "glue_native_pkg.glue_native_lifecycle",
+            "glue_native_lifecycle\tforged",
+        ] {
+            assert!(profile.package_fullname(name).is_none());
+        }
+    }
+
+    #[test]
+    fn package_four_provider_cells_preserve_base_and_reject_registered_profiles() {
+        for host in [false, true] {
+            for native in [false, true] {
+                let base = base(host);
+                let manifest = overlay(
+                    Profile::PackageImports,
+                    &base,
+                    &lifecycle_specs(),
+                    native.then_some("/native package images"),
+                )
+                .unwrap();
+                let decoded = Manifest::from_json(&manifest.to_json().unwrap()).unwrap();
+                let (config, directory) = admit_for(Profile::PackageImports, &decoded).unwrap();
+                assert_eq!(
+                    crate::profile::validate(&decoded).unwrap().kind,
+                    crate::profile::Kind::NativePackages
+                );
+                assert_eq!(config.is_some(), host);
+                assert_eq!(directory.is_some(), native);
+                assert_eq!(
+                    base_manifest(Profile::PackageImports, &decoded).unwrap().0,
+                    base
+                );
+                assert_eq!(decoded.runtimes, base.runtimes);
+                assert_eq!(decoded.native_modules.len(), if native { 0 } else { 4 });
+                assert_eq!(decoded.host_imports.len(), if native { 4 } else { 0 });
+                assert!(admit(&decoded).is_err());
+                assert!(admit_for(Profile::Lifecycle, &decoded).is_err());
+                let old = overlay(
+                    Profile::Lifecycle,
+                    &base,
+                    &lifecycle_specs(),
+                    native.then_some("/native lifecycle"),
+                )
+                .unwrap();
+                assert!(admit_for(Profile::PackageImports, &old).is_err());
+            }
+        }
+    }
+
+    #[test]
+    fn package_admission_rejects_altered_importer_assets_and_extra_native_source() {
+        let original = overlay(
+            Profile::PackageImports,
+            &base(true),
+            &lifecycle_specs(),
+            None,
+        )
+        .unwrap();
+        for key in std::iter::once(import_profile::IMPORTER.to_string())
+            .chain(Profile::PackageImports.extra_resources().into_keys())
+        {
+            let mut changed = original.clone();
+            changed.resources.get_mut(&key).unwrap().sha256 = digest(b"changed asset");
+            assert!(admit_for(Profile::PackageImports, &changed).is_err());
+            let mut missing = original.clone();
+            missing.resources.remove(&key);
+            assert!(admit_for(Profile::PackageImports, &missing).is_err());
+        }
+        let mut extra = original;
+        extra.resources.insert(
+            "app/python/glue_native_pkg/glue_native_lifecycle.py".into(),
+            resource_spec(b"substitute"),
+        );
+        assert!(admit_for(Profile::PackageImports, &extra).is_err());
+    }
+
+    #[test]
+    fn package_index_blocks_native_unknowns_and_rejects_source_and_namespace_collisions() {
+        let files = Profile::PackageImports.extra_resources();
+        let index = imports::Index::new(PACKAGE_APP_ID, files.clone()).unwrap();
+        check_package_index(&index).unwrap();
+        assert_eq!(
+            index
+                .request(b"resolve\tglue_native_pkg.glue_native_unknown")
+                .unwrap(),
+            b"blocked\n\n\n"
+        );
+        for key in [
+            "app/python/glue_native_pkg/glue_native_lifecycle.py",
+            "app/python/glue_native_pkg/glue_native_lifecycle/__init__.py",
+            "app/python/glue_native_pkg/glue_native_lifecycle/data.txt",
+        ] {
+            let mut shadowed = files.clone();
+            shadowed.insert(key.into(), b"substitute".to_vec());
+            let index = imports::Index::new(PACKAGE_APP_ID, shadowed).unwrap();
+            assert!(check_package_index(&index).is_err());
+        }
     }
 }

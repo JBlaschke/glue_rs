@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/Users/johannes.blaschke/Developer/glue_rs/scripts/check-linux-python-extension-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/host-host-app-error.trace.txt",
+    "--mode",
+    "host-host-app-error",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/host-host-app-error.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/host-host-app-error.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/native-metadata.json",
+    "--archive-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-extensions-final-build/relocated Python extensions/host-host.glue"
+  ],
+  "exit_status": 0
+}
