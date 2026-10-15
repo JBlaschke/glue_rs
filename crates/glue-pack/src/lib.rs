@@ -4,6 +4,8 @@
 //! discovers, installs, downloads or executes missing dependencies, and it is
 //! separate from the runtime's read-only archive reader.
 
+pub mod distribution;
+
 #[cfg(feature = "python")]
 pub mod python;
 

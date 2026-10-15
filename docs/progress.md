@@ -516,3 +516,18 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
   passed. Examples round-trip all three language descriptors, reject ambiguous
   modes, path collisions, escapes, cycles and runtime mismatches.
 - Decision 0036 describes the schema change. Runtime execution is subsequent work.
+
+## MVP implementation — C02 (15 October 2026)
+
+- Branch `codex/mvp-c02-distribution`, based on C01 `c599587`; result: branch tip.
+- Added bounded shared staging/build API, deterministic archive/lock/report,
+  launcher and notices, payload modes/internal links, exclusive atomic directory
+  publication and output/staging traversal exclusion. Native bytes stay deployed.
+- Product bounds: 100,000 archive entries, 1 GiB archived input, 8 GiB deployed
+  payload and 100,000 deployed files (configurable); original archive decode,
+  per-entry and central-directory bounds remain enforced.
+- `cargo test -p glue-pack --locked`: 24 tests passed on macOS arm64/Rust 1.88.0,
+  including deterministic distinct roots, overlap, collisions, missing/escaped
+  input, output preservation, safe links, modes and complete size accounting.
+- The exclusive rename boundary uses the platform's no-replace primitive.
+  Linux native execution remains a target-cell check; no release gate is claimed.

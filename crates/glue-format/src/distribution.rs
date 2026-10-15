@@ -173,9 +173,9 @@ pub enum DiagnosticCode {
 pub struct Diagnostic {
     pub code: DiagnosticCode,
     pub message: String,
-    pub input: Option<String>,
-    pub target: Option<String>,
-    pub runtime: Option<String>,
+    pub input: Option<Box<str>>,
+    pub target: Option<Box<str>>,
+    pub runtime: Option<Box<str>>,
     pub remedy: String,
 }
 impl Diagnostic {
