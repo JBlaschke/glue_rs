@@ -1,0 +1,1465 @@
+{
+  "cache": "uncontrolled OS page cache; first and warm labels denote fresh interpreter observations, no cold filesystem claim",
+  "host": {
+    "cpu": {
+      "CPU architecture": "8",
+      "CPU implementer": "0x61",
+      "CPU part": "0x000",
+      "CPU revision": "0",
+      "CPU variant": "0x0",
+      "Features": "fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 sme2 smei16i32 smebi32i32"
+    },
+    "cpu_count": 4,
+    "fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+    "host_boot_id": "8251dab0-af98-443c-b05f-c1907763fa23",
+    "kernel": "7.1.4-200.fc44.aarch64",
+    "libc": [
+      "glibc",
+      "2.36"
+    ],
+    "target": "aarch64-unknown-linux-gnu"
+  },
+  "launcher_build_provenance": {
+    "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd": {
+      "authority": "captured final release binary SHA; parent supplied source hint",
+      "dirty_state": "root had uncommitted R04 documentation during build; do not describe as clean exact-commit build",
+      "source_hint": "913eef9"
+    },
+    "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c": {
+      "authority": "captured final release binary SHA; no clean-tree claim",
+      "source_hint": "1076565"
+    }
+  },
+  "limitations": [
+    "PSS/FD sampled launcher values are lower bounds; traced FD peak covers all processes",
+    "time/RSS budgets are scoped to the recorded host boot",
+    "complete Mac syscall tracing and native Linuxx86_64 unavailable",
+    "ad-hoc development signing; Developer ID+notarization required before public release"
+  ],
+  "macos_observation": {
+    "gap": "complete startup syscall tracing unavailable",
+    "host": {
+      "cpu": "arm",
+      "cpu_count": 14,
+      "fingerprint": "c75d68572218ba776b68ef03d2ed92c740f57fe8b6eb11e4e7eaa15c233dc767",
+      "kernel": "25.6.0",
+      "libc": [
+        "",
+        ""
+      ],
+      "target": "aarch64-apple-darwin"
+    },
+    "raw_report": "/private/tmp/glue-r03-macos-lua55-release/benchmark.json",
+    "report": {
+      "sha256": "49b3ce45c97e5eab39fc53597fa0dc61d43a94726701c8cf07a41ad9c133d3e5",
+      "size": 170491
+    },
+    "status": "incomplete",
+    "variants": [
+      {
+        "costs": {
+          "archive_bytes": 2096,
+          "archived_uncompressed_bytes": 52,
+          "deployed_bytes": 6679576,
+          "deployed_directories": 2,
+          "deployed_files": 6,
+          "deployed_symlinks": 0,
+          "native_bytes": 0,
+          "runtime_bytes": 1751216
+        },
+        "measurements": [
+          {
+            "elapsed_max_seconds": 0.02633,
+            "elapsed_median_seconds": 0.02633,
+            "label": "first",
+            "peak_rss_max_bytes": 2932736,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.070439,
+            "elapsed_median_seconds": 0.0354195,
+            "label": "first",
+            "peak_rss_max_bytes": 2932736,
+            "ranks": 32,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.038119,
+            "elapsed_median_seconds": 0.038119,
+            "label": "warm",
+            "peak_rss_max_bytes": 2883584,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.041796,
+            "elapsed_median_seconds": 0.032207,
+            "label": "warm",
+            "peak_rss_max_bytes": 2965504,
+            "ranks": 32,
+            "semantics_match": true
+          }
+        ],
+        "variant": "empty-runtime"
+      },
+      {
+        "costs": {
+          "archive_bytes": 2277,
+          "archived_uncompressed_bytes": 350,
+          "deployed_bytes": 6679745,
+          "deployed_directories": 2,
+          "deployed_files": 6,
+          "deployed_symlinks": 0,
+          "native_bytes": 0,
+          "runtime_bytes": 1751216
+        },
+        "measurements": [
+          {
+            "elapsed_max_seconds": 0.029604,
+            "elapsed_median_seconds": 0.029604,
+            "label": "first",
+            "peak_rss_max_bytes": 2916352,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.063951,
+            "elapsed_median_seconds": 0.0325675,
+            "label": "first",
+            "peak_rss_max_bytes": 2998272,
+            "ranks": 32,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.017489,
+            "elapsed_median_seconds": 0.017489,
+            "label": "warm",
+            "peak_rss_max_bytes": 2916352,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.038138,
+            "elapsed_median_seconds": 0.026506500000000002,
+            "label": "warm",
+            "peak_rss_max_bytes": 3031040,
+            "ranks": 32,
+            "semantics_match": true
+          }
+        ],
+        "variant": "baseline"
+      },
+      {
+        "costs": {
+          "archive_bytes": 3582277,
+          "archived_uncompressed_bytes": 90350,
+          "deployed_bytes": 11899747,
+          "deployed_directories": 2,
+          "deployed_files": 6,
+          "deployed_symlinks": 0,
+          "native_bytes": 0,
+          "runtime_bytes": 1751216
+        },
+        "measurements": [
+          {
+            "elapsed_max_seconds": 0.142016,
+            "elapsed_median_seconds": 0.142016,
+            "label": "first",
+            "peak_rss_max_bytes": 24231936,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.607998,
+            "elapsed_median_seconds": 0.504555,
+            "label": "first",
+            "peak_rss_max_bytes": 25935872,
+            "ranks": 32,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.139474,
+            "elapsed_median_seconds": 0.139474,
+            "label": "warm",
+            "peak_rss_max_bytes": 24723456,
+            "ranks": 1,
+            "semantics_match": true
+          },
+          {
+            "elapsed_max_seconds": 0.710188,
+            "elapsed_median_seconds": 0.565545,
+            "label": "warm",
+            "peak_rss_max_bytes": 25853952,
+            "ranks": 32,
+            "semantics_match": true
+          }
+        ],
+        "variant": "scaled"
+      }
+    ]
+  },
+  "native_heavy_thread_policy": "No explicit BLAS/OpenMP override; inherited environment cleared; 4CPU VM",
+  "ranks": [
+    1,
+    32
+  ],
+  "raw_evidence_root": "/private/tmp/glue-r03-linux-release-evidence",
+  "reader_syscalls": {
+    "archive": {
+      "sha256": "2c9c37ee8a0c27aa1e0ba5ff1fd1f508705d9486066d49a54985f7fd534026be",
+      "size": 3582282
+    },
+    "buffered": {
+      "lseek": 7,
+      "read": 42
+    },
+    "command": "strace -qq -c -e trace=read,lseek reader-cost plain|buffered ARCHIVE; same archive, canonical validation retained",
+    "plain": {
+      "lseek": 60022,
+      "read": 60027
+    },
+    "resources": 10003,
+    "summaries": {
+      "buffered": {
+        "sha256": "52cbf8525772c666636e788b38f044b964ef3c916953aeba67763bb68feb5ad2",
+        "size": 365
+      },
+      "plain": {
+        "sha256": "e17be77f0d1e857fd1e7cbdeefc6ecd40a9edab5d7ac4a318fea331cec43400c",
+        "size": 365
+      }
+    }
+  },
+  "reports": [
+    {
+      "case": "lua55-project",
+      "measurement_tool": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-D_DARWIN_C_SOURCE",
+          "-D_DEFAULT_SOURCE",
+          "/harness/fixtures/mvp/measure.c",
+          "-o",
+          "/evidence/lua55-project/measure-process"
+        ],
+        "executable": {
+          "sha256": "0d19f3768e234b9ef3ce418f4ee75d530ec1afe6274f60cc1409670c0e80577b",
+          "size": 71288
+        },
+        "method": "minimal native parent uses wait4; no Python fork RSS floor",
+        "source": {
+          "sha256": "cd6ef9427d85e4b02064d0f879b6ed9830fdbe8a40bdbf940982d693ed0a679f",
+          "size": 2255
+        }
+      },
+      "raw_report": "/private/tmp/glue-r03-linux-release-evidence/lua55-project/benchmark.json",
+      "report": {
+        "sha256": "dd9b558b5c23dc79f6a1e2c9704054bf4e4626c7a0f6f91a83e010b0c3c19f6c",
+        "size": 173313
+      },
+      "status": "passed",
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "0dfa5895f9acf12c8637519b51ff06a94cd5a394ad9809b7229f34b4b54a2cb6",
+            "size": 2101
+          },
+          "costs": {
+            "archive_bytes": 2101,
+            "archived_uncompressed_bytes": 52,
+            "deployed_bytes": 7645433,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 14,
+            "read": 134,
+            "read_bytes": 7654258,
+            "seek": 4,
+            "stat": 14
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.009271558,
+              "elapsed_median_seconds": 0.009271558,
+              "label": "first",
+              "peak_rss_max_bytes": 3428352,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.070493071,
+              "elapsed_median_seconds": 0.052932716500000004,
+              "label": "first",
+              "peak_rss_max_bytes": 3698688,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.008390412,
+              "elapsed_median_seconds": 0.008390412,
+              "label": "warm",
+              "peak_rss_max_bytes": 3502080,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.082432362,
+              "elapsed_median_seconds": 0.0643260265,
+              "label": "warm",
+              "peak_rss_max_bytes": 3633152,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "0fd7871a2bdddb88ecc5853439a5ca16e53237d57e149f2ccb3facee3f357ba7",
+            "size": 2282
+          },
+          "costs": {
+            "archive_bytes": 2282,
+            "archived_uncompressed_bytes": 350,
+            "deployed_bytes": 7645602,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 14,
+            "read": 134,
+            "read_bytes": 7654590,
+            "seek": 4,
+            "stat": 15
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.008918391,
+              "elapsed_median_seconds": 0.008918391,
+              "label": "first",
+              "peak_rss_max_bytes": 3506176,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.066712164,
+              "elapsed_median_seconds": 0.046002999,
+              "label": "first",
+              "peak_rss_max_bytes": 3530752,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.008795085,
+              "elapsed_median_seconds": 0.008795085,
+              "label": "warm",
+              "peak_rss_max_bytes": 3493888,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.080707074,
+              "elapsed_median_seconds": 0.0559366565,
+              "label": "warm",
+              "peak_rss_max_bytes": 3678208,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "2c9c37ee8a0c27aa1e0ba5ff1fd1f508705d9486066d49a54985f7fd534026be",
+            "size": 3582282
+          },
+          "costs": {
+            "archive_bytes": 3582282,
+            "archived_uncompressed_bytes": 90350,
+            "deployed_bytes": 12865604,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 14,
+            "read": 207,
+            "read_bytes": 14976514,
+            "seek": 15,
+            "stat": 15
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.091021256,
+              "elapsed_median_seconds": 0.091021256,
+              "label": "first",
+              "peak_rss_max_bytes": 18382848,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.964729776,
+              "elapsed_median_seconds": 0.8902407305,
+              "label": "first",
+              "peak_rss_max_bytes": 18489344,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.087260143,
+              "elapsed_median_seconds": 0.087260143,
+              "label": "warm",
+              "peak_rss_max_bytes": 18436096,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.999592286,
+              "elapsed_median_seconds": 0.9465797684999999,
+              "label": "warm",
+              "peak_rss_max_bytes": 18436096,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "case": "lua55-native",
+      "measurement_tool": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-D_DARWIN_C_SOURCE",
+          "-D_DEFAULT_SOURCE",
+          "/harness/fixtures/mvp/measure.c",
+          "-o",
+          "/evidence/lua55-native/measure-process"
+        ],
+        "executable": {
+          "sha256": "0d19f3768e234b9ef3ce418f4ee75d530ec1afe6274f60cc1409670c0e80577b",
+          "size": 71288
+        },
+        "method": "minimal native parent uses wait4; no Python fork RSS floor",
+        "source": {
+          "sha256": "cd6ef9427d85e4b02064d0f879b6ed9830fdbe8a40bdbf940982d693ed0a679f",
+          "size": 2255
+        }
+      },
+      "raw_report": "/private/tmp/glue-r03-linux-release-evidence/lua55-native/benchmark.json",
+      "report": {
+        "sha256": "8a76e2a79ffc0c99f3bb38a0a4a292f818e45db168b964d440b5d40a58811a6d",
+        "size": 174085
+      },
+      "status": "passed",
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "48c95618490132b1faa6f6fd98a8fc6805151ce03816371a976b6abfdffb3673",
+            "size": 2447
+          },
+          "costs": {
+            "archive_bytes": 2447,
+            "archived_uncompressed_bytes": 7,
+            "deployed_bytes": 7787865,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 140208,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 19,
+            "read": 162,
+            "read_bytes": 9586768,
+            "seek": 4,
+            "stat": 21
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.010418986,
+              "elapsed_median_seconds": 0.010418986,
+              "label": "first",
+              "peak_rss_max_bytes": 5197824,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.09775193,
+              "elapsed_median_seconds": 0.0597565885,
+              "label": "first",
+              "peak_rss_max_bytes": 5324800,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.009693108,
+              "elapsed_median_seconds": 0.009693108,
+              "label": "warm",
+              "peak_rss_max_bytes": 5206016,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.085924818,
+              "elapsed_median_seconds": 0.055852333500000004,
+              "label": "warm",
+              "peak_rss_max_bytes": 5283840,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "078587232583fc27b650b16dec3192fd7665b121a386ba0be8f72298f396fc93",
+            "size": 2869
+          },
+          "costs": {
+            "archive_bytes": 2869,
+            "archived_uncompressed_bytes": 1212,
+            "deployed_bytes": 7788278,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 140208,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 28,
+            "read": 164,
+            "read_bytes": 9589246,
+            "seek": 4,
+            "stat": 31
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.012207406,
+              "elapsed_median_seconds": 0.012207406,
+              "label": "first",
+              "peak_rss_max_bytes": 5210112,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.092725167,
+              "elapsed_median_seconds": 0.0683629635,
+              "label": "first",
+              "peak_rss_max_bytes": 5246976,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.011896036,
+              "elapsed_median_seconds": 0.011896036,
+              "label": "warm",
+              "peak_rss_max_bytes": 5210112,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.087395618,
+              "elapsed_median_seconds": 0.0545002985,
+              "label": "warm",
+              "peak_rss_max_bytes": 5365760,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "12a190e4e7e58b99bca94b277d27cf3bac7efc2551e1b99eca81822e85f347c8",
+            "size": 3582869
+          },
+          "costs": {
+            "archive_bytes": 3582869,
+            "archived_uncompressed_bytes": 91212,
+            "deployed_bytes": 13008279,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 140208,
+            "runtime_bytes": 2109736
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 28,
+            "read": 236,
+            "read_bytes": 16845534,
+            "seek": 14,
+            "stat": 31
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.092962903,
+              "elapsed_median_seconds": 0.092962903,
+              "label": "first",
+              "peak_rss_max_bytes": 18440192,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.008277984,
+              "elapsed_median_seconds": 0.934357568,
+              "label": "first",
+              "peak_rss_max_bytes": 18448384,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.087124585,
+              "elapsed_median_seconds": 0.087124585,
+              "label": "warm",
+              "peak_rss_max_bytes": 18382848,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.952481072,
+              "elapsed_median_seconds": 0.817961969,
+              "label": "warm",
+              "peak_rss_max_bytes": 18444288,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "5.5.1",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "case": "node-cjs",
+      "measurement_tool": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-D_DARWIN_C_SOURCE",
+          "-D_DEFAULT_SOURCE",
+          "/harness/fixtures/mvp/measure.c",
+          "-o",
+          "/evidence/node-cjs/measure-process"
+        ],
+        "executable": {
+          "sha256": "0d19f3768e234b9ef3ce418f4ee75d530ec1afe6274f60cc1409670c0e80577b",
+          "size": 71288
+        },
+        "method": "minimal native parent uses wait4; no Python fork RSS floor",
+        "source": {
+          "sha256": "cd6ef9427d85e4b02064d0f879b6ed9830fdbe8a40bdbf940982d693ed0a679f",
+          "size": 2255
+        }
+      },
+      "raw_report": "/private/tmp/glue-r03-linux-release-evidence/node-cjs/benchmark.json",
+      "report": {
+        "sha256": "41629c3b7e66819c3eb2b41d2bc7396f98ba5d05eab43be8a45861ae9ce1e0d2",
+        "size": 174966
+      },
+      "status": "passed",
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "f90d5916e70e5a19177130b4268c7bc2dfed4fc5825f876bbdf5f7c4841ac046",
+            "size": 10584
+          },
+          "costs": {
+            "archive_bytes": 10584,
+            "archived_uncompressed_bytes": 2985,
+            "deployed_bytes": 133189874,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 126034776
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 55,
+            "read": 2166,
+            "read_bytes": 135820803,
+            "seek": 4,
+            "stat": 66
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.154962808,
+              "elapsed_median_seconds": 0.154962808,
+              "label": "first",
+              "peak_rss_max_bytes": 48939008,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.25558713,
+              "elapsed_median_seconds": 1.194669601,
+              "label": "first",
+              "peak_rss_max_bytes": 49315840,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.146004244,
+              "elapsed_median_seconds": 0.146004244,
+              "label": "warm",
+              "peak_rss_max_bytes": 49061888,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.35383367,
+              "elapsed_median_seconds": 1.2506343885,
+              "label": "warm",
+              "peak_rss_max_bytes": 49029120,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "24.22.0",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "4df62a285948eb71beddef33070f76fe8a0f6724ad26096cc90db7825ea61a86",
+            "size": 10769
+          },
+          "costs": {
+            "archive_bytes": 10769,
+            "archived_uncompressed_bytes": 3329,
+            "deployed_bytes": 133190036,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 126034776
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 56,
+            "read": 2166,
+            "read_bytes": 135821088,
+            "seek": 4,
+            "stat": 68
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.142635277,
+              "elapsed_median_seconds": 0.142635277,
+              "label": "first",
+              "peak_rss_max_bytes": 49729536,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.274837554,
+              "elapsed_median_seconds": 1.2124720005,
+              "label": "first",
+              "peak_rss_max_bytes": 49455104,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.149411836,
+              "elapsed_median_seconds": 0.149411836,
+              "label": "warm",
+              "peak_rss_max_bytes": 49782784,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.31154723,
+              "elapsed_median_seconds": 1.2351754955,
+              "label": "warm",
+              "peak_rss_max_bytes": 49852416,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "24.22.0",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "a7f7ba2e485b10ba859499d52c7f5b1b9f5321e93913160be2759a87490b0039",
+            "size": 3617516
+          },
+          "costs": {
+            "archive_bytes": 3617516,
+            "archived_uncompressed_bytes": 1273329,
+            "deployed_bytes": 138396784,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 126034776
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 57,
+            "read": 2243,
+            "read_bytes": 143287082,
+            "seek": 24,
+            "stat": 68
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "9c47835813a1e9dd530d5ed9073ef2f7415323a46428f5d4d144d7e1d049014c",
+            "size": 5530112
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.332640462,
+              "elapsed_median_seconds": 0.332640462,
+              "label": "first",
+              "peak_rss_max_bytes": 84254720,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 3.926540298,
+              "elapsed_median_seconds": 3.7490923935,
+              "label": "first",
+              "peak_rss_max_bytes": 87764992,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.404278059,
+              "elapsed_median_seconds": 0.404278059,
+              "label": "warm",
+              "peak_rss_max_bytes": 85082112,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 2.88288238,
+              "elapsed_median_seconds": 2.755591893,
+              "label": "warm",
+              "peak_rss_max_bytes": 86663168,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "24.22.0",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "case": "python-source-normalized",
+      "measurement_tool": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-D_DARWIN_C_SOURCE",
+          "-D_DEFAULT_SOURCE",
+          "/harness/fixtures/mvp/measure.c",
+          "-o",
+          "/evidence/python-source-normalized/measure-process"
+        ],
+        "compiler": {
+          "identity": {
+            "sha256": "dc53dbc5a583d03ae8ed6272ca9afc0f58873f9f9b86dd7d448b17fb3f88a8d0",
+            "size": 1319624
+          },
+          "path": "/usr/bin/cc",
+          "version": "cc (Debian 12.2.0-14+deb12u1) 12.2.0"
+        },
+        "executable": {
+          "sha256": "0d19f3768e234b9ef3ce418f4ee75d530ec1afe6274f60cc1409670c0e80577b",
+          "size": 71288
+        },
+        "method": "minimal native parent uses wait4; no Python fork RSS floor",
+        "source": {
+          "sha256": "cd6ef9427d85e4b02064d0f879b6ed9830fdbe8a40bdbf940982d693ed0a679f",
+          "size": 2255
+        }
+      },
+      "raw_report": "/private/tmp/glue-r03-linux-release-evidence/python-source-normalized/benchmark.json",
+      "report": {
+        "sha256": "52e5e04c90a67e63a4585687ba2727b3797456cd06ec0735d35999e0db2fc846",
+        "size": 528495
+      },
+      "status": "passed",
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "6abbe053bc8c8b0fa7e650b21bc2ab88299464b7e683c68695258118cb9aea8f",
+            "size": 93344
+          },
+          "costs": {
+            "archive_bytes": 93344,
+            "archived_uncompressed_bytes": 504,
+            "deployed_bytes": 92188929,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 197,
+            "read": 1789,
+            "read_bytes": 95874228,
+            "seek": 307,
+            "stat": 270
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.38360784,
+              "elapsed_median_seconds": 0.38360784,
+              "label": "first",
+              "peak_rss_max_bytes": 30044160,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 4.20008807,
+              "elapsed_median_seconds": 4.00705923,
+              "label": "first",
+              "peak_rss_max_bytes": 30085120,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.422868522,
+              "elapsed_median_seconds": 0.422868522,
+              "label": "warm",
+              "peak_rss_max_bytes": 30220288,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 3.943408591,
+              "elapsed_median_seconds": 3.7055084705,
+              "label": "warm",
+              "peak_rss_max_bytes": 30076928,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "38b1db9e1b8b3cb3228ce03c49d069ef16badeb0abcf1b3bd3716ebc32432ad1",
+            "size": 93796
+          },
+          "costs": {
+            "archive_bytes": 93796,
+            "archived_uncompressed_bytes": 1447,
+            "deployed_bytes": 92189359,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 6,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 259,
+            "read": 1884,
+            "read_bytes": 96316077,
+            "seek": 446,
+            "stat": 351
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.428062202,
+              "elapsed_median_seconds": 0.428062202,
+              "label": "first",
+              "peak_rss_max_bytes": 31031296,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 4.94978604,
+              "elapsed_median_seconds": 4.8363645665,
+              "label": "first",
+              "peak_rss_max_bytes": 31080448,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.544671412,
+              "elapsed_median_seconds": 0.544671412,
+              "label": "warm",
+              "peak_rss_max_bytes": 30973952,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 4.857575558,
+              "elapsed_median_seconds": 4.611228292,
+              "label": "warm",
+              "peak_rss_max_bytes": 31096832,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "31020d052e4a2867e5b66e38a58cc565a2099c2ed61b8e5dbe0406d2cb76be0f",
+            "size": 3903796
+          },
+          "costs": {
+            "archive_bytes": 3903796,
+            "archived_uncompressed_bytes": 101447,
+            "deployed_bytes": 97719355,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 6,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 259,
+            "read": 1923,
+            "read_bytes": 102899054,
+            "seek": 452,
+            "stat": 351
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.485362264,
+              "elapsed_median_seconds": 0.485362264,
+              "label": "first",
+              "peak_rss_max_bytes": 43048960,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 5.61548834,
+              "elapsed_median_seconds": 5.384087903499999,
+              "label": "first",
+              "peak_rss_max_bytes": 42692608,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.491221778,
+              "elapsed_median_seconds": 0.491221778,
+              "label": "warm",
+              "peak_rss_max_bytes": 43048960,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 5.535781431,
+              "elapsed_median_seconds": 5.188408036,
+              "label": "warm",
+              "peak_rss_max_bytes": 42852352,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "case": "python-native-normalized",
+      "measurement_tool": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-D_DARWIN_C_SOURCE",
+          "-D_DEFAULT_SOURCE",
+          "/harness/fixtures/mvp/measure.c",
+          "-o",
+          "/evidence/python-native-normalized-final/measure-process"
+        ],
+        "compiler": {
+          "identity": {
+            "sha256": "dc53dbc5a583d03ae8ed6272ca9afc0f58873f9f9b86dd7d448b17fb3f88a8d0",
+            "size": 1319624
+          },
+          "path": "/usr/bin/cc",
+          "version": "cc (Debian 12.2.0-14+deb12u1) 12.2.0"
+        },
+        "executable": {
+          "sha256": "0d19f3768e234b9ef3ce418f4ee75d530ec1afe6274f60cc1409670c0e80577b",
+          "size": 71288
+        },
+        "method": "minimal native parent uses wait4; no Python fork RSS floor",
+        "source": {
+          "sha256": "cd6ef9427d85e4b02064d0f879b6ed9830fdbe8a40bdbf940982d693ed0a679f",
+          "size": 2255
+        }
+      },
+      "raw_report": "/private/tmp/glue-r03-linux-release-evidence/python-native-normalized-final/benchmark.json",
+      "report": {
+        "sha256": "5a19401c6e8b935f96952152adf136e4edd22b7e73a3fcf14d0cfeed06c88a32",
+        "size": 532149
+      },
+      "status": "passed",
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "88234f952c589f78d3e316983bb812728ae41d8aef64fc3539f9fbd78a779792",
+            "size": 3740601
+          },
+          "costs": {
+            "archive_bytes": 3740601,
+            "archived_uncompressed_bytes": 14092218,
+            "deployed_bytes": 146858349,
+            "deployed_directories": 20,
+            "deployed_files": 40,
+            "deployed_symlinks": 2,
+            "native_bytes": 50689322,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 233,
+            "read": 2675,
+            "read_bytes": 150277774,
+            "seek": 368,
+            "stat": 337
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.369576279,
+              "elapsed_median_seconds": 0.369576279,
+              "label": "first",
+              "peak_rss_max_bytes": 30588928,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 3.890939043,
+              "elapsed_median_seconds": 3.7099118265,
+              "label": "first",
+              "peak_rss_max_bytes": 30519296,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.373316535,
+              "elapsed_median_seconds": 0.373316535,
+              "label": "warm",
+              "peak_rss_max_bytes": 30584832,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 3.86032583,
+              "elapsed_median_seconds": 3.7867753129999997,
+              "label": "warm",
+              "peak_rss_max_bytes": 30433280,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "02910462dd757b1e32711c78464e4cfffb7cb31fff9adef03d968bc91f53ae26",
+            "size": 3741449
+          },
+          "costs": {
+            "archive_bytes": 3741449,
+            "archived_uncompressed_bytes": 14094360,
+            "deployed_bytes": 146859175,
+            "deployed_directories": 20,
+            "deployed_files": 40,
+            "deployed_symlinks": 2,
+            "native_bytes": 50689322,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 303,
+            "read": 3118,
+            "read_bytes": 164243398,
+            "seek": 959,
+            "stat": 504
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.742038449,
+              "elapsed_median_seconds": 0.742038449,
+              "label": "first",
+              "peak_rss_max_bytes": 58105856,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 8.02575463,
+              "elapsed_median_seconds": 7.725873362,
+              "label": "first",
+              "peak_rss_max_bytes": 56012800,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.658072694,
+              "elapsed_median_seconds": 0.658072694,
+              "label": "warm",
+              "peak_rss_max_bytes": 58245120,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 7.600111376,
+              "elapsed_median_seconds": 7.0884193695,
+              "label": "warm",
+              "peak_rss_max_bytes": 55975936,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "17db5fff8ec349f8c01d5defe038e8d5b682e7c369ec10c2197199bef463d1d2",
+            "size": 7551449
+          },
+          "costs": {
+            "archive_bytes": 7551449,
+            "archived_uncompressed_bytes": 14194360,
+            "deployed_bytes": 152389165,
+            "deployed_directories": 20,
+            "deployed_files": 40,
+            "deployed_symlinks": 2,
+            "native_bytes": 50689322,
+            "runtime_bytes": 86219627
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 303,
+            "read": 3151,
+            "read_bytes": 170751696,
+            "seek": 961,
+            "stat": 504
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+            "size": 5530352
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.829647097,
+              "elapsed_median_seconds": 0.829647097,
+              "label": "first",
+              "peak_rss_max_bytes": 70004736,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 9.119644406,
+              "elapsed_median_seconds": 8.843245907,
+              "label": "first",
+              "peak_rss_max_bytes": 68440064,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.790856107,
+              "elapsed_median_seconds": 0.790856107,
+              "label": "warm",
+              "peak_rss_max_bytes": 70004736,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 8.696225213,
+              "elapsed_median_seconds": 8.3264900075,
+              "label": "warm",
+              "peak_rss_max_bytes": 69943296,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "runtime_version": "3.13.16",
+          "variant": "scaled"
+        }
+      ]
+    }
+  ],
+  "revision": 1,
+  "source_entries": 10000,
+  "target": "aarch64-unknown-linux-gnu"
+}

@@ -36,7 +36,8 @@ packages, runs package-manager hooks, compiles user dependencies or downloads.
 
 The harness inventories input bytes before/after packaging, compares exit/stdout/
 stderr against the stock runtime, moves the distribution to a new path with
-spaces/non-ASCII, removes the build prefix, clears execution environment, uses
+spaces/non-ASCII, deletes the copied input trees and build prefix before included
+execution, clears execution environment, uses
 an unrelated cwd, makes payloads read-only and makes HOME/temp/cache unusable.
 Those paths are read-only regular files, so child paths fail with ENOTDIR even
 under rootless VM filesystem mounts.
@@ -104,7 +105,8 @@ policy; `scripts/check-macos-deployment.py PAYLOAD --policy ad-hoc` also checks 
 final layout independently. Every Mach-O image gets strict codesign verification
 and its actual signature metadata is reported. Developer ID mode also records
 Gatekeeper assessment. Ad-hoc verification never proves Developer ID signing or
-notarization. No code is silently re-signed by these checks.
+notarization. No code is silently re-signed by these checks. The selected development policy
+is ad-hoc; public release requires Developer ID signing and notarization.
 
 Local R02 evidence: all four source/native Lua family cases passed complete
 Linux arm64 traces plus injected controls. macOS arm64 final Lua55 layout passed
@@ -113,3 +115,29 @@ noninteractive dtruss returned `sudo: a password is required`; this host has no
 approved complete macOS descendant trace. No Developer ID/notarization evidence
 or native Linux x86_64 trace is claimed. Those remain external acceptance gaps,
 and the Linux decoder is not presented as a macOS trace decoder.
+
+
+## Deployment cost budgets (R03)
+
+`./scripts/benchmark-mvp.py --case CASE --target TARGET --output NEWDIR`
+measures empty-entry, baseline and 10,000-extra-source distributions at 1 and 32
+ranks. Supply the same runtime/build input variables as the acceptance case and
+`GLUE_MVP_TRACE=required` for complete Linux startup I/O counts. The output
+`benchmark.json` retains individual rank exits/output hashes, elapsed time,
+kernel RSS and sampled PSS/FD data, plus archive/runtime/native sizes and file
+counts. Fresh processes are not labelled cold filesystem cache measurements.
+`--cold-hook FILE` records an explicit operator cache-reset argv only.
+
+`--budget FILE` checks a frozen numeric profile; `--freeze-budget FILE` only
+accepts a complete passing report. The CI matrix and accepted numeric profiles
+live under `fixtures/mvp/budgets`. Check all cases for a target with:
+
+```sh
+scripts/check-mvp-budgets.py --target aarch64-unknown-linux-gnu --reports /evidence
+```
+
+Missing reports, unavailable required metrics and source-scaling regressions
+fail the gate. Time/RSS limits apply only to the recorded host boot fingerprint;
+structure and size limits remain target/case scoped. See
+`docs/decisions/mvp-r03-hpc-cost-budgets.md` for measurement methods, margins and
+compact-mode costs. Native libraries still incur ordinary OS loader work.

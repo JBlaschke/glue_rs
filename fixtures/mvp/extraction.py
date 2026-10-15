@@ -99,9 +99,11 @@ def check_trace(prefix: Path, cwd: Path, allowed_outputs=(), sinks=(), expected_
             raise TraceError("root trace does not execute the selected included launcher")
     root_pid = first[1]
     expected, directories, clones, counts = {root_pid}, {root_pid: [cwd]}, [], {}
+    descriptors, cloexec = {root_pid: {0,1,2}}, {root_pid: set()}
+    peak_fds = 3
     allowed = [Path(os.path.normpath(str(path))) for path in allowed_outputs]
     sink_paths = {str(path) for path in sinks}
-    writes, memory_writes, io = 0, 0, {"open": 0, "stat": 0, "read": 0, "read_bytes": 0}
+    writes, memory_writes, io = 0, 0, {"open": 0, "stat": 0, "read": 0, "read_bytes": 0, "seek":0}
 
     def path_for(value, pid, directory_fd=None):
         path = Path(quoted(value))
@@ -139,6 +141,38 @@ def check_trace(prefix: Path, cwd: Path, allowed_outputs=(), sinks=(), expected_
             if match and int(match[1]) > 0:
                 child = int(match[1]); expected.add(child); clones.append([pid, child])
                 directories[child] = directories[pid] if "CLONE_FS" in ",".join(args) else list(directories[pid])
+                shared = "CLONE_FILES" in ",".join(args)
+                descriptors[child] = descriptors[pid] if shared else set(descriptors[pid])
+                cloexec[child] = cloexec[pid] if shared else set(cloexec[pid])
+        descriptor_result = re.match(r"^(\d+)", returned)
+        if name in {"open", "openat", "openat2", "creat", "memfd_create", "socket", "accept", "accept4", "eventfd", "eventfd2", "signalfd", "signalfd4", "inotify_init", "inotify_init1", "timerfd_create", "epoll_create", "epoll_create1", "dup", "dup2", "dup3"} or (name == "fcntl" and len(args)>1 and "F_DUPFD" in args[1]):
+            if descriptor_result:
+                number = int(descriptor_result[1]); descriptors[pid].add(number)
+                if "CLOEXEC" in ",".join(args): cloexec[pid].add(number)
+                else: cloexec[pid].discard(number)
+        if name in {"pipe", "pipe2", "socketpair"} and returned.startswith("0"):
+            output = args[0] if name != "socketpair" else args[3]
+            for descriptor in BASE.split_arguments(output.removeprefix("[").removesuffix("]")):
+                number = int(re.match(r"^(\d+)",descriptor)[1]); descriptors[pid].add(number)
+                if "CLOEXEC" in ",".join(args): cloexec[pid].add(number)
+        peak_fds = max(peak_fds,len(descriptors[pid]))
+        if name == "close" and returned.startswith("0"):
+            number = int(re.match(r"^(\d+)",args[0])[1]); descriptors[pid].discard(number); cloexec[pid].discard(number)
+        if name == "close_range" and returned.startswith("0"):
+            if "CLOSE_RANGE_UNSHARE" in args[2]:
+                descriptors[pid], cloexec[pid] = set(descriptors[pid]), set(cloexec[pid])
+            start = int(args[0], 0)
+            end = 2**32-1 if args[1] in {"~0U", "UINT_MAX"} else int(args[1], 0)
+            affected = {number for number in descriptors[pid] if start <= number <= end}
+            if "CLOSE_RANGE_CLOEXEC" in args[2]: cloexec[pid].update(affected)
+            else:
+                descriptors[pid].difference_update(affected); cloexec[pid].difference_update(affected)
+        if name == "fcntl" and len(args)>2 and args[1]=="F_SETFD" and returned.startswith("0"):
+            number=int(re.match(r"^(\d+)",args[0])[1])
+            if "FD_CLOEXEC" in args[2]: cloexec[pid].add(number)
+            else: cloexec[pid].discard(number)
+        if name in {"execve", "execveat"} and returned.startswith("0"):
+            descriptors[pid] = descriptors[pid] - cloexec[pid]; cloexec[pid] = set()
         if name == "chdir" and returned.startswith("0"):
             directories[pid][0] = path_for(args[0], pid)
         if name == "fchdir" and returned.startswith("0"):
@@ -176,6 +210,7 @@ def check_trace(prefix: Path, cwd: Path, allowed_outputs=(), sinks=(), expected_
         if name in {"io_uring_enter", "io_submit", "process_vm_writev", "ptrace"}:
             raise TraceError(f"write mechanism not observable by this trace policy: {name}")
         if name in {"stat", "lstat", "fstat", "newfstatat", "statx", "access", "faccessat", "faccessat2"}: io["stat"] += 1
+        if name in {"lseek", "_llseek"}: io["seek"] += 1
         if name in {"read", "readv", "pread64", "preadv", "preadv2"}:
             io["read"] += 1
             match = re.match(r"^(\d+)", returned)
@@ -184,6 +219,7 @@ def check_trace(prefix: Path, cwd: Path, allowed_outputs=(), sinks=(), expected_
         raise TraceError(f"process tree trace incomplete: expected {sorted(expected)}, retained {sorted(pids)}")
     return {"status": "passed", "processes": len(pids), "process_edges": clones, "syscalls": counts,
             "write_operations_observed": writes, "memory_object_writes": memory_writes, "io": io,
+            "fds": {"peak_per_process":peak_fds,"scope":"three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"},
             "policy": "all filesystem write attempts outside declared app output reject, including failed writes"}
 
 
