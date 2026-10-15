@@ -57,6 +57,7 @@ The registry contains:
 | `stock-pbs-host-archive-imports` | Explicit immutable host installation | None |
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
 | `stock-pbs-native-lifecycle` | Either provider above | Separate four-image lifecycle closure, archived or explicit immutable host files |
+| `stock-pbs-native-packages` | Either provider above | Same lifecycle images, imported as descriptor-backed dotted package children |
 
 Source applications declare their own entry, modules and assets below `app/`;
 importable sources live below `app/python/`. Runtime, importer, frozen startup
@@ -78,6 +79,13 @@ C boundary returns from interpreter finalization, the pinned ledger must report
 complete cleanup for the controlled workload; passing checks preserve the
 original application result. The historical native profile performs no ledger
 calls. See [the lifecycle fixture](../../fixtures/python-native-lifecycle/README.md).
+
+The native package profile delegates three declared dotted children to stock
+`ExtensionFileLoader`. A scoped callback exposes their retained descriptor aliases
+and checks native ownership around creation/execution. Parent source/resources
+stay in the archive; native metadata truthfully names `/proc/self/fd/N`. This route
+supplies zero built-in registrations and retains the unchanged C boundary. See
+[the package-member fixture](../../fixtures/python-native-packages/README.md).
 
 Open an archive once, validate its declarations, then pass that same owner into
 execution:

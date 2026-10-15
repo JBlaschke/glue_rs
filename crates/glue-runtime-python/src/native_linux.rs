@@ -98,13 +98,90 @@ impl Ledger {
     }
 }
 
-pub(super) struct Registrations {
+struct ExportCheck {
+    handle: *mut libc::c_void,
+    name: String,
+    pointer: usize,
+    base: usize,
+}
+
+struct NativeChecks {
+    aliases: BTreeMap<String, String>,
+    bases: Vec<usize>,
+    exports: Vec<ExportCheck>,
+    relocations: Vec<(usize, usize)>,
+}
+
+impl NativeChecks {
+    fn verify(&self) -> Result<(), String> {
+        check_image_bases(self.bases.clone())?;
+        for export in &self.exports {
+            absent_global(&export.name)?;
+            let pointer = symbol(export.handle, &export.name)?;
+            if pointer != export.pointer || owner(pointer)? != export.base {
+                return Err(format!(
+                    "native package export ownership differs: {}",
+                    export.name
+                ));
+            }
+        }
+        for &(slot, expected) in &self.relocations {
+            // SAFETY: the unchanged ELF inspector admitted every readable,
+            // aligned pointer slot in a process-pinned image. Python objects
+            // are not involved; this checks only its loader relocation words.
+            if unsafe { (slot as *const usize).read() } != expected {
+                return Err("native package relocation ownership differs".into());
+            }
+        }
+        Ok(())
+    }
+}
+
+pub(super) struct NativeClosure {
     _names: Vec<CString>,
     pub records: Vec<ExtensionRecord>,
     ledger: Option<Ledger>,
+    checks: Option<NativeChecks>,
 }
 
-impl Registrations {
+impl NativeClosure {
+    #[cfg(test)]
+    pub(super) fn test_aliases() -> Self {
+        Self {
+            _names: Vec::new(),
+            records: Vec::new(),
+            ledger: None,
+            checks: Some(NativeChecks {
+                aliases: BTreeMap::from([(
+                    "glue_native_pkg.glue_native_lifecycle".into(),
+                    "/proc/self/fd/42".into(),
+                )]),
+                bases: Vec::new(),
+                exports: Vec::new(),
+                relocations: Vec::new(),
+            }),
+        }
+    }
+
+    pub(super) fn request(&self, operation: &str, fullname: &str) -> Result<Vec<u8>, String> {
+        let checks = self
+            .checks
+            .as_ref()
+            .ok_or("native package callbacks require the descriptor profile")?;
+        let alias = checks
+            .aliases
+            .get(fullname)
+            .ok_or("undeclared native package callback name")?;
+        match operation {
+            "native-path" => Ok(alias.as_bytes().to_vec()),
+            "native-check" => {
+                checks.verify()?;
+                Ok(b"checked".to_vec())
+            }
+            _ => Err("unknown native package callback operation".into()),
+        }
+    }
+
     pub(super) fn finish(&self, result: Result<(), String>) -> Result<(), String> {
         if let Some(ledger) = &self.ledger {
             ledger.check_after_finalization()?;
@@ -118,7 +195,14 @@ pub(super) fn load(
     images: &mut [extension_profile::Image],
     runtime_handle: *mut libc::c_void,
     runtime_base: usize,
-) -> Result<Registrations, String> {
+) -> Result<NativeClosure, String> {
+    let mut checks =
+        (profile == extension_profile::Profile::PackageImports).then(|| NativeChecks {
+            aliases: BTreeMap::new(),
+            bases: Vec::new(),
+            exports: Vec::new(),
+            relocations: Vec::new(),
+        });
     let mut runtime = BTreeMap::new();
     for &name in profile.python_imports() {
         absent_global(name)?;
@@ -127,6 +211,14 @@ pub(super) fn load(
             return Err(format!(
                 "selected Python native import ownership differs: {name}"
             ));
+        }
+        if let Some(checks) = &mut checks {
+            checks.exports.push(ExportCheck {
+                handle: runtime_handle,
+                name: name.into(),
+                pointer,
+                base: runtime_base,
+            });
         }
         runtime.insert(name.to_string(), pointer);
     }
@@ -153,6 +245,15 @@ pub(super) fn load(
     let mut bases = vec![runtime_base];
     for (image, file) in images.iter().zip(files) {
         let path = CString::new(format!("/proc/self/fd/{}", file.as_raw_fd())).unwrap();
+        if let Some(checks) = &mut checks {
+            if let Some(root) = image
+                .name
+                .strip_suffix(".so")
+                .and_then(|root| profile.package_fullname(root))
+            {
+                checks.aliases.insert(root, path.to_str().unwrap().into());
+            }
+        }
         // SAFETY: admitted immutable ELF, dependency-first loading, no
         // constructors/TLS/IFUNC. The selected runtime remains RTLD_LOCAL.
         let handle = unsafe { libc::dlopen(path.as_ptr(), libc::RTLD_NOW | libc::RTLD_LOCAL) };
@@ -210,6 +311,9 @@ pub(super) fn load(
                     image.name
                 ));
             }
+            if let Some(checks) = &mut checks {
+                checks.relocations.push((slot, expected));
+            }
         }
         loaded.insert(image.name.clone(), (handle, base));
     }
@@ -238,12 +342,24 @@ pub(super) fn load(
             return Err("native initializer ownership differs".into());
         }
         absent_global(&export)?;
-        records.push(ExtensionRecord {
-            name: name.as_ptr(),
-            initializer: pointer as *const libc::c_void,
-        });
+        if let Some(checks) = &mut checks {
+            checks.exports.push(ExportCheck {
+                handle,
+                name: export,
+                pointer,
+                base,
+            });
+        } else {
+            records.push(ExtensionRecord {
+                name: name.as_ptr(),
+                initializer: pointer as *const libc::c_void,
+            });
+        }
     }
-    let ledger = if profile == extension_profile::Profile::Lifecycle {
+    let ledger = if matches!(
+        profile,
+        extension_profile::Profile::Lifecycle | extension_profile::Profile::PackageImports
+    ) {
         let (handle, base) = loaded[profile.dependency()];
         let image = images
             .iter()
@@ -258,6 +374,14 @@ pub(super) fn load(
             return Err("native lifecycle ledger ownership differs".into());
         }
         absent_global(profile.dependency_export())?;
+        if let Some(checks) = &mut checks {
+            checks.exports.push(ExportCheck {
+                handle,
+                name: profile.dependency_export().into(),
+                pointer,
+                base,
+            });
+        }
         // SAFETY: only the private lifecycle profile can select this reviewed
         // three-long signature. ELF admission/relocation and loader ownership
         // checks establish its exact function address; the image stays pinned.
@@ -267,9 +391,17 @@ pub(super) fn load(
     } else {
         None
     };
-    Ok(Registrations {
+    if let Some(checks) = &mut checks {
+        checks.bases = bases;
+        if checks.aliases.len() != profile.roots().len() {
+            return Err("native package descriptor alias inventory differs".into());
+        }
+        checks.verify()?;
+    }
+    Ok(NativeClosure {
         _names: names,
         records,
         ledger,
+        checks,
     })
 }

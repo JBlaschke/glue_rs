@@ -16,6 +16,7 @@ pub(crate) enum Kind {
     HostImports,
     RegisteredExtensions,
     NativeLifecycle,
+    NativePackages,
     BundledSourceApp,
     HostSourceApp,
     InstallHostSourceApp,
@@ -42,6 +43,7 @@ impl ControlledProfile {
             Kind::HostImports => "controlled explicit-host Python source/resources",
             Kind::RegisteredExtensions => "controlled registered Python native extensions",
             Kind::NativeLifecycle => "controlled registered Python native lifecycle",
+            Kind::NativePackages => "controlled descriptor-backed Python package extensions",
             Kind::BundledSourceApp => "pinned bundled Python source application",
             Kind::HostSourceApp => "pinned explicit-host Python source application",
             Kind::InstallHostSourceApp => "pinned install-only host Python source application",
@@ -101,6 +103,11 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             extension_profile::admit_for(extension_profile::Profile::Lifecycle, manifest)
                 .map_err(ExecutionError::failed)?;
             Kind::NativeLifecycle
+        }
+        extension_profile::PACKAGE_APP_ID => {
+            extension_profile::admit_for(extension_profile::Profile::PackageImports, manifest)
+                .map_err(ExecutionError::failed)?;
+            Kind::NativePackages
         }
         _ if runtime.build_id == source_app_profile::BUILD_ID => {
             source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;

@@ -516,7 +516,7 @@ pub(super) fn run_extensions(
                     is_package: i32::from(module.is_package),
                 })
                 .collect();
-            let result = invoke_archive(
+            let result = invoke_archive_context(
                 &api,
                 ArchiveStartup::Frozen(&records),
                 ArchiveApplication {
@@ -526,6 +526,8 @@ pub(super) fn run_extensions(
                 },
                 negative,
                 &registrations.records,
+                (payload.profile == extension_profile::Profile::PackageImports)
+                    .then_some(&registrations),
             );
             registrations.finish(result)
         }
@@ -537,7 +539,7 @@ pub(super) fn run_extensions(
                 .map_err(|_| "host stdlib contains NUL")?;
             let (api, handle, base) = load_api_with_handle(verified.library)?;
             let registrations = native::load(payload.profile, &mut payload.images, handle, base)?;
-            let result = invoke_archive(
+            let result = invoke_archive_context(
                 &api,
                 ArchiveStartup::Host(&prefix, &stdlib),
                 ArchiveApplication {
@@ -547,6 +549,8 @@ pub(super) fn run_extensions(
                 },
                 negative,
                 &registrations.records,
+                (payload.profile == extension_profile::Profile::PackageImports)
+                    .then_some(&registrations),
             );
             registrations.finish(result)
         }
@@ -571,6 +575,57 @@ fn invoke_archive(
     negative: bool,
     extensions: &[ExtensionRecord],
 ) -> Result<(), String> {
+    invoke_archive_context(api, startup, payload, negative, extensions, None)
+}
+
+type ResourceRequest =
+    unsafe extern "C" fn(*mut libc::c_void, *const u8, usize, *mut ResourceReply) -> libc::c_int;
+
+struct NativeArchiveContext<'a> {
+    index: &'a imports::Index,
+    native: &'a native::NativeClosure,
+}
+
+impl NativeArchiveContext<'_> {
+    fn request(&self, request: &[u8]) -> Result<Vec<u8>, String> {
+        if request.len() > 4096 {
+            return Err("archive resource request exceeds 4096 bytes".into());
+        }
+        let text =
+            std::str::from_utf8(request).map_err(|_| "archive resource request is not UTF-8")?;
+        if let Some((operation @ ("native-path" | "native-check"), fullname)) =
+            text.split_once('\t')
+        {
+            return self.native.request(operation, fullname);
+        }
+        self.index.request(request)
+    }
+}
+
+fn invoke_archive_context(
+    api: &Api,
+    startup: ArchiveStartup<'_>,
+    payload: ArchiveApplication<'_>,
+    negative: bool,
+    extensions: &[ExtensionRecord],
+    native: Option<&native::NativeClosure>,
+) -> Result<(), String> {
+    let mut native_context = native.map(|native| NativeArchiveContext {
+        index: &*payload.index,
+        native,
+    });
+    let (request, context): (ResourceRequest, *mut libc::c_void) =
+        if let Some(context) = &mut native_context {
+            (
+                native_resource_request,
+                (context as *mut NativeArchiveContext<'_>).cast(),
+            )
+        } else {
+            (
+                resource_request,
+                (payload.index as *const imports::Index).cast_mut().cast(),
+            )
+        };
     if negative {
         payload
             .app
@@ -607,9 +662,9 @@ fn invoke_archive(
                 extensions.as_ptr()
             },
             extensions.len(),
-            resource_request,
+            request,
             resource_release,
-            (payload.index as *mut imports::Index).cast(),
+            context,
             payload.bootstrap.as_ptr(),
             payload.bootstrap.len(),
             payload.app.as_ptr(),
@@ -662,6 +717,42 @@ unsafe extern "C" fn resource_request(
     let data = Box::into_raw(bytes).cast::<u8>();
     // SAFETY: C owns this transferred allocation and releases it exactly once
     // with the same pointer/length, including empty allocations and errors.
+    unsafe {
+        reply.write(ResourceReply { data, len });
+    }
+    status
+}
+
+unsafe extern "C" fn native_resource_request(
+    context: *mut libc::c_void,
+    request: *const u8,
+    request_len: usize,
+    reply: *mut ResourceReply,
+) -> libc::c_int {
+    if context.is_null()
+        || reply.is_null()
+        || request_len > 4096
+        || (request.is_null() && request_len != 0)
+    {
+        return 1;
+    }
+    // SAFETY: the descriptor-profile context borrows the live Index and pinned
+    // native closure through this synchronous C call and all finalizers. C
+    // supplies the bounded request and fresh reply; no Python object crosses.
+    let (status, bytes) = callback_outcome(|| {
+        let context = unsafe { &*context.cast::<NativeArchiveContext<'_>>() };
+        let request = if request_len == 0 {
+            &[]
+        } else {
+            unsafe { std::slice::from_raw_parts(request, request_len) }
+        };
+        context.request(request)
+    });
+    let bytes = bytes.into_boxed_slice();
+    let len = bytes.len();
+    let data = Box::into_raw(bytes).cast::<u8>();
+    // SAFETY: the unchanged C ownership contract copies and releases this exact
+    // Box<[u8]> once with resource_release, before calling Python again.
     unsafe {
         reply.write(ResourceReply { data, len });
     }
@@ -774,6 +865,71 @@ fn loader_error(context: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn descriptor_context_scopes_names_forwards_resources_and_transfers_bounded_replies() {
+        use super::*;
+        let native = native::NativeClosure::test_aliases();
+        let index = imports::Index::new(
+            "fixture",
+            BTreeMap::from([("app/python/data.bin".into(), vec![0, 255])]),
+        )
+        .unwrap();
+        let mut context = NativeArchiveContext {
+            index: &index,
+            native: &native,
+        };
+        assert_eq!(
+            context.request(b"read\tapp/python/data.bin").unwrap(),
+            [0, 255]
+        );
+        assert_eq!(
+            context
+                .request(b"native-path\tglue_native_pkg.glue_native_lifecycle")
+                .unwrap(),
+            b"/proc/self/fd/42"
+        );
+        for request in [
+            b"native-path\tglue_native_lifecycle".as_slice(),
+            b"native-check\tglue_native_pkg.unknown",
+            b"native-path\tglue_native_pkg.glue_native_lifecycle\tforged",
+            b"native-path\t\xff",
+        ] {
+            assert!(context.request(request).is_err());
+        }
+        assert!(context.request(&vec![b'x'; 4097]).is_err());
+        for request in [
+            b"native-path\tglue_native_pkg.glue_native_lifecycle".as_slice(),
+            b"native-check\tglue_native_pkg.unknown",
+        ] {
+            let mut reply = ResourceReply {
+                data: std::ptr::null_mut(),
+                len: 0,
+            };
+            // SAFETY: local live context, request and reply; the transferred
+            // allocation is copied and released exactly once below.
+            let status = unsafe {
+                native_resource_request(
+                    (&mut context as *mut NativeArchiveContext<'_>).cast(),
+                    request.as_ptr(),
+                    request.len(),
+                    &mut reply,
+                )
+            };
+            assert!(!reply.data.is_null());
+            let bytes = unsafe { std::slice::from_raw_parts(reply.data, reply.len) }.to_vec();
+            if request.starts_with(b"native-path") {
+                assert_eq!(status, 0);
+                assert_eq!(bytes, b"/proc/self/fd/42");
+            } else {
+                assert_eq!(status, 1);
+                assert_eq!(bytes, b"undeclared native package callback name");
+            }
+            unsafe {
+                resource_release(std::ptr::null_mut(), reply.data, reply.len);
+            }
+        }
+    }
+
     #[test]
     fn c_validates_and_pins_registered_native_names_before_python_calls() {
         // SAFETY: pure C ownership/metadata selftest, fake append never calls initializers.
