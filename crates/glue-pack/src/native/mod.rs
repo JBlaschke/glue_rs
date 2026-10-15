@@ -222,6 +222,19 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
             .inventory
             .host_requirements
             .extend(facts.versions.iter().cloned());
+        if !request.normalize
+            && facts
+                .search_paths
+                .iter()
+                .any(|p| !p.starts_with("$ORIGIN") && !p.starts_with("${ORIGIN}"))
+        {
+            return Err(diagnostic(
+                DiagnosticCode::TransformationRequired,
+                format!(
+                    "{deployed}: absolute/cwd-relative ELF search paths need --normalize-native-paths"
+                ),
+            ));
+        }
         for needed in &facts.dependencies {
             if system_library(needed, &request.target) || request.host_libraries.contains(needed) {
                 let provider = if system_library(needed, &request.target) {
@@ -240,17 +253,28 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
             }
             let mut candidates = Vec::new();
             let parent = source.parent().unwrap();
-            if needed.contains('/') && !needed.starts_with("$ORIGIN/") {
-                return Err(diagnostic(
-                    DiagnosticCode::TransformationRequired,
-                    format!(
-                        "{} has non-relocatable dependency {needed}; explicit path normalization is required",
-                        source.display()
-                    ),
-                ));
-            }
-            if let Some(suffix) = needed.strip_prefix("$ORIGIN/") {
-                candidates.push(parent.join(suffix));
+            if needed.contains('/')
+                && !needed.starts_with("$ORIGIN/")
+                && !needed.starts_with("${ORIGIN}/")
+            {
+                if !request.normalize {
+                    return Err(diagnostic(
+                        DiagnosticCode::TransformationRequired,
+                        format!("{deployed}: dependency {needed} requires explicit normalization"),
+                    ));
+                }
+                if needed.starts_with('/') {
+                    candidates.push(PathBuf::from(needed));
+                } else {
+                    for root in &roots {
+                        candidates.push(root.source.join(needed));
+                    }
+                }
+            } else if needed.starts_with("$ORIGIN/") || needed.starts_with("${ORIGIN}/") {
+                let expanded = needed
+                    .replace("${ORIGIN}", &parent.to_string_lossy())
+                    .replace("$ORIGIN", &parent.to_string_lossy());
+                candidates.push(PathBuf::from(expanded));
             } else {
                 for path in &facts.search_paths {
                     if path.starts_with("$ORIGIN") || path.starts_with("${ORIGIN}") {
@@ -258,23 +282,16 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
                             .replace("${ORIGIN}", &parent.to_string_lossy())
                             .replace("$ORIGIN", &parent.to_string_lossy());
                         candidates.push(PathBuf::from(expanded).join(needed));
-                    } else if path.starts_with('/') {
-                        return Err(diagnostic(
-                            DiagnosticCode::TransformationRequired,
-                            format!(
-                                "{} has absolute search path {path}; normalize explicitly",
-                                source.display()
-                            ),
-                        ));
-                    } else {
-                        return Err(diagnostic(
-                            DiagnosticCode::TransformationRequired,
-                            format!("{} has cwd-relative search path {path}", source.display()),
-                        ));
+                    } else if request.normalize && path.starts_with('/') {
+                        candidates.push(PathBuf::from(path).join(needed));
+                    } else if request.normalize {
+                        for root in &roots {
+                            candidates.push(root.source.join(path).join(needed));
+                        }
                     }
                 }
-                // Search roots may locate inputs, but do not fabricate a loader search path.
-                if candidates.is_empty() {
+                if candidates.is_empty() || request.normalize {
+                    candidates.push(parent.join(needed));
                     for root in &roots {
                         candidates.push(root.source.join(needed));
                     }
@@ -292,7 +309,7 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
             }
             let selected = existing[0];
             let (resolved, relative, provider) = locate(selected)?;
-            if facts.search_paths.is_empty() && !needed.contains('/') {
+            if !request.normalize && facts.search_paths.is_empty() && !needed.contains('/') {
                 return Err(diagnostic(
                     DiagnosticCode::TransformationRequired,
                     format!(
@@ -302,7 +319,9 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
                 ));
             }
             // The loader sees symlink aliases; record those without duplicating native bytes.
-            if selected != &resolved {
+            let alias = lexical_path(selected);
+            if alias != resolved {
+                let selected = &alias;
                 let root = roots
                     .iter()
                     .find(|r| selected.starts_with(&r.source))
@@ -335,6 +354,9 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
         }
         result.facts.insert(deployed, facts);
     }
+    if request.normalize {
+        linux::normalize_collection(&mut result)?;
+    }
     result
         .inventory
         .edges
@@ -353,4 +375,19 @@ pub(crate) fn relative_path(from: &Path, to: &Path) -> String {
         )
         .collect::<Vec<_>>()
         .join("/")
+}
+
+fn lexical_path(path: &Path) -> PathBuf {
+    use std::path::Component;
+    let mut result = PathBuf::new();
+    for component in path.components() {
+        match component {
+            Component::ParentDir => {
+                result.pop();
+            }
+            Component::CurDir => (),
+            other => result.push(other.as_os_str()),
+        }
+    }
+    result
 }
