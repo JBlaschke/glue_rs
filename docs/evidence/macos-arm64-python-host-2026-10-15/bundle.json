@@ -1,0 +1,13 @@
+{
+  "schema": "glue-evidence-bundle-1",
+  "name": "macos-arm64-python-host-2026-10-15",
+  "repository": "JBlaschke/glue_rs",
+  "tag": "evidence/macos-arm64-python-host-2026-10-15",
+  "commit": "30fcb52c7f391a8543bb7e158cc71a632697ba83",
+  "asset": "macos-arm64-python-host-2026-10-15.tar.gz",
+  "size": 49064,
+  "sha256": "15273aaa94a8b737776c99878a84ced4ad7619d5bb9fa1b5e26bc903d64e923f",
+  "files": 70,
+  "published": "2026-10-15T09:05:24Z",
+  "fetch": "sh scripts/fetch-evidence.sh docs/evidence/macos-arm64-python-host-2026-10-15"
+}
