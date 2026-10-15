@@ -561,3 +561,34 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
 - Pinned Clippy passed. C03's separate offline Linux arm64 run passed all 3 tests,
   including real relocation/TLS execution and readelf comparison. x86_64 native
   execution remains unexecuted. Public Developer ID/notarization is R02 evidence.
+
+## MVP implementation — V01 (15 October 2026)
+
+- Branch `codex/mvp-v01-portable-ci`, based on C04 `25eb646`; result: branch tip.
+- Added native Linux x86_64/Linux arm64/macOS arm64 GitHub jobs for baseline,
+  Lua55 and packaging suites. Rust/Clippy 1.88.0, expected native host and locked
+  dependencies are checked explicitly. Lua features run separately.
+- `scripts/ci-portable.sh baseline` passed locally on macOS arm64 (workspace
+  tests, formatting and all-target Clippy); raw log is local at
+  `/private/tmp/glue-mvp-v01-baseline.log`. `sh -n` passed.
+- Hosted jobs are configured, not yet executed. No signing/evidence assets are
+  required; portable checks do not substitute for target product receipts.
+
+## MVP implementation — C05 (15 October 2026)
+
+- Branch `codex/mvp-c05-builder-cli`, based on V01 `dc8e659` plus reviewed task
+  handoffs L01 `f78cdd5`, L02 `8ee9e76`, L03 `9f00c96`; result: branch tip.
+- Added high-level language dispatch slots and working Lua compact build/run,
+  TOML defaults with CLI precedence, compact inspection/size/doctor, sibling
+  integrity verification, literal placeholder expansion and direct Unix exec.
+  Payload write bits may be removed for immutable deployment; required read/exec
+  bits and hashes remain checked. No shell or missing-payload recovery exists.
+- Pinned runner tests passed (21 legacy + 3 new CLI tests); new tests execute a
+  relocated read-only distribution with deleted project, unrelated cwd, Unicode,
+  spaces and placeholder-looking path; stdin/out/err, literal argv, exit 7,
+  SIGINT/SIGTERM, config errors and missing sibling rejection pass. Clippy passed.
+- Reproduce: build/install the glue-owned Lua helpers, then
+  `glue build lua fixtures/mvp/lua-projects/first --lua 5.4 --output /tmp/lua-app`;
+  `/tmp/lua-app/glue run /tmp/lua-app/app.glue -- argument`.
+- Python and Node slots are intentionally integrated in R01 after their provider
+  handoffs. This is source/native Lua functionality, not M2 closure.

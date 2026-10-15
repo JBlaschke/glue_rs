@@ -1,5 +1,7 @@
 //! Packaging, inspection and explicit runtime profile execution entry points.
 
+mod compact;
+
 use glue_format::{Archive, ArchiveLimits, Manifest, Provisioning, RuntimeAbi, digest};
 use glue_resources::Resources;
 use std::{
@@ -16,6 +18,10 @@ type Result<T> = std::result::Result<T, Box<dyn Error>>;
 const HELP: &str = "glue — experimental archive packager
 
 Usage:
+  glue build lua PROJECT --lua 5.4|5.5 --output DIR [--entry FILE] [--config FILE]
+  glue build python --env ENV --entry FILE --output DIR
+  glue build node PROJECT --node EXECUTABLE --entry FILE --output DIR
+  glue run APP.glue -- [ARGUMENTS...]
   glue build --manifest MANIFEST --root INPUT_DIR --output APP.glue
   glue python-template --provider bundled --pbs-full FULL.tar.zst
     --frozen-bootstrap BUNDLE.json --output DIR [--json]
@@ -166,7 +172,24 @@ fn execution_result(result: Result<()>, unsupported: bool) -> Result<ExitCode> {
 }
 
 fn main() -> ExitCode {
-    let result = parse(std::env::args_os().skip(1).collect()).and_then(execute);
+    let arguments: Vec<_> = std::env::args_os().skip(1).collect();
+    if let Some(result) = compact::handle(&arguments) {
+        return match result {
+            Ok(code) => code,
+            Err(error) => {
+                if arguments.iter().any(|a| a == "--json") {
+                    eprintln!(
+                        "{}",
+                        serde_json::to_string(&error).expect("serializable diagnostic")
+                    );
+                } else {
+                    eprintln!("glue: {error}");
+                }
+                ExitCode::FAILURE
+            }
+        };
+    }
+    let result = parse(arguments).and_then(execute);
     match result {
         Ok(code) => code,
         Err(error) => {
