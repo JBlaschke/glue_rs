@@ -65,7 +65,7 @@ summary = {'status': 'passed' if passed else 'failed',
            'trace_environment': policy, 'trace_environment_error': policy_error,
            'budget_mode': budget_mode,
            'finished_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-           'scope': 'native V02/R02 and R03 under explicit traceable-native-syscalls-v1 CI policy; generated x86_64 budgets are proposed pending review',
+           'scope': 'native V02/R02 and R03 under explicit traceable-native-syscalls-v1 CI policy; ' + ('reviewed x86_64 budgets enforced' if budget_mode == 'enforce' else 'generated x86_64 budgets are proposed pending review'),
            'cache_policy': 'first/warm fresh processes; no cold filesystem-cache claim',
            'budget_policy': 'time/RSS scoped to recorded host boot fingerprint; no universal host limits'}
 (root / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
