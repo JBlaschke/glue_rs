@@ -1,0 +1,30 @@
+{
+  "cases": 22,
+  "cleanup_statuses": [
+    0,
+    0
+  ],
+  "core_sources_match_development_capture": true,
+  "new_fixture_source_identity_count": 10,
+  "probe": {
+    "path": "target/python-native-packages-development-build/relocated Python native packages/glue-python-bootstrap-probe",
+    "sha256": "42ac95306f631cc685f5c6a174e5e808784c341a274ee47b948df69b547a0d58",
+    "size": 3528672
+  },
+  "probe_matches_development_capture_artifacts": true,
+  "strict_replays": 22,
+  "suites": [
+    {
+      "family": "lifecycle",
+      "runtime_cases": 11,
+      "runtime_files": 95,
+      "strict_trace_replays": 11
+    },
+    {
+      "family": "registered",
+      "runtime_cases": 11,
+      "runtime_files": 98,
+      "strict_trace_replays": 11
+    }
+  ]
+}

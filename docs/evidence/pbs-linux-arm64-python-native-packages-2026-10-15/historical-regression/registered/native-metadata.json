@@ -1,0 +1,350 @@
+{
+  "archives": {
+    "bundled-archived": {
+      "bytes": 83438354,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "compression": "stored",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+          "size": 68672
+        },
+        "glue_native_init_error.so": {
+          "compression": "stored",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+          "size": 68400
+        },
+        "glue_native_multi.so": {
+          "compression": "stored",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+          "size": 68640
+        },
+        "glue_native_single.so": {
+          "compression": "stored",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+          "size": 68536
+        },
+        "libglue_python_dependency.so": {
+          "compression": "stored",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+          "size": 67152
+        }
+      },
+      "manifest_bytes": 341133,
+      "manifest_sha256": "0bb74b9dbbab2c89713a33fa10b94becc429feacf76d8ad948f69b6a084047c0",
+      "native": "archived",
+      "runtime": "bundled",
+      "sha256": "db387750e1d79b9e16d6ec3553ce19e867b3272115c4232994e2925440542a97",
+      "zip_directory_offset": 83212512
+    },
+    "bundled-host": {
+      "bytes": 83094831,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "path": "/build-target/host Python extensions/glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+        },
+        "glue_native_init_error.so": {
+          "path": "/build-target/host Python extensions/glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+        },
+        "glue_native_multi.so": {
+          "path": "/build-target/host Python extensions/glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+        },
+        "glue_native_single.so": {
+          "path": "/build-target/host Python extensions/glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+        },
+        "libglue_python_dependency.so": {
+          "path": "/build-target/host Python extensions/libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+        }
+      },
+      "manifest_bytes": 339898,
+      "manifest_sha256": "6e4fa71a35cba2c530b118001c90e92938e0d2e5e72c0c32f3bead448e426f9e",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "aab881196962c0fb25d4a0874baccfc0e2049f2ab344f6cd70596f347bc984d5",
+      "zip_directory_offset": 82869473
+    },
+    "corrupt-native": {
+      "bytes": 83438354,
+      "corrupt_native_offset": 621546,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "compression": "stored",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+          "size": 68672
+        },
+        "glue_native_init_error.so": {
+          "compression": "stored",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+          "size": 68400
+        },
+        "glue_native_multi.so": {
+          "compression": "stored",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+          "size": 68640
+        },
+        "glue_native_single.so": {
+          "compression": "stored",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+          "size": 68536
+        },
+        "libglue_python_dependency.so": {
+          "compression": "stored",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+          "size": 67152
+        }
+      },
+      "manifest_bytes": 341133,
+      "manifest_sha256": "0bb74b9dbbab2c89713a33fa10b94becc429feacf76d8ad948f69b6a084047c0",
+      "native": "archived",
+      "runtime": "bundled",
+      "sha256": "186b3c378e502eae431843c959f4cf46c5021d91b51c11e3c0c144553828b8f2",
+      "zip_directory_offset": 83212512
+    },
+    "host-archived": {
+      "bytes": 359787,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "compression": "stored",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+          "size": 68672
+        },
+        "glue_native_init_error.so": {
+          "compression": "stored",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+          "size": 68400
+        },
+        "glue_native_multi.so": {
+          "compression": "stored",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+          "size": 68640
+        },
+        "glue_native_single.so": {
+          "compression": "stored",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+          "size": 68536
+        },
+        "libglue_python_dependency.so": {
+          "compression": "stored",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+          "size": 67152
+        }
+      },
+      "manifest_bytes": 5912,
+      "manifest_sha256": "06edb5782ae00523bea9fda147fc17beacb91a836074649aee0774d6410934fa",
+      "native": "archived",
+      "runtime": "host",
+      "sha256": "7c8d5f07bdef95c89ba5dd38cfc85a19bdefcc29b8e2875a34d4197bc0a1ec00",
+      "zip_directory_offset": 357536
+    },
+    "host-host": {
+      "bytes": 16264,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "path": "/build-target/host Python extensions/glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+        },
+        "glue_native_init_error.so": {
+          "path": "/build-target/host Python extensions/glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+        },
+        "glue_native_multi.so": {
+          "path": "/build-target/host Python extensions/glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+        },
+        "glue_native_single.so": {
+          "path": "/build-target/host Python extensions/glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+        },
+        "libglue_python_dependency.so": {
+          "path": "/build-target/host Python extensions/libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+        }
+      },
+      "manifest_bytes": 4677,
+      "manifest_sha256": "be805bac8493c33d0ed7911f10bd1c95280747485e5910f102c71a87e3b77518",
+      "native": "host",
+      "runtime": "host",
+      "sha256": "524ec61d5705cf3276cd9fb52e6f5c4ae428e0a3de15067347b9e90b835091c4",
+      "zip_directory_offset": 14497
+    },
+    "missing-host-image": {
+      "bytes": 83094926,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "path": "/build-target/host Python extensions missing-host-image/glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+        },
+        "glue_native_init_error.so": {
+          "path": "/build-target/host Python extensions missing-host-image/glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+        },
+        "glue_native_multi.so": {
+          "path": "/build-target/host Python extensions missing-host-image/glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+        },
+        "glue_native_single.so": {
+          "path": "/build-target/host Python extensions missing-host-image/glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+        },
+        "libglue_python_dependency.so": {
+          "path": "/build-target/host Python extensions missing-host-image/libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+        }
+      },
+      "manifest_bytes": 339993,
+      "manifest_sha256": "8b2537e66d99c23a1cfdf5570523b2ae3a31295b73b746a2811d7324cd937e66",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "4cff4ac5eb71868a58aa46bbbb3ea8fe9cd7f71703fa5195f07aead540d855a8",
+      "zip_directory_offset": 82869568
+    },
+    "wrong-host-image": {
+      "bytes": 83094916,
+      "declarations": {
+        "glue_native_exec_error.so": {
+          "path": "/build-target/host Python extensions wrong-host-image/glue_native_exec_error.so",
+          "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6"
+        },
+        "glue_native_init_error.so": {
+          "path": "/build-target/host Python extensions wrong-host-image/glue_native_init_error.so",
+          "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e"
+        },
+        "glue_native_multi.so": {
+          "path": "/build-target/host Python extensions wrong-host-image/glue_native_multi.so",
+          "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20"
+        },
+        "glue_native_single.so": {
+          "path": "/build-target/host Python extensions wrong-host-image/glue_native_single.so",
+          "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d"
+        },
+        "libglue_python_dependency.so": {
+          "path": "/build-target/host Python extensions wrong-host-image/libglue_python_dependency.so",
+          "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168"
+        }
+      },
+      "manifest_bytes": 339983,
+      "manifest_sha256": "b351e7613b020b9b544719c0b71ca7a6957550a3756b755cf7a721a0b0350d45",
+      "native": "host",
+      "runtime": "bundled",
+      "sha256": "1f3d535abb42c65856030f13bdcec2f8e5d3756f5a0ec8bbb47b1b1ec019b046",
+      "zip_directory_offset": 82869558
+    }
+  },
+  "files": {
+    "glue_native_exec_error.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2068,
+          "flags": 5,
+          "memsz": 2068,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 728,
+          "flags": 6,
+          "memsz": 744,
+          "offset": 65088,
+          "vaddr": 130624
+        }
+      ],
+      "sha256": "25a42b2b856145fe4e84b18160cb17826f54fcc1857eceff2069a9b89e7e3db6",
+      "size": 68672
+    },
+    "glue_native_init_error.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 1688,
+          "flags": 5,
+          "memsz": 1688,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 640,
+          "flags": 6,
+          "memsz": 648,
+          "offset": 65096,
+          "vaddr": 130632
+        }
+      ],
+      "sha256": "139fd5c5f9fac35a94d1396779ff4a81b7d9b6e4f2344de4851e9aa869289f2e",
+      "size": 68400
+    },
+    "glue_native_multi.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2064,
+          "flags": 5,
+          "memsz": 2064,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 752,
+          "flags": 6,
+          "memsz": 760,
+          "offset": 65096,
+          "vaddr": 130632
+        }
+      ],
+      "sha256": "1d7abceaf3c2e7e3db228e91b3c28bf9b6ec58aac7a7b9fefbdaba1e9a0bbd20",
+      "size": 68640
+    },
+    "glue_native_single.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 2036,
+          "flags": 5,
+          "memsz": 2036,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 688,
+          "flags": 6,
+          "memsz": 696,
+          "offset": 65080,
+          "vaddr": 130616
+        }
+      ],
+      "sha256": "32c79302f631ae823f095a7a35153a57e16a8f3904ae2b3a8dcc2ff43c36cf9d",
+      "size": 68536
+    },
+    "libglue_python_dependency.so": {
+      "loads": [
+        {
+          "align": 65536,
+          "filesz": 712,
+          "flags": 5,
+          "memsz": 712,
+          "offset": 0,
+          "vaddr": 0
+        },
+        {
+          "align": 65536,
+          "filesz": 256,
+          "flags": 6,
+          "memsz": 256,
+          "offset": 65280,
+          "vaddr": 130816
+        }
+      ],
+      "sha256": "dd71198aa5f249666a9be2fdd58738598c56adfd7c69060c6f8d5d57c6d45168",
+      "size": 67152
+    }
+  },
+  "schema_version": 0
+}

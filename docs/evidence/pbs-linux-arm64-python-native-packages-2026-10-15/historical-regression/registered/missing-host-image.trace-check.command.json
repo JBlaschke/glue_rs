@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/local/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/Users/johannes.blaschke/Developer/glue_rs/scripts/check-linux-python-extension-trace.py",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/missing-host-image.trace.txt",
+    "--mode",
+    "missing-host-image",
+    "--stdout-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/missing-host-image.stdout.txt",
+    "--stderr-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/missing-host-image.stderr.txt",
+    "--native-metadata-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered/native-metadata.json",
+    "--archive-file",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-extensions-final-build/relocated Python extensions/missing-host-image.glue"
+  ],
+  "exit_status": 0
+}

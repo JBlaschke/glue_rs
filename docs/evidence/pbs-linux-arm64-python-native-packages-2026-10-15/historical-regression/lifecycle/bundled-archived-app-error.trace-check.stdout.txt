@@ -1,0 +1,1 @@
+PASS exact native lifecycle trace: bundled-archived-app-error

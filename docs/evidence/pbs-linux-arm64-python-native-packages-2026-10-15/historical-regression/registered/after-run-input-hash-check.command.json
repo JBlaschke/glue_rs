@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "podman",
+    "run",
+    "--rm",
+    "--network=none",
+    "--read-only",
+    "--read-only-tmpfs=false",
+    "--mount",
+    "type=volume,source=glue-native-packages-historical-registered-1792049919492914000,destination=/build-target,ro",
+    "--mount",
+    "type=bind,source=/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/registered,destination=/evidence,ro",
+    "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "sh",
+    "-c",
+    "sha256sum --quiet -c /evidence/runtime-inputs.sha256"
+  ],
+  "exit_status": 0
+}

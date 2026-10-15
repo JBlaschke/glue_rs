@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "podman",
+    "run",
+    "--rm",
+    "--network=none",
+    "--read-only",
+    "--read-only-tmpfs=false",
+    "--volume",
+    "glue-native-packages-historical-lifecycle-1792049848817414000:/build-target:rw",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-extensions-final-build:/cached:ro",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-development-build:/new-build:ro",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-packages-historical-regression/lifecycle:/evidence:rw",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-lifecycle-clean-final-build:/lifecycle:ro",
+    "--volume",
+    "/Users/johannes.blaschke/Developer/glue_rs/target/python-native-lifecycle-clean-final:/lifecycle-evidence:ro",
+    "62812c4a0e15bc750ddd6ec68d2a19f8815a14b60d520e201a911e2e29f40abe",
+    "sh",
+    "-c",
+    "set -eu; cp -a \"/cached/host Python imports\" /build-target/; mkdir \"/build-target/runtime-empty\" \"/build-target/relocated Python native lifecycle\"; cp /lifecycle/relocated\\ Python\\ native\\ lifecycle/*.glue \"/build-target/relocated Python native lifecycle/\"; cp /lifecycle-evidence/commands.sh /build-target/runtime-commands.sh; for suffix in \"\" \" missing-host-image\" \" wrong-host-image\"; do mkdir \"/build-target/host Python native lifecycle$suffix\"; cp /lifecycle/native-images/*.so \"/build-target/host Python native lifecycle$suffix/\"; done; chmod u+w \"/build-target/host Python native lifecycle wrong-host-image/glue_native_lifecycle.so\"; printf \"~\" | dd of=\"/build-target/host Python native lifecycle wrong-host-image/glue_native_lifecycle.so\" bs=1 count=1 conv=notrunc status=none; rm \"/build-target/host Python native lifecycle missing-host-image/libglue_python_lifecycle.so\"; cp \"/new-build/relocated Python native packages/glue-python-bootstrap-probe\" \"/build-target/relocated Python native lifecycle/glue-python-bootstrap-probe\"; chmod 0555 \"/build-target/relocated Python native lifecycle/glue-python-bootstrap-probe\" \"/build-target/relocated Python native lifecycle\" \"/build-target/runtime-empty\" /build-target/host\\ Python\\ native\\ lifecycle*; chmod 0444 /build-target/host\\ Python\\ native\\ lifecycle*/*.so \"/build-target/relocated Python native lifecycle/\"*.glue; test ! -e /build-target/producer; test ! -e /build-target/include; test ! -e /build-target/native-producer; find /build-target -type f -print0 | sort -z | xargs -0 sha256sum > /evidence/runtime-inputs.sha256; sha256sum --quiet -c /evidence/expected-runtime-inputs.sha256"
+  ],
+  "exit_status": 0
+}

@@ -1,0 +1,3379 @@
+{
+  "files": [
+    {
+      "encoding": "identity",
+      "retained": "capture/artifacts.sha256",
+      "source": "target/python-native-packages-clean-final/artifacts.sha256",
+      "source_identity": {
+        "sha256": "aaf2cbd5fe358b4bbcad3a9f4bf643cbc86c75c5e4311e80b8487e17fe68468f",
+        "size": 1167
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/build-provenance/glue-runtime-python-1dbcd75715a52b3d.txt.gz",
+      "source": "target/python-native-packages-clean-final/build-provenance/glue-runtime-python-1dbcd75715a52b3d.txt",
+      "source_identity": {
+        "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8",
+        "size": 1328
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/build-provenance/glue-runtime-python-1dbcd75715a52b3d.undefined.txt.gz",
+      "source": "target/python-native-packages-clean-final/build-provenance/glue-runtime-python-1dbcd75715a52b3d.undefined.txt",
+      "source_identity": {
+        "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964",
+        "size": 409
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/build-provenance/glue-runtime-python-97d81cc4d4d9dc64.txt.gz",
+      "source": "target/python-native-packages-clean-final/build-provenance/glue-runtime-python-97d81cc4d4d9dc64.txt",
+      "source_identity": {
+        "sha256": "eb1caf95a6e6c1dcc96cd636e5e70ce94cec6f58e7173e57d71c8c4966d6c9b8",
+        "size": 1328
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/build-provenance/glue-runtime-python-97d81cc4d4d9dc64.undefined.txt.gz",
+      "source": "target/python-native-packages-clean-final/build-provenance/glue-runtime-python-97d81cc4d4d9dc64.undefined.txt",
+      "source_identity": {
+        "sha256": "2c4edef0165dfa692a00e7bf5d5745eb016c9df9c3571d6bbcdffe790deb5964",
+        "size": 409
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived-app-error.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived-app-error.trace-check.txt",
+      "source_identity": {
+        "sha256": "394461b8122e8763ceb3ccab6e4882b04c5cee2c7a8cf1841fbcdf5af7daa3dd",
+        "size": 60
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/bundled-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/bundled-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "1b9005d304de51f7035b8c5da8d20e16d8503816279a63e1bf2b584dc9b38217",
+        "size": 7079998
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "935a7ea296242bf461f6eaff347deedbf0032142d1ca393e06dc6192216768b9",
+        "size": 56
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-archived.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/bundled-archived.trace-check.txt",
+      "source_identity": {
+        "sha256": "d692f6d2f52b521ffac7acd8cd2aed1edd198f73101272551bfd5c94795dc0ff",
+        "size": 50
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/bundled-archived.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/bundled-archived.trace.txt",
+      "source_identity": {
+        "sha256": "a76edab3f864752fb1b4706025375869ebf3c4926cb9a545a7ef6cd79a1378b6",
+        "size": 7079484
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-base.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-base.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-base.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-base.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "a2b7ca0ef65fc701ffa9e4edee6a041b35c0b11997bd617ffb9c4559c5d88952",
+        "size": 51
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host-app-error.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host-app-error.trace-check.txt",
+      "source_identity": {
+        "sha256": "df0815a2bd8f918298a49c32ae92924e9fc11aabdcbd36acf7ba95a7d3a4495d",
+        "size": 56
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/bundled-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/bundled-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "8d923cc754b9558658016f7520952e1f08086dfcfdeac30c73376141f05b1c78",
+        "size": 6980503
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "315564fd957e9455c5ed9a38a3b59345f4445bffde00b729b5f147784b1244c0",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.stderr.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.stdout.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/bundled-host.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/bundled-host.trace-check.txt",
+      "source_identity": {
+        "sha256": "f5598ad7d8063150289418afb3644237719662edc86f194f5c63b4aaa10c4834",
+        "size": 46
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/bundled-host.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/bundled-host.trace.txt",
+      "source_identity": {
+        "sha256": "430d8e2d092d96a7bfe8fc5c4e05af17eca47954999a986065822c17d0da1d45",
+        "size": 6980872
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/commands.sh",
+      "source": "target/python-native-packages-clean-final/commands.sh",
+      "source_identity": {
+        "sha256": "702b501f34e01a691cdfad9a55bff98b74e3bad0f3a8b86a9b13fcdaafe76298",
+        "size": 16268
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt-native.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/corrupt-native.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt-native.stderr.txt",
+      "source": "target/python-native-packages-clean-final/corrupt-native.stderr.txt",
+      "source_identity": {
+        "sha256": "e4cfa98b1446e69ecd6c12a662c35dd54b35ad0a5f2ad8f88a62c48130d54037",
+        "size": 101
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt-native.stdout.txt",
+      "source": "target/python-native-packages-clean-final/corrupt-native.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt-native.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/corrupt-native.trace-check.txt",
+      "source_identity": {
+        "sha256": "aded29ae4cc342914347f1319efbd48d4b874b5fb3f31cfd3d67fbc98f5cb309",
+        "size": 48
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/corrupt-native.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/corrupt-native.trace.txt",
+      "source_identity": {
+        "sha256": "7d546ee89e5ff66010f0206e6dd90ac13eab10c84978d938a5ca8eabb4c1f1a6",
+        "size": 3558640
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt.stderr.txt",
+      "source": "target/python-native-packages-clean-final/corrupt.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/corrupt.stdout.txt",
+      "source": "target/python-native-packages-clean-final/corrupt.stdout.txt",
+      "source_identity": {
+        "sha256": "a19f070a714ff42657483d4ed36aeee1d0875d5af38758ed5a193dfac22c29fc",
+        "size": 47
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/environment.txt.gz",
+      "source": "target/python-native-packages-clean-final/environment.txt",
+      "source_identity": {
+        "sha256": "f76969224de0f86dfee9a8cb856a2f2211ae714a2bd062259d41c4ce53662837",
+        "size": 485
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/extensions-build.txt.gz",
+      "source": "target/python-native-packages-clean-final/extensions-build.txt",
+      "source_identity": {
+        "sha256": "88363a618ae738dbac36628e15c91b7d40b15d23cf7465606257f935082c67a4",
+        "size": 147
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/extensions-clippy.txt.gz",
+      "source": "target/python-native-packages-clean-final/extensions-clippy.txt",
+      "source_identity": {
+        "sha256": "bc82628f60e9faeb742d58c27d52067508f5c13c9ccbd619bea90e68bcb25791",
+        "size": 1345
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/extensions-tests.txt.gz",
+      "source": "target/python-native-packages-clean-final/extensions-tests.txt",
+      "source_identity": {
+        "sha256": "d222c271a300b02ca21d6f45deb5761c8877f7adb0299da0e76390bd81c529f8",
+        "size": 18676
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/freeze-bundle.json",
+      "source": "target/python-native-packages-clean-final/freeze-bundle.json",
+      "source_identity": {
+        "sha256": "6a41fc38141d45c5197adfc1b0ee740c6244ea681742c205b8aa7b8449d865d7",
+        "size": 139523
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/freeze-provenance.json",
+      "source": "target/python-native-packages-clean-final/freeze-provenance.json",
+      "source_identity": {
+        "sha256": "79e9a2a116b50244d20d7481b9c1eabcdbc5d4ec4059542d67fa44c2e50de2f7",
+        "size": 41305
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/freeze.stderr.txt",
+      "source": "target/python-native-packages-clean-final/freeze.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/freeze.stdout.txt",
+      "source": "target/python-native-packages-clean-final/freeze.stdout.txt",
+      "source_identity": {
+        "sha256": "be8c8c5429ee8e8e242a312c97947f005c1331a8f7ac28ce167953d1cb44326c",
+        "size": 147
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/host-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived-app-error.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/host-archived-app-error.trace-check.txt",
+      "source_identity": {
+        "sha256": "e77b6a1c0094b4338220affdf6d08cb56d3171770b8c01c426170f1bbb3700f1",
+        "size": 57
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/host-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/host-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "55a4a1b95c97db8a73269b7c97f81e58f5120c0357e1db7fb8f28b347a3e0f4b",
+        "size": 1604556
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "935a7ea296242bf461f6eaff347deedbf0032142d1ca393e06dc6192216768b9",
+        "size": 56
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-archived.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/host-archived.trace-check.txt",
+      "source_identity": {
+        "sha256": "98ffa5bba5babaed4ffc19ce6b658d0013cb300a079d03c8e782a4ae4ff9e85e",
+        "size": 47
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/host-archived.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/host-archived.trace.txt",
+      "source_identity": {
+        "sha256": "6d21bc50489e12b9feba974fec6929c26a170f74fdb80699d84c2872e152ad88",
+        "size": 1604067
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-base.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-base.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-base.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-base.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "0176ce00b34fd3bdf4b12a5d3ed09a7a80e360129c82a57873775d8093d394c6",
+        "size": 62
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-controls.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-controls.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-controls.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-controls.stdout.txt",
+      "source_identity": {
+        "sha256": "ff370855b1f6ff7324df94cb3f28dadc0d6d4750fc1a7240912ab84f75c42336",
+        "size": 84
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/host-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host-app-error.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/host-host-app-error.trace-check.txt",
+      "source_identity": {
+        "sha256": "f64692477043d3cc804b116bf3692d786ac2620b9f0a5d8efc4f89d96c7e625d",
+        "size": 53
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/host-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/host-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "db49a5279033c09b11a9111abd7611a25b74f00b87de29d4b4398239753ce323",
+        "size": 1636859
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/host-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-host.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-host.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "315564fd957e9455c5ed9a38a3b59345f4445bffde00b729b5f147784b1244c0",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.stderr.txt",
+      "source": "target/python-native-packages-clean-final/host-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.stdout.txt",
+      "source": "target/python-native-packages-clean-final/host-host.stdout.txt",
+      "source_identity": {
+        "sha256": "9c396075145a5146a500906a62c81656e1ffcd66acd0c862e6608172550f57c3",
+        "size": 329
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-host.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/host-host.trace-check.txt",
+      "source_identity": {
+        "sha256": "18d939e9286f2be049f988d514b6bf23820cd063086af1320ba1789d6225a323",
+        "size": 43
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/host-host.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/host-host.trace.txt",
+      "source_identity": {
+        "sha256": "1da68a19af6ae8bfdb7c9f8dda3eebfdbe48cf377307794be1ff195154d43548",
+        "size": 1636312
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/host-runtime-provenance.json",
+      "source": "target/python-native-packages-clean-final/host-runtime-provenance.json",
+      "source_identity": {
+        "sha256": "a7d801c598775a95e207d7afa7c81afce52ee4bb8cd880a09963de13e3a39d5f",
+        "size": 57315
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/image-inspect.json",
+      "source": "target/python-native-packages-clean-final/image-inspect.json",
+      "source_identity": {
+        "sha256": "dba1e80c53d258359a692d6821cc31b3c91449cd64daea11d1f1f825b1017101",
+        "size": 7287
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/launcher.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/launcher.elf.txt",
+      "source_identity": {
+        "sha256": "de11bb78a44c04b63a789f81a15e4878491842762585f30f613a90352cb57230",
+        "size": 8290
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/lifecycle-hostile-audit.json",
+      "source": "target/python-native-packages-clean-final/lifecycle-hostile-audit.json",
+      "source_identity": {
+        "sha256": "07c620bfea6ff65846ab3b2fba1344d9cbfda2bd577f71b0c9d1ae94c3d408e0",
+        "size": 7512
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/lifecycle-hostile-audit.stderr.txt",
+      "source": "target/python-native-packages-clean-final/lifecycle-hostile-audit.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/lifecycle-hostile-audit.stdout.txt",
+      "source": "target/python-native-packages-clean-final/lifecycle-hostile-audit.stdout.txt",
+      "source_identity": {
+        "sha256": "35c9c18bcfc51532ffe392b96a40c1b171c529102c81fec223b7d8630d36ad21",
+        "size": 47
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/lifecycle-policy-stock-python-tests.txt.gz",
+      "source": "target/python-native-packages-clean-final/lifecycle-policy-stock-python-tests.txt",
+      "source_identity": {
+        "sha256": "2a6ba7d54e01036d86ba991ec6f718d2eb1e0e305e470695265676358c3149d7",
+        "size": 113
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/lifecycle-policy-tests.txt.gz",
+      "source": "target/python-native-packages-clean-final/lifecycle-policy-tests.txt",
+      "source_identity": {
+        "sha256": "281ab33dd13800b4ddb2e1e0bbd7f8394d3d4d5535a589452eaf08fbd6568c68",
+        "size": 113
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "315564fd957e9455c5ed9a38a3b59345f4445bffde00b729b5f147784b1244c0",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.stderr.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "5d03bd2341dce448d98a3ca0370052cfdddb343abd231971478584623ff9426a",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.stdout.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/missing-host-image.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/missing-host-image.trace-check.txt",
+      "source_identity": {
+        "sha256": "86e9514f61bbc7dfc5fa8ff69d92e02813eb748b044d8a5914a1ee0e15163c7e",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/missing-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/missing-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "ac881522a31eb2ffe75faaabd330a59991d911b23f1fdee8c3a3581b0a3875a3",
+        "size": 7102288
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-baseline.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/native-baseline.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-baseline.stderr.txt",
+      "source": "target/python-native-packages-clean-final/native-baseline.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-baseline.stdout.txt",
+      "source": "target/python-native-packages-clean-final/native-baseline.stdout.txt",
+      "source_identity": {
+        "sha256": "9d7b5e3b63a0f8bf58d0207b0d8f209e62c214601d1b9863fa8ac8e5716b9cfe",
+        "size": 229
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-build/artifacts.sha256",
+      "source": "target/python-native-packages-clean-final/native-build/artifacts.sha256",
+      "source_identity": {
+        "sha256": "9623cb8662dcaaca380ad876484363939519d89d3a9f831025f80218a8413a56",
+        "size": 843
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-build/baseline-driver.c",
+      "source": "target/python-native-packages-clean-final/native-build/baseline-driver.c",
+      "source_identity": {
+        "sha256": "57bf9baafb175b756be3c63e45347f2ca954851e96e52f3fb7378339bde17165",
+        "size": 13883
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/baseline-driver.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/baseline-driver.elf.txt",
+      "source_identity": {
+        "sha256": "83ebe3f938f1e0d0bdab3b7dfa9c826eb6fdc5b70fccc49659ec3ee1d7f85396",
+        "size": 23204
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/baseline-driver.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/baseline-driver.imports.txt",
+      "source_identity": {
+        "sha256": "52dd4689d42219e484dd36d7e4f5c524458533ccc2e40dc2a8d57d068cf18982",
+        "size": 1225
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/compiler.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/compiler.txt",
+      "source_identity": {
+        "sha256": "7e575ab6fefd049c43d6a74b298b043016556f4e410e77194274a0414054e807",
+        "size": 239
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_create_error.so.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_create_error.so.elf.txt",
+      "source_identity": {
+        "sha256": "d2a9d9ff53d8a24bc9a8f68497c3eb4b9bbfa6b2d08bffb3e6d1e3cadfc21b2c",
+        "size": 13883
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_create_error.so.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_create_error.so.imports.txt",
+      "source_identity": {
+        "sha256": "35224b32eccb9b2b32be3732e1eba675906baaca693368ac877df76192fd076d",
+        "size": 474
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_lifecycle.so.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_lifecycle.so.elf.txt",
+      "source_identity": {
+        "sha256": "59e81d49372b8cdead134ee6e97b99b92d831382d1759a404233b30bfea8cb1f",
+        "size": 13871
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_lifecycle.so.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_lifecycle.so.imports.txt",
+      "source_identity": {
+        "sha256": "35224b32eccb9b2b32be3732e1eba675906baaca693368ac877df76192fd076d",
+        "size": 474
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_lifecycle_exec_error.so.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_lifecycle_exec_error.so.elf.txt",
+      "source_identity": {
+        "sha256": "fd65a5150e81da011ddd1c8711933b0c4a4f4b4eaa5afbcc7db6bb9e5e4a077a",
+        "size": 13906
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/glue_native_lifecycle_exec_error.so.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/glue_native_lifecycle_exec_error.so.imports.txt",
+      "source_identity": {
+        "sha256": "35224b32eccb9b2b32be3732e1eba675906baaca693368ac877df76192fd076d",
+        "size": 474
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/libglue_python_lifecycle.so.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/libglue_python_lifecycle.so.elf.txt",
+      "source_identity": {
+        "sha256": "83ae4d73e991a93b68442753040d2d42108413c0a0900d1ec7216f46178dcaa0",
+        "size": 4042
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/libglue_python_lifecycle.so.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/libglue_python_lifecycle.so.imports.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/lifecycle-baseline-driver.elf.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/lifecycle-baseline-driver.elf.txt",
+      "source_identity": {
+        "sha256": "a41a71a5492abb7d44d4ef3d46ccb7e1d5ba4da9f0ff28322245a2f2a54b3580",
+        "size": 17828
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/native-build/lifecycle-baseline-driver.imports.txt.gz",
+      "source": "target/python-native-packages-clean-final/native-build/lifecycle-baseline-driver.imports.txt",
+      "source_identity": {
+        "sha256": "7347b567cef08b5e5fccae7d241fd26f0fc88d68f38f1c55015f245387627b39",
+        "size": 918
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-build.stderr.txt",
+      "source": "target/python-native-packages-clean-final/native-build.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-build.stdout.txt",
+      "source": "target/python-native-packages-clean-final/native-build.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-controls.json",
+      "source": "target/python-native-packages-clean-final/native-controls.json",
+      "source_identity": {
+        "sha256": "97cd995181c9c4d52cd61f31419d16fdc49f8f339f4165fa3e38d69dd88ee87a",
+        "size": 880
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/native-metadata.json",
+      "source": "target/python-native-packages-clean-final/native-metadata.json",
+      "source_identity": {
+        "sha256": "44a7d2ddf3daf2a8a0e347b4884e03fa4a34e67601fa5341080a8212f98e272c",
+        "size": 41725
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/post-removal-files.txt.gz",
+      "source": "target/python-native-packages-clean-final/post-removal-files.txt",
+      "source_identity": {
+        "sha256": "145ec445e9a14f0338c0c5401d1eb64224262a3a824158a03b32f59506f51664",
+        "size": 6473
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/provision.stderr.txt",
+      "source": "target/python-native-packages-clean-final/provision.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/provision.stdout.txt",
+      "source": "target/python-native-packages-clean-final/provision.stdout.txt",
+      "source_identity": {
+        "sha256": "29512f8a8a4786b4c30d981fdd5b5a8a99b3a01c0608041a7318f873eab1576c",
+        "size": 97
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/runtime-identity.txt",
+      "source": "target/python-native-packages-clean-final/runtime-identity.txt",
+      "source_identity": {
+        "sha256": "6527e0b2524b480c3d2cf0e83a00fc4e741c817f42a9757866bd97ec8b9ecb29",
+        "size": 59
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/runtime-mounts.txt.gz",
+      "source": "target/python-native-packages-clean-final/runtime-mounts.txt",
+      "source_identity": {
+        "sha256": "94986d2b368d4c31cd5a8901463004f1d5407b34c0d82f17853738b510d4e133",
+        "size": 3912
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/source-branch.txt",
+      "source": "target/python-native-packages-clean-final/source-branch.txt",
+      "source_identity": {
+        "sha256": "21d8790d35b2641494f97d3155aefd754bb527512335e8556b7079344d2ec593",
+        "size": 39
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/source-diff.patch.gz",
+      "source": "target/python-native-packages-clean-final/source-diff.patch",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/source-inputs.json",
+      "source": "target/python-native-packages-clean-final/source-inputs.json",
+      "source_identity": {
+        "sha256": "26166b12eda217e664e052c7f535d8ce5538ed808c9810029bb9b68b9b4ed86a",
+        "size": 61484
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/source-revision.txt",
+      "source": "target/python-native-packages-clean-final/source-revision.txt",
+      "source_identity": {
+        "sha256": "b607cd1b740b95e79dfce11ae2bd5c7d4b5532af6d54c0bb91612bb5e3bdebdc",
+        "size": 41
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/source-status.txt",
+      "source": "target/python-native-packages-clean-final/source-status.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/vendor-config.toml",
+      "source": "target/python-native-packages-clean-final/vendor-config.toml",
+      "source_identity": {
+        "sha256": "b00626b9d924346d65a8cf710c9647031f40fb6a260414412e1faf1a36213683",
+        "size": 125
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/vendor.stderr.txt.gz",
+      "source": "target/python-native-packages-clean-final/vendor.stderr.txt",
+      "source_identity": {
+        "sha256": "d128092a9e85a66daf37f357a2b277c8ff0ef560084a6086716670e3a0cc74e5",
+        "size": 8356
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/volume-name.txt",
+      "source": "target/python-native-packages-clean-final/volume-name.txt",
+      "source_identity": {
+        "sha256": "814765135f119bf63ad8930459ef2a9279b39259fef4663b2f261f66b1d10180",
+        "size": 33
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/volume-removal.stderr.txt",
+      "source": "target/python-native-packages-clean-final/volume-removal.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/volume-removal.stdout.txt",
+      "source": "target/python-native-packages-clean-final/volume-removal.stdout.txt",
+      "source_identity": {
+        "sha256": "814765135f119bf63ad8930459ef2a9279b39259fef4663b2f261f66b1d10180",
+        "size": 33
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.exit-status.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.prepare.stderr.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.prepare.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.prepare.stdout.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.prepare.stdout.txt",
+      "source_identity": {
+        "sha256": "315564fd957e9455c5ed9a38a3b59345f4445bffde00b729b5f147784b1244c0",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.stderr.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "e9c9e7107a27834aa2fe03112707c295c700551bdad6852e289d934289cc6765",
+        "size": 143
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.stdout.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "capture/wrong-host-image.trace-check.txt",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.trace-check.txt",
+      "source_identity": {
+        "sha256": "d20166152974fa724ea0395e8e2f8bdefb7d14c9171e4e7262651c927474f272",
+        "size": 50
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "capture/wrong-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-clean-final/wrong-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "c968949930f330ddff20cbdff34068cdf3498de1d68ab864cdb1cc7d97755c0f",
+        "size": 7052706
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/commands.json",
+      "source": "target/python-native-packages-historical-regression/commands.json",
+      "source_identity": {
+        "sha256": "6f3fec262a19888ee16ff412cdfa535dd4f40c7b3ca9150ebac1ca04b5c4eec3",
+        "size": 31754
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/historical-regression-summary.json",
+      "source": "target/python-native-packages-historical-regression/historical-regression-summary.json",
+      "source_identity": {
+        "sha256": "b836eea2d819c5d59cdae94e230f16870aeeaaad142247a45eb2115182aabe87",
+        "size": 3957
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/after-run-input-hash-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/after-run-input-hash-check.command.json",
+      "source_identity": {
+        "sha256": "34abd943f0807f147efa58c0ce279cd6a35f741b7de4de5680b27350735c3d70",
+        "size": 601
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/after-run-input-hash-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/after-run-input-hash-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/after-run-input-hash-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/after-run-input-hash-check.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "e9040be6e334de2e7a4c064e46db5f5ecdf1462c6f29c330932d7655649b7ccb",
+        "size": 1081
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "8a7b5489e8bd5bde5be3ab411409ae4c03c3cc192681c65a6957c49d7cfa71d3",
+        "size": 62
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/bundled-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "72187f3a6b84521f008f0d7b92646d3cfc65a5bdadbecf83565774472a2fab68",
+        "size": 7105027
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.trace-check.command.json",
+      "source_identity": {
+        "sha256": "ce6007552ccc092e58a6071da412073d7f4fd00b21fddde5f703f4bffd88b54b",
+        "size": 1041
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-archived.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "bb401a8d021785a745dd2f4fb92ff934f25b2ea05024d69124a799c7fb967495",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/bundled-archived.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-archived.trace.txt",
+      "source_identity": {
+        "sha256": "f40f16cc3d4001c8a0195685cfb43fd5b811386f348c052ff7c2cd569f7d0e66",
+        "size": 7104684
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "dd75201b0cd81093ff628889c98cb48aca224a0e21028ff15cf260756e50341c",
+        "size": 1061
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "20fbd4955d6fab187390d53c7b46ba8b91cd7bbc5a595d07914f85da8a29b3f9",
+        "size": 58
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/bundled-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "acd313b1a446b58b20c7f567909046ca48408c8973aa00e2e942c7f5982b951a",
+        "size": 7006333
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.trace-check.command.json",
+      "source_identity": {
+        "sha256": "7fb8df6454cc8e86651efd195304ec809aa6c2a5cc7986a5b6055bb49a2b61fc",
+        "size": 1021
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/bundled-host.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "41fd878a28c3c4e98a6fc2651f1e1f80ee4de2d160037806c67080c3f167424e",
+        "size": 48
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/bundled-host.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/bundled-host.trace.txt",
+      "source_identity": {
+        "sha256": "74ea7772a42098438a483e2a8b6a510b4036d85df9b175c72cbcbddf832d09c7",
+        "size": 7006360
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.stderr.txt",
+      "source_identity": {
+        "sha256": "e4cfa98b1446e69ecd6c12a662c35dd54b35ad0a5f2ad8f88a62c48130d54037",
+        "size": 101
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.trace-check.command.json",
+      "source_identity": {
+        "sha256": "7380bee902bbbbbcf1e9e2d58cb94e3497d98ac3b16faad636e154372b1b1ee5",
+        "size": 1031
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/corrupt-native.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "94d75b4882a73e03cb3d966d31984383be15514561d76b431258846512e0fc3f",
+        "size": 50
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/corrupt-native.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/corrupt-native.trace.txt",
+      "source_identity": {
+        "sha256": "a25d8b7dbfa2a02f486d377f772b31602f6cb1508590c653c376a7af6713d57b",
+        "size": 3577238
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/expected-runtime-inputs.sha256",
+      "source": "target/python-native-packages-historical-regression/lifecycle/expected-runtime-inputs.sha256",
+      "source_identity": {
+        "sha256": "a76143d2e269012733b17f59d7050de69d77feb6f9300d03bc9a4caac282041a",
+        "size": 12720
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/historical-regression-summary.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/historical-regression-summary.json",
+      "source_identity": {
+        "sha256": "0c66a15661ce0504d94a129456f70a21b662cca1f57b15640adb31a6d1ba0016",
+        "size": 1575
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "a2b024253d4b6f4f9ea24d3efcc72058217c3d22ea423e58c0b4167894c60760",
+        "size": 1066
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "29013c24cd0c43b33851160c34561e8359a71f3e7a68bf00b2770d8cc81b2256",
+        "size": 59
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/host-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "110073158b2f3f7e8878de79ddee0804617d06210f89eb7f88e260594f828c04",
+        "size": 1596977
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.trace-check.command.json",
+      "source_identity": {
+        "sha256": "28d0e5fbcaec16ce1335a26f7069705f0c2c7c59c00e70a92dc4a5aea9d54671",
+        "size": 1026
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-archived.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "0b3049d6057ec7ac6d890c4c0cf2a50e39b2aef59f207dc0987c9667a8748859",
+        "size": 49
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/host-archived.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-archived.trace.txt",
+      "source_identity": {
+        "sha256": "a6bc81fc3df7db9446b191b8d91944942da87fa6078665ffa34bf47f93982587",
+        "size": 1596460
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "f52ead865a665c5dc014c152ab4e57b13c9ad1e1d078bc07f59b0eecf80b0ffe",
+        "size": 1046
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "fb49c9af3a379119777be138a24257b2c7839a781d47826249967250dd921f5c",
+        "size": 55
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/host-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "3e74bd1eb441aaebeed6818c2ff53749ab243352c185d8eece01f0621cbb2f57",
+        "size": 1629775
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.stdout.txt",
+      "source_identity": {
+        "sha256": "5bcb24e06ac58cf7ea127c186da386a3b3a560aa4a61689db9a5824bb27b1527",
+        "size": 331
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.trace-check.command.json",
+      "source_identity": {
+        "sha256": "e8e493b745714581097d51245222d2d8358b57f8e2d6a042cad5d821cc76dc31",
+        "size": 1006
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/host-host.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "52afe078b4c165b0ba38bc7a531a3bc03ef90bf6f137f09c3d0479fa269b57fe",
+        "size": 45
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/host-host.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/host-host.trace.txt",
+      "source_identity": {
+        "sha256": "cbefba979cdfcc05e2126176d2abd9f7c8ff313207eef9112a1350089104018c",
+        "size": 1629440
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "5d03bd2341dce448d98a3ca0370052cfdddb343abd231971478584623ff9426a",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.trace-check.command.json",
+      "source_identity": {
+        "sha256": "803f2954c30a2ff2c4aeba9b61403423ea1d9b8be014ce934e722ced2de88cd6",
+        "size": 1051
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/missing-host-image.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "d1077c15a8ec200264e28ba8db5951a434c0b118033350a2c3765f65c9261b5a",
+        "size": 54
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/missing-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/missing-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "529b14d9302f07133ca32b0014bfd889b5bd6723d3ee415925d9fef1392b7b0d",
+        "size": 7127266
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/native-metadata.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/native-metadata.json",
+      "source_identity": {
+        "sha256": "a9150ebe92e86995309c205a302f0a91ceffd730ce2296c265ec0ffa6bbaf085",
+        "size": 36853
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/runtime-identity.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime-identity.txt",
+      "source_identity": {
+        "sha256": "6527e0b2524b480c3d2cf0e83a00fc4e741c817f42a9757866bd97ec8b9ecb29",
+        "size": 59
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/runtime-inputs.sha256",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime-inputs.sha256",
+      "source_identity": {
+        "sha256": "a76143d2e269012733b17f59d7050de69d77feb6f9300d03bc9a4caac282041a",
+        "size": 12720
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/runtime-mounts.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime-mounts.txt",
+      "source_identity": {
+        "sha256": "8375814180238308ac12e46addc2198632eca92be8acc1299f37cc0f7fc62077",
+        "size": 3768
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/runtime.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime.command.json",
+      "source_identity": {
+        "sha256": "8da7abeb31719a95cf9e0cef99f4105158bb1169d6f0a4a299268ab8aaec5496",
+        "size": 820
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/runtime.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/runtime.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/runtime.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/setup.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/setup.command.json",
+      "source_identity": {
+        "sha256": "0e5bd4885d3041c9551ac6a17cba15348aa22bc8181f0c1f7f4e1ff4ce85b63b",
+        "size": 2687
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/setup.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/setup.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/setup.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/setup.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-cleanup.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-cleanup.command.json",
+      "source_identity": {
+        "sha256": "9daab43397884f13715245d7cd2961c14d6df3efbc55baddb5126c5f4b64e358",
+        "size": 146
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-cleanup.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-cleanup.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-cleanup.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-cleanup.stdout.txt",
+      "source_identity": {
+        "sha256": "5f09870ce819c98d8ee251e5efc21d86f96e3c5b0dab451e7df67d2771790990",
+        "size": 62
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-create.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-create.command.json",
+      "source_identity": {
+        "sha256": "0ba89e621e832d5518f7735078d99808a7161c87ae7cc27e17e6adb358b8d1bb",
+        "size": 150
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-create.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-create.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-create.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-create.stdout.txt",
+      "source_identity": {
+        "sha256": "5f09870ce819c98d8ee251e5efc21d86f96e3c5b0dab451e7df67d2771790990",
+        "size": 62
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/volume-name.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/volume-name.txt",
+      "source_identity": {
+        "sha256": "5f09870ce819c98d8ee251e5efc21d86f96e3c5b0dab451e7df67d2771790990",
+        "size": 62
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "e9c9e7107a27834aa2fe03112707c295c700551bdad6852e289d934289cc6765",
+        "size": 143
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.trace-check.command.json",
+      "source_identity": {
+        "sha256": "37c7a4210467f3efe8ef8fcbffe4b43a8b7ac8f0a8a069cbe615f8fad202d560",
+        "size": 1041
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/lifecycle/wrong-host-image.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "850cf162b1dd4a23a1973a5ee31c93a96038e459dffcd3487fd850a1f448617f",
+        "size": 52
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/lifecycle/wrong-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/lifecycle/wrong-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "b2352f5235911ff4bbcdd41392fbd71ad78f44cab1713b499ff07641be0c4fc2",
+        "size": 7077804
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/after-run-input-hash-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/after-run-input-hash-check.command.json",
+      "source_identity": {
+        "sha256": "203ace5a684c493e2d32e82537d5785da56065548351a27e59489f79e30e0a01",
+        "size": 603
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/after-run-input-hash-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/after-run-input-hash-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/after-run-input-hash-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/after-run-input-hash-check.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "46a216b9ae232395ed8532d72ef285e1633789f6fb9430e7b6a4a983546a7871",
+        "size": 1060
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/bundled-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "83ba9f9c916ad7a9effed45add6bdd11f92abb8e48320ef7251ea8285df0dd25",
+        "size": 6913501
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.trace-check.command.json",
+      "source_identity": {
+        "sha256": "741fec7b89274d00cbed8f9b1f8afde5b86374b8a99e78a017c577b9777661bd",
+        "size": 1020
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-archived.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/bundled-archived.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-archived.trace.txt",
+      "source_identity": {
+        "sha256": "4e5798a583f08b0c2b4074ee4308ce2539cf6e62fb01bfd3c2e05c9897c326b3",
+        "size": 6912379
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "de018ab25596e10b905142e2db8b6d0dfacace09ba48a47ca8f19a73e0c9c8aa",
+        "size": 1040
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/bundled-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "88ff2f665dbf518207077bf5bd69d9cf011993bd2c7ca159f44eba815e9c27a7",
+        "size": 6820803
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.trace-check.command.json",
+      "source_identity": {
+        "sha256": "9d4a890ba027388237427f9698bbd0d90dd93a0beaf7355f2d24516429387924",
+        "size": 1000
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/bundled-host.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/bundled-host.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/bundled-host.trace.txt",
+      "source_identity": {
+        "sha256": "174f6e4c37e1e3dd509a5fbe3a208af695430b10b732c616bbe1f3a4522e2084",
+        "size": 6820508
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.stderr.txt",
+      "source_identity": {
+        "sha256": "3ebd94e930f0373ad8876e50c34ff06ebba7bba60a23c9536cc564c8dadf90f8",
+        "size": 102
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.trace-check.command.json",
+      "source_identity": {
+        "sha256": "142a5126649543f7c1fe62c5859b7efb310d8b1409558dd0fd67af7a7cad8ca9",
+        "size": 1010
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/corrupt-native.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/corrupt-native.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/corrupt-native.trace.txt",
+      "source_identity": {
+        "sha256": "ae5c0267b10fc1a183d5838e31e0e1b1fe3238b7e6e0a89c72c766c08e039c9c",
+        "size": 3422054
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/expected-runtime-inputs.sha256",
+      "source": "target/python-native-packages-historical-regression/registered/expected-runtime-inputs.sha256",
+      "source_identity": {
+        "sha256": "4308ce17fbfe44e6a19c8245aefafd01108762c5581da19d2c9b5efe47b0076d",
+        "size": 12971
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/historical-regression-summary.json",
+      "source": "target/python-native-packages-historical-regression/registered/historical-regression-summary.json",
+      "source_identity": {
+        "sha256": "4f2eb0ecd06102d35b771265f2e17536cf8768e0c446eb401c4c905016b09070",
+        "size": 1576
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "004a0fb9ef1a037bf16517a35f8e1d9456798a225f795a397d3b85ff182db6c4",
+        "size": 1045
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/host-archived-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "d2f39538444e43867d0156d33b1e521dd085b2f7316ddacaa6c126a7817bc18c",
+        "size": 1600955
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.trace-check.command.json",
+      "source_identity": {
+        "sha256": "3a8372e6355c20b81c63034de37b82be860531027fb6232d0c53c192c78eb1e1",
+        "size": 1005
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-archived.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/host-archived.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/host-archived.trace.txt",
+      "source_identity": {
+        "sha256": "e76356f9297eaf73a8cbc49a417452241a16723b6db762393d6856dee9a82b26",
+        "size": 1600087
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.stderr.txt",
+      "source_identity": {
+        "sha256": "fa70849a6adf65e9a8bd71e6f3f0d7f12183ab754a06a8a6856e5e24b4b2828a",
+        "size": 66
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.trace-check.command.json",
+      "source_identity": {
+        "sha256": "b925f508eb08d4a89a32568a391e7052b83b23a13f3d8e555355a38e35e4b175",
+        "size": 1025
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host-app-error.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/host-host-app-error.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/host-host-app-error.trace.txt",
+      "source_identity": {
+        "sha256": "a8ef15d471c941702ca5bb7dc7c41bc9710bf3f7ba80f26095dbaccbe9f10fbb",
+        "size": 1639845
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.stdout.txt",
+      "source_identity": {
+        "sha256": "151cfd3a89eb654dbc0f377ba65447069be30c35a68c87e8dbd6733af1c23f07",
+        "size": 169
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.trace-check.command.json",
+      "source_identity": {
+        "sha256": "5119edd7abe2e440e594daa80fd538905dd5933ed3598dbfa3fb2e18c84f8afe",
+        "size": 985
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/host-host.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/host-host.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/host-host.trace.txt",
+      "source_identity": {
+        "sha256": "4456166d9c18307b7026e73e5a44d0f4458805fea9225805e75192ccdd8bd9e5",
+        "size": 1639302
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "46aa0d2f1bff5efd1411c9cdc897555b879ab038948d2990f4bbe90f099a60cb",
+        "size": 164
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.trace-check.command.json",
+      "source_identity": {
+        "sha256": "7f0da392c505fb4a8cf24c86b4115810b70a08340e27ed0338f84236042970b9",
+        "size": 1030
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/missing-host-image.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/missing-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/missing-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "cf00841a81f695c4f30329e3bb6e156f07f7dc972eb42f69bb08716d97786f0f",
+        "size": 6929064
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/native-metadata.json",
+      "source": "target/python-native-packages-historical-regression/registered/native-metadata.json",
+      "source_identity": {
+        "sha256": "dede6d5da8fea742d9479511485c9658ec737fce0c29a3bb693046441a0a6e56",
+        "size": 12821
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/runtime-identity.txt",
+      "source": "target/python-native-packages-historical-regression/registered/runtime-identity.txt",
+      "source_identity": {
+        "sha256": "6527e0b2524b480c3d2cf0e83a00fc4e741c817f42a9757866bd97ec8b9ecb29",
+        "size": 59
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/runtime-inputs.sha256",
+      "source": "target/python-native-packages-historical-regression/registered/runtime-inputs.sha256",
+      "source_identity": {
+        "sha256": "4308ce17fbfe44e6a19c8245aefafd01108762c5581da19d2c9b5efe47b0076d",
+        "size": 12971
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/runtime-mounts.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/runtime-mounts.txt",
+      "source_identity": {
+        "sha256": "2c6a088a4cf5c3a1766eb8c77d50d8ce408873e8cbabfee59b217c21666f279f",
+        "size": 3779
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/runtime.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/runtime.command.json",
+      "source_identity": {
+        "sha256": "d2ff73b6e65e6dd53eb7056a5d744f0c1656b3fa83fcbddab0c2fb45df5650f2",
+        "size": 822
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/runtime.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/runtime.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/runtime.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/runtime.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/setup.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/setup.command.json",
+      "source_identity": {
+        "sha256": "1a5b7ea4efadc42d0373780154b3848d076802f208dfa4cfedf2c9eb9659024b",
+        "size": 1609
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/setup.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/setup.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/setup.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/setup.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-cleanup.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/volume-cleanup.command.json",
+      "source_identity": {
+        "sha256": "49640bb722e579f3918ba629f78e92fa2a9be5516db08c1b64a32ec2332032c3",
+        "size": 147
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-cleanup.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/volume-cleanup.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-cleanup.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/volume-cleanup.stdout.txt",
+      "source_identity": {
+        "sha256": "8668b6206c725b49b46f22223b7a7a398c609695ee6e763897317b10e0788d07",
+        "size": 63
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-create.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/volume-create.command.json",
+      "source_identity": {
+        "sha256": "6924d813000fa414dcd1545adf8a29a433221e28f21f6e7b59dc19ff9c6f4347",
+        "size": 151
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-create.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/volume-create.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-create.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/volume-create.stdout.txt",
+      "source_identity": {
+        "sha256": "8668b6206c725b49b46f22223b7a7a398c609695ee6e763897317b10e0788d07",
+        "size": 63
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/volume-name.txt",
+      "source": "target/python-native-packages-historical-regression/registered/volume-name.txt",
+      "source_identity": {
+        "sha256": "8668b6206c725b49b46f22223b7a7a398c609695ee6e763897317b10e0788d07",
+        "size": 63
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.exit-status.txt",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.exit-status.txt",
+      "source_identity": {
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.stderr.txt",
+      "source_identity": {
+        "sha256": "43ec51d9ad66fce97bf8437a3ca9925475f388cc72edefd0a125fa3d21730f6a",
+        "size": 134
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.stdout.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.trace-check.command.json",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.trace-check.command.json",
+      "source_identity": {
+        "sha256": "4fbf529485261b0525c152ca077ec93d95259fb65c6dff8cde995b5f50942af7",
+        "size": 1020
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.trace-check.stderr.txt",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.trace-check.stderr.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/registered/wrong-host-image.trace-check.stdout.txt",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.trace-check.stdout.txt",
+      "source_identity": {
+        "sha256": "66a9e246bbbd911ec808396023f09bb00cfaeb1cd00c7549858b222e4de11f04",
+        "size": 237
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "historical-regression/registered/wrong-host-image.trace.txt.gz",
+      "source": "target/python-native-packages-historical-regression/registered/wrong-host-image.trace.txt",
+      "source_identity": {
+        "sha256": "e9e24cdb34621db47277308f61378a8ef04673857834070fe484d304117f0ed6",
+        "size": 6879057
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/run-regressions.py",
+      "source": "target/python-native-packages-historical-regression/run-regressions.py",
+      "source_identity": {
+        "sha256": "8d725e272e136e11b296acb9841c16acc7f7be65a25aecdb0bfaebd4fd7c0ef9",
+        "size": 12567
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/source-and-launcher-bindings.json",
+      "source": "target/python-native-packages-historical-regression/source-and-launcher-bindings.json",
+      "source_identity": {
+        "sha256": "f93cb10ffb7581f8701cefa60506f201ebf22abbb9a3f83d00f2fa07b1c914c8",
+        "size": 11897
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "historical-regression/source-binding-verification.json",
+      "source": "target/python-native-packages-historical-regression/source-binding-verification.json",
+      "source_identity": {
+        "sha256": "092a99c4ea690475c695dd9e579453b86548d73d16110691d99be621882f6fea",
+        "size": 753
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/commands.sh",
+      "source": "target/python-native-packages-linux-source/commands.sh",
+      "source_identity": {
+        "sha256": "1c1eb322241fb5c0cc8ad8af2ca534bd5af153a526e79b5e3a1aceb8cac74a3c",
+        "size": 1376
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/console.txt.gz",
+      "source": "target/python-native-packages-linux-source/console.txt",
+      "source_identity": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/kernel.txt.gz",
+      "source": "target/python-native-packages-linux-source/kernel.txt",
+      "source_identity": {
+        "sha256": "ae64de5af3620aa2ea8aafa45151cf44e25653b8715c684077c90453d194818d",
+        "size": 112
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/lua54-clippy.exit-status.txt",
+      "source": "target/python-native-packages-linux-source/lua54-clippy.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/lua54-clippy.txt.gz",
+      "source": "target/python-native-packages-linux-source/lua54-clippy.txt",
+      "source_identity": {
+        "sha256": "1d6678bf802c242e28a19ab3eeff099eb847a223a116b75ac669204715c9adb7",
+        "size": 1848
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/lua54-tests.exit-status.txt",
+      "source": "target/python-native-packages-linux-source/lua54-tests.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/lua54-tests.txt.gz",
+      "source": "target/python-native-packages-linux-source/lua54-tests.txt",
+      "source_identity": {
+        "sha256": "75d15f7c4168443fb88cda9d78fec08655298d2109f87fd01d6aad96c6245773",
+        "size": 49244
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/lua55-clippy.exit-status.txt",
+      "source": "target/python-native-packages-linux-source/lua55-clippy.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/lua55-clippy.txt.gz",
+      "source": "target/python-native-packages-linux-source/lua55-clippy.txt",
+      "source_identity": {
+        "sha256": "f68f2b4b4cbe763ec33f422211864a769ab079e0f7bb3d7c4302a8a947bb1f4b",
+        "size": 375
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/lua55-tests.exit-status.txt",
+      "source": "target/python-native-packages-linux-source/lua55-tests.exit-status.txt",
+      "source_identity": {
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "size": 2
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/lua55-tests.txt.gz",
+      "source": "target/python-native-packages-linux-source/lua55-tests.txt",
+      "source_identity": {
+        "sha256": "9142c669459c0768068d1a3c49acc38e61e7d43f652addb3447d8bfe8e74d0e9",
+        "size": 47531
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "linux-source/rust.txt.gz",
+      "source": "target/python-native-packages-linux-source/rust.txt",
+      "source_identity": {
+        "sha256": "1ac65f1cd11fa83e9530348b787fa3e5bdd85b0f3727099df8bcdf3e24274138",
+        "size": 36
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "linux-source/source-inputs.json",
+      "source": "target/python-native-packages-linux-source/source-inputs.json",
+      "source_identity": {
+        "sha256": "3e2ede33ac243f0207bfef38d6500da0833d2f0db98529375c61d3be3e13e8a1",
+        "size": 61540
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-clippy54.txt.gz",
+      "source": "target/python-native-packages-mac-clippy54.txt",
+      "source_identity": {
+        "sha256": "5ba89b24baa4551305aca9ca77b8040987add2591c154d9248383cc00ab22b49",
+        "size": 2265
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-clippy55.txt.gz",
+      "source": "target/python-native-packages-mac-clippy55.txt",
+      "source_identity": {
+        "sha256": "afe9bf2e46f7b79db46858225f960bd4432721507e776cb331b08da4248af800",
+        "size": 595
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-environment.txt.gz",
+      "source": "target/python-native-packages-mac-environment.txt",
+      "source_identity": {
+        "sha256": "b8319cfae88807ad08ed4e2d289aa623291df4757139d7a3e21459b15be9e923",
+        "size": 88
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-final-builder.txt.gz",
+      "source": "target/python-native-packages-mac-final-builder.txt",
+      "source_identity": {
+        "sha256": "0d4018b07f9765f1bdbeb38ca9214cc04601ce0348238e1b80c96b37e85f4a64",
+        "size": 366
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-workspace54.txt.gz",
+      "source": "target/python-native-packages-mac-workspace54.txt",
+      "source_identity": {
+        "sha256": "ffbb11b5b73ac64e02eb2f94c80a38deed4c47494f0879206e21f099723a6a2b",
+        "size": 54965
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-mac-workspace55.txt.gz",
+      "source": "target/python-native-packages-mac-workspace55.txt",
+      "source_identity": {
+        "sha256": "385243fc2de0e412cbf6ce41cf90d43733f286c505b16849d52e17e1a5ec60ee",
+        "size": 48702
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "checks/python-native-packages-policy-tests.txt.gz",
+      "source": "target/python-native-packages-policy-tests.txt",
+      "source_identity": {
+        "sha256": "8c04cf70bed95ec06b826a1e682986f201ea1f27f8ba89aa4a9c39d938015e92",
+        "size": 401
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "checks/python-native-packages-mac-source-inputs.json",
+      "source": "target/python-native-packages-mac-source-inputs.json",
+      "source_identity": {
+        "sha256": "3e2ede33ac243f0207bfef38d6500da0833d2f0db98529375c61d3be3e13e8a1",
+        "size": 61540
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "native-images/glue_native_create_error.so",
+      "source": "target/python-native-packages-clean-final-build/native-images/glue_native_create_error.so",
+      "source_identity": {
+        "sha256": "7e9437494450d76c2df591ee5e5d53d1875f42054edefe2ad21c77702d6c6b6c",
+        "size": 69968
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "native-images/glue_native_lifecycle.so",
+      "source": "target/python-native-packages-clean-final-build/native-images/glue_native_lifecycle.so",
+      "source_identity": {
+        "sha256": "aa9b255a18d2454a96c218a0ec13030225a215c6d6a425ecc0cb4c906071425f",
+        "size": 69960
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "native-images/glue_native_lifecycle_exec_error.so",
+      "source": "target/python-native-packages-clean-final-build/native-images/glue_native_lifecycle_exec_error.so",
+      "source_identity": {
+        "sha256": "6662ad4df57b3e9256d6822aee618c9c486441c99d20597bc8ee788f6af894c2",
+        "size": 69976
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "native-images/libglue_python_lifecycle.so",
+      "source": "target/python-native-packages-clean-final-build/native-images/libglue_python_lifecycle.so",
+      "source_identity": {
+        "sha256": "75e0fd7203306d62eeff65b941fa43378e16b6870216104391c2237b450bcf6f",
+        "size": 67552
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/bundled-archived.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "29d5853cf3aed6a5eed5da46b21cbfcaefa88110293f468213c0ebfb685e24b9",
+        "size": 341299
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/bundled-archived.glue",
+      "source_identity": {
+        "sha256": "7bba260bacea238321af04ef339d7d5bc291d517e3b8ef6cea60b7c7e096d8ec",
+        "size": 83377068
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/bundled-host.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "a20138e8b734b338a768472b79af8ccf56a88433f718c30105bdf9f2add9f876",
+        "size": 340332
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/bundled-host.glue",
+      "source_identity": {
+        "sha256": "4adacfb5e0c83a860f21c2af94bd1a6d84d133e4a09d4f4832e14200f30a33d5",
+        "size": 83097899
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/corrupt-native.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "29d5853cf3aed6a5eed5da46b21cbfcaefa88110293f468213c0ebfb685e24b9",
+        "size": 341299
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/corrupt-native.glue",
+      "source_identity": {
+        "sha256": "89e28fffe87fb75d491135495b1d3554c9a158b1f5e737f540a89415c1d082f1",
+        "size": 83377068
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/host-archived.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "d7c8610885267f31c5e9fb735249b764191b2352725b829e6b8cc90942bbdc0f",
+        "size": 6078
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/host-archived.glue",
+      "source_identity": {
+        "sha256": "73b4753ce53e2c9b863a230954d30cf1cd8cec78f1cac0a10bcff5fa7058341f",
+        "size": 298501
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "archives/host-archived.glue",
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/host-archived.glue",
+      "source_identity": {
+        "sha256": "73b4753ce53e2c9b863a230954d30cf1cd8cec78f1cac0a10bcff5fa7058341f",
+        "size": 298501
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/host-host.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "f555ee36c261fd439e54f09a2c29de8d6b40da953a63cb7f589dd638468c3a1f",
+        "size": 5111
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/host-host.glue",
+      "source_identity": {
+        "sha256": "e812b6beb2c0226e6fe59f12eb973bcfe1a55334bbef3ef52adee8c591c5f8c0",
+        "size": 19332
+      }
+    },
+    {
+      "encoding": "identity",
+      "retained": "archives/host-host.glue",
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/host-host.glue",
+      "source_identity": {
+        "sha256": "e812b6beb2c0226e6fe59f12eb973bcfe1a55334bbef3ef52adee8c591c5f8c0",
+        "size": 19332
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/missing-host-image.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "5602d39fc31068e9113c79695f2ae40611099b1cdf11c5e588458af122c3a97b",
+        "size": 340408
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/missing-host-image.glue",
+      "source_identity": {
+        "sha256": "a110406943b8c0cc216b044561541077211168bda9271fcdb2fafbc1cfe1631c",
+        "size": 83097975
+      }
+    },
+    {
+      "encoding": "gzip",
+      "retained": "manifests/wrong-host-image.json.gz",
+      "selected_range": {
+        "offset": 64,
+        "sha256": "913fcaec06647ffd960183901edb1e56456cb00c12c4bb83a634e9744047541f",
+        "size": 340400
+      },
+      "source": "target/python-native-packages-clean-final-build/relocated Python native packages/wrong-host-image.glue",
+      "source_identity": {
+        "sha256": "1fbb861a3d0f2e4d24fa4534fb5eaaecfc5b7b2b5b6ccf755f683854a74939b4",
+        "size": 83097967
+      }
+    }
+  ],
+  "schema_version": 0
+}

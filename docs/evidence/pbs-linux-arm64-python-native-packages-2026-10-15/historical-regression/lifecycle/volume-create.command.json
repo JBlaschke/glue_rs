@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "podman",
+    "volume",
+    "create",
+    "glue-native-packages-historical-lifecycle-1792049848817414000"
+  ],
+  "exit_status": 0
+}

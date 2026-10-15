@@ -1,0 +1,1 @@
+PASS exact native package trace: host-archived-app-error
