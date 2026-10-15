@@ -15,19 +15,30 @@ cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 ```
 
-If a package-manager installation shadows Rustup's shims (as on the initial
-development Mac), place Rustup's shims first in `PATH` before running these
-commands. `rustup run` alone does not control every Cargo subprocess's executable
-lookup. Check both `rustc --version` and `cargo clippy --version`.
+If a package-manager installation shadows Rustup (as on the initial development
+Mac, where `cargo` on `PATH` is Homebrew Rust 1.99 and `~/.cargo/bin` holds no
+Rustup shims), place the pinned toolchain's own `bin` directory first in `PATH`
+before running these commands. `rustup which cargo` resolves it through
+`rust-toolchain.toml`. `rustup run` alone does not control every Cargo
+subprocess's executable lookup. Check both `rustc --version` and
+`cargo clippy --version`; both must report 1.88.0. Clippy from a newer
+toolchain fails `-D warnings` on lints that do not exist in 1.88.0, which is a
+toolchain mismatch rather than a project regression.
 
 ```sh
-export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$(dirname "$(rustup which cargo)"):$PATH"
 ```
 
 Tests should exercise contract boundaries and observable behavior. Archive/parser
 tests run on the local host. Platform/runtime gates require the native runners
 and traces described in `docs/fixtures.md`. Never replace missing target evidence
 with a cross-compilation result or a host runtime that was not declared.
+
+New evidence directories commit only their README, inventories and a
+`bundle.json` pointer; the traces, archives and logs are published as a release
+asset with `scripts/retain-evidence.sh` and restored with
+`scripts/fetch-evidence.sh`. See
+[decision 0030](docs/decisions/0030-evidence-retention.md).
 
 `PLAN.md` is the design baseline. Add a short decision record before changing
 shared APIs or any interpretation of the no-extraction constraint.

@@ -5,6 +5,9 @@ runtime source/build IDs, supported features, unsupported features and observed
 result. Preserve stdout/stderr, exit code and payload-write traces as evidence.
 Record whether memory objects or direct mapping were used. Tests must not infer
 no extraction from an empty directory after exit.
+Since [decision 0030](decisions/0030-evidence-retention.md), a new evidence
+directory keeps its README and inventories in Git and publishes the remaining
+files as a verified release asset; `scripts/fetch-evidence.sh` restores them.
 
 The first native fixture exports a function and data value, calls one archived
 dependency and one actual OS dependency, and reports constructor count. Compare
