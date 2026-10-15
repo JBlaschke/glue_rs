@@ -120,3 +120,16 @@ contains the full receipts/traces; its ZIP SHA256 is
 Local extraction and independent replay summary are
 `/private/tmp/glue-native-x86-evidence-38796669924/independent-replay.json`.
 Raw receipts and traces are not committed to Git.
+
+
+The subsequent full native run
+[38800548172](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172)
+passed all 24 language acceptance cases and all five reviewed R03 budgets,
+including the eight Node cases and Node CJS benchmark. The included launcher,
+bridge and Node identities match the hosted table above. All retained receipts,
+39 main/variant trace groups, controls and rank streams were independently
+replayed successfully. Final [artifact 12005186009](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172/artifacts/12005186009)
+has ZIP SHA256 `c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`;
+local replay is
+`/private/tmp/glue-native-x86-evidence-38800548172/independent-replay.json`.
+The same explicitly recorded syscall-trace environment scope applies.
