@@ -1,6 +1,6 @@
 //! Run the portable ELF admission check on arbitrary images and report the
 //! first rejection reason. This is a survey tool for the native capability
-//! contract (decision 0032); it loads nothing and changes no policy.
+//! contract (decision 0033); it loads nothing and changes no policy.
 //!
 //! Usage:
 //!   elf-survey [--soname NAME] [--allow-file PATH] [--data-import-file PATH] IMAGE

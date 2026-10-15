@@ -1,7 +1,7 @@
 # Native wheel corpus survey (A5)
 
 A measured basis for the native capability contract in
-[decision 0032](../../../docs/decisions/0032-native-capability-contract.md).
+[decision 0033](../../../docs/decisions/0033-native-capability-contract.md).
 Four unmodified upstream wheels for the project's cell, CPython 3.13 on
 manylinux aarch64, are downloaded as build-time inputs and every shared object
 in them is read statically. Nothing here maps, loads or executes corpus code,
