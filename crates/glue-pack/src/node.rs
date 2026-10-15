@@ -1,4 +1,5 @@
 //! Installed Node project ingestion. Never invokes npm, scripts, node-gyp or tsc.
+pub mod addon;
 use crate::distribution::{DistributionInput, DistributionLimits, PayloadSource, Result};
 use glue_format::{Diagnostic, DiagnosticCode, ResourcePath};
 use serde::{Deserialize, Serialize};
@@ -487,20 +488,13 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
         omissions,
     })
 }
-/// Source-only adapter. Native addons are routed by N05, never silently omitted.
-pub fn build(
+/// Build a source or Node-API project with an explicit stock runtime provider.
+pub fn prepare(
     options: &NodeBuildOptions,
-    launcher: &Path,
     output: &Path,
-    limits: DistributionLimits,
-) -> Result<glue_format::DistributionBuildReport> {
-    let project = ingest(&options.project, options.entry.as_deref(), Some(output))?;
-    if !project.native_addons.is_empty() {
-        return Err(error(
-            DiagnosticCode::UnsupportedCapability,
-            "Node addon deployment requires the native addon adapter",
-        ));
-    }
+    _limits: DistributionLimits,
+) -> Result<DistributionInput> {
+    let mut project = ingest(&options.project, options.entry.as_deref(), Some(output))?;
     let discovered = glue_runtime_node::discover(&options.node, options.target.as_deref())?;
     let mut roots = vec![crate::native::NativeSearchRoot {
         source: discovered.executable.parent().unwrap().into(),
@@ -514,24 +508,86 @@ pub fn build(
             provider: glue_format::DependencyProvider::Bundled,
         });
     }
-    let native = if options.host {
+    roots.push(crate::native::NativeSearchRoot {
+        source: project.root.clone(),
+        deployed: "native/node".into(),
+        provider: glue_format::DependencyProvider::Bundled,
+    });
+    let bridge = fs::canonicalize(&options.bridge).map_err(|e| {
+        error(
+            DiagnosticCode::MissingInput,
+            format!("Node archive bridge: {e}"),
+        )
+    })?;
+    roots.push(crate::native::NativeSearchRoot {
+        source: bridge.parent().unwrap().into(),
+        deployed: "support/bridge".into(),
+        provider: glue_format::DependencyProvider::Runtime,
+    });
+    let mut images: Vec<_> = project.native_addons.values().cloned().collect();
+    images.push(bridge.clone());
+    if !options.host {
+        images.push(discovered.executable.clone());
+    }
+    let native = if images.is_empty() {
         crate::native::NativeCollection::default()
     } else {
         crate::native::collect(&crate::native::NativeRequest {
-            images: vec![discovered.executable.clone()],
+            images,
             search_roots: roots,
             target: discovered.descriptor.target.clone(),
             normalize: options.normalize_native_paths,
             host_libraries: BTreeSet::new(),
         })?
     };
-    let provider = glue_runtime_node::prepare(
+    let available = match &discovered.descriptor.abi {
+        glue_format::RuntimeAbi::Node { node_api, .. } => *node_api,
+        _ => unreachable!(),
+    };
+    for (logical, source) in &project.native_addons {
+        let required = addon::required_node_api(source, &discovered.descriptor.target, available)?;
+        let deployed = native
+            .mappings
+            .get(
+                &fs::canonicalize(source)
+                    .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?,
+            )
+            .ok_or_else(|| {
+                error(
+                    DiagnosticCode::MissingDependency,
+                    "addon absent from native closure",
+                )
+            })?;
+        project.index.files.insert(
+            logical.clone(),
+            ModuleFile {
+                format: "addon".into(),
+                resource: None,
+                deployed: Some(deployed.clone()),
+                node_api: Some(required),
+            },
+        );
+    }
+    project.resources.insert(
+        "module-index.json".into(),
+        serde_json::to_vec(&project.index)
+            .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?,
+    );
+    let mut provider = glue_runtime_node::prepare(
         discovered,
         &options.bridge,
         BTreeMap::new(),
         native.inventory.clone(),
         options.host,
     )?;
+    let deployed_bridge = native.mappings.get(&bridge).ok_or_else(|| {
+        error(
+            DiagnosticCode::MissingDependency,
+            "Node archive bridge absent from native closure",
+        )
+    })?;
+    provider.payloads.remove("support/archive.node");
+    provider.launch.args[2] = format!("{{root}}/{deployed_bridge}");
     let mut payloads: BTreeMap<_, _> = provider
         .payloads
         .into_iter()
@@ -548,7 +604,17 @@ pub fn build(
         })
         .collect();
     payloads.extend(native.payloads);
-    crate::distribution::build(DistributionInput{app_id:project.app_id,entrypoint:"module-index.json".into(),runtime:provider.runtime,launch:provider.launch,resources:project.resources,payloads,native:provider.native,omissions:project.omissions,notices:"Node runtime and supplied project dependencies retain their original licenses; packaged license files are archived with the project.\n".into(),options:BTreeMap::from([("language".into(),"node".into())])},launcher,output,limits)
+    Ok(DistributionInput{app_id:project.app_id,entrypoint:"module-index.json".into(),runtime:provider.runtime,launch:provider.launch,resources:project.resources,payloads,native:provider.native,omissions:project.omissions,notices:"Node runtime and supplied project dependencies retain their original licenses; packaged license files are archived with the project.\n".into(),options:BTreeMap::from([("language".into(),"node".into())])})
+}
+
+/// Publish only after complete runtime/bridge/addon closure preparation succeeds.
+pub fn build(
+    options: &NodeBuildOptions,
+    launcher: &Path,
+    output: &Path,
+    limits: DistributionLimits,
+) -> Result<glue_format::DistributionBuildReport> {
+    crate::distribution::build(prepare(options, output, limits)?, launcher, output, limits)
 }
 
 #[cfg(test)]
@@ -722,8 +788,10 @@ mod execution_tests {
                 bridge: bridge.clone().into(),
                 target: None,
                 host: true,
-                native_search: vec![],
-                normalize_native_paths: false,
+                native_search: std::env::var_os("GLUE_NODE_TEST_NATIVE_SEARCH")
+                    .map(|s| std::env::split_paths(&s).collect())
+                    .unwrap_or_default(),
+                normalize_native_paths: std::env::var_os("GLUE_NODE_TEST_NORMALIZE").is_some(),
             };
             let report = build(
                 &opts,
@@ -738,7 +806,20 @@ mod execution_tests {
             let result = std::process::Command::new(&node)
                 .arg(output.join("support/node-bootstrap.cjs"))
                 .arg(output.join("app.glue"))
-                .arg(output.join("support/archive.node"))
+                .arg({
+                    let archive = glue_format::Archive::open(
+                        fs::File::open(output.join("app.glue")).unwrap(),
+                    )
+                    .unwrap();
+                    let arg = &archive
+                        .manifest()
+                        .distribution
+                        .as_ref()
+                        .unwrap()
+                        .launch
+                        .args[2];
+                    PathBuf::from(arg.replace("{root}", output.to_str().unwrap()))
+                })
                 .arg("hello argument")
                 .env_clear()
                 .env("NODE_DISABLE_COMPILE_CACHE", "1")
@@ -756,6 +837,150 @@ mod execution_tests {
             assert_eq!(
                 String::from_utf8_lossy(&result.stdout),
                 if esm { "esm:42\n" } else { "cjs:42\n" }
+            );
+        }
+        fs::remove_dir_all(base).unwrap();
+    }
+}
+
+#[cfg(test)]
+mod native_execution_tests {
+    use super::*;
+    #[test]
+    fn preexisting_node_api_addon_bundled_relocation() {
+        let Some(native_dir) = std::env::var_os("GLUE_NODE_TEST_NATIVE_DIR") else {
+            eprintln!("GLUE_NODE_TEST_NATIVE_DIR unset; native execution not run");
+            return;
+        };
+        let bridge = PathBuf::from(
+            std::env::var_os("GLUE_NODE_TEST_BRIDGE")
+                .expect("bridge required for native execution"),
+        );
+        let runtimes = std::env::var_os("GLUE_NODE_TEST_RUNTIMES")
+            .expect("runtime paths required for native execution");
+        let host = std::env::var_os("GLUE_NODE_TEST_NATIVE_HOST").is_some();
+        let base = std::env::temp_dir().join(format!("glue-node-native-{}", std::process::id()));
+        fs::create_dir(&base).unwrap();
+        for (i, runtime) in std::env::split_paths(&runtimes).enumerate() {
+            let source = base.join(format!("input-{i}"));
+            let project = source.join("project");
+            let bin = source.join("runtime/bin");
+            fs::create_dir_all(&project).unwrap();
+            fs::create_dir_all(&bin).unwrap();
+            fs::copy(&runtime, bin.join("node")).unwrap();
+            fs::write(
+                project.join("package.json"),
+                r#"{"name":"native-app","main":"main.cjs","dependencies":{"prepared":"1"}}"#,
+            )
+            .unwrap();
+            fs::write(project.join("main.cjs"),"const assert=require('node:assert/strict');const a=require('prepared');assert.equal(a,require('prepared'));const fs=require('node:fs');assert.equal(fs.existsSync('/__glue_archive__/node_modules/prepared/addon.node'),true);assert.equal(fs.statSync('/__glue_archive__/node_modules/prepared/addon.node').isFile(),true);assert.equal(a.answer(),42);assert.equal(a.constructors(),1);assert.equal(a.callback(x=>x+1),43);assert.throws(()=>a.fail(),{code:'ERR_PROBE'});(async()=>{assert.equal(await a.thread(),42);console.log('native:42:callback:error:thread:cache:constructor');})().catch(e=>{console.error(e);process.exitCode=1;});").unwrap();
+            let package = project.join("node_modules/prepared");
+            fs::create_dir_all(&package).unwrap();
+            fs::write(
+                package.join("package.json"),
+                r#"{"name":"prepared","main":"addon.node"}"#,
+            )
+            .unwrap();
+            let mut identities = BTreeMap::new();
+            for file in fs::read_dir(&native_dir).unwrap() {
+                let file = file.unwrap();
+                let target = package.join(file.file_name());
+                fs::copy(file.path(), &target).unwrap();
+                identities.insert(
+                    file.file_name().to_string_lossy().into_owned(),
+                    glue_format::InputIdentity::of(&fs::read(&target).unwrap()),
+                );
+            }
+            assert_eq!(
+                addon::required_node_api(
+                    &package.join("addon.node"),
+                    glue_runtime_node::host_target().unwrap(),
+                    10
+                )
+                .unwrap(),
+                8
+            );
+            assert_eq!(
+                addon::required_node_api(
+                    &package.join("addon.node"),
+                    glue_runtime_node::host_target().unwrap(),
+                    7
+                )
+                .unwrap_err()
+                .code,
+                DiagnosticCode::RuntimeAbiMismatch
+            );
+            let output = base.join(format!("relocated native {i} é"));
+            let options = NodeBuildOptions {
+                project,
+                entry: None,
+                node: if host {
+                    runtime.clone()
+                } else {
+                    bin.join("node")
+                },
+                bridge: bridge.clone(),
+                target: None,
+                host,
+                native_search: std::env::var_os("GLUE_NODE_TEST_NATIVE_SEARCH")
+                    .map(|s| std::env::split_paths(&s).collect())
+                    .unwrap_or_default(),
+                normalize_native_paths: std::env::var_os("GLUE_NODE_TEST_NORMALIZE").is_some(),
+            };
+            let report = build(
+                &options,
+                &std::env::current_exe().unwrap(),
+                &output,
+                DistributionLimits::default(),
+            )
+            .unwrap();
+            for (name, expected) in identities {
+                let path = format!("native/node/node_modules/prepared/{name}");
+                let actual = &report.payloads[&path];
+                if actual.sha256 != expected.sha256 {
+                    assert!(options.normalize_native_paths);
+                    assert!(report.native.transformations.iter().any(|t| t.path == path
+                        && t.input == expected
+                        && t.output.sha256 == actual.sha256));
+                }
+            }
+            fs::remove_dir_all(source).unwrap();
+            let run = std::process::Command::new(if host {
+                runtime.clone()
+            } else {
+                output.join("runtime/node")
+            })
+            .arg(output.join("support/node-bootstrap.cjs"))
+            .arg(output.join("app.glue"))
+            .arg({
+                let archive =
+                    glue_format::Archive::open(fs::File::open(output.join("app.glue")).unwrap())
+                        .unwrap();
+                let arg = &archive
+                    .manifest()
+                    .distribution
+                    .as_ref()
+                    .unwrap()
+                    .launch
+                    .args[2];
+                PathBuf::from(arg.replace("{root}", output.to_str().unwrap()))
+            })
+            .env_clear()
+            .env("PATH", "/no-tools")
+            .env("HOME", "/no-home")
+            .env("TMPDIR", "/no-temp")
+            .env("NODE_DISABLE_COMPILE_CACHE", "1")
+            .current_dir(&base)
+            .output()
+            .unwrap();
+            assert!(
+                run.status.success(),
+                "{}",
+                String::from_utf8_lossy(&run.stderr)
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&run.stdout),
+                "native:42:callback:error:thread:cache:constructor\n"
             );
         }
         fs::remove_dir_all(base).unwrap();

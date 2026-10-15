@@ -10,7 +10,8 @@ const archive=bridge.open(archivePath);
 const read=resource=>bridge.read(archive,resource);
 const index=JSON.parse(read('module-index.json'));
 const resolver=require('./resolver.cjs').createResolver(index,path.dirname(archivePath));
-const resources=require('./resources.cjs').installResources({read,list:()=>bridge.list(archive)});
+const deployed=Object.fromEntries(Object.entries(index.files).filter(([,f])=>f.format==='addon').map(([name,f])=>[name,path.join(path.dirname(archivePath),f.deployed)]));
+const resources=require('./resources.cjs').installResources({read,list:()=>bridge.list(archive),deployed});
 registerHooks({
   resolve(specifier,context,nextResolve) {
     if(isBuiltin(specifier))return nextResolve(specifier,context);

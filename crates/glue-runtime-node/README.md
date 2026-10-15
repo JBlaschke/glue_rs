@@ -56,3 +56,12 @@ methods. Native filesystem calls and worker/child bootstrap are not virtualized.
 backpressure, close/errors, traversal and denied writes. The N03 actual archive
 execution now also reads an installed package asset through `node:fs` after its
 source was deleted, for both npm CJS and pnpm ESM cases.
+
+Follow-up N05 evidence supersedes the early missing-major/Linux notes: official
+Node 24.22.0 and 26.10.0 passed the same stock/archive graphs and fs resource corpus
+on macOS arm64 and native Linux arm64. Node 24.10.0 passed the small N00 probe but
+failed ESM-imported CJS dependency resolution. Discovery now executes that public
+hook capability test and rejects failing patches, without a version/digest list.
+Mac bundled Node-API relocation and Linux explicit-host native evidence are in
+`fixtures/mvp/node-native/README.md`. Initial getter-inspection restrictions there
+remain explicit. Source URL query/fragment identities remain unsupported.

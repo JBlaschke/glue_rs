@@ -62,3 +62,10 @@ archive file until garbage collection/process exit. No arbitrary JavaScript
 external pointer can pass the type-tag check. Bad arguments, wrong handles,
 malformed archives and integrity errors throw `ERR_GLUE_ARCHIVE`. Individual path
 arguments are capped at 4096 UTF-8 bytes; resource bounds come from glue-format.
+
+Follow-up on the N05 branch: escalation allowed official test-runtime downloads.
+The N00 corpus subsequently passed both macOS arm64 and native Linux arm64 on two
+major lines. Mac local receipt is `/private/tmp/glue-node-two-majors-evidence/receipt.json`;
+Linux is `/private/tmp/glue-node-linux-out/n00-receipt/receipt.json`. N02's broader
+mixed-module graph exposed a real 24.10.0 hook defect; maintained 24.22.0 passed it
+on both OSes. Product discovery checks that behavior before packaging.
