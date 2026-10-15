@@ -27,13 +27,13 @@ const facade=installResources({aliases,list:()=>JSON.stringify([...data.keys()])
  assert.throws(()=>fs.writeFileSync(ROOT+'/asset.txt','bad'),{code:'EROFS'});
  await assert.rejects(fsp.writeFile(ROOT+'/asset.txt','bad'),{code:'EROFS'});
  await new Promise(resolve=>fs.unlink(ROOT+'/asset.txt',err=>{assert.equal(err.code,'EROFS');resolve();}));
- assert.throws(()=>fs.openSync(ROOT+'/asset.txt','r'),{code:'ENOTSUP'});
+ assert.throws(()=>fs.openSync(ROOT+'/asset.txt','r'),{code:'ENOTSUP'});assert.throws(()=>fs.realpathSync.native(ROOT+'/asset.txt'),{code:'ENOTSUP'});await new Promise(resolve=>fs.realpath.native(ROOT+'/asset.txt',err=>{assert.equal(err.code,'ENOTSUP');resolve();}));if(fs.openAsBlob)await assert.rejects(fs.openAsBlob(ROOT+'/asset.txt'),{code:'ENOTSUP'});
  await assert.rejects(fsp.open(ROOT+'/asset.txt'),{code:'ENOTSUP'});
  assert.throws(()=>fs.readdirSync(ROOT,{recursive:true}),{code:'ENOTSUP'});
  const full=[];const stream=fs.createReadStream(ROOT+'/nested/big.bin',{highWaterMark:7});for await(const chunk of stream){assert.ok(chunk.length<=7);full.push(chunk);}assert.equal(Buffer.concat(full).length,65537);assert.equal(stream.bytesRead,65537);
  const range=[];for await(const chunk of fs.createReadStream(ROOT+'/asset.txt',{start:2,end:6,highWaterMark:2}))range.push(chunk);assert.equal(Buffer.concat(range).toString(),'resou');
  const missing=fs.createReadStream(ROOT+'/missing');await assert.rejects(async()=>{for await(const chunk of missing)void chunk;},{code:'ENOENT'});
- const early=fs.createReadStream(ROOT+'/nested/big.bin',{highWaterMark:8});const closed=new Promise(resolve=>early.once('close',resolve));early.once('data',()=>early.destroy());early.resume();await closed;assert.ok(early.bytesRead<65537);
+ const early=fs.createReadStream(ROOT+'/nested/big.bin',{highWaterMark:8});const closed=new Promise(resolve=>early.once('close',resolve));early.once('data',()=>early.destroy());early.resume();await closed;assert.ok(early.bytesRead<65537);const closeEarly=fs.createReadStream(ROOT+'/asset.txt');await new Promise(resolve=>closeEarly.close(resolve));assert.equal(closeEarly.destroyed,true);const noCloseEvent=fs.createReadStream(ROOT+'/asset.txt',{emitClose:false});await new Promise(resolve=>noCloseEvent.close(resolve));assert.equal(noCloseEvent.destroyed,true);
  assert.throws(()=>fs.createReadStream(ROOT+'/asset.txt',{fd:1}),{code:'ENOTSUP'});
  const named=await import('node:fs');assert.equal(named.readFileSync(ROOT+'/asset.txt','utf8'),'a resource\n');const namedPromises=await import('node:fs/promises');assert.equal(await namedPromises.readFile(ROOT+'/asset.txt','utf8'),'a resource\n');
  const host=path.join(os.tmpdir(),'glue-node-fs-'+process.pid);fs.writeFileSync(host,'host');assert.equal(fs.readFileSync(host,'utf8'),'host');assert.equal(typeof fs.realpathSync.native,'function');fs.unlinkSync(host);
