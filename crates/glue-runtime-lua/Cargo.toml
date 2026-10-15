@@ -11,11 +11,23 @@ lua54 = []
 lua55 = []
 linux-native = ["dep:glue-native"]
 
+[[bin]]
+name = "glue-lua54"
+path = "src/bin/lua54.rs"
+required-features = ["lua54"]
+
+[[bin]]
+name = "glue-lua55"
+path = "src/bin/lua55.rs"
+required-features = ["lua55"]
+
 [dependencies]
 glue-format.workspace = true
 glue-resources.workspace = true
 libc.workspace = true
 thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 glue-native = { workspace = true, optional = true }
 
 # Exact upstream source crate shared by both compiled profiles.

@@ -22,6 +22,7 @@ fn main() {
         _ => panic!("linked Lua source profile requires exactly one of lua54 or lua55"),
     };
     let target = required_env("TARGET");
+    println!("cargo:rustc-env=GLUE_LUA_TARGET={target}");
     let host = required_env("HOST");
     track_override_variables(&target, &host);
 

@@ -206,6 +206,8 @@ dependencies = [
  "glue-resources",
  "libc",
  "lua-src",
+ "serde",
+ "serde_json",
  "thiserror",
 ]
 
