@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import read_capability as reader
 
@@ -64,7 +65,7 @@ class CapabilityReaderTests(unittest.TestCase):
                        "processes": [{"pid": 600, "created": True, "terminal": True}],
                        "fixture": reader.digest((self.toolkit / "owned-probe").read_bytes()),
                        "collector": reader.digest((self.toolkit / "capture-native").read_bytes()),
-                       "evidence": {}, "full_trace_acceptance": False, "settings_changed": False}
+                       "evidence": {}, "identity_checks_passed": True, "full_trace_acceptance": False, "settings_changed": False}
         for name in reader.EVIDENCE:
             (self.capture / name).write_bytes(b"")
         (self.capture / "program.d").write_bytes(reader.producer_program(600, "open"))
@@ -131,6 +132,22 @@ class CapabilityReaderTests(unittest.TestCase):
         self.assertEqual(subprocess.run(args, capture_output=True).returncode, 1)
         self.assertFalse(Path(args[-1]).exists())
 
+    def test_export_cleanup_preserves_name_that_lost_exclusive_create(self):
+        output = self.root / "concurrent export"
+        original_open = os.open
+        def concurrent_open(path, flags, *args, **kwargs):
+            if path == "summary.json":
+                fd = original_open(path, flags, *args, **kwargs)
+                os.write(fd, b"foreign concurrent content")
+                os.close(fd)
+                raise FileExistsError("synthetic concurrent exclusive-create loss")
+            return original_open(path, flags, *args, **kwargs)
+        with mock.patch.object(reader.os, "open", side_effect=concurrent_open):
+            with self.assertRaises(FileExistsError):
+                reader.export_files(output, io.BytesIO(b"raw timeline"), b"summary")
+        self.assertEqual((output / "summary.json").read_bytes(), b"foreign concurrent content")
+        self.assertFalse((output / "timeline.jsonl").exists())
+
     def test_receipt_missing_footer_duplicate_extra_and_wrong_types(self):
         original = encoded(self.report)
         for malformed in (original[:-1], original[:-3], original.replace(b'"revision":1', b'"revision":1,"revision":1'), original.replace(b'"revision":1', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
@@ -151,6 +168,22 @@ class CapabilityReaderTests(unittest.TestCase):
                     (self.capture / "capability.json").write_bytes(encoded(self.report))
                     with self.assertRaises(reader.InvalidCapability):
                         self.inspect()
+
+    def test_v2_identity_footer_is_mandatory_typed_and_failure_rejects_all_statuses(self):
+        original = copy.deepcopy(self.report)
+        del self.report["identity_checks_passed"]
+        self.save()
+        self.rejected("exact object keys")
+        for status in ("captured", "failed", "unavailable"):
+            for value in (False, 1, "true"):
+                with self.subTest(status=status, value=value):
+                    self.report = copy.deepcopy(original)
+                    self.report.update(status=status, identity_checks_passed=value)
+                    self.save()
+                    self.rejected("identity checks failed|boolean required")
+        self.report = original
+        self.save()
+        self.assertTrue(self.inspect()[0]["producer_identity_checks_passed"])
 
     def test_null_hash_and_byte_mismatch_reject(self):
         (self.capture / "target.stdout").write_bytes(b"different bytes")

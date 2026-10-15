@@ -25,6 +25,11 @@ Use the reader from the reviewed checkout matching the retained toolkit's C
 sources. It verifies all twelve `SHA256SUMS` entries, the retained source bytes
 against `capture-native.c`, `lifecycle-probe.c` and `owned-probe.c` beside the
 reader, and the receipt's collector/fixture identities against that toolkit.
+It requires the revised producer's mandatory boolean `identity_checks_passed`
+footer (introduced by `9414fed`). Missing, nonboolean or false identity status
+rejects every capture status, including failed/unavailable captures. Such
+evidence cannot establish transport integrity even when useful raw diagnostics
+remain on disk. Older receipts without this footer are unsupported.
 The source-matched toolkit is an explicit anchor selected by the operator.
 Hashes establish byte identity; they do not authenticate a producer or prove
 that retained source compiled into a binary. Retained build argv is bounded and

@@ -22,7 +22,7 @@ SCOPE = "owned diagnostic transport only; no complete process-tree or extraction
 EVIDENCE = {"program.d", "events.jsonl", "errors.jsonl", "probes.tsv", "target.stdout", "target.stderr", "watchdog.json"}
 TOOLKIT = {"capture-native", "lifecycle-probe", "owned-probe", "input.txt", "prepare-native.sh", "CAPTURE_FORMAT.md"} | {
     stem + suffix for stem in ("capture-native", "lifecycle-probe", "owned-probe") for suffix in (".c", "-build.argv")}
-HEADER = {"revision", "protocol", "scope", "status", "reason", "profile", "host", "elapsed_seconds", "root_pid", "root_wait_status", "deadline_seconds", "timed_out", "interrupted_signal", "started", "drained", "events", "drops", "errors", "open_entries", "open_returns", "argv", "processes", "fixture", "collector", "evidence", "full_trace_acceptance", "settings_changed"}
+HEADER = {"revision", "protocol", "scope", "status", "reason", "profile", "host", "elapsed_seconds", "root_pid", "root_wait_status", "deadline_seconds", "timed_out", "interrupted_signal", "started", "drained", "events", "drops", "errors", "open_entries", "open_returns", "argv", "processes", "fixture", "collector", "evidence", "identity_checks_passed", "full_trace_acceptance", "settings_changed"}
 EVENT = {"event", "cpu", "epid", "probe_id", "kind", "timestamp", "pid", "tid", "detail", "provider", "module", "function", "name", "records"}
 KINDS = {1: "begin", 2: "syscall-entry", 3: "syscall-return", 4: "proc-create", 5: "proc-start", 6: "proc-exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 14: "open-path", 15: "mach-entry", 16: "mach-return", 17: "end"}
 PROC_NAMES = {4: "create", 5: "start", 6: "exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure"}
@@ -190,6 +190,8 @@ def receipt_header(report):
     keys(report, HEADER, "capability")
     require(report["revision"] == 1 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
     require(report["full_trace_acceptance"] is False and report["settings_changed"] is False, "capability cannot assert acceptance or changed settings")
+    boolean(report["identity_checks_passed"], "identity_checks_passed")
+    require(report["identity_checks_passed"], "producer identity checks failed; transport integrity cannot be established")
     require(type(report["status"]) is str and report["status"] in {"captured", "failed", "unavailable"}, "unknown capture status")
     require(type(report["profile"]) is str and report["profile"] in {"open", "tree", "tree-mach"}, "unknown profile")
     string(report["reason"], 4096, "reason", False)
@@ -438,6 +440,7 @@ def inspect_capability(capture, toolkit, timeline):
             require(report["started"], "failed receipt must have started (otherwise unavailable)")
         return {"revision": 1, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
                 "transport_integrity": "consistent", "capture_status": report["status"], "capture_reason": report["reason"],
+                "producer_identity_checks_passed": report["identity_checks_passed"],
                 "full_trace_acceptance": False, "acceptance_rejection": "This capability format cannot satisfy the R02 full-trace oracle.",
                 "scope": "No syscall result, pathname, FD, process generation, mutation or kernel coverage interpretation.",
                 "host": report["host"], "profile": report["profile"], "argv": report["argv"], "fixture": matching[0],
@@ -454,12 +457,14 @@ def export_files(path, timeline, encoded):
     parent = open_directory(path.parent)
     target = None
     created = False
+    created_names = []
     try:
         os.mkdir(path.name, dir_fd=parent)
         created = True
         target = os.open(path.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
         for name, source in (("timeline.jsonl", timeline), ("summary.json", None)):
             descriptor = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644, dir_fd=target)
+            created_names.append(name)
             with os.fdopen(descriptor, "wb") as output:
                 if source is None:
                     output.write(encoded)
@@ -469,13 +474,14 @@ def export_files(path, timeline, encoded):
                         output.write(block)
     except BaseException:
         if target is not None:
-            for name in ("timeline.jsonl", "summary.json"):
-                try:
+            for name in created_names:
+                with contextlib.suppress(OSError):
                     os.unlink(name, dir_fd=target)
-                except FileNotFoundError:
-                    pass
         if created:
-            os.rmdir(path.name, dir_fd=parent)
+            # A name that lost O_EXCL may belong to another writer. Preserve it
+            # and the nonempty directory rather than deleting foreign content.
+            with contextlib.suppress(OSError):
+                os.rmdir(path.name, dir_fd=parent)
         raise
     finally:
         if target is not None:
