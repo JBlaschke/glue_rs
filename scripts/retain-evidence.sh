@@ -85,6 +85,8 @@ else
 fi
 
 mkdir -p "$output"
+# Later steps change directory into the bundle, so the output must be absolute.
+output=$(cd "$output" && pwd -P)
 work="$output/$name.work"
 rm -rf "${work:?}"
 mkdir -p "$work"
