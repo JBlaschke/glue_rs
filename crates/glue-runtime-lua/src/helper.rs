@@ -13,10 +13,11 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     ffi::OsString,
     fs::{self, File},
-    io::Read,
+    io::{self, Read},
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::{Child, ChildStdout, Command, Stdio},
     str::FromStr,
+    time::{Duration, Instant},
 };
 
 /// Versioned helper command/descriptor protocol.
@@ -204,31 +205,136 @@ impl SelectedHelper {
     }
 }
 
-/// Probe a supplied helper with bounded descriptor output. This is a build-time
-/// operation: the supplied executable must be trusted by the caller as an input.
+const DESCRIPTOR_TIMEOUT: Duration = Duration::from_secs(5);
+#[cfg(unix)]
+const BUSY_RETRY_WINDOW: Duration = Duration::from_millis(200);
+const PROCESS_POLL: Duration = Duration::from_millis(5);
+
+fn spawn_descriptor(command: &mut Command) -> io::Result<Child> {
+    #[cfg(unix)]
+    let deadline = Instant::now() + BUSY_RETRY_WINDOW;
+    loop {
+        match command.spawn() {
+            #[cfg(unix)]
+            Err(error) if error.raw_os_error() == Some(libc::ETXTBSY) => {
+                let remaining = deadline.saturating_duration_since(Instant::now());
+                if remaining.is_zero() {
+                    return Err(error);
+                }
+                std::thread::sleep(remaining.min(Duration::from_millis(10)));
+                if Instant::now() >= deadline {
+                    return Err(error);
+                }
+            }
+            result => return result,
+        }
+    }
+}
+
+#[cfg(unix)]
+#[allow(unsafe_code)]
+fn nonblocking(pipe: &ChildStdout) -> io::Result<()> {
+    use std::os::fd::AsRawFd;
+    // SAFETY: this borrowed pipe owns a live descriptor. fcntl only changes its
+    // nonblocking flag; no pointer or descriptor escapes this operation.
+    let flags = unsafe { libc::fcntl(pipe.as_raw_fd(), libc::F_GETFL) };
+    if flags < 0
+        || unsafe { libc::fcntl(pipe.as_raw_fd(), libc::F_SETFL, flags | libc::O_NONBLOCK) } < 0
+    {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(())
+}
+#[cfg(not(unix))]
+fn nonblocking(_: &ChildStdout) -> io::Result<()> {
+    Err(io::Error::new(
+        io::ErrorKind::Unsupported,
+        "bounded Lua helper queries require Unix pipes",
+    ))
+}
+
+#[allow(unsafe_code)]
+fn terminate_descriptor(child: &mut Child) {
+    #[cfg(unix)]
+    if let Ok(group) = libc::pid_t::try_from(child.id()) {
+        // SAFETY: spawn_descriptor creates this child in its own process group.
+        // Killing that positive child-owned group also closes inherited pipes.
+        if group > 0 {
+            unsafe { libc::kill(-group, libc::SIGKILL) };
+        }
+    }
+    let _ = child.kill();
+    let _ = child.wait();
+}
+
+fn capture_descriptor(child: &mut Child) -> Result<Vec<u8>, HelperError> {
+    let mut pipe = child.stdout.take().expect("piped descriptor output");
+    nonblocking(&pipe)?;
+    let deadline = Instant::now() + DESCRIPTOR_TIMEOUT;
+    let mut bytes = Vec::with_capacity(MAX_DESCRIPTOR_BYTES as usize + 1);
+    let mut buffer = [0; 8192];
+    let mut eof = false;
+    loop {
+        if Instant::now() >= deadline {
+            return Err(HelperError::Invalid(
+                "descriptor query timed out after 5s".into(),
+            ));
+        }
+        let mut progress = false;
+        if !eof {
+            let remaining = (MAX_DESCRIPTOR_BYTES + 1) as usize - bytes.len();
+            let length = remaining.min(buffer.len());
+            match pipe.read(&mut buffer[..length]) {
+                Ok(0) => eof = true,
+                Ok(length) => {
+                    bytes.extend_from_slice(&buffer[..length]);
+                    progress = true;
+                    if bytes.len() as u64 > MAX_DESCRIPTOR_BYTES {
+                        return Err(HelperError::Invalid("descriptor exceeds 64 KiB".into()));
+                    }
+                }
+                Err(error) if error.kind() == io::ErrorKind::Interrupted => continue,
+                Err(error) if error.kind() == io::ErrorKind::WouldBlock => {}
+                Err(error) => return Err(error.into()),
+            }
+        }
+        if let Some(status) = child.try_wait()? {
+            if !status.success() {
+                return Err(HelperError::Invalid("descriptor query failed".into()));
+            }
+            if eof {
+                return Ok(bytes);
+            }
+        }
+        if !progress {
+            std::thread::sleep(PROCESS_POLL);
+        }
+    }
+}
+
+/// Probe a trusted supplied executable with at most 64 KiB stdout and a 5s
+/// execution deadline. Only transient ETXTBSY spawn errors retry, for <=200ms;
+/// all other I/O failures are returned directly. No shell or PATH fallback.
 pub fn query(executable: &Path) -> Result<HelperDescriptor, HelperError> {
-    let mut child = Command::new(executable)
+    let mut command = Command::new(executable);
+    command
         .arg("--describe")
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()?;
-    let mut bytes = Vec::new();
-    let read = child
-        .stdout
-        .take()
-        .expect("piped descriptor output")
-        .take(MAX_DESCRIPTOR_BYTES + 1)
-        .read_to_end(&mut bytes);
-    if read.is_err() || bytes.len() as u64 > MAX_DESCRIPTOR_BYTES {
-        let _ = child.kill();
-        let _ = child.wait();
-        read?;
-        return Err(HelperError::Invalid("descriptor exceeds 64 KiB".to_owned()));
+        .stderr(Stdio::null());
+    #[cfg(unix)]
+    {
+        use std::os::unix::process::CommandExt;
+        command.process_group(0);
     }
-    if !child.wait()?.success() {
-        return Err(HelperError::Invalid("descriptor query failed".to_owned()));
-    }
+    let mut child = spawn_descriptor(&mut command)?;
+    let bytes = match capture_descriptor(&mut child) {
+        Ok(bytes) => bytes,
+        Err(error) => {
+            terminate_descriptor(&mut child);
+            return Err(error);
+        }
+    };
     Ok(serde_json::from_slice(&bytes)?)
 }
 
