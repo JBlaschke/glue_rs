@@ -89,7 +89,11 @@ pub fn inspect_install_stripped_selected<R: Read + Seek>(
     inspect_install_pin_selected(stripped_pin, install_input, selection, max_selected_bytes)
 }
 
-fn inspect_install_pin_selected<R: Read + Seek>(
+/// Inspect one independently pinned gzip install-only artifact for any
+/// target and retain selected regular files. The caller validates the pin's
+/// identity, URL and target; this checks the compressed bytes, single gzip
+/// stream, complete tar inventory and absence of full-distribution metadata.
+pub fn inspect_install_pin_selected<R: Read + Seek>(
     pin: &ArtifactPin,
     install_input: &mut R,
     selection: &BTreeSet<String>,

@@ -376,6 +376,41 @@ verification accept the pinned runtime's 80 MiB member bound. See the
 [runner fixture](fixtures/python-runner/README.md) and
 [integration decision](docs/decisions/0016-controlled-python-runner.md).
 
+## Try the explicit macOS host Python startup
+
+The separate [macOS host fixture](fixtures/python-host-macos/README.md) starts
+the pinned stock PBS CPython 3.13.16 macOS arm64 install-only library from an
+explicitly declared, immutable installation; the archive holds only the shared
+startup app. It is the macOS counterpart of the Linux host startup fixture and
+the first corrective step toward the plan's platform gates. The C boundary
+compiles with Apple clang against the artifact's 264 verified headers, dyld
+loads the verified library by path, and the loaded image's `LC_UUID` must match
+the verified bytes. See [decision 0031](docs/decisions/0031-macos-python-host-startup.md),
+which also records the measured requirements for a bundled macOS runtime.
+
+```sh
+# Download the exact artifact named in fixtures/python-host-macos/pins.json to
+# target/pbs-macos/, then run from the repository root with a new output directory:
+sh fixtures/python-host-macos/run-macos.sh target/python-host-macos-validation
+```
+
+The product runner serves the same archive on that cell once its C boundary
+is compiled against the verified header tree: `doctor` reports readiness from
+the declared target and the observed macOS version and page size, and `run`
+starts the verified library through dyld. See
+[decision 0032](docs/decisions/0032-macos-python-product-route.md).
+
+```sh
+GLUE_PYTHON_INCLUDE_DIR="$PWD/target/python-host-macos-validation/host Python/python/include/python3.13" \
+  cargo build --locked -p glue-runner --features python-pbs
+target/debug/glue doctor target/python-host-macos-validation/archives/success.glue
+target/debug/glue run target/python-host-macos-validation/archives/success.glue
+```
+
+Bundled macOS Python, native extensions on macOS and installation discovery
+remain pending; no syscall trace is available to an unprivileged user on
+macOS, and the evidence records that limitation.
+
 ## Try the resource fixture
 
 This older fixture declares a fictional `host` Lua library and tests packaging

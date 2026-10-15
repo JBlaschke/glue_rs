@@ -1,8 +1,9 @@
 //! Execution of pinned stock PBS Python source applications and fixture profiles.
 //!
-//! This crate supports a bounded GNU Linux arm64 source-application contract and
-//! exact fixture profiles. Provider handles remain pinned for
-//! process life; the synchronous executor owns one interpreter lifecycle.
+//! This crate supports a bounded GNU Linux arm64 source-application contract,
+//! exact fixture profiles and the explicit macOS arm64 host startup profile.
+//! Provider handles remain pinned for process life; the synchronous executor
+//! owns one interpreter lifecycle.
 #![deny(unsafe_code)]
 
 pub mod packaging;
@@ -37,6 +38,10 @@ mod install_host_source_app_profile;
 ))]
 #[allow(unsafe_code)]
 mod linux;
+#[cfg(glue_python_macos_host)]
+#[allow(unsafe_code)]
+mod macos;
+mod macos_host;
 mod metadata_profile;
 mod source_app_profile;
 mod source_entry;
@@ -129,6 +134,12 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::MacosHostStartup => {
+                drop(archive);
+                return Err(ExecutionError::unsupported(
+                    "the explicit macOS host Python startup profile requires macOS arm64",
+                ));
+            }
             profile::Kind::BundledMetadataApp => linux::run_imports(
                 metadata_profile::read_bundled(archive).map_err(ExecutionError::failed)?,
                 None,
@@ -187,12 +198,31 @@ pub fn execute(
         }
         .map_err(ExecutionError::failed)
     }
-    #[cfg(not(all(
-        feature = "pbs-bootstrap",
-        target_os = "linux",
-        target_arch = "aarch64",
-        target_env = "gnu",
-        glue_python_boundary
+    #[cfg(glue_python_macos_host)]
+    {
+        match selected.kind {
+            profile::Kind::MacosHostStartup => macos::run_host(
+                macos_host::read_payload_from(archive).map_err(ExecutionError::failed)?,
+                false,
+            )
+            .map_err(ExecutionError::failed),
+            _ => {
+                drop(archive);
+                Err(ExecutionError::unsupported(
+                    "this Python profile executes only with pbs-bootstrap on GNU Linux arm64",
+                ))
+            }
+        }
+    }
+    #[cfg(not(any(
+        all(
+            feature = "pbs-bootstrap",
+            target_os = "linux",
+            target_arch = "aarch64",
+            target_env = "gnu",
+            glue_python_boundary
+        ),
+        glue_python_macos_host
     )))]
     {
         drop(archive);
@@ -243,6 +273,16 @@ pub mod experimental {
         {
             return Err(ExecutionError::unsupported(
                 "execution requires pbs-bootstrap on GNU Linux arm64",
+            ));
+        }
+        #[cfg(not(glue_python_macos_host))]
+        if args
+            .get(1)
+            .and_then(|value| value.to_str())
+            .is_some_and(|mode| matches!(mode, "run-host-macos" | "run-host-macos-negative"))
+        {
+            return Err(ExecutionError::unsupported(
+                "execution requires pbs-bootstrap with a verified header tree on macOS arm64",
             ));
         }
         dispatch_experiment(args).map_err(ExecutionError::failed)
@@ -624,6 +664,20 @@ fn admit_manifest(actual: &Manifest) -> Result<(), String> {
 
 fn dispatch_experiment(args: &[std::ffi::OsString]) -> Result<(), String> {
     let mode = args.get(1).and_then(|s| s.to_str()).unwrap_or("");
+    if mode == "prepare-host-macos" && args.len() == 5 {
+        return macos_host::prepare(
+            Path::new(&args[2]),
+            args[3].to_str().unwrap_or(""),
+            Path::new(&args[4]),
+        );
+    }
+    if matches!(mode, "run-host-macos" | "run-host-macos-negative") {
+        let negative = mode == "run-host-macos-negative";
+        if args.len() != if negative { 4 } else { 3 } || (negative && args[3] != "app-error") {
+            return Err("wrong macOS host fixture arguments".into());
+        }
+        return run_host_macos(macos_host::read_payload(Path::new(&args[2]))?, negative);
+    }
     if mode == "prepare" && args.len() == 5 {
         prepare(
             Path::new(&args[2]),
@@ -711,7 +765,7 @@ fn dispatch_experiment(args: &[std::ffi::OsString]) -> Result<(), String> {
     ) {
         execute_experiment(mode, args)
     } else {
-        Err("usage: glue-python-bootstrap-probe prepare-native-packages BASE NATIVE_DIRECTORY archived|host OUTPUT | run-native-packages ARCHIVE | run-native-packages-negative ARCHIVE app-error | corrupt-native-packages INPUT OUTPUT | prepare-native-lifecycle BASE NATIVE_DIRECTORY archived|host OUTPUT | run-native-lifecycle ARCHIVE | run-native-lifecycle-negative ARCHIVE app-error | corrupt-native-lifecycle INPUT OUTPUT | prepare-extensions BASE NATIVE_DIRECTORY archived|host OUTPUT | run-extensions ARCHIVE | run-extensions-negative ARCHIVE app-error | corrupt-extensions INPUT OUTPUT | prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | prepare-host-imports FULL PREFIX OUTPUT | corrupt-host-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error | run-host-imports ARCHIVE | run-host-imports-negative ARCHIVE app-error".into())
+        Err("usage: glue-python-bootstrap-probe prepare-host-macos INSTALL_ONLY_ARCHIVE PREFIX OUTPUT | run-host-macos ARCHIVE | run-host-macos-negative ARCHIVE app-error | prepare-native-packages BASE NATIVE_DIRECTORY archived|host OUTPUT | run-native-packages ARCHIVE | run-native-packages-negative ARCHIVE app-error | corrupt-native-packages INPUT OUTPUT | prepare-native-lifecycle BASE NATIVE_DIRECTORY archived|host OUTPUT | run-native-lifecycle ARCHIVE | run-native-lifecycle-negative ARCHIVE app-error | corrupt-native-lifecycle INPUT OUTPUT | prepare-extensions BASE NATIVE_DIRECTORY archived|host OUTPUT | run-extensions ARCHIVE | run-extensions-negative ARCHIVE app-error | corrupt-extensions INPUT OUTPUT | prepare FULL BUNDLE OUTPUT | prepare-host FULL BUNDLE PREFIX OUTPUT | prepare-imports FULL BUNDLE OUTPUT | corrupt-imports INPUT OUTPUT | prepare-host-imports FULL PREFIX OUTPUT | corrupt-host-imports INPUT OUTPUT | run ARCHIVE | baseline ARCHIVE LIBRARY | run-negative ARCHIVE missing-encodings|bad-bytecode|app-error | run-host ARCHIVE | run-host-negative ARCHIVE app-error | run-imports ARCHIVE | baseline-imports ARCHIVE LIBRARY | run-imports-negative ARCHIVE app-error | run-host-imports ARCHIVE | run-host-imports-negative ARCHIVE app-error".into())
     }
 }
 
@@ -825,6 +879,16 @@ fn execute_experiment(mode: &str, args: &[std::ffi::OsString]) -> Result<(), Str
 )))]
 fn execute_experiment(_: &str, _: &[std::ffi::OsString]) -> Result<(), String> {
     Err("execution requires pbs-bootstrap on GNU Linux arm64".into())
+}
+
+#[cfg(glue_python_macos_host)]
+fn run_host_macos(payload: macos_host::Payload, negative: bool) -> Result<(), String> {
+    macos::run_host(payload, negative)
+}
+
+#[cfg(not(glue_python_macos_host))]
+fn run_host_macos(_: macos_host::Payload, _: bool) -> Result<(), String> {
+    Err("execution requires pbs-bootstrap with a verified header tree on macOS arm64".into())
 }
 
 #[cfg(test)]

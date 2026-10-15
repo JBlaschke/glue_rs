@@ -1,6 +1,7 @@
-//! Read-only prerequisites for the optional, pinned GNU Linux arm64 profile.
-//! These queries never load Python, open host installations or claim the
-//! process execution attempt. Legacy experiment entry points bypass them.
+//! Read-only prerequisites for the optional pinned profiles: the GNU Linux
+//! arm64 cell and the explicit macOS arm64 host startup cell. These queries
+//! never load Python, open host installations or claim the process execution
+//! attempt. Legacy experiment entry points bypass them.
 
 use glue_format::Manifest;
 #[cfg(any(
@@ -11,7 +12,8 @@ use glue_format::Manifest;
         target_arch = "aarch64",
         target_env = "gnu",
         glue_python_boundary
-    )
+    ),
+    glue_python_macos_host
 ))]
 use glue_format::{Architecture, OperatingSystem, TargetAbi, TargetProfile};
 
@@ -19,12 +21,15 @@ use glue_format::{Architecture, OperatingSystem, TargetAbi, TargetProfile};
 pub(crate) enum ReadinessError {
     Unsupported(String),
     #[cfg_attr(
-        not(all(
-            feature = "pbs-bootstrap",
-            target_os = "linux",
-            target_arch = "aarch64",
-            target_env = "gnu",
-            glue_python_boundary
+        not(any(
+            all(
+                feature = "pbs-bootstrap",
+                target_os = "linux",
+                target_arch = "aarch64",
+                target_env = "gnu",
+                glue_python_boundary
+            ),
+            glue_python_macos_host
         )),
         allow(dead_code)
     )]
@@ -41,6 +46,7 @@ pub(crate) fn readiness(manifest: &Manifest) -> Result<(), ReadinessError> {
     }
     #[cfg(all(
         feature = "pbs-bootstrap",
+        not(all(target_os = "macos", target_arch = "aarch64")),
         not(all(
             target_os = "linux",
             target_arch = "aarch64",
@@ -52,6 +58,18 @@ pub(crate) fn readiness(manifest: &Manifest) -> Result<(), ReadinessError> {
         let _ = manifest;
         Err(unsupported(
             "the pinned Python boundary is not compiled; requires the reviewed GNU Linux arm64 target",
+        ))
+    }
+    #[cfg(all(
+        feature = "pbs-bootstrap",
+        target_os = "macos",
+        target_arch = "aarch64",
+        not(glue_python_macos_host)
+    ))]
+    {
+        let _ = manifest;
+        Err(unsupported(
+            "the pinned Python boundary is not compiled; macOS arm64 builds require GLUE_PYTHON_INCLUDE_DIR to name the verified install-only header tree",
         ))
     }
     #[cfg(all(
@@ -76,6 +94,23 @@ pub(crate) fn readiness(manifest: &Manifest) -> Result<(), ReadinessError> {
             .ok_or_else(|| invalid("selected Python target does not exist"))?;
         validate_declaration(target)?;
         validate_host(target, &observe()?)
+    }
+    #[cfg(glue_python_macos_host)]
+    {
+        let component = manifest
+            .components
+            .get(&manifest.entrypoint)
+            .ok_or_else(|| invalid("selected Python component does not exist"))?;
+        let runtime = manifest
+            .runtimes
+            .get(&component.runtime)
+            .ok_or_else(|| invalid("selected Python runtime does not exist"))?;
+        let target = manifest
+            .targets
+            .get(&runtime.target)
+            .ok_or_else(|| invalid("selected Python target does not exist"))?;
+        validate_macos_declaration(target)?;
+        validate_macos_host(target, &observe_macos()?)
     }
 }
 
@@ -166,7 +201,8 @@ fn validate_host(target: &TargetProfile, host: &Host) -> Result<(), ReadinessErr
         target_arch = "aarch64",
         target_env = "gnu",
         glue_python_boundary
-    )
+    ),
+    glue_python_macos_host
 ))]
 fn check_floor(actual: &str, minimum: &str, name: &str) -> Result<(), ReadinessError> {
     let observed = numeric_version(actual)
@@ -187,7 +223,8 @@ fn check_floor(actual: &str, minimum: &str, name: &str) -> Result<(), ReadinessE
         target_arch = "aarch64",
         target_env = "gnu",
         glue_python_boundary
-    )
+    ),
+    glue_python_macos_host
 ))]
 fn numeric_version(value: &str) -> Result<[u32; 4], ReadinessError> {
     let mut result = [0; 4];
@@ -254,6 +291,89 @@ fn observe() -> Result<Host, ReadinessError> {
     })
 }
 
+/// Observed facts of the running macOS host, compared with the declared
+/// explicit-host startup target. Nothing here loads a library or opens the
+/// declared installation.
+#[cfg(any(test, glue_python_macos_host))]
+struct MacosHost {
+    os_version: String,
+    page_size: u32,
+}
+
+#[cfg(any(test, glue_python_macos_host))]
+fn validate_macos_declaration(target: &TargetProfile) -> Result<(), ReadinessError> {
+    if target.os != OperatingSystem::Macos || target.arch != Architecture::Aarch64 {
+        return Err(unsupported("the pinned Python target requires macOS arm64"));
+    }
+    if !matches!(target.abi, TargetAbi::Darwin) {
+        return Err(invalid("the pinned Python target requires the Darwin ABI"));
+    }
+    numeric_version(&target.minimum_os_version)?;
+    if target.page_sizes != std::collections::BTreeSet::from([crate::macos_host::PAGE_SIZE]) {
+        return Err(invalid(format!(
+            "the pinned Python target must declare exactly {}-byte pages",
+            crate::macos_host::PAGE_SIZE
+        )));
+    }
+    if !target.cpu_features.is_empty() {
+        return Err(unsupported(
+            "additional Python CPU feature requirements cannot be verified",
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(any(test, glue_python_macos_host))]
+fn validate_macos_host(target: &TargetProfile, host: &MacosHost) -> Result<(), ReadinessError> {
+    validate_macos_declaration(target)?;
+    if host.page_size != crate::macos_host::PAGE_SIZE {
+        return Err(unsupported(format!(
+            "host page size {} differs from the required {} bytes",
+            host.page_size,
+            crate::macos_host::PAGE_SIZE
+        )));
+    }
+    check_floor(&host.os_version, &target.minimum_os_version, "macOS")
+}
+
+#[cfg(glue_python_macos_host)]
+fn observe_macos() -> Result<MacosHost, ReadinessError> {
+    let mut buffer = [0u8; 64];
+    let mut length = buffer.len();
+    // SAFETY: sysctlbyname receives a terminated selector, writable storage of
+    // `length` bytes together with that length's address, and no new value.
+    // It is a read-only kernel query with no Python or loader API involved.
+    if unsafe {
+        libc::sysctlbyname(
+            c"kern.osproductversion".as_ptr(),
+            buffer.as_mut_ptr().cast(),
+            &mut length,
+            std::ptr::null_mut(),
+            0,
+        )
+    } != 0
+    {
+        return Err(unsupported(format!(
+            "macOS version query failed: {}",
+            std::io::Error::last_os_error()
+        )));
+    }
+    let os_version = buffer
+        .get(..length)
+        .and_then(|bytes| std::ffi::CStr::from_bytes_until_nul(bytes).ok())
+        .ok_or_else(|| unsupported("macOS version query returned no terminated value"))?
+        .to_str()
+        .map_err(|_| unsupported("macOS version is not UTF-8"))?
+        .to_owned();
+    // SAFETY: scalar query of a constant selector, with no Python or loader API.
+    let page_size = u32::try_from(unsafe { libc::sysconf(libc::_SC_PAGESIZE) })
+        .map_err(|_| unsupported("host page size query failed"))?;
+    Ok(MacosHost {
+        os_version,
+        page_size,
+    })
+}
+
 fn unsupported(message: impl Into<String>) -> ReadinessError {
     ReadinessError::Unsupported(message.into())
 }
@@ -266,7 +386,8 @@ fn unsupported(message: impl Into<String>) -> ReadinessError {
         target_arch = "aarch64",
         target_env = "gnu",
         glue_python_boundary
-    )
+    ),
+    glue_python_macos_host
 ))]
 fn invalid(message: impl Into<String>) -> ReadinessError {
     ReadinessError::Invalid(message.into())
@@ -354,6 +475,157 @@ mod tests {
             ));
         }
         assert!(numeric_version(&"1".repeat(65)).is_err());
+    }
+
+    fn macos_target() -> TargetProfile {
+        TargetProfile {
+            os: OperatingSystem::Macos,
+            arch: Architecture::Aarch64,
+            minimum_os_version: "26.7".into(),
+            abi: TargetAbi::Darwin,
+            page_sizes: BTreeSet::from([16384]),
+            cpu_features: BTreeSet::new(),
+        }
+    }
+
+    fn macos_host() -> MacosHost {
+        MacosHost {
+            os_version: "26.7".into(),
+            page_size: 16384,
+        }
+    }
+
+    #[test]
+    fn macos_readiness_requires_the_exact_darwin_arm64_declaration() {
+        assert!(validate_macos_host(&macos_target(), &macos_host()).is_ok());
+        let mut declared = macos_target();
+        declared.os = OperatingSystem::Linux;
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Unsupported(_))
+        ));
+        let mut declared = macos_target();
+        declared.arch = Architecture::X86_64;
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Unsupported(_))
+        ));
+        let mut declared = macos_target();
+        declared.abi = TargetAbi::Glibc {
+            minimum_version: "2.36".into(),
+        };
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Invalid(_))
+        ));
+        let mut declared = macos_target();
+        declared.page_sizes.insert(4096);
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Invalid(_))
+        ));
+        let mut declared = macos_target();
+        declared.page_sizes = BTreeSet::from([4096]);
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Invalid(_))
+        ));
+        let mut declared = macos_target();
+        declared.cpu_features.insert("unknown".into());
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Unsupported(_))
+        ));
+        let mut declared = macos_target();
+        declared.minimum_os_version = "26.7-beta".into();
+        assert!(matches!(
+            validate_macos_host(&declared, &macos_host()),
+            Err(ReadinessError::Invalid(_))
+        ));
+        // Each cell reports the other cell's declaration as unsupported, not invalid.
+        assert!(matches!(
+            validate_macos_host(&target(), &macos_host()),
+            Err(ReadinessError::Unsupported(_))
+        ));
+        assert!(matches!(
+            validate_host(&macos_target(), &host()),
+            Err(ReadinessError::Unsupported(_))
+        ));
+    }
+
+    #[test]
+    fn macos_readiness_compares_the_observed_version_and_page_size() {
+        for version in ["26.7", "26.7.1", "26.10", "27.0"] {
+            let actual = MacosHost {
+                os_version: version.into(),
+                page_size: 16384,
+            };
+            assert!(
+                validate_macos_host(&macos_target(), &actual).is_ok(),
+                "{version}"
+            );
+        }
+        for (version, page_size) in [
+            ("26.6", 16384),
+            ("26", 16384),
+            ("25.9.9", 16384),
+            ("Version 26.7", 16384),
+            ("", 16384),
+            ("26.7", 4096),
+            ("26.7", 0),
+        ] {
+            let actual = MacosHost {
+                os_version: version.into(),
+                page_size,
+            };
+            assert!(
+                matches!(
+                    validate_macos_host(&macos_target(), &actual),
+                    Err(ReadinessError::Unsupported(_))
+                ),
+                "{version} {page_size}"
+            );
+        }
+    }
+
+    #[test]
+    #[cfg(glue_python_macos_host)]
+    fn this_macos_cell_is_ready_for_the_explicit_host_startup_profile_only() {
+        use glue_format::{Compression, ResourceSpec};
+        use std::collections::BTreeMap;
+
+        let observed = observe_macos().unwrap();
+        assert_eq!(observed.page_size, 16384);
+        assert!(numeric_version(&observed.os_version).is_ok());
+        let config = crate::macos_host::Config::parse("/pinned macOS Python").unwrap();
+        let manifest = crate::macos_host::profile_manifest(&config).unwrap();
+        readiness(&manifest).unwrap();
+        let mut above = manifest.clone();
+        above
+            .targets
+            .get_mut(crate::macos_host::TARGET)
+            .unwrap()
+            .minimum_os_version = "4294967295.0".into();
+        assert!(matches!(
+            readiness(&above),
+            Err(ReadinessError::Unsupported(_))
+        ));
+        let linux = crate::profile_manifest(
+            BTreeMap::from([(
+                crate::APP.into(),
+                ResourceSpec {
+                    size: crate::HOST_APP.len() as u64,
+                    sha256: crate::digest(crate::HOST_APP),
+                    compression: Compression::Stored,
+                },
+            )]),
+            Some(&crate::host::Config::parse("/pinned Linux Python").unwrap()),
+        )
+        .unwrap();
+        assert!(matches!(
+            readiness(&linux),
+            Err(ReadinessError::Unsupported(_))
+        ));
     }
 
     #[test]

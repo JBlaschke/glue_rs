@@ -5,7 +5,7 @@
 
 use super::{
     ExecutionError, extension_profile, host_import_profile, host_source_app_profile,
-    import_profile, install_host_source_app_profile, metadata_profile, platform,
+    import_profile, install_host_source_app_profile, macos_host, metadata_profile, platform,
     source_app_profile,
 };
 use glue_format::{ArchiveLimits, Manifest, RuntimeAbi};
@@ -24,6 +24,7 @@ pub(crate) enum Kind {
     HostMetadataApp,
     InstallHostMetadataApp,
     StrippedInstallHostMetadataApp,
+    MacosHostStartup,
 }
 
 /// An admitted profile, tied to the manifest from which it was selected.
@@ -57,7 +58,26 @@ impl ControlledProfile {
             Kind::StrippedInstallHostMetadataApp => {
                 "pinned stripped install-only host Python distribution metadata application"
             }
+            Kind::MacosHostStartup => "controlled explicit-host macOS arm64 Python startup",
         }
+    }
+}
+
+/// The execution cell compiled into this build, for capability reporting.
+/// Admission stays portable; only readiness and execution depend on the cell.
+pub fn execution_cell() -> &'static str {
+    if cfg!(all(
+        feature = "pbs-bootstrap",
+        target_os = "linux",
+        target_arch = "aarch64",
+        target_env = "gnu",
+        glue_python_boundary
+    )) {
+        "GNU Linux arm64 execution only"
+    } else if cfg!(glue_python_macos_host) {
+        "explicit macOS arm64 host startup execution only"
+    } else {
+        "declaration validation only; no execution boundary is compiled"
     }
 }
 
@@ -108,6 +128,10 @@ pub fn validate(manifest: &Manifest) -> Result<ControlledProfile, ExecutionError
             extension_profile::admit_for(extension_profile::Profile::PackageImports, manifest)
                 .map_err(ExecutionError::failed)?;
             Kind::NativePackages
+        }
+        macos_host::APP_ID => {
+            macos_host::admit_manifest(manifest).map_err(ExecutionError::failed)?;
+            Kind::MacosHostStartup
         }
         _ if runtime.build_id == source_app_profile::BUILD_ID => {
             source_app_profile::admit(manifest).map_err(ExecutionError::failed)?;
@@ -203,6 +227,7 @@ mod tests {
     use crate::{APP, digest, execute, host, profile_manifest};
     use glue_format::{Archive, Compression, ResourceSpec, write_archive};
     use std::{
+        collections::BTreeMap,
         fs::{self, File, OpenOptions},
         path::PathBuf,
         sync::atomic::{AtomicU64, Ordering},
@@ -283,6 +308,75 @@ mod tests {
             glue_python_boundary
         )))]
         assert!(readiness(&selected).unwrap_err().is_unsupported());
+    }
+
+    fn macos_host_manifest(prefix: &str) -> Manifest {
+        macos_host::profile_manifest(&macos_host::Config::parse(prefix).unwrap()).unwrap()
+    }
+
+    #[test]
+    fn explicit_macos_host_startup_is_admitted_portably_without_packaging_bounds() {
+        let manifest = macos_host_manifest("/missing macOS Python");
+        let selected = validate(&manifest).unwrap();
+        assert_eq!(selected.kind, Kind::MacosHostStartup);
+        assert_eq!(
+            selected.name(),
+            "controlled explicit-host macOS arm64 Python startup"
+        );
+        assert!(packaging_limits(&manifest).unwrap().is_none());
+        let mut changed = manifest.clone();
+        changed.resources.get_mut(APP).unwrap().sha256 = digest(b"changed app");
+        assert!(!validate(&changed).unwrap_err().is_unsupported());
+        let mut changed = manifest.clone();
+        changed.runtimes.get_mut("python").unwrap().build_id = "unreviewed build".into();
+        assert!(!validate(&changed).unwrap_err().is_unsupported());
+        let mut changed = manifest.clone();
+        changed.app_id = "stock-pbs-host-startup".into();
+        assert!(validate(&changed).unwrap_err().is_unsupported());
+        // The GNU Linux explicit-host startup fixture keeps its probe-only status.
+        let linux = profile_manifest(
+            BTreeMap::from([(
+                APP.into(),
+                ResourceSpec {
+                    size: crate::HOST_APP.len() as u64,
+                    sha256: digest(crate::HOST_APP),
+                    compression: Compression::Stored,
+                },
+            )]),
+            Some(&host::Config::parse("/missing Linux Python").unwrap()),
+        )
+        .unwrap();
+        assert!(validate(&linux).unwrap_err().is_unsupported());
+        #[cfg(not(glue_python_macos_host))]
+        assert!(readiness(&selected).unwrap_err().is_unsupported());
+        assert_eq!(
+            execution_cell().contains("macOS"),
+            cfg!(glue_python_macos_host)
+        );
+    }
+
+    #[test]
+    #[cfg(not(glue_python_macos_host))]
+    fn macos_host_startup_is_unsupported_without_the_macos_boundary() {
+        let manifest = macos_host_manifest("/missing macOS Python");
+        let fixture = Fixture::new();
+        let path = fixture.0.join("macos host.glue");
+        let file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&path)
+            .unwrap();
+        write_archive(
+            file,
+            &manifest,
+            &BTreeMap::from([(APP.to_string(), crate::HOST_APP.to_vec())]),
+        )
+        .unwrap();
+        let archive =
+            Archive::open_with_limits(File::open(path).unwrap(), archive_limits()).unwrap();
+        let selected = validate(&manifest).unwrap();
+        let error = execute(archive, selected).unwrap_err();
+        assert!(error.is_unsupported(), "{error}");
     }
 
     #[test]

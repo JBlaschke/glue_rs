@@ -85,6 +85,8 @@ else
 fi
 
 mkdir -p "$output"
+# Later steps change directory into the bundle, so the output must be absolute.
+output=$(cd "$output" && pwd -P)
 work="$output/$name.work"
 rm -rf "${work:?}"
 mkdir -p "$work"
@@ -127,6 +129,11 @@ fi
 if gh release view "$tag" >/dev/null 2>&1; then
   fail "release $tag already exists; choose a new evidence directory name"
 fi
+# The release tag points at the commit being published from, which must
+# already be on the remote; it is the commit whose README describes the bundle.
+commit=$(git rev-parse HEAD)
+git fetch -q origin "$commit" 2>/dev/null || git branch -r --contains "$commit" | grep -q . ||
+  fail "commit $commit is not on the remote; push it before publishing"
 notes="$work/notes.md"
 {
   echo "Evidence bundle for \`$dir\`."
@@ -134,12 +141,14 @@ notes="$work/notes.md"
   echo "Published by scripts/retain-evidence.sh; see docs/decisions/0030-evidence-retention.md."
   echo "Fetch and verify with: sh scripts/fetch-evidence.sh $dir"
   echo
+  echo "- commit: $commit"
   echo "- files: $count"
   echo "- size: $size bytes"
   echo "- sha256: $sha"
 } >"$notes"
-gh release create "$tag" "$archive#$asset" --title "Evidence: $name" --notes-file "$notes" --latest=false >/dev/null
-echo "created release $tag with asset $asset"
+gh release create "$tag" "$archive#$asset" --title "Evidence: $name" --notes-file "$notes" \
+  --target "$commit" --latest=false >/dev/null
+echo "created release $tag at $commit with asset $asset"
 
 cp "$payload_inventory" "$dir/bundle-payload.sha256"
 published=$(date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -149,6 +158,7 @@ cat >"$dir/bundle.json" <<JSON
   "name": "$name",
   "repository": "$repo",
   "tag": "$tag",
+  "commit": "$commit",
   "asset": "$asset",
   "size": $size,
   "sha256": "$sha",
