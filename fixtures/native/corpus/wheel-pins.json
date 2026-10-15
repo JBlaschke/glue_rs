@@ -1,0 +1,54 @@
+{
+  "cell": {
+    "platform": "manylinux aarch64 (GNU Linux arm64, Debian bookworm glibc 2.36 test cell)",
+    "python_tag": "cp313",
+    "selection_rule": "latest stable release on 2026-10-15; the wheel pip would select for the cell when several manylinux levels exist"
+  },
+  "schema_version": 0,
+  "wheels": [
+    {
+      "filename": "markupsafe-3.0.4-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "project": "markupsafe",
+      "project_url": "https://pypi.org/project/markupsafe/3.0.4/",
+      "role": "small C extension (one speedup module)",
+      "sha256": "7018d4af1cd272e847aa5917983ab5e83e4f6579f9dbfecd4a79c0ca80b144c2",
+      "size": 24395,
+      "upload_time": "2026-10-02T23:05:15.909871Z",
+      "url": "https://files.pythonhosted.org/packages/f3/a5/28b76a7449eb702966b88bef599e2360b411fbb3afeee8fe560939be06ec/markupsafe-3.0.4-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "3.0.4"
+    },
+    {
+      "filename": "numpy-2.5.4-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl",
+      "project": "numpy",
+      "project_url": "https://pypi.org/project/numpy/2.5.4/",
+      "role": "dependency-heavy C/Fortran package bundling OpenBLAS and libgfortran",
+      "sha256": "1c2e71b04c6cad90026e544501bbe0ab9290fa8a4d845e7e8c0d124fb429c988",
+      "size": 15689178,
+      "upload_time": "2026-10-10T20:03:18.721795Z",
+      "url": "https://files.pythonhosted.org/packages/db/b6/135bb0953b61dc21c6cafa14b424ae666944e4899cf140e00c2b322a1a45/numpy-2.5.4-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "2.5.4"
+    },
+    {
+      "filename": "pydantic_core-2.50.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+      "project": "pydantic-core",
+      "project_url": "https://pypi.org/project/pydantic-core/2.50.1/",
+      "role": "Rust-built extension (PyO3)",
+      "sha256": "409e0ea40ec30d9158f33574fd758e689f6045a0f2596701828c27816ca9687d",
+      "size": 2047049,
+      "upload_time": "2026-10-11T18:32:46.164033Z",
+      "url": "https://files.pythonhosted.org/packages/4d/b8/fbfc25875219cc060e613170ff10e850c6d8924beb4910da57c2ee3ba1d2/pydantic_core-2.50.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+      "version": "2.50.1"
+    },
+    {
+      "filename": "cryptography-50.0.2-cp311-abi3-manylinux_2_34_aarch64.whl",
+      "project": "cryptography",
+      "project_url": "https://pypi.org/project/cryptography/50.0.2/",
+      "role": "Rust-built stable-ABI extension statically linking OpenSSL",
+      "sha256": "87e9ce85beb6b328ba370cc6e6aea483c92617b4c95b1d33a49297eb662bfb04",
+      "size": 4737859,
+      "upload_time": "2026-09-30T14:43:59.541693Z",
+      "url": "https://files.pythonhosted.org/packages/71/37/6202e488cc1eb625ea110c292c6bda92823176e023f427d8d5660ce8d632/cryptography-50.0.2-cp311-abi3-manylinux_2_34_aarch64.whl",
+      "version": "50.0.2"
+    }
+  ]
+}

@@ -36,6 +36,7 @@ Further implementation continues on separate feature branches.
 | A7 Registered Python native lifecycle | `codex/a7-python-native-lifecycle` / `9b1c386` (from merged `3f6bf8f`) | Experimental separate custom-create/owned-state profile; controlled GNU Linux arm64 observation | GNU source 501/502, Mac source Lua5.5 502/Mac packaging Lua5.4 546 and Clippy; GNU optimized Python165 and Clippy; independent stock baseline/seven ledger controls; all eleven new and eleven historical native traces pass; 22 Mac/stock-Python units and 264 historical units; all 33 hostile trace edits reject; five states freed/five references released after finalization on success and app error; [evidence](evidence/pbs-linux-arm64-python-native-lifecycle-2026-10-14/README.md) |
 | A7 Python native package members | `codex/a7-python-native-package-imports` / `dd8cdd3` (from merged `478ebcd`) | Experimental stock dynamic-loader route for three dotted native children of an archive source package | Mac packaging Lua5.4 550/source Lua5.5 506 and GNU source 505/506, Clippy clean; GNU optimized Python170; independent stock descriptor-loader proof; eleven new and 22 historical native cases pass/replay; 300 policy units and all 20 hostile edits reject; exact unchanged native images and API4 boundary; five states freed/five references released after finalization; [evidence](evidence/pbs-linux-arm64-python-native-packages-2026-10-15/README.md) |
 | Review hygiene and evidence retention | `claude/hygiene-and-evidence-policy` (from merged `a4e6ec1`) | Implemented | CONTRIBUTING toolchain guidance verified to select Rust 1.88.0 on the development Mac; 31 merged local branches pruned; [decision 0030](decisions/0030-evidence-retention.md) moves new evidence payloads to verified release assets; dry run packs the 2026-10-15 native-package bundle and verifies its inventory |
+| A5 native capability survey and proposed contract | `claude/competent-keller-668fef` (from merged `0c9b522`) | Static survey; proposed contract; no loader change | 24 shared objects from four pinned cp313 manylinux aarch64 wheels (markupsafe 3.0.4, numpy 2.5.4, pydantic-core 2.50.1, cryptography 50.0.2) read statically and cross-checked against llvm-readelf with zero disagreements; all 444 distinct Python API imports exported by the pinned runtime; the current inspector rejects all 24 images before any import policy; Mac workspace 505 tests and Clippy clean on Rust 1.88.0; [decision 0032](decisions/0032-native-capability-contract.md) |
 
 ## Gate status
 
@@ -484,7 +485,8 @@ The user prefers completing Python work before starting Node. The separate nativ
 package-member profile now delegates dotted native imports to stock
 `ExtensionFileLoader`, retaining lifecycle GC/finalization checks.
 Continue A7/A10 with third-party native wheels and their required ELF/dependency
-admission, and runtime installation/selection beyond the
+admission, against the measured profile proposed in
+[decision 0032](decisions/0032-native-capability-contract.md), and runtime installation/selection beyond the
 explicit pinned template/prerequisite preparers, selected installed-runtime-tree
 input and bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is
