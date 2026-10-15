@@ -46,8 +46,16 @@ struct Probe {
     node_api: u32,
     addon_abi: u32,
     hooks: bool,
+    #[serde(default)]
+    hook_error: String,
 }
-const PROBE: &str = "JSON.stringify({version:process.versions.node,platform:process.platform,arch:process.arch,node_api:Number(process.versions.napi||0),addon_abi:Number(process.versions.modules||0),hooks:typeof require('node:module').registerHooks==='function'})";
+const PROBE: &str = r#"import module from 'node:module';const {registerHooks}=module;
+let hooks=false, hook_error='';
+if(typeof registerHooks==='function'){
+const root='file:///__glue_capability__/';
+const h=registerHooks({resolve(s,c,n){if(s===root+'entry.cjs'||s==='./dep.cjs')return{url:s==='./dep.cjs'?root+'dep.cjs':s,format:'commonjs',shortCircuit:true};return n(s,c);},load(u,c,n){if(u.startsWith(root))return{format:'commonjs',source:u.endsWith('entry.cjs')?"module.exports=require('./dep.cjs')":'module.exports=42',shortCircuit:true};return n(u,c);}});
+try{hooks=(await import(root+'entry.cjs')).default===42;}catch(e){hook_error=e.code||String(e);}finally{h.deregister();}}
+console.log(JSON.stringify({version:process.versions.node,platform:process.platform,arch:process.arch,node_api:Number(process.versions.napi||0),addon_abi:Number(process.versions.modules||0),hooks,hook_error}));"#;
 
 /// Probe only Node builtins, with no project imports, npm calls or package scripts.
 /// Foreign targets must be rejected before this function by the inspecting caller.
@@ -91,7 +99,10 @@ pub fn discover(input: &Path, requested_target: Option<&str>) -> Result<Discover
     if !probe.hooks || probe.node_api < 8 {
         return Err(error(
             DiagnosticCode::UnsupportedCapability,
-            "Node must expose synchronous registerHooks and Node-API 8",
+            format!(
+                "Node must pass synchronous ESM/CJS archive hooks and provide Node-API 8; observed hook failure: {}",
+                probe.hook_error
+            ),
         ));
     }
     let target = match (probe.platform.as_str(), probe.arch.as_str()) {
@@ -165,7 +176,7 @@ pub fn host_target() -> Result<&'static str> {
 }
 fn bounded_probe(executable: &Path) -> Result<Vec<u8>> {
     let mut child = Command::new(executable)
-        .args(["--no-addons", "-p", PROBE])
+        .args(["--no-addons", "--input-type=module", "-e", PROBE])
         .env_clear()
         .env("NODE_DISABLE_COMPILE_CACHE", "1")
         .env("PATH", "/glue-no-tools")
@@ -245,8 +256,28 @@ pub fn prepare(
             "bridge must have the .node extension",
         ));
     }
-    let bridge_bytes =
-        fs::read(&bridge).map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    let bridge_file =
+        fs::File::open(&bridge).map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    let bridge_metadata = bridge_file
+        .metadata()
+        .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    if !bridge_metadata.is_file() || bridge_metadata.len() > 64 * 1024 * 1024 {
+        return Err(error(
+            DiagnosticCode::ResourceLimit,
+            "archive bridge must be a regular file no larger than 64 MiB",
+        ));
+    }
+    let mut bridge_bytes = Vec::new();
+    bridge_file
+        .take(64 * 1024 * 1024 + 1)
+        .read_to_end(&mut bridge_bytes)
+        .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    if bridge_bytes.len() > 64 * 1024 * 1024 {
+        return Err(error(
+            DiagnosticCode::ResourceLimit,
+            "archive bridge grew beyond 64 MiB",
+        ));
+    }
     let mut runtime = node.descriptor;
     runtime
         .inputs

@@ -1,0 +1,3 @@
+# Declared configuration, not evidence of an executed x86_64 cell.
+native-search = ["/usr/lib/x86_64-linux-gnu"]
+normalize-native-paths = true

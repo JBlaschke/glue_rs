@@ -6,8 +6,10 @@ const {Readable}=require('node:stream');
 const {syncBuiltinESMExports}=require('node:module');
 const ROOT='/__glue_archive__';
 function failure(code,syscall,path,message=code){return Object.assign(Error(`${code}: ${message}, ${syscall} '${path}'`),{code,syscall,path});}
-function installResources({read,list}) {
- const names=JSON.parse(list());
+function installResources({read,list,deployed={}}) {
+ const hostRead=fs.readFileSync;
+ const archiveRead=read;read=name=>Object.hasOwn(deployed,name)?hostRead(deployed[name]):archiveRead(name);
+ const names=[...new Set([...JSON.parse(list()),...Object.keys(deployed)])];
  const sizes=new Map();const directories=new Map([['',new Map()]]);
  for(const name of names){let parent='';const parts=name.split('/');for(let i=0;i<parts.length;i++){const dir=i<parts.length-1;directories.get(parent).set(parts[i],{directory:dir,name:parts[i],path:parent});parent=parent?parent+'/'+parts[i]:parts[i];if(dir&&!directories.has(parent))directories.set(parent,new Map());}sizes.set(name,null);}
  function virtual(input) {

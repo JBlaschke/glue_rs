@@ -1,0 +1,64 @@
+{
+  "revision": 1,
+  "case": "node-native",
+  "reference_kind": "stock",
+  "inputs": [
+    {
+      "source": "fixtures/mvp/node-native/source",
+      "destination": "project"
+    },
+    {
+      "source": "${GLUE_MVP_NODE_RUNTIME}",
+      "destination": "runtime"
+    },
+    {
+      "source": "${GLUE_MVP_NODE_BRIDGE}",
+      "destination": "archive.node"
+    },
+    {
+      "source": "${GLUE_MVP_NODE_NATIVE}",
+      "destination": "native"
+    },
+    {
+      "source": "${GLUE_MVP_NODE_CONFIG}",
+      "destination": "glue.toml"
+    }
+  ],
+  "build": {
+    "argv": [
+      "${GLUE_MVP_GLUE}",
+      "build",
+      "node",
+      "{inputs}/project",
+      "--node",
+      "{inputs}/runtime/bin/node",
+      "--node-bridge",
+      "{inputs}/archive.node",
+      "--entry",
+      "main.cjs",
+      "--output",
+      "{build}",
+      "--config",
+      "{inputs}/glue.toml"
+    ]
+  },
+  "reference": {
+    "argv": [
+      "{inputs}/runtime/bin/node",
+      "{inputs}/project/main.cjs",
+      "argument with spaces"
+    ]
+  },
+  "arguments": [
+    "argument with spaces"
+  ],
+  "expected_exit": 0,
+  "prepare": {
+    "argv": [
+      "{inputs}/runtime/bin/node",
+      "{repo}/fixtures/mvp/node-native/prepare-project.cjs",
+      "{inputs}/native",
+      "{inputs}/project"
+    ]
+  }
+}
