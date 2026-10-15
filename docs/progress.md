@@ -561,3 +561,15 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
 - Pinned Clippy passed. C03's separate offline Linux arm64 run passed all 3 tests,
   including real relocation/TLS execution and readelf comparison. x86_64 native
   execution remains unexecuted. Public Developer ID/notarization is R02 evidence.
+
+## MVP implementation — V01 (15 October 2026)
+
+- Branch `codex/mvp-v01-portable-ci`, based on C04 `25eb646`; result: branch tip.
+- Added native Linux x86_64/Linux arm64/macOS arm64 GitHub jobs for baseline,
+  Lua55 and packaging suites. Rust/Clippy 1.88.0, expected native host and locked
+  dependencies are checked explicitly. Lua features run separately.
+- `scripts/ci-portable.sh baseline` passed locally on macOS arm64 (workspace
+  tests, formatting and all-target Clippy); raw log is local at
+  `/private/tmp/glue-mvp-v01-baseline.log`. `sh -n` passed.
+- Hosted jobs are configured, not yet executed. No signing/evidence assets are
+  required; portable checks do not substitute for target product receipts.
