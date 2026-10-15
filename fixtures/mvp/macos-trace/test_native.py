@@ -1,6 +1,7 @@
 """Host transport/fixture tests; these do not prove DTrace provider availability."""
 import hashlib
 import json
+import os
 import platform
 import signal
 import subprocess
@@ -40,11 +41,47 @@ class NativeCapabilityTests(unittest.TestCase):
         self.assertEqual(receipt["status"], "unavailable")
         self.assertFalse(receipt["started"])
         self.assertFalse(receipt["full_trace_acceptance"])
+        self.assertTrue(receipt["identity_checks_passed"])
         self.assertEqual((output / "target.stdout").read_bytes(), b"")
         self.assertEqual((output / "events.jsonl").read_bytes(), b"")
         for name, identity in receipt["evidence"].items():
             data = (output / name).read_bytes()
             self.assertEqual(identity, {"size": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+
+    def test_real_file_hashes_cover_old_limit_and_exact_raw_capture_limit(self):
+        path = self.root / "large sparse raw trace"
+        for size in [64 * 1024 * 1024 + 1, 128 * 1024 * 1024]:
+            with self.subTest(size=size):
+                with path.open("wb") as output:
+                    output.truncate(size)
+                expected = hashlib.sha256()
+                remaining = size
+                block = bytes(1024 * 1024)
+                while remaining:
+                    count = min(remaining, len(block))
+                    expected.update(block[:count])
+                    remaining -= count
+                result = subprocess.run([str(self.unit), "identity", str(path)], capture_output=True, text=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                proof = json.loads(result.stdout)
+                self.assertEqual(proof["status"], "captured")
+                self.assertTrue(proof["identity_checks_passed"])
+                self.assertEqual(proof["identity"], {"size": size, "sha256": expected.hexdigest()})
+
+    def test_missing_nonregular_and_oversized_identity_cannot_report_captured(self):
+        oversized = self.root / "oversized sparse raw trace"
+        with oversized.open("wb") as output:
+            output.truncate(128 * 1024 * 1024 + 1)
+        fifo = self.root / "unopened fifo"
+        os.mkfifo(fifo)
+        for path in [self.root / "missing identity", self.root, fifo, oversized]:
+            with self.subTest(path=path.name):
+                result = subprocess.run([str(self.unit), "identity", str(path)], capture_output=True, text=True, timeout=3)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                proof = json.loads(result.stdout)
+                self.assertEqual(proof["status"], "failed")
+                self.assertFalse(proof["identity_checks_passed"])
+                self.assertIsNone(proof["identity"])
 
     def test_hard_watchdog_bounds_a_stuck_collector(self):
         output = self.root / "mock watchdog"

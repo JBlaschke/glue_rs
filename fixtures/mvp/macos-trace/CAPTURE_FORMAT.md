@@ -74,6 +74,13 @@ fault callbacks abort capture. Options use switch buffering, 16 MiB buffers,
 8 MiB dynamic state, 20 ms consume/status intervals and temporal ordering. A
 final drain failure, missing observed terminal, nonzero owned root exit, missing
 open events, timeout, signal, record bound or output error is a failure.
+Required fixture, collector and evidence identities are computed before selecting
+the final status, using a 16 KiB streaming buffer and a 128 MiB per-file bound
+matching the permitted raw capture size. Missing, nonregular, unreadable,
+oversized files or byte counts differing from the initial stat fail verification; a failed identity
+cannot produce `captured`. The receipt records `identity_checks_passed`; null
+identities can appear only in a failed/unavailable diagnostic. A one-byte
+sentinel bounds detection of growth after the initial file-size check.
 
 ## Files and raw schema
 

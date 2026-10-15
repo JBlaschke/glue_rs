@@ -26,6 +26,14 @@ static void event(struct capture *state, uint64_t kind, uint64_t pid, uint64_t d
     free(description);
 }
 int main(int argc, char **argv) {
+    if (argc==3 && !strcmp(argv[1],"identity")) {
+        struct capture state={.started=true};
+        struct identity identity;
+        capture_identity(&state,argv[2],&identity);
+        printf("{\"status\":\"%s\",\"identity_checks_passed\":%s,\"identity\":",capture_status(&state),state.identity_failed ? "false" : "true");
+        write_identity(stdout,&identity); puts("}");
+        return state.failed ? 1 : 0;
+    }
     if (argc==3 && !strcmp(argv[1],"setup-error")) {
         char *arguments[]={argv[0],"--output",argv[2],"--","/usr/bin/printf","fixture-must-not-start",NULL};
         return capture_native_main(6,arguments);
