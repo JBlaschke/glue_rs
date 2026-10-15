@@ -3,6 +3,8 @@
 //! Schema zero is an implementation contract, not a compatibility or loader claim.
 
 mod archive;
+mod buffered;
+pub use buffered::{BufferedReader, MAX_READ_BUFFER_BYTES};
 pub mod distribution;
 mod manifest;
 pub use distribution::*;
