@@ -188,8 +188,16 @@ while read -r version checksum; do
 done <<'PBS'
 3.12.15 5864001bf969db329fadc2b654c4878c6027d170c6bd77e28f88666260bcaf63
 3.13.16 1cca1041f693f110a2e0d16417090b8996258c7a121e90eeab66c2f40ea407f2
-3.14.8 83f9cb480b702548c592443f86209cf0fc03448d90692df257f095c01791dccc
 PBS
+
+# This independent conventional runtime avoids the selected PBS libffi static
+# trampoline path bug under relocated paths containing spaces. Keep all native
+# bytes unchanged and subject it to the same strict extraction oracle.
+/usr/bin/python3 fixtures/mvp/python-matrix/provision-conda.py \
+    --lock fixtures/mvp/python-matrix/conda-linux-x86_64-3.14.8.lock.json \
+    --work "$ci_root/downloads/python-3.14.8-conda" \
+    --output "$ci_root/runtimes/python-3.14.8" \
+    --evidence "$evidence/provisioning/python-3.14.8-conda"
 
 cargo build --release --locked -p glue-runner -p glue-runtime-node > "$evidence/build-release.log" 2>&1
 cargo build --release --locked -p glue-runtime-lua --no-default-features --features lua54 --bin glue-lua54 > "$evidence/build-lua54.log" 2>&1

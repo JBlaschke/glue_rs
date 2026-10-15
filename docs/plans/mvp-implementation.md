@@ -46,10 +46,10 @@ check, not a claim established by the development signatures.
 | N03 | `codex/mvp-n03-node-project` | `119f7b0` | npm/pnpm installed graph and lock provenance, no package manager |
 | N04 | `codex/mvp-n04-node-resources` | `44e7ca9` | Bounded read-only fs subset, streams and safe aliases |
 | N05 | `codex/mvp-n05-node-addons` | `1b9f9ee` | Existing Node-API addon/secondary closure across two majors; runtime closure locks |
-| V01 | `codex/mvp-v01-portable-ci` | `d342e74` | Pinned native-host CI matrix; initial hosted run 7/9 passed, helper fix rerun pending |
-| V02 | `codex/mvp-v02-relocated-harness` | `4d628c8` | Shared offline/relocation/reference receipt protocol; current-namespace Linux proof |
+| V01 | `codex/mvp-v01-portable-ci` | `d342e74` | Pinned native-host CI matrix; all nine hosted suites passed after helper fix |
+| V02 | `codex/mvp-v02-relocated-harness` | `f6e7482` | Shared offline/relocation/reference protocol; current namespace proof and explicit traceable syscall policy |
 | R01 | `codex/mvp-r01-workflows` | `ddd8468` | Three CLI adapters, inspect/doctor/size/rebuild, installer and end-to-end cases |
-| R02 | `codex/mvp-r02-extraction-signing` | `a2bff19` | Complete Linux process-tree oracle and signing checks; Mac backend/tracer and x86_64 rerun pending |
+| R02 | `codex/mvp-r02-extraction-signing` | `cc0077e` | Complete Linux process-tree oracle and signing checks; new strace syntax; Mac backend/tracer and x86_64 rerun pending |
 | R03 | `codex/mvp-r03-hpc-costs` | `b725309` | Bounded buffered reader, measured 10,000-entry/32-rank harness and budgets |
 | R04 | `codex/mvp-r04-docs` | `this branch` | Current user docs, compatibility/evidence ledger; M2 closure blocked by missing cells |
 
@@ -94,10 +94,11 @@ execution required (`GLUE_REQUIRE_COMPACT_CLI=1`). Harness tests passed 22 check
 including deliberate extraction violations and invalid/foreign receipt controls.
 The Lua55 suite passed 90 tests and packaging passed 130, both with pinned
 Clippy. Four additional CLI regressions passed after the final review fixes.
-Hosted portable run `38791521293` passed all three macOS arm64 suites, Linux
-x86_64 baseline/packaging and Linux arm64 Lua55/packaging. Its two remaining
-suites exposed the same transient Linux helper-spawn `ETXTBSY`; the bounded
-helper query fix is being rerun across the full matrix.
+Hosted portable run [38794420717](https://github.com/JBlaschke/glue_rs/actions/runs/38794420717)
+passed all nine suites: baseline, Lua55 and packaging on each of macOS arm64,
+Linux arm64 and Linux x86_64. Its source is `13ca6db64839aa5fb2a3b9fccec272db74d522ff`.
+The previous run's two transient Linux helper-spawn `ETXTBSY` failures are
+retained; the bounded helper query fix passed this complete rerun.
 Ignored runtime tests are not counted as target evidence; supplied-runtime
 receipts exercise those routes separately. An initial extra suite run hit
 ENOSPC and is not counted; disposable incremental build outputs were cleared.
@@ -143,6 +144,18 @@ Native hosted x86_64 acceptance and first performance observations are configure
 ranks, enforced offline execution, full traces and negative controls. First
 x86_64 budgets remain proposed until measured reports are reviewed and frozen. A configured job is not a passed cell; actual runner results will be
 recorded after completion.
+
+Replaying the original hosted traces after the tokenizer correction revealed
+successful libuv io_uring operations and a Python 3.14.8/libffi temporary
+executable trampoline. The [explicit Linux trace environment](../decisions/mvp-v02-ci-trace-environment.md)
+denies asynchronous kernel I/O for the entire reference/package/control/rank
+process tree, retaining independent denial and inheritance proofs. This is a
+declared test environment, not unrestricted-host acceptance or a product sandbox.
+The [libffi compatibility decision](../decisions/mvp-p05-libffi-static-trampolines.md)
+records the selected PBS input's path-with-spaces bug and an unchanged independent
+runtime alternative awaiting execution. The oracle continues rejecting temporary
+code writes. Neither the failed original receipts nor unexecuted alternatives
+count as acceptance.
 
 ## Evidence retention and open gates
 

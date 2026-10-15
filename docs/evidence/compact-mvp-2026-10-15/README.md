@@ -46,6 +46,12 @@ are retained separately and are excluded from the selected passing set.
 
 ## Hosted checks and macOS capability
 
+Portable run [38794420717](https://github.com/JBlaschke/glue_rs/actions/runs/38794420717)
+passed all nine baseline/Lua55/packaging jobs across macOS arm64, Linux arm64
+and Linux x86_64, on source `13ca6db64839aa5fb2a3b9fccec272db74d522ff`.
+The complete job log and final status snapshot are included in the local
+inventory. These portable results do not replace native runtime/trace cases.
+
 The owner authorized publishing the combined feature branch and running hosted
 acceptance. The first native x86_64 run, `38791248353`, built and ran all 24
 applications successfully but failed validation: inherited sysfs caused the
@@ -53,6 +59,12 @@ offline detector to report host interfaces, and newer strace `clone3` formatting
 exposed a parser rejection. Those original failed receipts remain unchanged at
 `/private/tmp/glue-native-x86-evidence-38791248353`. This run supplies diagnostic
 evidence, not a passed target cell or accepted performance budgets.
+
+Subsequent strict replay exposed successful libuv io_uring operations and a PBS
+Python 3.14.8 libffi temporary executable trampoline. The trace environment and
+independent runtime candidate are described in the implementation ledger. Original
+traces, replay classifications and failure identities are retained unchanged;
+the candidate has no acceptance pass until the new hosted execution completes.
 
 The [original Actions artifact](https://github.com/JBlaschke/glue_rs/actions/runs/38791248353/artifacts/12000323207)
 has GitHub digest
