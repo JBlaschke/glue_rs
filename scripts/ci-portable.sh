@@ -5,8 +5,8 @@ cd "$repository"
 toolchain_bin=$(dirname -- "$(rustup which cargo)")
 PATH="$toolchain_bin:$PATH"
 export PATH
-rustc --version | rg '^rustc 1\.88\.0 '
-cargo clippy --version | rg '^clippy 0\.1\.88 '
+rustc --version | grep -E '^rustc 1\.88\.0 '
+cargo clippy --version | grep -E '^clippy 0\.1\.88 '
 host=$(rustc -vV | sed -n 's/^host: //p')
 if [ -n "${GLUE_CI_EXPECT_HOST:-}" ] && [ "$host" != "$GLUE_CI_EXPECT_HOST" ]; then
     echo "native runner mismatch: $host != $GLUE_CI_EXPECT_HOST" >&2
