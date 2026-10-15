@@ -1,0 +1,69 @@
+{
+  "revision": 1,
+  "case": "python-abi3",
+  "reference_kind": "stock",
+  "inputs": [
+    {
+      "source": "${GLUE_MVP_PYTHON_ROOT}",
+      "destination": "runtime"
+    },
+    {
+      "source": "fixtures/mvp/python-matrix/abi3-project",
+      "destination": "project"
+    },
+    {
+      "source": "${GLUE_MVP_PYTHON_SITE}",
+      "destination": "installed"
+    },
+    {
+      "source": "${GLUE_MVP_PYTHON_SECONDARY}",
+      "destination": "secondary"
+    }
+  ],
+  "prepare": {
+    "argv": [
+      "${GLUE_MVP_PYTHON_TOOL}",
+      "{repo}/fixtures/mvp/python-matrix/prepare.py",
+      "{inputs}",
+      "${GLUE_MVP_PYTHON_RELATIVE}",
+      "${GLUE_MVP_PYTHON_ENV_KIND}",
+      "--native"
+    ]
+  },
+  "build": {
+    "argv": [
+      "${GLUE_MVP_GLUE}",
+      "build",
+      "python",
+      "{inputs}/project",
+      "--env",
+      "{inputs}/environment",
+      "--entry",
+      "main.py",
+      "--output",
+      "{build}",
+      "--normalize-native-paths",
+      "--native-search",
+      "${GLUE_MVP_NATIVE_SEARCH}"
+    ]
+  },
+  "reference": {
+    "argv": [
+      "{inputs}/runtime/${GLUE_MVP_PYTHON_RELATIVE}",
+      "-I",
+      "-S",
+      "-B",
+      "{repo}/fixtures/mvp/python-matrix/reference.py",
+      "{inputs}",
+      "file",
+      "main.py",
+      "argument caf\u00e9"
+    ]
+  },
+  "arguments": [
+    "argument caf\u00e9"
+  ],
+  "expected_exit": 0,
+  "timeout": 240,
+  "signing_policy": "ad-hoc"
+}
