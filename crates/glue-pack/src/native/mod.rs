@@ -171,6 +171,7 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
         queue.push_back(source);
     }
     let mut identities: BTreeMap<String, (String, String)> = BTreeMap::new();
+    let mut link_contracts = BTreeMap::new();
     while let Some(source) = queue.pop_front() {
         if result.mappings.contains_key(&source) {
             continue;
@@ -198,6 +199,18 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
             ));
         }
         let bytes = read_image(&source)?;
+        let link = linux::inspect_link_contract(&bytes)?;
+        result
+            .inventory
+            .features
+            .extend(link.properties.iter().cloned());
+        if let Some(floor) = &link.minimum_kernel {
+            result
+                .inventory
+                .host_requirements
+                .insert(format!("linux>={floor}"));
+        }
+        link_contracts.insert(deployed.clone(), link);
         let sha = digest(&bytes);
         if let Some(identity) = &facts.identity {
             if let Some((previous, other)) = identities.get(identity) {
@@ -353,6 +366,37 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
             queue.push_back(resolved);
         }
         result.facts.insert(deployed, facts);
+    }
+    for edge in &result.inventory.edges {
+        let needs = &link_contracts[&edge.from].version_needs;
+        let names = needs
+            .get(&edge.name)
+            .or_else(|| needs.get(edge.name.rsplit('/').next().unwrap()));
+        if let Some(names) = names {
+            if matches!(
+                edge.provider,
+                DependencyProvider::Bundled | DependencyProvider::Runtime
+            ) {
+                let supplied = &link_contracts[&edge.resolved].version_definitions;
+                let missing: Vec<_> = names.difference(supplied).collect();
+                if !missing.is_empty() {
+                    return Err(diagnostic(
+                        DiagnosticCode::RuntimeAbiMismatch,
+                        format!(
+                            "{} -> {}: selected image lacks symbol versions {missing:?}",
+                            edge.from, edge.name
+                        ),
+                    ));
+                }
+            } else {
+                for name in names {
+                    result
+                        .inventory
+                        .host_requirements
+                        .insert(format!("elf-version:{}:{name}", edge.name));
+                }
+            }
+        }
     }
     if request.normalize {
         linux::normalize_collection(&mut result)?;
