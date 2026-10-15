@@ -155,6 +155,7 @@ fn run_archive(path: &Path, hold: bool) -> ProbeResult<()> {
 fn fixture_manifest(dependency: &[u8], module: &[u8], arch: Architecture) -> Manifest {
     let target_id = "macos-aarch64".to_owned();
     Manifest {
+        distribution: None,
         schema_version: SCHEMA_VERSION,
         app_id: "macos.macho.probe".to_owned(),
         entrypoint: "fixture".to_owned(),

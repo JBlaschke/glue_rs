@@ -330,6 +330,7 @@ fn profile_manifest(
         }
     };
     let result = Manifest {
+        distribution: None,
         schema_version: 0,
         app_id: if host.is_some() {
             "stock-pbs-host-startup"

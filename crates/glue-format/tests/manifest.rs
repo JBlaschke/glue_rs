@@ -49,6 +49,7 @@ fn source() -> SourcePin {
 
 fn manifest() -> Manifest {
     Manifest {
+        distribution: None,
         schema_version: SCHEMA_VERSION,
         app_id: "contract.fixture".to_owned(),
         entrypoint: "main".to_owned(),
@@ -211,8 +212,8 @@ fn json_limits_trailing_data_and_unknown_schema_reject() {
     assert!(Manifest::from_json(&bytes).is_err());
     assert!(Manifest::from_json(&vec![b' '; MAX_MANIFEST_BYTES + 1]).is_err());
     assert!(matches!(
-        rejects(|m| m.schema_version = 1),
-        FormatError::UnsupportedSchemaVersion(1)
+        rejects(|m| m.schema_version = 99),
+        FormatError::UnsupportedSchemaVersion(99)
     ));
 }
 
