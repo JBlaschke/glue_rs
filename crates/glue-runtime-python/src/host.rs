@@ -830,7 +830,7 @@ fn verify_import_sources(imports: &ImportSources<'_>) -> Result<(Vec<File>, Vec<
     Ok((files, directories))
 }
 
-fn require_cache_absent(path: &Path) -> Result<(), String> {
+pub(super) fn require_cache_absent(path: &Path) -> Result<(), String> {
     match fs::symlink_metadata(path) {
         Ok(_) => Err(format!(
             "host startup bytecode cache is unsupported: {}",
@@ -867,7 +867,7 @@ pub(super) fn validate_path(path: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn open_directories(path: &Path) -> Result<Vec<File>, String> {
+pub(super) fn open_directories(path: &Path) -> Result<Vec<File>, String> {
     let text = path.to_str().ok_or("host directory path must be ASCII")?;
     validate_path(text)?;
     let mut current = std::path::PathBuf::from("/");
