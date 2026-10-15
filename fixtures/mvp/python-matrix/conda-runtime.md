@@ -19,10 +19,13 @@ CPython/ensurepip, then uses the shared execution-input staging helper. It does
 not compile native images or alter the glue builder, launcher or trace oracle.
 Package installation can perform the upstream package's normal prefix setup.
 Only the resulting complete installation is supplied to the existing Python
-source/module/console/native recipes. For the 3.14 matrix set `GLUE_MVP_NATIVE_SEARCH` to the prepared runtime
-`lib` directory. The builder also searches the copied runtime and its `lib`
-directory, so application and runtime images select the same compiler-runtime
-family. PBS 3.12/3.13 and their extra host search roots remain separate inputs.
+source/module/console/native recipes. Keep `GLUE_MVP_NATIVE_SEARCH=/usr/lib/x86_64-linux-gnu`: the Tk closure
+also needs explicitly supplied host X11 libraries. The builder already declares
+the copied runtime and its `lib` directory as search roots for the combined
+runtime/application closure; their deeper paths precede the extra host root.
+The pinned conda libstdc++ and its `$ORIGIN/.` RPATH therefore select the matching
+conda libgcc without losing the independent X11 inputs. PBS 3.12/3.13 and all
+R03 Python 3.13 inputs remain unchanged.
 
 The lock was cross-resolved as Linux metadata using verified native Mac
 micromamba, with glibc 2.39 as the target virtual package. This is input selection,
