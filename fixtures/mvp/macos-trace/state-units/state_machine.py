@@ -114,7 +114,10 @@ class StateMachine:
         require(not any(p["active"] and p["pid"] == pid for p in self.processes.values()), "PID reused while old generation is active", "lifecycle")
         require(len(self.processes) < MAX_PROCESSES, "process bound exceeded", "bound")
         self.object(cwd, "directory")
-        self.processes[identity] = {"pid": pid, "cwd": cwd, "fds": fds, "exec": 0, "active": True}
+        self.serial += 1
+        self.processes[identity] = {"pid": pid, "cwd": cwd, "cwd_version": self.serial, "fds": fds,
+                                    "fd_versions": {fd: entry["version"] for fd, entry in fds.items()}, "fd_table_version": self.serial,
+                                    "exec": 0, "active": True}
         self.totals["processes_created"] += 1
         self.peak_processes = max(self.peak_processes, sum(p["active"] for p in self.processes.values()))
 
@@ -123,7 +126,7 @@ class StateMachine:
         require(identity not in self.threads, "thread generation token reused", "lifecycle")
         require(not any(t["active"] and t["tid"] == tid for t in self.threads.values()), "thread ID reused while active", "lifecycle")
         require(len(self.threads) < MAX_THREADS, "thread bound exceeded", "bound")
-        self.threads[identity] = {"process": process_id, "tid": tid, "cwd": None, "pending": None, "active": True}
+        self.threads[identity] = {"process": process_id, "tid": tid, "cwd": None, "cwd_version": 0, "pending": None, "active": True}
         self.totals["threads_created"] += 1
 
     def binding(self, process, fd):
@@ -137,10 +140,22 @@ class StateMachine:
         require(fd in process["fds"] or len(process["fds"]) < MAX_FDS, "descriptor bound exceeded", "bound")
         self.serial += 1
         process["fds"][fd] = {"object": identity, "cloexec": cloexec, "version": self.serial}
+        process["fd_versions"][fd] = self.serial
+        process["fd_table_version"] = self.serial
         self.peak_fds = max(self.peak_fds, len(process["fds"]))
+
+    def remove(self, process, fd):
+        del process["fds"][fd]
+        self.serial += 1
+        process["fd_versions"][fd] = self.serial  # retain absence/change history
+        process["fd_table_version"] = self.serial
 
     def effective_cwd(self, process, thread):
         return thread["cwd"] if thread["cwd"] is not None else process["cwd"]
+
+    def cwd_snapshot(self, process, thread):
+        return {"object": self.effective_cwd(process, thread), "thread_version": thread["cwd_version"],
+                "process_version": process["cwd_version"] if thread["cwd"] is None else None}
 
     def enter(self, data):
         keys(data, {"process", "thread", "exec", "call", "operation", "args"})
@@ -150,7 +165,8 @@ class StateMachine:
         require(len(self.call_ids) < MAX_CALLS, "call bound exceeded", "bound")
         operation, args = data["operation"], data["args"]
         require(type(operation) is str and operation in {"fd-open", "fd-close", "fd-dup", "fd-dup2", "fd-flags", "read", "write", "cwd-set", "cwd-from-fd", "thread-cwd-set", "fork-parent", "exec"}, "unknown normalized operation", "unsupported")
-        pending = {"call": call, "process": data["process"], "thread": data["thread"], "exec": data["exec"], "operation": operation, "binding": None, "anchor": None}
+        pending = {"call": call, "process": data["process"], "thread": data["thread"], "exec": data["exec"], "operation": operation,
+                   "binding": None, "anchor": None, "anchor_binding": None, "cwd_binding": None, "entry_version": self.serial}
         if operation == "fd-open":
             keys(args, {"path_hex", "dirfd", "cloexec"}); boolean(args["cloexec"])
             path = args["path_hex"]
@@ -160,9 +176,11 @@ class StateMachine:
                 number(args["dirfd"], -2, MAX_FD); require(args["dirfd"] != -1, "unsupported negative dirfd", "cwd")
             if not raw.startswith(b"/"):
                 if args["dirfd"] is None or args["dirfd"] == -2:
-                    pending["anchor"] = self.effective_cwd(process, thread)
+                    pending["cwd_binding"] = self.cwd_snapshot(process, thread)
+                    pending["anchor"] = pending["cwd_binding"]["object"]
                 else:
-                    pending["anchor"] = self.binding(process, args["dirfd"])["object"]
+                    pending["anchor_binding"] = self.binding(process, args["dirfd"])
+                    pending["anchor"] = pending["anchor_binding"]["object"]
                     self.object(pending["anchor"], "directory")
         elif operation in {"fd-close", "cwd-from-fd"}:
             keys(args, {"fd"}); pending["binding"] = self.binding(process, args["fd"])
@@ -186,6 +204,9 @@ class StateMachine:
             if operation == "cwd-set" or args["object"] is not None: self.object(args["object"], "directory")
         else:
             keys(args, set())
+            if operation == "fork-parent":
+                pending["fork_fd_version"] = process["fd_table_version"]
+                pending["fork_cwd_version"] = process["cwd_version"]
         pending["args"] = dict(args)  # all supported argument values are scalars
         self.call_ids.add(call); thread["pending"] = pending
         self.totals["calls_entered"] += 1
@@ -202,7 +223,22 @@ class StateMachine:
             require(data["object"] is None, "unexpected returned object identity")
         if operation == "fd-close" and value == -1:
             raise StateError("unsupported", "close-on-error descriptor state is not inferred")
+        if operation in {"fd-dup", "fd-dup2", "read", "write", "cwd-from-fd"}:
+            source = args["source"] if operation in {"fd-dup", "fd-dup2"} else args["fd"]
+            require(self.binding(process, source) == binding,
+                    "source descriptor changed during pending operation; kernel lookup identity is unobserved", "fd")
+        if operation == "fd-dup2":
+            require(process["fd_versions"].get(args["target"], 0) <= pending["entry_version"],
+                    "destination descriptor changed during pending allocation or dup2", "fd")
+        if operation == "fd-open":
+            if pending["anchor_binding"] is not None:
+                require(self.binding(process, args["dirfd"]) == pending["anchor_binding"], "directory anchor changed during pending open", "cwd")
+            if pending["cwd_binding"] is not None:
+                require(self.cwd_snapshot(process, thread) == pending["cwd_binding"], "effective cwd changed during pending open", "cwd")
         if value >= 0:
+            if operation in {"fd-open", "fd-dup", "fd-dup2"}:
+                require(process["fd_versions"].get(value, 0) <= pending["entry_version"],
+                        "destination descriptor changed during pending allocation or dup2", "fd")
             if operation == "fd-open":
                 self.object(data["object"])
                 require(self.objects[data["object"]] in {"regular", "directory"}, "open cannot manufacture an authorized sink or pipe", "object")
@@ -210,7 +246,7 @@ class StateMachine:
             elif operation in {"fd-close", "fd-flags"}:
                 require(value == 0, "operation requires canonical zero success")
                 require(self.binding(process, args["fd"]) == binding, "descriptor changed during pending close/flags operation", "fd")
-                if operation == "fd-close": del process["fds"][args["fd"]]
+                if operation == "fd-close": self.remove(process, args["fd"])
                 else: self.install(process, args["fd"], binding["object"], args["cloexec"], True)
             elif operation in {"fd-dup", "fd-dup2"}:
                 if operation == "fd-dup":
@@ -225,8 +261,12 @@ class StateMachine:
                 require(value <= args["bytes"], "returned byte count exceeds request")
             elif operation in {"cwd-set", "cwd-from-fd", "thread-cwd-set"}:
                 require(value == 0, "cwd operation requires canonical zero success")
-                if operation == "thread-cwd-set": thread["cwd"] = args["object"]
-                else: process["cwd"] = binding["object"] if operation == "cwd-from-fd" else args["object"]
+                self.serial += 1
+                if operation == "thread-cwd-set":
+                    thread["cwd"] = args["object"]; thread["cwd_version"] = self.serial
+                else:
+                    process["cwd"] = binding["object"] if operation == "cwd-from-fd" else args["object"]
+                    process["cwd_version"] = self.serial
             elif operation == "fork-parent":
                 require(pending.get("child") is not None and self.processes[pending["child"]]["pid"] == value, "fork parent result lacks matching normalized child birth", "lifecycle")
             else:
@@ -281,6 +321,8 @@ class StateMachine:
                 call = thread["pending"]
                 require(call is not None and call["call"] == token(data["call"]) and call["operation"] == "fork-parent" and "child" not in call, "fork birth lacks unique pending parent-side call", "pairing")
                 require(thread["cwd"] is None, "fork with thread cwd override is uncalibrated", "unsupported")
+                require(process["fd_table_version"] == call["fork_fd_version"] and process["cwd_version"] == call["fork_cwd_version"],
+                        "fork inheritance changed before normalized child birth", "unsupported")
                 self.add_process(data["child"], data["pid"], process["cwd"], {fd: dict(binding) for fd, binding in process["fds"].items()})
                 call["child"] = data["child"]; self.edges.append([data["parent"], data["child"]])
             elif event == "exec-success":
@@ -290,7 +332,8 @@ class StateMachine:
                 require(thread["cwd"] is None, "exec with thread cwd override is uncalibrated", "unsupported")
                 require(number(data["new_exec"]) == process["exec"] + 1, "exec epoch must advance exactly once", "lifecycle")
                 self.retire_threads(data["process"], data["abandoned_calls"], "abandoned-exec")
-                process["fds"] = {fd: entry for fd, entry in process["fds"].items() if not entry["cloexec"]}
+                for fd in list(process["fds"]):
+                    if process["fds"][fd]["cloexec"]: self.remove(process, fd)
                 process["exec"] = data["new_exec"]
                 self.add_thread(data["process"], data["new_thread"], data["new_tid"])
             elif event == "thread-exit":
