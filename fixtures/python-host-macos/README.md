@@ -79,6 +79,8 @@ working directory in the fixture's poisoned environment, with
 expected exact values, recomputing the printed manifest digests from the JSON
 receipts, and requires the installation snapshot unchanged. See
 [decision 0033](../../docs/decisions/0033-macos-python-product-harness.md).
+Both harnesses leave their installations and archives read-only; restore
+write permission with `chmod -R u+w` before removing an output directory.
 
 Bundled macOS Python, native extensions, installation discovery, the complete
 stdlib and the distribution signing policy remain separate work.
