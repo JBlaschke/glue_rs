@@ -49,5 +49,13 @@ the installation before and after the runs and requires it unchanged.
 values. No syscall tracer is available without root on macOS; the evidence
 records that limitation rather than claiming a trace.
 
+On the same cell the product runner serves the prepared archive. Build `glue`
+with `--features python-pbs` and the same `GLUE_PYTHON_INCLUDE_DIR`; then
+`glue doctor OUTPUT.glue` reports readiness from the declared target and the
+observed macOS version and page size, and `glue run OUTPUT.glue` prints the
+same PASS line. The six rejected installations and the loader override reject
+through `glue run` with the `glue:` prefix. See
+[decision 0032](../../docs/decisions/0032-macos-python-product-route.md).
+
 Bundled macOS Python, native extensions, installation discovery, the complete
 stdlib and the distribution signing policy remain separate work.
