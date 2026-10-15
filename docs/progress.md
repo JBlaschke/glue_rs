@@ -505,3 +505,14 @@ unwinding, image identity and signed deployment are not established by the small
 spike or host-startup route. Follow the [separate roadmap](plans/memory-roadmap.md)
 instead of blocking compact packaging on general dyld replacement. Decision 0033
 remains useful static-corpus evidence, not a completed dynamic loader contract.
+
+## MVP implementation — C01 (15 October 2026)
+
+- Branch `codex/mvp-c01-contracts`, based on `6b49cc5`; result: branch tip.
+- Added explicit schema one distribution/runtime/native/launch/report/lock and
+  stable diagnostic APIs; schema zero fixtures retain their interpretation.
+- `cargo test -p glue-format --locked`: 55 tests passed on macOS arm64,
+  Rust 1.88.0. `cargo clippy -p glue-format --all-targets --locked -- -D warnings`
+  passed. Examples round-trip all three language descriptors, reject ambiguous
+  modes, path collisions, escapes, cycles and runtime mismatches.
+- Decision 0036 describes the schema change. Runtime execution is subsequent work.

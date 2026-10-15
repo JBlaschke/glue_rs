@@ -3,7 +3,9 @@
 //! Schema zero is an implementation contract, not a compatibility or loader claim.
 
 mod archive;
+pub mod distribution;
 mod manifest;
+pub use distribution::*;
 mod path;
 
 pub use archive::{
