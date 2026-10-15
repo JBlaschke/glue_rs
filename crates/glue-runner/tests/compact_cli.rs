@@ -88,7 +88,7 @@ fn relocated_lua_cli_forwards_io_argv_and_exit_and_checks_payloads() {
     fs::create_dir(&project).unwrap();
     fs::write(
         project.join("main.lua"),
-        "io.write(arg[1] .. '|' .. io.read('*l')); io.stderr:write('stderr'); os.exit(7)\n",
+        "assert(os.getenv('LD_LIBRARY_PATH') == nil); assert(os.getenv('LD_PROFILE_OUTPUT') == nil); assert(os.getenv('DYLD_FALLBACK_LIBRARY_PATH') == nil); io.write(arg[1] .. '|' .. io.read('*l')); io.stderr:write('stderr'); os.exit(7)\n",
     )
     .unwrap();
     fs::write(
@@ -136,6 +136,9 @@ fn relocated_lua_cli_forwards_io_argv_and_exit_and_checks_payloads() {
         .env("PATH", "/no-tools")
         .env("HOME", "/no-home")
         .env("TMPDIR", "/no-temp")
+        .env("LD_LIBRARY_PATH", "/no-loader-fallback")
+        .env("LD_PROFILE_OUTPUT", "/no-loader-output")
+        .env("DYLD_FALLBACK_LIBRARY_PATH", "/no-dyld-fallback")
         .current_dir("/")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -275,6 +278,7 @@ fn recorded_rebuild_reuses_runtime_and_rejects_runtime_lock_changes_before_publi
     let result = glue()
         .args(["build", "lua"])
         .arg(&project)
+        .arg("--normalize-native-paths")
         .arg("--helper-dir")
         .arg(helpers)
         .arg("--output")
@@ -304,6 +308,11 @@ fn recorded_rebuild_reuses_runtime_and_rejects_runtime_lock_changes_before_publi
         fs::read(original.join("app.glue")).unwrap(),
         fs::read(rebuilt.join("app.glue")).unwrap()
     );
+    let rebuilt_lock: serde_json::Value =
+        serde_json::from_slice(&fs::read(rebuilt.join("glue.lock.json")).unwrap()).unwrap();
+    let recorded: Vec<String> =
+        serde_json::from_str(rebuilt_lock["options"]["glue.cli.argv"].as_str().unwrap()).unwrap();
+    assert!(recorded.iter().any(|s| s == "--normalize-native-paths"));
     let mut lock: serde_json::Value =
         serde_json::from_slice(&fs::read(original.join("glue.lock.json")).unwrap()).unwrap();
     lock["runtime"]["version"] = "5.4.8".into();

@@ -895,9 +895,17 @@ fn distribution_command(
         "LUA_INIT_5_4",
         "LUA_INIT_5_5",
         "LD_PRELOAD",
+        "LD_LIBRARY_PATH",
+        "LD_AUDIT",
+        "LD_DEBUG",
+        "LD_DEBUG_OUTPUT",
+        "LD_PROFILE",
+        "LD_PROFILE_OUTPUT",
         "DYLD_INSERT_LIBRARIES",
         "DYLD_LIBRARY_PATH",
         "DYLD_FRAMEWORK_PATH",
+        "DYLD_FALLBACK_LIBRARY_PATH",
+        "DYLD_FALLBACK_FRAMEWORK_PATH",
     ] {
         launch.env_remove(variable);
     }
@@ -1120,7 +1128,7 @@ fn rebuild(args: &[OsString]) -> Result<ExitCode> {
         .values
         .insert("--output".into(), output.into_os_string());
     options.lists.extend(overrides.lists);
-    options.flags = overrides.flags;
+    options.flags.extend(overrides.flags);
     let cwd = lock.options.get("glue.cli.cwd").ok_or_else(|| {
         error(
             DiagnosticCode::InvalidConfiguration,
