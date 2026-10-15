@@ -13,18 +13,20 @@ case "$ci_root" in /*) ;; *) echo 'GLUE_MVP_CI_ROOT must be absolute' >&2; exit 
 test ! -e "$ci_root"
 mkdir -p "$ci_root/evidence/provisioning" "$ci_root/evidence/proposed-budgets" "$ci_root/downloads" "$ci_root/runtimes" "$ci_root/inputs" "$ci_root/cases" "$ci_root/benchmarks"
 evidence="$ci_root/evidence"
+budget_mode=${GLUE_MVP_BUDGET_MODE:-enforce}
+case "$budget_mode" in observe|enforce) ;; *) echo 'GLUE_MVP_BUDGET_MODE must be observe or enforce' >&2; exit 2 ;; esac
 exec > >(tee "$evidence/harness.log") 2>&1
 
 finish() {
     local result=$?
     local summary_result=0
     trap - EXIT
-    if /usr/bin/python3 - "$evidence" "$result" <<'PY'
+    if /usr/bin/python3 - "$evidence" "$result" "$budget_mode" <<'PY'
 import datetime, json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path('fixtures/mvp').resolve()))
 import trace_environment
-root, result = Path(sys.argv[1]), int(sys.argv[2])
+root, result, budget_mode = Path(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
 try:
     policy = trace_environment.check(root / 'provisioning/trace-environment', 'x86_64')
     policy_error = None
@@ -61,6 +63,7 @@ summary = {'status': 'passed' if passed else 'failed',
            'expected_benchmarks': sorted(expected_benchmarks), 'benchmarks': benchmarks,
            'benchmark_status': 'passed' if benchmarks_passed else 'failed',
            'trace_environment': policy, 'trace_environment_error': policy_error,
+           'budget_mode': budget_mode,
            'finished_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
            'scope': 'native V02/R02 and R03 under explicit traceable-native-syscalls-v1 CI policy; generated x86_64 budgets are proposed pending review',
            'cache_policy': 'first/warm fresh processes; no cold filesystem-cache claim',
@@ -78,6 +81,36 @@ PY
 trap finish EXIT
 printf '%s\n' 'Proposed first observations only. Review these x86_64 reports before accepting limits into Git.' \
     > "$evidence/proposed-budgets/README.txt"
+
+# Observation mode is an explicit first-run exception. Normal CI requires all
+# reviewed files before provisioning; a missing budget cannot silently refreeze.
+/usr/bin/python3 - "$repo_dir" "$evidence" "$budget_mode" <<'PY'
+import hashlib, json, shutil, sys
+from pathlib import Path
+repository, evidence, mode = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+expected = {'lua55-project', 'lua55-native', 'node-cjs', 'python-source-normalized', 'python-native-normalized'}
+if mode == 'enforce':
+    index = repository / 'fixtures/mvp/budgets/index.json'
+    target = json.loads(index.read_text())['targets']['x86_64-unknown-linux-gnu']
+    items = target['budgets']
+    if len(items) != 5 or {item['case'] for item in items} != expected:
+        raise SystemExit('all five reviewed x86_64 budgets are required')
+    destination = evidence / 'accepted-budgets'
+    destination.mkdir()
+    shutil.copy2(index, destination / 'index.json')
+    identities = {}
+    for item in items:
+        path = index.parent / item['budget']
+        if path != index.parent / 'x86_64-unknown-linux-gnu' / (item['case'] + '.json'):
+            raise SystemExit('unexpected reviewed budget path')
+        budget = json.loads(path.read_text())
+        if budget.get('completeness') != 'passed':
+            raise SystemExit('reviewed budget is incomplete')
+        shutil.copy2(path, destination / path.name)
+        identities[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    (destination / 'identities.json').write_text(json.dumps(identities, indent=2) + '\n')
+(evidence / 'budget-mode.json').write_text(json.dumps({'mode': mode, 'reviewed_limits_required': mode == 'enforce'}, indent=2) + '\n')
+PY
 
 toolchain_dir=$(dirname -- "$(rustup which --toolchain 1.88.0 cargo)")
 export PATH="$toolchain_dir:$PATH"
@@ -263,11 +296,12 @@ done <<'PYTHON'
 PYTHON
 
 check_benchmark() {
-    sudo -n /usr/bin/python3 - "$repo_dir" "$1" "$2" "$3" <<'PY'
+    sudo -n /usr/bin/python3 - "$repo_dir" "$1" "$2" "$3" "$budget_mode" "$evidence" <<'PY'
 import json, sys
 from pathlib import Path
 repository, output, budget_path = map(Path, sys.argv[1:4])
 case = sys.argv[4]
+budget_mode, evidence = sys.argv[5], Path(sys.argv[6])
 sys.path.insert(0, str(repository / 'fixtures/mvp'))
 import benchmark
 import harness
@@ -280,6 +314,9 @@ if report['source_entries'] != 10000:
     errors.append('expected 10000 additional source entries')
 if budget != benchmark.proposed_budget(report):
     errors.append('generated budget differs from measured first observations')
+if budget_mode == 'enforce':
+    accepted = json.loads((evidence / 'accepted-budgets' / (case + '.json')).read_text())
+    errors.extend('reviewed budget: ' + error for error in benchmark.check_budget(report, accepted))
 for key in ['max_elapsed_seconds', 'max_peak_rss_bytes', 'max_open_calls', 'max_stat_calls',
             'max_read_calls', 'max_seek_calls', 'max_read_bytes', 'max_process_fds']:
     if budget['limits'].get(key) is None:
@@ -305,7 +342,7 @@ for variant in variants:
             if any(rank.get(key) != value for key, value in metadata.items()):
                 errors.append('rank kernel usage metadata differs: ' + str(prefix))
 if errors: raise SystemExit('; '.join(errors))
-print(case + ': complete benchmark, retained traces/streams and proposed budget passed')
+print(case + ': complete benchmark, retained traces/streams and ' + budget_mode + ' budget checks passed')
 PY
 }
 

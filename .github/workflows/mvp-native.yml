@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 90
     env:
       GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
+      # Remove this explicit exception after successful first reports are reviewed.
+      GLUE_MVP_BUDGET_MODE: observe
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
