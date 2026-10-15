@@ -386,6 +386,8 @@ pub fn build(
             ));
         }
     }
+    #[cfg(target_os = "macos")]
+    crate::native::macos::verify_staged_signatures(&stage.0, &report.native.transformations)?;
     rename_exclusive(&stage.0, &output)?;
     Ok(report)
 }
