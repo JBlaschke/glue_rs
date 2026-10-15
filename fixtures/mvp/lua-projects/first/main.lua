@@ -1,0 +1,7 @@
+local module = require("nested.answer")
+assert(require("nested.answer") == module)
+assert(module.answer == 42)
+assert(glue.read("app/data/message.txt") == "Lua archived resource\n")
+assert(arg[1] == "argument with spaces")
+assert((...) == arg[1])
+print(_VERSION .. " project source/resource/argv passed")

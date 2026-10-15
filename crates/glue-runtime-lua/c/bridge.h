@@ -21,6 +21,7 @@ typedef struct glue_lua_options {
     size_t fail_after_allocations;
     size_t fail_after_reply_allocations;
     int collect_on_first_reply; /* Test-only deterministic nested GC request. */
+    int compact; /* Helper process: ordinary application host I/O is allowed. */
 } glue_lua_options;
 
 typedef struct glue_lua_result {

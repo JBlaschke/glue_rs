@@ -202,7 +202,7 @@ fn compact_helper_validates_shared_runtime_descriptor_before_entry() {
     let directory = Directory::new();
     let legacy = archive(
         &directory,
-        b"assert(math.maxinteger == 9223372036854775807); print(_VERSION)",
+        b"assert(math.maxinteger == 9223372036854775807); assert(arg[0]:find('glue://',1,true)); assert(arg[1]=='value with spaces'); assert((...)==arg[1]); assert(type(io.open)=='function'); print(_VERSION)",
         false,
     );
     let mut source_archive = glue_format::Archive::open(fs::File::open(&legacy).unwrap()).unwrap();
@@ -238,7 +238,12 @@ fn compact_helper_validates_shared_runtime_descriptor_before_entry() {
     });
     let path = directory.0.join("compact.glue");
     write_archive(fs::File::create(&path).unwrap(), &manifest, &contents).unwrap();
-    let output = Command::new(HELPER).arg("run").arg(&path).output().unwrap();
+    let output = Command::new(HELPER)
+        .arg("run")
+        .arg(&path)
+        .args(["--", "value with spaces"])
+        .output()
+        .unwrap();
     assert!(
         output.status.success(),
         "{}",
@@ -257,4 +262,54 @@ fn compact_helper_validates_shared_runtime_descriptor_before_entry() {
     assert_eq!(output.status.code(), Some(1));
     assert!(output.stdout.is_empty());
     assert!(String::from_utf8_lossy(&output.stderr).contains("runtime ABI/version/target"));
+}
+
+#[test]
+fn compact_helper_preserves_application_exit_status() {
+    use glue_format::{
+        DeliveryMode, DistributionSpec, InputIdentity, NativeInventory, PayloadKind, PayloadRecord,
+    };
+    let directory = Directory::new();
+    let path = archive(&directory, b"os.exit(7)", false);
+    let mut archive = glue_format::Archive::open(fs::File::open(&path).unwrap()).unwrap();
+    let mut manifest = archive.manifest().clone();
+    let contents: BTreeMap<_, _> = manifest
+        .resources
+        .keys()
+        .map(|path| (path.clone(), archive.read_resource(path).unwrap()))
+        .collect();
+    let bytes = fs::read(HELPER).unwrap();
+    let descriptor = helper::compiled_descriptor();
+    let executable = format!("runtime/{}", descriptor.family.executable_name());
+    manifest.schema_version = 1;
+    manifest.entrypoint = "app/main.lua".to_owned();
+    manifest.targets.clear();
+    manifest.runtimes.clear();
+    manifest.components.clear();
+    manifest.distribution = Some(DistributionSpec {
+        delivery: DeliveryMode::Compact,
+        runtime: descriptor.runtime_descriptor(executable.clone(), InputIdentity::of(&bytes)),
+        payloads: BTreeMap::from([(
+            executable.clone(),
+            PayloadRecord {
+                size: bytes.len() as u64,
+                sha256: digest(&bytes),
+                mode: 0o755,
+                kind: PayloadKind::File,
+            },
+        )]),
+        native: NativeInventory::default(),
+        launch: descriptor.launch_spec(executable),
+    });
+    write_archive(fs::File::create(&path).unwrap(), &manifest, &contents).unwrap();
+    assert_eq!(
+        Command::new(HELPER)
+            .arg("run")
+            .arg(path)
+            .output()
+            .unwrap()
+            .status
+            .code(),
+        Some(7)
+    );
 }
