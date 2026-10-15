@@ -1,5 +1,6 @@
 //! Installed Node project ingestion. Never invokes npm, scripts, node-gyp or tsc.
 pub mod addon;
+pub mod lock;
 use crate::distribution::{DistributionInput, DistributionLimits, PayloadSource, Result};
 use glue_format::{Diagnostic, DiagnosticCode, ResourcePath};
 use serde::{Deserialize, Serialize};
@@ -52,10 +53,18 @@ pub struct PackageRecord {
     pub dependencies: BTreeMap<String, String>,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ModuleAlias {
+    pub target: String,
+    pub directory: bool,
+    pub link_size: u64,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModuleIndex {
     pub schema_version: u32,
     pub entry: String,
     pub files: BTreeMap<String, ModuleFile>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub aliases: BTreeMap<String, ModuleAlias>,
     pub packages: BTreeMap<String, PackageRecord>,
 }
 #[derive(Clone, Debug)]
@@ -67,6 +76,7 @@ pub struct NodeProject {
     pub native_addons: BTreeMap<String, PathBuf>,
     pub native_files: BTreeMap<String, PathBuf>,
     pub omissions: BTreeMap<String, String>,
+    pub lock_provenance: BTreeMap<String, lock::LockProvenance>,
 }
 fn relative(root: &Path, path: &Path) -> Result<String> {
     let p = path
@@ -126,6 +136,7 @@ struct Walk<'a> {
     excluded: Option<&'a Path>,
     files: BTreeMap<String, Vec<u8>>,
     native: BTreeMap<String, PathBuf>,
+    aliases: BTreeMap<String, ModuleAlias>,
     seen: BTreeSet<PathBuf>,
     total: u64,
 }
@@ -175,10 +186,35 @@ impl Walk<'_> {
             }
             let metadata = fs::metadata(&target)
                 .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+            if entry
+                .file_type()
+                .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?
+                .is_symlink()
+            {
+                if self.aliases.len() >= 100_000 {
+                    return Err(error(
+                        DiagnosticCode::ResourceLimit,
+                        "Node input exceeds 100,000 symlinks",
+                    ));
+                }
+                self.aliases.insert(
+                    relative(self.root, &path)?,
+                    ModuleAlias {
+                        target: relative(self.root, &target)?,
+                        directory: metadata.is_dir(),
+                        link_size: fs::symlink_metadata(&path)
+                            .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?
+                            .len(),
+                    },
+                );
+            }
             if metadata.is_dir() {
                 self.visit(&target)?;
             } else if metadata.is_file() {
                 let name = relative(self.root, &target)?;
+                if self.files.contains_key(&name) || self.native.contains_key(&name) {
+                    continue;
+                }
                 if self.files.len() + self.native.len() >= 100_000 {
                     return Err(error(
                         DiagnosticCode::ResourceLimit,
@@ -282,6 +318,7 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
         excluded: excluded.as_deref(),
         files: BTreeMap::new(),
         native: BTreeMap::new(),
+        aliases: BTreeMap::new(),
         seen: BTreeSet::new(),
         total: 0,
     };
@@ -422,6 +459,7 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
             },
         );
     }
+    let lock_provenance = lock::collect(&walk.files, &raw, &packages)?;
     let mut files = BTreeMap::new();
     for name in walk.files.keys() {
         let format = if name.ends_with(".mjs") {
@@ -471,6 +509,7 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
         entry,
         files,
         packages,
+        aliases: walk.aliases,
     };
     let mut resources = walk.files;
     resources.insert(
@@ -486,6 +525,7 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
         native_addons,
         native_files: walk.native,
         omissions,
+        lock_provenance,
     })
 }
 /// Build a source or Node-API project with an explicit stock runtime provider.
@@ -604,7 +644,7 @@ pub fn prepare(
         })
         .collect();
     payloads.extend(native.payloads);
-    Ok(DistributionInput{app_id:project.app_id,entrypoint:"module-index.json".into(),runtime:provider.runtime,launch:provider.launch,resources:project.resources,payloads,native:provider.native,omissions:project.omissions,notices:"Node runtime and supplied project dependencies retain their original licenses; packaged license files are archived with the project.\n".into(),options:BTreeMap::from([("language".into(),"node".into())])})
+    Ok(DistributionInput{app_id:project.app_id,entrypoint:"module-index.json".into(),runtime:provider.runtime,launch:provider.launch,resources:project.resources,payloads,native:provider.native,omissions:project.omissions,notices:"Node runtime and supplied project dependencies retain their original licenses; packaged license files are archived with the project.\n".into(),options:BTreeMap::from([("language".into(),"node".into()),("node.lock-provenance".into(),serde_json::to_string(&project.lock_provenance).map_err(|e|error(DiagnosticCode::InvalidConfiguration,e.to_string()))?)])})
 }
 
 /// Publish only after complete runtime/bridge/addon closure preparation succeeds.
@@ -697,6 +737,23 @@ mod tests {
             "node_modules/.pnpm/b@2/node_modules/b"
         );
     }
+    #[cfg(unix)]
+    #[test]
+    fn internal_resource_links_are_indexed_without_duplicate_bytes() {
+        use std::os::unix::fs::symlink;
+        let t = Temp::new();
+        t.put("package.json", r#"{"main":"main.js"}"#);
+        t.put("main.js", "");
+        t.put("data/asset.txt", "bytes");
+        symlink("data", t.0.join("alias-dir")).unwrap();
+        symlink("data/asset.txt", t.0.join("alias-file")).unwrap();
+        let p = ingest(&t.0, None, None).unwrap();
+        assert_eq!(p.index.aliases["alias-dir"].target, "data");
+        assert!(p.index.aliases["alias-dir"].directory);
+        assert_eq!(p.index.aliases["alias-file"].target, "data/asset.txt");
+        assert!(!p.resources.contains_key("alias-dir/asset.txt"));
+        assert!(!p.resources.contains_key("alias-file"));
+    }
     #[test]
     fn missing_dependencies_entries_and_pnp_diagnose() {
         let t = Temp::new();
@@ -767,16 +824,28 @@ mod execution_tests {
             fs::create_dir_all(&dep).unwrap();
             fs::write(
                 dep.join("package.json"),
-                r#"{"name":"dep","main":"index.js"}"#,
+                r#"{"name":"dep","version":"2.0.0","main":"index.js"}"#,
             )
             .unwrap();
-            fs::write(dep.join("asset.txt"), "package asset").unwrap();
-            fs::write(dep.join("index.js"), "if(require('node:fs').readFileSync(require('node:path').join(__dirname,'asset.txt'),'utf8')!=='package asset')throw Error('asset lost');module.exports=42;").unwrap();
+            fs::create_dir(dep.join("actual-assets")).unwrap();
+            fs::write(dep.join("actual-assets/asset.txt"), "package asset").unwrap();
+            #[cfg(unix)]
+            std::os::unix::fs::symlink("actual-assets", dep.join("assets")).unwrap();
+            fs::write(dep.join("index.js"), "if(require('node:fs').readFileSync(require('node:path').join(__dirname,'assets/asset.txt'),'utf8')!=='package asset')throw Error('asset lost');module.exports=42;").unwrap();
             #[cfg(unix)]
             if pnpm {
                 std::os::unix::fs::symlink(
                     ".pnpm/dep@1/node_modules/dep",
                     source.join("node_modules/dep"),
+                )
+                .unwrap();
+            }
+            if pnpm {
+                fs::write(source.join("pnpm-lock.yaml"),"lockfileVersion: '9.0'\nimporters:\n  .:\n    dependencies:\n      dep:\n        version: 1.0.0\npackages:\n  dep@1.0.0: {}\n").unwrap();
+            } else {
+                fs::write(
+                    source.join("package-lock.json"),
+                    r#"{"lockfileVersion":3,"packages":{"node_modules/dep":{"version":"1.0.0"}}}"#,
                 )
                 .unwrap();
             }
@@ -801,6 +870,20 @@ mod execution_tests {
             )
             .unwrap();
             assert_eq!(report.runtime.provider, glue_format::RuntimeProvider::Host);
+            let lock: glue_format::BuildLock =
+                serde_json::from_slice(&fs::read(output.join("glue.lock.json")).unwrap()).unwrap();
+            let provenance: Value =
+                serde_json::from_str(&lock.options["node.lock-provenance"]).unwrap();
+            let lock_name = if pnpm {
+                "pnpm-lock.yaml"
+            } else {
+                "package-lock.json"
+            };
+            assert_eq!(
+                provenance[lock_name]["comparison"],
+                "installed_graph_differs"
+            );
+
             assert!(!source.join("SHOULD_NOT_EXIST").exists());
             fs::remove_dir_all(source).unwrap();
             let result = std::process::Command::new(&node)

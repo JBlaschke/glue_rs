@@ -65,3 +65,11 @@ hook capability test and rejects failing patches, without a version/digest list.
 Mac bundled Node-API relocation and Linux explicit-host native evidence are in
 `fixtures/mvp/node-native/README.md`. Initial getter-inspection restrictions there
 remain explicit. Source URL query/fragment identities remain unsupported.
+
+
+The optional revision-one module-index `aliases` map records canonical targets,
+file/directory kind and symlink text length. Both resolver and fs facade enforce
+bounded traversal; escaped links reject during build and cycles never fall back
+to host files. Actual npm/pnpm tests cover assets through directory links after
+source removal. Source bytes and deployed images retain one authoritative copy.
+The bridge uses glue-format's bounded seek-aware reader for archive header I/O.

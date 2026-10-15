@@ -10,6 +10,7 @@ default = []
 python = ["dep:glue-runtime-python"]
 
 [dependencies]
+yaml-rust2 = { version = "=0.13.0", default-features = false }
 glue-runtime-node = { path = "../glue-runtime-node" }
 glue-format.workspace = true
 glue-runtime-python = { workspace = true, optional = true }

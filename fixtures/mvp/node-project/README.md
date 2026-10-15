@@ -23,7 +23,14 @@ handoff. Native addon bytes are never included as source resources. Absent norma
 dependencies, escaped links, ambiguous entries and Yarn PnP diagnose before build.
 No install, postinstall, compiler, node-gyp or TypeScript command is invoked.
 
-Remaining evidence: bundled runtime native closure after C04, target versions and
-Linux. Lockfiles are retained as provenance but lock-vs-install reconciliation is
-not yet implemented. Internal package-directory links use Node's ordinary canonical
-realpath graph; resource aliases through directory links are not currently exposed.
+Follow-up bundled V02 cases passed macOS arm64 and Linux arm64 on stock Node
+24.22.0 and 26.10.0. Linux uses explicit native path normalization. `glue.lock.json` records `options.node.lock-provenance`: source lock hashes and
+version/presence differences for npm package-lock/shrinkwrap package maps and pnpm
+importer/package maps. Supplied installed bytes remain authoritative. Unsupported
+lock shapes explicitly report an unrecognized comparison status; Yarn lock bytes
+are retained without pretending to compare them. This is metadata reconciliation,
+not verification of npm tarball SRI against individually installed files.
+
+Internal file/directory links use an optional logical index alias map. Modules
+canonicalize to one cache identity; fs resource reads, stat/lstat, directory entries
+and streams follow safe aliases without duplicating source/native bytes.

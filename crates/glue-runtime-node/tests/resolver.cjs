@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict');
-const {createResolver}=require('../support/resolver.cjs');
+const {createResolver,createAliasResolver}=require('../support/resolver.cjs');
 const files={};for(const [name,format]of Object.entries({'main.cjs':'commonjs','main.mjs':'module','x.js':'commonjs','directory/index.js':'commonjs','p/r.cjs':'commonjs','p/i.mjs':'module','p/features/a.js':'module','a/index.js':'commonjs','b/index.js':'commonjs','v1/index.js':'commonjs','v2/index.js':'commonjs'}))files[name]={resource:name,format};
 const packages={
  '':{name:'root',type:'commonjs',imports:{'#x':'./x.js','#dependency':'dual','#missing':null},dependencies:{dual:'p',a:'a',b:'b'}},
@@ -8,7 +8,8 @@ const packages={
  a:{name:'a',type:'commonjs',dependencies:{dep:'v1'}},b:{name:'b',type:'commonjs',dependencies:{dep:'v2'}},
  v1:{name:'dep',type:'commonjs',dependencies:{}},v2:{name:'dep',type:'commonjs',dependencies:{}}
 };
-const r=createResolver({schema_version:1,entry:'main.cjs',files,packages},'/deployed');
+const aliases={link:{target:'x.js',directory:false,link_size:4},folder:{target:'p',directory:true,link_size:1}};
+const r=createResolver({schema_version:1,entry:'main.cjs',files,packages,aliases},'/deployed');
 const parent=r.url('main.cjs');const req=['node','require'];const imp=['node','import'];
 assert.equal(r.resolve('dual',parent,req).format,'commonjs');
 assert.equal(r.resolve('dual',parent,imp).format,'module');
@@ -31,4 +32,5 @@ assert.throws(()=>r.resolve('/tmp/host.js',parent,req),{code:'ERR_GLUE_RESOLUTIO
 assert.throws(()=>r.resolve('file:///tmp/host.js',parent,imp),{code:'ERR_GLUE_RESOLUTION'});
 assert.throws(()=>r.resolve('file:///__glue_archive__/p%2fr.cjs',parent,req),{code:'ERR_INVALID_MODULE_SPECIFIER'});
 assert.throws(()=>r.resolve('../../escape',parent,req),{code:'ERR_GLUE_PATH'});
-console.log('resolver: 21 semantic checks passed');
+assert.equal(r.resolve('./link',parent,req).url,r.url('x.js'));assert.equal(r.resolve('./folder/i.mjs',parent,imp).url,r.url('p/i.mjs'));assert.throws(()=>createAliasResolver({a:{target:'b',directory:true,link_size:1},b:{target:'a',directory:true,link_size:1}})('a'),{code:'ELOOP'});
+console.log('resolver: 24 semantic checks passed');
