@@ -1,5 +1,6 @@
 //! Build-time native closure inspection. Compact images use the OS loader, not the memory mapper.
 pub mod linux;
+pub mod macos;
 use crate::distribution::{PayloadSource, Result};
 use glue_format::*;
 use serde::{Deserialize, Serialize};
@@ -54,10 +55,7 @@ pub fn inspect(path: &Path) -> Result<NativeFacts> {
     if bytes.starts_with(b"\x7fELF") {
         linux::inspect_bytes(&bytes)
     } else {
-        Err(diagnostic(
-            DiagnosticCode::UnsupportedCapability,
-            format!("{} is not a supported native image", path.display()),
-        ))
+        macos::inspect_bytes(&bytes, None)
     }
 }
 pub(crate) fn read_image(path: &Path) -> Result<Vec<u8>> {
@@ -109,6 +107,9 @@ fn system_library(name: &str, target: &str) -> bool {
 }
 /// Preserve every input's relative path under declared roots. No host search-path fallback.
 pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
+    if request.target.ends_with("apple-darwin") {
+        return macos::collect(request);
+    }
     let arch = if request.target.starts_with("aarch64-") {
         "aarch64"
     } else if request.target.starts_with("x86_64-") {
@@ -340,7 +341,7 @@ pub fn collect(request: &NativeRequest) -> Result<NativeCollection> {
         .sort_by(|a, b| (&a.from, &a.name).cmp(&(&b.from, &b.name)));
     Ok(result)
 }
-fn relative_path(from: &Path, to: &Path) -> String {
+pub(crate) fn relative_path(from: &Path, to: &Path) -> String {
     let a: Vec<_> = from.components().collect();
     let b: Vec<_> = to.components().collect();
     let common = a.iter().zip(&b).take_while(|(a, b)| a == b).count();

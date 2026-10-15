@@ -545,3 +545,19 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
 - Absolute/cwd-dependent load paths produce transformation-required diagnostics;
   optional normalization tooling and x86_64 native execution remain pending.
   This card is implemented partially until those acceptance requirements pass.
+
+## MVP implementation — C04 (15 October 2026)
+
+- Branch `codex/mvp-c04-macos-native`, based on C03 `bdc186e`; result: branch tip.
+- Added bounded thin/universal Mach-O inspection, actual loader-chain rpath
+  resolution, native target/OS-floor checks, preserved relative closure paths,
+  explicit metadata normalization with input/output hashes and verified ad-hoc
+  re-signing. Host-prefix paths reject without explicit normalization.
+- `cargo test -p glue-pack --test native_macos --locked`: 3 passed on macOS arm64,
+  including ordinary independently compiled bundle + secondary dylib, copied to
+  Unicode/space path, original input deleted, native dlopen execution and final
+  codesign verification for unchanged and normalized paths. otool independently
+  confirms the dependency. Missing edges, slice mismatch and OS floor reject.
+- Pinned Clippy passed. C03's separate offline Linux arm64 run passed all 3 tests,
+  including real relocation/TLS execution and readelf comparison. x86_64 native
+  execution remains unexecuted. Public Developer ID/notarization is R02 evidence.
