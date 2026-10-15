@@ -62,6 +62,10 @@ this test alone does not prove no runtime writes or offline isolation.
 The reserved `glue.expected-runtime` JSON descriptor is compared before atomic
 publication, then removed from recorded options. A mismatch in implementation,
 version, provider, target, ABI or runtime input identities raises `PayloadIntegrity`.
+Runtime identities include original bytes of the interpreter/native-stdlib seed
+closure and every transitive bundled dependency, including external search roots.
+Application-only native images are excluded from the runtime descriptor so an
+application rebuild can change packages without replacing the selected runtime.
 Public build APIs return stable `Diagnostic` codes; lower-level compatibility
 wrappers retain their prior string-error interface. Runtime version strings keep
 prerelease/build suffixes separately from the numeric ABI tuple.

@@ -153,6 +153,38 @@ print(json.dumps({'status':'python-runtime-ok','version':list(sys.version_info[:
         glue_format::DiagnosticCode::PayloadIntegrity
     );
     assert!(!wrong_output.exists());
+    if options.discovery.runtime.is_none() {
+        let name = report
+            .runtime
+            .inputs
+            .keys()
+            .find(|name| {
+                name.starts_with("runtime-native/runtime/")
+                    && (name.contains("/lib-dynload/_dbm.")
+                        || name.contains("/lib-dynload/_ctypes."))
+            })
+            .expect("runtime includes independently loaded native smoke module");
+        let source = supplied.join(name.strip_prefix("runtime-native/runtime/").unwrap());
+        let original = fs::read(&source).unwrap();
+        let mut changed = original.clone();
+        *changed.last_mut().unwrap() ^= 1;
+        fs::write(&source, &changed).unwrap();
+        let expected = std::collections::BTreeMap::from([(
+            "glue.expected-runtime".into(),
+            serde_json::to_string(&report.runtime).unwrap(),
+        )]);
+        let changed_output = root.join("changed-runtime-library");
+        let error = compact::build_with_options(
+            &options,
+            Path::new("/usr/bin/true"),
+            &changed_output,
+            &expected,
+        )
+        .unwrap_err();
+        fs::write(source, original).unwrap();
+        assert_eq!(error.code, glue_format::DiagnosticCode::PayloadIntegrity);
+        assert!(!changed_output.exists());
+    }
     assert_eq!(
         report
             .payloads
