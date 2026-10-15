@@ -122,7 +122,7 @@ def main(argv=None):
         descriptor = os.open(args.input, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
         with os.fdopen(descriptor, "rb") as stream:
             facts = os.fstat(stream.fileno())
-            require(stat.S_ISREG(facts.st_mode) and facts.st_nlink == 1 and facts.st_size <= 1024 * 1024, "unit input must be a bounded, unlinked regular file")
+            require(stat.S_ISREG(facts.st_mode) and facts.st_nlink == 1 and facts.st_size <= 1024 * 1024, "unit input must be a bounded, singly linked regular file")
             while line := stream.readline(8193):
                 count += 1
                 size += len(line)
