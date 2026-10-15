@@ -1,7 +1,12 @@
 # macOS syscall capability probe
 
 This is a diagnostic prerequisite for R02, not a complete macOS extraction
-backend. A root-authenticated wildcard preflight on the current host reported:
+backend. A new [native capability transport](CAPTURE_FORMAT.md) can be built on
+the host and copied to an approved guest without guest Python or compiler tools.
+Its raw syscall/process fixtures remain capability-only until a full decoder and
+oracle are implemented and validated.
+
+A root-authenticated wildcard preflight on the current host reported:
 
 ```
 dtrace: failed to match syscall:::entry: System Integrity Protection is on
