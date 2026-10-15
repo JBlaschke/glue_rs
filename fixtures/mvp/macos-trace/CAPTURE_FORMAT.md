@@ -109,13 +109,23 @@ not a kernel sequence or an independent detector of lost events. The protocol is
 | 3 | BSD syscall return | ppid; arg0, arg1, arg2, arg3, DTrace errno |
 | 4 | proc create | translated child PID |
 | 5 | proc start | observed ppid |
-| 6 | proc exit | raw arg0 exit status |
+| 6 | proc exit | raw arg0 lifecycle code (`CLD_*`), not application exit status |
 | 7 / 8 | exec success / failure | ppid / raw arg0 error |
 | 9 | lwp create | translated thread ID; retain raw width for ABI inspection |
 | 10 / 11 | lwp start / exit | zero |
 | 12 / 13 | spawn success / failure | zero / raw arg0 error |
 | 14 | named open path | zero; bounded copyinstr record |
 | 15 / 16 | Mach trap entry / return | ppid; raw arg0..arg7 / raw arg0 |
+
+For kind 6, the collector records `proc:::exit`'s `arg0` unchanged. The inspected
+Apple [exit implementation](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_exit.c)
+emits `CLD_EXITED` there; it separately emits `proc:::exited` with a target
+process and exit value. This collector does not subscribe to `proc:::exited`.
+The receipt's `root_wait_status` comes from the collector's `waitpid` call and
+is separate from the lifecycle code; the raw protocol does not establish
+application exit statuses for descendants. Published source guides this
+distinction but does not substitute for calibration against the actual guest
+kernel.
 
 ## Remaining hard acceptance blockers
 
