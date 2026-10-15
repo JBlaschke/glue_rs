@@ -41,7 +41,12 @@ supported target, building the C boundary requires
 `GLUE_PYTHON_INCLUDE_DIR` to name the independently verified installed stock
 header tree. Python is acquired dynamically from the selected provider and is
 never a link-time dependency. Feature-enabled builds on other targets can
-validate declarations but cannot execute Python.
+validate declarations but cannot execute Python. On macOS arm64 the same
+boundary compiles when `GLUE_PYTHON_INCLUDE_DIR` names the pinned macOS
+install-only artifact's header tree, checked against
+`fixtures/python-host-macos/header-pins.json`; without it, Mac builds keep
+validating only. That cell supports the experimental `run-host-macos` probe
+route described in [decision 0031](../../docs/decisions/0031-macos-python-host-startup.md).
 
 The registry contains:
 
@@ -58,6 +63,7 @@ The registry contains:
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
 | `stock-pbs-native-lifecycle` | Either provider above | Separate four-image lifecycle closure, archived or explicit immutable host files |
 | `stock-pbs-native-packages` | Either provider above | Same lifecycle images, imported as descriptor-backed dotted package children |
+| `stock-pbs-host-startup-macos` (experimental probe only) | Explicit immutable macOS arm64 installation of the pinned install-only artifact, loaded by dyld | None |
 
 Source applications declare their own entry, modules and assets below `app/`;
 importable sources live below `app/python/`. Runtime, importer, frozen startup

@@ -36,6 +36,7 @@ Further implementation continues on separate feature branches.
 | A7 Registered Python native lifecycle | `codex/a7-python-native-lifecycle` / `9b1c386` (from merged `3f6bf8f`) | Experimental separate custom-create/owned-state profile; controlled GNU Linux arm64 observation | GNU source 501/502, Mac source Lua5.5 502/Mac packaging Lua5.4 546 and Clippy; GNU optimized Python165 and Clippy; independent stock baseline/seven ledger controls; all eleven new and eleven historical native traces pass; 22 Mac/stock-Python units and 264 historical units; all 33 hostile trace edits reject; five states freed/five references released after finalization on success and app error; [evidence](evidence/pbs-linux-arm64-python-native-lifecycle-2026-10-14/README.md) |
 | A7 Python native package members | `codex/a7-python-native-package-imports` / `dd8cdd3` (from merged `478ebcd`) | Experimental stock dynamic-loader route for three dotted native children of an archive source package | Mac packaging Lua5.4 550/source Lua5.5 506 and GNU source 505/506, Clippy clean; GNU optimized Python170; independent stock descriptor-loader proof; eleven new and 22 historical native cases pass/replay; 300 policy units and all 20 hostile edits reject; exact unchanged native images and API4 boundary; five states freed/five references released after finalization; [evidence](evidence/pbs-linux-arm64-python-native-packages-2026-10-15/README.md) |
 | Review hygiene and evidence retention | `claude/hygiene-and-evidence-policy` (from merged `a4e6ec1`) | Implemented | CONTRIBUTING toolchain guidance verified to select Rust 1.88.0 on the development Mac; 31 merged local branches pruned; [decision 0030](decisions/0030-evidence-retention.md) moves new evidence payloads to verified release assets; dry run packs the 2026-10-15 native-package bundle and verifies its inventory |
+| A7/A1 Explicit macOS host Python startup | `claude/macos-python-host` (from merged `0c9b522`) | Experimental macOS arm64 host provider for the pinned startup subset; controlled observation without a tracer | Pinned PBS 20261009 macOS install-only artifact and 264 verified headers; C boundary compiled with Apple clang; dyld path loading with LC_UUID binding; one success, one app error, six installation rejections, one loader-override rejection and one unsupported-mode status match exactly; 173 feature tests and Clippy clean; read-only installation snapshot unchanged; bundled macOS requirements measured in [decision 0031](decisions/0031-macos-python-host-startup.md) |
 
 ## Gate status
 
@@ -461,6 +462,10 @@ queries and one install-only anonymous growth/release. See
 ## Next critical-path assignments
 
 Extend native platform/release evidence beyond the controlled Linux Lua closure.
+The explicit macOS host Python startup now runs on macOS arm64 through dyld;
+root-level tracing of that cell, its product registry route and the measured
+thread-local, lazy-binding and weak-reference requirements of a bundled macOS
+runtime (decision 0031) are the next macOS items.
 Complete A1 independent tracing and distribution-signing evidence, then extend
 the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
 and A3 (Linux/FreeBSD ELF) on their native OS runners.

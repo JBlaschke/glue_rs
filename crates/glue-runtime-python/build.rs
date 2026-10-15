@@ -4,8 +4,18 @@ use sha2::{Digest, Sha256};
 use std::{env, fmt::Write as _, fs, io::Read, path::PathBuf};
 
 const HEADER_PINS: &str = include_str!("../../fixtures/python-bootstrap/header-pins.json");
+const MACOS_HEADER_PINS: &str = include_str!("../../fixtures/python-host-macos/header-pins.json");
 const FULL_ARTIFACT_SHA256: &str =
     "8907ec2f181f0fc5cd08b9d897d36159432405af78f68f8faca728f48940e0ca";
+const MACOS_INSTALL_ARTIFACT_SHA256: &str =
+    "3338fcd572a670ec45ac9ef75480b95595ea9b6b5dd320952fcf5df185089941";
+
+/// Exact cells whose verified installed header tree can compile the boundary.
+#[derive(Clone, Copy, PartialEq)]
+enum Cell {
+    LinuxArm64,
+    MacosArm64,
+}
 const OVERRIDE_ROOTS: &[&str] = &["CC", "CXX", "CFLAGS", "CXXFLAGS", "CPPFLAGS"];
 
 fn main() {
@@ -13,11 +23,26 @@ fn main() {
     println!("cargo:rerun-if-changed=boundary/bridge.c");
     println!("cargo:rerun-if-changed=boundary/bridge.h");
     println!("cargo:rerun-if-changed=../../fixtures/python-bootstrap/header-pins.json");
+    println!("cargo:rerun-if-changed=../../fixtures/python-host-macos/header-pins.json");
     println!("cargo:rerun-if-env-changed=GLUE_PYTHON_INCLUDE_DIR");
     println!("cargo:rustc-check-cfg=cfg(glue_python_boundary)");
+    println!("cargo:rustc-check-cfg=cfg(glue_python_macos_host)");
     let target = required_env("TARGET");
     let enabled = env::var_os("CARGO_FEATURE_PBS_BOOTSTRAP").is_some();
-    let supported = target == "aarch64-unknown-linux-gnu";
+    let cell = match target.as_str() {
+        "aarch64-unknown-linux-gnu" => Some(Cell::LinuxArm64),
+        "aarch64-apple-darwin" => Some(Cell::MacosArm64),
+        _ => None,
+    };
+    let include_dir = env::var_os("GLUE_PYTHON_INCLUDE_DIR").map(PathBuf::from);
+    // GNU Linux arm64 requires the header tree whenever the feature is enabled.
+    // macOS arm64 compiles the same boundary only when a verified header tree is
+    // named, so feature-enabled Mac builds without one keep validating only.
+    let supported = match cell {
+        Some(Cell::LinuxArm64) => true,
+        Some(Cell::MacosArm64) => include_dir.is_some(),
+        None => false,
+    };
     let output_dir = PathBuf::from(required_env("OUT_DIR"));
     let mut provenance = format!(
         "glue stock PBS Python bootstrap boundary provenance v1\n\
@@ -27,8 +52,15 @@ fn main() {
          python_api_export_count=29\n\
          source=CPython 3.13.16 / PBS 20261009 / conventional GIL / non-debug\n\
          TARGET={target:?}\npbs_bootstrap_feature={enabled}\n\
-         boundary_compiled={}\n",
-        enabled && supported
+         boundary_compiled={}\nboundary_cell={}\n",
+        enabled && supported,
+        match cell {
+            Some(Cell::LinuxArm64) => "gnu-linux-arm64/full-artifact-headers",
+            Some(Cell::MacosArm64) if include_dir.is_some() => {
+                "macos-arm64/install-only-artifact-headers"
+            }
+            _ => "none",
+        }
     );
     for name in [
         "HOST",
@@ -57,16 +89,23 @@ fn main() {
             );
         }
     }
-    let input_dir = env::var_os("GLUE_PYTHON_INCLUDE_DIR")
-        .map(PathBuf::from)
-        .expect("opt-in GNU Linux arm64 bootstrap requires GLUE_PYTHON_INCLUDE_DIR");
+    let input_dir =
+        include_dir.expect("opt-in GNU Linux arm64 bootstrap requires GLUE_PYTHON_INCLUDE_DIR");
     assert!(
         input_dir.is_absolute(),
         "GLUE_PYTHON_INCLUDE_DIR must be absolute"
     );
-    let pins: serde_json::Value = serde_json::from_str(HEADER_PINS)
+    let (header_pins, artifact_sha256, artifact_label) = match cell {
+        Some(Cell::MacosArm64) => (
+            MACOS_HEADER_PINS,
+            MACOS_INSTALL_ARTIFACT_SHA256,
+            "install_only_artifact_sha256",
+        ),
+        _ => (HEADER_PINS, FULL_ARTIFACT_SHA256, "full_artifact_sha256"),
+    };
+    let pins: serde_json::Value = serde_json::from_str(header_pins)
         .expect("checked-in Python header pins must be valid JSON");
-    assert_eq!(pins["artifact_sha256"], FULL_ARTIFACT_SHA256);
+    assert_eq!(pins["artifact_sha256"], artifact_sha256);
     let files = pins["files"]
         .as_object()
         .expect("header pins need a file map");
@@ -145,11 +184,11 @@ fn main() {
         version.status.success(),
         "default boundary compiler --version failed"
     );
-    writeln!(provenance, "full_artifact_sha256={FULL_ARTIFACT_SHA256}").unwrap();
+    writeln!(provenance, "{artifact_label}={artifact_sha256}").unwrap();
     writeln!(
         provenance,
         "header_pin_sha256={}",
-        hex_digest(HEADER_PINS.as_bytes())
+        hex_digest(header_pins.as_bytes())
     )
     .unwrap();
     writeln!(
@@ -191,6 +230,9 @@ fn main() {
         .warnings_into_errors(true)
         .compile("glue_python_bootstrap_boundary");
     println!("cargo:rustc-cfg=glue_python_boundary");
+    if cell == Some(Cell::MacosArm64) {
+        println!("cargo:rustc-cfg=glue_python_macos_host");
+    }
 }
 
 fn required_env(name: &str) -> String {
