@@ -407,6 +407,15 @@ target/debug/glue doctor target/python-host-macos-validation/archives/success.gl
 target/debug/glue run target/python-host-macos-validation/archives/success.glue
 ```
 
+The checked-in product harness repeats the complete capture of that route,
+from the default-feature workspace checks to the exact receipt checks, in a
+new output directory. See
+[decision 0034](docs/decisions/0034-macos-python-product-harness.md).
+
+```sh
+sh fixtures/python-host-macos/run-product-macos.sh target/python-host-macos-product-validation
+```
+
 Bundled macOS Python, native extensions on macOS and installation discovery
 remain pending; no syscall trace is available to an unprivileged user on
 macOS, and the evidence records that limitation.

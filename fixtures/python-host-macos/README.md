@@ -57,5 +57,30 @@ same PASS line. The six rejected installations and the loader override reject
 through `glue run` with the `glue:` prefix. See
 [decision 0032](../../docs/decisions/0032-macos-python-product-route.md).
 
+The checked-in product harness repeats that capture from the repository root
+with the same artifact and a new output directory:
+
+```sh
+sh fixtures/python-host-macos/run-product-macos.sh target/python-host-macos-product-validation
+```
+
+It runs the default-feature workspace checks first, extracts the artifact into
+a fresh read-only prefix, builds `glue` with `python-pbs` and the probe with
+`pbs-bootstrap` against the verified headers, copies both aside, runs the
+feature-enabled tests and lints, builds a second launcher without the header
+tree in `target/no-boundary`, derives the six control installations and
+prepares the seven archives. One GNU Linux arm64 declaration is staged
+portably from the [metadata fixture](../python-metadata/README.md) input
+against a fixed absent prefix and packaged by `glue build`. Every `doctor`,
+`inspect`, `inspect --json`, `verify` and `run` receipt runs from an empty
+working directory in the fixture's poisoned environment, with
+`DYLD_LIBRARY_PATH` set only in the loader-override case.
+`check-product-results.py` compares each status, stdout and stderr with the
+expected exact values, recomputing the printed manifest digests from the JSON
+receipts, and requires the installation snapshot unchanged. See
+[decision 0034](../../docs/decisions/0034-macos-python-product-harness.md).
+Both harnesses leave their installations and archives read-only; restore
+write permission with `chmod -R u+w` before removing an output directory.
+
 Bundled macOS Python, native extensions, installation discovery, the complete
 stdlib and the distribution signing policy remain separate work.
