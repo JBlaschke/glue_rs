@@ -1,0 +1,95 @@
+# Capability integrity reader
+
+`read_capability.py` validates `darwin-capability-raw-v1` and exports its raw
+timeline. It is a bounded diagnostic consumer, not a Darwin syscall decoder.
+Every summary retains `full_trace_acceptance: false`. Its acceptance API and
+`--acceptance` CLI option reject this format unconditionally.
+
+Run on the host after copying an actual guest capture and its matching toolkit:
+
+```sh
+python3 fixtures/mvp/macos-trace/read_capability.py \
+  --capture /absolute/retained/capture-open \
+  --toolkit /absolute/retained/toolkit \
+  --output /new/absolute/raw-export
+```
+
+The reader requires Python 3.9 or newer and uses only the standard library. It
+does not execute the toolkit or recorded argv, invoke DTrace, elevate privileges,
+or change OS settings. The collector can still run in a guest without Python;
+copy its evidence back to run this consumer. Paths must name real directories
+throughout, including ancestors (`/private/tmp`, rather than the `/tmp` alias).
+Directory symlinks, internal symlinks, hard links and nonregular files fail.
+
+Use the reader from the reviewed checkout matching the retained toolkit's C
+sources. It verifies all twelve `SHA256SUMS` entries, the retained source bytes
+against `capture-native.c`, `lifecycle-probe.c` and `owned-probe.c` beside the
+reader, and the receipt's collector/fixture identities against that toolkit.
+It requires the revised producer's mandatory boolean `identity_checks_passed`
+footer (introduced by `9414fed`). Missing, nonboolean or false identity status
+rejects every capture status, including failed/unavailable captures. Such
+evidence cannot establish transport integrity even when useful raw diagnostics
+remain on disk. Older receipts without this footer are unsupported.
+The source-matched toolkit is an explicit anchor selected by the operator.
+Hashes establish byte identity; they do not authenticate a producer or prove
+that retained source compiled into a binary. Retained build argv is bounded and
+must be NUL terminated, but the reader does not attest compiler behavior or
+signatures. Actual guest host/kernel labels are retained without mapping them to
+assumed kernel semantics.
+
+The export contains:
+
+- `summary.json`: transport consistency, producer status and reason, host, argv,
+  counts, observed process ledger, toolkit/receipt/reader identities and the
+  unconditional full-trace rejection.
+- `timeline.jsonl`: consumer index, producer kind label, original event object
+  with exact typed byte hex, and subsequent numeric records represented as raw
+  native little-endian uint64 values.
+
+The numeric conversion is supported only for the reviewed native Darwin arm64
+producer. There is no return-code/errno success classification, pathname
+decoding, syscall pairing, FD/cwd tracking, process generation inference,
+filesystem mutation verdict, or kernel-coverage claim. The copyinstr bytes stay
+hex; a NUL or truncation interpretation requires actual ABI evidence. A consumer
+index is not a kernel sequence or independent loss detector. Timeline records
+stay in received order; the reader does not invent a cross-CPU ordering.
+
+Validation requires exact JSON key sets/types, supported header/profile, bounded
+identities, the exact generated D program including root PID, inventory-matched
+probe descriptors, producer-specific record counts/actions/offsets/hex, and
+agreement between exposed headers and their raw uint64 bytes. It recomputes
+event/open/callback totals. For `captured`, it additionally requires clean final
+completion fields, exactly one BEGIN and END, required open events, no retained
+errors, an empty watchdog file and a consistent replay of the producer's
+observed ledger. The open-only profile records root terminal state from the
+producer's root wait; this does not invent a proc exit event. The tree ledger is
+only the producer's observed PID ledger, not proof that every child was visible.
+
+Limits include 1 MiB receipt, 128 entries per flat directory, 256 processes,
+1,000,000 events, 128 MiB event JSONL, 64 KiB lines, 8 KiB typed probe offsets,
+1 KiB copyinstr records, 64 MiB other retained files and 256 MiB exported timeline.
+Files are opened relative to held directory FDs with no-follow/nonblocking
+flags; each read checks regular-file identity and metadata for changes. The
+capture directory must contain exactly the protocol's eight files. Toolkit
+extras may be regular unlinked build logs, with at most 128 total entries.
+Unknown/missing/null identities fail closed, including the original collector's
+64–128 MiB identity-limit inconsistency; the reviewed collector follow-up fixes
+that producer bound. A nonempty watchdog always invalidates the final receipt.
+
+No output directory is created until validation succeeds. The export path must
+be new and is never overwritten. Exit 0 means only internally consistent
+`captured` capability transport. Exit 1 means a failed/unavailable producer,
+invalid/missing evidence, export failure or the unconditional acceptance
+rejection. Internally consistent failure evidence can still be exported so its
+raw diagnostics remain inspectable. No failed evidence is rewritten.
+
+Run the controls with:
+
+```sh
+python3 fixtures/mvp/macos-trace/test_read_capability.py -v
+```
+
+Tests generate conspicuously synthetic records and dummy executable identities
+inside temporary directories. They prove reader behavior, not native provider or
+kernel capture. A Darwin-only control compares every generated D program with
+the actual reviewed C generator without starting DTrace.

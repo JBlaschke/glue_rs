@@ -1,0 +1,1380 @@
+{
+  "artifact": {
+    "archive_download_url": "https://api.github.com/repos/JBlaschke/glue_rs/actions/artifacts/12003666300/zip",
+    "created_at": "2026-10-15T20:02:37Z",
+    "digest": "sha256:9dea9422cefedf9d938164883cb088a82fb3757f6dbc9ed4bfe422ba104d68a8",
+    "expired": false,
+    "expires_at": "2026-10-29T20:01:16Z",
+    "id": 12003666300,
+    "name": "mvp-native-linux-x86_64-38796669924-1",
+    "node_id": "MDg6QXJ0aWZhY3QxMjAwMzY2NjMwMA==",
+    "size_in_bytes": 152717463,
+    "updated_at": "2026-10-15T20:02:37Z",
+    "url": "https://api.github.com/repos/JBlaschke/glue_rs/actions/artifacts/12003666300",
+    "workflow_run": {
+      "head_branch": "codex/mvp-r04-docs",
+      "head_repository_id": 1410903336,
+      "head_sha": "26bc25446cf257794947394e8075267a43ae3029",
+      "id": 38796669924,
+      "repository_id": 1410903336
+    }
+  },
+  "artifact_identity_scope": "Retained GitHub API artifact metadata; local reports, receipts, rank streams and raw trace hashes independently checked",
+  "artifact_retention": "GitHub Actions artifact expires 2026-10-29; no durable release-asset retention claimed",
+  "cache": "first/warm fresh processes; uncontrolled OS page cache; no cold filesystem claim",
+  "host": {
+    "cpu": {
+      "model name": "AMD EPYC 9V74 80-Core Processor"
+    },
+    "cpu_count": 4,
+    "fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+    "host_boot_id": "a057ba86-04ca-4d85-9c5e-99b09d22d724",
+    "kernel": "6.17.0-1022-azure",
+    "libc": [
+      "glibc",
+      "2.39"
+    ],
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "limitations": [
+    "Only the five reviewed R03 profiles are accepted; overall 24-case x86 acceptance failed a separate Python3.14 native build",
+    "The traceable-native-syscalls-v1 CI policy disables asynchronous kernel I/O for build/reference/application/controls/all ranks; not unrestricted-host acceptance",
+    "Time/RSS limits apply only on the recorded full host boot fingerprint; fresh hosted VM boots still enforce structural/size/I/O/FD/source-scaling limits",
+    "PSS/FD process samples are lower bounds; retained trace reconstructs descriptor peaks across process/thread execution",
+    "No cold filesystem-cache or total-cluster-memory claim",
+    "No explicit BLAS/OpenMP override; cleared application environment on the observed 4-vCPU host"
+  ],
+  "overall_ci_acceptance": "failed: separate Python 3.14 native build identity conflict; not promoted",
+  "ranks": [
+    1,
+    32
+  ],
+  "raw_evidence_root": "/private/tmp/glue-native-x86-evidence-38796669924",
+  "reports": [
+    {
+      "accepted_budget": {
+        "sha256": "0132a39d42bf32f1493a8bc87398b05ca10c1ad55382f0bffd19ebf62a33cb04",
+        "size": 3008
+      },
+      "case": "lua55-project",
+      "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "proposed_budget": {
+        "sha256": "7d3b0808ab84be4dab1eb53bbcb68ee3a28eae6bc387f047756904ceb52580c1",
+        "size": 2521
+      },
+      "rank_results_checked": 198,
+      "raw_proposal": "proposed-budgets/lua55-project.json",
+      "raw_report": "benchmarks/lua55-project/benchmark.json",
+      "report": {
+        "sha256": "d704496ff04f427666770b1026b2e89159356bf993ace94cb18fc8ea7519b017",
+        "size": 172933
+      },
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "848e7b672f3f282fe5c18e2ef61780eea0630643c7489f37c353239b632e9935",
+            "size": 2100
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "6fa61f2c4d221b465c3bc65606582a49c60a53767b43fd93aac499f0ebf003fb",
+          "costs": {
+            "archive_bytes": 2100,
+            "archived_uncompressed_bytes": 52,
+            "deployed_bytes": 8080906,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 15,
+            "read": 156,
+            "read_bytes": 8100388,
+            "seek": 4,
+            "stat": 14
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.0095704,
+              "elapsed_median_seconds": 0.0095704,
+              "label": "first",
+              "peak_rss_max_bytes": 4538368,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.037408962,
+              "elapsed_median_seconds": 0.015797054,
+              "label": "first",
+              "peak_rss_max_bytes": 4546560,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.009555518,
+              "elapsed_median_seconds": 0.009555518,
+              "label": "warm",
+              "peak_rss_max_bytes": 4382720,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.022495304,
+              "elapsed_median_seconds": 0.015022553000000001,
+              "label": "warm",
+              "peak_rss_max_bytes": 4575232,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "5a08311304c95c9169b6a13036a351aab4d1b8e366c155c2475b415465fc97e0",
+            "size": 11911
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "3d9eafaa387a0cc867f140148bc355f8c33188c32f8e9b9a6c9edf812985ba3c",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "6cf47006338a00565404b3d1759df577cb1e94b32b0de719bf9a4631dd71de6b",
+            "size": 2281
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "c5bc6171d796b4933ebcb1d422f474c6ec0fb99afdb63ac73ef14e504b966cdc",
+          "costs": {
+            "archive_bytes": 2281,
+            "archived_uncompressed_bytes": 350,
+            "deployed_bytes": 8081075,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 15,
+            "read": 156,
+            "read_bytes": 8100700,
+            "seek": 4,
+            "stat": 15
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.009593254,
+              "elapsed_median_seconds": 0.009593254,
+              "label": "first",
+              "peak_rss_max_bytes": 4415488,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.03175755,
+              "elapsed_median_seconds": 0.0176353365,
+              "label": "first",
+              "peak_rss_max_bytes": 4575232,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.009548467,
+              "elapsed_median_seconds": 0.009548467,
+              "label": "warm",
+              "peak_rss_max_bytes": 4329472,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.042724831,
+              "elapsed_median_seconds": 0.0181908745,
+              "label": "warm",
+              "peak_rss_max_bytes": 4583424,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "f29895ae89495379ea6947613540796d930c6f487042f32290efa05bd7fdbdef",
+            "size": 11723
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "aaa61181096bfff141882c55c4c202153f357b4851975447ffa032dddd752dcb",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "6bc9da0b235fe6e9d8a83628ca80637e0ef65aa54b5c64547724a619bdb07e9c",
+            "size": 3582281
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "a3f499f147f8c7db457a56c54961dd2ea8baf5742fa94f62de9e3c22c2ac01a2",
+          "costs": {
+            "archive_bytes": 3582281,
+            "archived_uncompressed_bytes": 90350,
+            "deployed_bytes": 13301077,
+            "deployed_directories": 2,
+            "deployed_files": 6,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 15,
+            "read": 229,
+            "read_bytes": 15422616,
+            "seek": 15,
+            "stat": 15
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.1833339,
+              "elapsed_median_seconds": 0.1833339,
+              "label": "first",
+              "peak_rss_max_bytes": 19066880,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 2.798497709,
+              "elapsed_median_seconds": 2.5832210305,
+              "label": "first",
+              "peak_rss_max_bytes": 19202048,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.182921139,
+              "elapsed_median_seconds": 0.182921139,
+              "label": "warm",
+              "peak_rss_max_bytes": 19038208,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 2.879546714,
+              "elapsed_median_seconds": 2.663996223,
+              "label": "warm",
+              "peak_rss_max_bytes": 19210240,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "06f3569681da69195118f47eae8ebcfbe46d49eb38c612daf90ad90bf170e016",
+            "size": 11803
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "dc5e27750b48a274a86e810561eb4e1c4d136885c8ed1ccb3906dd82435ef440",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "accepted_budget": {
+        "sha256": "caa6fc7fa19c76653c90d21803a5c7d6842c328af66d7d4d7b083d63145aab78",
+        "size": 3012
+      },
+      "case": "lua55-native",
+      "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "proposed_budget": {
+        "sha256": "2e137636f77b3ca31fb0c9e3aa6d770b01cc20533475b660fa746cc234faf192",
+        "size": 2525
+      },
+      "rank_results_checked": 198,
+      "raw_proposal": "proposed-budgets/lua55-native.json",
+      "raw_report": "benchmarks/lua55-native/benchmark.json",
+      "report": {
+        "sha256": "a89571791c200f26a429d516c922fe0fe54f634edfdb90dd2ad1731680507bcc",
+        "size": 173507
+      },
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "4f899066548dd76992dc0dd3724eab9a4b3dd34be9daab39ca4ffcd9fcf7202e",
+            "size": 2756
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "2e64351c30c2db79d02d1b0ef5c0493cb7dda29b97f162528d4621a798c40eef",
+          "costs": {
+            "archive_bytes": 2756,
+            "archived_uncompressed_bytes": 7,
+            "deployed_bytes": 8115932,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 32072,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 21,
+            "read": 198,
+            "read_bytes": 10531874,
+            "seek": 4,
+            "stat": 22
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.011653673,
+              "elapsed_median_seconds": 0.011653673,
+              "label": "first",
+              "peak_rss_max_bytes": 7704576,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.045692674,
+              "elapsed_median_seconds": 0.0336609405,
+              "label": "first",
+              "peak_rss_max_bytes": 7835648,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.011584228,
+              "elapsed_median_seconds": 0.011584228,
+              "label": "warm",
+              "peak_rss_max_bytes": 7708672,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.024522763,
+              "elapsed_median_seconds": 0.017663857499999998,
+              "label": "warm",
+              "peak_rss_max_bytes": 7794688,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "b33c58f15c58499eb64f6ccc6d774579070506fa1ba35988d2ebca83cecf74eb",
+            "size": 12218
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "d45f2ae6fb2673f6849a5662f557d7d232b3f09dff15bfa0292e83aa55d93546",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "d0bc06a7d84b2dc75cc3eb21fd6f6b071545c01ebedb5939102bd6905d760d2a",
+            "size": 3178
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "e2746d7a2fe9503c6cb5002703e6b205bf93d8cc62356b2694ea71691da40131",
+          "costs": {
+            "archive_bytes": 3178,
+            "archived_uncompressed_bytes": 1212,
+            "deployed_bytes": 8116345,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 32072,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 25,
+            "read": 200,
+            "read_bytes": 10534332,
+            "seek": 4,
+            "stat": 27
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.01227711,
+              "elapsed_median_seconds": 0.01227711,
+              "label": "first",
+              "peak_rss_max_bytes": 7761920,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.051778635,
+              "elapsed_median_seconds": 0.02993763,
+              "label": "first",
+              "peak_rss_max_bytes": 7831552,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.012019353,
+              "elapsed_median_seconds": 0.012019353,
+              "label": "warm",
+              "peak_rss_max_bytes": 7704576,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.063333469,
+              "elapsed_median_seconds": 0.0295233365,
+              "label": "warm",
+              "peak_rss_max_bytes": 7831552,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "dea66bc5d4e5f320bd4b6f4416ee09f3df621fff7ae576a2c302823558997ec8",
+            "size": 12371
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 2,
+          "trace_identity_manifest_sha256": "b386293f46ce40f5a87dc267d3dba017202b65821560679d9124c4acfe8dcc8f",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "0a1a80dc36ca1606d58c476c6a8a607bf4067e95eff18d5041e4e9531879fad2",
+            "size": 3583178
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "9f7b8deaaebdbbdec44614b2b35ab7abd37bd20ce162c249fe9ba1e370dadcb4",
+          "costs": {
+            "archive_bytes": 3583178,
+            "archived_uncompressed_bytes": 91212,
+            "deployed_bytes": 13336346,
+            "deployed_directories": 4,
+            "deployed_files": 8,
+            "deployed_symlinks": 0,
+            "native_bytes": 32072,
+            "runtime_bytes": 2095536
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 25,
+            "read": 272,
+            "read_bytes": 17790612,
+            "seek": 14,
+            "stat": 27
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.201577555,
+              "elapsed_median_seconds": 0.201577555,
+              "label": "first",
+              "peak_rss_max_bytes": 21643264,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 2.934113706,
+              "elapsed_median_seconds": 2.7462380815,
+              "label": "first",
+              "peak_rss_max_bytes": 21803008,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.186895738,
+              "elapsed_median_seconds": 0.186895738,
+              "label": "warm",
+              "peak_rss_max_bytes": 21413888,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 2.89842484,
+              "elapsed_median_seconds": 2.605178797,
+              "label": "warm",
+              "peak_rss_max_bytes": 21778432,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "1dbb1d2c54f595deec06243fc04c4d3fa479e790d9249377930708522ac7bd09",
+            "size": 12425
+          },
+          "runtime_version": "5.5.1",
+          "trace_files": 2,
+          "trace_identity_manifest_sha256": "db7edee4ddeb2030a22811fbae1119c33f42955c4388151551d49dbbc7e38f09",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "accepted_budget": {
+        "sha256": "303a77d4d37c26d37af0a8d62dde8de972e97d4550ca66b58e0702d6a0e2b0f5",
+        "size": 3021
+      },
+      "case": "node-cjs",
+      "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "proposed_budget": {
+        "sha256": "adbd0aa29518dae69366d682a4fbf43229d30afba4affb8e8558b2420264ebf9",
+        "size": 2534
+      },
+      "rank_results_checked": 198,
+      "raw_proposal": "proposed-budgets/node-cjs.json",
+      "raw_report": "benchmarks/node-cjs/benchmark.json",
+      "report": {
+        "sha256": "2f5c571c409ac61336e02832a959c062623bf63abaaccf70f002d832a3de901f",
+        "size": 175830
+      },
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "d4e8be674f672ba3f21c19cc456d48b4113e287b537bb128a93675547871d2bc",
+            "size": 12259
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "4937f6b685e3bb518a8cd57e54a1f21abde7d289bf309f8ab3378df50752a0b9",
+          "costs": {
+            "archive_bytes": 12259,
+            "archived_uncompressed_bytes": 2985,
+            "deployed_bytes": 137530865,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 129946025
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 55,
+            "read": 2246,
+            "read_bytes": 140940979,
+            "seek": 4,
+            "stat": 65
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.150725492,
+              "elapsed_median_seconds": 0.150725492,
+              "label": "first",
+              "peak_rss_max_bytes": 54427648,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.437518596,
+              "elapsed_median_seconds": 1.1997464555000001,
+              "label": "first",
+              "peak_rss_max_bytes": 54747136,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.149267968,
+              "elapsed_median_seconds": 0.149267968,
+              "label": "warm",
+              "peak_rss_max_bytes": 54423552,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.453677734,
+              "elapsed_median_seconds": 1.2908903585,
+              "label": "warm",
+              "peak_rss_max_bytes": 54779904,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "0511bd2cdfdcaf9d10ed169628874aab384aaaacc004523e76caef5cdc31c843",
+            "size": 14369
+          },
+          "runtime_version": "24.22.0",
+          "trace_files": 7,
+          "trace_identity_manifest_sha256": "8b874fffa078358b5afa198b141c4a6b88ff26ba76e5d35dd3975449171ea8c6",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "d4cca5d6dc0d7e2027ad288ba269a35f098821e523697a33d1bfde298a1f57ab",
+            "size": 12444
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "06e9d940b0622652aac4c286bbfe7b40d9d0c46b242f89145468c6c9c34c5b61",
+          "costs": {
+            "archive_bytes": 12444,
+            "archived_uncompressed_bytes": 3329,
+            "deployed_bytes": 137531027,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 129946025
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 56,
+            "read": 2246,
+            "read_bytes": 140941229,
+            "seek": 4,
+            "stat": 67
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.150111328,
+              "elapsed_median_seconds": 0.150111328,
+              "label": "first",
+              "peak_rss_max_bytes": 55332864,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.497655801,
+              "elapsed_median_seconds": 1.303006333,
+              "label": "first",
+              "peak_rss_max_bytes": 55603200,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.151978771,
+              "elapsed_median_seconds": 0.151978771,
+              "label": "warm",
+              "peak_rss_max_bytes": 55435264,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.410396417,
+              "elapsed_median_seconds": 1.2759638595,
+              "label": "warm",
+              "peak_rss_max_bytes": 55615488,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "faaf1f7c178025d066fcdd90250d4edde698aebab01cacce2b116fdbe9a588e1",
+            "size": 14160
+          },
+          "runtime_version": "24.22.0",
+          "trace_files": 7,
+          "trace_identity_manifest_sha256": "e3512d3b110929c05951d33fc5bde7323329c7f8b54caede22fa0cf220ac5568",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "3b81d37dfb980b8d2ef80f0f484cfe823a8b7d316ec765f26ccf118bad2d46df",
+            "size": 3619191
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "7e20d868d53cc34ea14aa9a41167921692f6b01df01311514a9df732fe2e5fc1",
+          "costs": {
+            "archive_bytes": 3619191,
+            "archived_uncompressed_bytes": 1273329,
+            "deployed_bytes": 142737775,
+            "deployed_directories": 6,
+            "deployed_files": 12,
+            "deployed_symlinks": 1,
+            "native_bytes": 0,
+            "runtime_bytes": 129946025
+          },
+          "fds": {
+            "peak_per_process": 19,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 58,
+            "read": 2324,
+            "read_bytes": 148407217,
+            "seek": 24,
+            "stat": 67
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.36443318,
+              "elapsed_median_seconds": 0.36443318,
+              "label": "first",
+              "peak_rss_max_bytes": 90832896,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 5.171591501,
+              "elapsed_median_seconds": 4.9106880845,
+              "label": "first",
+              "peak_rss_max_bytes": 91881472,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.351305726,
+              "elapsed_median_seconds": 0.351305726,
+              "label": "warm",
+              "peak_rss_max_bytes": 91348992,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 5.475360187,
+              "elapsed_median_seconds": 5.255472018,
+              "label": "warm",
+              "peak_rss_max_bytes": 91873280,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "3a66df2f4f205390549d83fca79edb2219a3ce86509064d3c1eb30b494f0d48c",
+            "size": 14329
+          },
+          "runtime_version": "24.22.0",
+          "trace_files": 7,
+          "trace_identity_manifest_sha256": "66f6db7bc250f346e592f2f15f95d56923357adaed1f543dfde5bbaa18b77ac4",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "accepted_budget": {
+        "sha256": "f79b8c9cfc4886675b1683d7491f8e5f25763ad0e9a325071883b79134856b91",
+        "size": 3043
+      },
+      "case": "python-source-normalized",
+      "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "proposed_budget": {
+        "sha256": "b8699282ce9b220eda0474d59a602d2b78c0430867d536858280b586dd3fee16",
+        "size": 2556
+      },
+      "rank_results_checked": 198,
+      "raw_proposal": "proposed-budgets/python-source-normalized.json",
+      "raw_report": "benchmarks/python-source-normalized/benchmark.json",
+      "report": {
+        "sha256": "6cc0f00aeeaef2e556fcf456d24d58549f66f002bec21c0e210f179730726948",
+        "size": 534938
+      },
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "9dee2240d6a558a84f18674e76b4f6d4e55470cf7f762347a656f686c3381674",
+            "size": 2024701
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "9fdcd66f6efdb65e28a916df859abad6f4db150e08d5d225af53bdb04ecc6bf3",
+          "costs": {
+            "archive_bytes": 2024701,
+            "archived_uncompressed_bytes": 5690867,
+            "deployed_bytes": 103258763,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 193,
+            "read": 1944,
+            "read_bytes": 106999963,
+            "seek": 332,
+            "stat": 276
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.519383106,
+              "elapsed_median_seconds": 0.519383106,
+              "label": "first",
+              "peak_rss_max_bytes": 27623424,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 7.869206001,
+              "elapsed_median_seconds": 7.5550191855,
+              "label": "first",
+              "peak_rss_max_bytes": 27701248,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.515611318,
+              "elapsed_median_seconds": 0.515611318,
+              "label": "warm",
+              "peak_rss_max_bytes": 27508736,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 7.934199688,
+              "elapsed_median_seconds": 7.5802660865,
+              "label": "warm",
+              "peak_rss_max_bytes": 27668480,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "67836f324d7a0f03f55a57b990f3751a01673e402270c376ce039703059d9e8a",
+            "size": 122568
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "12a4503953567b401ed803531ca5b21d1a2b51aba29283358b384a742efce3bf",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "8719f068183268b41cd267938282bff2ad53006793dcf57b0bcff94602409bcd",
+            "size": 2025153
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "e91456adaa0edd948d5dedde1820a37e0749996e1b2f8562677fb41d68188224",
+          "costs": {
+            "archive_bytes": 2025153,
+            "archived_uncompressed_bytes": 5691810,
+            "deployed_bytes": 103259192,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 6,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 255,
+            "read": 2043,
+            "read_bytes": 107458367,
+            "seek": 479,
+            "stat": 357
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.658681212,
+              "elapsed_median_seconds": 0.658681212,
+              "label": "first",
+              "peak_rss_max_bytes": 29908992,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 10.173425296,
+              "elapsed_median_seconds": 9.964852829,
+              "label": "first",
+              "peak_rss_max_bytes": 29896704,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.643064709,
+              "elapsed_median_seconds": 0.643064709,
+              "label": "warm",
+              "peak_rss_max_bytes": 29749248,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 10.137494812,
+              "elapsed_median_seconds": 9.8398232855,
+              "label": "warm",
+              "peak_rss_max_bytes": 29974528,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "edb78dea384f77b3373281ffa05b5895aad1a8a76514fd0392750b77adc92722",
+            "size": 122406
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "12d444f2607389b2e749c95fbeb1739e0b00b948ee8aa2a53a7346d2f57d146b",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "fd16e91e68f32344d4827bfb491c0bfe859ecab2dbc94fafbfdf76e6939443f0",
+            "size": 5835152
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "15dd43a0e02aab0180ac4e7e2068a29a9360f2a3fb66d30f4ed61f52098deaf0",
+          "costs": {
+            "archive_bytes": 5835152,
+            "archived_uncompressed_bytes": 5791810,
+            "deployed_bytes": 108789181,
+            "deployed_directories": 7,
+            "deployed_files": 12,
+            "deployed_symlinks": 0,
+            "native_bytes": 0,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 6,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 255,
+            "read": 2078,
+            "read_bytes": 114036293,
+            "seek": 482,
+            "stat": 357
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.813246343,
+              "elapsed_median_seconds": 0.813246343,
+              "label": "first",
+              "peak_rss_max_bytes": 41099264,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 12.91770565,
+              "elapsed_median_seconds": 12.5048677845,
+              "label": "first",
+              "peak_rss_max_bytes": 41283584,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.816917146,
+              "elapsed_median_seconds": 0.816917146,
+              "label": "warm",
+              "peak_rss_max_bytes": 41177088,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 13.141764603,
+              "elapsed_median_seconds": 12.725116758,
+              "label": "warm",
+              "peak_rss_max_bytes": 41218048,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "3222f69ea32bfdc86f910568b396baf9bcb62b71c37258429a3236f4b4be831d",
+            "size": 122446
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "19d9b60677102f3348bc3cc13f60f83f304fd3c067b125e1a9a5d0f213bffe2e",
+          "variant": "scaled"
+        }
+      ]
+    },
+    {
+      "accepted_budget": {
+        "sha256": "a1283d1bbb7f2ed37f0ae400139dee9cd7aa322ce422efa91ac4af82f2c6f64b",
+        "size": 3051
+      },
+      "case": "python-native-normalized",
+      "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "proposed_budget": {
+        "sha256": "a8c0127a2886385a0dc00db14bd35750de61fb67b95c8a7798befc3ad6aafe11",
+        "size": 2564
+      },
+      "rank_results_checked": 198,
+      "raw_proposal": "proposed-budgets/python-native-normalized.json",
+      "raw_report": "benchmarks/python-native-normalized/benchmark.json",
+      "report": {
+        "sha256": "efb1c6581a91718bb2fa527fa254a28c98b51af69fff4b64758ba8253647f1e8",
+        "size": 539667
+      },
+      "variants": [
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "3264029cdc75698f7d2de6052bb957d4b702a8b591e638c52207ef943d839db3",
+            "size": 5676478
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "e903b6b6f8affb82b1d59ea3958d6698231732eb831bf4028841801850e168e7",
+          "costs": {
+            "archive_bytes": 5676478,
+            "archived_uncompressed_bytes": 19792398,
+            "deployed_bytes": 160327062,
+            "deployed_directories": 20,
+            "deployed_files": 41,
+            "deployed_symlinks": 2,
+            "native_bytes": 53083602,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 231,
+            "read": 2876,
+            "read_bytes": 164031754,
+            "seek": 388,
+            "stat": 347
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 0.589774132,
+              "elapsed_median_seconds": 0.589774132,
+              "label": "first",
+              "peak_rss_max_bytes": 29138944,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 8.761100169,
+              "elapsed_median_seconds": 8.4958884835,
+              "label": "first",
+              "peak_rss_max_bytes": 29237248,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 0.591880391,
+              "elapsed_median_seconds": 0.591880391,
+              "label": "warm",
+              "peak_rss_max_bytes": 29265920,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 8.893689142,
+              "elapsed_median_seconds": 8.598289243,
+              "label": "warm",
+              "peak_rss_max_bytes": 29319168,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "b0251197b9128a94a4ec0369e6031627cc59ad2f2dd4d4039728143aef201ecb",
+            "size": 123970
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 1,
+          "trace_identity_manifest_sha256": "68407a9f744c8185a51a0fe6439afc7164bfc89492103f3222dfd1cf7c9aa2d0",
+          "variant": "empty-runtime"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "54f163bb09e00ecd112aa837e2f30301fa1af26a3347c2ec08ca41dac9bd2439",
+            "size": 5677325
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "1634a10cad5ed9f423b5decd853b90cd34da00c41a9012d21dce02bd6b4a6896",
+          "costs": {
+            "archive_bytes": 5677325,
+            "archived_uncompressed_bytes": 19794540,
+            "deployed_bytes": 160327887,
+            "deployed_directories": 20,
+            "deployed_files": 41,
+            "deployed_symlinks": 2,
+            "native_bytes": 53083602,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 288,
+            "read": 3391,
+            "read_bytes": 182420772,
+            "seek": 979,
+            "stat": 516
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 1.063141768,
+              "elapsed_median_seconds": 1.063141768,
+              "label": "first",
+              "peak_rss_max_bytes": 67321856,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 17.043362301,
+              "elapsed_median_seconds": 16.6993407875,
+              "label": "first",
+              "peak_rss_max_bytes": 67444736,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.08462232,
+              "elapsed_median_seconds": 1.08462232,
+              "label": "warm",
+              "peak_rss_max_bytes": 67268608,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 17.021769723,
+              "elapsed_median_seconds": 16.702314282000003,
+              "label": "warm",
+              "peak_rss_max_bytes": 67371008,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "34ef046a0eb6ab3d4226196d839022191634508c0a2bd8d69bf0412aac2edde9",
+            "size": 125764
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 10,
+          "trace_identity_manifest_sha256": "d580f705085df3fadef60bf042c9836a769c67d243fdb459524c5240501bfca3",
+          "variant": "baseline"
+        },
+        {
+          "artifact": {
+            "path": "payload with spaces \u00fc/app.glue",
+            "sha256": "cc3e6b27132df795de0a133a4ec45adf547727b867848c971a13be64d0670d4f",
+            "size": 9487325
+          },
+          "commit": "26bc25446cf257794947394e8075267a43ae3029",
+          "controls_identity_manifest_sha256": "4777a348eeffc76843043ae3237fe16295e6dd0cce3a5491d6fd218babacdb25",
+          "costs": {
+            "archive_bytes": 9487325,
+            "archived_uncompressed_bytes": 19894540,
+            "deployed_bytes": 165857877,
+            "deployed_directories": 20,
+            "deployed_files": 41,
+            "deployed_symlinks": 2,
+            "native_bytes": 53083602,
+            "runtime_bytes": 94618454
+          },
+          "fds": {
+            "peak_per_process": 5,
+            "scope": "three initial stdio descriptors plus traced opens/dups/pipes/clones and CLOEXEC/close/close_range lifecycle"
+          },
+          "io": {
+            "open": 288,
+            "read": 3424,
+            "read_bytes": 188929066,
+            "seek": 981,
+            "stat": 516
+          },
+          "launcher": {
+            "path": "payload with spaces \u00fc/glue",
+            "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+            "size": 5979680
+          },
+          "measurements": [
+            {
+              "elapsed_max_seconds": 1.260223896,
+              "elapsed_median_seconds": 1.260223896,
+              "label": "first",
+              "peak_rss_max_bytes": 80596992,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 19.927985157,
+              "elapsed_median_seconds": 19.4128980885,
+              "label": "first",
+              "peak_rss_max_bytes": 81154048,
+              "ranks": 32,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 1.281357489,
+              "elapsed_median_seconds": 1.281357489,
+              "label": "warm",
+              "peak_rss_max_bytes": 80842752,
+              "ranks": 1,
+              "semantics_match": true
+            },
+            {
+              "elapsed_max_seconds": 20.141667724,
+              "elapsed_median_seconds": 19.455883989500002,
+              "label": "warm",
+              "peak_rss_max_bytes": 81068032,
+              "ranks": 32,
+              "semantics_match": true
+            }
+          ],
+          "receipt": {
+            "sha256": "a01051bacc6455e0869821475a5d67218e55bb28ca03e2e2be080b662ca09922",
+            "size": 125802
+          },
+          "runtime_version": "3.13.16",
+          "trace_files": 10,
+          "trace_identity_manifest_sha256": "2da44871ac1db8d6b6bb594067de4d1a1057c4e154d7ce6709c1e76adee00e97",
+          "variant": "scaled"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "method": "Current strict Linux parser replay; exact proposal recomputation; trace/control/stream/kernel-metadata identities; inventory byte/count reconciliation and all 1/32 first/warm ranks",
+    "oracle_control_captures_checked": 60,
+    "rank_results_checked": 990,
+    "raw_review": {
+      "sha256": "1787c3721c566d0743097784bc740d7d683ce9366ce470d028ca05598feb8eed",
+      "size": 48101
+    },
+    "receipts_checked": 15,
+    "review_log": {
+      "sha256": "c1a22783c39309523b0fc4d13af887616cd8d387b83b5d4344389e9f904e01ab",
+      "size": 320
+    },
+    "script": {
+      "sha256": "4f4d0c3b0c7cb19bc42e4770c465a99ee47b23ce7289e346cd6e3171f21100fb",
+      "size": 9290
+    },
+    "source_commit": "288908aa9566238f530e78a03b4e4e89a220e228",
+    "source_identities": {
+      "fixtures/mvp/benchmark.py": {
+        "sha256": "5e8ce586f6d0db4e7119f14ac516bcf6f9354aa42127552a817dfff69c619478",
+        "size": 21919
+      },
+      "fixtures/mvp/extraction.py": {
+        "sha256": "fd25b5f364cbac8e93b934ca4628a7d7264ba0668870f34eb1295161a4857fc8",
+        "size": 17470
+      },
+      "fixtures/mvp/harness.py": {
+        "sha256": "b49ec17d68f6a2ecd4483a62fd007ffc7e9038e486b9c5138667e6f1207f8ff0",
+        "size": 25456
+      },
+      "fixtures/mvp/trace_environment.py": {
+        "sha256": "ae211f0033c822e9a6fa4726210fec1716d3c569755287004c4bdb4210d7bd99",
+        "size": 3274
+      },
+      "scripts/check-linux-memfd-trace.py": {
+        "sha256": "560a91fa6f186f61a630d46fbcba96ba82e0930ebea7f9a781bb9aff884c7a58",
+        "size": 17123
+      }
+    }
+  },
+  "revision": 1,
+  "source_entries": 10000,
+  "status": "reviewed R03 profiles only",
+  "target": "x86_64-unknown-linux-gnu",
+  "trace_environment": {
+    "architecture": "x86_64",
+    "files": {
+      "glue-trace-environment": {
+        "sha256": "c1c34efa6e23997d4e605e36ec8e8701480d3fa40c0eef83c79559fcbcbb1f59",
+        "size": 17352
+      },
+      "proof.json": {
+        "sha256": "1460a52ff53f328698f9bb8e0356db626964d9a0226202890fbd3e903b4c141b",
+        "size": 1384
+      },
+      "trace_environment.c": {
+        "sha256": "9c6bf3698d0b3d5067a46e8f756589918544b0a6794b873e653d36d3626e6497",
+        "size": 7770
+      }
+    },
+    "policy": "traceable-native-syscalls-v1",
+    "scope": "CI trace environment; asynchronous kernel I/O disabled; not unrestricted-host acceptance or a security sandbox",
+    "setup_control": "available-before-policy"
+  }
+}

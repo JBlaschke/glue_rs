@@ -71,6 +71,7 @@ struct Options {
     fail_after_allocations: usize,
     fail_after_reply_allocations: usize,
     collect_on_first_reply: c_int,
+    compact: c_int,
 }
 
 impl Default for Options {
@@ -79,6 +80,7 @@ impl Default for Options {
             fail_after_allocations: usize::MAX,
             fail_after_reply_allocations: usize::MAX,
             collect_on_first_reply: 0,
+            compact: 0,
         }
     }
 }
@@ -189,6 +191,27 @@ pub(crate) fn execute<F: FnMut(u32, &[u8]) -> Reply>(
         entry,
         origin,
         &Options::default(),
+    )
+    .0
+}
+
+pub(crate) fn execute_compact<F: FnMut(u32, &[u8]) -> Reply>(
+    callback: F,
+    bootstrap: &[u8],
+    package_path: &str,
+    entry: &[u8],
+    origin: &str,
+) -> Result<(), String> {
+    execute_inner(
+        callback,
+        bootstrap,
+        package_path,
+        entry,
+        origin,
+        &Options {
+            compact: 1,
+            ..Options::default()
+        },
     )
     .0
 }

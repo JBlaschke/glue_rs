@@ -22,6 +22,7 @@ fn main() {
         _ => panic!("linked Lua source profile requires exactly one of lua54 or lua55"),
     };
     let target = required_env("TARGET");
+    println!("cargo:rustc-env=GLUE_LUA_TARGET={target}");
     let host = required_env("HOST");
     track_override_variables(&target, &host);
 
@@ -138,7 +139,71 @@ fn main() {
         lua_src::Lua55
     };
     let artifacts = lua_src::Build::new().build(version);
+    println!(
+        "cargo:rustc-env=GLUE_LUA_INCLUDE_PATH={}",
+        artifacts.include_dir().display()
+    );
+    let mut helper_exports = std::collections::BTreeSet::new();
+    for header in ["lua.h", "lauxlib.h", "lualib.h"] {
+        let contents = fs::read_to_string(artifacts.include_dir().join(header))
+            .expect("cannot read linked Lua API header");
+        for line in contents.lines() {
+            if !["LUA_API ", "LUALIB_API ", "LUAMOD_API "]
+                .iter()
+                .any(|prefix| line.starts_with(prefix))
+            {
+                continue;
+            }
+            let Some((_, declaration)) = line.split_once('(') else {
+                continue;
+            };
+            let Some((symbol, _)) = declaration.split_once(')') else {
+                continue;
+            };
+            if symbol.starts_with("lua")
+                && symbol
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b == b'_')
+            {
+                helper_exports.insert(symbol.to_owned());
+            }
+        }
+    }
+    assert!(
+        helper_exports.len() > 100,
+        "Lua public API header parsing failed"
+    );
+    helper_exports.insert("lua_ident".to_owned());
+    let helper_exports_path = PathBuf::from(required_env("OUT_DIR")).join("helper-exports.txt");
+    fs::write(
+        &helper_exports_path,
+        helper_exports
+            .iter()
+            .cloned()
+            .collect::<Vec<_>>()
+            .join("\n"),
+    )
+    .expect("cannot retain helper export descriptor");
+    println!(
+        "cargo:rustc-env=GLUE_LUA_HELPER_EXPORTS_PATH={}",
+        helper_exports_path.display()
+    );
+    let helper_bin = if release == "5.4.9" {
+        "glue-lua54"
+    } else {
+        "glue-lua55"
+    };
+    for symbol in helper_exports {
+        if target.ends_with("apple-darwin") {
+            println!("cargo:rustc-link-arg-bin={helper_bin}=-Wl,-exported_symbol,_{symbol}");
+            println!("cargo:rustc-link-arg-bin={helper_bin}=-Wl,-u,_{symbol}");
+        } else if target.contains("linux") {
+            println!("cargo:rustc-link-arg-bin={helper_bin}=-Wl,--export-dynamic-symbol={symbol}");
+            println!("cargo:rustc-link-arg-bin={helper_bin}=-Wl,-u,{symbol}");
+        }
+    }
     let mut boundary = cc::Build::new();
+    boundary.define("GLUE_LUA_COMPACT", None);
     if env::var_os("CARGO_FEATURE_LINUX_NATIVE").is_some() {
         boundary.define("GLUE_LUA_NATIVE", None);
     }

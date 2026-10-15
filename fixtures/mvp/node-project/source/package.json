@@ -1,0 +1,1 @@
+{"name":"ordinary-node-project","type":"commonjs","dependencies":{"dep":"1.0.0"},"scripts":{"postinstall":"exit 91"}}

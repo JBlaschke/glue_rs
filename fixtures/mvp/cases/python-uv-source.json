@@ -1,0 +1,63 @@
+{
+  "revision": 1,
+  "case": "python-uv-source",
+  "reference_kind": "stock",
+  "inputs": [
+    {
+      "source": "${GLUE_MVP_PYTHON_ROOT}",
+      "destination": "runtime"
+    },
+    {
+      "source": "fixtures/mvp/python-matrix/project",
+      "destination": "project"
+    },
+    {
+      "source": "fixtures/mvp/python-env/site",
+      "destination": "installed"
+    }
+  ],
+  "prepare": {
+    "argv": [
+      "${GLUE_MVP_PYTHON_TOOL}",
+      "{repo}/fixtures/mvp/python-matrix/prepare.py",
+      "{inputs}",
+      "${GLUE_MVP_PYTHON_RELATIVE}",
+      "${GLUE_MVP_PYTHON_ENV_KIND}"
+    ]
+  },
+  "build": {
+    "argv": [
+      "${GLUE_MVP_GLUE}",
+      "build",
+      "python",
+      "{inputs}/project",
+      "--env",
+      "{inputs}/environment",
+      "--entry",
+      "main.py",
+      "--output",
+      "{build}",
+      "--prune",
+      "app/site/0/_virtualenv.pth"
+    ]
+  },
+  "reference": {
+    "argv": [
+      "{inputs}/runtime/${GLUE_MVP_PYTHON_RELATIVE}",
+      "-I",
+      "-S",
+      "-B",
+      "{repo}/fixtures/mvp/python-matrix/reference.py",
+      "{inputs}",
+      "file",
+      "main.py",
+      "argument caf\u00e9"
+    ]
+  },
+  "arguments": [
+    "argument caf\u00e9"
+  ],
+  "expected_exit": 0,
+  "timeout": 240,
+  "signing_policy": "ad-hoc"
+}

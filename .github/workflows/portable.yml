@@ -1,0 +1,37 @@
+name: Portable baseline
+on:
+  push:
+    branches: ['main', 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: portable-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    name: ${{ matrix.cell }} / ${{ matrix.suite }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: ubuntu-24.04, cell: linux-x86_64, host: x86_64-unknown-linux-gnu, suite: baseline }
+          - { runner: ubuntu-24.04-arm, cell: linux-arm64, host: aarch64-unknown-linux-gnu, suite: baseline }
+          - { runner: macos-15, cell: macos-arm64, host: aarch64-apple-darwin, suite: baseline }
+          - { runner: ubuntu-24.04, cell: linux-x86_64, host: x86_64-unknown-linux-gnu, suite: lua55 }
+          - { runner: ubuntu-24.04-arm, cell: linux-arm64, host: aarch64-unknown-linux-gnu, suite: lua55 }
+          - { runner: macos-15, cell: macos-arm64, host: aarch64-apple-darwin, suite: lua55 }
+          - { runner: ubuntu-24.04, cell: linux-x86_64, host: x86_64-unknown-linux-gnu, suite: packaging }
+          - { runner: ubuntu-24.04-arm, cell: linux-arm64, host: aarch64-unknown-linux-gnu, suite: packaging }
+          - { runner: macos-15, cell: macos-arm64, host: aarch64-apple-darwin, suite: packaging }
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install repository toolchain
+        run: rustup toolchain install 1.88.0 --profile minimal --component rustfmt --component clippy
+      - name: Check native cell with pinned tools
+        env:
+          GLUE_CI_EXPECT_HOST: ${{ matrix.host }}
+        run: scripts/ci-portable.sh '${{ matrix.suite }}'

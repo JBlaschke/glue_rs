@@ -1,0 +1,73 @@
+{
+  "case": "python-native-normalized",
+  "completeness": "passed",
+  "evidence_report_sha256": "5a19401c6e8b935f96952152adf136e4edd22b7e73a3fcf14d0cfeed06c88a32",
+  "host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+  "limits": {
+    "max_archive_bytes": 8306594,
+    "max_deployed_bytes": 167628082,
+    "max_deployed_files": 40,
+    "max_deployment_file_delta": 0,
+    "max_elapsed_seconds": 18.24,
+    "max_metadata_call_delta": 10,
+    "max_native_byte_delta": 0,
+    "max_native_bytes": 55758255,
+    "max_open_calls": 311,
+    "max_peak_rss_bytes": 87505920,
+    "max_process_fds": 9,
+    "max_read_bytes": 187826866,
+    "max_read_calls": 3947,
+    "max_runtime_byte_delta": 0,
+    "max_runtime_bytes": 94841590,
+    "max_seek_calls": 969,
+    "max_stat_calls": 512
+  },
+  "measured_artifacts": [
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "88234f952c589f78d3e316983bb812728ae41d8aef64fc3539f9fbd78a779792",
+        "size": 3740601
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+        "size": 5530352
+      },
+      "runtime_descriptor_sha256": "6ca0a1a7a4bd85f60780b0d4ea1e283625d0e05f2ba2eeac70404545d89af7b9",
+      "runtime_version": "3.13.16"
+    },
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "02910462dd757b1e32711c78464e4cfffb7cb31fff9adef03d968bc91f53ae26",
+        "size": 3741449
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+        "size": 5530352
+      },
+      "runtime_descriptor_sha256": "712b392f66a5e34485bb530e85216219b52feb9018546e3071c3e045a7858464",
+      "runtime_version": "3.13.16"
+    },
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "17db5fff8ec349f8c01d5defe038e8d5b682e7c369ec10c2197199bef463d1d2",
+        "size": 7551449
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "8e5e1b4add7ca970a4f29c4cb33fe36cbcf9a97a83300f9bd85ba1ce38e423bd",
+        "size": 5530352
+      },
+      "runtime_descriptor_sha256": "11d98ee51338bd3548be3c3038b2be3671d79e5929781758aaebb01fe1325930",
+      "runtime_version": "3.13.16"
+    }
+  ],
+  "policy": "structure limits are fixed; time/RSS apply only to the measured host fingerprint; no universal timing claim",
+  "revision": 1,
+  "source_entries": 10000,
+  "target": "aarch64-unknown-linux-gnu"
+}

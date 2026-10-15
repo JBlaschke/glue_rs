@@ -20,8 +20,13 @@ path = "src/main.rs"
 [dependencies]
 glue-format.workspace = true
 glue-resources.workspace = true
-glue-pack.workspace = true
+glue-pack = { workspace = true, features = ["python"] }
 serde_json.workspace = true
+serde.workspace = true
+sha2.workspace = true
+toml = "=0.8.19"
+semver = "=1.0.27"
+glue-runtime-node.workspace = true
 glue-runtime-lua.workspace = true
 glue-runtime-python = { workspace = true, optional = true }
 

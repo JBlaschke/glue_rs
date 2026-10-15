@@ -1,0 +1,6 @@
+{
+  "revision": 1,
+  "case": "no-extraction",
+  "extends": "${GLUE_MVP_EXTRACTION_CASE}",
+  "trace": "required"
+}

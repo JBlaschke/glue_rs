@@ -1,0 +1,97 @@
+# macOS syscall capability probe
+
+This is a diagnostic prerequisite for R02, not a complete macOS extraction
+backend. A new [native capability transport](CAPTURE_FORMAT.md) can be built on
+the host and copied to an approved guest without guest Python or compiler tools.
+Its raw syscall/process fixtures remain capability-only until a full decoder and
+oracle are implemented and validated.
+
+A root-authenticated wildcard preflight on the current host reported:
+
+```
+dtrace: failed to match syscall:::entry: System Integrity Protection is on
+```
+
+The root-authenticated exact-name capture on Darwin 25.6.0 arm64 also failed:
+
+```
+probe description syscall::open:entry does not match any probes. System Integrity Protection is on
+```
+
+It returned exit 1, recorded zero events and did not start the fixture body.
+This rules out a wildcard-listing-only limitation. Root authentication does not
+override this OS tracing restriction. No SIP,
+tracing-policy, entitlement, signing-credential or other system setting is
+changed. Passwords never enter these scripts. A narrower owned-fixture probe
+reproduces the exact-name capability check.
+
+Prepare an independent diagnostic fixture, without root:
+
+```sh
+fixtures/mvp/macos-trace/prepare-probe.sh /new/absolute/probe-directory
+```
+
+The helper compiles only the checked-in test source, signs it ad-hoc and verifies
+its signature at its actual path. The fixture directly calls Darwin `SYS_open`,
+reads a 20-byte controlled input, writes a fixed completion marker and exits.
+Its three-second alarm bounds fixture execution. The deprecated libc `syscall`
+entry is used deliberately here to avoid ambiguity between libc's open/openat/
+open_nocancel wrappers; it is not a product runtime interface.
+
+The operator reviews and invokes this command through the host's native
+administrator authentication mechanism:
+
+```sh
+/usr/bin/python3 fixtures/mvp/macos-trace/capture-probe.py \
+  /new/absolute/probe-directory --output /new/absolute/capture-directory
+```
+
+The capture script requires root, never elevates itself, and runs `/usr/sbin/dtrace`
+with the checked-in `open-probe.d`, `-c` containing only the quoted owned fixture
+and input, and a new output directory. It deliberately omits `-Z`, so a missing
+or prohibited `syscall::open:entry` probe fails instead of appearing successful.
+A 15-second timeout kills/reaps the capture process group. Raw trace, DTrace
+stderr, target stdout, exact argv, native host facts and file identities are
+retained in `capability.json` and its accompanying files.
+
+`captured` means only that this particular owned fixture completed and emitted
+at least one matching syscall event. `unavailable` records the observed SIP
+provider rejection. Neither status is an R02 application acceptance pass.
+
+Before a complete Darwin backend can be accepted, actual captures must establish:
+
+- syscall entry/return/errno conventions, with complete successful and failed
+  attempts and lossless bounded path decoding;
+- exec, fork/vfork/posix_spawn, exits, thread coverage and descendants that outlive
+  their parent, including any protected executable that becomes unobservable;
+- descriptor inheritance/dup/close and received file descriptors, cwd/dirfd and
+  Darwin-specific filesystem mutation calls;
+- shared writable mmap and Mach/fileport or other write routes, rejecting
+  unsupported mechanisms instead of assuming they are read-only;
+- explicit rejection of DTrace errors, dropped events, truncation and incomplete
+  entry/return/process terminal records;
+- actual positive, create/unlink, denied-write, descendant-write and shared-map
+  controls, followed by the relocated/offline Lua/Python/Node corpus.
+
+The Linux strace protocol and its oracle remain separate. A userspace libc
+interposer, `fs_usage` summary, parser-only test or file snapshot does not replace
+complete Darwin capture evidence. The current capture is intentionally kept
+small until the OS exposes the required syscall provider on an approved host.
+
+## Retained local result identities
+
+Raw/local inventory files remain outside Git. No release asset or durable remote
+retention is claimed. These local identities describe unavailable capability,
+not macOS application acceptance:
+
+| Local file | SHA-256 |
+| --- | --- |
+| `/private/tmp/glue-mvp-macos-dtrace-preflight.log` | `b7b865fe2eaa5f34034e660c7dbc313d6fe75e9fd5f1d66e84a0f8034b3405f1` |
+| `/private/tmp/glue-mvp-macos-dtrace-open-probe/capability.json` | `88a86175c4630f4a3d975c00778bcf8ede0f0def2166af83787b00cbe7202c9a` |
+| `/private/tmp/glue-mvp-macos-dtrace-open-probe/dtrace.stderr` | `c43d5a21988439ba4a3e96562c299feb28ee016ab8dfdd430ec4e5ebb903cbd8` |
+| `/private/tmp/glue-mvp-macos-trace-capability-inventory.json` | `87252a9ff28dcf25f46f8bed66a9b898bccc3a79a9e3ce927837ecb87629a413` |
+
+The prepared ad-hoc fixture was independently verified and completed its
+readiness run before capture; the authenticated capture failed at provider
+selection before it could run. Full descendant/filesystem tracing remains
+unavailable on this host under the unchanged OS policy.

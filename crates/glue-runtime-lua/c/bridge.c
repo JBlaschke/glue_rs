@@ -20,7 +20,7 @@ _Static_assert(sizeof(lua_Number) == 8, "Lua number ABI must be float64");
 _Static_assert((lua_Integer)-1 < 0, "Lua integer ABI must be signed");
 _Static_assert(LUA_INT_TYPE == LUA_INT_LONGLONG, "Lua integer type must be long long");
 _Static_assert(LUA_FLOAT_TYPE == LUA_FLOAT_DOUBLE, "Lua number type must be double");
-#ifdef GLUE_LUA_NATIVE
+#if defined(GLUE_LUA_NATIVE) || defined(GLUE_LUA_COMPACT)
 _Static_assert(sizeof(uintptr_t) == sizeof(uint64_t), "Native profile requires 64-bit pointers");
 _Static_assert(sizeof(lua_CFunction) == sizeof(uintptr_t), "Native function pointer representation");
 #endif
@@ -45,6 +45,7 @@ typedef struct run_context {
     size_t reply_fault;
     int reply_fault_started;
     int collect_on_first_reply;
+    int compact;
     int panicked;
     int closing;
     glue_lua_result *result;
@@ -149,13 +150,17 @@ static int push_value(lua_State *L, reply_context *reply, unsigned depth,
         lua_pushinteger(L, (lua_Integer)integer);
         break;
     }
-#ifdef GLUE_LUA_NATIVE
+#if defined(GLUE_LUA_NATIVE) || defined(GLUE_LUA_COMPACT)
     case 5: {
         uint64_t bits = read_u64(L, reply);
         uintptr_t address;
         lua_CFunction initializer;
         if (bits == 0)
             invalid_reply(L);
+#ifndef GLUE_LUA_NATIVE
+        if (!reply->run->compact)
+            invalid_reply(L);
+#endif
         /* This private reply comes only from the preloaded manager's validated
            initializer lease. Bits alone cannot establish an arbitrary address
            is callable. The native profile pins all image handles past close. */
@@ -294,6 +299,12 @@ static int initialize_and_run(lua_State *L) {
         luaL_requiref(L, library->name, library->func, 1);
         lua_pop(L, 1);
     }
+    if (run->compact) {
+        luaL_requiref(L, LUA_IOLIBNAME, luaopen_io, 1);
+        lua_pop(L, 1);
+        luaL_requiref(L, LUA_OSLIBNAME, luaopen_os, 1);
+        lua_pop(L, 1);
+    }
     status = luaL_loadbufferx(L, (const char *)run->bootstrap,
                               run->bootstrap_len, "@glue-bootstrap", "t");
     if (status != LUA_OK)
@@ -304,14 +315,29 @@ static int initialize_and_run(lua_State *L) {
 #ifdef GLUE_LUA_NATIVE
     lua_pushboolean(L, 1);
 #else
-    lua_pushboolean(L, 0);
+    lua_pushboolean(L, run->compact);
 #endif
-    lua_call(L, 3, 0);
+    lua_pushboolean(L, run->compact);
+    lua_call(L, 4, 0);
     status = luaL_loadbufferx(L, (const char *)run->entry, run->entry_len,
                               run->origin, "t");
     if (status != LUA_OK)
         return lua_error(L);
-    lua_call(L, 0, 0);
+    if (run->compact) {
+        size_t i;
+        size_t count;
+        lua_getglobal(L, "arg");
+        count = lua_rawlen(L, -1);
+        if (count > (size_t)INT_MAX - 1)
+            return luaL_error(L, "too many application arguments");
+        luaL_checkstack(L, (int)count + 1, "application arguments");
+        for (i = 1; i <= count; i++)
+            lua_rawgeti(L, -(int)i, (lua_Integer)i);
+        lua_remove(L, -(int)count - 1);
+        lua_call(L, (int)count, 0);
+    } else {
+        lua_call(L, 0, 0);
+    }
     return 0;
 }
 
@@ -349,6 +375,7 @@ void glue_lua_run(void *ctx, glue_lua_request request,
     run.remaining_allocations = options->fail_after_allocations;
     run.reply_fault = options->fail_after_reply_allocations;
     run.collect_on_first_reply = options->collect_on_first_reply;
+    run.compact = options->compact;
     run.result = result;
 #if LUA_VERSION_NUM == 505
     L = lua_newstate(system_allocator, &run, luaL_makeseed(NULL));

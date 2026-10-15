@@ -1,6 +1,9 @@
 -- Only Lua and C call Lua APIs. Rust supplies verified resource replies through
 -- request; the C trampoline raises a reply error after the Rust call returns.
-local request, package_path, native_enabled = ...
+local request, package_path, native_enabled, compact = ...
+if compact then
+    arg = request(10, "")
+end
 local original_require, original_load = require, load
 local raise, protected_call = error, pcall
 local value_type, value_string, argument_count = type, tostring, select
@@ -98,6 +101,14 @@ if native_enabled then
             raise(origin, 2)
         end
         return loader
+    end
+end
+
+if compact then
+    package.loadlib = function(path, initializer)
+        path = string_argument(path, false, "native resource key")
+        initializer = string_argument(initializer, false, "native initializer")
+        return request(11, path .. "\0" .. initializer)
     end
 end
 

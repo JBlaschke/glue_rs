@@ -3,6 +3,12 @@
 //! The adapter reads bounded data. It never starts an interpreter, resolves
 //! dependencies, follows generated wrappers or executes an installation hook.
 
+pub mod compact;
+pub mod discovery;
+mod failure;
+pub mod inventory;
+pub mod native;
+
 use super::{
     BuildReport, PackError, PackLimits, build_owned, canonical_root, check_limit, input_io,
     io_error, read_manifest, resource_error, resource_file,

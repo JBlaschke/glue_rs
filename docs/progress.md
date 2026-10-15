@@ -1,23 +1,33 @@
 # Implementation progress
 
-## Current direction — 15 October 2026
+## Compact MVP implementation — 15 October 2026
 
-The owner review is distilled into [the revised plan](../PLAN.md),
-[decision 0035](decisions/0035-mvp-delivery-and-runtime-scope.md),
-[MVP contracts](plans/mvp-contract.md), [the task queue](plans/mvp-tasks.md) and
-[memory/expansion gates](plans/memory-roadmap.md). Planning branch:
-`codex/mvp-project-plan`, based on `5bb1ac4`. This update changes documentation
-only; it adds no runtime support and claims no new execution evidence.
-Validation: whitespace/diff checks, local plan-link checks, balanced code fences,
-and the 26-task dependency graph. Runtime tests are not rerun for this plan-only
-change; their prior results remain in the historical record below.
+The 26 cards now have separate `codex/mvp-*` feature branches. The integrated
+review stack is `codex/mvp-r04-docs`; `main` remains unchanged at `6b49cc5`.
+[The task/compatibility ledger](plans/mvp-implementation.md) records all branches,
+executed target/runtime cells, commands and open evidence. No milestone merge or
+release publication was performed.
 
-Current gates M0–M4 are pending. The immediate native-capable MVP uses compact
-deployment, supports Lua 5.4/5.5 and selectable modern Python/Node, and targets
-Linux/macOS. Runtime extraction and automatic user-module recompilation remain
-forbidden. Memory loading, Julia PackageCompiler bundles, mixed-language RPC and
-Windows/BSD have separate later gates. Historical A/G labels below remain a
-record of work under the old plan, not the current dispatch order.
+Implemented: schema-one compact distributions, deterministic atomic builder,
+ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
+modules, stock Python discovery/environment/provider/native paths, stock Node
+CJS/ESM/resources/Node-API, common CLI/config/rebuild, pinned portable CI, shared
+relocated/offline execution, complete Linux extraction oracle and performance harness.
+Historical schema-zero commands and memory experiments remain separate.
+
+The owner chose ad-hoc signing for macOS development acceptance; Developer ID and
+notarization are prerequisites for public binary releases. Current development
+execution covers macOS arm64 and native Linux arm64. Hosted native Linux x86_64
+ran all 24 applications successfully but awaits acceptance rerun after harness
+fixes. Complete macOS process-tree tracing is blocked by SIP on the current host,
+including after native administrator authentication. M1/M2 remain open: no
+missing execution is replaced with a cross-build, snapshot or skipped test.
+
+User instructions and installed tools are in [README](../README.md) and
+[the compact CLI guide](compact-cli.md). Test results, exact runtime versions,
+local evidence locations and host-scoped numeric performance budgets are linked
+from the acceptance ledger. Raw logs/binaries/traces stay outside Git under
+[decision 0030](decisions/0030-evidence-retention.md); publication remains pending.
 
 ## Historical implementation record
 
@@ -505,3 +515,120 @@ unwinding, image identity and signed deployment are not established by the small
 spike or host-startup route. Follow the [separate roadmap](plans/memory-roadmap.md)
 instead of blocking compact packaging on general dyld replacement. Decision 0033
 remains useful static-corpus evidence, not a completed dynamic loader contract.
+
+## MVP implementation — C01 (15 October 2026)
+
+- Branch `codex/mvp-c01-contracts`, based on `6b49cc5`; result: branch tip.
+- Added explicit schema one distribution/runtime/native/launch/report/lock and
+  stable diagnostic APIs; schema zero fixtures retain their interpretation.
+- `cargo test -p glue-format --locked`: 55 tests passed on macOS arm64,
+  Rust 1.88.0. `cargo clippy -p glue-format --all-targets --locked -- -D warnings`
+  passed. Examples round-trip all three language descriptors, reject ambiguous
+  modes, path collisions, escapes, cycles and runtime mismatches.
+- Decision 0036 describes the schema change. Runtime execution is subsequent work.
+
+## MVP implementation — C02 (15 October 2026)
+
+- Branch `codex/mvp-c02-distribution`, based on C01 `c599587`; result: branch tip.
+- Added bounded shared staging/build API, deterministic archive/lock/report,
+  launcher and notices, payload modes/internal links, exclusive atomic directory
+  publication and output/staging traversal exclusion. Native bytes stay deployed.
+- Product bounds: 100,000 archive entries, 1 GiB archived input, 8 GiB deployed
+  payload and 100,000 deployed files (configurable); original archive decode,
+  per-entry and central-directory bounds remain enforced.
+- `cargo test -p glue-pack --locked`: 24 tests passed on macOS arm64/Rust 1.88.0,
+  including deterministic distinct roots, overlap, collisions, missing/escaped
+  input, output preservation, safe links, modes and complete size accounting.
+- The exclusive rename boundary uses the platform's no-replace primitive.
+  Linux native execution remains a target-cell check; no release gate is claimed.
+
+## MVP implementation — C03 (15 October 2026)
+
+- Branch `codex/mvp-c03-linux-native`, based on C02 `74308df`; result: branch tip.
+- Added ELF64 dynamic inspection and deterministic explicit-root native closure
+  collection. Preserves relative paths, records SONAME/dependency/version/feature
+  facts, rejects missing edges, target mismatch, path escape and identity conflicts.
+  TLS, unwind and GNU hash facts do not inherit memory-mapper restrictions.
+- macOS arm64 parser/closure tests and pinned Clippy passed. A separate Linux-only
+  test compiles independent fixture inputs, compares readelf and executes the
+  relocated module plus secondary library through dlopen with TLS state.
+- Absolute/cwd-dependent load paths produce transformation-required diagnostics;
+  optional normalization tooling and x86_64 native execution remain pending.
+  This card is implemented partially until those acceptance requirements pass.
+
+## MVP implementation — C04 (15 October 2026)
+
+- Branch `codex/mvp-c04-macos-native`, based on C03 `bdc186e`; result: branch tip.
+- Added bounded thin/universal Mach-O inspection, actual loader-chain rpath
+  resolution, native target/OS-floor checks, preserved relative closure paths,
+  explicit metadata normalization with input/output hashes and verified ad-hoc
+  re-signing. Host-prefix paths reject without explicit normalization.
+- `cargo test -p glue-pack --test native_macos --locked`: 3 passed on macOS arm64,
+  including ordinary independently compiled bundle + secondary dylib, copied to
+  Unicode/space path, original input deleted, native dlopen execution and final
+  codesign verification for unchanged and normalized paths. otool independently
+  confirms the dependency. Missing edges, slice mismatch and OS floor reject.
+- Pinned Clippy passed. C03's separate offline Linux arm64 run passed all 3 tests,
+  including real relocation/TLS execution and readelf comparison. x86_64 native
+  execution remains unexecuted. Public Developer ID/notarization is R02 evidence.
+
+## MVP implementation — V01 (15 October 2026)
+
+- Branch `codex/mvp-v01-portable-ci`, based on C04 `25eb646`; result: branch tip.
+- Added native Linux x86_64/Linux arm64/macOS arm64 GitHub jobs for baseline,
+  Lua55 and packaging suites. Rust/Clippy 1.88.0, expected native host and locked
+  dependencies are checked explicitly. Lua features run separately.
+- `scripts/ci-portable.sh baseline` passed locally on macOS arm64 (workspace
+  tests, formatting and all-target Clippy); raw log is local at
+  `/private/tmp/glue-mvp-v01-baseline.log`. `sh -n` passed.
+- Hosted jobs are configured, not yet executed. No signing/evidence assets are
+  required; portable checks do not substitute for target product receipts.
+
+## MVP implementation — C05 (15 October 2026)
+
+- Branch `codex/mvp-c05-builder-cli`, based on V01 `dc8e659` plus reviewed task
+  handoffs L01 `f78cdd5`, L02 `8ee9e76`, L03 `9f00c96`; result: branch tip.
+- Added high-level language dispatch slots and working Lua compact build/run,
+  TOML defaults with CLI precedence, compact inspection/size/doctor, sibling
+  integrity verification, literal placeholder expansion and direct Unix exec.
+  Payload write bits may be removed for immutable deployment; required read/exec
+  bits and hashes remain checked. No shell or missing-payload recovery exists.
+- Pinned runner tests passed (21 legacy + 3 new CLI tests); new tests execute a
+  relocated read-only distribution with deleted project, unrelated cwd, Unicode,
+  spaces and placeholder-looking path; stdin/out/err, literal argv, exit 7,
+  SIGINT/SIGTERM, config errors and missing sibling rejection pass. Clippy passed.
+- Reproduce: build/install the glue-owned Lua helpers, then
+  `glue build lua fixtures/mvp/lua-projects/first --lua 5.4 --output /tmp/lua-app`;
+  `/tmp/lua-app/glue run /tmp/lua-app/app.glue -- argument`.
+- Python and Node slots are intentionally integrated in R01 after their provider
+  handoffs. This is source/native Lua functionality, not M2 closure.
+
+## MVP native acceptance update (15 October 2026)
+
+Native Linux x86_64 [run 38800548172](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172)
+tested [source e3962701](https://github.com/JBlaschke/glue_rs/commit/e3962701f558c287515508c97df4679e08d64ed2)
+and passed all 24 acceptance cases: both Lua families, twelve Python
+3.12.15/3.13.16/3.14.8 cases and eight Node 24.22.0/26.10.0 cases. The supplied
+3.14 conda runtime includes a compatible prebuilt compiler-runtime closure;
+packaging neither rebuilt native inputs nor relaxed conflicting-identity checks.
+All five reviewed R03 budgets, measured with 10,000 added entries at 1 and 32
+ranks, passed in enforcement mode. Independent replay verified all receipts,
+fifteen benchmark-variant traces, negative controls and 990 rank results.
+
+The run explicitly inherits
+[`traceable-native-syscalls-v1`](decisions/mvp-v02-ci-trace-environment.md),
+which returns ENOSYS for asynchronous kernel I/O in the complete stock/reference,
+packaged, control and rank trees. Fixed structure/I/O/scaling limits apply across
+hosts; time/RSS remain scoped to the recorded host fingerprint. No controlled
+cold-cache result or unrestricted ring-enabled-host acceptance is claimed.
+
+[Artifact 12005186009](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172/artifacts/12005186009)
+retains the raw evidence, ZIP SHA256
+`c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+Local replay is
+`/private/tmp/glue-native-x86-evidence-38800548172/independent-replay.json`.
+The artifact currently expires on 29 October; durable evidence publication
+remains open. The complete Darwin decoder/oracle is still unimplemented and
+unvalidated, so Mac R02 corpus/controls/budgets and M2 remain open. Developer ID
+and notarization are later public-release gates. Current task refs, commands and
+remaining work are recorded in the [implementation ledger](plans/mvp-implementation.md).

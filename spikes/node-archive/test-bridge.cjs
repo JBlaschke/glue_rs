@@ -1,0 +1,20 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const bridge = require(process.argv[2]);
+const file = process.argv[3];
+const a = bridge.open(file);
+assert.deepEqual(JSON.parse(bridge.list(a)).includes('asset.txt'),true);
+assert.equal(bridge.read(a,'asset.txt').toString(),'archived resource\n');
+for (let i=0;i<50;i++) assert.equal(bridge.read(bridge.open(file),'asset.txt').length,18);
+assert.throws(()=>bridge.read({},'asset.txt'));
+assert.throws(()=>bridge.read({fake:true},'asset.txt'));
+assert.throws(()=>bridge.read(a,'../asset.txt'));
+assert.throws(()=>bridge.read(a,'missing'));
+assert.throws(()=>bridge.read(a,7));
+assert.throws(()=>bridge.open('x'.repeat(4097)));
+assert.throws(()=>bridge.open(process.argv[2])); // native image is not an archive
+const b = bridge.read(a,'asset.txt'); b.fill(0);
+assert.equal(bridge.read(a,'asset.txt').toString(),'archived resource\n');
+if(global.gc) global.gc();
+console.log(JSON.stringify({case:'bridge',bounds:true,handles:true,ownership:true,malformed:true}));
