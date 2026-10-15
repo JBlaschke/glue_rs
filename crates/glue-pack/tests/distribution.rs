@@ -230,3 +230,113 @@ fn internal_symlink_and_permissions_are_preserved() {
         0o755
     );
 }
+
+#[cfg(target_os = "macos")]
+#[test]
+fn claimed_normalized_signature_is_verified_at_staged_bundle_path_before_publication() {
+    use std::process::Command;
+    let t = Temp::new();
+    let source = t.0.join("image.c");
+    let image = t.0.join("image");
+    fs::write(&source, "int main(void){return 0;}\n").unwrap();
+    assert!(
+        Command::new("/usr/bin/cc")
+            .arg(&source)
+            .arg("-o")
+            .arg(&image)
+            .status()
+            .unwrap()
+            .success()
+    );
+    assert!(
+        Command::new("/usr/bin/codesign")
+            .args(["--force", "--sign", "-", "--timestamp=none"])
+            .arg(&image)
+            .status()
+            .unwrap()
+            .success()
+    );
+    assert!(
+        Command::new("/usr/bin/codesign")
+            .args(["--verify", "--strict"])
+            .arg(&image)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let bytes = fs::read(&image).unwrap();
+    let launcher = launcher(&t.0);
+    let bundle_path = "native/Incomplete.app/Contents/MacOS/Incomplete";
+    let prepared = |path: &str, claimed: bool| {
+        let mut selected = input();
+        selected.payloads.insert(
+            path.into(),
+            PayloadSource::Bytes {
+                bytes: bytes.clone(),
+                mode: 0o755,
+            },
+        );
+        selected.native.transformations.push(Transformation {
+            path: path.into(),
+            input: InputIdentity::of(&bytes),
+            output: InputIdentity::of(&bytes),
+            edits: vec!["independent signed normalization-output fixture".into()],
+            signing: claimed.then(|| "ad_hoc; temporary image verified".into()),
+        });
+        selected
+    };
+    // Existing/unsigned inputs gain no new signing requirement without a claim.
+    let unchanged = t.0.join("unchanged");
+    build(
+        prepared(bundle_path, false),
+        &launcher,
+        &unchanged,
+        DistributionLimits::default(),
+    )
+    .unwrap();
+    assert!(
+        !Command::new("/usr/bin/codesign")
+            .args(["--verify", "--strict"])
+            .arg(unchanged.join(bundle_path))
+            .status()
+            .unwrap()
+            .success()
+    );
+    let rejected = t.0.join("rejected");
+    let failure = build(
+        prepared(bundle_path, true),
+        &launcher,
+        &rejected,
+        DistributionLimits::default(),
+    )
+    .unwrap_err();
+    assert_eq!(failure.code, DiagnosticCode::TransformationRequired);
+    assert!(failure.message.contains(bundle_path));
+    assert!(failure.message.contains("staged path"));
+    assert!(!rejected.exists());
+    assert!(!fs::read_dir(&t.0).unwrap().any(|entry| {
+        entry
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .starts_with(".glue-stage-")
+    }));
+    let accepted = t.0.join("accepted");
+    let standalone = "native/bin/image";
+    build(
+        prepared(standalone, true),
+        &launcher,
+        &accepted,
+        DistributionLimits::default(),
+    )
+    .unwrap();
+    assert!(
+        Command::new("/usr/bin/codesign")
+            .args(["--verify", "--strict"])
+            .arg(accepted.join(standalone))
+            .status()
+            .unwrap()
+            .success()
+    );
+    assert_eq!(fs::read(&image).unwrap(), bytes);
+}

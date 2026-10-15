@@ -11,6 +11,7 @@ use std::{
     path::{Path, PathBuf},
     process::{Command, Stdio},
     sync::atomic::{AtomicU64, Ordering},
+    time::{Duration, Instant},
 };
 fn bad(message: impl Into<String>) -> Diagnostic {
     diagnostic(DiagnosticCode::UnsupportedCapability, message)
@@ -548,22 +549,80 @@ impl Drop for Temporary {
     }
 }
 fn run(tool: &str, args: &[String], path: &Path) -> Result<()> {
-    let status = Command::new(tool)
+    let mut child = Command::new(tool)
         .args(args)
         .arg(path)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .status()
+        .spawn()
         .map_err(|e| bad(format!("{tool}: {e}")))?;
-    if !status.success() {
-        return Err(diagnostic(
-            DiagnosticCode::TransformationRequired,
-            format!("{tool} failed while editing/verifying {}", path.display()),
-        ));
+    let deadline = Instant::now() + Duration::from_secs(30);
+    loop {
+        match child.try_wait() {
+            Ok(Some(status)) if status.success() => return Ok(()),
+            Ok(Some(_)) => {
+                return Err(diagnostic(
+                    DiagnosticCode::TransformationRequired,
+                    format!("{tool} failed while editing/verifying {}", path.display()),
+                ));
+            }
+            Ok(None) if Instant::now() < deadline => {
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            result => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err(diagnostic(
+                    DiagnosticCode::TransformationRequired,
+                    format!(
+                        "{tool} did not finish editing/verifying {} within 30s: {}",
+                        path.display(),
+                        result
+                            .err()
+                            .map_or_else(|| "deadline exceeded".into(), |e| e.to_string())
+                    ),
+                ));
+            }
+        }
+    }
+}
+/// A code signature can verify as a standalone temporary image but fail after
+/// placement inside a bundle. Verify only claimed normalized signatures, after
+/// every staged payload/link exists and before the directory is published.
+#[cfg(target_os = "macos")]
+pub(crate) fn verify_staged_signatures(root: &Path, changes: &[Transformation]) -> Result<()> {
+    for change in changes.iter().filter(|change| change.signing.is_some()) {
+        validate_payload_path(&change.path)
+            .map_err(|e| diagnostic(DiagnosticCode::PathEscape, e.to_string()))?;
+        let path = root.join(&change.path);
+        let metadata = fs::symlink_metadata(&path).map_err(|e| {
+            diagnostic(
+                DiagnosticCode::MissingInput,
+                format!("{}: {e}", path.display()),
+            )
+        })?;
+        if !metadata.file_type().is_file()
+            || !fs::canonicalize(&path).is_ok_and(|p| p.starts_with(root))
+        {
+            return Err(diagnostic(
+                DiagnosticCode::PathEscape,
+                format!(
+                    "claimed signed image is not a regular staged payload: {}",
+                    path.display()
+                ),
+            ));
+        }
+        run("/usr/bin/codesign", &["--verify".into(), "--strict".into()], &path)
+            .map_err(|failure| Diagnostic::new(
+                failure.code,
+                format!("normalized image signature failed at staged path {}: {}", path.display(), failure.message),
+                "preserve the signed bundle layout or select a deployment path where the normalized signature remains valid",
+            ))?;
     }
     Ok(())
 }
+
 fn normalize_image(
     source: &Path,
     deployed: &str,
