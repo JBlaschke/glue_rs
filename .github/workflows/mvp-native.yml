@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      GLUE_MVP_CI_ROOT: ${{ runner.temp }}/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
+      GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
