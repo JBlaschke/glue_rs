@@ -11,12 +11,15 @@ use std::{
 
 /// Provisional schema: bump before making an incompatible contract change.
 pub const SCHEMA_VERSION: u32 = 0;
+pub const DISTRIBUTION_SCHEMA_VERSION: u32 = 1;
 pub const MAX_MANIFEST_BYTES: usize = 16 * 1024 * 1024;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Manifest {
     pub schema_version: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distribution: Option<crate::DistributionSpec>,
     pub app_id: String,
     /// ID of a declared component, not a filesystem path.
     pub entrypoint: String,
@@ -293,6 +296,12 @@ impl Manifest {
     }
 
     pub fn validate(&self) -> Result<(), FormatError> {
+        if self.schema_version == DISTRIBUTION_SCHEMA_VERSION {
+            return crate::distribution::validate_manifest(self);
+        }
+        if self.distribution.is_some() {
+            return invalid("schema zero cannot declare distribution payloads");
+        }
         if self.schema_version != SCHEMA_VERSION {
             return Err(FormatError::UnsupportedSchemaVersion(self.schema_version));
         }

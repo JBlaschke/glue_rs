@@ -219,6 +219,7 @@ fn app_specs() -> BTreeMap<String, ResourceSpec> {
 /// records the observed cell; it is not a tested compatibility floor.
 pub(super) fn profile_manifest(config: &Config) -> Result<Manifest, String> {
     let result = Manifest {
+        distribution: None,
         schema_version: 0,
         app_id: APP_ID.into(),
         entrypoint: "main".into(),

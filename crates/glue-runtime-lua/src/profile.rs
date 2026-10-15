@@ -268,6 +268,7 @@ mod tests {
 
     fn fixture(host: &platform::Host) -> Manifest {
         Manifest {
+            distribution: None,
             schema_version: 0,
             app_id: "lua.profile.fixture".to_owned(),
             entrypoint: "main".to_owned(),

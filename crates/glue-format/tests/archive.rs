@@ -14,6 +14,7 @@ fn fixture(compression: Compression, extra: bool) -> (Manifest, BTreeMap<String,
         );
     }
     let manifest = Manifest {
+        distribution: None,
         schema_version: SCHEMA_VERSION,
         app_id: "archive.fixture".to_owned(),
         entrypoint: "main".to_owned(),
