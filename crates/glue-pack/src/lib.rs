@@ -5,6 +5,7 @@
 //! separate from the runtime's read-only archive reader.
 
 pub mod distribution;
+pub mod lua;
 pub mod native;
 
 #[cfg(feature = "python")]
