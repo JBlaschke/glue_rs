@@ -2,7 +2,9 @@
 
 mod compact;
 
-use glue_format::{Archive, ArchiveLimits, Manifest, Provisioning, RuntimeAbi, digest};
+use glue_format::{
+    Archive, ArchiveLimits, BufferedReader, Manifest, Provisioning, RuntimeAbi, digest,
+};
 use glue_resources::Resources;
 use std::{
     error::Error,
@@ -22,6 +24,7 @@ Usage:
   glue build python --env ENV --entry FILE --output DIR
   glue build node PROJECT --node EXECUTABLE --entry FILE --output DIR
   glue run APP.glue -- [ARGUMENTS...]
+  glue rebuild glue.lock.json --output NEW_DIR [--json]
   glue build --manifest MANIFEST --root INPUT_DIR --output APP.glue
   glue python-template --provider bundled --pbs-full FULL.tar.zst
     --frozen-bootstrap BUNDLE.json --output DIR [--json]
@@ -43,12 +46,12 @@ Usage:
   glue doctor [APP.glue]
   glue run APP.glue
 
-A linked Lua 5.4 or 5.5 build can run source and resources from a matching archive.
-Optional builds also support controlled Linux native Lua and exact PBS Python
-profiles. General Python/Node applications and standalone executables remain
-pending. See fixtures/lua-linked and fixtures/python-runner for admitted profiles.
-Existing build outputs are never overwritten.
-Source-only installed Python package builds require --features python-pack.
+Compact builders consume existing Lua projects, Python environments and installed
+Node projects. Install glue, both Lua helpers and the archive bridge together with
+scripts/install-glue.sh PREFIX. Runtime versions must pass capability/ABI checks.
+Memory delivery remains limited to proven low-level profiles. Existing outputs
+are never overwritten. The legacy build-python command retains its separate
+python-pack feature; the high-level build python command is included normally.
 ";
 
 enum Command {
@@ -837,10 +840,13 @@ fn execute(command: Command) -> Result<ExitCode> {
     Ok(ExitCode::SUCCESS)
 }
 
-fn open(path: &Path) -> Result<Archive<File>> {
+fn open(path: &Path) -> Result<Archive<BufferedReader<File>>> {
     let file = File::open(path)
         .map_err(|error| format!("cannot open archive {}: {error}", path.display()))?;
-    Ok(Archive::open_with_limits(file, inspection_limits())?)
+    Ok(Archive::open_with_limits(
+        BufferedReader::new(file),
+        inspection_limits(),
+    )?)
 }
 
 fn inspection_limits() -> ArchiveLimits {
@@ -852,7 +858,7 @@ fn inspection_limits() -> ArchiveLimits {
     }
 }
 
-fn inspect(archive: &Archive<File>) -> Result<()> {
+fn inspect(archive: &Archive<BufferedReader<File>>) -> Result<()> {
     let manifest = archive.manifest();
     println!(
         "App: {} (schema {})",
@@ -923,7 +929,7 @@ fn execution_unavailable(manifest: &Manifest) {
 fn explain_size(path: &Path) -> Result<()> {
     let file = File::open(path)?;
     let archive_bytes = file.metadata()?.len();
-    let archive = Archive::open_with_limits(file, inspection_limits())?;
+    let archive = Archive::open_with_limits(BufferedReader::new(file), inspection_limits())?;
     let compressed = archive
         .entries()
         .values()

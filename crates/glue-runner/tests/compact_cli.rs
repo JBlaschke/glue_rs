@@ -252,3 +252,76 @@ fn compact_launcher_preserves_sigint_and_sigterm() {
         assert_eq!(child.wait().unwrap().signal(), Some(number));
     }
 }
+
+#[test]
+fn recorded_rebuild_reuses_runtime_and_rejects_runtime_lock_changes_before_publish() {
+    let helpers = std::env::var_os("GLUE_LUA_TEST_HELPER_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            PathBuf::from(env!("CARGO_BIN_EXE_glue"))
+                .parent()
+                .unwrap()
+                .to_owned()
+        });
+    if !helpers.join("glue-lua54").is_file() {
+        assert!(std::env::var_os("GLUE_REQUIRE_COMPACT_CLI").is_none());
+        return;
+    }
+    let t = Temp::new();
+    let project = t.0.join("project");
+    fs::create_dir(&project).unwrap();
+    fs::write(project.join("main.lua"), "print('rebuild')\n").unwrap();
+    let original = t.0.join("original");
+    let result = glue()
+        .args(["build", "lua"])
+        .arg(&project)
+        .arg("--helper-dir")
+        .arg(helpers)
+        .arg("--output")
+        .arg(&original)
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    let rebuilt = t.0.join("rebuilt");
+    let result = glue()
+        .arg("rebuild")
+        .arg(original.join("glue.lock.json"))
+        .arg("--output")
+        .arg(&rebuilt)
+        .arg("--json")
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    assert_eq!(
+        fs::read(original.join("app.glue")).unwrap(),
+        fs::read(rebuilt.join("app.glue")).unwrap()
+    );
+    let mut lock: serde_json::Value =
+        serde_json::from_slice(&fs::read(original.join("glue.lock.json")).unwrap()).unwrap();
+    lock["runtime"]["version"] = "5.4.8".into();
+    let invalid = t.0.join("invalid.lock.json");
+    fs::write(&invalid, serde_json::to_vec(&lock).unwrap()).unwrap();
+    let absent = t.0.join("absent");
+    let result = glue()
+        .arg("rebuild")
+        .arg(&invalid)
+        .arg("--output")
+        .arg(&absent)
+        .arg("--json")
+        .output()
+        .unwrap();
+    assert!(!result.status.success());
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(&result.stderr).unwrap()["code"],
+        "payload_integrity"
+    );
+    assert!(!absent.exists());
+}

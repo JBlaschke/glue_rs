@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-runtime-python", "crates/glue-native", "crates/glue-pbs", "crates/glue-ipc", "fixtures/worker-protocol", "spikes/linux-memfd", "spikes/macos-macho", "spikes/python-bootstrap"]
+members = ["crates/glue-format", "crates/glue-resources", "crates/glue-pack", "crates/glue-runner", "crates/glue-runtime-lua", "crates/glue-runtime-python", "crates/glue-runtime-node", "crates/glue-native", "crates/glue-pbs", "crates/glue-ipc", "fixtures/worker-protocol", "spikes/linux-memfd", "spikes/macos-macho", "spikes/python-bootstrap"]
 resolver = "3"
 
 [workspace.package]
@@ -23,6 +23,7 @@ glue-format = { path = "crates/glue-format" }
 glue-resources = { path = "crates/glue-resources" }
 glue-pack = { path = "crates/glue-pack" }
 glue-runtime-lua = { path = "crates/glue-runtime-lua", default-features = false }
+glue-runtime-node = { path = "crates/glue-runtime-node" }
 glue-runtime-python = { path = "crates/glue-runtime-python", default-features = false }
 glue-native = { path = "crates/glue-native" }
 glue-ipc = { path = "crates/glue-ipc" }

@@ -1,4 +1,6 @@
 //! Compact command dispatch. Adapters own discovery; this module owns launch and CLI policy.
+mod host;
+
 use glue_format::*;
 use glue_pack::distribution::{DistributionLimits, Result};
 use serde::Deserialize;
@@ -10,7 +12,7 @@ use std::{
     io::Read,
     path::{Path, PathBuf},
     process::{Command, ExitCode, Stdio},
-    time::{Duration, Instant},
+    time::Duration,
 };
 fn error(code: DiagnosticCode, message: impl Into<String>) -> Diagnostic {
     Diagnostic::new(
@@ -43,7 +45,10 @@ pub fn handle(args: &[OsString]) -> Option<Result<ExitCode>> {
             .get(1)
             .is_some_and(|s| ["lua", "python", "node"].iter().any(|n| s == n))
     {
-        return Some(build(&args[1..]));
+        return Some(build(&args[1..], None));
+    }
+    if command == "rebuild" {
+        return Some(rebuild(&args[1..]));
     }
     if !["run", "doctor", "inspect", "explain-size"].contains(&command) {
         return None;
@@ -53,7 +58,7 @@ pub fn handle(args: &[OsString]) -> Option<Result<ExitCode>> {
         return None;
     }
     let file = File::open(path).ok()?;
-    let archive = match Archive::open(file) {
+    let archive = match Archive::open(BufferedReader::new(file)) {
         Ok(a) => a,
         Err(_) => return None,
     };
@@ -97,8 +102,6 @@ struct LuaConfig {
     #[serde(default)]
     native_abi: BTreeMap<String, String>,
 }
-// Adapter configuration becomes active when the Python/Node slots land in R01.
-#[allow(dead_code)]
 #[derive(Clone, Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "kebab-case")]
 struct PythonConfig {
@@ -111,7 +114,6 @@ struct PythonConfig {
     #[serde(default)]
     prune: Vec<String>,
 }
-#[allow(dead_code)]
 #[derive(Clone, Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "kebab-case")]
 struct NodeConfig {
@@ -275,7 +277,7 @@ fn config(options: &Options, project: &Path) -> Result<Config> {
     }
     Ok(c)
 }
-fn build(args: &[OsString]) -> Result<ExitCode> {
+fn build(args: &[OsString], expected: Option<&RuntimeDescriptor>) -> Result<ExitCode> {
     let language = text(&args[0])?;
     let o = parse(&args[1..])?;
     let cwd =
@@ -286,6 +288,27 @@ fn build(args: &[OsString]) -> Result<ExitCode> {
         .or_else(|| o.path("--project"))
         .unwrap_or(cwd);
     let c = config(&o, &project)?;
+    validate_language_options(language, &o)?;
+    let mut context = BTreeMap::from([
+        (
+            "glue.cli.argv".to_owned(),
+            serde_json::to_string(&rebuild_arguments(args))
+                .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?,
+        ),
+        (
+            "glue.cli.cwd".to_owned(),
+            std::env::current_dir()
+                .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?
+                .to_string_lossy()
+                .into_owned(),
+        ),
+    ]);
+    if let Some(expected) = expected {
+        context.insert(
+            "glue.expected-runtime".into(),
+            serde_json::to_string(expected).unwrap(),
+        );
+    }
     let delivery = o
         .get("--delivery")?
         .or(c.delivery.clone())
@@ -390,14 +413,96 @@ fn build(args: &[OsString]) -> Result<ExitCode> {
                 native_search,
                 normalize_native_paths: normalize,
             };
-            glue_pack::lua::build(&options, &launcher, &output, DistributionLimits::default())?
+            let limits = DistributionLimits::default();
+            let mut input = glue_pack::lua::ingest(&options, limits)?;
+            glue_pack::lua::resolve_native(&options, &mut input)?;
+            publish(input, &launcher, &output, context)?
         }
-        "python" | "node" => {
-            let _ = (&c.python, &c.node, native_search, normalize, entry, mode);
-            return Err(error(
-                DiagnosticCode::UnsupportedCapability,
-                format!("{language} compact adapter is not integrated in this task branch"),
-            ));
+        "python" => {
+            use glue_pack::python::{
+                compact,
+                discovery::DiscoveryOptions,
+                inventory::{InventoryOptions, PythonEntry},
+            };
+            let has_cli_entry = ["--entry", "--module", "--console-script"]
+                .iter()
+                .any(|k| o.values.contains_key(*k));
+            let selected = if has_cli_entry {
+                [
+                    o.get("--entry")?.map(PythonEntry::File),
+                    o.get("--module")?.map(PythonEntry::Module),
+                    o.get("--console-script")?.map(PythonEntry::ConsoleScript),
+                ]
+            } else {
+                [
+                    entry.map(PythonEntry::File),
+                    c.python.module.map(PythonEntry::Module),
+                    c.python.console_script.map(PythonEntry::ConsoleScript),
+                ]
+            };
+            let mut selected: Vec<_> = selected.into_iter().flatten().collect();
+            if selected.len() != 1 {
+                return Err(error(
+                    DiagnosticCode::MissingEntry,
+                    "select exactly one --entry FILE, --module NAME or --console-script NAME (or one configured entry)",
+                ));
+            }
+            let project = o.path("--project").or(c.python.project).unwrap_or(project);
+            let environment = o
+                .path("--env")
+                .or(c.python.environment)
+                .unwrap_or_else(|| project.join(".venv"));
+            let mut application = InventoryOptions::new(project.clone(), selected.remove(0));
+            application.output = Some(output.clone());
+            application.prune.extend(c.python.prune);
+            application.prune.extend(o.list("--prune")?);
+            let options = compact::CompactBuildOptions {
+                discovery: DiscoveryOptions {
+                    environment,
+                    runtime: o.path("--runtime").or(c.python.runtime),
+                    python_version: o.get("--python")?.or(c.python.version),
+                    target: Some(target),
+                    inspect_only: false,
+                },
+                application,
+                runtime_provider: if mode == "host" {
+                    RuntimeProvider::Host
+                } else {
+                    RuntimeProvider::Bundled
+                },
+                native_search,
+                normalize_native_paths: normalize,
+                app_id: project
+                    .file_name()
+                    .and_then(|n| n.to_str())
+                    .unwrap_or("python-application")
+                    .to_owned(),
+            };
+            compact::build_with_options(&options, &launcher, &output, &context)?
+        }
+        "node" => {
+            let node=o.path("--node").or(c.node.executable).ok_or_else(||error(DiagnosticCode::MissingInput,"--node EXECUTABLE or node.executable in glue.toml is required; no runtime is downloaded"))?;
+            if let Some(constraint) = o.get("--node-version")?.or(c.node.version) {
+                let selected = glue_runtime_node::discover(&node, Some(&target))?;
+                require_node_version(&selected.descriptor.version, &constraint)?;
+            }
+            let bridge = o
+                .path("--node-bridge")
+                .or(c.node.bridge)
+                .or_else(|| std::env::var_os("GLUE_NODE_BRIDGE").map(PathBuf::from))
+                .unwrap_or_else(|| launcher.parent().unwrap().join("glue-archive.node"));
+            let options = glue_pack::node::NodeBuildOptions {
+                project,
+                entry: entry.map(PathBuf::from),
+                node,
+                bridge,
+                target: Some(target),
+                host: mode == "host",
+                native_search,
+                normalize_native_paths: normalize,
+            };
+            let input = glue_pack::node::prepare(&options, &output, DistributionLimits::default())?;
+            publish(input, &launcher, &output, context)?
         }
         _ => unreachable!(),
     };
@@ -521,6 +626,50 @@ fn selected_executable(root: &Path, spec: &DistributionSpec) -> Result<PathBuf> 
                     "declared host runtime is missing",
                 ));
             }
+            let key = match spec.runtime.implementation {
+                RuntimeImplementation::Node => "node-executable",
+                RuntimeImplementation::Cpython => "runtime-executable",
+                RuntimeImplementation::Lua => "helper-executable",
+            };
+            let expected = spec.runtime.inputs.get(key).ok_or_else(|| {
+                error(
+                    DiagnosticCode::InvalidConfiguration,
+                    "host runtime executable identity is missing",
+                )
+            })?;
+            let mut stream = File::open(&p)
+                .map_err(|e| error(DiagnosticCode::MissingDependency, e.to_string()))?;
+            let mut hash = Sha256::new();
+            let mut bytes = [0u8; 65536];
+            let mut total = 0u64;
+            loop {
+                let n = stream
+                    .read(&mut bytes)
+                    .map_err(|e| error(DiagnosticCode::PayloadIntegrity, e.to_string()))?;
+                if n == 0 {
+                    break;
+                }
+                total = total.checked_add(n as u64).ok_or_else(|| {
+                    error(DiagnosticCode::ResourceLimit, "host runtime size overflow")
+                })?;
+                if total > expected.size {
+                    return Err(error(
+                        DiagnosticCode::RuntimeAbiMismatch,
+                        "host runtime executable changed",
+                    ));
+                }
+                hash.update(&bytes[..n]);
+            }
+            let actual = InputIdentity {
+                size: total,
+                sha256: hash.finalize().iter().map(|b| format!("{b:02x}")).collect(),
+            };
+            if &actual != expected {
+                return Err(error(
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "host runtime executable changed",
+                ));
+            }
             Ok(p)
         }
     }
@@ -555,94 +704,77 @@ fn substitute(value: &str, root: &Path, archive: &Path) -> Result<String> {
     Ok(result)
 }
 fn runtime_probe(executable: &Path, spec: &DistributionSpec) -> Result<()> {
-    let mut command = Command::new(executable);
-    command
-        .env_clear()
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null());
-    if spec.runtime.implementation == RuntimeImplementation::Lua {
-        command.arg("--describe");
-    } else {
-        command.arg("--version");
-    }
-    let mut child = command
-        .spawn()
-        .map_err(|e| error(DiagnosticCode::RuntimeProcessFailure, e.to_string()))?;
-    let stdout = child.stdout.take().unwrap();
-    let handle = std::thread::spawn(move || {
-        let mut bytes = Vec::new();
-        stdout.take(65537).read_to_end(&mut bytes).map(|_| bytes)
-    });
-    let start = Instant::now();
-    loop {
-        match child.try_wait() {
-            Ok(Some(status)) => {
-                if !status.success() {
-                    return Err(error(
-                        DiagnosticCode::RuntimeAbiMismatch,
-                        "runtime metadata probe failed",
-                    ));
-                }
-                break;
-            }
-            Ok(None) if start.elapsed() < Duration::from_secs(5) => {
-                std::thread::sleep(Duration::from_millis(20))
-            }
-            _ => {
-                let _ = child.kill();
-                let _ = child.wait();
+    match spec.runtime.implementation {
+        RuntimeImplementation::Lua => {
+            let helper = glue_runtime_lua::helper::query(executable)
+                .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e.to_string()))?;
+            let RuntimeAbi::Lua { version, .. } = &spec.runtime.abi else {
+                unreachable!()
+            };
+            let family = if version.minor == 4 {
+                glue_runtime_lua::helper::LuaFamily::Lua54
+            } else {
+                glue_runtime_lua::helper::LuaFamily::Lua55
+            };
+            helper
+                .validate(family, &spec.runtime.target)
+                .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e.to_string()))?;
+            let actual = helper.runtime_descriptor(
+                spec.runtime.executable.clone(),
+                InputIdentity {
+                    size: 0,
+                    sha256: digest(b""),
+                },
+            );
+            if actual.abi != spec.runtime.abi || actual.version != spec.runtime.version {
                 return Err(error(
-                    DiagnosticCode::RuntimeProcessFailure,
-                    "runtime metadata probe timed out",
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "Lua helper differs from declared ABI",
+                ));
+            }
+        }
+        RuntimeImplementation::Node => {
+            let actual = glue_runtime_node::discover(executable, Some(&spec.runtime.target))?;
+            if actual.descriptor.version != spec.runtime.version
+                || actual.descriptor.abi != spec.runtime.abi
+            {
+                return Err(error(
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "Node executable differs from declared version/ABI/capabilities",
+                ));
+            }
+        }
+        RuntimeImplementation::Cpython => {
+            let actual = glue_pack::python::discovery::probe(executable, Duration::from_secs(5))
+                .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e))?;
+            let RuntimeAbi::Python {
+                version,
+                gil,
+                debug,
+            } = &spec.runtime.abi
+            else {
+                unreachable!()
+            };
+            if actual.implementation != "cpython"
+                || actual.version != [version.major, version.minor, version.patch]
+                || actual.version_text != spec.runtime.version
+                || actual.debug != *debug
+                || actual.gil_disabled != (*gil == GilMode::FreeThreaded)
+            {
+                return Err(error(
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "Python executable differs from declared exact version/ABI",
                 ));
             }
         }
     }
-    let bytes = handle
-        .join()
-        .map_err(|_| {
-            error(
-                DiagnosticCode::RuntimeProcessFailure,
-                "runtime probe reader failed",
-            )
-        })?
-        .map_err(|e| error(DiagnosticCode::RuntimeProcessFailure, e.to_string()))?;
-    if bytes.len() > 65536 {
-        return Err(error(
-            DiagnosticCode::ResourceLimit,
-            "runtime probe output exceeds bound",
-        ));
-    }
-    let version = if spec.runtime.implementation == RuntimeImplementation::Lua {
-        let value: serde_json::Value = serde_json::from_slice(&bytes)
-            .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e.to_string()))?;
-        format!(
-            "{}.{}.{}",
-            value["version"]["major"], value["version"]["minor"], value["version"]["patch"]
-        )
-    } else {
-        String::from_utf8_lossy(&bytes)
-            .trim()
-            .trim_start_matches("Python ")
-            .trim_start_matches('v')
-            .to_owned()
-    };
-    if version != spec.runtime.version {
-        return Err(error(
-            DiagnosticCode::RuntimeAbiMismatch,
-            format!(
-                "selected runtime reports {version}, expected {}",
-                spec.runtime.version
-            ),
-        ));
-    }
     Ok(())
 }
+
 fn distribution_command(
     command: &str,
     path: &Path,
-    archive: Archive<File>,
+    archive: Archive<BufferedReader<File>>,
     args: &[OsString],
 ) -> Result<ExitCode> {
     let m = archive.manifest();
@@ -721,6 +853,7 @@ fn distribution_command(
         fs::canonicalize(path).map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
     let root = path.parent().unwrap();
     verify_payloads(root, spec)?;
+    host::check(spec)?;
     let executable = selected_executable(root, spec)?;
     if command == "doctor" {
         runtime_probe(&executable, spec)?;
@@ -795,4 +928,227 @@ fn distribution_command(
             .map_err(|e| error(DiagnosticCode::RuntimeProcessFailure, e.to_string()))?;
         Ok(ExitCode::from(status.code().unwrap_or(1) as u8))
     }
+}
+
+fn validate_language_options(language: &str, o: &Options) -> Result<()> {
+    let groups = [
+        (
+            "lua",
+            vec![
+                "--lua",
+                "--helper-dir",
+                "--rocks-tree",
+                "--native-abi",
+                "--exclude",
+            ],
+        ),
+        (
+            "python",
+            vec![
+                "--env",
+                "--project",
+                "--runtime",
+                "--python",
+                "--module",
+                "--console-script",
+                "--prune",
+            ],
+        ),
+        ("node", vec!["--node", "--node-version", "--node-bridge"]),
+    ];
+    for (owner, keys) in groups {
+        if owner != language {
+            for key in keys {
+                if o.values.contains_key(key) || o.lists.contains_key(key) {
+                    return Err(error(
+                        DiagnosticCode::InvalidConfiguration,
+                        format!("{key} is a {owner} option, not valid for {language}"),
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+fn runtime_matches(expected: &RuntimeDescriptor, actual: &RuntimeDescriptor) -> bool {
+    expected.implementation == actual.implementation
+        && expected.version == actual.version
+        && expected.abi == actual.abi
+        && expected.target == actual.target
+        && expected.provider == actual.provider
+        && expected.inputs == actual.inputs
+}
+fn publish(
+    mut input: glue_pack::distribution::DistributionInput,
+    launcher: &Path,
+    output: &Path,
+    mut context: BTreeMap<String, String>,
+) -> Result<DistributionBuildReport> {
+    if let Some(expected) = context.remove("glue.expected-runtime") {
+        let expected: RuntimeDescriptor = serde_json::from_str(&expected)
+            .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?;
+        if !runtime_matches(&expected, &input.runtime) {
+            return Err(error(
+                DiagnosticCode::PayloadIntegrity,
+                "selected runtime differs from recorded rebuild lock",
+            ));
+        }
+    }
+    input.options.extend(context);
+    glue_pack::distribution::build(input, launcher, output, DistributionLimits::default())
+}
+fn require_node_version(version: &str, constraint: &str) -> Result<()> {
+    let version = semver::Version::parse(version)
+        .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e.to_string()))?;
+    for alternative in constraint.split("||") {
+        let normalized = alternative
+            .split_whitespace()
+            .map(|s| s.trim_end_matches(','))
+            .filter(|s| !s.is_empty())
+            .collect::<Vec<_>>()
+            .join(",");
+        let request = semver::VersionReq::parse(&normalized).map_err(|e| {
+            error(
+                DiagnosticCode::InvalidConfiguration,
+                format!("invalid Node version constraint {constraint:?}: {e}"),
+            )
+        })?;
+        if request.matches(&version) {
+            return Ok(());
+        }
+    }
+    Err(error(
+        DiagnosticCode::RuntimeAbiMismatch,
+        format!("selected Node {version} does not satisfy {constraint}"),
+    ))
+}
+fn rebuild_arguments(args: &[OsString]) -> Vec<String> {
+    let mut output = Vec::new();
+    let mut i = 0;
+    while i < args.len() {
+        if args[i] == "--output" {
+            i += 2;
+            continue;
+        }
+        if args[i] != "--json" {
+            output.push(args[i].to_string_lossy().into_owned());
+        }
+        i += 1;
+    }
+    output
+}
+fn rebuild(args: &[OsString]) -> Result<ExitCode> {
+    let lock_path = args.first().ok_or_else(|| {
+        error(
+            DiagnosticCode::MissingInput,
+            "rebuild requires glue.lock.json",
+        )
+    })?;
+    let overrides = parse(&args[1..])?;
+    if overrides.project.is_some() {
+        return Err(error(
+            DiagnosticCode::InvalidConfiguration,
+            "use --project for a rebuild project override",
+        ));
+    }
+    let mut bytes = Vec::new();
+    File::open(lock_path)
+        .and_then(|f| {
+            f.take(MAX_MANIFEST_BYTES as u64 + 1)
+                .read_to_end(&mut bytes)
+        })
+        .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    if bytes.len() > MAX_MANIFEST_BYTES {
+        return Err(error(
+            DiagnosticCode::ResourceLimit,
+            "rebuild lock exceeds bound",
+        ));
+    }
+    let lock: BuildLock = serde_json::from_slice(&bytes)
+        .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?;
+    if lock.revision != 1 {
+        return Err(error(
+            DiagnosticCode::InvalidConfiguration,
+            "unsupported rebuild lock revision",
+        ));
+    }
+    let recorded: Vec<String> =
+        serde_json::from_str(lock.options.get("glue.cli.argv").ok_or_else(|| {
+            error(
+                DiagnosticCode::UnsupportedCapability,
+                "lock has no recorded high-level CLI; use the original config",
+            )
+        })?)
+        .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?;
+    let language = recorded
+        .first()
+        .filter(|s| ["lua", "python", "node"].contains(&s.as_str()))
+        .ok_or_else(|| {
+            error(
+                DiagnosticCode::InvalidConfiguration,
+                "invalid recorded language",
+            )
+        })?;
+    let recorded_args: Vec<OsString> = recorded.iter().map(OsString::from).collect();
+    let mut options = parse(&recorded_args[1..])?;
+    let caller =
+        std::env::current_dir().map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    let output = overrides.path("--output").ok_or_else(|| {
+        error(
+            DiagnosticCode::InvalidConfiguration,
+            "rebuild requires a new --output DIR",
+        )
+    })?;
+    let output = if output.is_absolute() {
+        output
+    } else {
+        caller.join(output)
+    };
+    if let Some(project) = overrides.path("--project") {
+        options.project = Some(if project.is_absolute() {
+            project
+        } else {
+            caller.join(project)
+        });
+    }
+    for (key, value) in overrides.values {
+        if key != "--output" && (key != "--project" || language == "python") {
+            options.values.insert(key, value);
+        }
+    }
+    options
+        .values
+        .insert("--output".into(), output.into_os_string());
+    options.lists.extend(overrides.lists);
+    options.flags = overrides.flags;
+    let cwd = lock.options.get("glue.cli.cwd").ok_or_else(|| {
+        error(
+            DiagnosticCode::InvalidConfiguration,
+            "rebuild cwd is missing",
+        )
+    })?;
+    std::env::set_current_dir(cwd).map_err(|e| {
+        error(
+            DiagnosticCode::MissingInput,
+            format!("recorded source working directory {cwd}: {e}"),
+        )
+    })?;
+    let mut argv = vec![OsString::from(language)];
+    if let Some(project) = options.project {
+        argv.push(project.into_os_string());
+    }
+    for (key, value) in options.values {
+        argv.push(key.into());
+        argv.push(value);
+    }
+    for (key, values) in options.lists {
+        for value in values {
+            argv.push(key.clone().into());
+            argv.push(value);
+        }
+    }
+    for flag in options.flags {
+        argv.push(flag.into());
+    }
+    build(&argv, Some(&lock.runtime))
 }

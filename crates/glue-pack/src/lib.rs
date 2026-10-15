@@ -7,6 +7,7 @@
 pub mod distribution;
 pub mod lua;
 pub mod native;
+pub mod node;
 
 #[cfg(feature = "python")]
 pub mod python;
