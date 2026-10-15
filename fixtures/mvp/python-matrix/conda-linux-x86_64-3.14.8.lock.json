@@ -113,6 +113,15 @@
       "version": "3.54.0"
     },
     {
+      "build": "h934c35e_7",
+      "filename": "libstdcxx-16.2.0-h934c35e_7.conda",
+      "md5": "9b6707e0caca917fa6ea9ee473f37a5d",
+      "name": "libstdcxx",
+      "sha256": "fa7018298629fc429971fffd6ecba3d27a7b02e4e890d6a93ea01ffebe8cb745",
+      "url": "https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-16.2.0-h934c35e_7.conda",
+      "version": "16.2.0"
+    },
+    {
       "build": "hcfc3c73_0",
       "filename": "libuuid-2.42.4-hcfc3c73_0.conda",
       "md5": "54a948337e66706380ff24d6b5fde63f",
@@ -219,6 +228,11 @@
       "sha256": "c8c7583ef063bc3c430f1d48298e5ad24f796a35c22ed5b14183325825a61106",
       "version": "3.7.0"
     },
+    "libstdcxx": {
+      "build": "h934c35e_7",
+      "sha256": "fa7018298629fc429971fffd6ecba3d27a7b02e4e890d6a93ea01ffebe8cb745",
+      "version": "16.2.0"
+    },
     "python": {
       "build": "hcd007b5_102_cp314",
       "sha256": "32a39d6b85fd55d9949ea48d63887bef0dc61dca46d9844d4b409eb993460617",
@@ -227,12 +241,23 @@
   },
   "resolution": {
     "CONDA_OVERRIDE_GLIBC": "2.39",
+    "additional_explicit_inputs": [
+      {
+        "closure": "exact libgcc dependency already present in resolved lock; ELF RPATH $ORIGIN/. selects its adjacent libgcc_s.so.1",
+        "declared_dependencies": [
+          "__glibc >=2.17,<3.0.a0",
+          "libgcc 16.2.0 ha9f2e26_7"
+        ],
+        "metadata": "https://api.anaconda.org/release/conda-forge/libstdcxx/16.2.0",
+        "name": "libstdcxx"
+      }
+    ],
     "channel": "https://conda.anaconda.org/conda-forge",
     "scope": "Cross-platform metadata resolution only; no Linux runtime execution",
     "target_platform": "linux-64",
     "tool": "micromamba 2.3.3 osx-arm64 build 0",
     "tool_archive_sha256": "bd5b8d3f151c3ad2d92f0fb918806543d713c7f67895c020db4041097a7f004d",
-    "total_package_bytes": 51421065
+    "total_package_bytes": 58036501
   },
   "schema": 1
 }
