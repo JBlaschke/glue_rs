@@ -704,7 +704,8 @@ mod execution_tests {
                 r#"{"name":"dep","main":"index.js"}"#,
             )
             .unwrap();
-            fs::write(dep.join("index.js"), "module.exports=42;").unwrap();
+            fs::write(dep.join("asset.txt"), "package asset").unwrap();
+            fs::write(dep.join("index.js"), "if(require('node:fs').readFileSync(require('node:path').join(__dirname,'asset.txt'),'utf8')!=='package asset')throw Error('asset lost');module.exports=42;").unwrap();
             #[cfg(unix)]
             if pnpm {
                 std::os::unix::fs::symlink(

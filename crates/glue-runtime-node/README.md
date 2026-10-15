@@ -39,3 +39,20 @@ exports, imports, duplicate dependency versions and JSON). The integration test
 removes its source tree before archive execution. The required second-major run
 remains missing. URL query/fragment module identities are currently unsupported;
 no general npm-ecosystem compatibility is claimed from this corpus.
+
+N04 virtual resources use `/__glue_archive__/...` paths (including `__dirname`
+joins and `file:` URL objects). `node:fs`, `fs`, `node:fs/promises` and ESM named
+exports expose readFile sync/callback/promises, stat/lstat, readdir with Dirents,
+exists, read-only access and bounded Readable streams. Streams honor ranges,
+backpressure, destroy/close and errors; each resource is verified into a bounded
+buffer before bytes are emitted. Explicit `glueResources` offers read/list/stat/
+createReadStream and the virtual root. Stat identities and timestamps are
+synthetic read-only values. Recursive readdir, fd-only opens, mmap-style access
+and mutation APIs reject without creating files. Host paths retain their ordinary
+methods. Native filesystem calls and worker/child bootstrap are not virtualized.
+
+`node crates/glue-runtime-node/tests/resources.cjs` actually passed on macOS Node
+26.10.0, including callback/promises, binary data, bigint stat, Dirents, ranges,
+backpressure, close/errors, traversal and denied writes. The N03 actual archive
+execution now also reads an installed package asset through `node:fs` after its
+source was deleted, for both npm CJS and pnpm ESM cases.
