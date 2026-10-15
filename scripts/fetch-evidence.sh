@@ -3,24 +3,34 @@
 # every file against the committed inventories.
 # See docs/decisions/0030-evidence-retention.md.
 #
-# usage: sh scripts/fetch-evidence.sh docs/evidence/NAME
+# usage: sh scripts/fetch-evidence.sh docs/evidence/NAME [--output NEWROOT]
 set -eu
 
 fail() {
   echo "fetch-evidence: $*" >&2
   exit 1
 }
-[ $# -eq 1 ] || {
-  echo "usage: sh scripts/fetch-evidence.sh docs/evidence/NAME" >&2
+[ $# -ge 1 ] || {
+  echo "usage: sh scripts/fetch-evidence.sh docs/evidence/NAME [--output NEWROOT]" >&2
   exit 2
 }
 dir=${1%/}
 [ -f "$dir/bundle.json" ] || fail "$dir has no bundle.json"
 [ -f "$dir/bundle-payload.sha256" ] || fail "$dir has no bundle-payload.sha256"
-
+# Bound dispatch before parsing; v1 keeps its shell-only dependency profile.
+pointer_size=$(wc -c <"$dir/bundle.json" | tr -d ' ')
+[ "$pointer_size" -le 65536 ] || fail "bundle.json exceeds metadata bound"
 field() {
   sed -n "s/^ *\"$1\": *\"\{0,1\}\([^\",]*\)\"\{0,1\},\{0,1\}\$/\1/p" "$dir/bundle.json" | head -n 1
 }
+profile=$(field schema)
+if [ "$profile" = glue-evidence-bundle-2 ]; then
+  [ $# -eq 3 ] && [ "$2" = --output ] || fail "external-root bundle requires --output NEWROOT"
+  exec python3 "$(dirname "$0")/evidence-bundle.py" fetch --directory "$dir" --output "$3"
+fi
+[ "$profile" = glue-evidence-bundle-1 ] || fail "unsupported evidence bundle schema"
+[ $# -eq 1 ] || fail "legacy bundle accepts no output argument"
+
 tag=$(field tag)
 asset=$(field asset)
 sha=$(field sha256)
