@@ -8,8 +8,10 @@ payloads, install dependencies or compile application modules.
 
 The implementation is on the separate `codex/mvp-*` feature branches. `main`
 remains the reviewed planning baseline. See [the 26-task ledger and actual
-acceptance status](docs/plans/mvp-implementation.md). M2 remains open pending the
-hosted Linux x86_64 acceptance rerun and complete macOS tracing. The selected
+acceptance status](docs/plans/mvp-implementation.md). Native Linux x86_64 passes
+all 24 acceptance cases and five reviewed performance budgets under the recorded
+CI tracing policy. M2 remains open pending complete macOS tracing and durable
+evidence retention. The selected
 macOS policy is ad-hoc signing for development; Developer ID and notarization are
 required before public binary releases.
 
@@ -57,7 +59,7 @@ collection](docs/native-compact.md) describe their supported interfaces.
 
 ## Tested scope and limits
 
-Development execution covers macOS arm64 and native Linux arm64, Lua 5.4.9/5.5.1,
+Development execution covers macOS arm64 and native Linux arm64/x86_64, Lua 5.4.9/5.5.1,
 multiple modern CPython minors/providers, and stock Node 24.22.0/26.10.0. Python's
 native corpus includes NumPy, C++, Rust and CFFI; Node uses prebuilt Node-API
 addons and secondary libraries. Exact versions, commands, receipts and missing

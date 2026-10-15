@@ -602,3 +602,33 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
   `/tmp/lua-app/glue run /tmp/lua-app/app.glue -- argument`.
 - Python and Node slots are intentionally integrated in R01 after their provider
   handoffs. This is source/native Lua functionality, not M2 closure.
+
+## MVP native acceptance update (15 October 2026)
+
+Native Linux x86_64 [run 38800548172](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172)
+tested [source e3962701](https://github.com/JBlaschke/glue_rs/commit/e3962701f558c287515508c97df4679e08d64ed2)
+and passed all 24 acceptance cases: both Lua families, twelve Python
+3.12.15/3.13.16/3.14.8 cases and eight Node 24.22.0/26.10.0 cases. The supplied
+3.14 conda runtime includes a compatible prebuilt compiler-runtime closure;
+packaging neither rebuilt native inputs nor relaxed conflicting-identity checks.
+All five reviewed R03 budgets, measured with 10,000 added entries at 1 and 32
+ranks, passed in enforcement mode. Independent replay verified all receipts,
+fifteen benchmark-variant traces, negative controls and 990 rank results.
+
+The run explicitly inherits
+[`traceable-native-syscalls-v1`](decisions/mvp-v02-ci-trace-environment.md),
+which returns ENOSYS for asynchronous kernel I/O in the complete stock/reference,
+packaged, control and rank trees. Fixed structure/I/O/scaling limits apply across
+hosts; time/RSS remain scoped to the recorded host fingerprint. No controlled
+cold-cache result or unrestricted ring-enabled-host acceptance is claimed.
+
+[Artifact 12005186009](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172/artifacts/12005186009)
+retains the raw evidence, ZIP SHA256
+`c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+Local replay is
+`/private/tmp/glue-native-x86-evidence-38800548172/independent-replay.json`.
+The artifact currently expires on 29 October; durable evidence publication
+remains open. The complete Darwin decoder/oracle is still unimplemented and
+unvalidated, so Mac R02 corpus/controls/budgets and M2 remain open. Developer ID
+and notarization are later public-release gates. Current task refs, commands and
+remaining work are recorded in the [implementation ledger](plans/mvp-implementation.md).

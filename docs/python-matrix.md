@@ -19,6 +19,22 @@ complete descendant syscall trace and injected extraction-oracle controls.
 | Linux arm64 | 3.13.16 | PBS archive override | Full `.tar.zst`, install_only and install_only_stripped `.tar.gz` inputs |
 | Linux arm64 | 3.13.16 | PBS / existing cp311-abi3 wheel | cryptography 50.0.2 SHA-256 and Ed25519 operations with CFFI 2.1.1 |
 | Linux arm64 | 3.14.8 | Independent cached manylinux CPython | Source corpus; existing OpenSSL 1.1/secondary libraries supplied explicitly |
+| Linux x86_64 | 3.12.15 | PBS / ordinary copied venv | Source file, module, console-script and scientific/native corpus |
+| Linux x86_64 | 3.13.16 | PBS / ordinary copied venv | Source file, module, console-script and scientific/native corpus |
+| Linux x86_64 | 3.14.8 | Independent conda-forge installation / ordinary copied venv | Source file, module, console-script and scientific/native corpus; matching pinned libstdc++/libgcc closure |
+
+Native hosted [run 38800548172](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172)
+on [source e3962701](https://github.com/JBlaschke/glue_rs/commit/e3962701f558c287515508c97df4679e08d64ed2)
+passed all 24 language acceptance cases, including the twelve Python x86_64
+cases above, and all five reviewed R03 budgets in enforcement mode. Independent
+replay checked every acceptance receipt, all fifteen benchmark-variant
+receipts/traces, controls and all 990 rank results. Structure, size, I/O, FD and
+scaling limits apply across hosts; time/RSS retain the recorded host scope.
+These runs use the explicit
+[`traceable-native-syscalls-v1` CI policy](decisions/mvp-v02-ci-trace-environment.md):
+asynchronous kernel I/O returns ENOSYS throughout stock references, packaged
+processes, controls and ranks so the strict syscall oracle can observe writes.
+Unrestricted ring-enabled hosts are outside this evidence.
 
 The native corpus uses NumPy BLAS/LAPACK, contourpy's translated C++ exception,
 pydantic_core Rust validation errors, stock extension caching, ctypes and CFFI,
@@ -101,12 +117,24 @@ Raw evidence remains outside Git under decision 0030. Successful shared receipts
 - `/private/tmp/glue-python-v02-linux-evidence/linux313-archive-{install_only-bounded,install_only_stripped,pgo-lto-full-bounded}/receipt.json`.
 - `/private/tmp/glue-python-v02-linux-evidence/linux313-abi3-complete/receipt.json`.
 - `/private/tmp/glue-python-v02-linux-evidence/linux3148-nonpbs/receipt.json`.
+- `/private/tmp/glue-native-x86-evidence-38800548172/cases/python-{3.12.15,3.13.16,3.14.8}-{source,module,console,native}/receipt.json`.
+
+The final hosted evidence is retained in
+[artifact 12005186009](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172/artifacts/12005186009),
+ZIP SHA256 `c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+Its current expiry is 29 October 2026; durable evidence publication remains open.
+The local independent replay summary is
+`/private/tmp/glue-native-x86-evidence-38800548172/independent-replay.json`.
+The supplied 3.14 runtime's complete prebuilt package lock and preparation
+provenance are described in
+[`conda-runtime.md`](../fixtures/mvp/python-matrix/conda-runtime.md).
 
 Focused PEP 489 evidence is `/private/tmp/glue-python-lifecycle-linux313.json`;
 CLI negative cases are `/private/tmp/glue-python-cli-negatives/*.json`.
 Runtime-native rebuild-lock regression evidence is
 `/private/tmp/glue-python-runtime-native-lock.json`. The derived 16-cell table is
-`/private/tmp/glue-python-matrix-final/matrix.md` with its verified JSON index.
+`/private/tmp/glue-python-matrix-final/matrix.md` with its verified JSON index;
+the twelve hosted x86_64 cases are indexed separately in the final run above.
 The shared receipts retain raw streams, inventories, exact runtime/launcher
 identities and Linux syscall evidence. Discarded copies of quarantined original
 inputs are reproducible from their recorded inventories; source runtime and wheel
@@ -116,8 +144,10 @@ inputs remain available separately.
 receipts and derives a table. It reports only the listed cells. Global M2
 acceptance belongs to R04 and requires the external version/provider/native/input
 ledger, complete target coverage, R02 signing/tracing and release policy.
-Native Linux x86_64 execution is pending the external hosted runner. Full macOS
-descendant tracing and public Developer ID/notarization are not proven by these
-execution receipts. Strict development-policy verification is separate from
-public distribution approval. Tcl/Tk script resources and general multiprocessing
-spawn are outside this executed corpus and retain explicit capability limitations.
+The complete Darwin process-tree decoder and extraction oracle remain
+unimplemented and unvalidated. Mac R02 acceptance, its full corpus/controls/cost
+budgets and M2 remain open. Durable evidence assets have not been published.
+Public Developer ID/notarization remains a later release gate; strict development
+verification does not establish that approval. Tcl/Tk script resources and general
+multiprocessing spawn are outside this executed corpus and retain explicit
+capability limitations.
