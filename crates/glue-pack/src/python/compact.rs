@@ -492,32 +492,55 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
         })
         .map(|(name, _)| name.clone())
         .collect::<BTreeSet<_>>();
-    let source = io::BufReader::new(File::open(path).map_err(|e| e.to_string())?);
-    let mut head = File::open(path).map_err(|e| e.to_string())?;
-    let mut magic = [0u8; 4];
-    use std::io::Read;
-    head.read_exact(&mut magic).map_err(|e| e.to_string())?;
-    let reader: Box<dyn io::Read> = if magic[..2] == [0x1f, 0x8b] {
-        Box::new(flate2::read::GzDecoder::new(source))
-    } else if magic == [0x28, 0xb5, 0x2f, 0xfd] {
-        Box::new(
-            ruzstd::decoding::StreamingDecoder::new_with_max_window_size(source, 128 * 1024 * 1024)
-                .map_err(|e| e.to_string())?,
-        )
-    } else {
-        Box::new(source)
-    };
-    let selected = glue_pbs::archive::read_selected(
-        reader,
-        &glue_pbs::archive::Limits::default(),
-        &selection,
-        glue_pbs::archive::MAX_SELECTED_BYTES,
-    )?;
-    if selected.inventory != inventory
-        || InputIdentity::of(&read_bounded(path, 1024 * 1024 * 1024)?) != original_identity
-    {
-        return Err("runtime archive changed during build-time inspection".into());
+    let mut batches = Vec::new();
+    let mut batch = BTreeSet::new();
+    let mut batch_bytes = 0u64;
+    let mut total_bytes = 0u64;
+    for name in &selection {
+        let size = inventory.entries[name].size;
+        if size > glue_pbs::archive::MAX_SELECTED_BYTES {
+            return Err(
+                "one runtime archive member exceeds the 128 MiB retained-member bound".into(),
+            );
+        }
+        total_bytes = total_bytes
+            .checked_add(size)
+            .ok_or("runtime selection overflow")?;
+        if total_bytes > 1024 * 1024 * 1024 {
+            return Err(
+                "selected runtime archive bytes exceed the 1 GiB staged-input bound".into(),
+            );
+        }
+        if batch_bytes + size > glue_pbs::archive::MAX_SELECTED_BYTES {
+            batches.push(std::mem::take(&mut batch));
+            batch_bytes = 0;
+        }
+        batch.insert(name.clone());
+        batch_bytes += size;
     }
+    if !batch.is_empty() {
+        batches.push(batch);
+    }
+    let reader = || -> Result<Box<dyn io::Read>, String> {
+        let source = io::BufReader::new(File::open(path).map_err(|e| e.to_string())?);
+        let mut head = File::open(path).map_err(|e| e.to_string())?;
+        let mut magic = [0u8; 4];
+        use std::io::Read;
+        head.read_exact(&mut magic).map_err(|e| e.to_string())?;
+        if magic[..2] == [0x1f, 0x8b] {
+            Ok(Box::new(flate2::read::GzDecoder::new(source)))
+        } else if magic == [0x28, 0xb5, 0x2f, 0xfd] {
+            Ok(Box::new(
+                ruzstd::decoding::StreamingDecoder::new_with_max_window_size(
+                    source,
+                    128 * 1024 * 1024,
+                )
+                .map_err(|e| e.to_string())?,
+            ))
+        } else {
+            Ok(Box::new(source))
+        }
+    };
     static NEXT: AtomicU64 = AtomicU64::new(0);
     let stage = loop {
         let candidate = std::env::temp_dir().join(format!(
@@ -531,24 +554,40 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
             Err(e) => return Err(e.to_string()),
         }
     };
-    for (name, bytes) in &selected.files {
-        let dest = stage.0.join(name);
-        fs::create_dir_all(dest.parent().ok_or("runtime input has no parent")?)
-            .map_err(|e| e.to_string())?;
-        fs::write(&dest, bytes).map_err(|e| e.to_string())?;
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            fs::set_permissions(
-                &dest,
-                fs::Permissions::from_mode(selected.inventory.entries[name].mode & 0o777),
-            )
-            .map_err(|e| e.to_string())?;
+    // Keep the selective reader's 128 MiB memory ceiling while staging larger
+    // ordinary full/install-only runtimes in bounded, independently validated passes.
+    for batch in &batches {
+        let selected = glue_pbs::archive::read_selected(
+            reader()?,
+            &glue_pbs::archive::Limits::default(),
+            batch,
+            glue_pbs::archive::MAX_SELECTED_BYTES,
+        )?;
+        if selected.inventory != inventory {
+            return Err("runtime archive changed during bounded selection".into());
         }
+        for (name, bytes) in &selected.files {
+            let dest = stage.0.join(name);
+            fs::create_dir_all(dest.parent().ok_or("runtime input has no parent")?)
+                .map_err(|e| e.to_string())?;
+            fs::write(&dest, bytes).map_err(|e| e.to_string())?;
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                fs::set_permissions(
+                    &dest,
+                    fs::Permissions::from_mode(selected.inventory.entries[name].mode & 0o777),
+                )
+                .map_err(|e| e.to_string())?;
+            }
+        }
+    }
+    if InputIdentity::of(&read_bounded(path, 1024 * 1024 * 1024)?) != stage.1 {
+        return Err("runtime archive changed during build-time inspection".into());
     }
     // Resolve already-validated aliases after writing regular files. Materialized
     // aliases point to regular selected bytes; none can redirect later writes.
-    for (name, entry) in &selected.inventory.entries {
+    for (name, entry) in &inventory.entries {
         if name.starts_with(prefix)
             && matches!(
                 entry.kind,
@@ -556,7 +595,7 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
             )
         {
             if let Some(target) = &entry.resolved_target {
-                if selected.files.contains_key(target) {
+                if selection.contains(target) {
                     let dest = stage.0.join(name);
                     fs::create_dir_all(dest.parent().ok_or("runtime alias has no parent")?)
                         .map_err(|e| e.to_string())?;
