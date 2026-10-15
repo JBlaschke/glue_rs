@@ -342,7 +342,7 @@ def execute(recipe: dict, target: str, output: Path, repository: Path) -> dict:
                 checks["trace_complete"] = available
                 checks["signing_policy"] = {"status": "passed", "reason": "macOS signing gate does not apply to Linux"}
             else:
-                checks["trace_complete"] = {"status": "unavailable", "reason": "full native macOS descendant tracing requires an approved DTrace/dtruss host"}
+                checks["trace_complete"] = {"status": "unavailable", "reason": "Darwin capture/decoder/oracle integration requires implementation and validation on an approved trace-capable host"}
                 checks["signing_policy"] = extraction.verify_macos(payload, recipe.get("signing_policy", os.environ.get("GLUE_MVP_SIGNING_POLICY", "unconfigured")))
             for value in recipe.get("application_outputs", []):
                 path = Path(expand(value, context))

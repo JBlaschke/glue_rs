@@ -12,13 +12,15 @@ Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
 modules, stock Python discovery/environment/provider/native paths, stock Node
 CJS/ESM/resources/Node-API, common CLI/config/rebuild, pinned portable CI, shared
-relocated/offline execution, complete extraction oracle and performance harness.
+relocated/offline execution, complete Linux extraction oracle and performance harness.
 Historical schema-zero commands and memory experiments remain separate.
 
 The owner chose ad-hoc signing for macOS development acceptance; Developer ID and
 notarization are prerequisites for public binary releases. Current development
-execution covers macOS arm64 and native Linux arm64. Native Linux x86_64 and
-complete macOS process-tree tracing are still required. M1/M2 remain open: no
+execution covers macOS arm64 and native Linux arm64. Hosted native Linux x86_64
+ran all 24 applications successfully but awaits acceptance rerun after harness
+fixes. Complete macOS process-tree tracing is blocked by SIP on the current host,
+including after native administrator authentication. M1/M2 remain open: no
 missing execution is replaced with a cross-build, snapshot or skipped test.
 
 User instructions and installed tools are in [README](../README.md) and

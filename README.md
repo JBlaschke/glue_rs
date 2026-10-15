@@ -8,8 +8,8 @@ payloads, install dependencies or compile application modules.
 
 The implementation is on the separate `codex/mvp-*` feature branches. `main`
 remains the reviewed planning baseline. See [the 26-task ledger and actual
-acceptance status](docs/plans/mvp-implementation.md). M2 remains open while native
-Linux x86_64 execution and complete macOS tracing are unavailable. The selected
+acceptance status](docs/plans/mvp-implementation.md). M2 remains open pending the
+hosted Linux x86_64 acceptance rerun and complete macOS tracing. The selected
 macOS policy is ad-hoc signing for development; Developer ID and notarization are
 required before public binary releases.
 

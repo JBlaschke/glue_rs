@@ -111,12 +111,15 @@ and retain their actual class. Public release requires Developer ID signatures
 on every image, Gatekeeper assessment and separate notarization evidence.
 
 Local R02 evidence: all four source/native Lua family cases passed complete
-Linux arm64 traces plus injected controls. macOS arm64 final Lua55 layout passed
-strict ad-hoc verification. The full macOS R02 receipt deliberately fails because
-noninteractive dtruss returned `sudo: a password is required`; this host has no
-approved complete macOS descendant trace. No Developer ID/notarization evidence
-or native Linux x86_64 trace is claimed. Those remain external acceptance gaps,
-and the Linux decoder is not presented as a macOS trace decoder.
+Linux arm64 traces plus injected controls. macOS arm64 final Lua54 and Lua55
+layouts passed relocated/offline execution and strict development signature
+verification. Native administrator authentication succeeded, but both wildcard
+and exact owned ad-hoc fixture syscall probes were rejected by SIP. The exact
+probe emitted zero events and never started the fixture body. See the
+[capability diagnostic](macos-trace/README.md). A complete Darwin capture,
+decoder and extraction oracle still require implementation and validation on
+a trace-capable approved host. Hosted native x86_64 acceptance is being rerun
+after harness fixes. Public Developer ID/notarization evidence remains open.
 
 
 ## Deployment cost budgets (R03)

@@ -9,9 +9,11 @@ retain their own implementation commits.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
-host checks, relocated/offline harness, extraction oracle and benchmarks are
-implemented. Native Linux x86_64 and complete macOS process-tree tracing remain
-unperformed. M1/M2 therefore remain open. Cross-compilation/emulation, snapshots,
+host checks, relocated/offline harness, Linux extraction oracle and benchmarks are
+implemented. Hosted native Linux x86_64 ran all 24 applications successfully;
+its acceptance rerun is pending after two harness corrections. Complete macOS
+process-tree tracing remains unavailable. M1/M2 therefore remain open.
+Cross-compilation/emulation, snapshots,
 ad-hoc signatures and skipped tests do not replace those observations.
 
 The owner selected ad-hoc signing for development acceptance. Strict-valid
@@ -29,7 +31,7 @@ check, not a claim established by the development signatures.
 | C03 | `codex/mvp-c03-linux-native` | `d80eb32` | ELF closure, version/property checks, optional normalization; native x86_64 pending |
 | C04 | `codex/mvp-c04-macos-native` | `ced7287` | Mach-O closure, unchanged/normalized relocation and strict signature checks |
 | C05 | `codex/mvp-c05-builder-cli` | `e091fab` | CLI/config/process dispatch; initial Lua workflow and launch semantics |
-| L01 | `codex/mvp-l01-lua-helpers` | `f78cdd5` | Separate exact 5.4/5.5 helpers, one installation |
+| L01 | `codex/mvp-l01-lua-helpers` | `b5762a3` | Separate exact 5.4/5.5 helpers, bounded descriptor queries, one installation |
 | L02 | `codex/mvp-l02-lua-projects` | `8ee9e76` | Directory/rocks ingestion, source/resources/native handoff |
 | L03 | `codex/mvp-l03-lua-native` | `9f00c96` | OS-loaded modules/secondary deps, protected C boundary; x86_64 pending |
 | P00 | `codex/mvp-p00-python-bootstrap` | `45e69db` | Stock multi-minor bootstrap proof and provider recipe |
@@ -37,17 +39,17 @@ check, not a claim established by the development signatures.
 | P02 | `codex/mvp-p02-python-provider` | `7dab743` | Bundled/explicit-host stock subprocess and archived stdlib |
 | P03 | `codex/mvp-p03-python-inventory` | `8d422c0` | Installed source/data/metadata/namespace and entry inventory |
 | P04 | `codex/mvp-p04-python-native` | `2abc06d` | Stock extension lifecycle, C/C++/Rust/scientific/FFI corpus; x86_64 pending |
-| P05 | `codex/mvp-p05-python-matrix` | `1b6bdc5` | Version/provider/copy-venv matrix; see receipts below |
+| P05 | `codex/mvp-p05-python-matrix` | `f2b7968` | Version/provider/copy-venv matrix and runtime closure locks; see receipts below |
 | N00 | `codex/mvp-n00-node-probe` | `e98ecc1` | Public stock-hook/bridge/addon proof |
 | N01 | `codex/mvp-n01-node-provider` | `40f439c` | Bounded capability probes, native-header preflight, bundled/host provider |
 | N02 | `codex/mvp-n02-node-resolution` | `10ca7f5` | Indexed CJS/ESM resolution and stock cache semantics |
 | N03 | `codex/mvp-n03-node-project` | `119f7b0` | npm/pnpm installed graph and lock provenance, no package manager |
 | N04 | `codex/mvp-n04-node-resources` | `44e7ca9` | Bounded read-only fs subset, streams and safe aliases |
-| N05 | `codex/mvp-n05-node-addons` | `112a062` | Existing Node-API addon/secondary closure across two majors |
-| V01 | `codex/mvp-v01-portable-ci` | `dc8e659` | Pinned native-host CI matrix; hosted jobs configured, not run here |
-| V02 | `codex/mvp-v02-relocated-harness` | `894ab21` | Shared offline/relocation/reference receipt protocol; x86_64 pending |
+| N05 | `codex/mvp-n05-node-addons` | `1b9f9ee` | Existing Node-API addon/secondary closure across two majors; runtime closure locks |
+| V01 | `codex/mvp-v01-portable-ci` | `d342e74` | Pinned native-host CI matrix; initial hosted run 7/9 passed, helper fix rerun pending |
+| V02 | `codex/mvp-v02-relocated-harness` | `4d628c8` | Shared offline/relocation/reference receipt protocol; current-namespace Linux proof |
 | R01 | `codex/mvp-r01-workflows` | `ddd8468` | Three CLI adapters, inspect/doctor/size/rebuild, installer and end-to-end cases |
-| R02 | `codex/mvp-r02-extraction-signing` | `a2bff19` | Complete process-tree oracle and signing checks; Mac tracer/x86_64 pending |
+| R02 | `codex/mvp-r02-extraction-signing` | `a2bff19` | Complete Linux process-tree oracle and signing checks; Mac backend/tracer and x86_64 rerun pending |
 | R03 | `codex/mvp-r03-hpc-costs` | `b725309` | Bounded buffered reader, measured 10,000-entry/32-rank harness and budgets |
 | R04 | `codex/mvp-r04-docs` | `this branch` | Current user docs, compatibility/evidence ledger; M2 closure blocked by missing cells |
 
@@ -62,7 +64,7 @@ completed acceptance gates.
 | --- | --- | --- | --- | --- |
 | macOS arm64 | 5.4.9/5.5.1 source/native/secondary/TLS/errors | PBS/uv 3.13.16, 3.14.5, 3.15.0b1; non-PBS 3.12.14 and framework 3.14.8 (3.12.12 also focused provider test) | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Offline sandbox and relocated read-only execution; strict ad-hoc verification; full tracer unavailable |
 | GNU Linux arm64 | Both families source/native and extraction traces | PBS 3.13.16 file/module/console/native/abi3; non-PBS 3.14.8 source; local PBS archive routes | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Native Podman VM, network none, controlled uid/read-only tree, complete strace where receipted |
-| GNU Linux x86_64 | Unperformed | Unperformed | Unperformed | Required native runner missing; CI jobs are not execution evidence |
+| GNU Linux x86_64 | Both families source/native exited 0 | 3.12.15/3.13.16/3.14.8 source/module/console/native exited 0 | 24.22.0/26.10.0 CJS/ESM/resources/native exited 0 | Native hosted run failed harness validation; complete acceptance/budgets rerun pending |
 | macOS x86_64 | Unperformed | Unperformed | Unperformed | Later separate cell |
 
 Versions are observations, not production pins. Node 24.10.0 failed mixed ESM/CJS
@@ -87,11 +89,15 @@ The Mac operator installed the release tools with:
 scripts/install-glue.sh /private/tmp/glue-mvp-installed
 ```
 
-The pinned portable baseline passed on macOS arm64 with actual compact CLI
+The pinned portable baseline passed locally on macOS arm64 with actual compact CLI
 execution required (`GLUE_REQUIRE_COMPACT_CLI=1`). Harness tests passed 22 checks,
 including deliberate extraction violations and invalid/foreign receipt controls.
 The Lua55 suite passed 90 tests and packaging passed 130, both with pinned
 Clippy. Four additional CLI regressions passed after the final review fixes.
+Hosted portable run `38791521293` passed all three macOS arm64 suites, Linux
+x86_64 baseline/packaging and Linux arm64 Lua55/packaging. Its two remaining
+suites exposed the same transient Linux helper-spawn `ETXTBSY`; the bounded
+helper query fix is being rerun across the full matrix.
 Ignored runtime tests are not counted as target evidence; supplied-runtime
 receipts exercise those routes separately. An initial extra suite run hit
 ENOSPC and is not counted; disposable incremental build outputs were cleared.
@@ -141,14 +147,20 @@ recorded after completion.
 ## Evidence retention and open gates
 
 Raw outputs, binaries and traces remain outside Git. Hash inventories and local
-locations will be recorded in the integration evidence README, following
+locations are recorded in the [integration evidence README](../evidence/compact-mvp-2026-10-15/README.md), following
 [decision 0030](../decisions/0030-evidence-retention.md). Evidence release assets
 have not been published; there is no fabricated `bundle.json` or remote durable
 retention claim. Local files alone will not survive transfer of this repository.
 
-Remaining M2 work requires a native Linux x86_64 runner and an approved macOS
-process-tree tracer. Re-run the shared corpus, negative controls and budgets on
-those hosts. Public release additionally needs Developer ID/notarization under
+Remaining M2 work includes the hosted native Linux x86_64 rerun and an approved
+macOS process-tree tracer with a complete Darwin extraction backend. Native
+administrator authentication succeeded on the current Mac, but both wildcard
+and exact owned-fixture syscall probes failed under SIP. The password does not
+override that provider restriction; no OS security setting was changed. See the
+[capability diagnostic](../../fixtures/mvp/macos-trace/README.md).
+Implement and validate the Darwin backend on a trace-capable host, then run
+the shared corpus, negative controls and budgets there.
+Public release additionally needs Developer ID/notarization under
 the chosen policy, and publication/verification of retained evidence assets.
 Memory mode and later platform/language expansion remain in
 [their separate roadmap](memory-roadmap.md).
