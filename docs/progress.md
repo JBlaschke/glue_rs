@@ -531,3 +531,17 @@ remains useful static-corpus evidence, not a completed dynamic loader contract.
   input, output preservation, safe links, modes and complete size accounting.
 - The exclusive rename boundary uses the platform's no-replace primitive.
   Linux native execution remains a target-cell check; no release gate is claimed.
+
+## MVP implementation — C03 (15 October 2026)
+
+- Branch `codex/mvp-c03-linux-native`, based on C02 `74308df`; result: branch tip.
+- Added ELF64 dynamic inspection and deterministic explicit-root native closure
+  collection. Preserves relative paths, records SONAME/dependency/version/feature
+  facts, rejects missing edges, target mismatch, path escape and identity conflicts.
+  TLS, unwind and GNU hash facts do not inherit memory-mapper restrictions.
+- macOS arm64 parser/closure tests and pinned Clippy passed. A separate Linux-only
+  test compiles independent fixture inputs, compares readelf and executes the
+  relocated module plus secondary library through dlopen with TLS state.
+- Absolute/cwd-dependent load paths produce transformation-required diagnostics;
+  optional normalization tooling and x86_64 native execution remain pending.
+  This card is implemented partially until those acceptance requirements pass.
