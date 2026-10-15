@@ -313,3 +313,152 @@ fn compact_helper_preserves_application_exit_status() {
         Some(7)
     );
 }
+
+#[cfg(unix)]
+fn independent_query_program(directory: &Directory, name: &str, source: &str) -> PathBuf {
+    let input = directory.0.join(format!("{name}.c"));
+    let executable = directory.0.join(name);
+    fs::write(&input, source).unwrap();
+    let output = Command::new("cc")
+        .args([
+            "-O2",
+            "-std=c11",
+            "-D_DARWIN_C_SOURCE",
+            "-D_DEFAULT_SOURCE",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+        ])
+        .arg(&input)
+        .arg("-o")
+        .arg(&executable)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    executable
+}
+
+#[cfg(unix)]
+#[test]
+fn descriptor_query_deadline_kills_and_reaps_real_programs_with_open_or_closed_stdout() {
+    use std::time::{Duration, Instant};
+    let directory = Directory::new();
+    let descriptor = serde_json::to_string(&helper::compiled_descriptor()).unwrap();
+    let quoted = serde_json::to_string(&descriptor).unwrap();
+    let source = format!(
+        r#"
+#include <errno.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+int main(int argc, char **argv) {{
+    char path[4096];
+    FILE *file;
+    if (argc==3 && strcmp(argv[1],"--check-pid")==0) {{
+        long pid=strtol(argv[2],NULL,10);
+        if (pid<=0) return 8;
+        return kill((pid_t)pid,0)==-1 && errno==ESRCH ? 0 : 1;
+    }}
+    alarm(20);
+    if (snprintf(path,sizeof(path),"%s.pid",argv[0]) >= (int)sizeof(path)) return 3;
+    file=fopen(path,"w");
+    if (!file) return 4;
+    fprintf(file,"%ld",(long)getpid());
+    if (fclose(file)) return 5;
+    if (strstr(argv[0],"closed-stdout")) {{
+        fputs({quoted},stdout);
+        fclose(stdout);
+    }} else {{
+        fputs("{{",stdout);
+        fflush(stdout);
+    }}
+    for (;;) pause();
+}}
+"#
+    );
+    let opened = independent_query_program(&directory, "open-stdout", &source);
+    let closed = directory.0.join("closed-stdout");
+    fs::copy(&opened, &closed).unwrap();
+    std::thread::scope(|scope| {
+        let probes:Vec<_>=[opened,closed].into_iter().map(|path| scope.spawn(move || {
+            let started=Instant::now();
+            let error=helper::query(&path).unwrap_err();
+            assert!(matches!(&error,helper::HelperError::Invalid(message) if message.contains("timed out after 5s")),"{error}");
+            assert!(started.elapsed()>=Duration::from_millis(4500));
+            assert!(started.elapsed()<Duration::from_secs(10));
+            let pid=fs::read_to_string(path.with_extension("pid")).unwrap();
+            let status=Command::new(&path).args(["--check-pid",pid.trim()]).output().unwrap();
+            assert!(status.status.success(),"timed-out helper {pid} was not killed/reaped");
+        })).collect();
+        for probe in probes {
+            probe.join().unwrap();
+        }
+    });
+}
+
+#[cfg(unix)]
+#[test]
+fn descriptor_query_preserves_output_bound_and_other_spawn_errors() {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = Directory::new();
+    let noisy = independent_query_program(
+        &directory,
+        "noisy",
+        r#"
+#include <stdio.h>
+int main(void) { for(int n=0;n<65537;n++) putchar('x'); return 0; }
+"#,
+    );
+    assert!(
+        matches!(helper::query(&noisy),Err(helper::HelperError::Invalid(message)) if message.contains("64 KiB"))
+    );
+    let missing = directory.0.join("missing");
+    assert!(
+        matches!(helper::query(&missing),Err(helper::HelperError::Io(error)) if error.kind()==std::io::ErrorKind::NotFound)
+    );
+    fs::set_permissions(&noisy, fs::Permissions::from_mode(0o644)).unwrap();
+    assert!(
+        matches!(helper::query(&noisy),Err(helper::HelperError::Io(error)) if error.kind()==std::io::ErrorKind::PermissionDenied)
+    );
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+fn descriptor_query_retries_only_transient_executable_busy_and_bounds_persistent_busy() {
+    use std::{
+        fs::OpenOptions,
+        time::{Duration, Instant},
+    };
+    let directory = Directory::new();
+    let descriptor = helper::compiled_descriptor();
+    let quoted = serde_json::to_string(&serde_json::to_string(&descriptor).unwrap()).unwrap();
+    let executable = independent_query_program(
+        &directory,
+        "busy-descriptor",
+        &format!("#include <stdio.h>\nint main(void){{fputs({quoted},stdout);return 0;}}\n"),
+    );
+    let writer = OpenOptions::new().write(true).open(&executable).unwrap();
+    let error = Command::new(&executable).spawn().unwrap_err();
+    assert_eq!(error.raw_os_error(), Some(libc::ETXTBSY));
+    let release = std::thread::spawn(move || {
+        std::thread::sleep(Duration::from_millis(20));
+        drop(writer);
+    });
+    let result = helper::query(&executable);
+    release.join().unwrap();
+    assert_eq!(result.unwrap(), descriptor);
+    let _writer = OpenOptions::new().write(true).open(&executable).unwrap();
+    let started = Instant::now();
+    assert!(
+        matches!(helper::query(&executable),Err(helper::HelperError::Io(error)) if error.raw_os_error()==Some(libc::ETXTBSY))
+    );
+    assert!(started.elapsed() >= Duration::from_millis(150));
+    assert!(started.elapsed() < Duration::from_secs(2));
+}
