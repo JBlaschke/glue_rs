@@ -14,6 +14,8 @@ import runpy
 import struct
 import sys
 import zipfile
+import contextlib
+import pathlib
 
 _VIRTUAL = "glue:///"
 
@@ -33,6 +35,9 @@ class GlueArchive:
             raise ImportError("glue manifest identity differs")
         self.manifest = json.loads(manifest)
         self.resources = self.manifest["resources"]
+        self.native = {}
+        self.distribution = None
+        self.verified_native = set()
         if len(self.resources) > 100000:
             raise ImportError("glue archive resource count exceeds bound")
         self.zip = zipfile.ZipFile(self.stream)
@@ -61,6 +66,39 @@ class GlueArchive:
             raise ImportError("glue resource identity differs: " + name)
         return data
 
+    def native_path(self, name):
+        relative = self.native.get(name)
+        if relative is None:
+            raise FileNotFoundError("undeclared native image: " + name)
+        deployed = os.path.realpath(os.path.join(self.distribution, relative))
+        if os.path.commonpath([self.distribution, deployed]) != self.distribution:
+            raise ImportError("native mapping escapes distribution")
+        spec = self.manifest["distribution"]["payloads"].get(relative)
+        if spec is None or spec["size"] > 512 * 1024 * 1024:
+            raise ImportError("native mapping has no bounded payload declaration")
+        if relative not in self.verified_native:
+            identity = hashlib.sha256()
+            size = 0
+            with open(deployed, "rb") as stream:
+                while chunk := stream.read(64 * 1024):
+                    size += len(chunk)
+                    if size > spec["size"]:
+                        raise ImportError("native payload size differs")
+                    identity.update(chunk)
+            if size != spec["size"] or identity.hexdigest() != spec["sha256"]:
+                raise ImportError("native payload identity differs: " + relative)
+            self.verified_native.add(relative)
+        return deployed
+
+    def install_native(self, index, distribution):
+        self.native = index.get("native", {})
+        self.distribution = distribution
+        for name in self.native:
+            parent = posixpath.dirname(name)
+            while parent:
+                self.directories.add(parent)
+                parent = posixpath.dirname(parent)
+
 
 class ArchivePath(importlib.resources.abc.Traversable):
     def __init__(self, archive, key):
@@ -76,7 +114,7 @@ class ArchivePath(importlib.resources.abc.Traversable):
         return ArchivePath(self.archive, posixpath.dirname(self.key))
 
     def is_file(self):
-        return self.key in self.archive.resources
+        return self.key in self.archive.resources or self.key in self.archive.native
 
     def is_dir(self):
         return self.key in self.archive.directories or not self.key
@@ -86,7 +124,7 @@ class ArchivePath(importlib.resources.abc.Traversable):
             raise NotADirectoryError(self.key)
         prefix = self.key + "/" if self.key else ""
         names = sorted({name[len(prefix):].split("/", 1)[0]
-                        for name in self.archive.resources if name.startswith(prefix)})
+                        for name in set(self.archive.resources) | set(self.archive.native) if name.startswith(prefix)})
         return iter(ArchivePath(self.archive, prefix + name) for name in names)
 
     def joinpath(self, *descendants):
@@ -101,14 +139,31 @@ class ArchivePath(importlib.resources.abc.Traversable):
     def open(self, mode="r", *args, **kwargs):
         if mode not in ("r", "rb", "rt"):
             raise PermissionError("glue archive resources are read-only")
+        if self.key in self.archive.native:
+            return open(self.archive.native_path(self.key), mode, *args, **kwargs)
         stream = io.BytesIO(self.archive.read(self.key))
         if mode == "rb":
             return stream
         return io.TextIOWrapper(stream, *args, **kwargs)
 
+    def deployed_path(self):
+        return self.archive.native_path(self.key) if self.key in self.archive.native else None
+
+    def __fspath__(self):
+        deployed = self.deployed_path()
+        if deployed is None:
+            raise TypeError("archived resource has no filesystem path; use resource streams")
+        return deployed
+
+    def __str__(self):
+        return self.deployed_path() or _VIRTUAL + self.key
+
 
 @importlib.resources.as_file.register(ArchivePath)
 def _no_resource_extraction(path):
+    deployed = path.deployed_path()
+    if deployed is not None:
+        return contextlib.nullcontext(pathlib.Path(deployed))
     raise OSError("glue archive as_file extraction is unsupported; use resource streams")
 
 
@@ -143,6 +198,9 @@ class MergedArchivePath(ArchivePath):
             if path.is_file():
                 return path.open(mode, *args, **kwargs)
         raise FileNotFoundError(self.key)
+
+    def deployed_path(self):
+        return next((deployed for path in self.paths if (deployed := path.deployed_path()) is not None), None)
 
 
 class NamespaceLoader(importlib.abc.Loader):
@@ -218,13 +276,14 @@ class ArchiveFinder(importlib.abc.MetaPathFinder):
                         spec.submodule_search_locations[:] = [_VIRTUAL + base]
                     return spec
             for suffix in importlib.machinery.EXTENSION_SUFFIXES:
-                native = self.index.get("native", {}).get(base + suffix)
-                if native is not None:
-                    deployed = os.path.realpath(os.path.join(self.distribution, native))
-                    if os.path.commonpath([self.distribution, deployed]) != self.distribution:
-                        raise ImportError("native mapping escapes distribution")
-                    loader = importlib.machinery.ExtensionFileLoader(fullname, deployed)
-                    return importlib.util.spec_from_file_location(fullname, deployed, loader=loader)
+                for key in (base + "/__init__" + suffix, base + suffix):
+                    if key in self.index.get("native", {}):
+                        deployed = self.archive.native_path(key)
+                        loader = importlib.machinery.ExtensionFileLoader(fullname, deployed)
+                        spec = importlib.util.spec_from_file_location(fullname, deployed, loader=loader)
+                        if key == base + "/__init__" + suffix:
+                            spec.submodule_search_locations = [_VIRTUAL + base]
+                        return spec
             if base in self.archive.directories:
                 namespaces.append(_VIRTUAL + base)
         if namespaces:
@@ -252,9 +311,20 @@ def run_application(archive_path, distribution, arguments):
     index = json.loads(archive.read("support/python-index.json"))
     if index["revision"] != 1:
         raise ImportError("unsupported Python application index")
+    archive.install_native(index, distribution)
     finder = ArchiveFinder(archive, index, distribution)
     sys.meta_path.insert(0, finder)
     sys.path[:0] = [_VIRTUAL + root for root in index["import_roots"]]
+    if archive.native:
+        import ctypes
+        original_cdll_init = ctypes.CDLL.__init__
+
+        def declared_cdll_init(self, name, *args, **kwargs):
+            if isinstance(name, str) and name.startswith(_VIRTUAL):
+                name = archive.native_path(name[len(_VIRTUAL):])
+            return original_cdll_init(self, name, *args, **kwargs)
+
+        ctypes.CDLL.__init__ = declared_cdll_init
     entry = index["entry"]
     sys.argv = [entry["value"], *arguments]
     if entry["kind"] == "file":

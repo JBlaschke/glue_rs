@@ -191,7 +191,10 @@ fn collect_impl(
 ) -> Result<PythonInventory, Failure> {
     let project = fs::canonicalize(&options.project)
         .map_err(|e| Failure::new(DiagnosticCode::MissingInput, e.to_string()))?;
-    let mut excluded = vec![environment.environment.clone()];
+    let mut excluded = vec![
+        environment.environment.clone(),
+        environment.runtime.prefix.clone(),
+    ];
     if let Some(output) = &options.output {
         excluded.push(fs::canonicalize(output).unwrap_or_else(|_| {
             if output.is_absolute() {
