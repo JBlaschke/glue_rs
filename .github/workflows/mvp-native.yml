@@ -19,8 +19,6 @@ jobs:
     timeout-minutes: 90
     env:
       GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
-      # Remove this explicit exception after successful first reports are reviewed.
-      GLUE_MVP_BUDGET_MODE: observe
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -30,7 +28,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends build-essential ca-certificates curl patchelf python3 strace xz-utils libx11-6 libxext6 libxrender1 libxft2 libxss1 libfontconfig1 libfreetype6
           rustup toolchain install 1.88.0 --profile minimal
-      - name: Build tools, run offline cases, and measure proposed cost budgets
+      - name: Build tools, run offline cases, and enforce reviewed cost budgets
         run: bash scripts/ci-mvp-linux.sh
       - name: Retain receipts, inventories, logs and complete traces
         if: always()
