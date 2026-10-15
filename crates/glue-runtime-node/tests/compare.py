@@ -32,7 +32,7 @@ def main():
    index['entry']=entry;(src/'module-index.json').write_text(json.dumps(index));subprocess.run([str(args.pack.resolve()),str(src),str(dest/(entry+'.glue'))],check=True)
   shutil.rmtree(src)
   shutil.copyfile(args.bridge,dest/'archive.node')
-  for file in ['bootstrap.cjs','resolver.cjs']:shutil.copyfile(HERE.parent/'support'/file,dest/file)
+  for file in ['bootstrap.cjs','resolver.cjs','resources.cjs']:shutil.copyfile(HERE.parent/'support'/file,dest/file)
   for entry in references:
    run=subprocess.run([str(args.node.resolve()),str(dest/'bootstrap.cjs'),str(dest/(entry+'.glue')),str(dest/'archive.node')],env=env,cwd=empty,text=True,capture_output=True,timeout=30)
    assert run.returncode==0,run.stderr

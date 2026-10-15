@@ -279,6 +279,13 @@ pub fn prepare(
             mode: 0o444,
         },
     );
+    payloads.insert(
+        "support/resources.cjs".into(),
+        NodePayload::Bytes {
+            bytes: crate::RESOURCES.as_bytes().to_vec(),
+            mode: 0o444,
+        },
+    );
     let launch = RuntimeLaunchSpec {
         executable: runtime.executable.clone(),
         args: vec![

@@ -10,6 +10,7 @@ const archive=bridge.open(archivePath);
 const read=resource=>bridge.read(archive,resource);
 const index=JSON.parse(read('module-index.json'));
 const resolver=require('./resolver.cjs').createResolver(index,path.dirname(archivePath));
+const resources=require('./resources.cjs').installResources({read,list:()=>bridge.list(archive)});
 registerHooks({
   resolve(specifier,context,nextResolve) {
     if(isBuiltin(specifier))return nextResolve(specifier,context);
@@ -27,7 +28,7 @@ registerHooks({
     return {format:file.format,source:read(file.resource),shortCircuit:true};
   }
 });
-Object.defineProperty(globalThis,'glueResources',{value:Object.freeze({read})});
+Object.defineProperty(globalThis,'glueResources',{value:Object.freeze({root:resources.root,read:resources.read,list:resources.list,stat:resources.stat,createReadStream:resources.createReadStream})});
 (async()=>{
   const entry=index.entry;const result=resolver.record(entry);
   process.argv=[process.execPath,fileURLToPath(result.url),...process.argv.slice(4)];
