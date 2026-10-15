@@ -7,12 +7,15 @@ license.workspace = true
 
 [features]
 default = []
-python = ["dep:glue-runtime-python"]
+python = ["dep:glue-runtime-python", "dep:glue-pbs", "dep:flate2", "dep:ruzstd"]
 
 [dependencies]
 glue-runtime-node = { path = "../glue-runtime-node" }
 glue-format.workspace = true
 glue-runtime-python = { workspace = true, optional = true }
+glue-pbs = { path = "../glue-pbs", optional = true }
+flate2 = { workspace = true, optional = true }
+ruzstd = { workspace = true, optional = true }
 libc.workspace = true
 serde.workspace = true
 serde_json = { workspace = true, features = ["preserve_order"] }
