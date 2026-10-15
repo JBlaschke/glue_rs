@@ -3,6 +3,40 @@ use glue_pack::python::discovery::{DiscoveryOptions, discover, probe};
 use std::{fs, path::PathBuf, time::Duration};
 
 #[test]
+#[ignore = "requires a supplied native GLUE_TEST_PYTHON with stdlib venv"]
+fn ordinary_copied_venv_selects_only_its_identical_existing_base_image() {
+    let python =
+        PathBuf::from(std::env::var_os("GLUE_TEST_PYTHON").expect("supply GLUE_TEST_PYTHON"));
+    let root = std::env::temp_dir().join(format!("glue copied venv {}", std::process::id()));
+    let status = std::process::Command::new(&python)
+        .args(["-I", "-B", "-m", "venv", "--without-pip", "--copies"])
+        .arg(&root)
+        .status()
+        .unwrap();
+    assert!(status.success());
+    let found = discover(&DiscoveryOptions {
+        environment: root.clone(),
+        runtime: None,
+        python_version: None,
+        target: None,
+        inspect_only: false,
+    })
+    .unwrap();
+    assert!(!found.runtime.executable.starts_with(&root));
+    assert!(
+        found
+            .runtime
+            .executable
+            .starts_with(fs::canonicalize(&found.runtime.prefix).unwrap())
+    );
+    assert_eq!(
+        found.descriptor.inputs["environment-executable"],
+        glue_format::InputIdentity::of(&fs::read(root.join("bin/python3")).unwrap())
+    );
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
 #[ignore = "requires a supplied native runtime in GLUE_TEST_PYTHON"]
 fn selected_runtime_and_venv_metadata_never_execute_site_hooks() {
     let python = std::env::var_os("GLUE_TEST_PYTHON").expect("supply GLUE_TEST_PYTHON");

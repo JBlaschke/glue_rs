@@ -134,6 +134,25 @@ print(json.dumps({'status':'python-runtime-ok','version':list(sys.version_info[:
         serde_json::from_slice(&fs::read(output.join("glue.lock.json")).unwrap()).unwrap();
     assert_eq!(lock.options["glue.cli.language"], "python");
     assert_eq!(report.runtime.provider, RuntimeProvider::Bundled);
+    let mut wrong_provider = report.runtime.clone();
+    wrong_provider.provider = RuntimeProvider::Host;
+    let wrong_context = std::collections::BTreeMap::from([(
+        "glue.expected-runtime".into(),
+        serde_json::to_string(&wrong_provider).unwrap(),
+    )]);
+    let wrong_output = root.join("wrong-provider");
+    assert_eq!(
+        compact::build_with_options(
+            &options,
+            Path::new("/usr/bin/true"),
+            &wrong_output,
+            &wrong_context
+        )
+        .unwrap_err()
+        .code,
+        glue_format::DiagnosticCode::PayloadIntegrity
+    );
+    assert!(!wrong_output.exists());
     assert_eq!(
         report
             .payloads
