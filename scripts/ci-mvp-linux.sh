@@ -22,7 +22,14 @@ finish() {
     if /usr/bin/python3 - "$evidence" "$result" <<'PY'
 import datetime, json, sys
 from pathlib import Path
+sys.path.insert(0, str(Path('fixtures/mvp').resolve()))
+import trace_environment
 root, result = Path(sys.argv[1]), int(sys.argv[2])
+try:
+    policy = trace_environment.check(root / 'provisioning/trace-environment', 'x86_64')
+    policy_error = None
+except (OSError, ValueError, KeyError, TypeError) as error:
+    policy, policy_error = None, str(error)
 table = root / 'case-status.tsv'
 cases = []
 if table.exists():
@@ -46,15 +53,16 @@ benchmark_complete = (len(benchmarks) == len(expected_benchmarks)
                               for case in expected_benchmarks))
 cases_passed = complete and all(c['exit'] == 0 for c in cases)
 benchmarks_passed = benchmark_complete and all(b['exit'] == 0 for b in benchmarks)
-passed = result == 0 and cases_passed and benchmarks_passed
+passed = result == 0 and cases_passed and benchmarks_passed and policy is not None
 summary = {'status': 'passed' if passed else 'failed',
            'exit': result or (0 if passed else 1), 'target': 'x86_64-unknown-linux-gnu', 'expected_cases': len(expected),
            'expected_labels': sorted(expected), 'cases': cases,
            'acceptance_status': 'passed' if cases_passed else 'failed',
            'expected_benchmarks': sorted(expected_benchmarks), 'benchmarks': benchmarks,
            'benchmark_status': 'passed' if benchmarks_passed else 'failed',
+           'trace_environment': policy, 'trace_environment_error': policy_error,
            'finished_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-           'scope': 'native V02/R02 and R03 first observations; generated x86_64 budgets are proposed pending review',
+           'scope': 'native V02/R02 and R03 under explicit traceable-native-syscalls-v1 CI policy; generated x86_64 budgets are proposed pending review',
            'cache_policy': 'first/warm fresh processes; no cold filesystem-cache claim',
            'budget_policy': 'time/RSS scoped to recorded host boot fingerprint; no universal host limits'}
 (root / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
@@ -87,6 +95,21 @@ sudo -n unshare --net /usr/bin/true
     strace --version
 } > "$evidence/toolchain.txt"
 git status --short > "$evidence/source-status.txt"
+
+# A syscall tracer cannot observe io_uring SQE writes. Select the ordinary
+# syscall fallback explicitly for the complete test process tree, including
+# stock references and all benchmark ranks. This is a CI host policy only.
+trace_environment_dir="$evidence/provisioning/trace-environment"
+mkdir "$trace_environment_dir"
+cp fixtures/mvp/trace_environment.c "$trace_environment_dir/trace_environment.c"
+trace_environment="$trace_environment_dir/glue-trace-environment"
+cc -O2 -std=c11 -Wall -Wextra -Werror "$trace_environment_dir/trace_environment.c" -o "$trace_environment"
+printf '%s\n' 'cc -O2 -std=c11 -Wall -Wextra -Werror trace_environment.c -o glue-trace-environment' \
+    > "$trace_environment_dir/build-command.txt"
+sudo -n "$trace_environment" --probe > "$trace_environment_dir/proof.json"
+/usr/bin/python3 fixtures/mvp/trace_environment.py "$trace_environment_dir" --architecture x86_64 --record
+(cd "$trace_environment_dir" && sha256sum trace_environment.c glue-trace-environment proof.json manifest.json) \
+    > "$trace_environment_dir/SHA256SUMS"
 
 download() {
     curl --fail --location --retry 3 --proto '=https' --tlsv1.2 --output "$2" "$1"
@@ -186,7 +209,7 @@ run_case() {
     shift 2
     local output="$ci_root/cases/$label" result=0
     echo "Running native offline acceptance: $label"
-    if sudo -n env -i "${common_env[@]}" "$@" unshare --net /usr/bin/python3 fixtures/mvp/harness.py \
+    if sudo -n env -i "${common_env[@]}" "$@" "$trace_environment" -- unshare --net /usr/bin/python3 fixtures/mvp/harness.py \
         --case "$recipe" --target x86_64-unknown-linux-gnu --output "$output" > "$evidence/$label.log" 2>&1; then
         if ! sudo -n /usr/bin/python3 scripts/check-mvp-results.py "$output/receipt.json" >> "$evidence/$label.log" 2>&1; then result=1; fi
     else
@@ -291,7 +314,7 @@ run_benchmark() {
     shift
     local output="$ci_root/benchmarks/$recipe" budget="$evidence/proposed-budgets/$recipe.json" result=0
     echo "Measuring native first observations: $recipe"
-    if sudo -n env -i "${common_env[@]}" "$@" unshare --net /usr/bin/python3 scripts/benchmark-mvp.py \
+    if sudo -n env -i "${common_env[@]}" "$@" "$trace_environment" -- unshare --net /usr/bin/python3 scripts/benchmark-mvp.py \
         --case "$recipe" --target x86_64-unknown-linux-gnu --source-entries 10000 --ranks 1,32 \
         --output "$output" --freeze-budget "$budget" > "$evidence/benchmark-$recipe.log" 2>&1; then
         if ! check_benchmark "$output" "$budget" "$recipe" >> "$evidence/benchmark-$recipe.log" 2>&1; then result=1; fi

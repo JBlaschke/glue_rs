@@ -100,6 +100,13 @@ an oracle that simply rejects every trace. The receipt checker re-parses raw
 traces and checks retained trace hashes. `scripts/check-mvp-trace.py` exposes the
 same oracle for independent operator captures.
 
+Hosted Linux x86_64 CI uses the explicitly recorded
+[trace environment policy](../../docs/decisions/mvp-v02-ci-trace-environment.md)
+to disable kernel asynchronous I/O before every case/reference/control and
+benchmark rank. These results cover the runtime's syscall fallback in that
+environment; they do not establish unrestricted-host acceptance. The oracle
+continues to reject unobservable successful asynchronous I/O.
+
 On macOS, `GLUE_MVP_SIGNING_POLICY=ad-hoc|developer-id` selects the intended
 policy; `scripts/check-macos-deployment.py PAYLOAD --policy ad-hoc` also checks a
 final layout independently. Every Mach-O image gets strict codesign verification
