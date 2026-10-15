@@ -100,3 +100,9 @@ paths. Re-sign every modified Mach-O and verify the final signatures. No such
 normalization is silently performed here, and no non-PBS relocation success is
 claimed. A non-framework POSIX installation with relative native edges can use
 the same ZIP landmark recipe; that route still needs native-run evidence.
+
+P05 later proved a smaller final framework layout: the same real app executable
+can deploy as standalone `runtime/bin/Python`, with its core edge explicitly
+normalized to `@loader_path/../Python`. Relocated isolated execution and strict
+signature verification pass without retaining an incomplete `.app` container.
+This product-provider improvement does not change the spike's historical results.
