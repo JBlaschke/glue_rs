@@ -231,3 +231,135 @@ fn real_prebuilt_extension_secondary_library_loads_after_relocation() {
             .success()
     );
 }
+
+#[cfg(target_os = "linux")]
+#[test]
+fn explicit_normalization_retains_source_bytes_and_runs_without_source_prefix() {
+    use glue_pack::distribution::PayloadSource;
+    use std::process::Command;
+    let tool = std::env::var_os("GLUE_PATCHELF")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("/usr/bin/patchelf"));
+    if !tool.is_file() {
+        assert!(
+            std::env::var_os("GLUE_REQUIRE_ELF_NORMALIZATION").is_none(),
+            "required test patchelf missing"
+        );
+        eprintln!("ELF normalization execution unperformed: provision patchelf");
+        return;
+    }
+    let t = Temp::new();
+    let source = t.0.join("source");
+    fs::create_dir(&source).unwrap();
+    fs::write(source.join("dep.c"), "int dependency(void){return 42;}\n").unwrap();
+    fs::write(
+        source.join("module.c"),
+        "extern int dependency(void);int answer(void){return dependency();}\n",
+    )
+    .unwrap();
+    assert!(
+        Command::new("cc")
+            .current_dir(&source)
+            .args([
+                "-shared",
+                "-fPIC",
+                "dep.c",
+                "-Wl,-soname,libdep.so",
+                "-o",
+                "libdep.so"
+            ])
+            .status()
+            .unwrap()
+            .success()
+    );
+    assert!(
+        Command::new("cc")
+            .current_dir(&source)
+            .args([
+                "-shared",
+                "-fPIC",
+                "module.c",
+                "-L.",
+                "-ldep",
+                "-o",
+                "module.so"
+            ])
+            .status()
+            .unwrap()
+            .success()
+    );
+    let before = fs::read(source.join("module.so")).unwrap();
+    let mut request = NativeRequest {
+        images: vec![source.join("module.so")],
+        search_roots: vec![NativeSearchRoot {
+            source: source.clone(),
+            deployed: "native".into(),
+            provider: DependencyProvider::Bundled,
+        }],
+        target: format!(
+            "{}-unknown-linux-gnu",
+            if cfg!(target_arch = "aarch64") {
+                "aarch64"
+            } else {
+                "x86_64"
+            }
+        ),
+        normalize: false,
+        host_libraries: BTreeSet::new(),
+    };
+    assert_eq!(
+        collect(&request).unwrap_err().code,
+        DiagnosticCode::TransformationRequired
+    );
+    request.normalize = true;
+    let collection = collect(&request).unwrap();
+    assert_eq!(fs::read(source.join("module.so")).unwrap(), before);
+    assert_eq!(collection.inventory.transformations.len(), 1);
+    let change = &collection.inventory.transformations[0];
+    assert_ne!(change.input, change.output);
+    let deployed = t.0.join("relocated");
+    for (path, src) in collection.payloads {
+        let target = deployed.join(path);
+        fs::create_dir_all(target.parent().unwrap()).unwrap();
+        match src {
+            PayloadSource::File(p) => {
+                fs::copy(p, target).unwrap();
+            }
+            PayloadSource::Bytes { bytes, .. } => fs::write(target, bytes).unwrap(),
+            PayloadSource::Symlink { target: link } => {
+                std::os::unix::fs::symlink(link, target).unwrap()
+            }
+        }
+    }
+    let actual = Command::new("readelf")
+        .arg("-d")
+        .arg(deployed.join("native/module.so"))
+        .output()
+        .unwrap();
+    assert!(actual.status.success());
+    assert!(
+        String::from_utf8(actual.stdout)
+            .unwrap()
+            .contains("$ORIGIN")
+    );
+    fs::write(t.0.join("load.c"),"#include <dlfcn.h>\nint main(int c,char**v){(void)c;void*h=dlopen(v[1],RTLD_NOW);if(!h)return 1;int(*f)(void)=dlsym(h,\"answer\");return f&&f()==42?0:2;}\n").unwrap();
+    assert!(
+        Command::new("cc")
+            .arg(t.0.join("load.c"))
+            .args(["-ldl", "-o"])
+            .arg(t.0.join("loader"))
+            .status()
+            .unwrap()
+            .success()
+    );
+    fs::remove_dir_all(source).unwrap();
+    assert!(
+        Command::new(t.0.join("loader"))
+            .arg(deployed.join("native/module.so"))
+            .env_clear()
+            .current_dir("/")
+            .status()
+            .unwrap()
+            .success()
+    );
+}
