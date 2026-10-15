@@ -92,6 +92,7 @@ fn build_impl(
         })?;
         let actual = &input.runtime;
         if expected.implementation != actual.implementation
+            || expected.provider != actual.provider
             || expected.version != actual.version
             || expected.abi != actual.abi
             || expected.target != actual.target

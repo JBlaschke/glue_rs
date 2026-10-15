@@ -319,6 +319,31 @@ pub fn discover_diagnostic(options: &DiscoveryOptions) -> Result<ResolvedEnviron
 }
 fn checked_probe(executable: &Path) -> Result<RuntimeMetadata, Failure> {
     let mut metadata = probe_metadata(executable, Duration::from_secs(15))?;
+    let prefix = fs::canonicalize(&metadata.prefix).map_err(|e| e.to_string())?;
+    if !metadata.executable.starts_with(&prefix) && metadata.framework.is_empty() {
+        // `venv --copies` places the same interpreter image outside base_prefix.
+        // Select its existing base installation image only after byte identity
+        // and probed ABI agree; do not substitute an arbitrary same-version runtime.
+        let base = prefix.join(format!(
+            "bin/python{}.{}",
+            metadata.version[0], metadata.version[1]
+        ));
+        if base.is_file()
+            && InputIdentity::of(&read_bounded(executable, 256 * 1024 * 1024)?)
+                == InputIdentity::of(&read_bounded(&base, 256 * 1024 * 1024)?)
+        {
+            validate_native_executable(&base)
+                .map_err(|e| Failure::new(DiagnosticCode::TargetMismatch, e))?;
+            let actual = probe_metadata(&base, Duration::from_secs(15))?;
+            if actual.version != metadata.version || actual.soabi != metadata.soabi {
+                return Err(Failure::new(
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "copied environment interpreter and identical base image disagree",
+                ));
+            }
+            metadata = actual;
+        }
+    }
     if !metadata.framework.is_empty() {
         // Framework bin/python may exec a compiled original app-bundle path.
         // Ship the already installed real stock interpreter instead.
@@ -475,6 +500,10 @@ fn resolve(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Failure> {
     inputs.insert(
         "runtime-executable".into(),
         InputIdentity::of(&executable_bytes),
+    );
+    inputs.insert(
+        "environment-executable".into(),
+        InputIdentity::of(&read_bounded(&env_executable, 256 * 1024 * 1024)?),
     );
     if cfg_path.exists() {
         inputs.insert(
