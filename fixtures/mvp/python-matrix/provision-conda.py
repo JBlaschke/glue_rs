@@ -28,6 +28,8 @@ PINS = {
                'sha256': '32a39d6b85fd55d9949ea48d63887bef0dc61dca46d9844d4b409eb993460617'},
     'libffi': {'version': '3.7.0', 'build': 'h81df57d_1',
                'sha256': 'c8c7583ef063bc3c430f1d48298e5ad24f796a35c22ed5b14183325825a61106'},
+    'libstdcxx': {'version': '16.2.0', 'build': 'h934c35e_7',
+                  'sha256': 'fa7018298629fc429971fffd6ecba3d27a7b02e4e890d6a93ea01ffebe8cb745'},
 }
 
 
