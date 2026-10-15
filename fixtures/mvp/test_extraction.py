@@ -67,6 +67,32 @@ class ExtractionTests(unittest.TestCase):
         self.trace('1.000000 execve("/payload/glue", ["glue"], 0x0) = 0\n')
         with self.assertRaisesRegex(extraction.TraceError, "no terminal"): self.check()
 
+    def test_successful_clone3_in_out_annotation_preserves_child_tracking(self):
+        # Actual arguments from native x86_64 run 38791248353,
+        # node-24.22.0-cjs/trace/syscalls.5147; only timestamps are shortened.
+        clone = ('1.100000 clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, '
+                 'child_tid=0x7f9e4ceef990, parent_tid=0x7f9e4ceef990, exit_signal=0, stack=0x7f9e4c6ef000, stack_size=0x7ffdc0, tls=0x7f9e4ceef6c0} => {parent_tid=[5148]}, 88) = 5148\n')
+        self.trace(self.root_trace(clone))
+        with self.assertRaisesRegex(extraction.TraceError, "process tree trace incomplete"):
+            self.check()
+        self.trace('1.200000 set_robust_list(0x0, 24) = 0\n1.300000 exit(0) = ?\n1.300001 +++ exited with 0 +++\n', 5148)
+        self.assertEqual(self.check()["processes"], 2)
+        self.trace('1.200000 openat(AT_FDCWD, "/cache/child-extraction", O_WRONLY|O_CREAT, 0666) = -1 EACCES (Permission denied)\n1.300001 +++ exited with 0 +++\n', 5148)
+        with self.assertRaisesRegex(extraction.TraceError, "open-for-write"):
+            self.check()
+
+    def test_argument_mutations_preserve_quotes_and_descriptor_angles(self):
+        arguments = '"literal => > data", 3</path-ending-in=>, [4<pipe:[99]>], {value=1} => {value=2}, 88'
+        self.assertEqual(extraction.BASE.split_arguments(arguments), [
+            '"literal => > data"', '3</path-ending-in=>', '[4<pipe:[99]>]',
+            '{value=1} => {value=2}', '88'])
+        for malformed in ['>', '3</missing', '[3</mismatch>}', '{value=1} > {value=2}',
+                          '{value=1} => {value=[2}', '=> {value=2}', '{value=1} =>',
+                          '{value=1} =>, 88', '[=> 1]']:
+            with self.subTest(malformed=malformed):
+                with self.assertRaises(extraction.TraceError):
+                    extraction.BASE.split_arguments(malformed)
+
     def signing_images(self):
         (self.root / "glue").write_bytes(b"\xcf\xfa\xed\xfefixture")
         (self.root / "vendor.dylib").write_bytes(b"\xcf\xfa\xed\xfefixture-vendor")
