@@ -155,6 +155,7 @@ fn prepare_impl(
             .unix_permissions(0o444)
             .last_modified_time(zip::DateTime::default());
         let mut images = vec![environment.runtime.executable.clone()];
+        let mut runtime_seeds = images.clone();
         images.extend(application.native_files.values().cloned());
         let mut bytes = 0u64;
         let mut entries = 0usize;
@@ -183,6 +184,7 @@ fn prepare_impl(
             }
             if is_native_file(&path)? {
                 if name.starts_with("lib-dynload/") {
+                    runtime_seeds.push(path.clone());
                     images.push(path);
                 }
                 continue;
@@ -262,6 +264,12 @@ fn prepare_impl(
             normalize: options.normalize_native_paths,
             host_libraries: BTreeSet::new(),
         })?;
+        descriptor
+            .inputs
+            .extend(super::native::runtime_input_identities(
+                &runtime_seeds,
+                &closure,
+            )?);
         descriptor.executable = closure
             .mappings
             .get(&fs::canonicalize(&environment.runtime.executable).map_err(|e| e.to_string())?)

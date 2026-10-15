@@ -1,9 +1,9 @@
 //! Python ABI checks and deployed native-image mappings, independent of package IDs.
 use super::{discovery::ResolvedEnvironment, inventory::PythonInventory};
-use crate::native::NativeSearchRoot;
-use glue_format::{DependencyProvider, Diagnostic, DiagnosticCode, RuntimeVersion};
+use crate::native::{NativeCollection, NativeSearchRoot};
+use glue_format::{DependencyProvider, Diagnostic, DiagnosticCode, InputIdentity, RuntimeVersion};
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, BTreeSet, VecDeque},
     fs,
     path::{Path, PathBuf},
 };
@@ -202,6 +202,65 @@ fn is_python_core(name: &str) -> bool {
     name.contains("libpython") || name.ends_with("/Python")
 }
 
+/// Hash original runtime seeds and their transitive bundled dependencies.
+/// Application-only native images remain application inputs, permitting a
+/// rebuild to update application packages without replacing the selected runtime.
+pub(crate) fn runtime_input_identities(
+    seeds: &[PathBuf],
+    collection: &NativeCollection,
+) -> Result<BTreeMap<String, InputIdentity>, Diagnostic> {
+    let sources = collection
+        .mappings
+        .iter()
+        .map(|(source, deployed)| (deployed.as_str(), source))
+        .collect::<BTreeMap<_, _>>();
+    let mut edges = BTreeMap::<&str, Vec<&str>>::new();
+    for edge in &collection.inventory.edges {
+        if matches!(
+            edge.provider,
+            DependencyProvider::Runtime | DependencyProvider::Bundled
+        ) {
+            edges.entry(&edge.from).or_default().push(&edge.resolved);
+        }
+    }
+    let mut queue = VecDeque::new();
+    for seed in seeds {
+        let canonical = fs::canonicalize(seed)
+            .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+        let deployed = collection.mappings.get(&canonical).ok_or_else(|| {
+            error(
+                DiagnosticCode::MissingDependency,
+                format!(
+                    "runtime seed missing from native closure: {}",
+                    seed.display()
+                ),
+            )
+        })?;
+        queue.push_back(deployed.as_str());
+    }
+    let mut visited = BTreeSet::new();
+    let mut inputs = BTreeMap::new();
+    while let Some(deployed) = queue.pop_front() {
+        if !visited.insert(deployed) {
+            continue;
+        }
+        let source = sources.get(deployed).ok_or_else(|| {
+            error(
+                DiagnosticCode::MissingDependency,
+                format!("runtime dependency missing its original input: {deployed}"),
+            )
+        })?;
+        inputs.insert(
+            format!("runtime-native/{deployed}"),
+            InputIdentity::of(&crate::native::read_image(source)?),
+        );
+        if let Some(dependencies) = edges.get(deployed) {
+            queue.extend(dependencies.iter().copied());
+        }
+    }
+    Ok(inputs)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -213,5 +272,59 @@ mod tests {
         assert!(!compatible_tag("cp314-cp314-any", 13));
         assert!(!compatible_tag("cp314-cp314t-any", 14));
         assert!(compatible_tag("py2.py3-none-any", 14));
+    }
+    #[test]
+    fn runtime_graph_identity_tracks_transitive_dependencies_and_excludes_app_only_inputs() {
+        let root = std::env::temp_dir().join(format!("glue runtime graph {}", std::process::id()));
+        fs::create_dir_all(&root).unwrap();
+        let mut collection = NativeCollection::default();
+        for name in [
+            "runtime/bin/python",
+            "runtime/lib/core",
+            "native/external/secondary",
+            "app/module",
+            "app/secondary",
+        ] {
+            let path = root.join(name);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(&path, name.as_bytes()).unwrap();
+            collection
+                .mappings
+                .insert(fs::canonicalize(path).unwrap(), name.into());
+        }
+        for (from, to) in [
+            ("runtime/bin/python", "runtime/lib/core"),
+            ("runtime/lib/core", "native/external/secondary"),
+            ("app/module", "app/secondary"),
+        ] {
+            collection
+                .inventory
+                .edges
+                .push(glue_format::NativeDependency {
+                    from: from.into(),
+                    name: to.into(),
+                    provider: DependencyProvider::Bundled,
+                    resolved: to.into(),
+                });
+        }
+        let seeds = vec![root.join("runtime/bin/python")];
+        let original = runtime_input_identities(&seeds, &collection).unwrap();
+        assert_eq!(original.len(), 3);
+        assert!(original.contains_key("runtime-native/native/external/secondary"));
+        fs::write(root.join("app/secondary"), b"different app bytes").unwrap();
+        assert_eq!(
+            original,
+            runtime_input_identities(&seeds, &collection).unwrap()
+        );
+        fs::write(
+            root.join("native/external/secondary"),
+            b"different selected runtime dependency",
+        )
+        .unwrap();
+        assert_ne!(
+            original,
+            runtime_input_identities(&seeds, &collection).unwrap()
+        );
+        fs::remove_dir_all(root).unwrap();
     }
 }
