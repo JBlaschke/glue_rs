@@ -71,3 +71,45 @@ python3 -m unittest discover -s fixtures/mvp -p 'test_*.py'
 The synthetic tests exercise rejection of input fallback, cache writes, missing
 dependencies, wrong exits, changed bytes, missing offline policy and skipped
 target execution. They do not count as a language/OS product acceptance run.
+
+## Complete execution traces and macOS deployment (R02)
+
+Set `GLUE_MVP_TRACE=required` when running any language case, or select the
+`no-extraction` recipe with `GLUE_MVP_EXTRACTION_CASE=lua55-native` (substitute
+the actual corpus case). This adds mandatory trace completeness, no-extraction,
+oracle-control and target signing checks to the same receipt. Linux needs
+`strace` and an approved ptrace-capable native runner, for example the offline
+container with `--cap-add SYS_PTRACE --security-opt seccomp=unconfined`.
+
+The runner retains `strace -ff -yy` logs for every process/thread. The checker
+requires a successful initial exec, terminal records and every cloned child;
+it rejoins unfinished/resumed records and rejects malformed/truncated evidence.
+Filesystem writes, open-for-write, create/unlink pairs, metadata mutations and
+writable shared file mappings outside explicitly declared application outputs
+reject even if the kernel denied them. Successful asynchronous I/O mechanisms
+without a decoder reject. Anonymous memory objects remain distinct from
+filesystem extraction. Source/resources/native bytes are not recognized by a
+fixture digest registry. `application_outputs` may name directories strictly
+under `{output}/application-output`; payloads, inputs and caches are never
+implicit writable destinations.
+
+Actual negative controls attempt ordinary create/unlink, denied writes and a
+descendant's payload write. A read-only positive control must pass, preventing
+an oracle that simply rejects every trace. The receipt checker re-parses raw
+traces and checks retained trace hashes. `scripts/check-mvp-trace.py` exposes the
+same oracle for independent operator captures.
+
+On macOS, `GLUE_MVP_SIGNING_POLICY=ad-hoc|developer-id` selects the intended
+policy; `scripts/check-macos-deployment.py PAYLOAD --policy ad-hoc` also checks a
+final layout independently. Every Mach-O image gets strict codesign verification
+and its actual signature metadata is reported. Developer ID mode also records
+Gatekeeper assessment. Ad-hoc verification never proves Developer ID signing or
+notarization. No code is silently re-signed by these checks.
+
+Local R02 evidence: all four source/native Lua family cases passed complete
+Linux arm64 traces plus injected controls. macOS arm64 final Lua55 layout passed
+strict ad-hoc verification. The full macOS R02 receipt deliberately fails because
+noninteractive dtruss returned `sudo: a password is required`; this host has no
+approved complete macOS descendant trace. No Developer ID/notarization evidence
+or native Linux x86_64 trace is claimed. Those remain external acceptance gaps,
+and the Linux decoder is not presented as a macOS trace decoder.

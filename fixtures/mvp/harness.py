@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import platform
@@ -28,6 +29,13 @@ REQUIRED = {
 
 class HarnessError(Exception):
     pass
+
+
+def extraction_module():
+    spec = importlib.util.spec_from_file_location("glue_mvp_extraction", Path(__file__).with_name("extraction.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def identity(path: Path) -> dict:
@@ -186,6 +194,19 @@ def check(receipt_path: Path) -> list[str]:
             errors.append(f"{name} evidence is missing/escaped")
         elif identity(path) != {key: evidence.get(key) for key in ["size", "sha256"]}:
             errors.append(f"{name} evidence changed")
+    if "no_extraction" in receipt.get("required_checks", []):
+        trace = receipt.get("trace", {})
+        if trace.get("backend") == "strace":
+            try:
+                extraction_module().check_trace(receipt_path.parent / trace["prefix"], Path(trace["cwd"]), trace.get("allowed_outputs", []), trace.get("sinks", []), trace.get("executable"))
+            except (ValueError, OSError, KeyError) as error:
+                errors.append(f"raw extraction trace rejected: {error}")
+            for relative, recorded in {**trace.get("evidence", {}), **receipt.get("trace_oracle_evidence", {})}.items():
+                path = receipt_path.parent / relative
+                if not path.resolve().is_relative_to(receipt_path.parent.resolve()) or not path.is_file() or identity(path) != recorded:
+                    errors.append(f"raw trace evidence changed/missing: {relative}")
+        else:
+            errors.append("complete extraction trace backend/evidence is unavailable")
     return errors
 
 
@@ -209,6 +230,9 @@ def execute(recipe: dict, target: str, output: Path, repository: Path) -> dict:
                "commands": {}, "checks": {}, "reference_kind": recipe.get("reference_kind"),
                "required_checks": sorted(REQUIRED | set(recipe.get("required_checks", [])))}
     checks, commands = receipt["checks"], receipt["commands"]
+    trace_requested = recipe.get("trace") == "required" or os.environ.get("GLUE_MVP_TRACE") == "required"
+    if trace_requested:
+        receipt["required_checks"] = sorted(set(receipt["required_checks"]) | {"trace_complete", "no_extraction", "trace_oracle", "signing_policy"})
     def status(name, passed, **details): checks[name] = {"status": "passed" if passed else "failed", **details}
     status("native_target", True)
     try:
@@ -275,13 +299,46 @@ def execute(recipe: dict, target: str, output: Path, repository: Path) -> dict:
         status("no_language_tools", not Path(environment["PATH"]).exists())
         status("unrelated_cwd", unrelated != payload and not unrelated.is_relative_to(payload))
         status("unusable_temp_cache", all(Path(path).is_file() and Path(path).stat().st_mode & 0o222 == 0 for path in denied))
-        commands["run"] = run_command("run", wrapper + argv, unrelated, environment, output, recipe.get("timeout", 120), drop_root=True)
+        trace_argv, trace_prefix = [], None
+        if trace_requested:
+            extraction = extraction_module()
+            if platform.system() == "Linux":
+                trace_argv, trace_prefix, available = extraction.trace_prefix(output, 65534)
+                receipt["trace"] = {"backend": "strace", "prefix": str(trace_prefix.relative_to(output)) if trace_prefix else "", "cwd": str(unrelated), "executable": argv[0], "sinks": [str(output / "run.stdout"), str(output / "run.stderr")], "allowed_outputs": []}
+                checks["trace_complete"] = available
+                checks["signing_policy"] = {"status": "passed", "reason": "macOS signing gate does not apply to Linux"}
+            else:
+                checks["trace_complete"] = {"status": "unavailable", "reason": "full native macOS descendant tracing requires an approved DTrace/dtruss host"}
+                checks["signing_policy"] = extraction.verify_macos(payload, recipe.get("signing_policy", os.environ.get("GLUE_MVP_SIGNING_POLICY", "unconfigured")))
+            for value in recipe.get("application_outputs", []):
+                path = Path(expand(value, context))
+                if not path.is_relative_to(output / "application-output"):
+                    raise HarnessError("legitimate application outputs must stay under {output}/application-output")
+                path.mkdir(parents=True, exist_ok=True)
+                if os.geteuid() == 0: path.chmod(0o777)
+                if trace_prefix: receipt["trace"]["allowed_outputs"].append(str(path))
+        commands["run"] = run_command("run", trace_argv + wrapper + argv, unrelated, environment, output, recipe.get("timeout", 120), drop_root=True)
         status("execution_completed", not commands["run"]["timed_out"])
         status("payload_unchanged", payload_before == inventory(payload), note="snapshot comparison alone does not prove no extraction")
         expected = recipe.get("expected_exit", 0)
         status("exit_status", commands["run"]["exit"] == commands["reference"]["exit"] == expected)
         for stream in ["stdout", "stderr"]:
             status(stream, commands["run"][stream]["sha256"] == commands["reference"][stream]["sha256"])
+        if trace_requested:
+            if trace_prefix:
+                try:
+                    analysis = extraction.check_trace(trace_prefix, unrelated, receipt["trace"]["allowed_outputs"], receipt["trace"]["sinks"], argv[0])
+                    checks["trace_complete"] = {"status": "passed", "processes": analysis["processes"]}
+                    checks["no_extraction"] = analysis
+                except extraction.TraceError as error:
+                    checks["trace_complete"] = {"status": "failed", "reason": str(error)}
+                    checks["no_extraction"] = {"status": "failed", "reason": str(error)}
+                receipt["trace"]["evidence"] = {str(path.relative_to(output)): identity(path) for path in sorted(trace_prefix.parent.glob(trace_prefix.name + ".*"))}
+                checks["trace_oracle"] = extraction.oracle_self_test(output / "trace-controls")
+                receipt["trace_oracle_evidence"] = {str(path.relative_to(output)): identity(path) for path in sorted((output / "trace-controls").rglob("syscalls.*"))}
+            else:
+                checks["no_extraction"] = {"status": "unavailable", "reason": checks["trace_complete"].get("reason", "trace unavailable")}
+                checks["trace_oracle"] = {"status": "unavailable", "reason": "cannot inject controls without a complete native tracer"}
     except (HarnessError, OSError, KeyError, ValueError) as error:
         receipt["error"] = str(error)
     (output / "receipt.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n")
@@ -301,6 +358,12 @@ def main(argv=None):
     cases = Path(os.environ.get("GLUE_MVP_CASES_DIR", repository / "fixtures/mvp/cases"))
     try:
         recipe = json.loads((cases / f"{args.case}.json").read_text())
+        if "extends" in recipe:
+            parent_name = expand(recipe["extends"], {})
+            if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,80}", parent_name): raise HarnessError("invalid base case name")
+            parent = json.loads((cases / f"{parent_name}.json").read_text())
+            if "extends" in parent: raise HarnessError("nested case inheritance is unsupported")
+            recipe = {**parent, **recipe, "base_case": parent_name}
         if recipe.get("revision") != REVISION or recipe.get("case") != args.case: raise HarnessError("case recipe identity/revision mismatch")
         receipt = execute(recipe, args.target, args.output, repository)
         print(f"{args.case}: {receipt['status']} ({args.output / 'receipt.json'})")
