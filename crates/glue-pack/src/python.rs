@@ -7,6 +7,7 @@ pub mod compact;
 pub mod discovery;
 mod failure;
 pub mod inventory;
+pub mod native;
 
 use super::{
     BuildReport, PackError, PackLimits, build_owned, canonical_root, check_limit, input_io,

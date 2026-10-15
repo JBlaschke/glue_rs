@@ -122,13 +122,9 @@ fn prepare_impl(
 ) -> Result<DistributionInput, Failure> {
     let mut application = options.application.clone();
     application.output = Some(output.to_owned());
-    let application = inventory::collect_diagnostic(environment, &application)?;
-    if !application.native_files.is_empty() {
-        return Err(Failure::new(
-            DiagnosticCode::UnsupportedCapability,
-            "installed native Python inputs require the P04 compact native mapping route",
-        ));
-    }
+    let mut application = inventory::collect_diagnostic(environment, &application)?;
+    super::native::validate(&application, environment)?;
+    super::native::validate_runtime_linkage(environment, &application.native_files)?;
     let mut descriptor = environment.descriptor.clone();
     descriptor.provider = options.runtime_provider;
     let mut payloads = BTreeMap::new();
@@ -158,6 +154,7 @@ fn prepare_impl(
             .unix_permissions(0o444)
             .last_modified_time(zip::DateTime::default());
         let mut images = vec![environment.runtime.executable.clone()];
+        images.extend(application.native_files.values().cloned());
         let mut bytes = 0u64;
         let mut entries = 0usize;
         for (relative, path) in files {
@@ -224,6 +221,17 @@ fn prepare_impl(
             deployed: "runtime".into(),
             provider: DependencyProvider::Runtime,
         }];
+        if root.join("lib").is_dir() {
+            roots.push(NativeSearchRoot {
+                source: root.join("lib"),
+                deployed: "runtime/lib".into(),
+                provider: DependencyProvider::Runtime,
+            });
+        }
+        roots.extend(super::native::search_roots(
+            environment,
+            &options.application.project,
+        )?);
         for (index, source) in options.native_search.iter().enumerate() {
             roots.push(NativeSearchRoot {
                 source: source.clone(),
@@ -243,6 +251,8 @@ fn prepare_impl(
             .get(&fs::canonicalize(&environment.runtime.executable).map_err(|e| e.to_string())?)
             .cloned()
             .ok_or("runtime executable missing from collected closure")?;
+        application.index.native =
+            super::native::mappings(&application.native_files, &closure.mappings)?;
         native = closure.inventory;
         payloads = closure.payloads;
         payloads.insert(
@@ -271,7 +281,40 @@ fn prepare_impl(
             "explicit host CPython {} at {}",
             descriptor.version, descriptor.executable
         ));
+        if !application.native_files.is_empty() {
+            let mut roots = super::native::search_roots(environment, &options.application.project)?;
+            for (index, source) in options.native_search.iter().enumerate() {
+                roots.push(NativeSearchRoot {
+                    source: source.clone(),
+                    deployed: format!("native/search{index}"),
+                    provider: DependencyProvider::Bundled,
+                });
+            }
+            let host_libraries = crate::native::inspect(&environment.runtime.executable)?
+                .dependencies
+                .into_iter()
+                .filter(|name| name.contains("libpython") || name.ends_with("/Python"))
+                .collect();
+            let closure = native::collect(&NativeRequest {
+                images: application.native_files.values().cloned().collect(),
+                search_roots: roots,
+                target: descriptor.target.clone(),
+                normalize: options.normalize_native_paths,
+                host_libraries,
+            })?;
+            application.index.native =
+                super::native::mappings(&application.native_files, &closure.mappings)?;
+            native = closure.inventory;
+            payloads = closure.payloads;
+            descriptor
+                .requirements
+                .extend(native.host_requirements.iter().cloned());
+        }
     }
+    application.resources.insert(
+        "support/python-index.json".into(),
+        serde_json::to_vec(&application.index).map_err(|e| e.to_string())?,
+    );
     let bootstrap = bootstrap(environment, options.runtime_provider);
     payloads.insert(
         "support/python-bootstrap.py".into(),
