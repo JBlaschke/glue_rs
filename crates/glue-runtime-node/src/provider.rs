@@ -40,6 +40,7 @@ pub struct NodeProvider {
 }
 #[derive(Deserialize)]
 struct Probe {
+    executable: String,
     version: String,
     platform: String,
     arch: String,
@@ -55,7 +56,7 @@ if(typeof registerHooks==='function'){
 const root='file:///__glue_capability__/';
 const h=registerHooks({resolve(s,c,n){if(s===root+'entry.cjs'||s==='./dep.cjs')return{url:s==='./dep.cjs'?root+'dep.cjs':s,format:'commonjs',shortCircuit:true};return n(s,c);},load(u,c,n){if(u.startsWith(root))return{format:'commonjs',source:u.endsWith('entry.cjs')?"module.exports=require('./dep.cjs')":'module.exports=42',shortCircuit:true};return n(u,c);}});
 try{hooks=(await import(root+'entry.cjs')).default===42;}catch(e){hook_error=e.code||String(e);}finally{h.deregister();}}
-console.log(JSON.stringify({version:process.versions.node,platform:process.platform,arch:process.arch,node_api:Number(process.versions.napi||0),addon_abi:Number(process.versions.modules||0),hooks,hook_error}));"#;
+console.log(JSON.stringify({executable:process.execPath,version:process.versions.node,platform:process.platform,arch:process.arch,node_api:Number(process.versions.napi||0),addon_abi:Number(process.versions.modules||0),hooks,hook_error}));"#;
 
 /// Probe only Node builtins, with no project imports, npm calls or package scripts.
 /// Foreign targets must be rejected before this function by the inspecting caller.
@@ -87,8 +88,19 @@ pub fn discover(input: &Path, requested_target: Option<&str>) -> Result<Discover
             "Node executable must be a regular file no larger than 512 MiB",
         ));
     }
-    let bytes =
-        fs::read(&executable).map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    let mut bytes = Vec::new();
+    fs::File::open(&executable)
+        .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?
+        .take(512 * 1024 * 1024 + 1)
+        .read_to_end(&mut bytes)
+        .map_err(|e| error(DiagnosticCode::MissingInput, e.to_string()))?;
+    if bytes.len() > 512 * 1024 * 1024 {
+        return Err(error(
+            DiagnosticCode::ResourceLimit,
+            "Node executable grew beyond 512 MiB",
+        ));
+    }
+    native_executable(&bytes)?;
     let stdout = bounded_probe(&executable)?;
     let probe: Probe = serde_json::from_slice(&stdout).map_err(|e| {
         error(
@@ -96,6 +108,18 @@ pub fn discover(input: &Path, requested_target: Option<&str>) -> Result<Discover
             format!("malformed Node probe: {e}"),
         )
     })?;
+    let observed = fs::canonicalize(&probe.executable).map_err(|e| {
+        error(
+            DiagnosticCode::InvalidConfiguration,
+            format!("Node reported an unavailable executable: {e}"),
+        )
+    })?;
+    if observed != executable {
+        return Err(error(
+            DiagnosticCode::UnsupportedCapability,
+            "selected executable delegates to another Node runtime; select the actual stock binary, not a shim",
+        ));
+    }
     if !probe.hooks || probe.node_api < 8 {
         return Err(error(
             DiagnosticCode::UnsupportedCapability,
@@ -173,6 +197,145 @@ pub fn host_target() -> Result<&'static str> {
             "unsupported Node host",
         )),
     }
+}
+fn native_executable(bytes: &[u8]) -> Result<()> {
+    let host = host_target()?;
+    let bad = || {
+        error(
+            DiagnosticCode::InvalidConfiguration,
+            "truncated or malformed stock Node executable metadata",
+        )
+    };
+    let range = |start: usize, size: usize| {
+        bytes
+            .get(start..start.checked_add(size).ok_or_else(bad)?)
+            .ok_or_else(bad)
+    };
+    let u16at =
+        |offset| -> Result<u16> { Ok(u16::from_le_bytes(range(offset, 2)?.try_into().unwrap())) };
+    let u32at =
+        |offset| -> Result<u32> { Ok(u32::from_le_bytes(range(offset, 4)?.try_into().unwrap())) };
+    let u64at =
+        |offset| -> Result<u64> { Ok(u64::from_le_bytes(range(offset, 8)?.try_into().unwrap())) };
+    let mismatch = || {
+        error(
+            DiagnosticCode::TargetMismatch,
+            "selected Node image does not contain a native host OS/architecture executable; foreign interpreters are not executed",
+        )
+    };
+    if bytes.starts_with(b"\x7fELF") {
+        if !host.ends_with("linux-gnu") {
+            return Err(mismatch());
+        }
+        if range(4, 2)? != [2, 1] {
+            return Err(error(
+                DiagnosticCode::UnsupportedCapability,
+                "Node requires little-endian ELF64",
+            ));
+        }
+        if u16at(18)? != if host.starts_with("aarch64") { 183 } else { 62 } {
+            return Err(mismatch());
+        }
+        if ![2, 3].contains(&u16at(16)?) || u64at(24)? == 0 {
+            return Err(error(
+                DiagnosticCode::UnsupportedCapability,
+                "Node image is not an ELF executable",
+            ));
+        }
+        let offset = usize::try_from(u64at(32)?).map_err(|_| bad())?;
+        let size = u16at(54)? as usize;
+        let count = u16at(56)? as usize;
+        if size < 56 || count == 0 {
+            return Err(bad());
+        }
+        range(offset, size.checked_mul(count).ok_or_else(bad)?)?;
+        for i in 0..count {
+            let p = offset + i * size;
+            if u32at(p)? == 3 {
+                let location = usize::try_from(u64at(p + 8)?).map_err(|_| bad())?;
+                let size = usize::try_from(u64at(p + 32)?).map_err(|_| bad())?;
+                let interpreter = range(location, size)?;
+                if interpreter.windows(7).any(|b| b == b"ld-musl") {
+                    return Err(error(
+                        DiagnosticCode::TargetMismatch,
+                        "musl Node is outside the GNU Linux target contract",
+                    ));
+                }
+            }
+        }
+        return Ok(());
+    }
+    let macho = |slice: &[u8]| -> Result<()> {
+        if !host.ends_with("apple-darwin") {
+            return Err(mismatch());
+        }
+        if slice.len() < 32 || u32::from_le_bytes(slice[..4].try_into().unwrap()) != 0xfeedfacf {
+            return Err(bad());
+        }
+        let cpu = u32::from_le_bytes(slice[4..8].try_into().unwrap());
+        if cpu
+            != if host.starts_with("aarch64") {
+                0x0100000c
+            } else {
+                0x01000007
+            }
+        {
+            return Err(mismatch());
+        }
+        if u32::from_le_bytes(slice[12..16].try_into().unwrap()) != 2 {
+            return Err(error(
+                DiagnosticCode::UnsupportedCapability,
+                "Node image is not a Mach-O executable",
+            ));
+        }
+        Ok(())
+    };
+    if bytes.starts_with(&[0xcf, 0xfa, 0xed, 0xfe]) {
+        return macho(bytes);
+    }
+    if bytes.starts_with(&[0xca, 0xfe, 0xba, 0xbe]) || bytes.starts_with(&[0xca, 0xfe, 0xba, 0xbf])
+    {
+        if !host.ends_with("apple-darwin") {
+            return Err(mismatch());
+        }
+        let wide = bytes[3] == 0xbf;
+        let count = u32::from_be_bytes(range(4, 4)?.try_into().unwrap()) as usize;
+        if count == 0 || count > 64 {
+            return Err(bad());
+        }
+        for i in 0..count {
+            let p = 8 + i * if wide { 32 } else { 20 };
+            let cpu = u32::from_be_bytes(range(p, 4)?.try_into().unwrap());
+            if cpu
+                == if host.starts_with("aarch64") {
+                    0x0100000c
+                } else {
+                    0x01000007
+                }
+            {
+                let (offset, size) = if wide {
+                    (
+                        u64::from_be_bytes(range(p + 8, 8)?.try_into().unwrap()),
+                        u64::from_be_bytes(range(p + 16, 8)?.try_into().unwrap()),
+                    )
+                } else {
+                    (
+                        u32::from_be_bytes(range(p + 8, 4)?.try_into().unwrap()) as u64,
+                        u32::from_be_bytes(range(p + 12, 4)?.try_into().unwrap()) as u64,
+                    )
+                };
+                return macho(range(
+                    usize::try_from(offset).map_err(|_| bad())?,
+                    usize::try_from(size).map_err(|_| bad())?,
+                )?);
+            }
+        }
+        return Err(mismatch());
+    }
+    Err(error(
+        DiagnosticCode::UnsupportedCapability,
+        "select a stock ELF/Mach-O Node executable; wrapper scripts are not executed",
+    ))
 }
 fn bounded_probe(executable: &Path) -> Result<Vec<u8>> {
     let mut child = Command::new(executable)
@@ -399,6 +562,29 @@ mod tests {
                 .unwrap_err()
                 .code,
             DiagnosticCode::TargetMismatch
+        );
+    }
+    #[test]
+    fn foreign_headers_and_wrapper_scripts_reject_before_execution() {
+        let mut elf = vec![0_u8; 64];
+        elf[..6].copy_from_slice(b"\x7fELF\x02\x01");
+        elf[18..20].copy_from_slice(
+            &(if std::env::consts::ARCH == "aarch64" {
+                62_u16
+            } else {
+                183_u16
+            })
+            .to_le_bytes(),
+        );
+        assert_eq!(
+            native_executable(&elf).unwrap_err().code,
+            DiagnosticCode::TargetMismatch
+        );
+        assert_eq!(
+            native_executable(b"#!/bin/sh\ntouch SHOULD_NOT_RUN\n")
+                .unwrap_err()
+                .code,
+            DiagnosticCode::UnsupportedCapability
         );
     }
     #[test]
