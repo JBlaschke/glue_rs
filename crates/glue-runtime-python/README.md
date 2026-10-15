@@ -4,7 +4,8 @@ This crate owns execution mechanisms shared by the product runner and the
 Python bootstrap probe. Its public registry supports bounded bundled and host source
 applications and the existing exact source/resource and registered-native
 declaration profiles for stock CPython
-3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64.
+3.13.16 / PBS `20261009`, conventional GIL, non-debug ABI, on GNU Linux arm64,
+plus the explicit macOS arm64 host startup profile on its own cell.
 General installation discovery and native package compatibility remain pending.
 Separate metadata-aware source profiles add public `importlib.metadata`
 discovery for bounded application `.dist-info` inventories. They validate
@@ -45,8 +46,15 @@ validate declarations but cannot execute Python. On macOS arm64 the same
 boundary compiles when `GLUE_PYTHON_INCLUDE_DIR` names the pinned macOS
 install-only artifact's header tree, checked against
 `fixtures/python-host-macos/header-pins.json`; without it, Mac builds keep
-validating only. That cell supports the experimental `run-host-macos` probe
-route described in [decision 0031](../../docs/decisions/0031-macos-python-host-startup.md).
+validating only and report the macOS profile as unsupported. On that cell the
+registry serves `stock-pbs-host-startup-macos` through `glue doctor` and
+`glue run`: readiness requires a macOS arm64 Darwin declaration with exactly
+16 KiB pages and compares the declared minimum version with the observed
+`kern.osproductversion` and page size without opening the installation, and
+execution reads the application from the open archive before dyld loads the
+verified library as the `run-host-macos` probe route does. See
+[decision 0031](../../docs/decisions/0031-macos-python-host-startup.md) and
+[decision 0032](../../docs/decisions/0032-macos-python-product-route.md).
 
 The registry contains:
 
@@ -63,7 +71,7 @@ The registry contains:
 | `stock-pbs-registered-extensions` | Either provider above | Archived sealed images or explicit immutable host files |
 | `stock-pbs-native-lifecycle` | Either provider above | Separate four-image lifecycle closure, archived or explicit immutable host files |
 | `stock-pbs-native-packages` | Either provider above | Same lifecycle images, imported as descriptor-backed dotted package children |
-| `stock-pbs-host-startup-macos` (experimental probe only) | Explicit immutable macOS arm64 installation of the pinned install-only artifact, loaded by dyld | None |
+| `stock-pbs-host-startup-macos` | Explicit immutable macOS arm64 installation of the pinned install-only artifact, loaded by dyld on the macOS arm64 cell | None |
 
 Source applications declare their own entry, modules and assets below `app/`;
 importable sources live below `app/python/`. Runtime, importer, frozen startup
@@ -108,7 +116,8 @@ glue_runtime_python::execute(archive, selected)?;
 `ControlledProfile` is opaque and tied to its admitted manifest. `validate`
 is portable and does not inspect host files. `readiness(&selected)` checks build
 and platform prerequisites without loading Python; it is useful for doctor
-reporting. `execute` revalidates the token and performs readiness once, so run
+reporting, and `execution_cell()` names the compiled cell for the same report.
+`execute` revalidates the token and performs readiness once, so run
 callers need no additional readiness call. `ExecutionError::is_unsupported()`
 distinguishes unavailable capability status 2 from invalid/integrity/application
 failure status 1.

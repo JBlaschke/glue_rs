@@ -107,7 +107,9 @@ The [macOS host startup fixture](../fixtures/python-host-macos/README.md)
 repeats that startup subset on macOS arm64 with the pinned install-only
 artifact, dyld path loading, `LC_UUID` binding, six installation rejections,
 a loader-override rejection and unchanged read-only installation snapshots.
-No unprivileged syscall tracer exists there; the evidence says so.
+No unprivileged syscall tracer exists there; the evidence says so. The product
+route of [decision 0032](decisions/0032-macos-python-product-route.md) serves
+the same archives through `glue doctor` and `glue run` on that cell.
 
 The [archive Python source/resource fixture](../fixtures/python-imports/README.md)
 extends stock bundled startup with source modules, packages, single-archive

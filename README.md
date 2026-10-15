@@ -394,9 +394,22 @@ which also records the measured requirements for a bundled macOS runtime.
 sh fixtures/python-host-macos/run-macos.sh target/python-host-macos-validation
 ```
 
-Bundled macOS Python, native extensions on macOS, installation discovery and
-the product registry route remain pending; no syscall trace is available to an
-unprivileged user on macOS, and the evidence records that limitation.
+The product runner serves the same archive on that cell once its C boundary
+is compiled against the verified header tree: `doctor` reports readiness from
+the declared target and the observed macOS version and page size, and `run`
+starts the verified library through dyld. See
+[decision 0032](docs/decisions/0032-macos-python-product-route.md).
+
+```sh
+GLUE_PYTHON_INCLUDE_DIR="$PWD/target/python-host-macos-validation/host Python/python/include/python3.13" \
+  cargo build --locked -p glue-runner --features python-pbs
+target/debug/glue doctor target/python-host-macos-validation/archives/success.glue
+target/debug/glue run target/python-host-macos-validation/archives/success.glue
+```
+
+Bundled macOS Python, native extensions on macOS and installation discovery
+remain pending; no syscall trace is available to an unprivileged user on
+macOS, and the evidence records that limitation.
 
 ## Try the resource fixture
 

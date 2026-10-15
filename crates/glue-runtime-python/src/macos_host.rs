@@ -4,9 +4,12 @@
 //! Preparation verifies the independently pinned install-only artifact and
 //! selects its library and the six reviewed startup sources without extracting
 //! anything. Execution verifies the same identities in the declared
-//! installation before dyld loads the library by its verified path. This is a
-//! startup subset on one observed macOS cell; it is not host discovery, a
-//! complete stdlib policy, a bundled macOS provider or a native-extension profile.
+//! installation before dyld loads the library by its verified path. The
+//! product registry admits the profile through `admit_manifest` and reads its
+//! application from the runner's open archive through `read_payload_from`.
+//! This is a startup subset on one observed macOS cell; it is not host
+//! discovery, a complete stdlib policy, a bundled macOS provider or a
+//! native-extension profile.
 #![cfg_attr(not(glue_python_macos_host), allow(dead_code))]
 
 use super::{APP, HOST_APP, bundle::MODULE_SPECS, digest, host, host_limits};
@@ -300,9 +303,20 @@ pub(super) struct Payload {
 }
 
 pub(super) fn read_payload(path: &Path) -> Result<Payload, String> {
-    let mut archive =
+    read_payload_from(
         Archive::open_with_limits(File::open(path).map_err(|e| e.to_string())?, host_limits())
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| e.to_string())?,
+    )
+}
+
+/// Read the application from an already-open archive. The product runner opens
+/// archives with the registry's wider bounds, so the profile's own bounds apply
+/// again before any payload read; the archive closes on return, before the
+/// declared installation is opened.
+pub(super) fn read_payload_from(mut archive: Archive<File>) -> Result<Payload, String> {
+    archive
+        .check_limits(host_limits())
+        .map_err(|e| e.to_string())?;
     let config = admit_manifest(archive.manifest())?;
     if archive
         .entries()
@@ -484,6 +498,13 @@ mod tests {
         assert_eq!(payload.config, config);
         assert_eq!(payload.app, HOST_APP);
         assert!(read_payload(&directory.join("missing.glue")).is_err());
+        let archive =
+            Archive::open_with_limits(File::open(&path).unwrap(), crate::profile::archive_limits())
+                .unwrap();
+        std::fs::remove_file(&path).unwrap();
+        let payload = read_payload_from(archive).unwrap();
+        assert_eq!(payload.config, config);
+        assert_eq!(payload.app, HOST_APP);
         std::fs::remove_dir_all(&directory).unwrap();
     }
 

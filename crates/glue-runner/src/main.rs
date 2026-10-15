@@ -739,7 +739,8 @@ fn execute(command: Command) -> Result<ExitCode> {
             );
             #[cfg(feature = "python-pbs")]
             println!(
-                "Python: controlled CPython 3.13.16 / PBS 20261009 profiles; GNU Linux arm64 execution only"
+                "Python: controlled CPython 3.13.16 / PBS 20261009 profiles; {}",
+                glue_runtime_python::profile::execution_cell()
             );
             #[cfg(not(feature = "python-pbs"))]
             println!(

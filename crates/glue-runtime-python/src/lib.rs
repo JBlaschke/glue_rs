@@ -1,8 +1,9 @@
 //! Execution of pinned stock PBS Python source applications and fixture profiles.
 //!
-//! This crate supports a bounded GNU Linux arm64 source-application contract and
-//! exact fixture profiles. Provider handles remain pinned for
-//! process life; the synchronous executor owns one interpreter lifecycle.
+//! This crate supports a bounded GNU Linux arm64 source-application contract,
+//! exact fixture profiles and the explicit macOS arm64 host startup profile.
+//! Provider handles remain pinned for process life; the synchronous executor
+//! owns one interpreter lifecycle.
 #![deny(unsafe_code)]
 
 pub mod packaging;
@@ -133,6 +134,12 @@ pub fn execute(
     ))]
     {
         match selected.kind {
+            profile::Kind::MacosHostStartup => {
+                drop(archive);
+                return Err(ExecutionError::unsupported(
+                    "the explicit macOS host Python startup profile requires macOS arm64",
+                ));
+            }
             profile::Kind::BundledMetadataApp => linux::run_imports(
                 metadata_profile::read_bundled(archive).map_err(ExecutionError::failed)?,
                 None,
@@ -191,12 +198,31 @@ pub fn execute(
         }
         .map_err(ExecutionError::failed)
     }
-    #[cfg(not(all(
-        feature = "pbs-bootstrap",
-        target_os = "linux",
-        target_arch = "aarch64",
-        target_env = "gnu",
-        glue_python_boundary
+    #[cfg(glue_python_macos_host)]
+    {
+        match selected.kind {
+            profile::Kind::MacosHostStartup => macos::run_host(
+                macos_host::read_payload_from(archive).map_err(ExecutionError::failed)?,
+                false,
+            )
+            .map_err(ExecutionError::failed),
+            _ => {
+                drop(archive);
+                Err(ExecutionError::unsupported(
+                    "this Python profile executes only with pbs-bootstrap on GNU Linux arm64",
+                ))
+            }
+        }
+    }
+    #[cfg(not(any(
+        all(
+            feature = "pbs-bootstrap",
+            target_os = "linux",
+            target_arch = "aarch64",
+            target_env = "gnu",
+            glue_python_boundary
+        ),
+        glue_python_macos_host
     )))]
     {
         drop(archive);
