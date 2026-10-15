@@ -302,7 +302,9 @@ pub fn main_with_args(arguments: impl IntoIterator<Item = OsString>) -> u8 {
 fn run_archive(path: &Path, arguments: Vec<Vec<u8>>) -> u8 {
     let result = File::open(path)
         .map_err(|error| error.to_string())
-        .and_then(|file| Archive::open(file).map_err(|error| error.to_string()));
+        .and_then(|file| {
+            Archive::open(glue_format::BufferedReader::new(file)).map_err(|error| error.to_string())
+        });
     let archive = match result {
         Ok(archive) => archive,
         Err(error) => return fail(error, 1),
