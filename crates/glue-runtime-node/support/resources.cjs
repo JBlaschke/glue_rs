@@ -48,8 +48,8 @@ function installResources({read,list,deployed={},aliases={}}) {
   const start=opts.start??0,end=opts.end??Infinity;
   if(!Number.isSafeInteger(start)||start<0||!(end===Infinity||Number.isSafeInteger(end))||end<start)throw Object.assign(new RangeError('invalid stream range'),{code:'ERR_OUT_OF_RANGE'});
   let data,offset=start;
-  const result=new Readable({highWaterMark:opts.highWaterMark,encoding:opts.encoding,signal:opts.signal,emitClose:opts.emitClose??true,read(size){try{if(data===undefined)data=bytes(name,'open');const limit=Math.min(data.length,end===Infinity?Infinity:end+1);if(offset>=limit){this.push(null);return;}const next=Math.min(limit,offset+Math.max(size,1));const chunk=data.subarray(offset,next);offset=next;this.bytesRead+=chunk.length;this.push(chunk);}catch(error){this.destroy(error);}}});
-  result.path=ROOT+'/'+name;result.bytesRead=0;result.pending=false;return result;
+  const result=new Readable({highWaterMark:opts.highWaterMark,encoding:opts.encoding,signal:opts.signal,emitClose:opts.emitClose??true,destroy(error,callback){data=undefined;callback(error);},read(size){try{if(data===undefined)data=bytes(name,'open');const limit=Math.min(data.length,end===Infinity?Infinity:end+1);if(offset>=limit){this.push(null);return;}const next=Math.min(limit,offset+Math.max(size,1));const chunk=data.subarray(offset,next);offset=next;this.bytesRead+=chunk.length;this.push(chunk);}catch(error){this.destroy(error);}}});
+  result.path=ROOT+'/'+name;result.bytesRead=0;result.pending=false;result.close=function(callback){if(callback!==undefined&&typeof callback!=='function')throw new TypeError('callback must be a function');result.destroy();if(callback)process.nextTick(callback);};return result;
  }
  const saved=[];
  function replace(object,name,fn){if(typeof object[name]!=='function')return;saved.push([object,name,object[name]]);Object.assign(fn,object[name]);object[name]=fn;}
@@ -69,6 +69,11 @@ function installResources({read,list,deployed={},aliases={}}) {
   const original=object[key];const multi=['rename','copyFile','cp','symlink','link'].includes(name);
   replace(object,key,function(...args){let found;for(const arg of args.slice(0,multi?2:1)){const candidate=virtual(arg);if(candidate!==null){found=candidate;break;}}if(found===undefined)return original.apply(this,args);const err=failure(writes.includes(name)?'EROFS':'ENOTSUP',name,ROOT+'/'+found,'operation unsupported on read-only archive');if(style==='promise')return Promise.reject(err);if(style==='callback'&&!['createWriteStream','watch','watchFile','unwatchFile'].includes(name)){const callback=args.at(-1);if(typeof callback!=='function')throw new TypeError('callback must be a function');process.nextTick(()=>callback(err));return;}throw err;});
  }
+ for(const name of ['realpath','realpathSync'])if(typeof fs[name].native==='function'){
+  const original=fs[name].native;
+  fs[name].native=function(input,...rest){const name=virtual(input);if(name===null)return original.call(this,input,...rest);const error=failure('ENOTSUP','realpath',ROOT+'/'+name,'virtual realpath is unsupported');if(typeof rest.at(-1)==='function'){process.nextTick(()=>rest.at(-1)(error));return;}throw error;};
+ }
+ if(typeof fs.openAsBlob==='function'){const original=fs.openAsBlob;replace(fs,'openAsBlob',async function(input,...rest){const name=virtual(input);if(name===null)return original.call(this,input,...rest);throw failure('ENOTSUP','openAsBlob',ROOT+'/'+name,'virtual file descriptors are unsupported');});}
  syncBuiltinESMExports();
  return Object.freeze({root:ROOT,read,stat:path=>stat(path),list:()=>names.slice(),createReadStream:stream,restore(){for(const [object,key,value]of saved.reverse())object[key]=value;syncBuiltinESMExports();}});
 }
