@@ -33,9 +33,32 @@
       ]
     },
     "x86_64-unknown-linux-gnu": {
-      "budgets": [],
-      "reason": "no native x86_64 execution cell observed",
-      "status": "unavailable"
+      "acceptance_scope": "Overall native run failed separate Python3.14 native build; no whole-target acceptance claim",
+      "budgets": [
+        {
+          "budget": "x86_64-unknown-linux-gnu/lua55-project.json",
+          "case": "lua55-project"
+        },
+        {
+          "budget": "x86_64-unknown-linux-gnu/lua55-native.json",
+          "case": "lua55-native"
+        },
+        {
+          "budget": "x86_64-unknown-linux-gnu/node-cjs.json",
+          "case": "node-cjs"
+        },
+        {
+          "budget": "x86_64-unknown-linux-gnu/python-source-normalized.json",
+          "case": "python-source-normalized"
+        },
+        {
+          "budget": "x86_64-unknown-linux-gnu/python-native-normalized.json",
+          "case": "python-native-normalized"
+        }
+      ],
+      "observations": "observations-x86_64-unknown-linux-gnu.json",
+      "status": "reviewed R03 cost profiles only",
+      "trace_environment_policy": "traceable-native-syscalls-v1"
     }
   }
 }

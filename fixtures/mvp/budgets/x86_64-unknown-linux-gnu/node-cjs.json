@@ -1,0 +1,85 @@
+{
+  "case": "node-cjs",
+  "completeness": "passed",
+  "host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+  "limits": {
+    "max_archive_bytes": 3981111,
+    "max_deployed_bytes": 157011553,
+    "max_deployed_files": 12,
+    "max_deployment_file_delta": 0,
+    "max_elapsed_seconds": 10.951,
+    "max_metadata_call_delta": 10,
+    "max_native_byte_delta": 0,
+    "max_native_bytes": 0,
+    "max_open_calls": 66,
+    "max_peak_rss_bytes": 114851840,
+    "max_process_fds": 23,
+    "max_read_bytes": 163247939,
+    "max_read_calls": 2913,
+    "max_runtime_byte_delta": 0,
+    "max_runtime_bytes": 142940628,
+    "max_seek_calls": 32,
+    "max_stat_calls": 75
+  },
+  "measured_artifacts": [
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "d4e8be674f672ba3f21c19cc456d48b4113e287b537bb128a93675547871d2bc",
+        "size": 12259
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+        "size": 5979680
+      },
+      "runtime_descriptor_sha256": "35b2e01ca4cf7470ffa9668ce628228536441a79891872a2208362e5869283d3",
+      "runtime_version": "24.22.0"
+    },
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "d4cca5d6dc0d7e2027ad288ba269a35f098821e523697a33d1bfde298a1f57ab",
+        "size": 12444
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+        "size": 5979680
+      },
+      "runtime_descriptor_sha256": "35b2e01ca4cf7470ffa9668ce628228536441a79891872a2208362e5869283d3",
+      "runtime_version": "24.22.0"
+    },
+    {
+      "archive": {
+        "path": "payload with spaces \u00fc/app.glue",
+        "sha256": "3b81d37dfb980b8d2ef80f0f484cfe823a8b7d316ec765f26ccf118bad2d46df",
+        "size": 3619191
+      },
+      "launcher": {
+        "path": "payload with spaces \u00fc/glue",
+        "sha256": "80114ea81faceefc540aafce40854d26e88d5d1f67398ebd9a3d0492f6669830",
+        "size": 5979680
+      },
+      "runtime_descriptor_sha256": "35b2e01ca4cf7470ffa9668ce628228536441a79891872a2208362e5869283d3",
+      "runtime_version": "24.22.0"
+    }
+  ],
+  "policy": "structure limits are fixed; time/RSS apply only to the measured host fingerprint; no universal timing claim",
+  "reviewed_observation": {
+    "proposed_budget": {
+      "sha256": "adbd0aa29518dae69366d682a4fbf43229d30afba4affb8e8558b2420264ebf9",
+      "size": 2534
+    },
+    "report": {
+      "sha256": "2f5c571c409ac61336e02832a959c062623bf63abaaccf70f002d832a3de901f",
+      "size": 175830
+    },
+    "run_id": 38796669924,
+    "scope": "R03 profile only; this native run failed a separate Python3.14 native acceptance build"
+  },
+  "revision": 1,
+  "source_entries": 10000,
+  "target": "x86_64-unknown-linux-gnu",
+  "trace_environment_policy": "traceable-native-syscalls-v1"
+}

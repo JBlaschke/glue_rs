@@ -1461,5 +1461,11 @@
   ],
   "revision": 1,
   "source_entries": 10000,
+  "subsequent_observations": {
+    "x86_64-unknown-linux-gnu": {
+      "path": "observations-x86_64-unknown-linux-gnu.json",
+      "scope": "Reviewed R03 costs only; separate overall x86 acceptance failure retained"
+    }
+  },
   "target": "aarch64-unknown-linux-gnu"
 }
