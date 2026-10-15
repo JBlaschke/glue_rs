@@ -355,13 +355,27 @@ class BoundedTarInfo(tarfile.TarInfo):
     def _proc_pax(self, archive):
         require(self.type == tarfile.XHDTYPE and 0 <= self.size <= 16384,
                 "unsupported or oversized tar extension")
-        return super()._proc_pax(archive)
+        require(not getattr(archive, "_evidence_pax_active", False), "nested tar extensions are forbidden")
+        archive._evidence_pax_active = True
+        try:
+            return super()._proc_pax(archive)
+        finally:
+            archive._evidence_pax_active = False
 
     def _proc_gnulong(self, archive):
         raise Invalid("GNU tar name extensions are not supported")
 
     def _proc_sparse(self, archive):
         raise Invalid("sparse archive members are not supported")
+
+    def _proc_gnusparse_00(self, *args):
+        raise Invalid("sparse PAX metadata is not supported")
+
+    def _proc_gnusparse_01(self, *args):
+        raise Invalid("sparse PAX metadata is not supported")
+
+    def _proc_gnusparse_10(self, *args):
+        raise Invalid("sparse PAX metadata is not supported")
 
 
 class LimitedReader:

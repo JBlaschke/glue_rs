@@ -258,6 +258,18 @@ class BundleTests(unittest.TestCase):
                     self.restore()
                 self.assertFalse((self.root / "restored").exists())
 
+    def test_sparse_pax_rejected_before_builtin_processing(self):
+        self.prepare()
+        def mutate(members):
+            member, data = members[-1]
+            member.pax_headers = {"GNU.sparse.major": "1", "GNU.sparse.minor": "0"}
+            return members
+        self.rewrite_archive(mutate)
+        with mock.patch.object(tarfile.TarInfo, "_proc_gnusparse_10", side_effect=AssertionError("unsafe sparse parser entered")):
+            with self.assertRaises(B.Invalid):
+                self.restore()
+        self.assertFalse((self.root / "restored").exists())
+
     def test_metadata_types_and_duplicate_json_fail(self):
         self.prepare()
         path = self.output / "prepared.json"
