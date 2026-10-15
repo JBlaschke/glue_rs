@@ -10,6 +10,7 @@ import platform
 import re
 import shutil
 import signal
+import socket
 import stat
 import subprocess
 import sys
@@ -134,11 +135,17 @@ def offline_policy(quarantine: Path) -> tuple[list[str], dict]:
             return ["/usr/bin/sandbox-exec", "-p", profile], {"status": "passed", "mechanism": "macOS sandbox denies network and quarantined input reads"}
         return [], {"status": "unavailable", "reason": probe.stderr.decode(errors="replace")}
     if platform.system() == "Linux":
-        interfaces = sorted(path.name for path in Path("/sys/class/net").iterdir())
-        if set(interfaces) <= {"lo"}:
+        # sysfs may still be mounted for the parent namespace after unshare --net.
+        # if_nameindex queries the calling thread's active network namespace.
+        try:
+            interfaces = sorted(name for _, name in socket.if_nameindex())
+            namespace = os.readlink("/proc/self/ns/net")
+        except (OSError, AttributeError) as error:
+            return [], {"status": "unavailable", "reason": f"cannot inspect active network namespace: {error}"}
+        if interfaces == ["lo"]:
             return [], {"status": "passed", "mechanism": "native network namespace has loopback only", "interfaces": interfaces,
-                        "namespace": os.readlink("/proc/self/ns/net")}
-        return [], {"status": "unavailable", "reason": "run target cell in a --network none container/namespace", "interfaces": interfaces}
+                        "namespace": namespace}
+        return [], {"status": "unavailable", "reason": "run target cell in a --network none container/namespace with its loopback interface present", "interfaces": interfaces, "namespace": namespace}
     return [], {"status": "unavailable", "reason": "no enforced offline mechanism available"}
 
 

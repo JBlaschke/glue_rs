@@ -78,6 +78,42 @@ script+="printf '%s\\\\n' 'observable expected output'\\n"
         self.assertEqual(receipt["status"], "failed")
         self.assertIn("offline: unavailable", harness.check(output / "receipt.json"))
 
+    def test_linux_offline_uses_current_namespace_despite_stale_parent_sysfs(self):
+        with patch.object(harness.platform, "system", return_value="Linux"), \
+             patch.object(harness.socket, "if_nameindex", return_value=[(1, "lo")]), \
+             patch.object(harness.os, "readlink", return_value="net:[123]"), \
+             patch.object(Path, "iterdir", return_value=iter([Path("lo"), Path("eth0")])) as stale_sysfs:
+            wrapper, proof = harness.offline_policy(self.root)
+        self.assertEqual(wrapper, [])
+        self.assertEqual(proof["status"], "passed")
+        self.assertEqual(proof["interfaces"], ["lo"])
+        self.assertEqual(proof["namespace"], "net:[123]")
+        stale_sysfs.assert_not_called()
+
+    def test_linux_offline_rejects_nonloopback_or_missing_interfaces_despite_sysfs(self):
+        for interfaces in [[(1, "lo"), (2, "eth0")], [], [(2, "eth0")], [(1, "lo"), (2, "unexpected")]]:
+            with self.subTest(interfaces=interfaces), \
+                 patch.object(harness.platform, "system", return_value="Linux"), \
+                 patch.object(harness.socket, "if_nameindex", return_value=interfaces), \
+                 patch.object(harness.os, "readlink", return_value="net:[456]"), \
+                 patch.object(Path, "iterdir", return_value=iter([Path("lo")])) as stale_sysfs:
+                _, proof = harness.offline_policy(self.root)
+                self.assertEqual(proof["status"], "unavailable")
+                stale_sysfs.assert_not_called()
+
+    def test_linux_offline_fails_closed_if_namespace_query_is_unavailable(self):
+        for error in [OSError("namespace query denied"), AttributeError("if_nameindex unavailable")]:
+            with self.subTest(error=error), \
+                 patch.object(harness.platform, "system", return_value="Linux"), \
+                 patch.object(harness.socket, "if_nameindex", side_effect=error):
+                _, proof = harness.offline_policy(self.root)
+                self.assertEqual(proof["status"], "unavailable")
+        with patch.object(harness.platform, "system", return_value="Linux"), \
+             patch.object(harness.socket, "if_nameindex", return_value=[(1, "lo")]), \
+             patch.object(harness.os, "readlink", side_effect=OSError("namespace identity missing")):
+            _, proof = harness.offline_policy(self.root)
+        self.assertEqual(proof["status"], "unavailable")
+
     def test_wrong_exit_missing_dependency_and_cache_write_are_detected(self):
         for mode in ["wrong-exit", "missing-dependency", "cache-write", "input-fallback"]:
             with self.subTest(mode=mode):
