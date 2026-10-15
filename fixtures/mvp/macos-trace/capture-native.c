@@ -26,6 +26,7 @@
 #define MAX_PROCESSES 256
 #define MAX_EVENTS 1000000
 #define MAX_RAW_BYTES (128UL * 1024 * 1024)
+#define MAX_IDENTITY_BYTES MAX_RAW_BYTES
 #define MAX_RECORD_BYTES 8192
 
 enum { BEGIN_EVENT=1, SYSCALL_ENTRY, SYSCALL_RETURN, CREATE_EVENT, START_EVENT,
@@ -38,6 +39,7 @@ struct capture {
     size_t processes_used;
     uint64_t events_seen, drops, faults, open_entries, open_returns;
     bool failed, root_terminal, tree, started;
+    bool identity_failed;
     pid_t root;
     const char *reason;
 };
@@ -200,23 +202,60 @@ static FILE *new_file(const char *directory, const char *name) {
     if (!output) close(fd);
     return output;
 }
-static void file_identity(FILE *output, const char *path) {
+struct identity {
+    bool valid;
+    uint64_t size;
+    unsigned char digest[CC_SHA256_DIGEST_LENGTH];
+};
+static bool read_identity(const char *path, struct identity *identity) {
     unsigned char bytes[16384], digest[CC_SHA256_DIGEST_LENGTH];
     CC_SHA256_CTX context;
-    FILE *input=fopen(path,"rb");
-    if (!input) { fputs("null",output); return; }
+    *identity=(struct identity){0};
+    /* Nonblocking open lets the regular-file check reject FIFOs/devices without
+     * waiting for a producer. The watchdog separately bounds filesystem stalls. */
+    int fd=open(path,O_RDONLY|O_NONBLOCK|O_CLOEXEC);
+    if (fd<0) return false;
     struct stat facts;
-    if (fstat(fileno(input),&facts) || !S_ISREG(facts.st_mode) || facts.st_size<0 || facts.st_size>64*1024*1024) {
-        fclose(input); fputs("null",output); return;
+    if (fstat(fd,&facts) || !S_ISREG(facts.st_mode) || facts.st_size<0 || (uint64_t)facts.st_size>MAX_IDENTITY_BYTES) {
+        close(fd); return false;
     }
+    FILE *input=fdopen(fd,"rb");
+    if (!input) { close(fd); return false; }
     CC_SHA256_Init(&context);
-    uint64_t size=0; size_t count;
-    while ((count=fread(bytes,1,sizeof(bytes),input))!=0) { size+=count; CC_SHA256_Update(&context,bytes,(CC_LONG)count); }
-    bool failed=ferror(input)!=0; fclose(input);
-    if (failed) { fputs("null",output); return; }
+    uint64_t size=0;
+    bool failed=false;
+    for (;;) {
+        /* One sentinel byte detects a file growing beyond the limit after stat,
+         * without reading an unbounded amount or allocating the file in memory. */
+        uint64_t remaining=MAX_IDENTITY_BYTES-size+1;
+        size_t capacity=remaining<sizeof(bytes) ? (size_t)remaining : sizeof(bytes);
+        size_t count=fread(bytes,1,capacity,input);
+        if (count==0) break;
+        size+=count;
+        if (size>MAX_IDENTITY_BYTES) { failed=true; break; }
+        CC_SHA256_Update(&context,bytes,(CC_LONG)count);
+    }
+    if (ferror(input) || size!=(uint64_t)facts.st_size) failed=true;
+    if (fclose(input)) failed=true;
+    if (failed) return false;
     CC_SHA256_Final(digest,&context);
-    fprintf(output,"{\"size\":%"PRIu64",\"sha256\":\"",size);
-    for (size_t i=0;i<sizeof(digest);++i) fprintf(output,"%02x",digest[i]);
+    identity->valid=true; identity->size=size;
+    memcpy(identity->digest,digest,sizeof(digest));
+    return true;
+}
+static void capture_identity(struct capture *state, const char *path, struct identity *identity) {
+    if (!read_identity(path,identity)) {
+        state->failed=true; state->identity_failed=true;
+        state->reason="required fixture, collector or evidence identity unavailable";
+    }
+}
+static const char *capture_status(const struct capture *state) {
+    return state->failed ? (state->started ? "failed" : "unavailable") : "captured";
+}
+static void write_identity(FILE *output, const struct identity *identity) {
+    if (!identity->valid) { fputs("null",output); return; }
+    fprintf(output,"{\"size\":%"PRIu64",\"sha256\":\"",identity->size);
+    for (size_t i=0;i<sizeof(identity->digest);++i) fprintf(output,"%02x",identity->digest[i]);
     fputs("\"}",output);
 }
 static int usage(void) {
@@ -357,6 +396,18 @@ int main(int argc, char **argv) {
     if (fclose(state.errors)) close_error=-1;
     if (fclose(state.inventory)) close_error=-1;
     if (close_error) { state.failed=true; state.reason="evidence output close failed"; }
+    /* Resolve every required identity before selecting the final status. A hash
+     * failure must never leave a captured receipt containing a null identity. */
+    const char *files[]={"program.d","events.jsonl","errors.jsonl","probes.tsv","target.stdout","target.stderr","watchdog.json"};
+    struct identity fixture_identity,collector_identity={0},evidence_identities[sizeof(files)/sizeof(files[0])];
+    capture_identity(&state,argv[command],&fixture_identity);
+    char executable[PATH_MAX]; uint32_t executable_size=sizeof(executable);
+    if (_NSGetExecutablePath(executable,&executable_size)==0) capture_identity(&state,executable,&collector_identity);
+    else { state.failed=true; state.identity_failed=true; state.reason="collector executable path unavailable for identity"; }
+    for (size_t i=0;i<sizeof(files)/sizeof(files[0]);++i) {
+        char path[PATH_MAX]; snprintf(path,sizeof(path),"%s/%s",directory,files[i]);
+        capture_identity(&state,path,&evidence_identities[i]);
+    }
     FILE *report=new_file(directory,"capability.json");
     if (!report) {
         kill(watchdog,SIGTERM); while (waitpid(watchdog,NULL,0)<0 && errno==EINTR) {}
@@ -367,7 +418,7 @@ int main(int argc, char **argv) {
     size_t product_size=sizeof(product),build_size=sizeof(build);
     if (sysctlbyname("kern.osproductversion",product,&product_size,NULL,0)) strcpy(product,"unavailable");
     if (sysctlbyname("kern.osversion",build,&build_size,NULL,0)) strcpy(build,"unavailable");
-    fprintf(report,"{\"revision\":1,\"protocol\":\"darwin-capability-raw-v1\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",state.failed ? (state.started ? "failed" : "unavailable") : "captured");
+    fprintf(report,"{\"revision\":1,\"protocol\":\"darwin-capability-raw-v1\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
     json_string(report,state.failed ? state.reason : "owned fixture exited, required open events observed, observed tree drained");
     fputs(",\"profile\":",report); json_string(report,profile);
     fputs(",\"host\":{\"system\":",report); json_string(report,host.sysname);
@@ -379,16 +430,13 @@ int main(int argc, char **argv) {
     for (int i=command;i<argc;++i) { if (i!=command) fputc(',',report); json_string(report,argv[i]); }
     fputs("],\"processes\":[",report);
     for (size_t i=0;i<state.processes_used;++i) fprintf(report,"%s{\"pid\":%d,\"created\":%s,\"terminal\":%s}",i ? "," : "",state.processes[i].pid,state.processes[i].created ? "true" : "false",state.processes[i].terminal ? "true" : "false");
-    fputs("],\"fixture\":",report); file_identity(report,argv[command]);
-    char executable[PATH_MAX]; uint32_t executable_size=sizeof(executable);
-    fputs(",\"collector\":",report); if (_NSGetExecutablePath(executable,&executable_size)==0) file_identity(report,executable); else fputs("null",report);
+    fputs("],\"fixture\":",report); write_identity(report,&fixture_identity);
+    fputs(",\"collector\":",report); write_identity(report,&collector_identity);
     fputs(",\"evidence\":{",report);
-    const char *files[]={"program.d","events.jsonl","errors.jsonl","probes.tsv","target.stdout","target.stderr","watchdog.json"};
     for (size_t i=0;i<sizeof(files)/sizeof(files[0]);++i) {
-        char path[PATH_MAX]; snprintf(path,sizeof(path),"%s/%s",directory,files[i]);
-        if (i) fputc(',',report); json_string(report,files[i]); fputc(':',report); file_identity(report,path);
+        if (i) fputc(',',report); json_string(report,files[i]); fputc(':',report); write_identity(report,&evidence_identities[i]);
     }
-    fputs("},\"full_trace_acceptance\":false,\"settings_changed\":false}\n",report);
+    fprintf(report,"},\"identity_checks_passed\":%s,\"full_trace_acceptance\":false,\"settings_changed\":false}\n",state.identity_failed ? "false" : "true");
     bool report_error=ferror(report)!=0; if (fclose(report)) report_error=true;
     kill(watchdog,SIGTERM);
     while (waitpid(watchdog,NULL,0)<0 && errno==EINTR) {}
