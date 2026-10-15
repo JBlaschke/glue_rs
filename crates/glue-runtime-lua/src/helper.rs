@@ -85,6 +85,7 @@ pub struct HelperDescriptor {
     pub build_id: String,
     pub source: SourcePin,
     pub error_boundary: String,
+    pub exports: BTreeSet<String>,
 }
 
 impl HelperDescriptor {
@@ -136,6 +137,9 @@ impl HelperDescriptor {
             || self.build_id != expected_build
             || self.source != source_for(family)
             || self.error_boundary != "glue-c-boundary-1"
+            || !["lua_gettop", "luaL_checkversion_", "luaL_error"]
+                .iter()
+                .all(|symbol| self.exports.contains(*symbol))
         {
             return Err(HelperError::Invalid(format!(
                 "helper descriptor does not match selected {family:?} int64/float64 runtime for {target}"
@@ -174,6 +178,10 @@ pub fn compiled_descriptor() -> HelperDescriptor {
         build_id: crate::profile::BUILD_ID.to_owned(),
         source: crate::profile::source_pin(),
         error_boundary: "glue-c-boundary-1".to_owned(),
+        exports: include_str!(env!("GLUE_LUA_HELPER_EXPORTS_PATH"))
+            .lines()
+            .map(str::to_owned)
+            .collect(),
     }
 }
 
@@ -284,7 +292,10 @@ pub fn main_with_args(arguments: impl IntoIterator<Item = OsString>) -> u8 {
                     .collect(),
             )
         }
-        _ => fail("usage: glue-lua54|glue-lua55 --describe | run ARCHIVE [-- ARGUMENTS...]", 2),
+        _ => fail(
+            "usage: glue-lua54|glue-lua55 --describe | run ARCHIVE [-- ARGUMENTS...]",
+            2,
+        ),
     }
 }
 
@@ -309,7 +320,16 @@ fn run_archive(path: &Path, arguments: Vec<Vec<u8>>) -> u8 {
     };
     let compact = archive.manifest().distribution.is_some();
     let result = if compact {
-        crate::execute_compact(Resources::with_default_cache(archive), &entry, arguments)
+        let root = path
+            .parent()
+            .filter(|root| !root.as_os_str().is_empty())
+            .unwrap_or(Path::new("."));
+        crate::execute_compact(
+            Resources::with_default_cache(archive),
+            &entry,
+            arguments,
+            root,
+        )
     } else if arguments.is_empty() {
         crate::execute(Resources::with_default_cache(archive), &entry)
     } else {
@@ -352,11 +372,6 @@ fn validate_archive(
     if distribution.delivery != DeliveryMode::Compact {
         return Err(CapabilityError::Unsupported(
             "Lua helper requires compact delivery".to_owned(),
-        ));
-    }
-    if !distribution.native.roots.is_empty() || !distribution.native.edges.is_empty() {
-        return Err(CapabilityError::Unsupported(
-            "compact Lua native modules require L03".to_owned(),
         ));
     }
     Ok(manifest.entrypoint.clone())

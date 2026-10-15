@@ -35,6 +35,9 @@ glue-native = { workspace = true, optional = true }
 lua-src.workspace = true
 cc = "=1.6.0"
 
+[dev-dependencies]
+glue-pack.workspace = true
+
 # Unsafe code is restricted to platform queries and the private C bridge.
 [lints.rust]
 unsafe_code = "deny"

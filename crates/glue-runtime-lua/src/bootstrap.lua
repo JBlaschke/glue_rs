@@ -104,6 +104,14 @@ if native_enabled then
     end
 end
 
+if compact then
+    package.loadlib = function(path, initializer)
+        path = string_argument(path, false, "native resource key")
+        initializer = string_argument(initializer, false, "native initializer")
+        return request(11, path .. "\0" .. initializer)
+    end
+end
+
 require = function(name)
     name = string_argument(name, false, "archive module name")
     -- Validate the complete string before upstream require treats it as a
