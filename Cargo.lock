@@ -149,9 +149,12 @@ dependencies = [
 name = "glue-pack"
 version = "0.1.0"
 dependencies = [
+ "flate2",
  "glue-format",
+ "glue-pbs",
  "glue-runtime-python",
  "libc",
+ "ruzstd",
  "serde",
  "serde_json",
  "thiserror",
