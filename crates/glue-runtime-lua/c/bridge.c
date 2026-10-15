@@ -45,6 +45,7 @@ typedef struct run_context {
     size_t reply_fault;
     int reply_fault_started;
     int collect_on_first_reply;
+    int compact;
     int panicked;
     int closing;
     glue_lua_result *result;
@@ -294,6 +295,12 @@ static int initialize_and_run(lua_State *L) {
         luaL_requiref(L, library->name, library->func, 1);
         lua_pop(L, 1);
     }
+    if (run->compact) {
+        luaL_requiref(L, LUA_IOLIBNAME, luaopen_io, 1);
+        lua_pop(L, 1);
+        luaL_requiref(L, LUA_OSLIBNAME, luaopen_os, 1);
+        lua_pop(L, 1);
+    }
     status = luaL_loadbufferx(L, (const char *)run->bootstrap,
                               run->bootstrap_len, "@glue-bootstrap", "t");
     if (status != LUA_OK)
@@ -306,12 +313,27 @@ static int initialize_and_run(lua_State *L) {
 #else
     lua_pushboolean(L, 0);
 #endif
-    lua_call(L, 3, 0);
+    lua_pushboolean(L, run->compact);
+    lua_call(L, 4, 0);
     status = luaL_loadbufferx(L, (const char *)run->entry, run->entry_len,
                               run->origin, "t");
     if (status != LUA_OK)
         return lua_error(L);
-    lua_call(L, 0, 0);
+    if (run->compact) {
+        size_t i;
+        size_t count;
+        lua_getglobal(L, "arg");
+        count = lua_rawlen(L, -1);
+        if (count > (size_t)INT_MAX - 1)
+            return luaL_error(L, "too many application arguments");
+        luaL_checkstack(L, (int)count + 1, "application arguments");
+        for (i = 1; i <= count; i++)
+            lua_rawgeti(L, -(int)i, (lua_Integer)i);
+        lua_remove(L, -(int)count - 1);
+        lua_call(L, (int)count, 0);
+    } else {
+        lua_call(L, 0, 0);
+    }
     return 0;
 }
 
@@ -349,6 +371,7 @@ void glue_lua_run(void *ctx, glue_lua_request request,
     run.remaining_allocations = options->fail_after_allocations;
     run.reply_fault = options->fail_after_reply_allocations;
     run.collect_on_first_reply = options->collect_on_first_reply;
+    run.compact = options->compact;
     run.result = result;
 #if LUA_VERSION_NUM == 505
     L = lua_newstate(system_allocator, &run, luaL_makeseed(NULL));

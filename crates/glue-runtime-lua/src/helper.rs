@@ -273,12 +273,22 @@ pub fn main_with_args(arguments: impl IntoIterator<Item = OsString>) -> u8 {
             }
             Err(error) => fail(error, 1),
         },
-        [command, path] if command == "run" => run_archive(Path::new(path)),
-        _ => fail("usage: glue-lua54|glue-lua55 --describe | run ARCHIVE", 2),
+        [command, path] if command == "run" => run_archive(Path::new(path), Vec::new()),
+        [command, path, separator, arguments @ ..] if command == "run" && separator == "--" => {
+            run_archive(
+                Path::new(path),
+                arguments
+                    .iter()
+                    .cloned()
+                    .map(OsString::into_encoded_bytes)
+                    .collect(),
+            )
+        }
+        _ => fail("usage: glue-lua54|glue-lua55 --describe | run ARCHIVE [-- ARGUMENTS...]", 2),
     }
 }
 
-fn run_archive(path: &Path) -> u8 {
+fn run_archive(path: &Path, arguments: Vec<Vec<u8>>) -> u8 {
     let result = File::open(path)
         .map_err(|error| error.to_string())
         .and_then(|file| Archive::open(file).map_err(|error| error.to_string()));
@@ -297,7 +307,15 @@ fn run_archive(path: &Path) -> u8 {
             return fail(error, status);
         }
     };
-    match crate::execute(Resources::with_default_cache(archive), &entry) {
+    let compact = archive.manifest().distribution.is_some();
+    let result = if compact {
+        crate::execute_compact(Resources::with_default_cache(archive), &entry, arguments)
+    } else if arguments.is_empty() {
+        crate::execute(Resources::with_default_cache(archive), &entry)
+    } else {
+        return fail("application arguments require a compact Lua archive", 2);
+    };
+    match result {
         Ok(()) => 0,
         Err(error) => {
             let status = if error.is_unsupported() { 2 } else { 1 };

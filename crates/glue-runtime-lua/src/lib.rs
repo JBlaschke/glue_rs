@@ -62,8 +62,26 @@ impl ExecutionError {
 /// names; no source or asset is materialized as a host file. The private C
 /// boundary owns all Lua calls and contains Lua errors before returning to Rust.
 pub fn execute<R: Read + Seek>(
+    resources: Resources<R>,
+    entry_point: &str,
+) -> Result<(), ExecutionError> {
+    execute_inner(resources, entry_point, None)
+}
+
+/// Execute inside the standalone compact helper, allowing ordinary host I/O and
+/// process exit while archive imports/resources retain the protected C boundary.
+pub fn execute_compact<R: Read + Seek>(
+    resources: Resources<R>,
+    entry_point: &str,
+    arguments: Vec<Vec<u8>>,
+) -> Result<(), ExecutionError> {
+    execute_inner(resources, entry_point, Some(arguments))
+}
+
+fn execute_inner<R: Read + Seek>(
     mut resources: Resources<R>,
     entry_point: &str,
+    arguments: Option<Vec<Vec<u8>>>,
 ) -> Result<(), ExecutionError> {
     ResourcePath::new(entry_point).map_err(|error| ExecutionError::failed(error.to_string()))?;
     let bytes = resources
@@ -86,16 +104,25 @@ pub fn execute<R: Read + Seek>(
                 .map_err(ExecutionError::native)?,
         )
     };
+    let compact = arguments.is_some();
     let mut context = Context {
         resources,
+        arguments: arguments.unwrap_or_default(),
+        entry_point: entry_point.to_owned(),
         #[cfg(feature = "linux-native")]
         native,
     };
-    bridge::execute(
-        move |operation, key| match context.request(operation, key) {
-            Ok(values) => OwnedReply::success(&values).into_reply(),
-            Err(message) => OwnedReply::error(message).into_reply(),
-        },
+    let callback = move |operation, key: &[u8]| match context.request(operation, key) {
+        Ok(values) => OwnedReply::success(&values).into_reply(),
+        Err(message) => OwnedReply::error(message).into_reply(),
+    };
+    let execute = if compact {
+        bridge::execute_compact
+    } else {
+        bridge::execute
+    };
+    execute(
+        callback,
         include_bytes!("bootstrap.lua"),
         &package_path,
         &bytes,
@@ -108,6 +135,8 @@ pub fn execute<R: Read + Seek>(
 // and Rust temporaries end before the C trampoline constructs Lua values.
 struct Context<R: Read + Seek> {
     resources: Resources<R>,
+    arguments: Vec<Vec<u8>>,
+    entry_point: String,
     #[cfg(feature = "linux-native")]
     native: Option<glue_native::NativeManager>,
 }
@@ -116,6 +145,15 @@ impl<R: Read + Seek> Context<R> {
     fn request(&mut self, operation: u32, key: &[u8]) -> Result<Vec<Value>, String> {
         let key = std::str::from_utf8(key).map_err(|_| "archive key must be UTF-8".to_owned())?;
         match operation {
+            10 => {
+                let mut rows = vec![(Value::Integer(0), self.origin(&self.entry_point))];
+                rows.extend(
+                    self.arguments.iter().enumerate().map(|(index, argument)| {
+                        (Value::Integer(index as i64 + 1), string(argument))
+                    }),
+                );
+                Ok(vec![Value::Table(rows)])
+            }
             1 => {
                 let bytes = self
                     .resources
