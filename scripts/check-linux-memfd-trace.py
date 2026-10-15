@@ -88,6 +88,14 @@ def split_arguments(text: str) -> list[str]:
             index = end + 1
         elif character == '"':
             quote = True
+        elif text.startswith("=>", index) and (not stack or stack[-1] != ">"):
+            # strace can show a syscall argument before and after the kernel
+            # updates it, e.g. clone3({...} => {parent_tid=[123]}, 88). This
+            # operator is not a decoded-descriptor angle-bracket terminator.
+            left, right = text[start:index].rstrip(), text[index + 2:].lstrip()
+            if not left or left[-1] in "([{,<=>" or not right or right[0] in ",)]}>=":
+                raise TraceError("incomplete syscall argument mutation")
+            index += 1
         elif character in pairs:
             stack.append(pairs[character])
         elif character in ")]}>":
