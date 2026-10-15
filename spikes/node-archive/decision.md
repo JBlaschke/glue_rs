@@ -17,3 +17,19 @@ Primary references, checked 15 October 2026:
 [Node synchronous hooks](https://nodejs.org/api/module.html#moduleregisterhooksoptions)
 and [Node-API](https://nodejs.org/api/n-api.html). The implementation probes the
 actual runtime rather than inferring support only from its version number.
+
+
+Revision-one index extension: `aliases` is optional and empty when absent. Each
+canonical alias key maps to `{target,directory,link_size}` with a canonical target
+(root target may be empty). This retains ordinary realpath module cache identity
+and exposes internal resource links without duplicate archive/native bytes. New
+distributions ship their matching bounded resolver/bootstrap; existing no-alias
+indexes retain their behavior. Cycles and escapes fail rather than consulting
+host filesystem paths.
+
+Installed npm/pnpm lockfiles are build-time provenance rather than instructions.
+The bounded YAML token parser accepts ordinary pnpm mappings but rejects aliases,
+tags, duplicate keys, excessive depth and token counts. It never expands YAML
+references. `glue.lock.json` records lock byte identities and version/presence
+mismatches with installed metadata; unsupported lock shapes say comparison was
+unavailable. Installed package/resource bytes remain authoritative in all cases.

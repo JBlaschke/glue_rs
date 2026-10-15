@@ -6,6 +6,7 @@ use std::{
     fs::File,
     ptr,
 };
+type BridgeArchive = Archive<glue_format::BufferedReader<File>>;
 type Env = *mut c_void;
 type Value = *mut c_void;
 type Info = *mut c_void;
@@ -107,7 +108,7 @@ unsafe fn args<const N: usize>(e: Env, i: Info) -> Result<[Value; N], String> {
     Ok(a)
 }
 // Node-API external values need a type tag before their raw pointer is trusted.
-unsafe fn archive(e: Env, v: Value) -> Result<*mut Archive<File>, String> {
+unsafe fn archive(e: Env, v: Value) -> Result<*mut BridgeArchive, String> {
     let mut valid = false;
     check(unsafe { napi_check_object_type_tag(e, v, &ARCHIVE_TAG, &mut valid) })?;
     if !valid {
@@ -138,7 +139,7 @@ unsafe fn boundary(e: Env, f: impl FnOnce() -> Result<Value, String>) -> Value {
 }
 unsafe extern "C" fn finalize(_: Env, data: *mut c_void, _: *mut c_void) {
     if !data.is_null() {
-        drop(unsafe { Box::from_raw(data.cast::<Archive<File>>()) });
+        drop(unsafe { Box::from_raw(data.cast::<BridgeArchive>()) });
     }
 }
 unsafe extern "C" fn open(e: Env, i: Info) -> Value {
@@ -146,7 +147,10 @@ unsafe extern "C" fn open(e: Env, i: Info) -> Value {
         boundary(e, || {
             let [path] = args(e, i)?;
             let file = File::open(text(e, path)?).map_err(|e| e.to_string())?;
-            let archive = Box::new(Archive::open(file).map_err(|e| e.to_string())?);
+            let archive = Box::new(
+                BridgeArchive::open(glue_format::BufferedReader::new(file))
+                    .map_err(|e| e.to_string())?,
+            );
             let p = Box::into_raw(archive);
             let mut out = ptr::null_mut();
             if let Err(err) = check(napi_create_external(

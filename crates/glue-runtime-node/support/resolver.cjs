@@ -10,6 +10,11 @@ function canonical(name,empty=false) {
   if(typeof name!=='string'||!name||name.startsWith('/')||name.includes('\\')||name.includes('\0')||name.split('/').some(p=>!p||p==='.'||p==='..')) fail('ERR_GLUE_PATH',`Invalid logical path ${name}`);
   return name;
 }
+function createAliasResolver(aliases={}) {
+  const entries=Object.entries(aliases).sort((a,b)=>b[0].length-a[0].length);
+  for(const [name,record]of entries){canonical(name);canonical(record.target,true);if(typeof record.directory!=='boolean'||!Number.isSafeInteger(record.link_size)||record.link_size<0)fail('ERR_GLUE_INDEX','Invalid logical link');}
+  return function resolveAlias(name){canonical(name,true);for(let depth=0;depth<64;depth++){const match=entries.find(([key])=>name===key||name.startsWith(key+'/'));if(!match)return name;const [key,record]=match;if(name!==key&&!record.directory)fail('ENOTDIR','File link used as a directory');const suffix=name.slice(key.length).replace(/^\//,'');name=record.target+(record.target&&suffix?'/':'')+suffix;canonical(name,true);}fail('ELOOP','Too many archive link traversals');};
+}
 function createResolver(index,distributionRoot) {
   index={...index,files:Object.assign(Object.create(null),index.files),packages:Object.assign(Object.create(null),index.packages)};
   if(index.schema_version!==1 || !index.files || !index.packages) fail('ERR_GLUE_INDEX','Unsupported module index');
@@ -18,6 +23,7 @@ function createResolver(index,distributionRoot) {
     if(!['commonjs','module','json','addon'].includes(file.format)) fail('ERR_GLUE_INDEX',`Invalid format ${name}`);
     if(file.format==='addon'&&(!Number.isSafeInteger(file.node_api)||file.node_api<1)) fail('ERR_GLUE_INDEX','Invalid addon minimum Node-API');
   }
+  const unalias=createAliasResolver(index.aliases);
   const roots=Object.keys(index.packages).sort((a,b)=>b.length-a.length);
   for(const root of roots) {
     canonical(root,true);
@@ -30,7 +36,7 @@ function createResolver(index,distributionRoot) {
   if(!Object.hasOwn(index.files,index.entry))fail('ERR_GLUE_INDEX','Entry absent from module index');
   const directories=new Set();for(const name of Object.keys(index.files)){let parent=path.dirname(name);while(parent!=='.'){directories.add(parent);parent=path.dirname(parent);}}
   function owner(name) {return roots.find(root=>root===''||name.startsWith(root+'/'));}
-  function url(name) {return PREFIX+canonical(name).split('/').map(encodeURIComponent).join('/');}
+  function url(name) {return PREFIX+canonical(unalias(name)).split('/').map(encodeURIComponent).join('/');}
   function logical(value) {
     if(value.startsWith(PREFIX)) {
       if(/%2f|%5c/i.test(value))fail('ERR_INVALID_MODULE_SPECIFIER','Encoded separator in archive URL');
@@ -41,6 +47,7 @@ function createResolver(index,distributionRoot) {
     return null;
   }
   function record(name) {
+    name=unalias(name);
     const file=index.files[name];
     if(!file)fail('MODULE_NOT_FOUND',`Cannot find archived module ${name}`);
     if(file.format==='addon') {
@@ -50,6 +57,7 @@ function createResolver(index,distributionRoot) {
     return {url:url(name),format:file.format,shortCircuit:true};
   }
   function legacy(name,seen=new Set()) {
+    name=unalias(name);
     if(index.files[name])return name;
     for(const ext of ['.js','.json','.node'])if(index.files[name+ext])return name+ext;
     if(seen.has(name))return null;seen.add(name);
@@ -117,7 +125,7 @@ function createResolver(index,distributionRoot) {
       return selected.bare?resolve(selected.bare,parentURL,conditions,depth+1):record(selected.logical);
     }
     if(specifier.startsWith('./')||specifier.startsWith('../')) {
-      const name=path.normalize(path.join(path.dirname(parent),specifier));canonical(name);
+      const name=unalias(path.normalize(path.join(path.dirname(parent),specifier)));canonical(name);
       if(conditions.includes('require'))return record(legacy(name)||name);
       if(directories.has(name))fail('ERR_UNSUPPORTED_DIR_IMPORT',`Directory import ${specifier}`);
       return record(name);
@@ -139,4 +147,4 @@ function createResolver(index,distributionRoot) {
   }
   return Object.freeze({prefix:PREFIX,index,logical,url,record,resolve(specifier,parent,conditions){try{return resolve(specifier,parent,conditions);}catch(error){if(error.code==='MODULE_NOT_FOUND'&&!conditions.includes('require'))error.code='ERR_MODULE_NOT_FOUND';throw error;}}});
 }
-module.exports={createResolver,PREFIX};
+module.exports={createResolver,createAliasResolver,PREFIX};

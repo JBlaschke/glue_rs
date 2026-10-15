@@ -6,12 +6,14 @@ const {Readable}=require('node:stream');
 const {syncBuiltinESMExports}=require('node:module');
 const ROOT='/__glue_archive__';
 function failure(code,syscall,path,message=code){return Object.assign(Error(`${code}: ${message}, ${syscall} '${path}'`),{code,syscall,path});}
-function installResources({read,list,deployed={}}) {
+function installResources({read,list,deployed={},aliases={}}) {
+ const unalias=require('./resolver.cjs').createAliasResolver(aliases);
  const hostRead=fs.readFileSync;
- const archiveRead=read;read=name=>Object.hasOwn(deployed,name)?hostRead(deployed[name]):archiveRead(name);
- const names=[...new Set([...JSON.parse(list()),...Object.keys(deployed)])];
+ const archiveRead=read;read=name=>{name=unalias(name);return Object.hasOwn(deployed,name)?hostRead(deployed[name]):archiveRead(name);};
+ const names=[...new Set([...JSON.parse(list()),...Object.keys(deployed),...Object.keys(aliases)])];
+ function exists(name){name=unalias(name);return sizes.has(name)||directories.has(name);}
  const sizes=new Map();const directories=new Map([['',new Map()]]);
- for(const name of names){let parent='';const parts=name.split('/');for(let i=0;i<parts.length;i++){const dir=i<parts.length-1;directories.get(parent).set(parts[i],{directory:dir,name:parts[i],path:parent});parent=parent?parent+'/'+parts[i]:parts[i];if(dir&&!directories.has(parent))directories.set(parent,new Map());}sizes.set(name,null);}
+ for(const name of names){let parent='';const parts=name.split('/');for(let i=0;i<parts.length;i++){const dir=i<parts.length-1;directories.get(parent).set(parts[i],{directory:dir,name:parts[i],path:parent,link:i===parts.length-1&&Object.hasOwn(aliases,name)});parent=parent?parent+'/'+parts[i]:parts[i];if(dir&&!directories.has(parent))directories.set(parent,new Map());}sizes.set(name,null);}
  function virtual(input) {
   let value=input;
   if(value instanceof URL){if(value.protocol!=='file:')return null;value=fileURLToPath(value);}
@@ -22,21 +24,24 @@ function installResources({read,list,deployed={}}) {
   return name.replace(/\/$/,'');
  }
  function bytes(name,syscall='readFile') {
+  name=unalias(name);
   if(directories.has(name))throw failure('EISDIR',syscall,ROOT+'/'+name,'illegal operation on a directory');
   if(!sizes.has(name))throw failure('ENOENT',syscall,ROOT+'/'+name,'no such archived file');
   const result=read(name);sizes.set(name,result.length);return result;
  }
- function stat(name,options={}) {
+ function stat(name,options={},follow=true) {
+  const link=!follow&&Object.hasOwn(aliases,name)?aliases[name]:null;
+  if(!link)name=unalias(name);
   const directory=directories.has(name);
   if(!directory&&!sizes.has(name))throw failure('ENOENT','stat',ROOT+'/'+name,'no such archived file');
-  const size=directory?0:(sizes.get(name)??bytes(name,'stat').length);
+  const size=link?link.link_size:directory?0:(sizes.get(name)??bytes(name,'stat').length);
   const integer=n=>options?.bigint?BigInt(n):n;
-  return {dev:integer(0),ino:integer(0),mode:integer((directory?0o40000:0o100000)|0o444|(directory?0o111:0)),nlink:integer(1),uid:integer(0),gid:integer(0),rdev:integer(0),size:integer(size),blksize:integer(4096),blocks:integer(Math.ceil(size/512)),atimeMs:integer(0),mtimeMs:integer(0),ctimeMs:integer(0),birthtimeMs:integer(0),atime:new Date(0),mtime:new Date(0),ctime:new Date(0),birthtime:new Date(0),...(options?.bigint?{atimeNs:0n,mtimeNs:0n,ctimeNs:0n,birthtimeNs:0n}:{}),isFile:()=>!directory,isDirectory:()=>directory,isSymbolicLink:()=>false,isSocket:()=>false,isFIFO:()=>false,isBlockDevice:()=>false,isCharacterDevice:()=>false};
+  return {dev:integer(0),ino:integer(0),mode:integer((link?0o120000:directory?0o40000:0o100000)|0o444|(directory?0o111:0)),nlink:integer(1),uid:integer(0),gid:integer(0),rdev:integer(0),size:integer(size),blksize:integer(4096),blocks:integer(Math.ceil(size/512)),atimeMs:integer(0),mtimeMs:integer(0),ctimeMs:integer(0),birthtimeMs:integer(0),atime:new Date(0),mtime:new Date(0),ctime:new Date(0),birthtime:new Date(0),...(options?.bigint?{atimeNs:0n,mtimeNs:0n,ctimeNs:0n,birthtimeNs:0n}:{}),isFile:()=>!link&&!directory,isDirectory:()=>!link&&directory,isSymbolicLink:()=>!!link,isSocket:()=>false,isFIFO:()=>false,isBlockDevice:()=>false,isCharacterDevice:()=>false};
  }
  function options(value){return typeof value==='string'?{encoding:value}:value||{};}
  function decode(buffer,encoding){return encoding&&encoding!=='buffer'?buffer.toString(encoding):buffer;}
  function readFile(name,opts){opts=options(opts);if(opts.signal?.aborted)throw Object.assign(Error('The operation was aborted'),{name:'AbortError',code:'ABORT_ERR'});if(opts.flag&&opts.flag!=='r'&&opts.flag!=='rs')throw failure('EROFS','readFile',ROOT+'/'+name,'read-only archive');return decode(bytes(name),opts.encoding);}
- function readdir(name,opts){opts=options(opts);const children=directories.get(name);if(!children){if(sizes.has(name))throw failure('ENOTDIR','scandir',ROOT+'/'+name);throw failure('ENOENT','scandir',ROOT+'/'+name);}if(opts.recursive)throw failure('ENOTSUP','scandir',ROOT+'/'+name,'recursive readdir is unsupported');return [...children.values()].sort((a,b)=>a.name.localeCompare(b.name,'en')).map(child=>{const value=opts.encoding==='buffer'?Buffer.from(child.name):child.name;if(!opts.withFileTypes)return value;return {name:value,path:ROOT+'/'+name,parentPath:ROOT+'/'+name,isFile:()=>!child.directory,isDirectory:()=>child.directory,isSymbolicLink:()=>false,isSocket:()=>false,isFIFO:()=>false,isBlockDevice:()=>false,isCharacterDevice:()=>false};});}
+ function readdir(name,opts){opts=options(opts);name=unalias(name);const children=directories.get(name);if(!children){if(sizes.has(name))throw failure('ENOTDIR','scandir',ROOT+'/'+name);throw failure('ENOENT','scandir',ROOT+'/'+name);}if(opts.recursive)throw failure('ENOTSUP','scandir',ROOT+'/'+name,'recursive readdir is unsupported');return [...children.values()].sort((a,b)=>a.name.localeCompare(b.name,'en')).map(child=>{const value=opts.encoding==='buffer'?Buffer.from(child.name):child.name;if(!opts.withFileTypes)return value;return {name:value,path:ROOT+'/'+name,parentPath:ROOT+'/'+name,isFile:()=>!child.link&&!child.directory,isDirectory:()=>!child.link&&child.directory,isSymbolicLink:()=>!!child.link,isSocket:()=>false,isFIFO:()=>false,isBlockDevice:()=>false,isCharacterDevice:()=>false};});}
  function stream(name,opts={}) {
   opts=options(opts);if(opts.fd!==undefined)throw failure('ENOTSUP','open',ROOT+'/'+name,'virtual file descriptors are unsupported');
   if(opts.flags&&opts.flags!=='r'&&opts.flags!=='rs')throw failure('EROFS','open',ROOT+'/'+name,'read-only archive');
@@ -53,10 +58,10 @@ function installResources({read,list,deployed={}}) {
   replace(fs,name,function(input,...rest){const p=virtual(input);if(p===null)return callback.call(this,input,...rest);const cb=rest.pop();if(typeof cb!=='function')throw new TypeError('callback must be a function');process.nextTick(()=>{let value;try{value=fn(p,...rest);}catch(error){cb(error);return;}cb(null,value);});});
   replace(promises,name,async function(input,...rest){const p=virtual(input);return p===null?promise.call(this,input,...rest):fn(p,...rest);});
  }
- readMethod('readFile',readFile);readMethod('stat',stat);readMethod('lstat',stat);readMethod('readdir',readdir);
+ readMethod('readFile',readFile);readMethod('stat',stat);readMethod('lstat',(name,opts)=>stat(name,opts,false));readMethod('readdir',readdir);
  readMethod('access',(name,mode=fs.constants.F_OK)=>{stat(name);if(mode&(fs.constants.W_OK|fs.constants.X_OK))throw failure('EROFS','access',ROOT+'/'+name);});
- const realExists=fs.existsSync;replace(fs,'existsSync',function(input){try{const name=virtual(input);return name===null?realExists.call(this,input):sizes.has(name)||directories.has(name);}catch{return false;}});
- const realExistsAsync=fs.exists;replace(fs,'exists',function(input,callback){let name;try{name=virtual(input);}catch{process.nextTick(()=>callback(false));return;}if(name===null)return realExistsAsync.call(this,input,callback);process.nextTick(()=>callback(sizes.has(name)||directories.has(name)));});
+ const realExists=fs.existsSync;replace(fs,'existsSync',function(input){try{const name=virtual(input);return name===null?realExists.call(this,input):exists(name);}catch{return false;}});
+ const realExistsAsync=fs.exists;replace(fs,'exists',function(input,callback){let name;try{name=virtual(input);}catch{process.nextTick(()=>callback(false));return;}if(name===null)return realExistsAsync.call(this,input,callback);process.nextTick(()=>callback(exists(name)));});
  const realStream=fs.createReadStream;replace(fs,'createReadStream',function(input,...rest){const name=virtual(input);return name===null?realStream.call(this,input,...rest):stream(name,...rest);});
  const writes=['writeFile','appendFile','truncate','unlink','rm','rmdir','mkdir','rename','copyFile','cp','symlink','link','chmod','chown','utimes','lchmod','lchown','lutimes','mkdtemp','createWriteStream'];
  const unsupported=['open','opendir','readlink','realpath','watch','watchFile','unwatchFile','statfs'];
