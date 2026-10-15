@@ -83,8 +83,8 @@ def discover(executable):
         raise ValueError("foreign runtime cannot be executed by this native spike")
     if metadata["framework"]:
         raise ValueError("framework runtime requires explicit Mach-O path normalization; "
-                         "rewrite the executable's absolute Python framework dependency to "
-                         "@executable_path/../Python, collect/rewrite every non-system edge, "
+                         "select Resources/Python.app/Contents/MacOS/Python (bin/python may exec an original-prefix app), "
+                         "rewrite its Python dependency to @executable_path/../../../../Python, collect/rewrite every non-system edge, "
                          "then re-sign all modified images; unchanged bytes cannot relocate")
     metadata["executable"] = str(selected)
     root = Path(metadata["prefix"]).resolve(strict=True)

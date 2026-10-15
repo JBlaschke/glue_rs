@@ -3,7 +3,9 @@
 //! The adapter reads bounded data. It never starts an interpreter, resolves
 //! dependencies, follows generated wrappers or executes an installation hook.
 
+pub mod compact;
 pub mod discovery;
+mod failure;
 pub mod inventory;
 
 use super::{

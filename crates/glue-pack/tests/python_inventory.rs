@@ -132,6 +132,12 @@ fn record_integrity_and_source_escape_reject() {
             .unwrap_err()
             .contains("SHA-256")
     );
+    assert_eq!(
+        inventory::collect_diagnostic(&environment, &options)
+            .unwrap_err()
+            .code,
+        DiagnosticCode::PayloadIntegrity
+    );
     #[cfg(unix)]
     {
         std::os::unix::fs::symlink("/etc/passwd", root.join("project/escaped")).unwrap();

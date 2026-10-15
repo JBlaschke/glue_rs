@@ -91,7 +91,10 @@ Homebrew: /opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Ve
 python.org: /Library/Frameworks/Python.framework/Versions/3.15/Python
 ```
 
-Both need the executable dependency changed to `@executable_path/../Python`;
+P02 subsequently proved that framework `bin/pythonX.Y` may be a stub which execs
+an original-prefix app executable. Select the existing real interpreter at
+`Resources/Python.app/Contents/MacOS/Python`, preserving that path under runtime.
+Its Python-image dependency becomes `@executable_path/../../../../Python`;
 collect and rewrite other non-system absolute edges using actual loader-relative
 paths. Re-sign every modified Mach-O and verify the final signatures. No such
 normalization is silently performed here, and no non-PBS relocation success is
