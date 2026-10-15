@@ -528,6 +528,72 @@ pub fn ingest(project: &Path, entry: Option<&Path>, output: Option<&Path>) -> Re
         lock_provenance,
     })
 }
+/// Identify only the original native images required by Node and its bridge.
+/// Native addons remain application inputs, even when they share a search root.
+fn record_runtime_native_inputs(
+    runtime: &mut glue_format::RuntimeDescriptor,
+    native: &crate::native::NativeCollection,
+    seeds: &BTreeSet<String>,
+) -> Result<()> {
+    let originals: BTreeMap<_, _> = native
+        .inventory
+        .transformations
+        .iter()
+        .map(|change| (change.path.as_str(), &change.input))
+        .collect();
+    let mut dependencies = BTreeMap::<&str, Vec<&str>>::new();
+    for edge in &native.inventory.edges {
+        if matches!(
+            edge.provider,
+            glue_format::DependencyProvider::Bundled | glue_format::DependencyProvider::Runtime
+        ) {
+            dependencies
+                .entry(&edge.from)
+                .or_default()
+                .push(&edge.resolved);
+        }
+    }
+    let mut seen = BTreeSet::new();
+    let mut pending: Vec<_> = seeds.iter().map(String::as_str).collect();
+    while let Some(path) = pending.pop() {
+        if !seen.insert(path) {
+            continue;
+        }
+        if let Some(children) = dependencies.get(path) {
+            pending.extend(children.iter().copied());
+        }
+        if seeds.contains(path) {
+            continue;
+        }
+        let identity = if let Some(original) = originals.get(path).copied() {
+            original.clone()
+        } else {
+            let source = native.payloads.get(path).ok_or_else(|| {
+                error(
+                    DiagnosticCode::MissingDependency,
+                    format!("runtime dependency {path} has no collected payload"),
+                )
+            })?;
+            match source {
+                PayloadSource::File(source) => {
+                    glue_format::InputIdentity::of(&read(source, 512 * 1024 * 1024)?)
+                }
+                PayloadSource::Bytes { bytes, .. } => glue_format::InputIdentity::of(bytes),
+                PayloadSource::Symlink { .. } => {
+                    return Err(error(
+                        DiagnosticCode::InvalidConfiguration,
+                        "runtime dependency edge must resolve to its canonical image, not an alias",
+                    ));
+                }
+            }
+        };
+        runtime
+            .inputs
+            .insert(format!("runtime-native/{path}"), identity);
+    }
+    Ok(())
+}
+
 /// Build a source or Node-API project with an explicit stock runtime provider.
 pub fn prepare(
     options: &NodeBuildOptions,
@@ -613,6 +679,21 @@ pub fn prepare(
         serde_json::to_vec(&project.index)
             .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))?,
     );
+    let mut seed_sources = vec![&bridge];
+    if !options.host {
+        seed_sources.push(&discovered.executable);
+    }
+    let runtime_seeds = seed_sources
+        .into_iter()
+        .map(|source| {
+            native.mappings.get(source).cloned().ok_or_else(|| {
+                error(
+                    DiagnosticCode::MissingDependency,
+                    "runtime seed is absent from the collected native closure",
+                )
+            })
+        })
+        .collect::<Result<BTreeSet<_>>>()?;
     let mut provider = glue_runtime_node::prepare(
         discovered,
         &options.bridge,
@@ -620,6 +701,7 @@ pub fn prepare(
         native.inventory.clone(),
         options.host,
     )?;
+    record_runtime_native_inputs(&mut provider.runtime, &native, &runtime_seeds)?;
     let deployed_bridge = native.mappings.get(&bridge).ok_or_else(|| {
         error(
             DiagnosticCode::MissingDependency,
@@ -683,6 +765,123 @@ mod tests {
         fn drop(&mut self) {
             let _ = fs::remove_dir_all(&self.0);
         }
+    }
+    #[test]
+    fn runtime_native_identities_follow_seed_closures_and_original_bytes() {
+        use glue_format::{
+            DependencyProvider, InputIdentity, NativeDependency, RuntimeAbi, RuntimeDescriptor,
+            RuntimeImplementation, RuntimeProvider, RuntimeVersion, Transformation,
+        };
+        let temp = Temp::new();
+        temp.put("runtime-second", "same ABI, original runtime secondary");
+        temp.put("bridge-second", "archive bridge dependency");
+        temp.put("app-only", "application-only native dependency");
+        let mut runtime = RuntimeDescriptor {
+            implementation: RuntimeImplementation::Node,
+            version: "24.22.0".into(),
+            target: "aarch64-unknown-linux-gnu".into(),
+            abi: RuntimeAbi::Node {
+                version: RuntimeVersion {
+                    major: 24,
+                    minor: 22,
+                    patch: 0,
+                },
+                node_api: 10,
+                addon_abi: 137,
+                bridge_revision: "test-bridge".into(),
+            },
+            provider: RuntimeProvider::Bundled,
+            executable: "runtime/node".into(),
+            inputs: BTreeMap::from([
+                (
+                    "node-executable".into(),
+                    InputIdentity::of(b"unchanged node"),
+                ),
+                (
+                    "archive-bridge".into(),
+                    InputIdentity::of(b"unchanged bridge"),
+                ),
+            ]),
+            requirements: BTreeSet::new(),
+        };
+        let unbound = runtime.clone();
+        let mut native = crate::native::NativeCollection::default();
+        let edge = |from: &str, to: &str| NativeDependency {
+            from: from.into(),
+            name: to.into(),
+            provider: DependencyProvider::Bundled,
+            resolved: to.into(),
+        };
+        native.inventory.edges = vec![
+            edge("runtime/node", "runtime/first.so"),
+            edge("runtime/first.so", "runtime/second.so"),
+            edge("runtime/second.so", "runtime/first.so"),
+            edge("support/bridge.node", "support/bridge-second.so"),
+            edge("native/addon.node", "native/app-only.so"),
+            edge("native/addon.node", "runtime/first.so"),
+            NativeDependency {
+                from: "runtime/node".into(),
+                name: "libc.so.6".into(),
+                provider: DependencyProvider::OperatingSystem,
+                resolved: "libc.so.6".into(),
+            },
+        ];
+        native.payloads = BTreeMap::from([
+            (
+                "runtime/first.so".into(),
+                PayloadSource::Bytes {
+                    bytes: b"explicitly normalized deployed bytes".to_vec(),
+                    mode: 0o644,
+                },
+            ),
+            (
+                "runtime/second.so".into(),
+                PayloadSource::File(temp.0.join("runtime-second")),
+            ),
+            (
+                "support/bridge-second.so".into(),
+                PayloadSource::File(temp.0.join("bridge-second")),
+            ),
+            (
+                "native/app-only.so".into(),
+                PayloadSource::File(temp.0.join("app-only")),
+            ),
+        ]);
+        let original = InputIdentity::of(b"original runtime first library");
+        native.inventory.transformations.push(Transformation {
+            path: "runtime/first.so".into(),
+            input: original.clone(),
+            output: InputIdentity::of(b"explicitly normalized deployed bytes"),
+            edits: vec!["explicit relative load-path edit".into()],
+            signing: None,
+        });
+        let seeds = BTreeSet::from(["runtime/node".into(), "support/bridge.node".into()]);
+        record_runtime_native_inputs(&mut runtime, &native, &seeds).unwrap();
+        assert_eq!(runtime.inputs.len(), 5);
+        assert_eq!(runtime.inputs["runtime-native/runtime/first.so"], original);
+        assert!(
+            !runtime
+                .inputs
+                .contains_key("runtime-native/native/addon.node")
+        );
+        assert!(
+            !runtime
+                .inputs
+                .contains_key("runtime-native/native/app-only.so")
+        );
+        let before = runtime.clone();
+        temp.put("app-only", "changed application dependency");
+        let mut after_app_change = unbound.clone();
+        record_runtime_native_inputs(&mut after_app_change, &native, &seeds).unwrap();
+        assert_eq!(before, after_app_change);
+
+        temp.put("runtime-second", "same ABI, changed runtime secondary");
+        let mut after_runtime_change = unbound;
+        record_runtime_native_inputs(&mut after_runtime_change, &native, &seeds).unwrap();
+        assert_eq!(before.version, after_runtime_change.version);
+        assert_eq!(before.abi, after_runtime_change.abi);
+        assert_ne!(before.inputs, after_runtime_change.inputs);
+        assert_ne!(before, after_runtime_change);
     }
     #[test]
     fn npm_sources_assets_and_ordered_conditions() {
