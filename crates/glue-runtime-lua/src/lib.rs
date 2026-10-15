@@ -8,6 +8,7 @@
 //! `linux-native` profile eagerly loads a verified native closure before Lua
 //! starts. The caller must validate provisioning and target compatibility.
 
+pub mod helper;
 pub mod profile;
 
 #[allow(unsafe_code)]
