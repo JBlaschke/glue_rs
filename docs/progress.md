@@ -1,5 +1,26 @@
 # Implementation progress
 
+## Current direction — 15 October 2026
+
+The owner review is distilled into [the revised plan](../PLAN.md),
+[decision 0035](decisions/0035-mvp-delivery-and-runtime-scope.md),
+[MVP contracts](plans/mvp-contract.md), [the task queue](plans/mvp-tasks.md) and
+[memory/expansion gates](plans/memory-roadmap.md). Planning branch:
+`codex/mvp-project-plan`, based on `5bb1ac4`. This update changes documentation
+only; it adds no runtime support and claims no new execution evidence.
+Validation: whitespace/diff checks, local plan-link checks, balanced code fences,
+and the 26-task dependency graph. Runtime tests are not rerun for this plan-only
+change; their prior results remain in the historical record below.
+
+Current gates M0–M4 are pending. The immediate native-capable MVP uses compact
+deployment, supports Lua 5.4/5.5 and selectable modern Python/Node, and targets
+Linux/macOS. Runtime extraction and automatic user-module recompilation remain
+forbidden. Memory loading, Julia PackageCompiler bundles, mixed-language RPC and
+Windows/BSD have separate later gates. Historical A/G labels below remain a
+record of work under the old plan, not the current dispatch order.
+
+## Historical implementation record
+
 The earlier feature work and evidence were merged into `main` at `6afed9a`.
 Further implementation continues on separate feature branches.
 
@@ -41,7 +62,7 @@ Further implementation continues on separate feature branches.
 | A7/A1 Explicit macOS host Python startup | `claude/macos-python-host` (from merged `0c9b522`) | Experimental macOS arm64 host provider for the pinned startup subset; controlled observation without a tracer | Pinned PBS 20261009 macOS install-only artifact and 264 verified headers; C boundary compiled with Apple clang; dyld path loading with LC_UUID binding; one success, one app error, six installation rejections, one loader-override rejection and one unsupported-mode status match exactly; 173 feature tests and Clippy clean; read-only installation snapshot unchanged; bundled macOS requirements measured in [decision 0031](decisions/0031-macos-python-host-startup.md) |
 | A5 native capability survey and proposed contract | `claude/competent-keller-668fef` (from merged `0c9b522`) | Static survey; proposed contract; no loader change | 24 shared objects from four pinned cp313 manylinux aarch64 wheels (markupsafe 3.0.4, numpy 2.5.4, pydantic-core 2.50.1, cryptography 50.0.2) read statically and cross-checked against llvm-readelf with zero disagreements; all 444 distinct Python API imports exported by the pinned runtime; the current inspector rejects all 24 images before any import policy; Mac workspace 505 tests and Clippy clean on Rust 1.88.0; [decision 0033](decisions/0033-native-capability-contract.md) |
 
-## Gate status
+## Legacy gate status before the plan revision
 
 G0, G1 and G2 are open. Linked official Lua 5.4.9 and 5.5.1 have explicit,
 version-specific source-only profiles and optional GNU Linux arm64 native
@@ -464,39 +485,23 @@ queries and one install-only anonymous growth/release. See
 
 ## Next critical-path assignments
 
-Extend native platform/release evidence beyond the controlled Linux Lua closure.
-The explicit macOS host Python startup now runs on macOS arm64 through dyld
-and through the product `glue doctor`/`glue run` route (decision 0032), with
-a checked-in product harness and exact checker (decision 0034); root-level
-tracing of that cell and the measured thread-local, lazy-binding and
-weak-reference requirements of a bundled macOS runtime (decision 0031) are
-the next macOS items.
-Complete A1 independent tracing and distribution-signing evidence, then extend
-the supported Mach-O subset to actual runtime startup. Continue A2 (Windows PE)
-and A3 (Linux/FreeBSD ELF) on their native OS runners.
-Establish the FreeBSD bundled Python/Node producer. Extend Python host-installation
-compatibility beyond the pinned full/install-only inventories, extend native
-loading beyond the reviewed package-member corpus, and preserve both providers' archive
-source/resource behavior. Add version selection only after each candidate has
-its own verified producer, headers, runtime ABI and conformance evidence.
-Extend complete runtime traces beyond the controlled arm64
-cell. The Linux native Lua vertical slice exercises the G2 fixture on its
-observed cell; it does not establish the four-platform prerequisite or general
-package compatibility.
+Use [the MVP queue](plans/mvp-tasks.md), whose dependencies and acceptance checks
+replace the former platform-first and Python-before-Node assignments:
 
-In parallel, A9 now has a bounded message codec and controller connection ledger.
-Continue with private inherited protocol pipes and launcher re-execution,
-worker-side cancellation races, clocks/queue budgets and actual runtime bindings.
-The synthetic fixture reserves its own stdin/stdout for protocol; it does not
-establish product worker execution or close G4.
+1. C01: translate compact/runtime contracts into versioned shared types.
+2. V01: automate existing portable checks; V02 then establishes target receipts.
+3. L01: expose both existing Lua families as selectable helpers.
+4. P00: prove stock multi-version Python bootstrap with archived stdlib.
+5. N00: prove stock Node archive hooks and an existing native addon now.
 
-The user prefers completing Python work before starting Node. The separate native
-package-member profile now delegates dotted native imports to stock
-`ExtensionFileLoader`, retaining lifecycle GC/finalization checks.
-Continue A7/A10 with third-party native wheels and their required ELF/dependency
-admission, against the measured profile proposed in
-[decision 0033](decisions/0033-native-capability-contract.md), and runtime installation/selection beyond the
-explicit pinned template/prerequisite preparers, selected installed-runtime-tree
-input and bounded installed-package adapter;
-A8 remains unimplemented. Python's remaining platform/native/provider work is
-still required; metadata support does not close those gates.
+Then implement compact distribution writing, Linux/macOS native collection and
+the three independent input adapters. The exact pinned Python/native profiles
+remain regression evidence, not the admission model for new project inputs.
+No native-capable MVP is complete without all three languages. Node can proceed
+alongside Python; Windows, BSD and general mixed-language workers are deferred.
+
+The macOS native memory loader remains substantial work: actual runtime TLS,
+unwinding, image identity and signed deployment are not established by the small
+spike or host-startup route. Follow the [separate roadmap](plans/memory-roadmap.md)
+instead of blocking compact packaging on general dyld replacement. Decision 0033
+remains useful static-corpus evidence, not a completed dynamic loader contract.

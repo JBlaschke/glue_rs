@@ -4,13 +4,25 @@ A Rust packager and launcher under development for Python, Node.js and Lua apps
 in a read-only archive. The runtime contract forbids payload extraction and
 silent runtime-provider fallback. See [PLAN.md](PLAN.md) for the full design.
 
+The [revised project plan](PLAN.md) targets a Linux/macOS MVP with simple builders
+for Python/uv environments, Lua 5.4/5.5 directories and installed Node projects.
+Its default delivery is a compact tree prepared at build time: archived source
+and resources plus the selected runtime and existing native libraries. Archive-only
+native loading follows separate memory-mode gates. Both prohibit runtime extraction.
+See [the implementation queue](docs/plans/mvp-tasks.md) for bounded assignments
+and [the MVP contract](docs/plans/mvp-contract.md) for proposed CLI semantics.
+These are planned changes; the commands and restrictions below describe the
+existing experimental implementation.
+
 The current implementation packages explicit resources, validates manifest and
 ZIP32/ZIP64 metadata, verifies stored/deflate contents, and exposes a read-only
 resource tree with bounded memory caching. Experimental **linked Lua 5.4.9 and
 5.5.1 source profiles** run archive scripts and resources on matching macOS or GNU
 Linux targets. General native loading, host/archived runtime acquisition,
 general Python/Node compatibility, workers and standalone executables remain pending.
-The archive and manifest are experimental version 0; G0/G1/G2 remain open.
+The archive and manifest are experimental version 0. The historical G0/G1/G2
+labels are superseded by the M0–M4 gates in the revised plan; none of the new
+product gates is claimed complete.
 An experimental worker-message codec and controller ledger are tested through
 synthetic Rust peers over anonymous pipes. Runtime worker execution and
 cross-language calls remain pending; see

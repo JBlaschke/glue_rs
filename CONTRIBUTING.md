@@ -42,3 +42,9 @@ asset with `scripts/retain-evidence.sh` and restored with
 
 `PLAN.md` is the design baseline. Add a short decision record before changing
 shared APIs or any interpretation of the no-extraction constraint.
+
+For new MVP work, take one bounded assignment from
+[`docs/plans/mvp-tasks.md`](docs/plans/mvp-tasks.md), respecting its dependencies
+and shared-file ownership. Use the handoff template there. Historical A/G task
+labels are not the current dispatch order. Do not promote fixture success into
+general package/runtime support without the new product acceptance checks.
