@@ -271,11 +271,12 @@ def verify_macos(root: Path, policy: str) -> dict:
         text = metadata.stderr.decode(errors="replace")
         signature = "ad-hoc" if "Signature=adhoc" in text else "developer-id" if "Authority=Developer ID Application:" in text else "unknown"
         images.append({"path": path.relative_to(root).as_posix(), "verification_exit": verification.returncode,
-                       "signature": signature, "metadata": text, "verification_error": verification.stderr.decode(errors="replace")})
+                       "signature": signature, "metadata_exit": metadata.returncode, "metadata": text, "verification_error": verification.stderr.decode(errors="replace")})
     if policy not in {"ad-hoc", "developer-id"}:
         return {"status": "unavailable", "reason": "select the intended ad-hoc or developer-id deployment policy", "images": images}
-    passed = bool(images) and all(image["verification_exit"] == 0 and image["signature"] == policy for image in images)
-    result = {"status": "passed" if passed else "failed", "policy": policy, "images": images,
+    accepted = {"ad-hoc", "developer-id"} if policy == "ad-hoc" else {"developer-id"}
+    passed = bool(images) and all(image["verification_exit"] == 0 and image["metadata_exit"] == 0 and image["signature"] in accepted for image in images)
+    result = {"status": "passed" if passed else "failed", "policy": policy, "accepted_signature_classes": sorted(accepted), "images": images,
               "notarization": "not proven by codesign verification"}
     if policy == "developer-id":
         assessment = subprocess.run(["/usr/sbin/spctl", "--assess", "--type", "execute", "--verbose=4", str(root / "glue")], capture_output=True, check=False)
