@@ -38,6 +38,7 @@ Further implementation continues on separate feature branches.
 | Review hygiene and evidence retention | `claude/hygiene-and-evidence-policy` (from merged `a4e6ec1`) | Implemented | CONTRIBUTING toolchain guidance verified to select Rust 1.88.0 on the development Mac; 31 merged local branches pruned; [decision 0030](decisions/0030-evidence-retention.md) moves new evidence payloads to verified release assets; dry run packs the 2026-10-15 native-package bundle and verifies its inventory |
 | A7/A1 macOS host Python product route | `claude/distracted-wozniak-c2a76a` (from merged `28b0cab`) | Product `glue doctor`/`glue run` route for the explicit macOS arm64 host startup profile; controlled observation on one cell | Portable admission of `stock-pbs-host-startup-macos`; macOS readiness from the declared Darwin arm64 target, observed `kern.osproductversion` and 16 KiB page size; archive-backed payload read with re-applied bounds; doctor Ready and run PASS on the cell; six installation rejections, loader override, GNU Linux declarations and the no-boundary Mac build report their expected statuses; GNU Linux readiness unchanged; [decision 0032](decisions/0032-macos-python-product-route.md) |
 | A7/A1 Explicit macOS host Python startup | `claude/macos-python-host` (from merged `0c9b522`) | Experimental macOS arm64 host provider for the pinned startup subset; controlled observation without a tracer | Pinned PBS 20261009 macOS install-only artifact and 264 verified headers; C boundary compiled with Apple clang; dyld path loading with LC_UUID binding; one success, one app error, six installation rejections, one loader-override rejection and one unsupported-mode status match exactly; 173 feature tests and Clippy clean; read-only installation snapshot unchanged; bundled macOS requirements measured in [decision 0031](decisions/0031-macos-python-host-startup.md) |
+| A5 native capability survey and proposed contract | `claude/competent-keller-668fef` (from merged `0c9b522`) | Static survey; proposed contract; no loader change | 24 shared objects from four pinned cp313 manylinux aarch64 wheels (markupsafe 3.0.4, numpy 2.5.4, pydantic-core 2.50.1, cryptography 50.0.2) read statically and cross-checked against llvm-readelf with zero disagreements; all 444 distinct Python API imports exported by the pinned runtime; the current inspector rejects all 24 images before any import policy; Mac workspace 505 tests and Clippy clean on Rust 1.88.0; [decision 0033](decisions/0033-native-capability-contract.md) |
 
 ## Gate status
 
@@ -491,7 +492,8 @@ The user prefers completing Python work before starting Node. The separate nativ
 package-member profile now delegates dotted native imports to stock
 `ExtensionFileLoader`, retaining lifecycle GC/finalization checks.
 Continue A7/A10 with third-party native wheels and their required ELF/dependency
-admission, and runtime installation/selection beyond the
+admission, against the measured profile proposed in
+[decision 0033](decisions/0033-native-capability-contract.md), and runtime installation/selection beyond the
 explicit pinned template/prerequisite preparers, selected installed-runtime-tree
 input and bounded installed-package adapter;
 A8 remains unimplemented. Python's remaining platform/native/provider work is
