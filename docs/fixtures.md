@@ -111,7 +111,7 @@ No unprivileged syscall tracer exists there; the evidence says so. The product
 route of [decision 0032](decisions/0032-macos-python-product-route.md) serves
 the same archives through `glue doctor` and `glue run` on that cell. Its
 checked-in harness, `run-product-macos.sh` of
-[decision 0033](decisions/0033-macos-python-product-harness.md), runs the
+[decision 0034](decisions/0034-macos-python-product-harness.md), runs the
 default-feature checks before the feature-enabled build, records doctor,
 inspect, verify and run receipts for the valid archive, the six controls, a
 loader override, a portably staged GNU Linux declaration and a feature-enabled

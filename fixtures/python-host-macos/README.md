@@ -78,7 +78,7 @@ working directory in the fixture's poisoned environment, with
 `check-product-results.py` compares each status, stdout and stderr with the
 expected exact values, recomputing the printed manifest digests from the JSON
 receipts, and requires the installation snapshot unchanged. See
-[decision 0033](../../docs/decisions/0033-macos-python-product-harness.md).
+[decision 0034](../../docs/decisions/0034-macos-python-product-harness.md).
 Both harnesses leave their installations and archives read-only; restore
 write permission with `chmod -R u+w` before removing an output directory.
 

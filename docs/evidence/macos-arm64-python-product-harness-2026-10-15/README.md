@@ -3,7 +3,7 @@
 Captured on 15 October 2026 from clean feature commit `f69284e` on
 `claude/relaxed-torvalds-a9df39`, based on `108b4d0` of
 `claude/distracted-wozniak-c2a76a`.
-[Decision 0033](../../decisions/0033-macos-python-product-harness.md)
+[Decision 0034](../../decisions/0034-macos-python-product-harness.md)
 defines the step; the [fixture](../../../fixtures/python-host-macos/README.md)
 describes the harness. This is the first capture of the product route of
 [decision 0032](../../decisions/0032-macos-python-product-route.md) by the
