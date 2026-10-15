@@ -390,3 +390,122 @@ fn dynamic_string_table_may_cross_contiguous_file_backed_loads_but_not_gaps() {
     set(&mut discontinuous, second + 40, 1148);
     assert!(inspect_bytes(&discontinuous).is_err());
 }
+
+#[test]
+fn gnu_notes_report_kernel_floor_and_required_cpu_isa() {
+    let mut b = fixture("module.so", None, "$ORIGIN");
+    let p = 64 + 3 * 56;
+    b[p..p + 4].copy_from_slice(&4u32.to_le_bytes());
+    for (o, v) in [(p + 8, 1280u64), (p + 16, 0), (p + 32, 64), (p + 40, 64)] {
+        b[o..o + 8].copy_from_slice(&v.to_le_bytes());
+    }
+    let put = |b: &mut Vec<u8>, p: usize, n: u32| b[p..p + 4].copy_from_slice(&n.to_le_bytes());
+    for offset in [1280, 1312] {
+        put(&mut b, offset, 4);
+        put(&mut b, offset + 4, 16);
+        b[offset + 12..offset + 16].copy_from_slice(b"GNU\0");
+    }
+    put(&mut b, 1288, 1);
+    put(&mut b, 1300, 4);
+    put(&mut b, 1304, 14);
+    put(&mut b, 1308, 0);
+    put(&mut b, 1320, 5);
+    put(&mut b, 1328, 0xc0008002);
+    put(&mut b, 1332, 4);
+    put(&mut b, 1336, 4);
+    let facts = glue_pack::native::linux::inspect_link_contract(&b).unwrap();
+    assert_eq!(facts.minimum_kernel.as_deref(), Some("4.14.0"));
+    assert!(facts.properties.contains("x86_64_isa_v3"));
+    put(&mut b, 1332, 1024);
+    assert!(glue_pack::native::linux::inspect_link_contract(&b).is_err());
+}
+#[cfg(target_os = "linux")]
+#[test]
+fn supplied_dependency_must_define_its_required_symbol_versions() {
+    use std::process::Command;
+    let t = Temp::new();
+    fs::write(t.0.join("dep.c"), "int dependency(void){return 42;}\n").unwrap();
+    fs::write(
+        t.0.join("module.c"),
+        "extern int dependency(void);int answer(void){return dependency();}\n",
+    )
+    .unwrap();
+    fs::write(
+        t.0.join("symbols.map"),
+        "VER_2.0 { global: dependency; local: *; };\n",
+    )
+    .unwrap();
+    let compile = || {
+        assert!(
+            Command::new("cc")
+                .current_dir(&t.0)
+                .args([
+                    "-shared",
+                    "-fPIC",
+                    "dep.c",
+                    "-Wl,-soname,libdep.so",
+                    "-Wl,--version-script,symbols.map",
+                    "-o",
+                    "libdep.so"
+                ])
+                .status()
+                .unwrap()
+                .success()
+        );
+    };
+    compile();
+    assert!(
+        Command::new("cc")
+            .current_dir(&t.0)
+            .args([
+                "-shared",
+                "-fPIC",
+                "module.c",
+                "-L.",
+                "-ldep",
+                "-Wl,-rpath,$ORIGIN",
+                "-o",
+                "module.so"
+            ])
+            .status()
+            .unwrap()
+            .success()
+    );
+    let contract =
+        glue_pack::native::linux::inspect_link_contract(&fs::read(t.0.join("module.so")).unwrap())
+            .unwrap();
+    assert!(contract.version_needs["libdep.so"].contains("VER_2.0"));
+    let defs =
+        glue_pack::native::linux::inspect_link_contract(&fs::read(t.0.join("libdep.so")).unwrap())
+            .unwrap();
+    assert!(defs.version_definitions.contains("VER_2.0"));
+    let request = NativeRequest {
+        images: vec![t.0.join("module.so")],
+        search_roots: vec![NativeSearchRoot {
+            source: t.0.clone(),
+            deployed: "native".into(),
+            provider: DependencyProvider::Bundled,
+        }],
+        target: format!(
+            "{}-unknown-linux-gnu",
+            if cfg!(target_arch = "aarch64") {
+                "aarch64"
+            } else {
+                "x86_64"
+            }
+        ),
+        normalize: false,
+        host_libraries: BTreeSet::new(),
+    };
+    collect(&request).unwrap();
+    fs::write(
+        t.0.join("symbols.map"),
+        "VER_1.0 { global: dependency; local: *; };\n",
+    )
+    .unwrap();
+    compile();
+    assert_eq!(
+        collect(&request).unwrap_err().code,
+        DiagnosticCode::RuntimeAbiMismatch
+    );
+}

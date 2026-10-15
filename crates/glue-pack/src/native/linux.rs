@@ -87,45 +87,7 @@ pub fn inspect_bytes(bytes: &[u8]) -> Result<NativeFacts> {
             _ => (),
         }
     }
-    let mapped = |address: u64, size: u64| -> Result<u64> {
-        let end = address
-            .checked_add(size)
-            .ok_or_else(|| bad("ELF virtual range overflow"))?;
-        let (_, offset, _) = loads
-            .iter()
-            .rev()
-            .find(|(base, _, length)| address >= *base && address - *base < *length)
-            .ok_or_else(|| {
-                bad(format!(
-                    "ELF dynamic address {address:#x} is not file-backed"
-                ))
-            })?;
-        let (base, _, _) = loads
-            .iter()
-            .rev()
-            .find(|(base, _, length)| address >= *base && address - *base < *length)
-            .unwrap();
-        let start = offset
-            .checked_add(address - base)
-            .ok_or_else(|| bad("ELF translated range overflow"))?;
-        let mut current = address;
-        while current < end {
-            let (base, offset, length) = loads
-                .iter()
-                .rev()
-                .find(|(base, _, length)| current >= *base && current - *base < *length)
-                .ok_or_else(|| bad("ELF dynamic table crosses an unmapped/file-unbacked gap"))?;
-            if offset.checked_add(current - base) != start.checked_add(current - address) {
-                return Err(bad("ELF dynamic table crosses noncontiguous file mappings"));
-            }
-            current = end.min(
-                base.checked_add(*length)
-                    .ok_or_else(|| bad("ELF load range overflow"))?,
-            );
-        }
-        e.range(start, size)?;
-        Ok(start)
-    };
+    let mapped = |address: u64, size: u64| file_offset(&e, &loads, address, size);
     let (offset, size) = dynamic.ok_or_else(|| bad("ELF image has no dynamic metadata"))?;
     if size % 16 != 0 || size / 16 > 65536 {
         return Err(bad("invalid ELF dynamic segment size"));
@@ -184,6 +146,8 @@ pub fn inspect_bytes(bytes: &[u8]) -> Result<NativeFacts> {
         features.insert("constructors".into());
     }
     let mut versions = BTreeSet::new();
+    let mut version_items = 0usize;
+    let mut version_bytes = 0usize;
     if let Some(base) = single(0x6ffffffe)? {
         let count =
             single(0x6fffffff)?.ok_or_else(|| bad("missing ELF version requirement count"))?;
@@ -205,7 +169,13 @@ pub fn inspect_bytes(bytes: &[u8]) -> Result<NativeFacts> {
                 .ok_or_else(|| bad("version pointer overflow"))?;
             for j in 0..aux_count {
                 let a = mapped(aux, 16)?;
-                versions.insert(cstring(strings, u64::from(e.u32(a + 8)?))?);
+                let value = cstring(strings, u64::from(e.u32(a + 8)?))?;
+                version_items += 1;
+                version_bytes += value.len();
+                if version_items > 65536 || version_bytes > 32 * 1024 * 1024 {
+                    return Err(bad("ELF version requirements exceed metadata bound"));
+                }
+                versions.insert(value);
                 let next = u64::from(e.u32(a + 12)?);
                 if j + 1 < aux_count && next < 16 {
                     return Err(bad("invalid ELF version auxiliary chain"));
@@ -424,4 +394,277 @@ pub(crate) fn normalize_collection(collection: &mut super::NativeCollection) -> 
         );
     }
     Ok(())
+}
+
+fn file_offset(e: &Elf<'_>, loads: &[(u64, u64, u64)], address: u64, size: u64) -> Result<u64> {
+    let end = address
+        .checked_add(size)
+        .ok_or_else(|| bad("ELF virtual range overflow"))?;
+    let (_, offset, _) = loads
+        .iter()
+        .rev()
+        .find(|(base, _, length)| address >= *base && address - *base < *length)
+        .ok_or_else(|| {
+            bad(format!(
+                "ELF dynamic address {address:#x} is not file-backed"
+            ))
+        })?;
+    let (base, _, _) = loads
+        .iter()
+        .rev()
+        .find(|(base, _, length)| address >= *base && address - *base < *length)
+        .unwrap();
+    let start = offset
+        .checked_add(address - base)
+        .ok_or_else(|| bad("ELF translated range overflow"))?;
+    let mut current = address;
+    while current < end {
+        let (base, offset, length) = loads
+            .iter()
+            .rev()
+            .find(|(base, _, length)| current >= *base && current - *base < *length)
+            .ok_or_else(|| bad("ELF dynamic table crosses an unmapped/file-unbacked gap"))?;
+        if offset.checked_add(current - base) != start.checked_add(current - address) {
+            return Err(bad("ELF dynamic table crosses noncontiguous file mappings"));
+        }
+        current = end.min(
+            base.checked_add(*length)
+                .ok_or_else(|| bad("ELF load range overflow"))?,
+        );
+    }
+    e.range(start, size)?;
+    Ok(start)
+}
+
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct ElfLinkContract {
+    pub version_needs: std::collections::BTreeMap<String, BTreeSet<String>>,
+    pub version_definitions: BTreeSet<String>,
+    pub properties: BTreeSet<String>,
+    pub minimum_kernel: Option<String>,
+}
+/// Symbol-version edges and GNU ABI/CPU notes used for closure compatibility.
+/// Inspection never executes the image. Weak version needs do not become hard gates.
+pub fn inspect_link_contract(bytes: &[u8]) -> Result<ElfLinkContract> {
+    inspect_bytes(bytes)?;
+    let e = Elf(bytes);
+    let ph = e.u64(32)?;
+    let count = u64::from(e.u16(56)?);
+    let mut loads = Vec::new();
+    let mut dynamic = None;
+    let mut notes = Vec::new();
+    for i in 0..count {
+        let p = ph + i * 56;
+        let tag = e.u32(p)?;
+        let offset = e.u64(p + 8)?;
+        let address = e.u64(p + 16)?;
+        let size = e.u64(p + 32)?;
+        if tag == 1 {
+            loads.push((address, offset, size));
+        }
+        if tag == 2 {
+            dynamic = Some((offset, size));
+        }
+        if tag == 4 || tag == 0x6474e553 {
+            notes.push((offset, size));
+        }
+    }
+    let (offset, size) = dynamic.unwrap();
+    let mut tags = std::collections::BTreeMap::<u64, Vec<u64>>::new();
+    for i in 0..size / 16 {
+        let tag = e.u64(offset + i * 16)?;
+        if tag == 0 {
+            break;
+        }
+        tags.entry(tag)
+            .or_default()
+            .push(e.u64(offset + i * 16 + 8)?);
+    }
+    let one = |tag: u64| -> Result<Option<u64>> {
+        match tags.get(&tag) {
+            None => Ok(None),
+            Some(v) if v.len() == 1 => Ok(Some(v[0])),
+            _ => Err(bad("duplicate ELF link-contract dynamic tag")),
+        }
+    };
+    let strsz = one(10)?.unwrap();
+    let strtab = file_offset(&e, &loads, one(5)?.unwrap(), strsz)?;
+    let strings = e.range(strtab, strsz)?;
+    let mapped = |a, n| file_offset(&e, &loads, a, n);
+    let mut result = ElfLinkContract::default();
+    let mut metadata_bytes = 0usize;
+    let mut entries = 0usize;
+    let mut name = |offset: u64| -> Result<String> {
+        let value = cstring(strings, offset)?;
+        metadata_bytes = metadata_bytes
+            .checked_add(value.len())
+            .ok_or_else(|| bad("ELF metadata size overflow"))?;
+        entries += 1;
+        if metadata_bytes > 32 * 1024 * 1024 || entries > 65536 {
+            return Err(bad("ELF version metadata exceeds bound"));
+        }
+        Ok(value)
+    };
+    if let Some(base) = one(0x6ffffffe)? {
+        let count = one(0x6fffffff)?.ok_or_else(|| bad("missing version need count"))?;
+        let mut current = base;
+        for i in 0..count {
+            let p = mapped(current, 16)?;
+            let library = name(u64::from(e.u32(p + 4)?))?;
+            let aux_count = u64::from(e.u16(p + 2)?);
+            let mut aux = current
+                .checked_add(u64::from(e.u32(p + 8)?))
+                .ok_or_else(|| bad("ELF version need overflow"))?;
+            for j in 0..aux_count {
+                let a = mapped(aux, 16)?;
+                let value = name(u64::from(e.u32(a + 8)?))?;
+                if e.u16(a + 4)? & 2 == 0 {
+                    result
+                        .version_needs
+                        .entry(library.clone())
+                        .or_default()
+                        .insert(value);
+                }
+                let next = u64::from(e.u32(a + 12)?);
+                if j + 1 < aux_count && next < 16 {
+                    return Err(bad("invalid version auxiliary chain"));
+                }
+                aux = aux
+                    .checked_add(next)
+                    .ok_or_else(|| bad("version auxiliary overflow"))?;
+            }
+            let next = u64::from(e.u32(p + 12)?);
+            if i + 1 < count && next < 16 {
+                return Err(bad("invalid version need chain"));
+            }
+            current = current
+                .checked_add(next)
+                .ok_or_else(|| bad("version need overflow"))?;
+        }
+    }
+    if let Some(base) = one(0x6ffffffc)? {
+        let count = one(0x6ffffffd)?.ok_or_else(|| bad("missing version definition count"))?;
+        if count > 4096 {
+            return Err(bad("too many version definitions"));
+        }
+        let mut current = base;
+        for i in 0..count {
+            let p = mapped(current, 20)?;
+            if e.u16(p)? != 1 {
+                return Err(bad("unsupported version definition format"));
+            }
+            let aux_count = u64::from(e.u16(p + 6)?);
+            if aux_count == 0 || aux_count > 4096 {
+                return Err(bad("invalid version definition auxiliary count"));
+            }
+            let mut aux = current
+                .checked_add(u64::from(e.u32(p + 12)?))
+                .ok_or_else(|| bad("definition auxiliary overflow"))?;
+            for j in 0..aux_count {
+                let a = mapped(aux, 8)?;
+                result
+                    .version_definitions
+                    .insert(name(u64::from(e.u32(a)?))?);
+                let next = u64::from(e.u32(a + 4)?);
+                if j + 1 < aux_count && next < 8 {
+                    return Err(bad("invalid version definition auxiliary chain"));
+                }
+                aux = aux
+                    .checked_add(next)
+                    .ok_or_else(|| bad("version definition overflow"))?;
+            }
+            let next = u64::from(e.u32(p + 16)?);
+            if i + 1 < count && next < 20 {
+                return Err(bad("invalid version definition chain"));
+            }
+            current = current
+                .checked_add(next)
+                .ok_or_else(|| bad("version definition overflow"))?;
+        }
+    }
+    let mut seen = BTreeSet::new();
+    let mut note_entries = 0usize;
+    for (offset, size) in notes {
+        if !seen.insert((offset, size)) {
+            continue;
+        }
+        let data = e.range(offset, size)?;
+        let n = Elf(data);
+        let mut p = 0u64;
+        while p + 12 <= size {
+            note_entries += 1;
+            if note_entries > 65536 {
+                return Err(bad("ELF note count exceeds bound"));
+            }
+            let namesz = u64::from(n.u32(p)?);
+            let descsz = u64::from(n.u32(p + 4)?);
+            let kind = n.u32(p + 8)?;
+            if namesz > 256 || descsz > 1024 * 1024 {
+                return Err(bad("ELF note metadata exceeds bound"));
+            }
+            let title = n.range(p + 12, namesz)?;
+            let descriptor = p + 12 + ((namesz + 3) & !3);
+            let desc = n.range(descriptor, descsz)?;
+            if title == b"GNU\0" && kind == 1 && descsz >= 16 {
+                let d = Elf(desc);
+                if d.u32(0)? == 0 {
+                    let floor = format!("{}.{}.{}", d.u32(4)?, d.u32(8)?, d.u32(12)?);
+                    result.minimum_kernel = Some(floor);
+                }
+            }
+            if title == b"GNU\0" && kind == 5 {
+                let d = Elf(desc);
+                let mut q = 0u64;
+                while q + 8 <= descsz {
+                    let property = d.u32(q)?;
+                    let length = u64::from(d.u32(q + 4)?);
+                    d.range(q + 8, length)?;
+                    if length == 4 {
+                        let mask = d.u32(q + 8)?;
+                        match property {
+                            0xc0008002 if e.u16(18)? == 62 => {
+                                for level in 1..=4 {
+                                    if mask & (1 << (level - 1)) != 0 {
+                                        result.properties.insert(format!("x86_64_isa_v{level}"));
+                                    }
+                                }
+                                if mask & !15 != 0 {
+                                    result
+                                        .properties
+                                        .insert(format!("x86_64_unknown_isa_mask:{mask:#x}"));
+                                }
+                            }
+                            0xc0000000 if e.u16(18)? == 183 => {
+                                if mask & 1 != 0 {
+                                    result.properties.insert("aarch64_bti".into());
+                                }
+                                if mask & 2 != 0 {
+                                    result.properties.insert("aarch64_pac".into());
+                                }
+                            }
+                            0xc0000002 if e.u16(18)? == 62 => {
+                                if mask & 1 != 0 {
+                                    result.properties.insert("x86_64_ibt".into());
+                                }
+                                if mask & 2 != 0 {
+                                    result.properties.insert("x86_64_shadow_stack".into());
+                                }
+                            }
+                            _ => (),
+                        }
+                    }
+                    q = q
+                        .checked_add(8 + ((length + 7) & !7))
+                        .ok_or_else(|| bad("GNU property overflow"))?;
+                    if q > descsz {
+                        return Err(bad("GNU property exceeds note"));
+                    }
+                }
+            }
+            p = descriptor
+                .checked_add((descsz + 3) & !3)
+                .ok_or_else(|| bad("ELF note overflow"))?;
+        }
+    }
+    Ok(result)
 }
