@@ -83,16 +83,79 @@ class NormalizedStateTests(unittest.TestCase):
         self.assertEqual(result["write_attempts"], [{"call": "write-file", "process": "root", "object": "file-a", "kind": "regular", "bytes": 20, "unit_intent": "filesystem-attempt"}])
         self.assertEqual(result["call_history"][-1]["binding"]["object"], "file-a")
 
-    def test_pending_write_binds_original_object_across_number_reuse(self):
-        unit = Units(); unit.thread()
-        unit.enter("old-write", "write", {"fd": 1, "bytes": 5})
+    def test_pending_io_rejects_ambiguous_descriptor_reuse(self):
+        for operation in ("read", "write"):
+            unit = Units(); unit.thread()
+            unit.enter("pending-io", operation, {"fd": 1, "bytes": 5})
+            unit.call("worker-close", "fd-close", {"fd": 1}, thread="worker")
+            unit.call("worker-open", "fd-open", opened(), 1, obj="file-a", thread="worker")
+            with self.subTest(operation=operation), self.assertRaisesRegex(state.StateError, "source descriptor changed"):
+                unit.returned("pending-io", 5)
+            self.assertTrue(unit.machine.failed)
+            with self.assertRaises(state.StateError): unit.machine.finish()
+
+    def test_dup_and_dup2_reject_source_reuse_before_kernel_lookup_is_known(self):
+        for operation in ("fd-dup", "fd-dup2"):
+            for returned, error in ((3 if operation == "fd-dup" else 2, 0), (-1, 9)):
+                unit = Units(); unit.thread()
+                args = {"source": 1} if operation == "fd-dup" else {"source": 1, "target": 2}
+                unit.enter("pending-dup", operation, args)
+                unit.call("worker-close", "fd-close", {"fd": 1}, thread="worker")
+                unit.call("worker-open", "fd-open", opened(), 1, obj="file-a", thread="worker")
+                with self.subTest(operation=operation, error=error), self.assertRaisesRegex(state.StateError, "source descriptor changed"):
+                    unit.returned("pending-dup", returned, error)
+
+    def test_source_close_then_restore_same_object_still_rejects_version_change(self):
+        unit = Units(); unit.call("alias", "fd-dup", {"source": 1}, 3); unit.thread()
+        unit.enter("pending-io", "write", {"fd": 1, "bytes": 5})
         unit.call("worker-close", "fd-close", {"fd": 1}, thread="worker")
-        unit.call("worker-open", "fd-open", opened(), 1, obj="file-a", thread="worker")
-        unit.returned("old-write", 5)
-        unit.call("new-write", "write", {"fd": 1, "bytes": 5}, 5, thread="worker")
-        unit.exited()
-        result = unit.end(t=2, returned=4)
-        self.assertEqual([a["object"] for a in result["write_attempts"]], ["stdout", "file-a"])
+        unit.call("worker-restore", "fd-dup2", {"source": 3, "target": 1}, 1, thread="worker")
+        with self.assertRaisesRegex(state.StateError, "source descriptor changed"):
+            unit.returned("pending-io", 5)
+
+    def test_dup2_target_change_and_restore_absence_rejects(self):
+        for originally_open in (False, True):
+            unit = Units(); unit.thread(); target = 2 if originally_open else 5
+            unit.enter("pending-dup2", "fd-dup2", {"source": 1, "target": target})
+            if originally_open: unit.call("close-target", "fd-close", {"fd": target}, thread="worker")
+            unit.call("open-target", "fd-open", opened(), target, obj="file-a", thread="worker")
+            if not originally_open: unit.call("restore-absence", "fd-close", {"fd": target}, thread="worker")
+            with self.subTest(originally_open=originally_open), self.assertRaisesRegex(state.StateError, "destination descriptor changed"):
+                unit.returned("pending-dup2", target)
+
+    def test_allocation_target_transient_reuse_rejects_but_unrelated_slot_is_supported(self):
+        for operation in ("fd-open", "fd-dup"):
+            unit = Units(); unit.thread()
+            unit.enter("allocation", operation, opened() if operation == "fd-open" else {"source": 1})
+            unit.call("worker-open", "fd-open", opened(), 3, obj="file-a", thread="worker")
+            unit.call("worker-close", "fd-close", {"fd": 3}, thread="worker")
+            with self.subTest(operation=operation), self.assertRaisesRegex(state.StateError, "destination descriptor changed"):
+                unit.returned("allocation", 3, obj="file-b" if operation == "fd-open" else None)
+        unit = Units(); unit.thread(); unit.enter("allocation", "fd-dup", {"source": 1})
+        unit.call("unrelated-flags", "fd-flags", {"fd": 2, "cloexec": True}, thread="worker")
+        unit.returned("allocation", 3); unit.exited(); unit.end(t=2, returned=2)
+
+    def test_directory_fd_and_cwd_races_reject_including_restore(self):
+        descriptors = [{"fd": 7, "object": "root-dir", "cloexec": False}, {"fd": 8, "object": "other-dir", "cloexec": False}]
+        for operation in ("cwd-from-fd", "fd-open"):
+            unit = Units(extra_fds=descriptors); unit.thread()
+            unit.enter("pending-dir", operation, {"fd": 7} if operation == "cwd-from-fd" else opened(dirfd=7))
+            unit.call("replace-dir", "fd-dup2", {"source": 8, "target": 7}, 7, thread="worker")
+            with self.subTest(operation=operation), self.assertRaisesRegex(state.StateError, "source descriptor changed|directory anchor changed"):
+                unit.returned("pending-dir", 0 if operation == "cwd-from-fd" else 3, obj=None if operation == "cwd-from-fd" else "file-a")
+        for restore in (False, True):
+            unit = Units(); unit.thread(); unit.enter("pending-open", "fd-open", opened())
+            unit.call("change-cwd", "cwd-set", {"object": "other-dir"}, thread="worker")
+            if restore: unit.call("restore-cwd", "cwd-set", {"object": "root-dir"}, thread="worker")
+            with self.subTest(restore=restore), self.assertRaisesRegex(state.StateError, "effective cwd changed"):
+                unit.returned("pending-open", 3, obj="file-a")
+
+    def test_fork_rejects_changed_inheritance_before_birth(self):
+        for change in ("fd-flags", "cwd-set"):
+            unit = Units(); unit.thread(); unit.enter("fork-a", "fork-parent")
+            unit.call("change", change, {"fd": 1, "cloexec": True} if change == "fd-flags" else {"object": "other-dir"}, thread="worker")
+            with self.subTest(change=change), self.assertRaisesRegex(state.StateError, "fork inheritance changed"):
+                unit.event("process-fork", {"parent": "root", "thread": "main", "exec": 0, "call": "fork-a", "child": "child", "pid": 200})
 
     def test_dup_flags_same_fd_and_exec_close_only_its_descriptors(self):
         unit = Units()

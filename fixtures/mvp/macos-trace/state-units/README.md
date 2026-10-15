@@ -63,7 +63,7 @@ Supported canonical operations and argument keys:
 | `fd-dup` | `source` | install lowest unused fd with shared object, CLOEXEC cleared |
 | `fd-dup2` | `source`, `target` | replace target; source==target preserves its flags |
 | `fd-flags` | `fd`, `cloexec` | set this descriptor's CLOEXEC only |
-| `read` / `write` | `fd`, requested `bytes` | retain entry-time object binding; returned count cannot exceed request |
+| `read` / `write` | `fd`, requested `bytes` | require stable source binding; returned count cannot exceed request |
 | `cwd-set` | directory `object` | set process cwd |
 | `cwd-from-fd` | directory `fd` | set process cwd from entry-time directory identity |
 | `thread-cwd-set` | directory `object` or null | set/clear explicit unit thread override |
@@ -92,9 +92,21 @@ Relative path requests retain the entry-time effective cwd object, or a tracked
 directory fd object. Darwin `AT_FDCWD=-2` and null choose effective cwd. Absolute
 paths have no dirfd anchor. Path bytes remain hex; no symlink, mount, `..`, vnode
 alias, actual target or application-output resolution is performed. A later cwd
-change cannot rewrite an earlier anchor. A write remains bound to its original
-object even if another thread closes/reuses its fd before return. File/directory
-write attempts are retained even on failure. This is not the full mutation policy:
+change cannot rewrite an earlier anchor. Duplication and I/O require their source
+descriptor's object, flags and binding version unchanged at return, including
+failed returns. The same source guard applies to `cwd-from-fd`. Destination slots
+for dup2 and returned allocation slots for open/dup must be untouched during the
+pending interval; per-slot versions retain close/absence history, so a temporary
+allocation followed by close cannot be mistaken for an unchanged empty slot.
+Relative-open directory anchors and effective cwd versions must also remain
+unchanged; cwd change-and-restore rejects. Fork rejects descriptor-table or process
+cwd changes between its parent-side entry and child birth. Concurrent close/reuse
+or even restoration of the same object
+rejects because this model has no observed kernel lookup identity. The entry-time
+binding is a supplied normalized causal-order assumption; a raw adapter cannot
+establish it merely by snapshotting the userspace descriptor table at syscall
+entry. File/directory write attempts are retained even on failure when that binding
+is stable. This is not the full mutation policy:
 write-open/create/truncate flags remain the separate open-intent unit, and many
 other data/metadata/namespace write routes are unsupported.
 
