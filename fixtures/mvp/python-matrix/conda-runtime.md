@@ -46,4 +46,25 @@ native packaging when its wheel C++ closure selected the host GCC 13 libgcc
 alongside the runtime's GCC 16 libgcc. The additional pinned libstdc++ package
 depends on the exact already-locked GCC 16 libgcc build; its original ELF
 RPATH is `$ORIGIN/.`. No conflicting-identity or symbol-version validation is
-relaxed. The full 3.14 native case must be rerun with this complete input.
+relaxed. The full 3.14 native case was then rerun with this complete input.
+
+
+Hosted native x86_64 run
+[38800548172](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172)
+passed all four 3.14 source/module/console/native recipes and the complete
+24-case matrix, with immutable inputs, relocated paths containing spaces,
+read-only payloads, unusable caches and the strict process-tree write oracle.
+The 3.14 native receipt SHA256 is
+`828387c67c36fbeb2d1ea820be5eab3e7d4efcfb3401c12b7cb41da7a366209d`.
+Its ten-process trace records no memory-object writes or temporary code files;
+only the expected stdout write occurs. The selected conda runtime is an
+independent non-PBS input, with no native compilation or input-byte patches.
+
+The execution environment explicitly inherits `traceable-native-syscalls-v1`,
+which makes asynchronous kernel I/O return ENOSYS for both stock references and
+packaged trees so the syscall oracle can observe operations. Unrestricted
+ring-enabled hosts are outside this evidence. Complete receipts and controls
+are in [artifact 12005186009](https://github.com/JBlaschke/glue_rs/actions/runs/38800548172/artifacts/12005186009),
+ZIP SHA256 `c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+Local independently replayed evidence is
+`/private/tmp/glue-native-x86-evidence-38800548172/independent-replay.json`.
