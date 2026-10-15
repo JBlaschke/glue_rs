@@ -106,7 +106,9 @@ final layout independently. Every Mach-O image gets strict codesign verification
 and its actual signature metadata is reported. Developer ID mode also records
 Gatekeeper assessment. Ad-hoc verification never proves Developer ID signing or
 notarization. No code is silently re-signed by these checks. The selected development policy
-is ad-hoc; public release requires Developer ID signing and notarization.
+is ad-hoc: strict-valid ad-hoc and existing Developer ID signatures are accepted
+and retain their actual class. Public release requires Developer ID signatures
+on every image, Gatekeeper assessment and separate notarization evidence.
 
 Local R02 evidence: all four source/native Lua family cases passed complete
 Linux arm64 traces plus injected controls. macOS arm64 final Lua55 layout passed
