@@ -1,5 +1,7 @@
 //! General installed CPython discovery. Selected runtimes are trusted build
 //! programs, but application code, site hooks and package-manager tools never run.
+use super::failure::Failure;
+use glue_format::{Diagnostic, DiagnosticCode};
 use glue_format::{
     GilMode, InputIdentity, RuntimeAbi, RuntimeDescriptor, RuntimeImplementation, RuntimeProvider,
     RuntimeVersion,
@@ -90,6 +92,11 @@ pub fn read_bounded(path: &Path, limit: u64) -> Result<Vec<u8>, String> {
 /// The probe is deliberately -I -S -B. Reader allocations and waits are bounded.
 /// A selected executable remains a trusted build input, not sandboxed code.
 pub fn probe(executable: &Path, timeout: Duration) -> Result<RuntimeMetadata, String> {
+    let metadata = probe_metadata(executable, timeout)?;
+    validate_metadata(&metadata)?;
+    Ok(metadata)
+}
+fn probe_metadata(executable: &Path, timeout: Duration) -> Result<RuntimeMetadata, String> {
     let mut child = Command::new(executable)
         .args(["-I", "-S", "-B", "-c", PROBE])
         .stdin(Stdio::null())
@@ -166,7 +173,6 @@ pub fn probe(executable: &Path, timeout: Duration) -> Result<RuntimeMetadata, St
     let mut metadata: RuntimeMetadata = serde_json::from_slice(&outputs["stdout"])
         .map_err(|e| format!("malformed Python metadata: {e}"))?;
     metadata.executable = fs::canonicalize(executable).map_err(|e| e.to_string())?;
-    validate_metadata(&metadata)?;
     Ok(metadata)
 }
 
@@ -306,11 +312,63 @@ fn parse_config(path: &Path) -> Result<BTreeMap<String, String>, String> {
 }
 
 pub fn discover(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, String> {
-    let environment = fs::canonicalize(&options.environment)
-        .map_err(|e| format!("missing Python environment {:?}: {e}", options.environment))?;
+    discover_diagnostic(options).map_err(|e| e.to_string())
+}
+pub fn discover_diagnostic(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Diagnostic> {
+    resolve(options).map_err(|e| e.0)
+}
+fn checked_probe(executable: &Path) -> Result<RuntimeMetadata, Failure> {
+    let mut metadata = probe_metadata(executable, Duration::from_secs(15))?;
+    if !metadata.framework.is_empty() {
+        // Framework bin/python may exec a compiled original app-bundle path.
+        // Ship the already installed real stock interpreter instead.
+        let real = metadata
+            .prefix
+            .join("Resources/Python.app/Contents/MacOS/Python");
+        if real.is_file()
+            && fs::canonicalize(&real).map_err(|e| e.to_string())? != metadata.executable
+        {
+            validate_native_executable(&real)
+                .map_err(|e| Failure::new(DiagnosticCode::TargetMismatch, e))?;
+            let actual = probe_metadata(&real, Duration::from_secs(15))?;
+            if actual.version != metadata.version || actual.soabi != metadata.soabi {
+                return Err(Failure::new(
+                    DiagnosticCode::RuntimeAbiMismatch,
+                    "framework stub and real interpreter disagree",
+                ));
+            }
+            metadata = actual;
+        }
+    }
+    if metadata.gil_disabled || metadata.debug {
+        return Err(Failure::new(
+            DiagnosticCode::UnsupportedCapability,
+            "free-threaded/debug Python needs a separately tested ABI adapter",
+        ));
+    }
+    if metadata.implementation != "cpython" || metadata.version[0] != 3 || metadata.version[1] < 11
+    {
+        return Err(Failure::new(
+            DiagnosticCode::RuntimeAbiMismatch,
+            "requires modern CPython 3.11+",
+        ));
+    }
+    validate_metadata(&metadata)?;
+    Ok(metadata)
+}
+fn resolve(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Failure> {
+    let environment = fs::canonicalize(&options.environment).map_err(|e| {
+        Failure::new(
+            DiagnosticCode::MissingInput,
+            format!("missing Python environment {:?}: {e}", options.environment),
+        )
+    })?;
     let target = options.target.clone().unwrap_or(current_target()?);
     if options.inspect_only || target != current_target()? {
-        return Err("inspection-only/foreign runtime: use inspect_pbs_tar or inspect_tree; exact executable ABI facts are unavailable without a declared native probe".into());
+        return Err(Failure::new(
+            DiagnosticCode::TargetMismatch,
+            "inspection-only/foreign runtime: use inspect_pbs_archive or inspect_tree; exact executable ABI facts require a native probe",
+        ));
     }
     let cfg_path = environment.join("pyvenv.cfg");
     let pyvenv = if cfg_path.exists() {
@@ -322,16 +380,26 @@ pub fn discover(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Strin
         .get("include-system-site-packages")
         .is_some_and(|s| s.eq_ignore_ascii_case("true"))
     {
-        return Err("system-site-packages is unsupported; supply an isolated environment".into());
+        return Err(Failure::new(
+            DiagnosticCode::UnsupportedCapability,
+            "system-site-packages is unsupported; supply an isolated environment",
+        ));
     }
-    let env_executable = executable_in(&environment)
-        .map_err(|e| format!("environment base runtime is missing: {e}"))?;
-    validate_native_executable(&env_executable)?;
-    let env_metadata = probe(&env_executable, Duration::from_secs(15))?;
+    let env_executable = executable_in(&environment).map_err(|e| {
+        Failure::new(
+            DiagnosticCode::MissingInput,
+            format!("environment base runtime is missing: {e}"),
+        )
+    })?;
+    validate_native_executable(&env_executable)
+        .map_err(|e| Failure::new(DiagnosticCode::TargetMismatch, e))?;
+    let env_metadata = checked_probe(&env_executable)?;
     let runtime = if let Some(path) = &options.runtime {
-        let executable = executable_in(path)?;
-        validate_native_executable(&executable)?;
-        probe(&executable, Duration::from_secs(15))?
+        let executable =
+            executable_in(path).map_err(|e| Failure::new(DiagnosticCode::MissingInput, e))?;
+        validate_native_executable(&executable)
+            .map_err(|e| Failure::new(DiagnosticCode::TargetMismatch, e))?;
+        checked_probe(&executable)?
     } else {
         env_metadata.clone()
     };
@@ -340,21 +408,28 @@ pub fn discover(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Strin
         || runtime.gil_disabled != env_metadata.gil_disabled
         || runtime.debug != env_metadata.debug
     {
-        return Err(format!(
-            "Python runtime ABI mismatch: environment {} vs override {}",
-            env_metadata.soabi, runtime.soabi
+        return Err(Failure::new(
+            DiagnosticCode::RuntimeAbiMismatch,
+            format!(
+                "Python runtime ABI mismatch: environment {} vs override {}",
+                env_metadata.soabi, runtime.soabi
+            ),
         ));
     }
     if let Some(requested) = &options.python_version {
         let numeric = requested.strip_prefix("==").unwrap_or(requested).split('.').map(str::parse::<u16>).collect::<Result<Vec<_>, _>>().map_err(|_| fail("Python version constraint must be MAJOR.MINOR[.PATCH] or ==MAJOR.MINOR[.PATCH]"))?;
         if !(2..=3).contains(&numeric.len()) || !runtime.version.starts_with(&numeric) {
-            return Err(format!("selected Python does not satisfy {requested}"));
+            return Err(Failure::new(
+                DiagnosticCode::RuntimeAbiMismatch,
+                format!("selected Python does not satisfy {requested}"),
+            ));
         }
     }
     let runtime_target = metadata_target(&runtime)?;
     if runtime_target != target {
-        return Err(format!(
-            "Python runtime target mismatch: {runtime_target} vs {target}"
+        return Err(Failure::new(
+            DiagnosticCode::TargetMismatch,
+            format!("Python runtime target mismatch: {runtime_target} vs {target}"),
         ));
     }
     let version = format!("{}.{}", runtime.version[0], runtime.version[1]);
@@ -387,7 +462,10 @@ pub fn discover(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Strin
             }
             for (name, value) in console_entries(&read_bounded(&path, MAX_METADATA)?)? {
                 if console_scripts.insert(name.clone(), value).is_some() {
-                    return Err(format!("ambiguous console script {name}"));
+                    return Err(Failure::new(
+                        DiagnosticCode::InvalidConfiguration,
+                        format!("ambiguous console script {name}"),
+                    ));
                 }
             }
         }
@@ -407,11 +485,11 @@ pub fn discover(options: &DiscoveryOptions) -> Result<ResolvedEnvironment, Strin
     let descriptor = RuntimeDescriptor {
         implementation: RuntimeImplementation::Cpython,
         version: runtime
-            .version
-            .iter()
-            .map(u16::to_string)
-            .collect::<Vec<_>>()
-            .join("."),
+            .version_text
+            .split_whitespace()
+            .next()
+            .ok_or("missing exact Python version text")?
+            .to_owned(),
         target,
         abi: RuntimeAbi::Python {
             version: RuntimeVersion {

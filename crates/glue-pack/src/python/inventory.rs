@@ -1,5 +1,7 @@
 //! Preserve existing project/package bytes and metadata without importing them.
 use super::discovery::{ResolvedEnvironment, read_bounded};
+use super::failure::Failure;
+use glue_format::{Diagnostic, DiagnosticCode};
 use glue_format::{InputIdentity, ResourcePath};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -61,6 +63,31 @@ struct Scan<'a> {
     max_files: usize,
     max_bytes: u64,
     omissions: BTreeMap<String, String>,
+}
+pub(crate) type RuntimeTreeInventory = (BTreeMap<String, PathBuf>, BTreeMap<String, String>);
+pub(crate) fn runtime_stdlib_files(
+    prefix: &Path,
+    stdlib: &Path,
+) -> Result<RuntimeTreeInventory, String> {
+    let prune = BTreeSet::new();
+    let mut scan = Scan {
+        roots_excluded: vec![stdlib.join("site-packages")],
+        prune: &prune,
+        files: 0,
+        bytes: 0,
+        max_files: 100_000,
+        max_bytes: 1024 * 1024 * 1024,
+        omissions: BTreeMap::new(),
+    };
+    let logical = stdlib
+        .strip_prefix(prefix)
+        .map_err(|e| e.to_string())?
+        .to_str()
+        .ok_or("non-UTF8 stdlib prefix")?
+        .replace('\\', "/");
+    let mut files = BTreeMap::new();
+    scan.walk(prefix, stdlib, &logical, &mut BTreeSet::new(), &mut files)?;
+    Ok((files, scan.omissions))
 }
 impl Scan<'_> {
     fn walk(
@@ -150,7 +177,20 @@ pub fn collect(
     environment: &ResolvedEnvironment,
     options: &InventoryOptions,
 ) -> Result<PythonInventory, String> {
-    let project = fs::canonicalize(&options.project).map_err(|e| e.to_string())?;
+    collect_diagnostic(environment, options).map_err(|e| e.to_string())
+}
+pub fn collect_diagnostic(
+    environment: &ResolvedEnvironment,
+    options: &InventoryOptions,
+) -> Result<PythonInventory, Diagnostic> {
+    collect_impl(environment, options).map_err(|e| e.0)
+}
+fn collect_impl(
+    environment: &ResolvedEnvironment,
+    options: &InventoryOptions,
+) -> Result<PythonInventory, Failure> {
+    let project = fs::canonicalize(&options.project)
+        .map_err(|e| Failure::new(DiagnosticCode::MissingInput, e.to_string()))?;
     let mut excluded = vec![environment.environment.clone()];
     if let Some(output) = &options.output {
         excluded.push(fs::canonicalize(output).unwrap_or_else(|_| {
@@ -209,8 +249,11 @@ pub fn collect(
     }
     for (key, bytes) in &resources {
         if key.ends_with(".egg-link") {
-            return Err(format!(
-                "editable .egg-link is unsupported: {key}; install a non-editable package before building"
+            return Err(Failure::new(
+                DiagnosticCode::UnsupportedCapability,
+                format!(
+                    "editable .egg-link is unsupported: {key}; install a non-editable package before building"
+                ),
             ));
         }
         if key.ends_with("/direct_url.json") {
@@ -221,7 +264,10 @@ pub fn collect(
                 .and_then(|v| v.as_bool())
                 == Some(true)
             {
-                return Err(format!("editable distribution is unsupported: {key}"));
+                return Err(Failure::new(
+                    DiagnosticCode::UnsupportedCapability,
+                    format!("editable distribution is unsupported: {key}"),
+                ));
             }
         }
         if key.ends_with(".pth") {
@@ -255,8 +301,11 @@ pub fn collect(
                 .filter(|s| !s.is_empty() && !s.starts_with('#'))
             {
                 if line.starts_with("import ") || line.starts_with("import\t") {
-                    return Err(format!(
-                        "executable .pth is unsupported: {key}; replace it with declared internal paths"
+                    return Err(Failure::new(
+                        DiagnosticCode::UnsupportedCapability,
+                        format!(
+                            "executable .pth is unsupported: {key}; replace it with declared internal paths"
+                        ),
                     ));
                 }
                 let path = fs::canonicalize(root.join(line))
@@ -265,7 +314,10 @@ pub fn collect(
                     .strip_prefix(&root)
                     .map_err(|_| format!(".pth path escapes site-packages: {key}"))?;
                 if !path.is_dir() {
-                    return Err(format!(".pth path must be an internal directory: {key}"));
+                    return Err(Failure::new(
+                        DiagnosticCode::UnsupportedCapability,
+                        format!(".pth path must be an internal directory: {key}"),
+                    ));
                 }
                 let logical = format!(
                     "{site_root}/{}",
@@ -299,29 +351,40 @@ pub fn collect(
                     );
                     continue;
                 }
-                return Err(format!(
-                    "RECORD references external data {name}; provide an explicit resource mapping"
+                return Err(Failure::new(
+                    DiagnosticCode::UnsupportedCapability,
+                    format!(
+                        "RECORD references external data {name}; provide an explicit resource mapping"
+                    ),
                 ));
             }
             ResourcePath::new(&name).map_err(|e| e.to_string())?;
             let logical = format!("{root}/{name}");
             if !owned.insert(logical.clone()) {
-                return Err(format!("duplicate RECORD ownership: {logical}"));
+                return Err(Failure::new(
+                    DiagnosticCode::InvalidConfiguration,
+                    format!("duplicate RECORD ownership: {logical}"),
+                ));
             }
             let Some(identity) = inputs.get(&logical) else {
                 if name.contains("__pycache__/") || name.ends_with(".pyc") {
                     continue;
                 }
-                return Err(format!(
-                    "RECORD references missing installed file: {logical}"
+                return Err(Failure::new(
+                    DiagnosticCode::MissingInput,
+                    format!("RECORD references missing installed file: {logical}"),
                 ));
             };
             if !size.is_empty() && size.parse::<u64>().ok() != Some(identity.size) {
-                return Err(format!("RECORD size differs: {logical}"));
+                return Err(Failure::new(
+                    DiagnosticCode::PayloadIntegrity,
+                    format!("RECORD size differs: {logical}"),
+                ));
             }
             if !hash.is_empty() && hash != record_hash(&identity.sha256)? {
-                return Err(format!(
-                    "RECORD SHA-256 differs or unsupported hash algorithm: {logical}"
+                return Err(Failure::new(
+                    DiagnosticCode::PayloadIntegrity,
+                    format!("RECORD SHA-256 differs or unsupported hash algorithm: {logical}"),
                 ));
             }
         }
@@ -336,7 +399,10 @@ pub fn collect(
             ResourcePath::new(path).map_err(|e| e.to_string())?;
             let key = format!("app/project/{path}");
             if !resources.contains_key(&key) {
-                return Err(format!("missing Python entry source {path}"));
+                return Err(Failure::new(
+                    DiagnosticCode::MissingEntry,
+                    format!("missing Python entry source {path}"),
+                ));
             }
             PythonEntry::File(key)
         }
@@ -347,7 +413,10 @@ pub fn collect(
                 resources.contains_key(&format!("{root}/{relative}.py"))
                     || resources.contains_key(&format!("{root}/{relative}/__main__.py"))
             }) {
-                return Err(format!("missing executable Python module {module}"));
+                return Err(Failure::new(
+                    DiagnosticCode::MissingEntry,
+                    format!("missing executable Python module {module}"),
+                ));
             }
             PythonEntry::Module(module.clone())
         }
@@ -357,9 +426,12 @@ pub fn collect(
                 .get(name)
                 .cloned()
                 .ok_or_else(|| {
-                    format!(
-                        "console script {name} is absent; available: {:?}",
-                        environment.console_scripts.keys().collect::<Vec<_>>()
+                    Failure::new(
+                        DiagnosticCode::MissingEntry,
+                        format!(
+                            "console script {name} is absent; available: {:?}",
+                            environment.console_scripts.keys().collect::<Vec<_>>()
+                        ),
                     )
                 })?;
             let callable = target.split('[').next().unwrap_or("").trim();

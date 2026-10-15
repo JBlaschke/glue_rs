@@ -62,6 +62,12 @@ fn selected_runtime_and_venv_metadata_never_execute_site_hooks() {
         ..options
     };
     assert!(discover(&wrong).unwrap_err().contains("does not satisfy"));
+    assert_eq!(
+        glue_pack::python::discovery::discover_diagnostic(&wrong)
+            .unwrap_err()
+            .code,
+        glue_format::DiagnosticCode::RuntimeAbiMismatch
+    );
     fs::remove_dir_all(root).unwrap();
 }
 
@@ -79,7 +85,12 @@ fn probe_rejects_malformed_output_and_bounds_time_and_bytes() {
         let executable = root.join(name);
         fs::write(&executable, format!("#!/bin/sh\n{body}\n")).unwrap();
         fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
-        let error = probe(&executable, Duration::from_millis(200)).unwrap_err();
+        let timeout = if name == "timeout" {
+            Duration::from_millis(100)
+        } else {
+            Duration::from_secs(3)
+        };
+        let error = probe(&executable, timeout).unwrap_err();
         assert!(error.contains(expected), "{name}: {error}");
     }
     fs::remove_dir_all(root).unwrap();
