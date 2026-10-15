@@ -4,6 +4,7 @@
 //! dependencies, follows generated wrappers or executes an installation hook.
 
 pub mod discovery;
+pub mod inventory;
 
 use super::{
     BuildReport, PackError, PackLimits, build_owned, canonical_root, check_limit, input_io,
