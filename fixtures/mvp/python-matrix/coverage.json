@@ -1,0 +1,13 @@
+{
+  "revision": 1,
+  "description": "Covering execution matrix; actual status comes only from V02 receipt checks, never this plan.",
+  "required_targets": ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-unknown-linux-gnu"],
+  "source_minors": ["3.12", "3.13", ">=3.14"],
+  "native_minors": ["3.13", ">=3.14"],
+  "provider_origins": ["PBS", "non-PBS"],
+  "environment_origins": ["ordinary venv including pip", "uv venv"],
+  "input_routes": ["installed tree", "PBS full archive", "PBS install_only archive", "PBS install_only_stripped archive"],
+  "entry_routes": ["file", "module", "console-script"],
+  "separate_evidence": ["additional patch/different runtime digest/same glue digest", "abi3 admitted only with compatible inputs", "wrong Python ABI/version rejected", "native target match", "offline", "full descendant trace", "macOS final signing policy"],
+  "default_unproven": ["native Linux x86_64 without a runner", "complete macOS descendant trace without approved host tracing", "public macOS signing/notarization without distribution identity"]
+}

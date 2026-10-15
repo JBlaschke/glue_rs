@@ -39,6 +39,8 @@ def compatible(filename, python, target):
                 return True
             if target == "linux-arm64" and platform.startswith("manylinux") and platform.endswith("_aarch64"):
                 return True
+            if target == "linux-x86_64" and platform.startswith("manylinux") and platform.endswith("_x86_64"):
+                return True
     return False
 
 
@@ -73,7 +75,7 @@ def unpack(wheel, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--python", required=True, choices=["cp312", "cp313", "cp314", "cp315"])
-    parser.add_argument("--target", required=True, choices=["linux-arm64", "macos-arm64"])
+    parser.add_argument("--target", required=True, choices=["linux-arm64", "linux-x86_64", "macos-arm64"])
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--fetch", action="store_true", required=True)
     parser.add_argument("packages", nargs="+", help="exact name==version inputs")
