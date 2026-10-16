@@ -21,6 +21,11 @@ Only an actual owned child, selected by the controller PID captured before fork,
 may reset dispositions or release its setup mask. It resets every catchable
 disposition to default with an empty handler mask and zero public flags,
 disables the alternate stack, and verifies all dispositions/stack/setup mask.
+The disable request uses NULL storage and size SIGSTKSZ: the native UNIX2003
+wrapper rejects a zero size even with SS_DISABLE. Native initial controls
+observed ENOMEM; [Rust 1.88's corresponding workaround](https://github.com/rust-lang/rust/blob/1.88.0/library/std/src/sys/pal/unix/stack_overflow.rs#L231)
+also supplies a sufficient size. The [Apple API](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sigaltstack.2.html)
+and kernel disable semantics still require no installed storage for this request.
 After the caller validates complete GO plus EOF and closes the gate, release
 checks that policy again, rejects pending signals, installs and verifies an
 empty mask. Signals arriving after the check may terminate the child; this
