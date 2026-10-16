@@ -113,7 +113,8 @@ class KitControls(unittest.TestCase):
         self.assertEqual(done.returncode,2)
 
     def test_strict_json_and_integer_types(self):
-        for raw in (b'{"x":1,"x":2}',b'{"x":NaN}',b'\xff',b'['*2000,b' '* (kit.MAX_JSON+1)):
+        for raw in (b'{"x":1,"x":2}',b'{"x":NaN}',b'{"x":1e999}',b'{"x":1.0}',b'{"x":'+b'9'*5000+b'}',
+                    b'\xff',b'['*2000,b' '* (kit.MAX_JSON+1)):
             with self.subTest(raw=raw[:20]),self.assertRaises(kit.Refusal):kit.strict_json(raw)
         for x in (True,1.0,'1',None,-1,1<<64):
             with self.assertRaises(kit.Refusal):kit.integer(x)
