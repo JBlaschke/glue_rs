@@ -89,8 +89,10 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-tree-open` | `ace2f55` | Preserve calibrated named-open observations across process/thread lifetimes; 13 controls; integrated as `6b5b0ad` |
 | R02 | `codex/mvp-r02-mach-msg2-scalars` | `dcb1c5c` | Observe packed scalar fields while keeping message effects unresolved; 16 controls; integrated as `8fc437a` |
 | R02 | `codex/mvp-r02-target-credentials` | `ecc35f2` | Owned-child credential primitive and 14 controls; independently reviewed; integrated as `6eae79b`; collector integration/native privileged Darwin transition remain open |
+| R02 | `codex/mvp-r02-target-descriptors` | `7ca6005` | Numeric owned-child FD closure with strict bounded self-inventory/rescan; 15 controls and two independent reviews; integrated as `27baa08`; no endpoint-object or collector integration claim |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
 | V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
+| V01 | `codex/mvp-v01-darwin-descriptor-ci` | `this branch` | Add descriptor controls to portable CI; 213 collected controls; local follow-up, no hosted run yet |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -99,14 +101,22 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-darwin-hosted-ci` | `b824afb` | Record exact hosted CI metadata; running-guest SIP proof was pending at this checkpoint |
 | R04 | `codex/mvp-r04-darwin-restoration-evidence` | `439bb46` | Separate 57-file SIP-enabled proof and exact approved CI checkpoint; 59-member restore verifies |
 | R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
-| R04 | `codex/mvp-r04-credential-hosted-ci` | `this branch` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
+| R04 | `codex/mvp-r04-credential-hosted-ci` | `5567bcd` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
 
-The ten automated Python suites collect 198 controls. All pass on the development
-Mac with Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass
-195 controls; the two Darwin compiler checks and one nonprivileged-only
-credential control are explicitly skipped in that root-run container.
+The eleven automated Python suites collect 213 controls. On the development Mac
+with Python 3.15.0, 212 pass and the Linux-only unsupported-adapter check skips.
+Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 205 controls with eight
+explicit skips: two Darwin compiler checks, five Darwin descriptor controls and
+one nonprivileged-only credential control in that root-run container.
 These are unit/format checks, independent of full Darwin application acceptance.
-Logs are `/private/tmp/glue-portable-darwin-credentials-*-20261016.log`.
+Logs are `/private/tmp/glue-portable-darwin-descriptors-*-20261016.log`.
+The descriptor helper additionally passes six injected-only ASan/UBSan control
+groups. Its native Mac controls close FD 4096 even after only the child's soft
+and hard limits become 64; parent limits and sentinel FDs remain unchanged.
+This proves bounded numeric closure on that host, not endpoint provenance,
+privileged guest bootstrap, cwd/Mach/fileport closure or tracing acceptance.
+The hosted nine-job run above covers the earlier `64a4dd2` source; the descriptor
+follow-up has not been pushed or checked on hosted runners.
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux
 forked-child transition to UID/GID 65534 and groups `[65534]` preserves parent

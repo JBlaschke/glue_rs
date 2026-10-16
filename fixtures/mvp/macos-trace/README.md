@@ -39,6 +39,13 @@ independent review pass; it is not integrated into the collector. Privileged
 Darwin transition calibration, inherited-FD/cwd/signal setup and the launch gate
 remain open. Existing root-target capture bytes and receipts are unchanged.
 
+The [descriptor helper](target-descriptors/README.md) separately closes unlisted
+ordinary descriptors only in an owned child and verifies an exact five-number
+rescan. Native unprivileged Mac controls and independent reviews pass, including
+a sentinel above lowered child FD limits; Linux runs injected controls and
+explicitly rejects the native adapter. This numeric property does not verify
+endpoint objects, inherited cwd/Mach/fileport rights or a complete bootstrap.
+
 A root-authenticated wildcard preflight on the physical host reported:
 
 ```

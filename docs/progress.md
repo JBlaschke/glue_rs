@@ -220,6 +220,39 @@ approved `64a4dd2` push. Full Darwin R02/M2 is still open.
 Kernel file/port object identity, consumed Mach messages and the full extraction
 oracle remain separate implementation work before the product corpus can pass.
 
+`codex/mvp-r02-target-descriptors` (`7ca6005`, integrated `27baa08`) adds the
+[owned-child numeric descriptor helper](../fixtures/mvp/macos-trace/target-descriptors/README.md).
+It uses a preallocated bounded Darwin self-inventory with spare capacity,
+validates all five kept numbers before closing anything, closes each nonkeep
+descriptor once and requires an exact rescan. It checks the declared original
+controller and current blocked signals; reviewed single-threaded setup and no
+endpoint rebinding remain caller preconditions. Errors preserve stage/errno;
+ambiguous close/EINTR never retries or authorizes launch. No soft-limit loop,
+endpoint-object authorization, stdio remapping, cwd, gate or collector integration
+is supplied. Fifteen controls collect 14 native Mac passes and one Linux-only
+skip; offline Linux passes ten injected/unsupported controls with five native
+Mac controls skipped. Native Mac tests close sparse FD 4096 above the child's
+lowered soft/hard limit 64 and verify parent handles/limits unchanged.
+Independent source review and six extra injected-only ASan/UBSan control groups
+pass. Evidence/reviews remain at `/private/tmp/glue-target-descriptors-native-20261016`,
+`/private/tmp/glue-target-descriptors-source-review-7ca6005-20261016` and
+`/private/tmp/glue-target-descriptors-independent-review-20261016`.
+
+`codex/mvp-v01-darwin-descriptor-ci` adds its controls to portable baseline CI.
+Eleven suites collect 213 controls: Mac/Python 3.15 passes 212 with the Linux-only
+adapter check skipped; the offline Linux arm64 root-run container passes 205
+with eight explicit skips. Exact logs/driver/counts are frozen in the five-file
+`/private/tmp/glue-target-descriptors-portable-20261016` record, manifest SHA256
+`fb44812df31148df74b4cf6a49a7e26600ea45463167bd455a3e8eccd2208ed5`.
+This follow-up remains local, beyond the approved `64a4dd2` push and hosted run.
+Privileged guest bootstrap and full Darwin R02/M2 remain open; SIP stays enabled.
+
+The separate read-only bootstrap assessment at
+`/private/tmp/glue-darwin-nonroot-bootstrap-assessment-20261016/ASSESSMENT.md`
+(SHA256 `2822a0b1d64d92877760b868d2ab25e274bca037e18158d5bc30ca781fdb00bd`)
+defines remaining endpoint, signal/cwd, fixed protocol, watchdog and versioned
+reader work. It is a proposal, not an implemented target launcher or new capture.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
