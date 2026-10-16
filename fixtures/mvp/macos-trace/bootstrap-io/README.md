@@ -34,7 +34,9 @@ A normalized `{uint64 seconds,uint64 nanoseconds}` deadline must flatten into
 uint64 nanoseconds, be strictly future and no more than 30 seconds away at entry.
 Clock rollback or reaching the deadline fails, including a full transfer whose
 post-I/O clock check is late. Poll uses a ceiling millisecond timeout, then
-checks time before touching bytes. Every retry/progress loop checks time again;
+checks time before touching bytes. Fatal/anomalous poll outcomes retain their
+first stage/errno before later clock observations; successful, timeout and EINTR
+returns recheck the clock before I/O or retry. Every retry/progress loop checks time again;
 EINTR/EAGAIN retain the original absolute deadline and confirmed offset. The
 4096-step diagnostic limit bounds even a frozen/faulty injected clock. Early
 poll timeouts may retry; they never reset the deadline. This is not an unlimited
@@ -60,9 +62,10 @@ BIO_TEST_CFLAGS='-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer' \
   python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
 ```
 
-The 17 groups cover injected preflight/length/type/access, clock format/overflow/
+The 18 groups cover injected preflight/length/type/access, clock format/overflow/
 rollback/deadline/future limits, interruption storms/4096-step bounds, exact
-partial offsets, zero/oversized/negative syscall results, poll errors, EOF/trailing
+partial offsets, zero/oversized/negative syscall results, first poll-error
+precedence over a later clock failure/deadline, EOF/trailing
 bytes and complete-but-late writes. Native private-pipe controls cover both
 record sizes, fragmented child writes, buffered data plus HUP, truncation,
 trailing data, leaked writer deadline, endpoint rejection and broken-peer policy.

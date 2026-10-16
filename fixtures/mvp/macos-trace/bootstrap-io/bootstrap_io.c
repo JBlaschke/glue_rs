@@ -100,24 +100,28 @@ static int transfer(int fd, const unsigned char *input, size_t length,
         short events = 0;
         e = 0;
         rc = r.ops.poll_fn(r.ops.context, fd, wanted, timeout, &events, &e);
-        if (check_time(&r, &now)) return -1;
-        if (rc == -1 && e > 0) {
-            if (e == EINTR) continue;
+        /* Preserve a fatal/anomalous poll result before any later clock
+         * observation can replace its stage or saved errno. Nonfatal returns
+         * still recheck time before retrying or touching bytes. */
+        if (rc == -1 && e > 0 && e != EINTR)
             return fail(&r, BIO_STAGE_POLL, BIO_REASON_SYSCALL, e);
-        }
-        if (rc < 0 || rc > 1) return fail(&r, BIO_STAGE_POLL, BIO_REASON_ADAPTER, 0);
-        if (rc == 0) {
-            if (events) return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
-            continue;
-        }
-        unsigned allowed = (unsigned)(wanted | POLLERR | POLLHUP | POLLNVAL);
-        if (!events || ((unsigned short)events & ~allowed))
+        if (rc < 0 && !(rc == -1 && e == EINTR))
+            return fail(&r, BIO_STAGE_POLL, BIO_REASON_ADAPTER, 0);
+        if (rc > 1) return fail(&r, BIO_STAGE_POLL, BIO_REASON_ADAPTER, 0);
+        if (rc == 0 && events)
             return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
-        if (events & POLLNVAL) return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_INVALID, 0);
-        if ((events & POLLERR) || (writing && (events & POLLHUP)))
-            return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_ERROR, 0);
-        if (!(events & wanted) && !(events & POLLHUP))
-            return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
+        if (rc == 1) {
+            unsigned allowed = (unsigned)(wanted | POLLERR | POLLHUP | POLLNVAL);
+            if (!events || ((unsigned short)events & ~allowed))
+                return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
+            if (events & POLLNVAL) return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_INVALID, 0);
+            if ((events & POLLERR) || (writing && (events & POLLHUP)))
+                return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_ERROR, 0);
+            if (!(events & wanted) && !(events & POLLHUP))
+                return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
+        }
+        if (check_time(&r, &now)) return -1;
+        if (rc != 1) continue;
         unsigned char chunk[BIO_MAX_RECORD_BYTES] = {0};
         size_t moved = result->bytes_moved;
         size_t want = eof ? 1 : length - moved;
