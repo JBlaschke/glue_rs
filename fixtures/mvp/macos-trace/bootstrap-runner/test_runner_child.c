@@ -17,10 +17,10 @@ const struct tc_operations *tc_native_operations(void){return NULL;}
 const struct td_operations *td_native_operations(void){return NULL;}
 const struct te_operations *te_native_operations(void){return NULL;}
 const struct bio_operations *bio_native_operations(void){return NULL;}
-int bs_reset_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;(void)e;return 0;}
-int bs_check_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;(void)e;assert(tc_calls&&cwd_calls&&td_calls);return 0;}
-int bs_release_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;(void)e;assert(gate_closes==1);release_calls++;return 0;}
-int te_map_in_owned_child(const struct te_prepared*p,uint64_t owner,const struct te_operations*o,struct te_error*e){(void)p;(void)o;(void)e;assert(owner==100&&!tc_calls);return 0;}
+int bs_reset_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;memset(e,0,sizeof(*e));return 0;}
+int bs_check_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;memset(e,0,sizeof(*e));assert(tc_calls&&cwd_calls&&td_calls);return 0;}
+int bs_release_in_owned_child(struct bs_state*s,struct bs_error*e){(void)s;memset(e,0,sizeof(*e));assert(gate_closes==1);release_calls++;return 0;}
+int te_map_in_owned_child(const struct te_prepared*p,uint64_t owner,const struct te_operations*o,struct te_error*e){(void)p;(void)o;*e=(struct te_error){TE_STAGE_NONE,TE_REASON_NONE,0,TE_NO_ROLE,-1,0,0};assert(owner==100&&!tc_calls);return 0;}
 int tc_drop_in_owned_child(const struct tc_request*r,uint64_t owner,const struct tc_operations*o,struct tc_error*e){(void)r;(void)o;assert(owner==100&&!cwd_calls&&!td_calls);tc_calls++;memset(e,0,sizeof(*e));e->mutation_attempted=mode!=1;if(mode==1||mode==2){e->stage=TC_STAGE_SETUID;e->system_errno=EPERM;return -1;}return 0;}
 int td_close_in_owned_child(const struct td_plan*p,uint64_t owner,const struct td_operations*o,struct td_error*e){(void)o;assert(owner==100&&cwd_calls==1&&p->keep[3]==8&&p->keep[4]==9);td_calls++;memset(e,0,sizeof(*e));e->closure_attempted=mode!=4;if(mode==4||mode==5){e->stage=TD_STAGE_CLOSE;e->system_errno=EIO;e->fd=19;return -1;}return 0;}
 int bio_write_record(int fd,const unsigned char*p,size_t n,struct bio_time d,const struct bio_operations*o,struct bio_result*r,struct bio_error*e){(void)d;(void)o;assert(fd==9&&n==256&&records<3);struct bw_binding b=bound();assert(bw_status_decode(p,n,&b,&seen[records])==BW_OK);records++;memset(r,0,sizeof(*r));memset(e,0,sizeof(*e));if((mode==10&&seen[records-1].kind==BW_READY)||(mode==11&&seen[records-1].kind==BW_EXEC_ATTEMPT)){r->bytes_moved=13;e->reason=BIO_REASON_DEADLINE;return -1;}r->bytes_moved=n;return 0;}

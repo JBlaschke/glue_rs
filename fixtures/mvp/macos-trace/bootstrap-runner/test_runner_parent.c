@@ -21,7 +21,7 @@ static pid_t model_getpgid(pid_t p){assert(p==200);return 200;}
 static pid_t model_wait(pid_t p,int*s,int flags){assert(p==200&&flags==WNOHANG);wait_calls++;if(mode==4){errno=ECHILD;return -1;}if(mode==5&&wait_calls==1){errno=EINTR;return -1;}if(mode!=0&&!killed)return 0;*s=0;return 200;}
 static int model_kill(pid_t p,int sig){assert(p==200&&sig==SIGKILL);assert(!killed);killed=1;return 0;}
 static int model_nap(const struct timespec*t,struct timespec*r){(void)t;(void)r;return 0;}
-static int model_restore(struct bs_state*s,struct bs_error*e){(void)e;s->restore_attempted=1;s->pipe_restored=s->mask_restored=1;return 0;}
+static int model_restore(struct bs_state*s,struct bs_error*e){memset(e,0,sizeof(*e));s->restore_attempted=1;s->pipe_restored=s->mask_restored=1;return 0;}
 static _Noreturn void model_child(struct nr_attempt*a){(void)a;abort();}
 static int model_write(int fd,const unsigned char*p,size_t n,struct bio_time t,const struct bio_operations*o,struct bio_result*r,struct bio_error*e){(void)p;(void)t;(void)o;assert(fd==19&&n==64);go_calls++;assert(go_calls==1);memset(r,0,sizeof(*r));memset(e,0,sizeof(*e));r->bytes_moved=64;if(mode==1){e->stage=BIO_STAGE_CLOCK;e->reason=BIO_REASON_DEADLINE;return -1;}return 0;}
 static int model_next(struct nr_status_stream*s,int fd,struct bio_time t,const struct bio_operations*o){(void)t;(void)o;assert(fd==20);status_calls++;
