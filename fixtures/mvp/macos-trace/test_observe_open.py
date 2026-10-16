@@ -104,7 +104,7 @@ class OpenObservationTests(unittest.TestCase):
     def test_extra_thread_and_different_entry_clause_reject(self):
         self.fixture.events[2]["epid"] = self.fixture.events[1]["epid"]
         self.save()
-        self.rejected("separate clause")
+        self.rejected("separate clause|probe identity changes open phase")
         self.prepare()
         self.fixture.events[2] = support.event(3, 14, pid=600, raw_path=self.path)
         self.fixture.events[2]["tid"] = 999
@@ -129,6 +129,41 @@ class OpenObservationTests(unittest.TestCase):
         with (self.fixture.capture / "events.jsonl").open("ab") as stream:
             stream.write(b"corruption\n")
         self.rejected("JSON|hash|truncated")
+
+    def two_calls(self):
+        self.fixture.events = [support.event(1, 1, 500),
+            support.event(2, 2, extra=self.request), support.event(3, 14, raw_path=self.path),
+            support.event(4, 3, extra=self.returned), support.event(5, 2, extra=self.request),
+            support.event(6, 14, raw_path=self.path), support.event(7, 3, extra=self.returned), support.event(8, 17, 500)]
+        for index, epid in enumerate((1, 2, 3, 4, 2, 3, 4, 5)):
+            self.fixture.events[index]["epid"] = epid
+        self.fixture.report.update(events=8, open_entries=2, open_returns=2)
+        self.save()
+
+    def test_phases_must_share_the_same_syscall_descriptor_family(self):
+        self.fixture.events[3]["module"] = "different-module"
+        self.save()
+        self.rejected("descriptor families")
+
+    def test_enabled_probe_roles_cannot_swap_or_change_across_calls(self):
+        self.two_calls()
+        self.assertEqual(len(self.inspect()["calls"]), 2)
+        self.fixture.events[4]["epid"], self.fixture.events[5]["epid"] = 3, 2
+        self.save()
+        self.rejected("probe identity|open phase")
+        self.two_calls()
+        self.fixture.events[4]["epid"] = 99
+        self.save()
+        self.rejected("probe identity")
+
+    def test_ordered_triples_cannot_move_backwards_between_calls(self):
+        self.two_calls()
+        for index, timestamp in ((4, 1), (5, 11), (6, 21)):
+            frame = self.fixture.events[index]
+            frame["timestamp"] = timestamp
+            frame["records"][1]["hex"] = timestamp.to_bytes(8, "little").hex()
+        self.save()
+        self.rejected("moves backwards")
 
     def test_bound_and_acceptance_rejection_in_api_and_cli(self):
         with mock.patch.object(observer, "MAX_CALLS", 0):

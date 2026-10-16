@@ -14,6 +14,9 @@ The adapter first runs the strict transport reader, including exact producer
 sources, raw hashes, generated program, record layouts and completion checks.
 It pairs entry/path/return by PID/TID and consumer order. Separate entry/path
 callbacks have different timestamps and EPIDs; timestamps need only be ordered.
+Each phase keeps its enabled-probe identity across calls, all three phases
+refer to the same syscall descriptor family, and the single-thread timeline
+cannot move backwards between calls.
 Results retain every raw frame, the copied user pathname bytes and terminator
 position, raw flag bits, zero mode, descriptor number or observed ENOENT error.
 Write-capable requests remain visible, including the actual runtime startup

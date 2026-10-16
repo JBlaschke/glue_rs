@@ -38,6 +38,8 @@ def _normalize_call(entry, path, returned):
     """Called only for typed source-matched frames, with no object inference."""
     frames = [entry["raw"], path["raw"], returned["raw"]]
     first, copied, last = frames
+    require(len({tuple(frame[key] for key in ("provider", "module", "function")) for frame in frames}) == 1,
+            "open phases refer to different syscall descriptor families")
     require(first["probe_id"] == copied["probe_id"] and first["epid"] != copied["epid"],
             "copied path is not the separate clause for the same open probe")
     require(first["timestamp"] <= copied["timestamp"] <= last["timestamp"],
@@ -95,6 +97,7 @@ def observe_owned_capture(capture, toolkit):
         timeline.seek(0)
         calls, pending, thread = [], None, None
         count, began, ended = 0, False, False
+        phase_epids, epid_phases, last_timestamp = {}, {}, -1
         for line in timeline:
             count += 1
             require(count <= 3 * MAX_CALLS + 2, "open observation event bound exceeded")
@@ -102,6 +105,13 @@ def observe_owned_capture(capture, toolkit):
             raw = frame["raw"]
             kind = raw["kind"]
             require(not ended, "frame after END")
+            require(raw["timestamp"] >= last_timestamp, "single-thread open timeline moves backwards")
+            last_timestamp = raw["timestamp"]
+            require(kind not in phase_epids or phase_epids[kind] == raw["epid"], "open phase changes its enabled probe identity")
+            require(raw["epid"] not in epid_phases or epid_phases[raw["epid"]] == kind,
+                    "enabled probe identity changes open phase")
+            phase_epids[kind] = raw["epid"]
+            epid_phases[raw["epid"]] = kind
             if kind == 1:
                 require(count == 1 and not began, "BEGIN must be the first frame")
                 began = True
