@@ -50,7 +50,8 @@ failure artifact. Final JSON is promoted exclusively after owned resources and
 child reap are resolved and parent signal restoration attempted; promotion has
 no later fallible finalization. Its absolute rename relies on the checked fresh
 root0700 directory under root sticky1777 and the recorded no privileged mutator
-invariant. A close failure suppresses promotion. The final file alone is never a
+invariant. A close failure suppresses promotion. Capture-valid flags distinguish measured bytes/hashes from unavailable placeholders;
+stderr diagnostics are bounded at4096 bytes. The final file alone is never a
 completed outcome: consumers must also require normal CLI exit0 and inspect the
 explicit scope/observations. CLI1 is a finalized failed diagnostic; CLI2 may be
 preflight, unresolved cleanup or incomplete finalization, with no final marker.
@@ -76,6 +77,9 @@ It compares canonical catalog bytes to an independent Python struct golden and
 rejects mismatched READY/probe observations. A separately compiled source-isolated
 parent model replaces fork/wait/kill/close/clock/pipe operations with assertions;
 it never performs those native operations and never links into the production CLI.
+Source-isolated child controls cover TC/CWD/TD error routing, GO/EOF/gate failures,
+and failed READY/ATTEMPT writes without appended ERROR framing. Finalization models
+cover capture/dir/pending close failures and exclusive-promotion ordering.
 Native controls compile the whole CLI and exercise only argument/nonroot or Linux
 unsupported refusal, before output. Sanitizer controls do not run the native CLI.
 No privileged positive, credential-transition, protected guest admission or

@@ -131,15 +131,18 @@ static void hex(const uint8_t *p,size_t n,char *out) {static const char h[]="012
 int nr_finish_outputs(struct nr_attempt *a) {
  if(a->output_fd<0 || !a->output_path[0] || a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped) ||
     (a->signals_initialized&&!a->signals_restored))return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
- uint8_t stdout_bytes[NP_REPORT_SIZE],stderr_byte[1],stdout_sha[32]={0},stderr_sha[32]={0},status_sha[32]={0};
+ uint8_t stdout_bytes[NP_REPORT_SIZE],stderr_byte[4096],stdout_sha[32]={0},stderr_sha[32]={0},status_sha[32]={0};
  size_t out_n=0,err_n=0;
- int captures=0;
+ int stdout_valid=0,stderr_valid=0;
  if(a->sources[1]<0 && a->sources[2]<0 && a->stdout_identity.st_ino && a->stderr_identity.st_ino) {
   int x=capture(a,"probe.stdout",&a->stdout_identity,stdout_bytes,sizeof(stdout_bytes),&out_n,stdout_sha);
   int y=capture(a,"probe.stderr",&a->stderr_identity,stderr_byte,sizeof(stderr_byte),&err_n,stderr_sha);
-  captures=!x&&!y;
+  stdout_valid=!x;stderr_valid=!y;
  }
- if(captures && a->error.stage==NR_NONE) {
+ /* A capture-reader close can fail AFTER the entry guard. Do not create or
+  * promote any further result metadata with ambiguous resource resolution. */
+ if(a->close_failed)return -1;
+ if(stdout_valid && stderr_valid && a->error.stage==NR_NONE) {
   struct np_report report;
   a->probe_fault=np_report_decode(stdout_bytes,out_n,a->request_sha,&report);
   struct bw_binding binding={(uint32_t)a->owner,(uint32_t)a->child,{0}};memcpy(binding.request_sha256,a->request_sha,32);
@@ -172,7 +175,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
   "\"ready_matched\":%s,\"probe_matched\":%s,\"wait\":{\"forked\":%s,\"reaped\":%s,\"lost\":%s,\"kill_attempted\":%s,\"raw_status\":%d},"
   "\"signals\":{\"prepared\":%s,\"restore_called\":%s,\"pipe_restored\":%s,\"mask_restored\":%s,\"restore_stage\":%d,\"restore_reason\":%d,\"restore_errno\":%d},"
   "\"identities\":{\"request_sha256\":\"%s\",\"catalog_sha256\":\"%s\",\"signal_policy_sha256\":\"%s\",\"status_sha256\":\"%s\",\"stdout_sha256\":\"%s\",\"stderr_sha256\":\"%s\",\"probe_sha256\":\"%s\",\"runner_static_sources_sha256\":\"%s\",\"build_recipe_sha256\":\"%s\"},"
-  "\"stdout_bytes\":%zu,\"stderr_bytes\":%zu}\n",
+  "\"stdout_capture_valid\":%s,\"stderr_capture_valid\":%s,\"stdout_bytes\":%zu,\"stderr_bytes\":%zu}\n",
   a->error.stage==NR_NONE&&a->probe_matched?"true":"false",(long)a->owner,(long)a->child,
   a->error.stage,a->error.reason,a->error.saved_errno,a->error.detail,
   a->cleanup_error.stage,a->cleanup_error.reason,a->cleanup_error.saved_errno,a->cleanup_error.detail,
@@ -184,7 +187,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
   a->request.release_action,a->go_attempted?"true":"false",a->go_attempted?"true":"false",a->go_result.bytes_moved,a->go_error.stage,a->go_error.reason,a->go_error.system_errno,a->go_closed?"true":"false",
   a->ready_matched?"true":"false",a->probe_matched?"true":"false",a->forked?"true":"false",a->reaped?"true":"false",a->lost_child?"true":"false",a->kill_attempted?"true":"false",a->wait_status,
   a->signals.prepared?"true":"false",a->signals_restored?"true":"false",a->signals.pipe_restored?"true":"false",a->signals.mask_restored?"true":"false",a->signal_restore_error.stage,a->signal_restore_error.reason,a->signal_restore_error.system_errno,
-  request_h,catalog_h,policy_h,status_h,stdout_h,stderr_h,probe_h,source_h,recipe_h,out_n,err_n);
+  request_h,catalog_h,policy_h,status_h,stdout_h,stderr_h,probe_h,source_h,recipe_h,stdout_valid?"true":"false",stderr_valid?"true":"false",out_n,err_n);
  int rc=0;if(n<0 || (size_t)n>=sizeof(json))rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
  if(!rc)rc=write_all(a,pending,(const uint8_t*)json,(size_t)n,NR_FINALIZE);
  if(nr_close_owned(a,&pending,NR_FINALIZE))rc=-1;
