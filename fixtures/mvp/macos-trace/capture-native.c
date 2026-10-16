@@ -28,6 +28,9 @@
 #define MAX_RAW_BYTES (128UL * 1024 * 1024)
 #define MAX_IDENTITY_BYTES MAX_RAW_BYTES
 #define MAX_RECORD_BYTES 8192
+/* Source-pinned kernel discriminator; actual CTF access needs guest calibration.
+ * See docs/decisions/mvp-r02-darwin-shadow-exit.md. */
+#define PINNED_P_REF_SHADOW UINT32_C(0x20)
 
 enum { BEGIN_EVENT=1, SYSCALL_ENTRY, SYSCALL_RETURN, CREATE_EVENT, START_EVENT,
        EXIT_EVENT, EXEC_SUCCESS, EXEC_FAILURE, LWP_CREATE, LWP_START, LWP_EXIT,
@@ -139,6 +142,11 @@ static bool all_terminal(struct capture *state) {
         if (!state->processes[i].created || !state->processes[i].terminal) return false;
     return state->root_terminal;
 }
+static bool terminal_pid(const struct capture *state, uint64_t pid) {
+    for (size_t i=0;i<state->processes_used;++i)
+        if ((uint64_t)state->processes[i].pid==pid) return state->processes[i].terminal;
+    return false;
+}
 static int error_event(const dtrace_errdata_t *error, void *argument) {
     struct capture *state=argument;
     ++state->faults; fail_capture(state,"DTrace error callback");
@@ -182,8 +190,8 @@ static bool select_layout(const struct capture *state, const dtrace_probedata_t 
     }
     if (!kind) return false;
     bool leading=kind==BEGIN_EVENT || kind==CREATE_EVENT || kind==START_EVENT || kind==EXEC_SUCCESS;
-    int zero=leading ? 0 : kind==EXITED_TARGET ? 6 : -1;
-    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==MACH_RETURN || kind==OPEN_PATH || kind==EXITED_TARGET ? 6 : 5;
+    int zero=leading ? 0 : -1;
+    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==EXITED_TARGET ? 8 : kind==MACH_RETURN || kind==OPEN_PATH ? 6 : 5;
     *layout=(struct layout){.kind=kind,.count=payloads+(zero>=0),.zero=zero,.first=leading ? 1 : 0,
                             .bytes=kind==OPEN_PATH ? 1080 : 16+(uint32_t)payloads*8};
     return true;
@@ -191,7 +199,7 @@ static bool select_layout(const struct capture *state, const dtrace_probedata_t 
 static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     struct capture *state=argument;
     const dtrace_eprobedesc_t *description=data->dtpda_edesc;
-    uint64_t header[5]={0};
+    uint64_t header[5]={0}, target_address=0, target_refcount=0;
     struct layout layout;
     const char *rejection="event-count";
     if (++state->events_seen>MAX_EVENTS) goto invalid;
@@ -226,9 +234,25 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     if (header[2]>INT_MAX) goto invalid;
     rejection="header-target";
     if ((layout.kind==CREATE_EVENT || layout.kind==EXITED_TARGET) && (header[4]==0 || header[4]>INT_MAX)) goto invalid;
+    if (layout.kind==EXITED_TARGET) {
+        memcpy(&target_address,data->dtpda_data+description->dtepd_rec[6].dtrd_offset,8);
+        memcpy(&target_refcount,data->dtpda_data+description->dtepd_rec[7].dtrd_offset,8);
+        rejection="target-identity";
+        if (!target_address || target_refcount>UINT32_MAX) goto invalid;
+    }
     rejection="header-detail";
     if ((layout.kind==BEGIN_EVENT || layout.kind==END_EVENT || layout.kind==LWP_START || layout.kind==LWP_EXIT ||
          layout.kind==SPAWN_SUCCESS || layout.kind==OPEN_PATH) && header[4]!=0) goto invalid;
+    rejection="lifecycle-state";
+    /* A shadow exit is raw context even if that PID's live object has already
+     * terminated. Never attribute its current context to application activity. */
+    if (layout.kind!=BEGIN_EVENT && layout.kind!=END_EVENT && layout.kind!=EXITED_TARGET &&
+        layout.kind!=LWP_EXIT && terminal_pid(state,header[2])) goto invalid;
+    if (layout.kind==CREATE_EVENT) {
+        for (size_t i=0;i<state->processes_used;++i)
+            if ((uint64_t)state->processes[i].pid==header[4] && (state->processes[i].created || state->processes[i].terminal)) goto invalid;
+    }
+    if (layout.kind==EXITED_TARGET && !(target_refcount&PINNED_P_REF_SHADOW) && terminal_pid(state,header[4])) goto invalid;
     fprintf(state->events,"{\"event\":%"PRIu64",\"cpu\":%d,\"epid\":%u,\"probe_id\":%u,\"record_bytes\":%u,\"header_record_indexes\":[%d,%d,%d,%d,%d],\"kind\":%"PRIu64",\"timestamp\":%"PRIu64",\"pid\":%"PRIu64",\"tid\":%"PRIu64",\"detail\":%"PRIu64",\"provider\":",state->events_seen,data->dtpda_cpu,description->dtepd_epid,data->dtpda_pdesc->dtpd_id,description->dtepd_size,layout.first,layout.first+1,layout.first+2,layout.first+3,layout.first+4,header[0],header[1],header[2],header[3],header[4]);
     json_string(state->events,data->dtpda_pdesc->dtpd_provider);
     fputs(",\"module\":",state->events); json_string(state->events,data->dtpda_pdesc->dtpd_mod);
@@ -251,7 +275,7 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     } else if (header[0]==START_EVENT || header[0]==EXEC_SUCCESS) {
         struct process *process=process_for(state,(pid_t)header[2]);
         if (process) process->created=true;
-    } else if (header[0]==EXITED_TARGET) {
+    } else if (header[0]==EXITED_TARGET && !(target_refcount&PINNED_P_REF_SHADOW)) {
         struct process *process=process_for(state,(pid_t)header[4]);
         if (process) process->terminal=true;
         if ((pid_t)header[4]==state->root) state->root_terminal=true;
@@ -309,7 +333,7 @@ static int write_program(FILE *output, pid_t root, const char *profile) {
         }
         fputs("proc:::exited /watched[args[0]->pr_pid]/ { ",output);
         event_header(output,EXITED_TARGET,"args[0]->pr_pid");
-        fputs("trace((uint64_t)arg1); watched[args[0]->pr_pid]=0; }\n",output);
+        fputs("trace((uint64_t)arg1); trace((uint64_t)args[0]->pr_addr); trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount); }\n",output);
     }
     if (mach) for (int which=0;which<2;++which) {
         fprintf(output,"mach_trap:::%s /watched[pid]/ { ",which ? "return" : "entry");
@@ -545,7 +569,7 @@ int main(int argc, char **argv) {
     size_t product_size=sizeof(product),build_size=sizeof(build);
     if (sysctlbyname("kern.osproductversion",product,&product_size,NULL,0)) strcpy(product,"unavailable");
     if (sysctlbyname("kern.osversion",build,&build_size,NULL,0)) strcpy(build,"unavailable");
-    fprintf(report,"{\"revision\":3,\"protocol\":\"darwin-capability-raw-v3\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
+    fprintf(report,"{\"revision\":4,\"protocol\":\"darwin-capability-raw-v4\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
     json_string(report,state.failed ? state.reason : "owned fixture exited, required open events observed, observed tree drained");
     fputs(",\"profile\":",report); json_string(report,profile);
     fputs(",\"host\":{\"system\":",report); json_string(report,host.sysname);
