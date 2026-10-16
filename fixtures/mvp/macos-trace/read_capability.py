@@ -30,6 +30,7 @@ MAX_EVENTS = 1_000_000
 MAX_RAW = 128 * 1024 * 1024
 MAX_FILE = 64 * 1024 * 1024
 MAX_LINE = 64 * 1024
+MAX_ENABLINGS = 8192
 UINT64 = (1 << 64) - 1
 UINT32 = (1 << 32) - 1
 INT_MAX = (1 << 31) - 1
@@ -443,6 +444,33 @@ def typed_event(event, expected_index, profile, inventory):
             "raw_uint64_after_header": words[5:]}
 
 
+class _EnablingBindings:
+    """Session identity checks after typed_event validates each record.
+
+    This fixed generated program is enabled once. An EPID identifies its probe
+    and clause layout throughout that handle; each (kind, probe ID) has exactly
+    one generated clause. Call-specific values are deliberately not bindings.
+    """
+    def __init__(self):
+        self.by_epid = {}
+        self.by_clause = {}
+
+    def observe(self, event):
+        epid = event["epid"]
+        clause = event["kind"], event["probe_id"]
+        signature = (event["probe_id"], *(event[name] for name in ("provider", "module", "function", "name")),
+                     event["kind"], event["record_bytes"], tuple(event["header_record_indexes"]),
+                     tuple((record["action"], record["size"], record["offset"]) for record in event["records"]))
+        if epid in self.by_epid:
+            require(self.by_epid[epid] == signature, "EPID binding changed within capture session")
+        require(clause not in self.by_clause or self.by_clause[clause] == epid,
+                "generated clause has multiple EPIDs within capture session")
+        if epid not in self.by_epid:
+            require(len(self.by_epid) < MAX_ENABLINGS, "capture enabling count exceeds diagnostic limit")
+            self.by_epid[epid] = signature
+            self.by_clause[clause] = epid
+
+
 def inspect_capability(capture, toolkit, timeline):
     """Validate source-matched bytes and export raw records into a binary stream.
 
@@ -470,6 +498,7 @@ def inspect_capability(capture, toolkit, timeline):
         program = evidence.read("program.d", MAX_LINE)
         require(digest(program) == report["evidence"]["program.d"] and program == producer_program(report["root_pid"], report["profile"]), "program bytes/root/profile differ from reviewed producer")
         totals = {"events": 0, "open_entries": 0, "open_returns": 0, "begin": 0, "end": 0}
+        bindings = _EnablingBindings()
         ledger = {report["root_pid"]: {"pid": report["root_pid"], "created": True, "terminal": False}}
         hasher, size = hashlib.sha256(), 0
         def process(pid):
@@ -486,6 +515,7 @@ def inspect_capability(capture, toolkit, timeline):
                 totals["events"] += 1
                 event = strict_json(line, "events.jsonl")
                 exported = typed_event(event, totals["events"], report["profile"], inventory)
+                bindings.observe(event)
                 kind = event["kind"]
                 if kind == 1:
                     totals["begin"] += 1
