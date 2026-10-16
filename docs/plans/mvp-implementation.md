@@ -93,17 +93,19 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-wire` | `f7ecb27`, `5a48e25` | Fixed pure codecs and poisonable sequence validator; 11 controls and independent review; integrated as `2d93b0d`, `e6d9587` |
 | R02 | `codex/mvp-r02-target-endpoints` | `d25ccf4` | Validate/copy five owned sources before child stdio mapping; 17 native controls on Mac and unprivileged Linux; independently reviewed; integrated as `04fea27` |
 | R02 | `codex/mvp-r02-bootstrap-io` | `135acc5`, `07b6a29`, `2279299` | Nonblocking fixed-record/EOF transport, original poll-error precedence and documentation clarification; 18 controls plus independent sanitizer review; integrated as `4362220`, `cfe0c81`, `4e59295` |
-| R02 | `codex/mvp-r02-bootstrap-signals` | `89997da`, `83148d9`, `12fff2f` | Single-attempt parent signal snapshot/restoration and owned-child reset/release; 15 controls and five extra independent sanitizer scenarios; no complete controller or privileged transition |
+| R02 | `codex/mvp-r02-bootstrap-signals` | `89997da`, `83148d9`, `12fff2f` | Single-attempt parent signal snapshot/restoration and owned-child reset/release; 15 controls and five extra independent sanitizer scenarios; privileged transition unexecuted |
 | R02 | `codex/mvp-r02-bootstrap-request` | `9f30258`, `49b44cf` | Pure canonical request and complete READY comparison; 11 controls and two extra independent sanitizer groups; integrated as `50f52d5`, `d702927` |
 | R02 | `codex/mvp-r02-bootstrap-probe` | `aed1a3a`, `df062f1`, `53e9a1a`, `ac36669` | Fixed ordinary-user context self-report; 12 pure/13 native controls, actual failed root-regain check and independent raw report review; integrated through `885660b` |
 | R02 | `codex/mvp-r02-bootstrap-admission` | `41b75ec`, `3f6d388` | Parent-only protected physical path/ACL/root–Data profile, 15 controls and independent injected review; integrated as `e5e4b93`, `ead94f0`; native root positive unexecuted |
 | R02 | `codex/mvp-r02-bootstrap-inspector` | `a16feac`, `d2bd45d` | Ordinary-user read-only root/Data and kernel-identity observation; three controls and independent source/kit reviews; guest run pending unlock |
 | R02 | `codex/mvp-r02-bootstrap-runner` | `093629b` through `7c50621` | Fixed compiled-catalog nontracing owned-probe controller; seven Mac/Linux controls, five sanitizer controls plus two exclusions; integrated through `6cc8a7d`; protected guest/root transition unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-kit` | `d62964c` through `bbd82ca` | Guarded host-only kit builder and ordinary-user canonical request writer; 21 Mac/20 Linux passes plus one skip, independent codec/workflow reviews; integrated through `02495ac`; registry empty, configured build unexecuted |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
 | V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
 | V01 | `codex/mvp-v01-darwin-descriptor-ci` | `a3edd97` | Add descriptor controls to portable CI; 213 collected controls; local follow-up, no hosted run yet |
-| V01 | `codex/mvp-v01-bootstrap-primitives-ci` | `2f087d5` | Add wire, endpoint and pipe-I/O controls to portable CI; 259 collected controls; public push/hosted run awaiting separate owner approval |
+| V01 | `codex/mvp-v01-bootstrap-primitives-ci` | `2f087d5` | Add wire, endpoint and pipe-I/O controls to portable CI; 259 collected controls; unpublished earlier checkpoint, see latest controller CI follow-up |
 | V01 | `codex/mvp-v01-bootstrap-context-ci` | `7156e80` | Add signal/request/probe/admission/inspector controls; 328 collected controls; local follow-up, no hosted run |
+| V01 | `codex/mvp-v01-bootstrap-controller-ci` | `this branch` | Add runner/guarded-kit controls; 22 suites/356 controls; composed local coverage, no single full-driver or hosted run for this source |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -114,21 +116,24 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
 | R04 | `codex/mvp-r04-credential-hosted-ci` | `5567bcd` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
 
-The twenty automated Python suites collect 328 controls. On the development Mac
-with Python 3.15.0, 323 pass with five explicit skips: four Linux-only refusal
-checks and the inapplicable noncanonical-group negative (the actual vector is
-canonical, and the native positive runs). Native Linux arm64, Python 3.11.17 and
-glibc 2.28 pass 304 with 24 explicit skips: two Darwin compiler, five descriptor,
-four native signal, eleven native probe, one admission API and one inspector
-control. The Linux run uses UID/GID 65534; applicable nonprivileged credential and
-endpoint controls execute. Earlier root-container runs/skips remain frozen.
-These are unit/format checks, independent of full Darwin application acceptance.
-The exact driver, logs and 76 source/data pins are retained at
-`/private/tmp/glue-bootstrap-context-portable-20261016`, manifest SHA256
-`e7c9a2dc64043ccef133e27632c98686b6da6880e3e2c5a7cd3cb8ff6571e4f2`.
-Independent driver/count/source review is retained at
-`/private/tmp/glue-bootstrap-context-independent-review-20261016`, manifest
-`46a4d8246916fa24e6ce226cd4ef31ece5b15fb777ac88a645b7d981d85eb474`.
+Portable CI now invokes 22 Python suites collecting 356 controls. Local coverage
+joins the frozen 20-suite run with separately executed final runner (7) and kit
+(21) suites, verifying 104 source/data/decision pins and exact current CI argv.
+This is composed coverage, not a single 22-suite driver run or a complete portable
+baseline job. Together the recorded Mac/Python 3.15.0 results account for 351
+passes and five explicit skips: four Linux-only refusal checks and the
+inapplicable noncanonical-group negative (the actual vector is canonical).
+Linux arm64/Python 3.11.17/glibc 2.28 accounts for 331 passes and 25 skips:
+two Darwin compiler, five descriptor, four signal, eleven probe, one admission,
+one inspector and one exact-min26 SDK control. Linux uses UID/GID 65534; applicable
+nonprivileged credential and endpoint controls execute. Older root runs and skips
+remain frozen. These unit/format/model checks do not prove full Darwin acceptance.
+The six logs, CI snapshot, exact source pins and coverage method are retained at
+`/private/tmp/glue-bootstrap-controller-ci-coverage-20261016`, manifest SHA256
+`c9ca1da93293f11b1dd2616ff71b6e85e4f44a7fd1423f2858ec96b452d398e5`.
+Independent pin/argv/log/count review is retained at
+`/private/tmp/glue-bootstrap-controller-ci-independent-review-20261016`, manifest
+`01a5fdb968606b43330be837fffc7c6f0c673fbcc966a05941c6b57db70d0289`.
 The descriptor helper additionally passes six injected-only ASan/UBSan control
 groups. Its native Mac controls close FD 4096 even after only the child's soft
 and hard limits become 64; parent limits and sentinel FDs remain unchanged.
@@ -139,8 +144,8 @@ independent boundary controls; the endpoint helper passes all 17 controls on
 both native hosts. Root review is retained at
 `/private/tmp/glue-bootstrap-primitives-root-review-20261016`. Deadline and
 confirmed-prefix checks never turn pipe EOF into exec-success proof, and a
-failed GO write must be treated as possibly delivered. The complete controller
-and collector integration remain open.
+failed GO write must be treated as possibly delivered. Protected native controller
+execution and collector integration remain open.
 The hosted nine-job run above covers the earlier `64a4dd2` source; these
 follow-ups have not been pushed or checked on hosted runners.
 The credential primitive independently passes 14 native unprivileged controls

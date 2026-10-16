@@ -369,8 +369,9 @@ Independent review checks all five retained files, 76 source/data pins, exact
 twenty-suite driver/CI correspondence and every status/count/skip at
 `/private/tmp/glue-bootstrap-context-independent-review-20261016`, manifest
 `46a4d8246916fa24e6ce226cd4ef31ece5b15fb777ac88a645b7d981d85eb474`.
-Shell syntax and diff checks pass. This local source is beyond both the approved
-public `64a4dd2` run and the separately pending `2f087d5` push request.
+Shell syntax and diff checks pass. This checkpoint extends the approved public
+`64a4dd2` run and the earlier unpublished `2f087d5` push candidate; the latest
+controller CI follow-up is documented below.
 The nontracing controller has separate follow-up commits below; privileged Darwin
 calibration, collector integration and full R02/M2 stay open.
 
@@ -408,6 +409,51 @@ initializes injected helper error outputs without weakening compiler warnings.
 Protected guest admission, actual root-to-user transition and collector adoption
 remain unexecuted. The next read-only guest inspection still awaits VM unlock;
 guest SIP remains enabled.
+
+`codex/mvp-r02-bootstrap-kit` (`d62964c` through `bbd82ca`, integrated through
+`02495ac`) adds a host-only guarded kit builder and a separate ordinary-user
+request writer. The empty reviewed-input registry prevents configured builds;
+actual guest inspection and complete reviewed source registration are still
+required. The source/recipe/probe/catalog digest graph excludes its own outputs.
+The request writer uses actual equal IDs and ordered kernel groups, complete
+read-only directory metadata, checked closes and one canonical output write.
+Unconfigured native refusal runs use the host OS target; exact min26 compilation
+and Mach-O inspection do not execute that binary. An earlier dyld rejection of
+`-no_uuid` is retained, and the recipe now requires the UUID load command.
+
+Review found that failed compiler descendants could leave live writers. Failed,
+timed-out, spawn, read or growth outcomes now retain explicitly partial metadata
+without claiming a closed tree or final inventory. No retry is permitted while
+cleanup is unresolved. Consumers require normal builder exit0 and a complete
+verified inventory/result. Twenty-one controls pass on Mac; unprivileged offline
+Linux passes 20 with one Darwin SDK skip. Two previously passed pure C sanitizer
+controls retain identical C/header bytes and harness AST; no new sanitizer run is
+claimed for the Python-only failure-record fixes. Final integration record:
+`/private/tmp/glue-bootstrap-kit-root-review-v2-20261016`, manifest
+`cd44a9c7093cce9830ee33fa9f23b107d37b101e7900b1176c3f090af5e1e803`.
+Independent catalog/native-writer review and two additional sanitizer groups are
+at `/private/tmp/glue-bootstrap-kit-independent-review-20261016`, manifest
+`74bcac9e8e16b5f68bfb6419546ead1ad1692681b375d933a19d61a77ba8a7c8`.
+Independent builder/parser/workflow review, four pure groups and the six-outcome
+injected failure check are at
+`/private/tmp/glue-bootstrap-kit-workflow-independent-review-20261016`, manifest
+`58d1584c3689f847ec3963600c30248df28985737b47b5fd311d53199a3931e2`.
+No configured kit, protected installation or privileged guest launch has run.
+
+`codex/mvp-v01-bootstrap-controller-ci` adds the runner and kit suites to CI.
+Twenty-two suites collect 356 controls. Local coverage composes the unchanged
+earlier 20-suite source with the final 7-control runner and 21-control kit runs;
+it records 351 Mac passes/five skips and 331 Linux passes/25 skips, not a single
+22-suite driver execution. All 104 source/data/decision pins and exact CI argv
+are checked at `/private/tmp/glue-bootstrap-controller-ci-coverage-20261016`,
+manifest `c9ca1da93293f11b1dd2616ff71b6e85e4f44a7fd1423f2858ec96b452d398e5`.
+Independent pin/argv/log/count review is retained at
+`/private/tmp/glue-bootstrap-controller-ci-independent-review-20261016`, manifest
+`01a5fdb968606b43330be837fffc7c6f0c673fbcc966a05941c6b57db70d0289`.
+Shell syntax and diff checks pass; no complete portable job or hosted run for
+this latest source is claimed. The older approved `64a4dd2` nine-job hosted
+result remains separate; Rust/Cargo/toolchain files are unchanged since that run.
+Full R02, Darwin corpus/budgets and M2 remain open.
 
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
