@@ -1,10 +1,10 @@
 # Capability integrity reader
 
-`read_capability.py` validates revision 2, `darwin-capability-raw-v2`, and exports its raw
+`read_capability.py` validates revision 3, `darwin-capability-raw-v3`, and exports its raw
 timeline. It is a bounded diagnostic consumer, not a Darwin syscall decoder.
 Every summary retains `full_trace_acceptance: false`. Its acceptance API and
 `--acceptance` CLI option reject this format unconditionally.
-Raw-v1 receipts require their retained source-matched older reader; this reader
+Raw-v1/v2 receipts require their retained source-matched older reader; this reader
 does not reinterpret or upgrade old captures.
 
 Run on the host after copying an actual guest capture and its matching toolkit:
@@ -69,9 +69,9 @@ observed ledger. The open-only profile records root terminal state from the
 producer's root wait; this does not invent a proc exit event. The tree ledger is
 only the producer's observed PID ledger, not proof that every child was visible.
 
-Raw-v2 retains every descriptor, including the exact zero-width assignment
-descriptors: index 0, offset 12 for BEGIN/create/start/exec-success, or index 5,
-offset 56 for exit. Their action must be `DTRACEACT_DIFEXPR` (1), size must be
+Raw-v3 retains every descriptor, including the exact zero-width assignment
+descriptors: index 0, offset 12 for BEGIN/create/start/exec-success, or index 6,
+offset 64 for target-aware `exited`. Their action must be `DTRACEACT_DIFEXPR` (1), size must be
 zero and raw hex must be empty. The five uint64 header records start at offset
 16 and their explicit indexes must match the clause. Other zero-width records,
 arbitrary gaps, moved headers or skipped descriptors reject. The copyinstr
@@ -79,6 +79,19 @@ record retains all 1024 configured bytes at offset 56. The actual guest v4
 diagnostic established the BEGIN layout; the other source-derived clause
 layouts remain strict candidates for subsequent actual calibration, with no
 kernel semantics or full-trace acceptance inferred from synthetic controls.
+
+Kind 6 (`proc:::exit`) retains five scalar records for the current callback
+context only. Its raw detail is not an application exit status or a target PID;
+it neither clears a watch nor retires any observed process. Kind 18
+(`proc:::exited`) retains the explicitly translated target PID as header detail,
+one additional opaque raw `arg1` uint64, and the trailing zero-width assignment
+at index 6, offset 64. It has seven descriptors and 64 total bytes. Only this
+target-aware record updates the producer's observed terminal ledger. Create
+and exited target details must be in `1..INT_MAX` before any PID conversion.
+The extra raw exit value is not decoded into application status. This revision
+addresses the actual v5 failed-spawn control where a current-context exit
+callback retired the still-running parent; new guest evidence must calibrate
+the target-aware clause separately.
 
 The revised producer's `layout-error` and `libdtrace-error` envelopes require
 exact key sets, native integer bounds, bounded byte strings and at most sixteen
