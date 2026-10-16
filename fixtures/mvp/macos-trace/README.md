@@ -16,6 +16,12 @@ root-run captures have networking enabled and do not satisfy the offline
 application corpus or full R02/M2. Guest SIP restoration is in progress; the
 physical host's policy remains unchanged.
 
+The [raw-call pairing adapter](call-pairing/README.md) independently validates
+capture/toolkit inputs and pairs 1,193 returned calls across the seven v8 tree
+captures. Thirteen additional entries retain explicit termination boundaries
+with no fabricated return. Pairing preserves raw provenance and supplies no
+filesystem or Mach effects decision.
+
 A root-authenticated wildcard preflight on the physical host reported:
 
 ```

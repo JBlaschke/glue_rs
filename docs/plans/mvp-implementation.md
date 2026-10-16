@@ -84,14 +84,20 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-shadow-exit` | `a401d49` | Explicit target object/refcount distinguishes exec-shadow cleanup; integrated as `aa570d8` |
 | R02 | `codex/mvp-r02-darwin-shadow-reader` | `729bfea` | Exact raw-v4 layout, shadow and terminal checks; 55 controls; integrated as `ad6ff3f` |
 | R02 | `codex/mvp-r02-open-drain-order` | `d4e9e93` | Preserve queued open-only records after root wait; 14 native controls; integrated as `748a309` |
+| R02 | `codex/mvp-r02-raw-call-pairing` | `7a98e78` | Strict-reader-backed opaque call pairing, 17 controls and seven actual tree replays; integrated as `12159ec` |
+| V01 | `codex/mvp-v01-darwin-pairing-ci` | `this branch` | Add pairing controls to the portable baseline; 155 collected controls |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
-| R04 | `codex/mvp-r04-darwin-calibration-final` | `this branch` | Nine validated owned diagnostics; full extraction corpus remains open |
+| R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
 
-The six automated Python suites pass 138 controls on the development Mac with
-Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 136
+The seven automated Python suites pass 155 controls on the development Mac with
+Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 153
 controls; the two Darwin compiler checks are explicitly skipped there.
 These are unit/format checks, independent of full Darwin application acceptance.
+The pairing adapter separately replays all seven v8 process-tree captures as
+1,193 returned pairs and 13 explicit entries terminated without return. It
+retains raw frames and observed thread/exec lifetimes; it supplies no resolved
+file objects, path authorization, Mach effects or full extraction verdict.
 The Linux image was `83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
 with network disabled and this checkout mounted read-only. Native SDK/signature
 open controls retain their separate target receipts.

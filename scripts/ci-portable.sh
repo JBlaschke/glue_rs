@@ -20,6 +20,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/test_read_capability.py -v
         python3 fixtures/mvp/macos-trace/test_observe_open.py -v
         python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v
+        python3 fixtures/mvp/macos-trace/call-pairing/test_pair_calls.py -v
         # Native SDK/signature controls keep their separate target receipts.
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v

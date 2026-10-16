@@ -65,13 +65,29 @@ Status documentation continues on `codex/mvp-r04-darwin-calibration-status`.
 `codex/mvp-r02-shadow-exit` (`a401d49`, integrated `aa570d8`),
 `codex/mvp-r02-darwin-shadow-reader` (`729bfea`, integrated `ad6ff3f`) and
 `codex/mvp-r02-open-drain-order` (`d4e9e93`, integrated `748a309`) implement the
-calibrated diagnostic fixes. The final six portable suites collect 138 controls:
+calibrated diagnostic fixes. The six portable suites at that point collect 138 controls:
 all pass on the Mac; Linux arm64 passes 136 with the two Darwin compiler checks
 skipped. Fourteen separate native SDK/signature/collector controls also pass.
 Final logs use `/private/tmp/glue-portable-darwin-final-*-20261016.log` and
 `/private/tmp/glue-darwin-open-drain-native-root-20261016.log`. This establishes
 owned capability transport, with full R02/M2 still open. Documentation continues
 on `codex/mvp-r04-darwin-calibration-final`.
+
+`codex/mvp-r02-raw-call-pairing` (`7a98e78`, integrated `12159ec`) adds an
+independently reviewed capture/toolkit API that invokes the strict reader and
+pairs opaque BSD/Mach frames by observed thread and exec epoch. Seven actual
+v8 tree captures replay 1,083 BSD and 110 Mach returned pairs, plus 12 `exit`
+and one `bsdthread_terminate` entry with explicit termination boundaries and
+null return fields. All raw frames and original capture identities remain
+unchanged. Seventeen rebuilt-hash controls and three independent adversarial
+checks pass, including live Mach calls spanning exec-shadow cleanup. The API
+provides no attested kernel generation, FD/path, mutation or Mach effects verdict.
+`codex/mvp-v01-darwin-pairing-ci` adds its controls to the portable baseline:
+seven suites collect 155 tests, all pass on macOS/Python 3.15; offline Linux
+arm64/Python 3.11 passes 153 with two Darwin compiler checks skipped. Logs are
+`/private/tmp/glue-portable-darwin-pairing-*-20261016.log`; raw pairing evidence
+and independent review remain outside Git under the retention policy. Full
+Darwin R02/M2 acceptance remains open.
 
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
