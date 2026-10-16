@@ -139,8 +139,10 @@ there is no atomic signal-to-exec guarantee.
 
 Retain raw status records and every confirmed incomplete BIO prefix, at most
 three256-byte records plus a one-byte extra probe. Decode only on-time complete
-records. Zero-prefix record-read truncation is boundary EOF; nonzero prefix is
-incomplete. ATTEMPT can legally be followed by ERROR2, so do not prematurely
+records. Zero-prefix record-read truncation is only a candidate boundary EOF; require
+a second bounded BIO require_eof with the same absolute deadline before accepting
+it, since record-mode zero read lacks a post-read clock check. Late observed EOF
+is failure. Nonzero prefix is incomplete. ATTEMPT can legally be followed by ERROR2, so do not prematurely
 require EOF there. Terminal ERROR requires EOF and rejects any extra byte.
 
 A complete NP256 report and normal direct-child exit0 are additionally required
@@ -163,9 +165,10 @@ One absolute checked CLOCK_MONOTONIC deadline (request<=10s) covers attempt;
 BIO keeps it unchanged. Cleanup has a separate<=2s deadline. WNOHANG wait checks
 time even after EINTR, tracks live-unreaped/reaped state and never signals a
 reaped/forged PID, group or pid0. On postfork failure close GO, kill only actual
-unreaped child, reap once and record unresolved cleanup as failure. Fixture has
-no descendants and its own postexec alarm. No controller-death/arbitrary-child
-containment or uninterruptible-kernel deadline guarantee is claimed.
+unreaped child, reap once and record unresolved cleanup as failure. The reviewed probe has no descendants and no postexec alarm. Only actual owned
+parent and external test deadlines apply; no timer is silently added. There is
+no controller-death/arbitrary-child containment or uninterruptible-kernel
+deadline guarantee.
 
 Finalize only after all writers closed, owned child reaped, outputs stable and
 both parent signal restore outcomes checked. Status EOF/ATTEMPT without reported
@@ -178,7 +181,8 @@ Implement catalog/closed path/output and comparison controls first, then bounded
 native lifecycle and distinct model/unprivileged driver tests. Test every status
 phase, valid-but-mismatched READY/NP, partial/extra/leaked-writer/late GO, failure
 at each helper boundary, once-only close, mask restoration, cleanup ownership and
-unconfigured/nonroot/Linux refusal. CommonCrypto goldens use independent hashlib.
+unconfigured/nonroot/Linux refusal, and zero-prefix EOF observed after the
+attempt deadline. CommonCrypto goldens use independent hashlib.
 Do not run root/VM tests here. Native positive protected admission, actual Darwin
 credential drop and later tracing require separately authorized execution and a
 fresh reviewed kit built from actual guest facts. No source fixtures/runtime
