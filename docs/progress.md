@@ -371,8 +371,43 @@ twenty-suite driver/CI correspondence and every status/count/skip at
 `46a4d8246916fa24e6ce226cd4ef31ece5b15fb777ac88a645b7d981d85eb474`.
 Shell syntax and diff checks pass. This local source is beyond both the approved
 public `64a4dd2` run and the separately pending `2f087d5` push request.
-The complete nontracing controller is being implemented on a separate branch;
-privileged Darwin calibration, collector integration and full R02/M2 stay open.
+The nontracing controller has separate follow-up commits below; privileged Darwin
+calibration, collector integration and full R02/M2 stay open.
+
+`codex/mvp-r02-bootstrap-runner` (`093629b` through `7c50621`, integrated through
+`6cc8a7d` on `codex/mvp-r02-bootstrap-runner-integration`) now combines the reviewed
+helpers into a standalone, nontracing controller for the closed context probe.
+Only a compiled catalog can select the protected executable; default builds
+refuse. Canonical requests explicitly declare numeric target credentials, and
+READY/report comparisons do not authenticate a caller's authorization. One GO,
+strict same-deadline status EOF, known direct-child reap, signal restoration and
+checked resource closure precede exclusive final-result promotion. Any parent close
+failure suppresses promotion, including capture-reader failures found in review.
+Capture-valid flags distinguish unavailable counts/hashes from measured empty
+output. CLI1 is a finalized failed diagnostic; CLI2 requires halting without
+reading potentially live probe outputs. Final JSON also requires independent CLI
+exit-status validation. All scope fields retain `tracing=false`,
+`exec_proved=false` and `full_acceptance=false`.
+
+Seven focused controls pass on Mac and unprivileged offline Linux; Mac ASan/UBSan
+passes five with two explicit native-CLI exclusions. Source-isolated child,
+parent and finalization models exercise ordering, error framing, partial/late
+GO, ownership, close failures and promotion boundaries. Native execution covers
+only argument/nonroot/unsupported refusal, before output creation. Root integration
+review and reruns retain 61 source pins at
+`/private/tmp/glue-bootstrap-runner-root-review-v2-20261016`, manifest
+`992337ccad06a6ed0eaeebf4e8f7198daa3f880919e599ac078eab631e68ea6e`.
+Producer evidence is `/private/tmp/glue-bootstrap-runner-native-v2-20261016`,
+manifest `8c72230164f942cc64bfe4368321f7b8aa36ba3ff9816cd11dbacef891e47e0d`.
+Independent parent/output/finalization review verifies the final source and
+producer inventory and adds two injected ASan/UBSan cleanup controls at
+`/private/tmp/glue-bootstrap-runner-independent-review-20261016`, manifest
+`96fe0f3272a1fb59ec1c1d7229a1ccc7274c0e178e585c5638d14cbf3448252e`.
+The initial GCC test-stub warning is preserved separately; its test-only fix
+initializes injected helper error outputs without weakening compiler warnings.
+Protected guest admission, actual root-to-user transition and collector adoption
+remain unexecuted. The next read-only guest inspection still awaits VM unlock;
+guest SIP remains enabled.
 
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
