@@ -8,7 +8,7 @@ commits narrative and hash inventories only. No evidence has been published and
 there is no `bundle.json`. This version freezes the completed local v3–v8
 calibration and reviewed pairing evidence while guest SIP restoration remains
 pending private owner authentication in Recovery. It contains no restored-SIP
-proof and does not close full Darwin R02 or second-machine acceptance.
+proof and does not close full Darwin R02 or M2 acceptance.
 
 ## Selection and scope
 
@@ -96,7 +96,7 @@ these explicit owned inputs:
 - `glue-darwin-calibration-preflight-replay-20261016`, its exact standalone
   Python verifier and command log: the read-only preflight and its original
   1,329-file source-inventory snapshot. It predates this proof selection and
-  the final SIP restoration observation;
+  does not observe SIP restoration;
 - `glue-darwin-call-pairing-evidence-20261016` and
   `glue-darwin-pairing-independent-review-20261016`: the frozen raw-v4
   call-pairing source, 17 unit controls, seven whole-capture replays and the
@@ -304,8 +304,8 @@ streams differ in scope from the 17 named controlled pairs across all nine
 cases. The observer/doc-review manifest SHA-256 is
 `ea0475a3f17293e03b6543c5cc057ea3bcd21d786dffd8501034f172b1b294c8`.
 Its frozen documentation snapshots record SIP restoration in progress at their
-review time. Later restoration proof is separate; historical bytes are not
-rewritten to update their tense.
+review time. Any later restoration proof will be separate; historical bytes
+are not rewritten to update their tense.
 
 The selected final portable logs contain six suites / 138 controls per host:
 138 macOS controls passed; 136 Linux arm64 controls passed and two native Darwin
@@ -349,8 +349,9 @@ its verifier SHA-256 is
 This preflight did not observe final SIP restoration or prepare a bundle.
 
 A preliminary candidate01 was prepared before the final pairing additions
-and SIP-restoration proof. Its 1,333 selected source files / 26,411,385 bytes
-restore as 1,335 archive members. The immutable 2,615,523-byte archive SHA-256 is
+and contains no SIP-restoration proof. Its 1,333 selected source files /
+26,411,385 bytes restore as 1,335 archive members. The immutable 2,615,523-byte
+archive SHA-256 is
 `2ac4ea5f1f4737ada6ab1686c02e710622abe0d027c9902fd6d1acea8640a122`;
 its complete member-inventory SHA-256 is
 `7441a479c4028365cf306a3bad7b300478f2d35a6bface35ea36de5a2d8d5eed`.
@@ -393,6 +394,16 @@ and its `.log` (SHA-256
 are local post-preparation proofs outside this frozen payload. They import only
 the retained diagnostic Python and do not execute captured targets or argv.
 All results keep full-trace acceptance false.
+
+An independent restore into
+`/private/tmp/glue-darwin-calibration-lua-audit-20261016/restored` reproduced
+the same replay and post-inventory report identities, including all seven
+pairing outputs, with no changed files or modes. Its review JSON SHA-256 is
+`0d39a50b52aca7de611317d4e6c4448da0f0d398c850cd8c60727c20e9f16a2d`;
+the external `AUDIT-SHA256SUMS` identity is
+`ff9367e3a40c0f12ef054d4ba3712186afbdaa3d067492f5a8057147b8056467`.
+These post-prepare audit files are separate from the immutable archive. Only
+frozen Python verifier source ran; no captured native binary was executed.
 
 Equivalent prepare/restore commands use new output directories:
 

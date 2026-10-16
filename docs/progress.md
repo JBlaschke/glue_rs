@@ -111,6 +111,30 @@ collect 184 tests: all pass on macOS/Python 3.15, while offline Linux arm64/Pyth
 and CLIs reject full extraction acceptance. No hosted follow-up CI result is
 claimed while the new public branch push awaits approval.
 
+`codex/mvp-r04-macos-calibration-evidence` (`d44dd33`, integrated `aded39b`)
+commits the [preliminary Darwin checkpoint](evidence/compact-mvp-darwin-calibration-2026-10-15/README.md)
+README and hash inventories. Its 1,372 selected files restore as 1,374 archive
+members; all 46 historical outcomes, 25 exports and seven pairing outputs
+replay with exact hashes/modes under independent restoration. The separate candidate01 also restores and
+replays on macOS and offline Linux arm64 tmpfs. No raw evidence or VM files
+enter Git, and no archive has been published. This finite checkpoint covers
+v3–v8 calibration and reviewed pairing; later tree-open/Mach scalar snapshots
+remain separate. Guest SIP restoration is waiting for private owner
+authentication in Recovery. The checkpoint contains no restored-SIP proof.
+The physical Mac's policy remains unchanged. Full Darwin R02, macOS
+product/budget acceptance and M2 remain open. Current status continues on
+`codex/mvp-r04-darwin-followup-status`.
+
+The next native boundary must run the target with an explicit non-root identity
+after a verified bootstrap and before observed application exec; the current
+calibration runs the target as root. The read-only source proposal at
+`/private/tmp/glue-darwin-collector-identity-assessment-20261016/ASSESSMENT.md`
+(SHA256 `7f9e472e1a915e7b5216a08a02a70a98baf0ad05fc3a6a3dedd30f8d73bea23e`)
+records Darwin group-list, inherited-FD, signal, gate and login-context limits.
+It is a proposal, with no credential transition or native change implemented.
+Kernel file/port object identity, consumed Mach messages and the full extraction
+oracle remain separate implementation work before the product corpus can pass.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two

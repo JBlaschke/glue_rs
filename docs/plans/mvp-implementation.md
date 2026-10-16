@@ -88,10 +88,12 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-darwin-pairing-ci` | `1959c23` | Add pairing controls to the portable baseline; 155 collected controls |
 | R02 | `codex/mvp-r02-tree-open` | `ace2f55` | Preserve calibrated named-open observations across process/thread lifetimes; 13 controls; integrated as `6b5b0ad` |
 | R02 | `codex/mvp-r02-mach-msg2-scalars` | `dcb1c5c` | Observe packed scalar fields while keeping message effects unresolved; 16 controls; integrated as `8fc437a` |
-| V01 | `codex/mvp-v01-darwin-scalar-ci` | `this branch` | Add both observation suites to portable CI; 184 collected controls |
+| V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
+| R04 | `codex/mvp-r04-macos-calibration-evidence` | `d44dd33` | Preliminary 1,372-file checkpoint restores and replays; SIP proof/publication pending; integrated as `aded39b` |
+| R04 | `codex/mvp-r04-darwin-followup-status` | `this branch` | Record committed diagnostic follow-ups and remaining acceptance gates |
 
 The nine automated Python suites pass 184 controls on the development Mac with
 Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 182
