@@ -55,13 +55,13 @@ struct synthetic_layout {
 static const struct synthetic_layout layouts[]={
     {1,"dtrace","","BEGIN",6,0,56},{2,"syscall","open","entry",13,-1,120},
     {3,"syscall","open","return",10,-1,96},{4,"proc",".","create",6,0,56},
-    {5,"proc",".","start",6,0,56},{6,"proc",".","exit",6,5,56},
+    {5,"proc",".","start",6,0,56},{6,"proc",".","exit",5,-1,56},
     {7,"proc",".","exec-success",6,0,56},{8,"proc",".","exec-failure",5,-1,56},
     {9,"proc",".","lwp-create",5,-1,56},{10,"proc",".","lwp-start",5,-1,56},
     {11,"proc",".","lwp-exit",5,-1,56},{12,"proc",".","spawn-success",5,-1,56},
     {13,"proc",".","spawn-failure",5,-1,56},{14,"syscall","open","entry",6,-1,1080},
     {15,"mach_trap","mach_test","entry",13,-1,120},{16,"mach_trap","mach_test","return",6,-1,64},
-    {17,"dtrace","","END",5,-1,56},
+    {17,"dtrace","","END",5,-1,56},{18,"proc",".","exited",7,6,64},
 };
 struct synthetic_event {
     dtrace_eprobedesc_t *description;
@@ -84,7 +84,7 @@ static void make_event(struct synthetic_event *event, int kind, uint64_t pid, ui
     for (int i=0;i<layout->count;++i) {
         dtrace_recdesc_t *record=&event->description->dtepd_rec[i];
         record->dtrd_action=1;
-        if (i==layout->zero) { record->dtrd_offset=i==0 ? 12 : 56; continue; }
+        if (i==layout->zero) { record->dtrd_offset=i==0 ? 12 : 64; continue; }
         record->dtrd_offset=16+(uint32_t)payload*8;
         record->dtrd_size=kind==14 && i==5 ? 1024 : 8;
         if (record->dtrd_size==8) memcpy(event->bytes+record->dtrd_offset,&words[payload],8);
@@ -99,8 +99,8 @@ static void event(struct capture *state, uint64_t kind, uint64_t pid, uint64_t d
     free(sample.description);
 }
 static void negative_layouts(void) {
-    for (int test=0;test<18;++test) {
-        int kind=test==5 ? 17 : test==6 ? 6 : test==14 ? 4 : test==15 ? 15 : 1;
+    for (int test=0;test<22;++test) {
+        int kind=test==5 ? 17 : test==6 ? 18 : test==14 || test==18 || test==19 ? 4 : test==15 ? 15 : test==20 || test==21 ? 18 : 1;
         struct synthetic_event sample; make_event(&sample,kind,100,0);
         struct capture state={.events=tmpfile(),.errors=tmpfile(),.tree=true,.mach=true};
         const char *reason="record-layout";
@@ -111,7 +111,7 @@ static void negative_layouts(void) {
         case 3: sample.description->dtepd_rec[0].dtrd_action=2; reason="record-action"; break;
         case 4: sample.description->dtepd_rec[1].dtrd_size=0; break;
         case 5: sample.description->dtepd_nrecs=6; reason="record-count"; break;
-        case 6: sample.description->dtepd_rec[5].dtrd_offset=55; break;
+        case 6: sample.description->dtepd_rec[6].dtrd_offset=63; break;
         case 7: sample.description->dtepd_rec[2].dtrd_size=4; break;
         case 8: sample.description->dtepd_rec[2].dtrd_offset=25; break;
         case 9: sample.description->dtepd_rec[2].dtrd_action=2; reason="record-action"; break;
@@ -123,19 +123,21 @@ static void negative_layouts(void) {
         case 15: state.mach=false; reason="probe-layout"; break;
         case 16: sample.probe.dtpd_id=43; reason="probe-id"; break;
         case 17: sample.description->dtepd_size=8193; reason="record-bytes"; break;
+        case 18: case 20: reason="header-target"; break; /* zero target */
+        case 19: case 21: { uint64_t value=(uint64_t)INT_MAX+1; memcpy(sample.bytes+48,&value,8); reason="header-target"; break; }
         }
         assert(consume_probe(&sample.data,&state)==DTRACE_CONSUME_ABORT && state.failed);
         assert(!strcmp(state.reason,reason));
         rewind(state.events); assert(fgetc(state.events)==EOF);
         fclose(state.events); fclose(state.errors); free(sample.description);
     }
-    puts("18 exact layout rejection controls passed; synthetic only");
+    puts("22 exact layout rejection controls passed; synthetic only");
 }
 int main(int argc, char **argv) {
     if (argc==2 && !strcmp(argv[1],"valid-layouts")) {
-        for (int kind=1;kind<=17;++kind) {
+        for (int kind=1;kind<=18;++kind) {
             struct capture state={.events=tmpfile(),.errors=tmpfile(),.tree=true,.mach=true};
-            event(&state,kind,100,kind==4 ? 200 : 0);
+            event(&state,kind,100,kind==4 || kind==18 ? 200 : 0);
             rewind(state.events); int byte; while ((byte=fgetc(state.events))!=EOF) putchar(byte);
             fclose(state.events); fclose(state.errors);
         }
@@ -171,9 +173,13 @@ int main(int argc, char **argv) {
     assert(state.events && state.errors);
     process_for(&state,100)->created=true;
     event(&state,CREATE_EVENT,100,200);
-    event(&state,EXIT_EVENT,100,0);
-    assert(!all_terminal(&state)); /* An exited root is not a drained tree. */
-    event(&state,EXIT_EVENT,200,0);
+    event(&state,EXIT_EVENT,100,1);
+    assert(!state.root_terminal && !process_for(&state,100)->terminal && !process_for(&state,200)->terminal);
+    /* A failed-spawn exit in the parent context cannot end either process. */
+    event(&state,EXITED_TARGET,100,200);
+    assert(process_for(&state,200)->terminal && !process_for(&state,100)->terminal && !all_terminal(&state));
+    event(&state,SYSCALL_ENTRY,100,0); /* Parent continues after child exit. */
+    event(&state,EXITED_TARGET,300,100); /* Target, not current PID, closes root. */
     assert(all_terminal(&state));
     dtrace_dropdata_t drop={.dtdda_drops=3,.dtdda_msg="synthetic loss"};
     assert(drop_event(&drop,&state)==DTRACE_HANDLE_ABORT);
