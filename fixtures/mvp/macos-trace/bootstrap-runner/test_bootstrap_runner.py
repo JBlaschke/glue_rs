@@ -44,6 +44,20 @@ class Models(unittest.TestCase):
         libs=['-lproc'] if platform.system()=='Darwin' else []
         subprocess.run(cmd+list(map(str,sources))+libs+['-o',str(binary)],check=True,timeout=60)
         subprocess.run([str(binary)],check=True,capture_output=True,timeout=10)
+    def test_source_isolated_capture_close_finalization(self):
+        binary=self.out/'finalization-models'
+        sources=[HERE/'test_runner_finalization.c',BASE/'bootstrap-probe/probe_report.c']
+        cmd=shlex.split(os.environ.get('CC','cc'))+['-std=c11','-D_DEFAULT_SOURCE','-D_DARWIN_C_SOURCE','-Wall','-Wextra','-Werror','-O1']
+        if os.environ.get('GLUE_RUNNER_SANITIZE')=='1':cmd+=['-g','-fsanitize=address,undefined','-fno-omit-frame-pointer']
+        subprocess.run(cmd+list(map(str,sources))+['-o',str(binary)],check=True,timeout=60)
+        subprocess.run([str(binary)],check=True,capture_output=True,timeout=10)
+    def test_source_isolated_child_sequence_models(self):
+        binary=self.out/'child-models'
+        sources=[HERE/'test_runner_child.c',BASE/'bootstrap-wire/bootstrap_wire.c']
+        cmd=shlex.split(os.environ.get('CC','cc'))+['-std=c11','-D_DEFAULT_SOURCE','-D_DARWIN_C_SOURCE','-Wall','-Wextra','-Werror','-O1']
+        if os.environ.get('GLUE_RUNNER_SANITIZE')=='1':cmd+=['-g','-fsanitize=address,undefined','-fno-omit-frame-pointer']
+        subprocess.run(cmd+list(map(str,sources))+['-o',str(binary)],check=True,timeout=60)
+        subprocess.run([str(binary)],check=True,capture_output=True,timeout=10)
     def test_independent_catalog_golden(self):
         actual=subprocess.run([str(self.binary),'catalog'],check=True,capture_output=True,timeout=10).stdout
         expected=bytearray(192)
