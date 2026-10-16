@@ -35,8 +35,9 @@ saved immediately after failure. All argument objects and byte spans must be val
 nonoverlapping and stable through the call. The helper snapshots the operation
 table and write bytes, allocates no memory, closes nothing and never retries close.
 A read with POLLIN plus HUP drains buffered bytes; EOF checks reject a trailing
-byte and time out on a leaked writer. Poll errors and anomalous callback returns
-fail with a stage, reason, original positive syscall errno and confirmed count.
+byte and time out on a leaked writer. Fatal/anomalous poll results are diagnosed before a later clock read can hide
+the first stage/errno; successful, timeout and EINTR polls recheck time before
+I/O or retry. Poll errors and anomalous callback returns fail with a stage, reason, original positive syscall errno and confirmed count.
 
 Focused injected and owned private-pipe controls can run without tracing or
 privilege. They do not establish protocol ordering, endpoint object identities,

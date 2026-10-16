@@ -19,7 +19,7 @@
 struct action { ssize_t value; int error; };
 struct fake {
     mode_t mode;
-    int flags, stat_rc, stat_error, flags_error, clock_rc, clock_error, clock_malformed;
+    int flags, stat_rc, stat_error, flags_error, clock_rc, clock_error, clock_malformed, clock_fail_at;
     uint64_t time, tick, times[32];
     size_t times_len;
     int calls[6], poll_rc, poll_error, events;
@@ -37,7 +37,9 @@ static void init(struct fake *f, int writing) {
 }
 static int fclock(void *p, struct bio_time *t, int *e) {
     struct fake *f=p; size_t i=(size_t)f->calls[0]++;
-    if (f->clock_rc) { *e=f->clock_error; return f->clock_rc; }
+    if (f->clock_rc && (!f->clock_fail_at || (int)i+1==f->clock_fail_at)) {
+        *e=f->clock_error; return f->clock_rc;
+    }
     if (f->clock_malformed) {
         t->seconds=f->clock_malformed==2 ? UINT64_MAX : 0;
         t->nanoseconds=f->clock_malformed==1 ? BASE : 0; return 0;
@@ -209,6 +211,34 @@ static int poll_anomalies(void) {
     init(&f,0);f.events=POLLIN|POLLHUP;CHECK(read_fake(&f,&r,&e)==0 && r.bytes_moved==64);
     init(&f,0);f.events=POLLHUP;CHECK(read_fake(&f,&r,&e)==0);
     init(&f,1);f.events=POLLOUT|POLLHUP;CHECK(write_fake(&f,&r,&e)==-1 && !f.calls[5]);
+    return 0;
+}
+static int poll_error_precedence(void) {
+    struct fake f;struct bio_result r;struct bio_error e;
+    int rc[]={-1,-2,2,0,1,1};
+    int events[]={0,0,0,POLLIN,POLLNVAL,POLLERR};
+    enum bio_reason why[]={BIO_REASON_SYSCALL,BIO_REASON_ADAPTER,BIO_REASON_ADAPTER,
+        BIO_REASON_POLL_EVENT,BIO_REASON_POLL_INVALID,BIO_REASON_POLL_ERROR};
+    for(int late=0;late<2;late++)for(size_t i=0;i<6;i++) {
+        init(&f,0);f.poll_rc=rc[i];f.events=events[i];f.poll_error=EIO;
+        if(late) {f.clock_rc=-1;f.clock_error=ENOSYS;f.clock_fail_at=3;}
+        else {f.times_len=3;f.times[0]=BASE;f.times[1]=BASE;f.times[2]=2*BASE;}
+        CHECK(read_fake(&f,&r,&e)==-1 && e.stage==BIO_STAGE_POLL && e.reason==why[i]);
+        CHECK(e.system_errno==(i==0?EIO:0) && f.calls[0]==2 && !f.calls[4]);
+        CHECK(r.bytes_moved==0 && tail_zero(&r));
+    }
+    /* Successful readiness, timeout and EINTR must still check time before
+     * an I/O attempt or retry, including clock failures rather than expiry. */
+    for(int late=0;late<2;late++)for(int mode=0;mode<3;mode++) {
+        init(&f,0);
+        if(mode==1) {f.poll_rc=0;f.events=0;}
+        if(mode==2) {f.poll_rc=-1;f.poll_error=EINTR;f.events=0;}
+        if(late) {f.clock_rc=-1;f.clock_error=ENOSYS;f.clock_fail_at=3;}
+        else {f.times_len=3;f.times[0]=BASE;f.times[1]=BASE;f.times[2]=2*BASE;}
+        CHECK(read_fake(&f,&r,&e)==-1 && e.stage==BIO_STAGE_CLOCK);
+        CHECK(e.reason==(late?BIO_REASON_SYSCALL:BIO_REASON_DEADLINE));
+        CHECK(e.system_errno==(late?ENOSYS:0) && f.calls[0]==3 && !f.calls[4]);
+    }
     return 0;
 }
 static int storms(void) {
@@ -384,7 +414,7 @@ int main(int argc,char **argv) {
     struct { const char *name; int(*test)(void); } cases[]={
         {"arguments",arguments},{"endpoint",endpoint},{"time-bounds",time_bounds},
         {"time-progress",time_progress},{"partial",partial},{"poll-anomalies",poll_anomalies},
-        {"storms",storms},{"io-anomalies",io_anomalies},{"eof",eof_fake},
+        {"poll-error-precedence",poll_error_precedence},{"storms",storms},{"io-anomalies",io_anomalies},{"eof",eof_fake},
         {"native-roundtrip",native_roundtrip},{"native-fragmented",native_fragmented},
         {"native-hup",native_hup},{"native-truncated",native_truncated},
         {"native-eof-extra",native_eof_extra},{"native-deadline",native_deadline},

@@ -43,7 +43,7 @@ def make_case(name):
 
 
 for _case in ("arguments", "endpoint", "time-bounds", "time-progress", "partial",
-              "poll-anomalies", "storms", "io-anomalies", "eof", "native-roundtrip",
+              "poll-anomalies", "poll-error-precedence", "storms", "io-anomalies", "eof", "native-roundtrip",
               "native-fragmented", "native-hup", "native-truncated", "native-eof-extra",
               "native-deadline", "native-broken-peer", "native-endpoint"):
     setattr(BootstrapIOTests, "test_" + _case.replace("-", "_"), make_case(_case))
