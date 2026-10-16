@@ -6,8 +6,8 @@ owned macOS test VM and their source/review identities. It is separate from the
 18,588-file source inventory and its archive remain unchanged. This directory
 commits narrative and hash inventories only. No evidence has been published and
 there is no `bundle.json`. This version freezes the completed local v3–v8
-calibration and reviewed pairing evidence while guest SIP restoration remains
-pending private owner authentication in Recovery. It contains no restored-SIP
+calibration and reviewed pairing evidence. At preparation, guest SIP restoration
+awaited private owner authentication in Recovery. It contains no restored-SIP
 proof and does not close full Darwin R02 or M2 acceptance.
 
 ## Selection and scope

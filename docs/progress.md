@@ -24,7 +24,7 @@ independent replay. The merged `main` also passed all nine portable CI jobs in
 Complete macOS process-tree tracing is blocked by SIP on the physical host.
 The owner subsequently authorized temporarily disabling SIP only in the owned
 UTM test VM, with restoration after tracing; guest authentication and actual
-capture validation were initially pending. The guest now reports SIP disabled.
+capture validation were initially pending. Capture metadata records SIP disabled.
 V3/v4 preserve rejected callback layouts; v5 completes eight owned cases and
 exposes lost parent coverage after failed spawn. V6's explicit target-PID exit
 candidate completes the two open-only cases but fails all seven tree cases:
@@ -108,8 +108,21 @@ remains at `/private/tmp/glue-mach-msg2-v8-replay-20261016`.
 collect 184 tests: all pass on macOS/Python 3.15, while offline Linux arm64/Python
 3.11 passes 182 with two Darwin compiler checks skipped. Logs are
 `/private/tmp/glue-portable-darwin-scalar-*-20261016.log`. Both observation APIs
-and CLIs reject full extraction acceptance. No hosted follow-up CI result is
-claimed while the new public branch push awaits approval.
+and CLIs reject full extraction acceptance.
+
+After owner approval, `codex/mvp-r04-darwin-followup-status` at
+`8567d387f41862883de4ea830042d7408c8412ed` was pushed unchanged. All nine native
+portable jobs passed in [run 38895660723](https://github.com/JBlaschke/glue_rs/actions/runs/38895660723):
+baseline, Lua55 and packaging on Linux x86_64, Linux arm64 and macOS arm64.
+Exact run/jobs metadata, source workflow/script and a hash manifest remain at
+`/private/tmp/glue-portable-darwin-followup-38895660723-20261016`; the review
+summary SHA256 is `b39c5caa9af6003cda46b2effe94e39d8851be6fc2ba3fb6a20138d8b829efc8`.
+This is portable CI evidence for that exact source, with no new full macOS
+product, signing, filesystem-trace or budget acceptance. The VM's Recovery
+reported SIP on after private authentication; normal reboot reached the login
+screen, and the running-guest status proof still awaits private login.
+`codex/mvp-r04-darwin-hosted-ci` records this result locally; it is not included
+in the approved `8567d38` push.
 
 `codex/mvp-r04-macos-calibration-evidence` (`d44dd33`, integrated `aded39b`)
 commits the [preliminary Darwin checkpoint](evidence/compact-mvp-darwin-calibration-2026-10-15/README.md)
@@ -119,10 +132,10 @@ replay with exact hashes/modes under independent restoration. The separate candi
 replays on macOS and offline Linux arm64 tmpfs. No raw evidence or VM files
 enter Git, and no archive has been published. This finite checkpoint covers
 v3–v8 calibration and reviewed pairing; later tree-open/Mach scalar snapshots
-remain separate. Guest SIP restoration is waiting for private owner
+remain separate. At preparation, guest SIP restoration awaited private owner
 authentication in Recovery. The checkpoint contains no restored-SIP proof.
 The physical Mac's policy remains unchanged. Full Darwin R02, macOS
-product/budget acceptance and M2 remain open. Current status continues on
+product/budget acceptance and M2 remain open. Checkpoint status was recorded on
 `codex/mvp-r04-darwin-followup-status`.
 
 The next native boundary must run the target with an explicit non-root identity

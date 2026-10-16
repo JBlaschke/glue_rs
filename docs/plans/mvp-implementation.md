@@ -93,7 +93,8 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
 | R04 | `codex/mvp-r04-macos-calibration-evidence` | `d44dd33` | Preliminary 1,372-file checkpoint restores and replays; SIP proof/publication pending; integrated as `aded39b` |
-| R04 | `codex/mvp-r04-darwin-followup-status` | `this branch` | Record committed diagnostic follow-ups and remaining acceptance gates |
+| R04 | `codex/mvp-r04-darwin-followup-status` | `8567d38` | Approved public push; all nine native portable CI jobs passed in run `38895660723` |
+| R04 | `codex/mvp-r04-darwin-hosted-ci` | `this branch` | Record exact hosted CI metadata and pending running-guest SIP proof |
 
 The nine automated Python suites pass 184 controls on the development Mac with
 Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 182
