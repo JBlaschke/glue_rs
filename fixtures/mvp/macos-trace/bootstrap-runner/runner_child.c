@@ -1,0 +1,92 @@
+#define _POSIX_C_SOURCE 200809L
+#define _DARWIN_C_SOURCE 1
+#include "runner_internal.h"
+#include <errno.h>
+#include <limits.h>
+#include <string.h>
+#include <unistd.h>
+static int status_write(struct nr_attempt *a,const struct bw_status *s) {
+ uint8_t bytes[BW_STATUS_SIZE];struct bio_result r;struct bio_error e;
+ if(bw_status_encode(s,bytes)!=BW_OK)return -1;
+ return bio_write_record(a->endpoints.copies[TE_STATUS_WRITER],bytes,sizeof(bytes),a->deadline,bio_native_operations(),&r,&e);
+}
+static _Noreturn void child_error(struct nr_attempt *a,const struct bw_binding *b,unsigned seq,unsigned stage,unsigned flags,unsigned reason,int saved,int detail) {
+ struct bw_status s;memset(&s,0,sizeof(s));s.binding=*b;s.kind=BW_ERROR;s.sequence=seq;s.stage=stage;s.mutation_flags=flags;
+ s.reason=reason;s.system_errno=reason==BW_SYSCALL && saved>0 && saved<=INT32_MAX?(uint32_t)saved:0;
+ if(reason==BW_SYSCALL && !s.system_errno)s.reason=BW_ADAPTER;
+ s.detail=detail>=0?detail:-1;(void)status_write(a,&s);_exit(120);
+}
+#define ERROR(stage,reason,saved,detail) child_error(a,&binding,sequence,stage,flags,reason,saved,detail)
+_Noreturn void nr_child(struct nr_attempt *a) {
+ struct bw_binding binding={(uint32_t)a->owner,(uint32_t)getpid(),{0}};memcpy(binding.request_sha256,a->request_sha,32);
+ unsigned sequence=0,flags=0;
+ if(getpid()<=0 || getpid()>INT32_MAX || getpid()==a->owner || getppid()!=a->owner)
+  ERROR(BW_REQUEST,BW_OWNERSHIP,0,-1);
+ if(nr_before(a,a->deadline,NR_PROCESS_GROUP))ERROR(BW_PROCESS_GROUP,BW_TIMEOUT,0,-1);
+ if(setpgid(0,0))ERROR(BW_PROCESS_GROUP,BW_SYSCALL,errno,-1);
+ if(getpgrp()!=getpid())ERROR(BW_PROCESS_GROUP,BW_MISMATCH,0,-1);
+ struct bs_error se;
+ if(bs_reset_in_owned_child(&a->signals,&se))ERROR(BW_SIGNALS,se.system_errno?BW_SYSCALL:BW_SIGNAL_POLICY,se.system_errno,se.signal_number);
+ struct te_error te;
+ if(te_map_in_owned_child(&a->endpoints,(uint64_t)a->owner,te_native_operations(),&te))
+  ERROR(BW_STDIO,te.system_errno?BW_SYSCALL:BW_MISMATCH,te.system_errno,te.fd);
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_CREDENTIALS,BW_TIMEOUT,0,-1);
+ struct tc_error tc;
+ if(tc_drop_in_owned_child(&a->request.credentials,(uint64_t)a->owner,tc_native_operations(),&tc)) {
+  if(tc.mutation_attempted)flags|=BW_CREDENTIAL_ATTEMPT;
+  ERROR(BW_CREDENTIALS,tc.system_errno?BW_SYSCALL:BW_MISMATCH,tc.system_errno,(int)tc.stage);
+ }
+ flags|=BW_CREDENTIAL_ATTEMPT;
+ if(chdir(a->cwd))ERROR(BW_CWD,BW_SYSCALL,errno,-1);
+ struct stat cwd;
+ if(stat(".",&cwd))ERROR(BW_CWD,BW_SYSCALL,errno,-1);
+ if((uint64_t)(uint32_t)cwd.st_dev!=a->request.cwd_device || (uint64_t)cwd.st_ino!=a->request.cwd_inode || !S_ISDIR(cwd.st_mode))
+  ERROR(BW_CWD,BW_MISMATCH,0,-1);
+ struct td_record scratch[TD_MAX_CAPACITY];struct td_plan plan={{0,1,2,a->endpoints.copies[TE_GATE_READER],a->endpoints.copies[TE_STATUS_WRITER]},scratch,TD_MAX_CAPACITY};
+ struct td_error td;
+ if(td_close_in_owned_child(&plan,(uint64_t)a->owner,td_native_operations(),&td)) {
+  if(td.closure_attempted)flags|=BW_DESCRIPTOR_ATTEMPT;
+  ERROR(BW_DESCRIPTORS,td.system_errno?BW_SYSCALL:BW_MISMATCH,td.system_errno,td.fd);
+ }
+ /* td_closure_attempted describes actual nonkeep-close attempts. This topology
+  * always has admission/output/source/spare FDs in addition to the five keeps. */
+ if(td.closure_attempted)flags|=BW_DESCRIPTOR_ATTEMPT;
+ if(flags!=BR_READY_FLAGS)ERROR(BW_READY_IO,BW_MISMATCH,0,-1);
+ if(bs_check_in_owned_child(&a->signals,&se))ERROR(BW_READY_IO,se.system_errno?BW_SYSCALL:BW_SIGNAL_POLICY,se.system_errno,se.signal_number);
+ struct bw_status ready;memset(&ready,0,sizeof(ready));ready.binding=binding;ready.kind=BW_READY;ready.detail=-1;ready.mutation_flags=flags;
+ uint64_t ids[]={getuid(),geteuid(),getgid(),getegid()};
+ for(unsigned i=0;i<4;i++)if(!ids[i] || ids[i]>INT32_MAX)ERROR(BW_READY_IO,BW_RANGE,0,(int)i);
+ ready.real_uid=(uint32_t)ids[0];ready.effective_uid=(uint32_t)ids[1];ready.real_gid=(uint32_t)ids[2];ready.effective_gid=(uint32_t)ids[3];
+ gid_t groups[16];int count=getgroups(16,groups);
+ if(count<0)ERROR(BW_READY_IO,BW_SYSCALL,errno,-1);
+ if(count<1 || count>16)ERROR(BW_READY_IO,BW_RANGE,0,count);
+ ready.group_count=(uint32_t)count;
+ for(int i=0;i<count;i++){if((uint64_t)groups[i]>INT32_MAX)ERROR(BW_READY_IO,BW_RANGE,0,i);ready.groups[i]=(uint32_t)groups[i];}
+ ready.cwd_device=(uint64_t)(uint32_t)cwd.st_dev;ready.cwd_inode=(uint64_t)cwd.st_ino;
+ for(unsigned i=0;i<5;i++)ready.kept_fds[i]=(uint32_t)plan.keep[i];
+ memcpy(ready.signal_policy_sha256,a->policy_sha,32);
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_READY_IO,BW_TIMEOUT,0,-1);
+ /* Failed/late writes can have delivered a full record or prefix; never append
+  * another record after failure, which could fabricate a new framing boundary. */
+ if(status_write(a,&ready))_exit(121);
+ sequence=1;
+ struct bio_result go;struct bio_error ioe;
+ if(bio_read_record(plan.keep[3],BW_GO_SIZE,a->deadline,bio_native_operations(),&go,&ioe))
+  ERROR(BW_GO_IO,ioe.system_errno?BW_SYSCALL:(ioe.reason==BIO_REASON_TRUNCATED?BW_EOF:BW_TIMEOUT),ioe.system_errno,-1);
+ struct bw_binding decoded;
+ if(bw_go_decode(go.prefix,go.bytes_moved,&binding,&decoded)!=BW_OK)ERROR(BW_GO_VALIDATE,BW_MISMATCH,0,-1);
+ if(bio_require_eof(plan.keep[3],a->deadline,bio_native_operations(),&go,&ioe))
+  ERROR(BW_GO_VALIDATE,ioe.system_errno?BW_SYSCALL:(ioe.reason==BIO_REASON_TRAILING?BW_EXTRA:BW_TIMEOUT),ioe.system_errno,-1);
+ int gate=plan.keep[3];
+ /* close is attempted exactly once; do not retry EINTR or guess ownership. */
+ if(close(gate))ERROR(BW_GATE_CLOSE,BW_SYSCALL,errno,gate);
+ if(bs_release_in_owned_child(&a->signals,&se))ERROR(BW_MASK_RESTORE,se.system_errno?BW_SYSCALL:BW_SIGNAL_POLICY,se.system_errno,se.signal_number);
+ struct bw_status attempt;memset(&attempt,0,sizeof(attempt));attempt.binding=binding;attempt.kind=BW_EXEC_ATTEMPT;
+ attempt.sequence=1;attempt.stage=BW_EXEC;attempt.mutation_flags=flags;attempt.detail=-1;
+ if(status_write(a,&attempt))_exit(122);
+ sequence=2;
+ char *const argv[]={a->executable,"--request-sha256",a->request_hex,NULL};char *const environment[]={NULL};
+ execve(a->executable,argv,environment);
+ int saved=errno;ERROR(BW_EXEC,BW_SYSCALL,saved,-1);
+}
+#undef ERROR
