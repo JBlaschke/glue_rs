@@ -173,6 +173,19 @@ int main(int argc, char **argv) {
     }
     if (argc==2 && !strcmp(argv[1],"negative-layouts")) { negative_layouts(); return 0; }
     if (argc==2 && !strcmp(argv[1],"terminal-rejections")) { terminal_rejections(); return 0; }
+    if (argc==2 && !strcmp(argv[1],"open-final-drain")) {
+        struct capture state={.events=tmpfile(),.errors=tmpfile(),.root=100,.root_terminal=true};
+        struct process *root=process_for(&state,100); root->created=true; root->terminal=true;
+        /* Model waitpid having completed before DTrace yields its queued user
+         * records. Tree-mode postterminal activity is separately rejected. */
+        event(&state,BEGIN_EVENT,500,0);
+        event(&state,SYSCALL_ENTRY,100,0); event(&state,OPEN_PATH,100,0);
+        event(&state,SYSCALL_RETURN,100,0); event(&state,END_EVENT,500,0);
+        assert(!state.failed && all_terminal(&state) && state.events_seen==5 && state.open_entries==1 && state.open_returns==1);
+        fclose(state.events); fclose(state.errors);
+        puts("open-only queued final drain preserves records after root wait; synthetic only");
+        return 0;
+    }
     if (argc==2 && !strncmp(argv[1],"layout",6)) { rejected_layout(argv[1]); return 0; }
     if (argc==2 && !strcmp(argv[1],"libdtrace-error")) {
         struct capture state={.errors=tmpfile()}; assert(state.errors);

@@ -246,7 +246,9 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     rejection="lifecycle-state";
     /* A shadow exit is raw context even if that PID's live object has already
      * terminated. Never attribute its current context to application activity. */
-    if (layout.kind!=BEGIN_EVENT && layout.kind!=END_EVENT && layout.kind!=EXITED_TARGET &&
+    /* Only tree profiles have event-ordered terminal evidence. In open-only
+     * mode waitpid can mark the root reaped before queued records are drained. */
+    if (state->tree && layout.kind!=BEGIN_EVENT && layout.kind!=END_EVENT && layout.kind!=EXITED_TARGET &&
         layout.kind!=LWP_EXIT && terminal_pid(state,header[2])) goto invalid;
     if (layout.kind==CREATE_EVENT) {
         for (size_t i=0;i<state->processes_used;++i)
