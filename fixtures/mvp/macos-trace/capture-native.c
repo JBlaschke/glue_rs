@@ -39,7 +39,7 @@ struct capture {
     size_t processes_used;
     uint64_t events_seen, drops, faults, open_entries, open_returns;
     unsigned diagnostics;
-    bool failed, root_terminal, tree, started;
+    bool failed, root_terminal, tree, mach, started;
     bool identity_failed;
     pid_t root;
     const char *reason;
@@ -155,31 +155,79 @@ static int drop_event(const dtrace_dropdata_t *drop, void *argument) {
     fputs("}\n",state->errors);
     return DTRACE_HANDLE_ABORT;
 }
+struct layout { int kind, count, zero, first; uint32_t bytes; };
+static bool select_layout(const struct capture *state, const dtrace_probedata_t *data, struct layout *layout) {
+    const dtrace_probedesc_t *probe=data->dtpda_pdesc;
+    if (!probe) return false;
+    int kind=0;
+    if (!strcmp(probe->dtpd_provider,"dtrace") && !probe->dtpd_mod[0] && !probe->dtpd_func[0]) {
+        if (!strcmp(probe->dtpd_name,"BEGIN")) kind=BEGIN_EVENT;
+        else if (!strcmp(probe->dtpd_name,"END")) kind=END_EVENT;
+    } else if (!strcmp(probe->dtpd_provider,"syscall") && probe->dtpd_func[0] &&
+               (state->tree || !strcmp(probe->dtpd_func,"open"))) {
+        if (!strcmp(probe->dtpd_name,"entry"))
+            kind=!strcmp(probe->dtpd_func,"open") && data->dtpda_edesc->dtepd_nrecs==6 ? OPEN_PATH : SYSCALL_ENTRY;
+        else if (!strcmp(probe->dtpd_name,"return")) kind=SYSCALL_RETURN;
+    } else if (state->tree && !strcmp(probe->dtpd_provider,"proc")) {
+        const struct { const char *name; int kind; } names[]={
+            {"create",CREATE_EVENT},{"start",START_EVENT},{"exit",EXIT_EVENT},
+            {"exec-success",EXEC_SUCCESS},{"exec-failure",EXEC_FAILURE},{"lwp-create",LWP_CREATE},
+            {"lwp-start",LWP_START},{"lwp-exit",LWP_EXIT},{"spawn-success",SPAWN_SUCCESS},{"spawn-failure",SPAWN_FAILURE},
+        };
+        for (unsigned i=0;i<sizeof(names)/sizeof(names[0]);++i)
+            if (!strcmp(probe->dtpd_name,names[i].name)) kind=names[i].kind;
+    } else if (state->mach && !strcmp(probe->dtpd_provider,"mach_trap") && probe->dtpd_func[0]) {
+        if (!strcmp(probe->dtpd_name,"entry")) kind=MACH_ENTRY;
+        else if (!strcmp(probe->dtpd_name,"return")) kind=MACH_RETURN;
+    }
+    if (!kind) return false;
+    bool leading=kind==BEGIN_EVENT || kind==CREATE_EVENT || kind==START_EVENT || kind==EXEC_SUCCESS;
+    int zero=leading ? 0 : kind==EXIT_EVENT ? 5 : -1;
+    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==MACH_RETURN || kind==OPEN_PATH ? 6 : 5;
+    *layout=(struct layout){.kind=kind,.count=payloads+(zero>=0),.zero=zero,.first=leading ? 1 : 0,
+                            .bytes=kind==OPEN_PATH ? 1080 : 16+(uint32_t)payloads*8};
+    return true;
+}
 static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     struct capture *state=argument;
     const dtrace_eprobedesc_t *description=data->dtpda_edesc;
     uint64_t header[5]={0};
+    struct layout layout;
     const char *rejection="event-count";
     if (++state->events_seen>MAX_EVENTS) goto invalid;
     rejection="record-count";
     if (description->dtepd_nrecs<5 || description->dtepd_nrecs>20) goto invalid;
     rejection="record-bytes";
     if (description->dtepd_size>MAX_RECORD_BYTES) goto invalid;
+    rejection="probe-layout";
+    if (!select_layout(state,data,&layout)) goto invalid;
+    rejection="probe-id";
+    if (!description->dtepd_epid || !data->dtpda_pdesc->dtpd_id || description->dtepd_probeid!=data->dtpda_pdesc->dtpd_id) goto invalid;
+    rejection="record-count";
+    if (description->dtepd_nrecs!=layout.count) goto invalid;
     for (int i=0;i<description->dtepd_nrecs;++i) {
         const dtrace_recdesc_t *record=&description->dtepd_rec[i];
         rejection="record-range";
         if (record->dtrd_offset>description->dtepd_size || record->dtrd_size>description->dtepd_size-record->dtrd_offset) goto invalid;
-        if (i<5) {
-            rejection="header-width";
-            if (record->dtrd_size!=sizeof(uint64_t)) goto invalid;
-            memcpy(&header[i],data->dtpda_data+record->dtrd_offset,sizeof(uint64_t));
-        }
+        rejection="record-action";
+        if (record->dtrd_action!=DTRACEACT_DIFEXPR) goto invalid;
+        int payload=i-(layout.zero>=0 && i>layout.zero);
+        uint32_t expected_size=i==layout.zero ? 0 : layout.kind==OPEN_PATH && i==5 ? 1024 : 8;
+        uint32_t expected_offset=i==layout.zero ? (i==0 ? 12 : 56) : 16+(uint32_t)payload*8;
+        rejection="record-layout";
+        if (record->dtrd_size!=expected_size || record->dtrd_offset!=expected_offset) goto invalid;
     }
+    rejection="record-bytes";
+    if (description->dtepd_size!=layout.bytes || !data->dtpda_data) goto invalid;
+    for (int i=0;i<5;++i) memcpy(&header[i],data->dtpda_data+description->dtepd_rec[layout.first+i].dtrd_offset,sizeof(uint64_t));
     rejection="header-kind";
-    if (header[0]<BEGIN_EVENT || header[0]>END_EVENT) goto invalid;
+    if (header[0]!=(uint64_t)layout.kind) goto invalid;
     rejection="header-pid";
     if (header[2]>INT_MAX) goto invalid;
-    fprintf(state->events,"{\"event\":%"PRIu64",\"cpu\":%d,\"epid\":%u,\"probe_id\":%u,\"kind\":%"PRIu64",\"timestamp\":%"PRIu64",\"pid\":%"PRIu64",\"tid\":%"PRIu64",\"detail\":%"PRIu64",\"provider\":",state->events_seen,data->dtpda_cpu,description->dtepd_epid,data->dtpda_pdesc->dtpd_id,header[0],header[1],header[2],header[3],header[4]);
+    rejection="header-detail";
+    if ((layout.kind==BEGIN_EVENT || layout.kind==END_EVENT || layout.kind==LWP_START || layout.kind==LWP_EXIT ||
+         layout.kind==SPAWN_SUCCESS || layout.kind==OPEN_PATH) && header[4]!=0) goto invalid;
+    fprintf(state->events,"{\"event\":%"PRIu64",\"cpu\":%d,\"epid\":%u,\"probe_id\":%u,\"record_bytes\":%u,\"header_record_indexes\":[%d,%d,%d,%d,%d],\"kind\":%"PRIu64",\"timestamp\":%"PRIu64",\"pid\":%"PRIu64",\"tid\":%"PRIu64",\"detail\":%"PRIu64",\"provider\":",state->events_seen,data->dtpda_cpu,description->dtepd_epid,data->dtpda_pdesc->dtpd_id,description->dtepd_size,layout.first,layout.first+1,layout.first+2,layout.first+3,layout.first+4,header[0],header[1],header[2],header[3],header[4]);
     json_string(state->events,data->dtpda_pdesc->dtpd_provider);
     fputs(",\"module\":",state->events); json_string(state->events,data->dtpda_pdesc->dtpd_mod);
     fputs(",\"function\":",state->events); json_string(state->events,data->dtpda_pdesc->dtpd_func);
@@ -380,7 +428,7 @@ int main(int argc, char **argv) {
     struct stat fixture;
     if (stat(argv[command],&fixture) || !S_ISREG(fixture.st_mode) || access(argv[command],X_OK)) { perror("owned fixture"); return 2; }
     if (mkdir(directory,0755)) { perror("new capture directory"); return 2; }
-    struct capture state={.tree=strcmp(profile,"open")!=0,.reason="not started"};
+    struct capture state={.tree=strcmp(profile,"open")!=0,.mach=!strcmp(profile,"tree-mach"),.reason="not started"};
     state.events=new_file(directory,"events.jsonl"); state.errors=new_file(directory,"errors.jsonl");
     state.inventory=new_file(directory,"probes.tsv");
     FILE *program=new_file(directory,"program.d"), *target_out=new_file(directory,"target.stdout"), *target_err=new_file(directory,"target.stderr");
@@ -493,7 +541,7 @@ int main(int argc, char **argv) {
     size_t product_size=sizeof(product),build_size=sizeof(build);
     if (sysctlbyname("kern.osproductversion",product,&product_size,NULL,0)) strcpy(product,"unavailable");
     if (sysctlbyname("kern.osversion",build,&build_size,NULL,0)) strcpy(build,"unavailable");
-    fprintf(report,"{\"revision\":1,\"protocol\":\"darwin-capability-raw-v1\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
+    fprintf(report,"{\"revision\":2,\"protocol\":\"darwin-capability-raw-v2\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
     json_string(report,state.failed ? state.reason : "owned fixture exited, required open events observed, observed tree drained");
     fputs(",\"profile\":",report); json_string(report,profile);
     fputs(",\"host\":{\"system\":",report); json_string(report,host.sysname);
