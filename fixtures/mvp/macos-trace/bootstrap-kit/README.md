@@ -69,9 +69,16 @@ Successful output has `kit/{context-probe,bootstrap-runner,make-request}`,
 `catalog.bin`, `catalog.generated.c`, `recipe.json`, `source-lock.json`,
 `admitted-proof.json`, source snapshots, both build trees, exact command logs,
 `result.json` and `SHA256SUMS`. Nothing is installed. Compiler/signing commands have
-60-second limits. A failed build keeps its new directory, source/command logs and
-failed result when writable. An oversized or otherwise incomplete failed tree may
-lack a complete inventory; absence of the final success record is never success.
+60-second limits. A failed/timeout/spawn-error tool may leave descendant writers:
+`subprocess.run` reaps the direct command only. Such failures keep raw outputs
+and a clearly partial `failure.partial.json` marker when writable, and suppress
+the final inventory and closed result. No process containment, immutable failed
+tree or complete failed-log capture is proved; descendants may still be live.
+Other failures keep source/command logs and a failed result when possible. An
+oversized or otherwise incomplete failed tree may lack a complete inventory.
+Consumers require **normal builder exit 0 plus a complete exact verified
+`SHA256SUMS`/`result.json` tree**; a success-looking partial file alone is never a
+completed build, including if later output finalization or close failed.
 
 `make-request` is a separate ordinary-user executable. Its only optional argument
 is exact `--simulate-provider-failure`; no argument selects SEND_GO. It rejects

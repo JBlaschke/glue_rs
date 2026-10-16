@@ -38,6 +38,13 @@ recipe, not reproducibility across arbitrary SDK/compiler versions. Commands,
 tools, source snapshots and failed partial output are retained in the new output;
 the builder never runs a newly built executable, downloads, installs or elevates.
 
+Failed, timed-out or spawn-error external tools do not establish descendant
+cleanup: reaping a direct compiler does not prove its linker children stopped.
+Those attempts retain only explicitly partial raw output/marker, with possible
+live writers, and suppress a final inventory or closed result. The successful
+path is unchanged. Consumers require normal builder exit zero and the complete
+exact verified inventory/result tree, never presence of one partial file.
+
 The separately linked `make-request` utility accepts no arguments for SEND_GO or
 exactly `--simulate-provider-failure`. It observes real nonzero equal real and
 effective IDs and the actual kernel group vector, rejecting incompatible values

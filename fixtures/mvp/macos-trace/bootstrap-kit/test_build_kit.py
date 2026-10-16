@@ -1,5 +1,6 @@
 """Synthetic parser/codec controls only. No guest kit or new target execution."""
 import copy
+import errno
 import hashlib
 import importlib.util
 import json
@@ -231,6 +232,45 @@ class KitControls(unittest.TestCase):
             build.finish({'status':'failed','full_acceptance':False})
             identity=hashlib.sha256((root/'SHA256SUMS').read_bytes()).hexdigest()
             self.assertEqual(kit.verified_tree(root,identity)['sources/x'],b'x')
+
+    def test_injected_tool_failures_stay_partial_and_success_can_finish(self):
+        # No external command, compiler, process group or descendant is launched.
+        for outcome in ('timeout','nonzero','spawn','success'):
+            with self.subTest(outcome=outcome),tempfile.TemporaryDirectory(prefix='glue-kit-injected-tool-') as temp:
+                root=Path(temp).resolve()/'new';build=kit.Build(root,HERE.parents[3])
+                def tool(argv,**kw):
+                    if outcome=='spawn':raise OSError(errno.EACCES,'injected spawn refusal')
+                    kw['stdout'].write(b'confirmed-prefix');kw['stderr'].write(b'injected-only\n')
+                    if outcome=='timeout':raise subprocess.TimeoutExpired(argv,60)
+                    return subprocess.CompletedProcess(argv,0 if outcome=='success' else 17)
+                with patch.object(kit.subprocess,'run',side_effect=tool) as mock:
+                    if outcome=='success':
+                        self.assertEqual(build.run('tool',['injected-tool']),b'confirmed-prefix')
+                        self.assertFalse(build.tool_cleanup_unresolved)
+                        build.finish({'status':'injected-unit-only','full_acceptance':False})
+                        identity=hashlib.sha256((root/'SHA256SUMS').read_bytes()).hexdigest()
+                        self.assertIn('result.json',kit.verified_tree(root,identity))
+                    else:
+                        with self.assertRaises(kit.Refusal) as failure:build.run('tool',['injected-tool'])
+                        self.assertTrue(build.tool_cleanup_unresolved)
+                        with patch.object(kit,'tree_members',side_effect=AssertionError('failed tool must not inventory')):
+                            build.retain_failure(failure.exception)
+                            with self.assertRaises(kit.Refusal):build.finish({'status':'must-not-finalize'})
+                        marker=json.loads((root/'failure.partial.json').read_bytes())
+                        self.assertIs(marker['possible_live_descendants'],True)
+                        self.assertIs(marker['command_cleanup_unresolved'],True)
+                        self.assertIs(marker['tree_closed'],False);self.assertIs(marker['inventory_complete'],False)
+                        self.assertIs(marker['full_acceptance'],False)
+                        self.assertFalse((root/'SHA256SUMS').exists());self.assertFalse((root/'result.json').exists())
+                        record=json.loads((root/'logs/tool.status.json').read_bytes())
+                        self.assertEqual(record['returncode'],17 if outcome=='nonzero' else None)
+                        self.assertEqual(record['timed_out'],outcome=='timeout')
+                        self.assertEqual(record['operation_errno'],errno.EACCES if outcome=='spawn' else None)
+                        # Simulated late writer changes raw bytes; no closed-tree
+                        # digest/result is created or retroactively asserted.
+                        with (root/'logs/tool.stdout').open('ab') as stream:stream.write(b'late-injected-data')
+                        with self.assertRaises(kit.Refusal):build.run('no-retry',['must-not-run'])
+                    self.assertEqual(mock.call_count,1)
 
     def test_output_inside_repository_or_aliased_chain_rejected_without_creation(self):
         out=HERE/'must-not-be-created'
