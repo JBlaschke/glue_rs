@@ -32,6 +32,13 @@ observations in the Mach-enabled capture and reports the other six profiles as
 not enabled. Copied paths, numeric descriptors and message fields do not prove
 file objects, port identities or effects; both acceptance APIs remain closed.
 
+The separate [credential primitive](target-credentials/README.md) validates and
+applies an explicit numeric identity only in an owned child, with precise
+failure stages and exact real/effective ID and group readback. Its controls and
+independent review pass; it is not integrated into the collector. Privileged
+Darwin transition calibration, inherited-FD/cwd/signal setup and the launch gate
+remain open. Existing root-target capture bytes and receipts are unchanged.
+
 A root-authenticated wildcard preflight on the physical host reported:
 
 ```

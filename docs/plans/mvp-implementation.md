@@ -88,7 +88,9 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-darwin-pairing-ci` | `1959c23` | Add pairing controls to the portable baseline; 155 collected controls |
 | R02 | `codex/mvp-r02-tree-open` | `ace2f55` | Preserve calibrated named-open observations across process/thread lifetimes; 13 controls; integrated as `6b5b0ad` |
 | R02 | `codex/mvp-r02-mach-msg2-scalars` | `dcb1c5c` | Observe packed scalar fields while keeping message effects unresolved; 16 controls; integrated as `8fc437a` |
+| R02 | `codex/mvp-r02-target-credentials` | `ecc35f2` | Owned-child credential primitive and 14 controls; independently reviewed; integrated as `6eae79b`; collector integration/native privileged Darwin transition remain open |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
+| V01 | `codex/mvp-v01-darwin-credential-ci` | `this branch` | Add credential controls to portable CI; 198 collected controls, new hosted run pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -96,12 +98,19 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-darwin-followup-status` | `8567d38` | Approved public push; all nine native portable CI jobs passed in run `38895660723` |
 | R04 | `codex/mvp-r04-darwin-hosted-ci` | `b824afb` | Record exact hosted CI metadata; running-guest SIP proof was pending at this checkpoint |
 | R04 | `codex/mvp-r04-darwin-restoration-evidence` | `439bb46` | Separate 57-file SIP-enabled proof and exact approved CI checkpoint; 59-member restore verifies |
-| R04 | `codex/mvp-r04-sip-restoration-status` | `this branch` | Record independently verified running-guest SIP restoration; no full Darwin acceptance |
+| R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
 
-The nine automated Python suites pass 184 controls on the development Mac with
-Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 182
-controls; the two Darwin compiler checks are explicitly skipped there.
+The ten automated Python suites collect 198 controls. All pass on the development
+Mac with Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass
+195 controls; the two Darwin compiler checks and one nonprivileged-only
+credential control are explicitly skipped in that root-run container.
 These are unit/format checks, independent of full Darwin application acceptance.
+Logs are `/private/tmp/glue-portable-darwin-credentials-*-20261016.log`.
+The credential primitive independently passes 14 native unprivileged controls
+and five additional injected-only ASan/UBSan controls. Its isolated Linux
+forked-child transition to UID/GID 65534 and groups `[65534]` preserves parent
+credentials; it does not calibrate a privileged Darwin transition or integrate
+the helper into the collector. That collector still runs root-target diagnostics.
 The pairing adapter separately replays all seven v8 process-tree captures as
 1,193 returned pairs and 13 explicit entries terminated without return. It
 retains raw frames and observed thread/exec lifetimes; it supplies no resolved

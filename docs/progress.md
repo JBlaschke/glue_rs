@@ -167,7 +167,35 @@ calibration runs the target as root. The read-only source proposal at
 `/private/tmp/glue-darwin-collector-identity-assessment-20261016/ASSESSMENT.md`
 (SHA256 `7f9e472e1a915e7b5216a08a02a70a98baf0ad05fc3a6a3dedd30f8d73bea23e`)
 records Darwin group-list, inherited-FD, signal, gate and login-context limits.
-It is a proposal, with no credential transition or native change implemented.
+That assessment itself changes no code or credentials.
+`codex/mvp-r02-target-credentials` (`ecc35f2`, integrated `6eae79b`) implements
+the separate [owned-child credential primitive](../fixtures/mvp/macos-trace/target-credentials/README.md).
+It validates explicit nonzero numeric IDs and a bounded nonempty primary-first
+group list, checks the declared controller/calling parent, applies groups then
+GID then UID, and verifies exact real/effective IDs and the ordered group vector.
+Failures stop at their precise stage and preserve syscall errno; after any
+mutation attempt the caller must exit the child on failure. No target launch,
+collector integration or saved-ID/login/Mach/FD/gate assurance is supplied.
+Fourteen native unprivileged controls and independent review pass, including
+five additional injected-only ASan/UBSan controls. A separate offline Linux
+container control succeeds only in its forked child with UID/GID 65534 and
+groups `[65534]`, leaving the parent unchanged; privileged Darwin transition
+calibration remains unavailable. Evidence and review remain at
+`/private/tmp/glue-target-credentials-native-20261016` and
+`/private/tmp/glue-target-credentials-independent-review-20261016`.
+
+`codex/mvp-v01-darwin-credential-ci` adds that suite to the portable baseline.
+Ten suites collect 198 controls: all pass on macOS/Python 3.15, and the offline
+Linux arm64 root-run container passes 195 with two Darwin compiler checks and
+one nonprivileged-only credential control explicitly skipped. Logs are
+`/private/tmp/glue-portable-darwin-credentials-*-20261016.log`; the exact driver is
+`/private/tmp/glue-portable-darwin-credentials-tests-20261016.sh`.
+The five-file portable control record at
+`/private/tmp/glue-target-credentials-portable-20261016` retains those exact logs,
+driver and counts; its manifest SHA256 is
+`846eb333185dcae2a20c7b1b86b627e70422e9dfad9f81f6d153966729d66656`.
+These local follow-ups are beyond the approved `8567d38` push; their hosted CI
+run remains pending. Full Darwin R02/M2 is still open.
 Kernel file/port object identity, consumed Mach messages and the full extraction
 oracle remain separate implementation work before the product corpus can pass.
 
