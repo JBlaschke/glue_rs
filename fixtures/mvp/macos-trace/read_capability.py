@@ -17,15 +17,15 @@ import sys
 import tempfile
 
 
-PROTOCOL = "darwin-capability-raw-v2"
+PROTOCOL = "darwin-capability-raw-v3"
 SCOPE = "owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance"
 EVIDENCE = {"program.d", "events.jsonl", "errors.jsonl", "probes.tsv", "target.stdout", "target.stderr", "watchdog.json"}
 TOOLKIT = {"capture-native", "lifecycle-probe", "owned-probe", "input.txt", "prepare-native.sh", "CAPTURE_FORMAT.md"} | {
     stem + suffix for stem in ("capture-native", "lifecycle-probe", "owned-probe") for suffix in (".c", "-build.argv")}
 HEADER = {"revision", "protocol", "scope", "status", "reason", "profile", "host", "elapsed_seconds", "root_pid", "root_wait_status", "deadline_seconds", "timed_out", "interrupted_signal", "started", "drained", "events", "drops", "errors", "open_entries", "open_returns", "argv", "processes", "fixture", "collector", "evidence", "identity_checks_passed", "full_trace_acceptance", "settings_changed"}
 EVENT = {"event", "cpu", "epid", "probe_id", "kind", "timestamp", "pid", "tid", "detail", "provider", "module", "function", "name", "record_bytes", "header_record_indexes", "records"}
-KINDS = {1: "begin", 2: "syscall-entry", 3: "syscall-return", 4: "proc-create", 5: "proc-start", 6: "proc-exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 14: "open-path", 15: "mach-entry", 16: "mach-return", 17: "end"}
-PROC_NAMES = {4: "create", 5: "start", 6: "exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure"}
+KINDS = {1: "begin", 2: "syscall-entry", 3: "syscall-return", 4: "proc-create", 5: "proc-start", 6: "proc-exit-context", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 14: "open-path", 15: "mach-entry", 16: "mach-return", 17: "end", 18: "proc-exited-target"}
+PROC_NAMES = {4: "create", 5: "start", 6: "exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 18: "exited"}
 MAX_EVENTS = 1_000_000
 MAX_RAW = 128 * 1024 * 1024
 MAX_FILE = 64 * 1024 * 1024
@@ -33,7 +33,7 @@ MAX_LINE = 64 * 1024
 UINT64 = (1 << 64) - 1
 UINT32 = (1 << 32) - 1
 INT_MAX = (1 << 31) - 1
-LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-kind", "header-pid", "event-output", "probe-layout", "probe-id", "record-action", "record-layout", "header-detail"}
+LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-kind", "header-pid", "event-output", "probe-layout", "probe-id", "record-action", "record-layout", "header-detail", "header-target"}
 SOURCE = Path(__file__).resolve().parent
 
 
@@ -190,7 +190,7 @@ def toolkit_provenance(directory):
 
 def receipt_header(report):
     keys(report, HEADER, "capability")
-    require(report["revision"] == 2 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
+    require(report["revision"] == 3 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
     require(report["full_trace_acceptance"] is False and report["settings_changed"] is False, "capability cannot assert acceptance or changed settings")
     boolean(report["identity_checks_passed"], "identity_checks_passed")
     require(report["identity_checks_passed"], "producer identity checks failed; transport integrity cannot be established")
@@ -272,7 +272,9 @@ def producer_program(root, profile):
         result += "proc:::exec-success /watched[pid] || watched[ppid]/ { watched[pid]=1; " + header(7, "ppid") + "}\n"
         for name, kind, detail in (("exit", 6, "arg0"), ("exec-failure", 8, "arg0"), ("spawn-success", 12, "0"), ("spawn-failure", 13, "arg0"), ("lwp-create", 9, "args[0]->pr_lwpid"), ("lwp-start", 10, "0"), ("lwp-exit", 11, "0")):
             result += "proc:::%s /watched[pid]/ { " % name + header(kind, detail)
-            result += ("watched[pid]=0; " if kind == 6 else "") + "}\n"
+            result += "}\n"
+        result += "proc:::exited /watched[args[0]->pr_pid]/ { " + header(18, "args[0]->pr_pid")
+        result += "trace((uint64_t)arg1); watched[args[0]->pr_pid]=0; }\n"
     if mach:
         for returning in (False, True):
             result += "mach_trap:::%s /watched[pid]/ { " % ("return" if returning else "entry")
@@ -407,15 +409,17 @@ def typed_event(event, expected_index, profile, inventory):
             require(profile == "tree-mach" and event["provider"] == "mach_trap" and event["function"] != "" and event["name"] == ("entry" if kind == 15 else "return"), "invalid Mach profile/descriptor")
     if kind in {10, 11, 12, 14}:
         require(event["detail"] == 0, "producer constant detail differs")
+    if kind in {4, 18}:
+        integer(event["detail"], 1, INT_MAX, "process target detail")
     # Source-matched layout, not a generic skip-zero-record policy. The actual
     # v4 guest observed the BEGIN assignment; other clauses remain candidates
     # that must match this exact transport before they can be inspected.
     leading = kind in {1, 4, 5, 7}
-    trailing = kind == 6
-    word_count = {2: 13, 3: 10, 15: 13, 16: 6}.get(kind, 5)
+    trailing = kind == 18
+    word_count = {2: 13, 3: 10, 15: 13, 16: 6, 18: 6}.get(kind, 5)
     layout = ([(0, 12)] if leading else []) + [(8, 16 + i * 8) for i in range(word_count)]
     if trailing:
-        layout.append((0, 56))
+        layout.append((0, 64))
     if kind == 14:
         layout.append((1024, 56))
     record_bytes = 1080 if kind == 14 else 16 + word_count * 8
@@ -491,8 +495,8 @@ def inspect_capability(capture, toolkit, timeline):
                     process(event["detail"])["created"] = True
                 elif kind in {5, 7}:
                     process(event["pid"])["created"] = True
-                elif kind == 6:
-                    process(event["pid"])["terminal"] = True
+                elif kind == 18:
+                    process(event["detail"])["terminal"] = True
                 if event["function"] == "open" and kind in {2, 3}:
                     totals["open_entries" if kind == 2 else "open_returns"] += 1
                 timeline.write((json.dumps(exported, separators=(",", ":"), ensure_ascii=True) + "\n").encode())
@@ -511,7 +515,7 @@ def inspect_capability(capture, toolkit, timeline):
             require(not report["started"] and not report["drained"] and totals["events"] == 0, "unavailable receipt claims started event capture")
         else:
             require(report["started"], "failed receipt must have started (otherwise unavailable)")
-        return {"revision": 2, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
+        return {"revision": 3, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
                 "transport_integrity": "consistent", "capture_status": report["status"], "capture_reason": report["reason"],
                 "producer_identity_checks_passed": report["identity_checks_passed"],
                 "producer_diagnostics": diagnostics,
@@ -523,7 +527,7 @@ def inspect_capability(capture, toolkit, timeline):
 
 
 def require_full_trace_acceptance(_summary=None):
-    raise InvalidCapability("darwin-capability-raw-v2 is capability-only; R02 full-trace acceptance is unconditionally rejected")
+    raise InvalidCapability("darwin-capability-raw-v3 is capability-only; R02 full-trace acceptance is unconditionally rejected")
 
 
 def export_files(path, timeline, encoded):
