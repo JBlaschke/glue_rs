@@ -87,8 +87,10 @@ sentinel bounds detection of growth after the initial file-size check.
 - `program.d`: exact generated program with the gated root PID.
 - `probes.tsv`: actual syscall/proc/mach_trap inventory, including IDs.
 - `events.jsonl`: bounded typed records; no Linux strace grammar is used.
-- `errors.jsonl`: drop/fault callback records and literal setup diagnostics
-  (the file can contain plain text during setup failure).
+- `errors.jsonl`: drop/fault callback records, bounded rejected-layout/libdtrace
+  diagnostics and literal setup diagnostics (the file can contain plain text
+  during setup failure). The first failure cause is preserved in the receipt;
+  a later drain or cleanup failure cannot replace it.
 - `target.stdout` / `target.stderr`: actual owned fixture streams.
 - `watchdog.json`: empty normally; explicit hard-timeout diagnostic if fired.
 - `capability.json`: native kernel/architecture, profile, exact argv, root wait
@@ -101,6 +103,19 @@ hex. It exposes the first five uint64 fields as `kind`, `timestamp`, `pid`, `tid
 `detail`. Their raw bytes remain authoritative. `event` is a consumer sequence,
 not a kernel sequence or an independent detector of lost events. The protocol is
 `darwin-capability-raw-v1`; the prepared binaries are native little-endian arm64.
+
+A rejected callback emits a `layout-error` diagnostic with its reason, consumer
+event count, descriptor count, total probe byte size, first five record values
+(`header`) and up to twenty descriptor metadata entries. Each entry retains
+`action`, `size`, `offset` and `u64`; a value is null unless its record is exactly
+eight bytes and lies within a probe bounded to 8 KiB. Zero-width or invalid
+descriptors remain rejected. These metadata do not become accepted events and
+do not establish the actual kernel ABI. Work/stop/drain failures additionally
+retain `libdtrace-error` with the operation, actual libdtrace error number and a
+message bounded to 512 bytes. At most sixteen combined layout/libdtrace
+diagnostics are emitted; callback drop/fault counters keep their existing
+meaning. An event count that exceeds serialized events is incomplete evidence,
+even when a rejected-record diagnostic explains the gap.
 
 | Kind | Meaning | Detail / subsequent records |
 | --- | --- | --- |

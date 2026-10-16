@@ -33,6 +33,42 @@ class NativeCapabilityTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("not capture evidence", result.stdout)
 
+    def test_rejected_layout_diagnostics_preserve_exact_bounded_metadata(self):
+        for mode, reason, count in [("layout", "header-width", 6),
+                                    ("layout-range", "record-range", 6),
+                                    ("layout-wide", "record-count", 21)]:
+            with self.subTest(mode=mode):
+                result = subprocess.run([str(self.unit), mode], capture_output=True, text=True, timeout=3)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                diagnostic = json.loads(result.stdout)
+                self.assertEqual(diagnostic["kind"], "layout-error")
+                self.assertEqual([diagnostic[key] for key in ["cpu", "epid", "probe_id", "provider", "module", "function", "name"]],
+                                 [2, 7, 42, "dtrace", "", "", "BEGIN"])
+                self.assertEqual(diagnostic["reason"], reason)
+                self.assertEqual(diagnostic["event"], 1)
+                self.assertEqual(diagnostic["nrecs"], count)
+                self.assertEqual(len(diagnostic["records"]), min(count, 20))
+                self.assertIsNone(diagnostic["header"][0])
+                if mode == "layout-wide":
+                    self.assertEqual(diagnostic["header"], [None] * 5)
+                    self.assertTrue(all(record["u64"] is None for record in diagnostic["records"]))
+                else:
+                    self.assertEqual(diagnostic["header"][1:], [1, 1000, 100, 2000])
+                    self.assertEqual(diagnostic["records"][0]["size"], 0 if mode == "layout" else 8)
+                    self.assertEqual(diagnostic["records"][1]["u64"], 1)
+                self.assertLess(len(result.stdout.encode()), 8192)
+
+    def test_diagnostic_count_message_bounds_and_original_failure_cause(self):
+        result = subprocess.run([str(self.unit), "layout-limit"], capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        diagnostics = [json.loads(line) for line in result.stdout.splitlines()]
+        self.assertEqual(len(diagnostics), 16)
+        self.assertEqual([record["event"] for record in diagnostics], list(range(1, 17)))
+        result = subprocess.run([str(self.unit), "libdtrace-error"], capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        diagnostic = json.loads(result.stdout)
+        self.assertEqual(diagnostic, {"kind": "libdtrace-error", "operation": "work", "error": 5, "message": "x" * 512})
+
     def test_setup_failure_never_releases_owned_fixture(self):
         output = self.root / "mock setup failure"
         result = subprocess.run([str(self.unit), "setup-error", str(output)], capture_output=True, text=True, timeout=5)
