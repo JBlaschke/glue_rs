@@ -3,10 +3,11 @@
 15 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
-cherry-picked for integration. No branch was merged to main and no release asset
-was published. `main` remains at `6b49cc5`.
-`codex/mvp-r04-docs` is the combined review branch; task branches
-retain their own implementation commits.
+cherry-picked for integration. The owner merged the combined
+`codex/mvp-r04-docs` stack into `main` at `96e6958` through
+[PR #34](https://github.com/JBlaschke/glue_rs/pull/34). Task branches retain their
+own implementation commits. Follow-up work continues on feature branches;
+no release asset has been published.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -56,18 +57,37 @@ check, not a claim established by the development signatures.
 | R01 | `codex/mvp-r01-workflows` | `448df87` | Three CLI adapters, inspect/doctor/size/rebuild, installer and end-to-end cases; accurate enforced-budget CI summary |
 | R02 | `codex/mvp-r02-extraction-signing` | `d03b56f` | Complete Linux process-tree oracle and signing checks; bounded Darwin capability transport/diagnostic reader and normalized open-intent controls; full Darwin decoder/oracle unimplemented |
 | R03 | `codex/mvp-r03-hpc-costs` | `05bd056` | Bounded buffered reader, measured 10,000-entry/32-rank harness and five reviewed budgets on each Linux architecture |
-| R04 | `codex/mvp-r04-docs` | `this branch` | Current user docs and compatibility/evidence ledger; M2 and durable evidence publication remain open |
+| R04 | `codex/mvp-r04-docs` | `d44ccb5` | User docs and compatibility/evidence ledger, merged through PR #34; M2 and durable evidence publication remain open |
 
 Use `git log BRANCH` for each original task commit and
 `git log codex/mvp-r04-docs` for the integrated stack. Follow-up fixes stay on their
 owning card branch before integration. The table records implementation, not 26
-completed acceptance gates.
+completed acceptance gates. All nine portable jobs passed on merged `main`
+`96e6958` in [run 38810513172](https://github.com/JBlaschke/glue_rs/actions/runs/38810513172).
+
+Follow-up branches preserve the original task commits:
+
+| Task | Follow-up branch | Commit | Verified scope |
+| --- | --- | --- | --- |
+| R02 | `codex/mvp-r02-darwin-capture-docs` | `695dd32` | Correct `proc:::exit` lifecycle-code documentation; integrated as `409f51c` |
+| R02 | `codex/mvp-r02-darwin-state` | `6ce6ae2` | Synthetic process/thread generations, call pairing, FD/cwd inheritance and conservative race rejection; 26 controls, no native acceptance |
+| R04 | `codex/mvp-r04-evidence-retention` | `1dd9b90` | Indexed external-root prepare/restore/fetch, 18 controls and unchanged full-bundle round trip; remote publication pending |
+| V01 | `codex/mvp-v01-evidence-ci` | `45e375f` | Baseline runs evidence/reader/open-intent/state controls; Linux GNU tar fixture includes gzip |
+| R04 | `codex/mvp-r04-acceptance-followup` | `this branch` | Current merged-main, retention and guest-calibration record |
+
+The four newly automated suites pass 73 controls on the development Mac with
+Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass their
+portable controls; the single Darwin compiler check is explicitly skipped there.
+These are unit/format checks, independent of full Darwin application acceptance.
+The Linux image was `83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
+with network disabled and this checkout mounted read-only. Native SDK/signature
+open controls retain their separate target receipts.
 
 ## Executed development cells
 
 | Cell | Lua | Python | Node | Release observations |
 | --- | --- | --- | --- | --- |
-| macOS arm64 | 5.4.9/5.5.1 source/native/secondary/TLS/errors | PBS/uv 3.13.16, 3.14.5, 3.15.0b1; non-PBS 3.12.14 and framework 3.14.8 (3.12.12 also focused provider test) | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Offline sandbox and relocated read-only execution; strict ad-hoc verification; full tracer unavailable |
+| macOS arm64 | 5.4.9/5.5.1 source/native/secondary/TLS/errors | PBS/uv 3.13.16, 3.14.5, 3.15.0b1; non-PBS 3.12.14 and framework 3.14.8 (3.12.12 also focused provider test) | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Offline sandbox and relocated read-only execution; strict ad-hoc verification; complete Darwin oracle remains unimplemented |
 | GNU Linux arm64 | Both families source/native and extraction traces | PBS 3.13.16 file/module/console/native/abi3; non-PBS 3.14.8 source; local PBS archive routes | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Native Podman VM, network none, controlled uid/read-only tree, complete strace where receipted |
 | GNU Linux x86_64 | Both families source/native passed full acceptance | PBS 3.12.15/3.13.16 and independent conda-forge 3.14.8 source/module/console/native all passed | 24.22.0/26.10.0 all eight cases passed full acceptance | All 24 acceptance cases and all five reviewed R03 budgets passed under the explicit trace environment; independently replayed |
 | macOS x86_64 | Unperformed | Unperformed | Unperformed | Later separate cell |
@@ -141,9 +161,9 @@ cp311-abi3 cryptography runs pass complete V02/R02 traces; non-PBS 3.14.8 source
 and local PBS archive variants are separately receipted. The raw locations are
 `/private/tmp/glue-python-v02-*` and
 `/private/tmp/glue-python-v02-linux-evidence/`. Failed preparatory runs remain
-retained and do not count as acceptance. The final integration evidence
-inventory selects only checked passing receipts and labels signing/tracing
-checks separately.
+retained and do not count as acceptance. Acceptance summaries select checked
+passing receipts and label signing/tracing checks separately; the evidence
+inventory also preserves failed runs and preparatory diagnostics.
 
 Native hosted x86_64 acceptance and performance enforcement are configured in
 `.github/workflows/mvp-native.yml` using `scripts/ci-mvp-linux.sh`. It requires
@@ -190,6 +210,15 @@ locations are recorded in the [integration evidence README](../evidence/compact-
 [decision 0030](../decisions/0030-evidence-retention.md). Evidence release assets
 have not been published; there is no fabricated `bundle.json` or remote durable
 retention claim. Local files alone will not survive transfer of this repository.
+The indexed checkpoint now prepares and restores 18,588 captured files without
+rewriting them; replay from a new root passes 94 receipts, ten budget profiles
+and 1,980 rank results. The archive is 619,802,268 bytes with SHA-256
+`aa8b2291a670791f8a50626c1098eb2281b8b616cff260163c9aa895ddc8879f`.
+Independent review of its final native x86 subtree also passes 24 acceptance
+receipts, 15 benchmark variants, 156 controls and 990 rank results, with the
+4,804-file subtree unchanged. Review artifacts created after preparation are
+separate from that frozen checkpoint; exact identities and commands are in the
+evidence README.
 
 Remaining M2 work includes a complete, validated Darwin extraction backend and
 the required macOS corpus, negative controls and budgets. Native
@@ -199,12 +228,17 @@ override that provider restriction; no OS security setting was changed. See the
 [capability diagnostic](../../fixtures/mvp/macos-trace/README.md). The owner
 approved a local UTM VM after freeing internal storage, and completed the guest
 Setup Assistant. The exact owned-fixture syscall probe also failed under SIP
-in the arm64 VirtualMac2,1 guest. The owner explicitly declined
-disabling SIP and requires it to remain enabled. Host and guest security
-policies were preserved; no approved trace-capable hosted macOS runner is
-available. The capability transport and diagnostic reader do not supply the
+in the arm64 VirtualMac2,1 guest. The owner initially chose to keep guest SIP
+enabled, then explicitly corrected that choice and authorized temporarily
+disabling it only in this owned test VM, with restoration after tracing.
+Recovery owner authentication succeeded and post-reboot guest metadata confirms
+SIP disabled. The first nine native diagnostic programs compile and start DTrace,
+but reject their first record before a complete transport can be validated.
+Their failed captures are preserved; record-layout calibration is in progress.
+The physical host policy remains unchanged. No approved trace-capable hosted
+macOS runner is available. The capability transport and diagnostic reader do not supply the
 missing Darwin decoder/oracle. Full Mac R02 implementation and its corpus,
-negative controls and budgets remain open under the retained policy.
+negative controls and budgets remain open until actual capture and replay pass.
 Public release additionally needs Developer ID/notarization under
 the chosen policy, and publication/verification of retained evidence assets.
 Memory mode and later platform/language expansion remain in

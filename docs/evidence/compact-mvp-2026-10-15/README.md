@@ -135,10 +135,18 @@ and no fixture execution. The result is retained under
 Two earlier guest attempts failed at `dtrace -c` argument quoting and remain
 diagnostic records rather than SIP evidence. Toolkit files are shared read-only;
 only the dedicated test-results folder is writable. VM disk images and guest
-credentials are excluded from evidence. After read-only Recovery inspection,
-the owner chose to keep the guest's SIP enabled. `csrutil status` still reported
-enabled immediately before its clean shutdown; no guest or host SIP change was
-executed. The native diagnostic collector and strict raw reader are implemented
+credentials are excluded from evidence. At the earlier checkpoint after read-only
+Recovery inspection, the owner chose to keep guest SIP enabled; `csrutil status`
+reported enabled before its clean shutdown. The owner subsequently corrected
+that choice and authorized temporarily disabling SIP only in this owned test VM,
+with restoration after tracing. Recovery owner authentication succeeded; the
+post-reboot native batch records `System Integrity Protection status: disabled.`
+The nine programs compile/start DTrace but fail the collector's strict record
+layout before producing complete captures. Their original results are at
+`/private/tmp/glue-mvp-macos-vm-results/glue-mvp-guest-native-v3-jWaBxiJ3`.
+This is diagnostic failure, not application acceptance or a remaining SIP-provider
+rejection. No physical host policy change was authorized or executed.
+The native diagnostic collector and strict raw reader are implemented
 but always reject full-trace acceptance; a complete Darwin decoder/oracle and
 actual macOS extraction acceptance remain open.
 
@@ -147,15 +155,99 @@ reviewed normalized open-intent slice passes 11 controls, including ten actual
 owned host fixture modes and comparison with compiled SDK constants. Those
 self-reports are not kernel traces, and its acceptance API also rejects. The
 host-only report is `/private/tmp/glue-darwin-open-intent-evidence/report.json`.
-The retained guest toolkit includes a prepared nine-case native capture script;
-that script was reviewed but not executed. VM trace acceptance is not inferred
-from these host tests or the prepared script.
+The retained guest toolkit's reviewed nine-case script has now executed as the
+failed batch above. VM trace acceptance is not inferred from those attempts or
+the host unit tests. Transport calibration continues separately.
 
 ## Retention
 
-Following [decision 0030](../../decisions/0030-evidence-retention.md), this directory
-commits narrative and SHA-256 inventories only. Bulk receipts, traces and logs
-remain outside Git. There is no `bundle.json` because no evidence archive has
-been published. A clone alone cannot retrieve the local files; the selected
-evidence must be packaged, explicitly published and fetched/verified before
-claiming durable shared retention or release closure.
+Following [decision 0030](../../decisions/0030-evidence-retention.md) and the
+[external-root extension](../../decisions/mvp-r04-external-evidence-retention.md),
+this directory commits narrative and SHA-256 inventories only. The source index
+now selects 18,588 ordinary files from 68 explicitly identified local roots.
+The original 13,808 indexed file identities are unchanged; 4,774 original failed
+run files and six merged-main portable CI records were added. This includes the
+original failed run's complete retained raw tree, rather than only its six
+summary/triage files. VM disks, credentials and unrelated temporary directories
+are not selected.
+
+Prepare and restore a private local bundle with:
+
+```sh
+python3 scripts/evidence-bundle.py prepare \
+  --source-root /private/tmp \
+  --inventory docs/evidence/compact-mvp-2026-10-15/local-evidence.sha256 \
+  --output /absolute/new/prepared-directory
+python3 scripts/evidence-bundle.py restore \
+  --archive /absolute/new/prepared-directory/evidence.tar.gz \
+  --metadata /absolute/new/prepared-directory/prepared.json \
+  --inventory docs/evidence/compact-mvp-2026-10-15/bundle-payload.sha256 \
+  --output /absolute/new/restored-directory
+```
+
+The restorer verifies the compressed identity, exact member inventory, hashes,
+sizes and ordinary modes before promoting the new output. Captures appear below
+`restored-directory/payload/<original inventory-relative path>`, including names
+with spaces and Unicode. Source parent aliases inside the declared root are
+materialized as ordinary files at their original logical names. Final symlinks,
+hard links, special files and escaping aliases are rejected. Recorded absolute
+receipt and trace strings remain byte-identical; replay uses relative capture
+files and those original names as logical trace values. Selected older payloads
+are intentionally absent, so retrospective replay does not imply a fresh runtime
+execution environment.
+
+`prepared.json` records actual local archive bytes and is not a publication
+pointer. There is no `bundle.json` because no evidence archive has been published.
+A clone alone cannot retrieve these files. After an authorized actual upload,
+a version-two pointer and committed complete inventory allow
+`sh scripts/fetch-evidence.sh docs/evidence/compact-mvp-2026-10-15 --output NEWROOT`
+to download, verify and restore into a new root. Publication and a real remote
+fetch/verification remain required before claiming durable shared retention or
+release closure.
+
+The prepared checkpoint is
+`/private/tmp/glue-mvp-evidence-prepared-final-20261015`; the independently
+restored root is `/private/tmp/glue-mvp-evidence-restored-final-20261015`.
+It contains 18,590 archive members: 18,588 captures totaling 2,757,301,124 bytes,
+the source inventory and the manifest. The 619,802,268-byte archive has SHA-256
+`aa8b2291a670791f8a50626c1098eb2281b8b616cff260163c9aa895ddc8879f`.
+The committed complete inventory has SHA-256
+`63389b5afa21295e9a1fa285b898581bc23829cf325176db739a39f98e98a7d4`;
+the exact source inventory has SHA-256
+`5fa0522647fdf674944f308e51d9e9ec5bf947ab476555b88f0c8abedab2c259`.
+`prepared.json` has SHA-256
+`280d9976095122a30dd13855c3d13b6181a1a73fedc53d9078405eeb0a18cecb`.
+
+Seventeen focused contract tests passed with
+`python3 scripts/test-evidence-bundle.py -v`; the local log is
+`/private/tmp/glue-mvp-evidence-tests-final-20261015.log`, SHA-256
+`3d5f44edf749bb56650aa2d671d12d86717a77816df42d0f01b76bbfb517c30a`.
+Shell syntax, Python compilation and whitespace checks also passed. A separate
+read-only proof driver checked the 40 selected older acceptance receipts,
+24 final native receipts, 30 benchmark variant receipts, all ten accepted
+arm64/x86 profiles and 1,980 rank results with their exact streams and kernel
+measurement JSON. All checks passed from the restored root. The driver calls
+the checked-in harness and budget validators; it neither rewrites captures nor
+executes recorded commands. Its exact invocation was:
+
+```sh
+python3 /private/tmp/glue-evidence-portable-replay.py \
+  --restored /private/tmp/glue-mvp-evidence-restored-final-20261015 \
+  --repository /Users/johannes.blaschke/Developer/glue_rs \
+  --output /private/tmp/glue-mvp-evidence-portable-replay-final-20261015.json
+```
+
+The driver SHA-256 is
+`33c8dde09348e35b525eb6da3ed1a3acc178a3cf4867e98d65530b8bd2a2414d`;
+the report SHA-256 is
+`4914c1c39aa769a74533a9ca28fee771abd82494cdf28314d2cf945f1d8b0e69`.
+These post-preparation review files are outside the frozen checkpoint and are
+not claimed as published or durably shared evidence. Later checkpoints can
+explicitly index them without changing this archive's captured bytes.
+
+A follow-up guard rejects sparse PAX processing and nested extensions before
+Python's tar parser handles them. Eighteen controls passed; the new log is
+`/private/tmp/glue-mvp-evidence-tests-final-hardened-20261015.log`, SHA-256
+`b1792c0b5c2f40398ed217afc79f727fbaad5f73345da551383d75651487e99b`.
+The unchanged archive was restored and fully verified again at
+`/private/tmp/glue-mvp-evidence-restored-hardened-final-20261015`.

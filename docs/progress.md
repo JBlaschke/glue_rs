@@ -2,11 +2,11 @@
 
 ## Compact MVP implementation — 15 October 2026
 
-The 26 cards now have separate `codex/mvp-*` feature branches. The integrated
-review stack is `codex/mvp-r04-docs`; `main` remains unchanged at `6b49cc5`.
+The 26 cards have separate `codex/mvp-*` feature branches. The owner merged the
+integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
 [The task/compatibility ledger](plans/mvp-implementation.md) records all branches,
-executed target/runtime cells, commands and open evidence. No milestone merge or
-release publication was performed.
+executed target/runtime cells, commands and open evidence. Follow-up work uses
+new feature branches; no release asset has been published.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
@@ -18,16 +18,32 @@ Historical schema-zero commands and memory experiments remain separate.
 The owner chose ad-hoc signing for macOS development acceptance; Developer ID and
 notarization are prerequisites for public binary releases. Current development
 execution covers macOS arm64 and native Linux arm64. Hosted native Linux x86_64
-ran all 24 applications successfully but awaits acceptance rerun after harness
-fixes. Complete macOS process-tree tracing is blocked by SIP on the current host,
-including after native administrator authentication. M1/M2 remain open: no
-missing execution is replaced with a cross-build, snapshot or skipped test.
+passed all 24 acceptance cases and five enforced performance budgets, including
+independent replay. The merged `main` also passed all nine portable CI jobs in
+[run 38810513172](https://github.com/JBlaschke/glue_rs/actions/runs/38810513172).
+Complete macOS process-tree tracing is blocked by SIP on the physical host.
+The owner subsequently authorized temporarily disabling SIP only in the owned
+UTM test VM, with restoration after tracing; guest authentication and actual
+capture validation were initially pending. The guest now reports SIP disabled;
+its first nine native programs start DTrace but fail strict record-layout checks.
+Those failed captures are preserved while transport calibration continues.
+A complete Darwin decoder/oracle and M2 remain
+open: no missing execution is replaced with a cross-build, snapshot or skipped
+test.
 
 User instructions and installed tools are in [README](../README.md) and
 [the compact CLI guide](compact-cli.md). Test results, exact runtime versions,
 local evidence locations and host-scoped numeric performance budgets are linked
 from the acceptance ledger. Raw logs/binaries/traces stay outside Git under
 [decision 0030](decisions/0030-evidence-retention.md); publication remains pending.
+
+Follow-up source branches include `codex/mvp-r02-darwin-state` (`6ce6ae2`,
+26 independently reviewed synthetic state controls),
+`codex/mvp-r04-evidence-retention` (`1dd9b90`, strict external-root bundles and
+18 controls) and `codex/mvp-v01-evidence-ci` (`45e375f`, automated portable
+evidence controls). The 18,588-file checkpoint round-trips unchanged and replays
+94 receipts, ten budget profiles and 1,980 rank results from a new root.
+Current documentation continues on `codex/mvp-r04-acceptance-followup`.
 
 ## Historical implementation record
 
