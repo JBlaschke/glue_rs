@@ -106,6 +106,20 @@ its verification-root manifest SHA-256 is
 `2157a2196feab8458efd98527cc2009d0c6c86c1c5165863d72300a895ec4ed5`.
 No recorded command or target was executed.
 
+An independent restore into
+`/private/tmp/glue-darwin-restoration-independent-restore-20261016` reproduced
+all 59 members, hashes, sizes and modes. The reviewer also checked the exact
+ten-command SIP proof, nine unique CI jobs and critical steps, and workflow/script
+bytes against the approved Git objects. The four-file review root is separate
+from the frozen checkpoint at
+`/private/tmp/glue-restoration-checkpoint-independent-review-20261016`.
+Its review JSON SHA-256 is
+`31a81d9840286a42ebec96390153eefdd3c6f702091ecd2d53ade37c40f0d17b`;
+its manifest SHA-256 is
+`6fccab28387a5bd5c026d423d0bfddd49795db1e4795f25801046f95f26d4c38`.
+Existing roots remained unchanged; no captured programs or retained argv were
+executed. This review adds no full Darwin acceptance or remote publication.
+
 Use the bounded external-root
 [retention profile](../../decisions/mvp-r04-external-evidence-retention.md) with
 new output directories:

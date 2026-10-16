@@ -141,7 +141,10 @@ setting. The physical Mac's SIP settings remain unchanged.
 [restoration and hosted-CI checkpoint](evidence/compact-mvp-darwin-restoration-2026-10-16/README.md):
 57 selected files / 160,140 bytes, restored as 59 exact archive members with
 matching hashes, sizes and modes. Earlier checkpoints remain unchanged. The
-22,316-byte archive stays local; durable publication remains open.
+independent fresh restore confirms the same exact members and source/CI proof;
+its review remains at
+`/private/tmp/glue-restoration-checkpoint-independent-review-20261016`.
+The 22,316-byte archive stays local; durable publication remains open.
 `codex/mvp-r04-sip-restoration-status` records the current restoration status.
 
 `codex/mvp-r04-macos-calibration-evidence` (`d44dd33`, integrated `aded39b`)
