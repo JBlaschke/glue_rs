@@ -46,6 +46,21 @@ a sentinel above lowered child FD limits; Linux runs injected controls and
 explicitly rejects the native adapter. This numeric property does not verify
 endpoint objects, inherited cwd/Mach/fileport rights or a complete bootstrap.
 
+The [endpoint helper](target-endpoints/README.md) validates all five source
+roles before allocating fresh CLOEXEC copies, then maps blocking stdio only
+inside the owned child. Its private FIFO control ends must already be
+nonblocking; original caller descriptors and shared status flags stay unchanged.
+Partial allocation or mapping failures cannot authorize launch.
+
+The [bootstrap wire codec](bootstrap-wire/README.md) supplies fixed, bound
+READY/GO/EXEC_ATTEMPT/ERROR records and strict sequence validation. The separate
+[pipe transport](bootstrap-io/README.md) retains confirmed byte prefixes under
+absolute monotonic deadlines, including on failure. A failed GO write can
+already have released its peer and must never be replayed. Neither helper treats
+pipe EOF as proof of exec success. These dependencies have focused native and
+injected controls; the complete nonroot controller and collector integration
+remain separate work.
+
 A root-authenticated wildcard preflight on the physical host reported:
 
 ```

@@ -25,6 +25,9 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/mach-msg2/test_observe_msg2.py -v
         python3 fixtures/mvp/macos-trace/target-credentials/test_target_credentials.py -v
         python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
+        python3 fixtures/mvp/macos-trace/target-endpoints/test_target_endpoints.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-wire/test_bootstrap_wire.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
         # Native SDK/signature controls keep their separate target receipts.
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v

@@ -253,6 +253,45 @@ The separate read-only bootstrap assessment at
 defines remaining endpoint, signal/cwd, fixed protocol, watchdog and versioned
 reader work. It is a proposal, not an implemented target launcher or new capture.
 
+`codex/mvp-r02-bootstrap-wire` (`f7ecb27`, `5a48e25`, integrated as `2d93b0d`,
+`e6d9587`) adds pure fixed-record codecs, request/PID binding and a poisonable
+sequence validator. Eleven controls and an independent review with two extra
+ASan/UBSan boundary groups pass. `codex/mvp-r02-target-endpoints` (`d25ccf4`,
+integrated `04fea27`) validates all five source roles before copying, keeps
+stdio blocking and private FIFO controls nonblocking, and maps only inside the
+owned child. Seventeen native controls pass on both Mac and unprivileged Linux;
+the independent source/cross-component review passes. Neither helper authorizes
+endpoint objects or integrates the collector.
+
+`codex/mvp-r02-bootstrap-io` (`135acc5`, `07b6a29`, `2279299`, integrated as
+`4362220`, `cfe0c81`, `4e59295`) adds bounded nonblocking record/EOF transport.
+The first implementation's later clock check could hide an earlier fatal poll
+error; the separate fix and regression control preserve its original errno.
+All 18 controls pass on Mac, Mac ASan/UBSan and offline unprivileged Linux.
+Independent review adds two sanitizer controls after partial transfers. Previous
+logs remain unchanged. The root review at
+`/private/tmp/glue-bootstrap-primitives-root-review-20261016` (manifest SHA256
+`10c784ddb20d285828bc4293708911ac80339039b2e67744dd3bde44a3285d32`)
+also records the corrected sanitizer invocation after an unused environment
+variable made an earlier run ordinary C execution. Prefixes survive failure;
+a failed GO write may already have released the child and must never be replayed.
+EOF alone supplies no exec-success proof.
+
+`codex/mvp-v01-bootstrap-primitives-ci` adds these three suites to the portable
+baseline. Fourteen suites collect 259 controls: Mac passes 258 with one Linux-only
+skip; offline Linux arm64, now explicitly running as UID/GID 65534, passes 252
+with two Darwin compiler and five Darwin descriptor controls skipped. The exact
+driver, logs and 53 source/data pins are retained in
+`/private/tmp/glue-bootstrap-primitives-portable-v2-20261016`, manifest SHA256
+`b832ed22c95a4cb2e7be2833261f5c6b3bdd255239463251be7b2d2e6b4e579c`.
+Independent audit verifies all five files, both counts, exact suite argv and
+all 53 code/data identities against the tested base and current checkout:
+`/private/tmp/glue-bootstrap-portable-independent-review-20261016`, manifest
+`8a2c81368fdf60d69c2a9b5b066aaf2cf32c36d679d04ce1428468ea0d9acb7e`.
+Shell syntax and diff checks pass. These local follow-ups remain outside the
+approved public `64a4dd2` push and its hosted run. The complete nonroot controller,
+privileged Darwin calibration and full R02/M2 remain open; guest SIP stays enabled.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
