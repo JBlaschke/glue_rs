@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-15 October 2026. Product authority remains [the plan](../../PLAN.md),
+16 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -73,11 +73,20 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-darwin-state` | `6ce6ae2` | Synthetic process/thread generations, call pairing, FD/cwd inheritance and conservative race rejection; 26 controls, no native acceptance |
 | R04 | `codex/mvp-r04-evidence-retention` | `1dd9b90` | Indexed external-root prepare/restore/fetch, 18 controls and unchanged full-bundle round trip; remote publication pending |
 | V01 | `codex/mvp-v01-evidence-ci` | `45e375f` | Baseline runs evidence/reader/open-intent/state controls; Linux GNU tar fixture includes gzip |
-| R04 | `codex/mvp-r04-acceptance-followup` | `this branch` | Current merged-main, retention and guest-calibration record |
+| R02 | `codex/mvp-r02-native-diagnostics` | `3b44dce` | Bounded rejected-layout/libdtrace diagnostics preserve the first failure; integrated as `7ad6fce` |
+| R02 | `codex/mvp-r02-native-layout-v2` | `281f1dd` | Exact assignment/scalar/path layouts, calibrated by v5; integrated as `cd9112c` |
+| R02 | `codex/mvp-r02-target-exit` | `971fd7b` | Raw-v3 explicit target exit candidate; v6 rejects its incomplete exec-shadow handling; integrated as `17a6436` |
+| R02 | `codex/mvp-r02-darwin-diagnostic-reader` | `e3274dd` | Strict source-matched diagnostics and raw-v2/v3 readers; v3 integrated as `2b7dc42` |
+| R02 | `codex/mvp-r02-darwin-enabling-bindings` | `7135bca` | Session-stable EPID/probe/clause descriptors; 43 controls and all 2,592 retained v5 events replay; integrated as `b52b2f8` |
+| R02 | `codex/mvp-r02-owned-open-observer` | `1408f3a` | Calibrated single-thread named-open observations, 13 controls and 15 whole-stream calls from two actual v5 captures; no kernel path/object or extraction claim |
+| R02 | `codex/mvp-r02-darwin-syscall-coverage` | `9be06a1` | 161 pinned syscall declarations, argument/return facts and 18 controls; unresolved routes stay incomplete; integrated as `252b8a1` |
+| V01 | `codex/mvp-v01-darwin-observation-ci` | `4177ab9` | Portable baseline adds owned-open and source-contract suites; 126 collected controls |
+| R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
+| R04 | `codex/mvp-r04-darwin-calibration-status` | `this branch` | Updated native failures and bounded calibration scope |
 
-The four newly automated suites pass 73 controls on the development Mac with
-Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass their
-portable controls; the single Darwin compiler check is explicitly skipped there.
+The six automated Python suites pass 126 controls on the development Mac with
+Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 124
+controls; the two Darwin compiler checks are explicitly skipped there.
 These are unit/format checks, independent of full Darwin application acceptance.
 The Linux image was `83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
 with network disabled and this checkout mounted read-only. Native SDK/signature
@@ -232,9 +241,17 @@ in the arm64 VirtualMac2,1 guest. The owner initially chose to keep guest SIP
 enabled, then explicitly corrected that choice and authorized temporarily
 disabling it only in this owned test VM, with restoration after tracing.
 Recovery owner authentication succeeded and post-reboot guest metadata confirms
-SIP disabled. The first nine native diagnostic programs compile and start DTrace,
-but reject their first record before a complete transport can be validated.
-Their failed captures are preserved; record-layout calibration is in progress.
+SIP disabled. Native v3/v4 captures reject the first callback's layout. The exact
+v2 layout candidate in guest run v5 completes eight of nine owned cases; failed
+spawn exposes a genuine current-context/target exit mismatch and lost parent
+syscalls. V6 adds explicit target exit records, completes the two open-only
+cases and fails all seven tree cases: old-image cleanup after exec shares the
+live PID and prematurely clears its watch. Four failed captures also reject
+their stdout identities because unobserved descendants append after the
+premature footer. Preserve all original bytes and failed gates. A target PID
+alone cannot prove termination of the active process image; that calibration
+remains in progress. These are owned diagnostics, with guest networking enabled,
+and do not satisfy the offline product corpus.
 The physical host policy remains unchanged. No approved trace-capable hosted
 macOS runner is available. The capability transport and diagnostic reader do not supply the
 missing Darwin decoder/oracle. Full Mac R02 implementation and its corpus,

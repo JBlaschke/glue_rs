@@ -1,6 +1,6 @@
 # Implementation progress
 
-## Compact MVP implementation — 15 October 2026
+## Compact MVP implementation — 16 October 2026
 
 The 26 cards have separate `codex/mvp-*` feature branches. The owner merged the
 integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
@@ -24,9 +24,14 @@ independent replay. The merged `main` also passed all nine portable CI jobs in
 Complete macOS process-tree tracing is blocked by SIP on the physical host.
 The owner subsequently authorized temporarily disabling SIP only in the owned
 UTM test VM, with restoration after tracing; guest authentication and actual
-capture validation were initially pending. The guest now reports SIP disabled;
-its first nine native programs start DTrace but fail strict record-layout checks.
-Those failed captures are preserved while transport calibration continues.
+capture validation were initially pending. The guest now reports SIP disabled.
+V3/v4 preserve rejected callback layouts; v5 completes eight owned cases and
+exposes lost parent coverage after failed spawn. V6's explicit target-PID exit
+candidate completes the two open-only cases but fails all seven tree cases:
+macOS also cleans up an old exec image carrying the live PID. Four of those
+failed streams additionally reject stdout identities after unobserved children
+append beyond the premature footer. Those failures remain unchanged while
+process identity calibration continues; restoration of guest SIP is pending.
 A complete Darwin decoder/oracle and M2 remain
 open: no missing execution is replaced with a cross-build, snapshot or skipped
 test.
@@ -44,6 +49,15 @@ Follow-up source branches include `codex/mvp-r02-darwin-state` (`6ce6ae2`,
 evidence controls). The 18,588-file checkpoint round-trips unchanged and replays
 94 receipts, ten budget profiles and 1,980 rank results from a new root.
 Current documentation continues on `codex/mvp-r04-acceptance-followup`.
+
+The subsequent R02 branches and their integrated commits are listed in the
+[follow-up ledger](plans/mvp-implementation.md#task-branches). The strict reader
+has 43 controls and rejects changes to enabled-probe descriptors within a
+session. The owned-open observer has 13 controls and replays all 15 calls in two
+completed v5 streams, retaining raw paths and flags without claiming resolved
+kernel paths or file objects. The source-contract table records 161 pinned
+syscall declarations and has 18 controls. None is a complete extraction oracle.
+Status documentation continues on `codex/mvp-r04-darwin-calibration-status`.
 
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
