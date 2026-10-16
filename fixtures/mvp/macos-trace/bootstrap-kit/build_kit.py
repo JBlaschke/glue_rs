@@ -493,11 +493,15 @@ class Build:
         good = not timed_out and operation_errno is None and code == 0 and out.stat().st_size <= MAX_JSON and err.stat().st_size <= MAX_JSON
         record = {'argv': argv, 'returncode': code, 'timed_out': timed_out, 'operation_errno': operation_errno,
                   'command_cleanup_unresolved': not good}
+        if good:
+            data = out.read_bytes()
+            require(len(data) <= MAX_JSON, 'build command output grew: ' + label)
+        # Do not emit a completed status before the bounded output read. A read
+        # failure retains partial raw files/marker with status absent, not a
+        # false per-command cleanup claim.
         self.commands.append(record)
         self.put('logs/' + label + '.status.json', canonical(record))
         require(good, 'build command failed: ' + label)
-        data = out.read_bytes()
-        require(len(data) <= MAX_JSON, 'build command output grew: ' + label)
         self.tool_cleanup_unresolved = False
         self.active_tool = None
         return data

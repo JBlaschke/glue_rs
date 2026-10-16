@@ -235,23 +235,31 @@ class KitControls(unittest.TestCase):
 
     def test_injected_tool_failures_stay_partial_and_success_can_finish(self):
         # No external command, compiler, process group or descendant is launched.
-        for outcome in ('timeout','nonzero','spawn','success'):
+        for outcome in ('timeout','nonzero','spawn','read-error','growth','success'):
             with self.subTest(outcome=outcome),tempfile.TemporaryDirectory(prefix='glue-kit-injected-tool-') as temp:
                 root=Path(temp).resolve()/'new';build=kit.Build(root,HERE.parents[3])
                 def tool(argv,**kw):
                     if outcome=='spawn':raise OSError(errno.EACCES,'injected spawn refusal')
                     kw['stdout'].write(b'confirmed-prefix');kw['stderr'].write(b'injected-only\n')
                     if outcome=='timeout':raise subprocess.TimeoutExpired(argv,60)
-                    return subprocess.CompletedProcess(argv,0 if outcome=='success' else 17)
+                    return subprocess.CompletedProcess(argv,17 if outcome=='nonzero' else 0)
+                original_read=Path.read_bytes
+                def read_output(path):
+                    if path==root/'logs/tool.stdout':
+                        if outcome=='read-error':raise OSError(errno.EIO,'injected output read failure')
+                        if outcome=='growth':return b'x'*(kit.MAX_JSON+1)
+                    return original_read(path)
+                def run_tool():
+                    with patch.object(Path,'read_bytes',read_output):return build.run('tool',['injected-tool'])
                 with patch.object(kit.subprocess,'run',side_effect=tool) as mock:
                     if outcome=='success':
-                        self.assertEqual(build.run('tool',['injected-tool']),b'confirmed-prefix')
+                        self.assertEqual(run_tool(),b'confirmed-prefix')
                         self.assertFalse(build.tool_cleanup_unresolved)
                         build.finish({'status':'injected-unit-only','full_acceptance':False})
                         identity=hashlib.sha256((root/'SHA256SUMS').read_bytes()).hexdigest()
                         self.assertIn('result.json',kit.verified_tree(root,identity))
                     else:
-                        with self.assertRaises(kit.Refusal) as failure:build.run('tool',['injected-tool'])
+                        with self.assertRaises((kit.Refusal,OSError)) as failure:run_tool()
                         self.assertTrue(build.tool_cleanup_unresolved)
                         with patch.object(kit,'tree_members',side_effect=AssertionError('failed tool must not inventory')):
                             build.retain_failure(failure.exception)
@@ -262,10 +270,13 @@ class KitControls(unittest.TestCase):
                         self.assertIs(marker['tree_closed'],False);self.assertIs(marker['inventory_complete'],False)
                         self.assertIs(marker['full_acceptance'],False)
                         self.assertFalse((root/'SHA256SUMS').exists());self.assertFalse((root/'result.json').exists())
-                        record=json.loads((root/'logs/tool.status.json').read_bytes())
-                        self.assertEqual(record['returncode'],17 if outcome=='nonzero' else None)
-                        self.assertEqual(record['timed_out'],outcome=='timeout')
-                        self.assertEqual(record['operation_errno'],errno.EACCES if outcome=='spawn' else None)
+                        if outcome in ('read-error','growth'):
+                            self.assertFalse((root/'logs/tool.status.json').exists())
+                        else:
+                            record=json.loads((root/'logs/tool.status.json').read_bytes())
+                            self.assertEqual(record['returncode'],17 if outcome=='nonzero' else None)
+                            self.assertEqual(record['timed_out'],outcome=='timeout')
+                            self.assertEqual(record['operation_errno'],errno.EACCES if outcome=='spawn' else None)
                         # Simulated late writer changes raw bytes; no closed-tree
                         # digest/result is created or retroactively asserted.
                         with (root/'logs/tool.stdout').open('ab') as stream:stream.write(b'late-injected-data')
