@@ -23,7 +23,9 @@ int main(int argc,char **argv) {
     struct sigaction action;memset(&action,0,sizeof(action));action.sa_handler=SIG_DFL;
     if(sigemptyset(&action.sa_mask))return 2;
     for(int s=1;s<NSIG;s++)if(s!=SIGKILL&&s!=SIGSTOP&&sigaction(s,&action,NULL))return 2;
-    stack_t stack;memset(&stack,0,sizeof(stack));stack.ss_flags=SS_DISABLE;
+    /* Darwin UNIX2003 validates size even for SS_DISABLE; NULL storage is
+     * never activated. Match the reviewed native-signal workaround. */
+    stack_t stack;memset(&stack,0,sizeof(stack));stack.ss_flags=SS_DISABLE;stack.ss_size=SIGSTKSZ;
     if(sigaltstack(&stack,NULL))return 2;
     if(!strcmp(argv[2],"extra-fd")) {if(open("/dev/null",O_RDONLY)<3)return 2;}
     if(!strcmp(argv[2],"high-fd")) {
