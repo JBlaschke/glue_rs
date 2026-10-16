@@ -90,7 +90,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-mach-msg2-scalars` | `dcb1c5c` | Observe packed scalar fields while keeping message effects unresolved; 16 controls; integrated as `8fc437a` |
 | R02 | `codex/mvp-r02-target-credentials` | `ecc35f2` | Owned-child credential primitive and 14 controls; independently reviewed; integrated as `6eae79b`; collector integration/native privileged Darwin transition remain open |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
-| V01 | `codex/mvp-v01-darwin-credential-ci` | `this branch` | Add credential controls to portable CI; 198 collected controls, new hosted run pending |
+| V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -99,6 +99,7 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-darwin-hosted-ci` | `b824afb` | Record exact hosted CI metadata; running-guest SIP proof was pending at this checkpoint |
 | R04 | `codex/mvp-r04-darwin-restoration-evidence` | `439bb46` | Separate 57-file SIP-enabled proof and exact approved CI checkpoint; 59-member restore verifies |
 | R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
+| R04 | `codex/mvp-r04-credential-hosted-ci` | `this branch` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
 
 The ten automated Python suites collect 198 controls. All pass on the development
 Mac with Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass

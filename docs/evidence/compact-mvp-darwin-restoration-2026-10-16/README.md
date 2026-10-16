@@ -141,3 +141,21 @@ ordinary modes before promoting a new output root. Original proof files are
 restored below `payload/<original relative path>`; captured absolute strings
 are not rewritten. Local preparation is not remote publication or a verified
 public fetch.
+
+## Later credential CI result, outside this frozen selection
+
+After separate owner approval, source
+`64a4dd2d59e23820553521c5e21484dc81d421f4` on
+`codex/mvp-v01-darwin-credential-ci` passed all nine portable jobs in
+[run 38903379520](https://github.com/JBlaschke/glue_rs/actions/runs/38903379520).
+That later run adds the bounded credential primitive controls to baseline CI;
+it supplies no privileged Darwin bootstrap or full extraction acceptance.
+Its 13-file metadata root is
+`/private/tmp/glue-portable-darwin-credential-38903379520-20261016`, with manifest
+SHA-256 `6fa02c86daa6203a5729299fad1000ce4ed8441abfbf855ba46450f154022072`.
+An independent raw API/Git-object review is separate at
+`/private/tmp/glue-portable-darwin-credential-38903379520-root-review-20261016`,
+with review JSON SHA-256
+`1d22b449c25fdd5590c673d74a9ca9add17c0e3b1036dd328a2769607202961e`.
+Neither later root is part of the 57-file selection or its immutable archive.
+The original checkpoint and its hash inventories remain unchanged.

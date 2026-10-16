@@ -194,8 +194,29 @@ The five-file portable control record at
 `/private/tmp/glue-target-credentials-portable-20261016` retains those exact logs,
 driver and counts; its manifest SHA256 is
 `846eb333185dcae2a20c7b1b86b627e70422e9dfad9f81f6d153966729d66656`.
-These local follow-ups are beyond the approved `8567d38` push; their hosted CI
-run remains pending. Full Darwin R02/M2 is still open.
+The owner subsequently approved pushing exact
+`64a4dd2d59e23820553521c5e21484dc81d421f4` on
+`codex/mvp-v01-darwin-credential-ci`. The public branch matches that commit.
+All nine portable jobs pass in
+[run 38903379520](https://github.com/JBlaschke/glue_rs/actions/runs/38903379520):
+baseline, Lua55 and packaging on native Linux x86_64, Linux arm64 and macOS
+arm64. Each required pinned-tool native check step also succeeds. The run is
+event `push`, attempt one, and checks that exact source. Its 13-file frozen
+metadata root is
+`/private/tmp/glue-portable-darwin-credential-38903379520-20261016`;
+the summary SHA256 is
+`9e8de1a631bad5fe87d462622ad3ab1b3983e886a2e2eaee194261f556bfabe5`
+and manifest SHA256 is
+`6fa02c86daa6203a5729299fad1000ce4ed8441abfbf855ba46450f154022072`.
+Independent raw run/jobs and Git-object review confirms nine exact unique jobs,
+native runner labels, required successful steps and byte-identical workflow/script
+sources; its separate review root is
+`/private/tmp/glue-portable-darwin-credential-38903379520-root-review-20261016`.
+No raw captures, archives or VM files were published. This portable CI result
+does not calibrate a privileged Darwin target transition, complete bootstrap,
+filesystem/Mach extraction oracle, new macOS product corpus or budgets.
+`codex/mvp-r04-credential-hosted-ci` records these results locally, outside the
+approved `64a4dd2` push. Full Darwin R02/M2 is still open.
 Kernel file/port object identity, consumed Mach messages and the full extraction
 oracle remain separate implementation work before the product corpus can pass.
 
