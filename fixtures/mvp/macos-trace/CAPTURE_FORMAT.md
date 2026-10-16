@@ -172,8 +172,11 @@ bit 0x20 prevents an old exec object's exit from retiring the live PID. Only a
 nonshadow kind 18 marks its target terminal. No exited record clears a D-side
 watch. Ordinary activity after terminal, duplicate nonshadow termination and
 observed PID reuse reject. Context-only `lwp-exit` may follow terminal without
-changing the ledger. Target detail for exited and create must be in
-1..INT_MAX before a PID conversion. Parent errno, thread exit or missing records cannot
+changing the ledger.
+The current-activity terminal guard applies only to tree profiles. In open-only
+mode, actual root wait may precede consumption of queued final-drain events;
+those records still require exact validation and complete drain. Target detail
+for exited and create must be in 1..INT_MAX before a PID conversion. Parent errno, thread exit or missing records cannot
 substitute for this target evidence. The raw exit value remains unclassified;
 the receipt's `root_wait_status` is separately supplied by actual `waitpid`.
 Published source guides this distinction but does not substitute for new guest

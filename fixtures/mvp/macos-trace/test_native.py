@@ -86,6 +86,11 @@ class NativeCapabilityTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("5 postterminal and PID reuse rejection controls passed", result.stdout)
 
+    def test_open_only_final_drain_preserves_queued_records_after_root_wait(self):
+        result = subprocess.run([str(self.unit), "open-final-drain"], capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("open-only queued final drain preserves records after root wait", result.stdout)
+
     def test_diagnostic_count_message_bounds_and_original_failure_cause(self):
         result = subprocess.run([str(self.unit), "layout-limit"], capture_output=True, text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)

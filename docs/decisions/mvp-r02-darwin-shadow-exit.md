@@ -49,3 +49,13 @@ records, failed-spawn parent continuation and unchanged final stream identities.
 Synthetic controls cover the same-PID shadow sequence, duplicate/reuse/late
 activity and invalid identity/layout boundaries, but cannot calibrate the guest
 kernel. Keep all nine owned cases, deadlines, loss gates and failure evidence.
+
+Actual v7 completed all seven tree profiles, including failed spawn, but both
+open-only profiles rejected their first queued open during final drain. In that
+profile only, `waitpid` may mark the root terminal before the consumer sees its
+buffered records. Apply the current-activity terminal guard only to tree
+profiles, whose terminal state comes from ordered trace events. The open-only
+profile still requires real root wait, strict record validation, drain, loss
+checks and required open events. The reader already applies the open-profile
+wait terminal after reading its whole stream. No protocol or reader semantics
+change; preserve all original v7 failures and calibrate a new complete batch.
