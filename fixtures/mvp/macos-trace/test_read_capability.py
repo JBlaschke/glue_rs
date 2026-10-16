@@ -32,8 +32,6 @@ def event(index, kind, pid=600, detail=0, extra=(), raw_path=None):
     leading = kind in {1, 4, 5, 7}
     if leading:
         records.insert(0, {"action": 1, "size": 0, "offset": 12, "hex": ""})
-    if kind == 18:
-        records.append({"action": 1, "size": 0, "offset": 64, "hex": ""})
     if raw_path is not None:
         raw_path = raw_path.ljust(1024, b"\0")
         records.append({"action": 1, "size": 1024, "offset": 56, "hex": raw_path.hex()})
@@ -74,7 +72,7 @@ class CapabilityReaderTests(unittest.TestCase):
         self.events = [event(1, 1, 500), event(2, 2, detail=500, extra=range(8)),
                        event(3, 14, raw_path=b"/synthetic/input\0"),
                        event(4, 3, detail=500, extra=(3, 0, 0, 0, 0)), event(5, 17, 500)]
-        self.report = {"revision": 3, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
+        self.report = {"revision": 4, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
                        "status": "captured", "reason": "SYNTHETIC FORMAT TEST ONLY", "profile": "open",
                        "host": {"system": "Darwin", "release": "synthetic", "machine": "arm64", "product_version": "synthetic", "build": "synthetic"},
                        "elapsed_seconds": 0.1, "root_pid": 600, "root_wait_status": 0, "deadline_seconds": 15,
@@ -133,6 +131,14 @@ class CapabilityReaderTests(unittest.TestCase):
         self.write_events()
         self.save()
 
+    def tree_session(self, events, processes=None):
+        self.events = events
+        self.report.update(profile="tree", events=len(events),
+                           processes=processes or [{"pid": 600, "created": True, "terminal": True}])
+        (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree"))
+        self.write_events()
+        self.save()
+
     def test_consistent_synthetic_transport_exports_exact_raw_records_only(self):
         summary, timeline = self.inspect()
         self.assertEqual(summary["capture_status"], "captured")
@@ -184,7 +190,7 @@ class CapabilityReaderTests(unittest.TestCase):
 
     def test_receipt_missing_footer_duplicate_extra_and_wrong_types(self):
         original = encoded(self.report)
-        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":3', b'"revision":3,"revision":3'), original.replace(b'"revision":3', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
+        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":4', b'"revision":4,"revision":4'), original.replace(b'"revision":4', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
             with self.subTest(malformed=malformed[:70]):
                 (self.capture / "capability.json").write_bytes(malformed)
                 self.rejected("footer|JSON|header|status|elapsed")
@@ -361,7 +367,7 @@ class CapabilityReaderTests(unittest.TestCase):
             self.assertEqual(self.inspect()[0]["totals"]["events"], 8)
 
     def test_prior_raw_receipts_are_explicitly_unsupported(self):
-        for revision in (1, 2):
+        for revision in (1, 2, 3):
             self.report.update(revision=revision, protocol="darwin-capability-raw-v" + str(revision))
             self.save()
             self.rejected("unsupported capability header")
@@ -369,14 +375,14 @@ class CapabilityReaderTests(unittest.TestCase):
     def test_v2_exact_clause_layouts_preserve_zero_descriptors(self):
         for kind in reader.KINDS:
             with self.subTest(kind=kind):
-                extra = range({2: 8, 3: 5, 15: 8, 16: 1, 18: 1}.get(kind, 0))
+                extra = range({2: 8, 3: 5, 15: 8, 16: 1, 18: 3}.get(kind, 0))
                 value = event(1, kind, detail=600 if kind in {4, 18} else 0, extra=extra, raw_path=b"synthetic\0" if kind == 14 else None)
                 inventory = {} if kind in {1, 17} else {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
                 exported = reader.typed_event(value, 1, "tree-mach", inventory)
                 self.assertEqual(exported["raw"], value)
                 self.assertEqual(exported["raw_uint64_after_header"], list(extra))
                 zero_indexes = [index for index, record in enumerate(value["records"]) if record["size"] == 0]
-                self.assertEqual(zero_indexes, [0] if kind in {1, 4, 5, 7} else [6] if kind == 18 else [])
+                self.assertEqual(zero_indexes, [0] if kind in {1, 4, 5, 7} else [])
                 for index in zero_indexes:
                     self.assertEqual(exported["raw"]["records"][index]["hex"], "")
 
@@ -400,7 +406,7 @@ class CapabilityReaderTests(unittest.TestCase):
                 self.write_events()
                 self.save()
                 self.rejected("layout|action|record|hex|BEGIN")
-        value = event(1, 18, detail=600, extra=(0,))
+        value = event(1, 18, detail=600, extra=(0, 0x12340000, 1))
         inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
         value["records"][-1]["offset"] = 48
         with self.assertRaisesRegex(reader.InvalidCapability, "exact clause layout"):
@@ -611,10 +617,10 @@ class CapabilityReaderTests(unittest.TestCase):
 
     def test_tree_ledger_replay_does_not_end_at_root_exit(self):
         self.report["profile"] = "tree-mach"
-        self.events = [event(1, 1, 500), event(2, 4, detail=601), event(3, 18, detail=600, extra=(0,)),
+        self.events = [event(1, 1, 500), event(2, 4, detail=601), event(3, 18, detail=600, extra=(0, 0x12340000, 1)),
                        event(4, 2, pid=601, extra=range(8)), event(5, 3, pid=601, extra=range(5)),
                        event(6, 15, pid=601, extra=range(8)), event(7, 16, pid=601, extra=(UINT := (1 << 64) - 1,)),
-                       event(8, 18, detail=601, extra=(0,)), event(9, 17, 500)]
+                       event(8, 18, detail=601, extra=(0, 0x12350000, 1)), event(9, 17, 500)]
         self.report.update(events=9, processes=[{"pid": 600, "created": True, "terminal": True}, {"pid": 601, "created": True, "terminal": True}])
         (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree-mach"))
         self.write_events()
@@ -632,8 +638,8 @@ class CapabilityReaderTests(unittest.TestCase):
                        event(3, 6, detail=1),  # raw current-context CLD_* only
                        event(4, 2, extra=range(8)), event(5, 14, raw_path=b"/synthetic/input\0"),
                        event(6, 3, extra=(3, 3, 0, 0, 0)),
-                       event(7, 18, pid=600, detail=601, extra=((1 << 64) - 1,)),
-                       event(8, 18, pid=500, detail=600, extra=(0,)), event(9, 17, 500)]
+                       event(7, 18, pid=600, detail=601, extra=((1 << 64) - 1, 0x12350000, 1)),
+                       event(8, 18, pid=500, detail=600, extra=(0, 0x12340000, 1)), event(9, 17, 500)]
         self.report.update(events=9, processes=[{"pid": 600, "created": True, "terminal": True},
                                                {"pid": 601, "created": True, "terminal": True}])
         (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree"))
@@ -642,7 +648,7 @@ class CapabilityReaderTests(unittest.TestCase):
         summary, timeline = self.inspect()
         self.assertEqual(timeline[2]["kind_label"], "proc-exit-context")
         self.assertEqual(timeline[6]["kind_label"], "proc-exited-target")
-        self.assertEqual(timeline[6]["raw_uint64_after_header"], [(1 << 64) - 1])
+        self.assertEqual(timeline[6]["raw_uint64_after_header"], [(1 << 64) - 1, 0x12350000, 1])
         self.assertEqual(summary["observed_processes"], self.report["processes"])
         # A current-context exit is insufficient for the actual target footer.
         self.events[6] = event(7, 6, pid=601, detail=1)
@@ -654,20 +660,119 @@ class CapabilityReaderTests(unittest.TestCase):
         for kind in (4, 18):
             for target in (0, True, 1 << 31, (1 << 64) - 1):
                 with self.subTest(kind=kind, target=target):
-                    value = event(1, kind, detail=int(target), extra=(0,) if kind == 18 else ())
+                    value = event(1, kind, detail=int(target), extra=(0, 0x12340000, 1) if kind == 18 else ())
                     value["detail"] = target
                     inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
                     with self.assertRaises(reader.InvalidCapability):
                         reader.typed_event(value, 1, "tree", inventory)
 
     def test_v3_rejects_old_context_exit_assignment_and_wrong_target_exit_layout(self):
-        values = [event(1, 6, detail=1), event(1, 18, detail=600, extra=(0,))]
+        values = [event(1, 6, detail=1), event(1, 18, detail=600, extra=(0, 0x12340000, 1))]
         values[0]["records"].append({"action": 1, "size": 0, "offset": 56, "hex": ""})
         values[1]["records"][-1]["offset"] = 56
         for value in values:
             inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
             with self.assertRaisesRegex(reader.InvalidCapability, "record|layout"):
                 reader.typed_event(value, 1, "tree", inventory)
+
+    def test_v4_shadow_exit_retains_bytes_and_root_continues_until_nonshadow_exit(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=600, extra=(0, 0x11110000, 0x21)),
+                           event(3, 2, extra=range(8)), event(4, 14, raw_path=b"/synthetic/input\0"),
+                           event(5, 3, extra=(3, 3, 0, 0, 0)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual(timeline[1]["raw_uint64_after_header"], [0, 0x11110000, 0x21])
+        self.assertEqual(timeline[5]["raw_uint64_after_header"], [0, 0x22220000, 1])
+        self.assertEqual(timeline[1]["raw"]["records"], self.events[1]["records"])
+
+    def test_v4_shadow_exit_after_terminal_stays_raw_without_duplicate_retirement(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=((1 << 64) - 1, 0x11110000, 0x20)),
+                           event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertEqual(timeline[5]["raw_uint64_after_header"], [(1 << 64) - 1, 0x11110000, 0x20])
+
+    def test_v4_shadow_exit_cannot_establish_terminal_completion(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x11110000, 0x21)), event(6, 17, 500)])
+        self.rejected("ledger/footer")
+
+    def test_v4_nonshadow_duplicate_terminal_rejects_even_with_new_object_bytes(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x33330000, 2)), event(7, 17, 500)])
+        self.rejected("duplicate nonshadow terminal")
+
+    def test_v4_current_activity_start_and_exec_after_terminal_reject(self):
+        for kind in (2, 5, 6, 7, 9, 10):
+            with self.subTest(kind=kind):
+                self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                                   event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                                   event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                                   event(6, kind, extra=range(8) if kind == 2 else ()), event(7, 17, 500)])
+                self.rejected("lifecycle activity")
+
+    def test_v4_lwp_exit_cleanup_after_terminal_stays_context_only(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 11), event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertEqual(timeline[5]["kind_label"], "lwp-exit")
+
+    def test_v4_create_cannot_reuse_an_observed_pid(self):
+        self.tree_session([event(1, 1, 500), event(2, 4, detail=601), event(3, 4, detail=601),
+                           event(4, 2, extra=range(8)), event(5, 14, raw_path=b"/synthetic/input\0"),
+                           event(6, 3, extra=(3, 3, 0, 0, 0)), event(7, 17, 500)])
+        self.rejected("create reuses")
+
+    def test_v4_unknown_shadow_target_does_not_add_a_ledger_process(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=601, extra=(0, 0x11110000, 0x21)),
+                           event(3, 2, extra=range(8)), event(4, 14, raw_path=b"/synthetic/input\0"),
+                           event(5, 3, extra=(3, 3, 0, 0, 0)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)])
+        self.assertEqual(self.inspect()[0]["observed_processes"], [{"pid": 600, "created": True, "terminal": True}])
+
+    def test_v4_unknown_nonshadow_target_cannot_complete_the_observed_tree(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=601, extra=(0, 0x11110000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)],
+                          [{"pid": 600, "created": True, "terminal": True}, {"pid": 601, "created": False, "terminal": True}])
+        self.rejected("ledger/footer")
+
+    def test_v4_create_cannot_retroactively_complete_an_unknown_terminal_target(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=601, extra=(0, 0x11110000, 1)),
+                           event(3, 4, detail=601), event(4, 2, extra=range(8)),
+                           event(5, 14, raw_path=b"/synthetic/input\0"), event(6, 3, extra=(3, 3, 0, 0, 0)), event(7, 17, 500)])
+        self.rejected("create reuses")
+
+    def test_v4_exited_identity_fields_have_exact_bounds_and_remain_raw(self):
+        for address, flags in ((0, 1), (1, 1 << 32)):
+            with self.subTest(address=address, flags=flags):
+                value = event(1, 18, detail=600, extra=(0, address, flags))
+                inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                with self.assertRaisesRegex(reader.InvalidCapability, "address|refcount"):
+                    reader.typed_event(value, 1, "tree", inventory)
+        value = event(1, 18, detail=600, extra=((1 << 64) - 1, 1, (1 << 32) - 1))
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        self.assertEqual(reader.typed_event(value, 1, "tree", inventory)["raw_uint64_after_header"],
+                         [(1 << 64) - 1, 1, (1 << 32) - 1])
+
+    def test_v4_rejects_prior_target_exit_shape_instead_of_upgrading_it(self):
+        value = event(1, 18, detail=600, extra=(0,))
+        value["records"].append({"action": 1, "size": 0, "offset": 64, "hex": ""})
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        with self.assertRaisesRegex(reader.InvalidCapability, "record byte layout|record count"):
+            reader.typed_event(value, 1, "tree", inventory)
 
     @unittest.skipUnless(platform.system() == "Darwin", "producer C generator requires Darwin headers")
     def test_program_template_matches_actual_reviewed_c_generator(self):
