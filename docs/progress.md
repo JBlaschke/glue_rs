@@ -45,6 +45,16 @@ evidence controls). The 18,588-file checkpoint round-trips unchanged and replays
 94 receipts, ten budget profiles and 1,980 rank results from a new root.
 Current documentation continues on `codex/mvp-r04-acceptance-followup`.
 
+`codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
+pinned syscall-contract suites to the portable baseline. All six Python suites
+collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
+Darwin C compiler controls skipped on offline Linux arm64/Python 3.11.17. The
+reader now rejects changed EPID bindings before the observation layer; its
+malformed-capture tests accept that precise earlier rejection. These controls
+do not establish native Darwin extraction acceptance. Logs remain at
+`/private/tmp/glue-portable-darwin-followup-{macos,linux-arm64}-20261016.log`;
+the implementation result is this feature branch's tip.
+
 ## Historical implementation record
 
 The earlier feature work and evidence were merged into `main` at `6afed9a`.

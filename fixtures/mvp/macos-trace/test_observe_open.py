@@ -104,7 +104,7 @@ class OpenObservationTests(unittest.TestCase):
     def test_extra_thread_and_different_entry_clause_reject(self):
         self.fixture.events[2]["epid"] = self.fixture.events[1]["epid"]
         self.save()
-        self.rejected("separate clause|probe identity changes open phase")
+        self.rejected("separate clause|probe identity changes open phase|EPID binding changed")
         self.prepare()
         self.fixture.events[2] = support.event(3, 14, pid=600, raw_path=self.path)
         self.fixture.events[2]["tid"] = 999
@@ -150,11 +150,11 @@ class OpenObservationTests(unittest.TestCase):
         self.assertEqual(len(self.inspect()["calls"]), 2)
         self.fixture.events[4]["epid"], self.fixture.events[5]["epid"] = 3, 2
         self.save()
-        self.rejected("probe identity|open phase")
+        self.rejected("probe identity|open phase|EPID binding changed")
         self.two_calls()
         self.fixture.events[4]["epid"] = 99
         self.save()
-        self.rejected("probe identity")
+        self.rejected("probe identity|generated clause has multiple EPIDs")
 
     def test_ordered_triples_cannot_move_backwards_between_calls(self):
         self.two_calls()
