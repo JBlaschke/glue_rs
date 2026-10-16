@@ -17,7 +17,7 @@ import sys
 import tempfile
 
 
-PROTOCOL = "darwin-capability-raw-v3"
+PROTOCOL = "darwin-capability-raw-v4"
 SCOPE = "owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance"
 EVIDENCE = {"program.d", "events.jsonl", "errors.jsonl", "probes.tsv", "target.stdout", "target.stderr", "watchdog.json"}
 TOOLKIT = {"capture-native", "lifecycle-probe", "owned-probe", "input.txt", "prepare-native.sh", "CAPTURE_FORMAT.md"} | {
@@ -31,10 +31,11 @@ MAX_RAW = 128 * 1024 * 1024
 MAX_FILE = 64 * 1024 * 1024
 MAX_LINE = 64 * 1024
 MAX_ENABLINGS = 8192
+P_REF_SHADOW = 0x20
 UINT64 = (1 << 64) - 1
 UINT32 = (1 << 32) - 1
 INT_MAX = (1 << 31) - 1
-LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-kind", "header-pid", "event-output", "probe-layout", "probe-id", "record-action", "record-layout", "header-detail", "header-target"}
+LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-kind", "header-pid", "event-output", "probe-layout", "probe-id", "record-action", "record-layout", "header-detail", "header-target", "target-identity", "lifecycle-state"}
 SOURCE = Path(__file__).resolve().parent
 
 
@@ -191,7 +192,7 @@ def toolkit_provenance(directory):
 
 def receipt_header(report):
     keys(report, HEADER, "capability")
-    require(report["revision"] == 3 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
+    require(report["revision"] == 4 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
     require(report["full_trace_acceptance"] is False and report["settings_changed"] is False, "capability cannot assert acceptance or changed settings")
     boolean(report["identity_checks_passed"], "identity_checks_passed")
     require(report["identity_checks_passed"], "producer identity checks failed; transport integrity cannot be established")
@@ -275,7 +276,7 @@ def producer_program(root, profile):
             result += "proc:::%s /watched[pid]/ { " % name + header(kind, detail)
             result += "}\n"
         result += "proc:::exited /watched[args[0]->pr_pid]/ { " + header(18, "args[0]->pr_pid")
-        result += "trace((uint64_t)arg1); watched[args[0]->pr_pid]=0; }\n"
+        result += "trace((uint64_t)arg1); trace((uint64_t)args[0]->pr_addr); trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount); }\n"
     if mach:
         for returning in (False, True):
             result += "mach_trap:::%s /watched[pid]/ { " % ("return" if returning else "entry")
@@ -416,11 +417,8 @@ def typed_event(event, expected_index, profile, inventory):
     # v4 guest observed the BEGIN assignment; other clauses remain candidates
     # that must match this exact transport before they can be inspected.
     leading = kind in {1, 4, 5, 7}
-    trailing = kind == 18
-    word_count = {2: 13, 3: 10, 15: 13, 16: 6, 18: 6}.get(kind, 5)
+    word_count = {2: 13, 3: 10, 15: 13, 16: 6, 18: 8}.get(kind, 5)
     layout = ([(0, 12)] if leading else []) + [(8, 16 + i * 8) for i in range(word_count)]
-    if trailing:
-        layout.append((0, 64))
     if kind == 14:
         layout.append((1024, 56))
     record_bytes = 1080 if kind == 14 else 16 + word_count * 8
@@ -440,6 +438,9 @@ def typed_event(event, expected_index, profile, inventory):
         if size == 8:
             words.append(int.from_bytes(bytes.fromhex(raw), "little"))
     require(words[:5] == [event[name] for name in ("kind", "timestamp", "pid", "tid", "detail")], "decoded header differs from authoritative raw uint64 records")
+    if kind == 18:
+        require(words[6] != 0, "exited target proc address is zero")
+        integer(words[7], 0, UINT32, "exited target refcount")
     return {"consumer_index": expected_index, "kind_label": KINDS[kind], "raw": event,
             "raw_uint64_after_header": words[5:]}
 
@@ -517,16 +518,28 @@ def inspect_capability(capture, toolkit, timeline):
                 exported = typed_event(event, totals["events"], report["profile"], inventory)
                 bindings.observe(event)
                 kind = event["kind"]
+                # These are source-matched bounded lifecycle checks, not a
+                # general process-generation model. Shadow exited records are
+                # raw context only, including after an observed terminal PID.
+                if kind not in {1, 11, 17, 18}:
+                    require(event["pid"] not in ledger or not ledger[event["pid"]]["terminal"],
+                            "lifecycle activity after observed terminal PID")
                 if kind == 1:
                     totals["begin"] += 1
                 if kind == 17:
                     totals["end"] += 1
                 if kind == 4:
+                    target = ledger.get(event["detail"])
+                    require(target is None or not (target["created"] or target["terminal"]),
+                            "lifecycle create reuses an observed PID")
                     process(event["detail"])["created"] = True
                 elif kind in {5, 7}:
                     process(event["pid"])["created"] = True
                 elif kind == 18:
-                    process(event["detail"])["terminal"] = True
+                    if (exported["raw_uint64_after_header"][2] & P_REF_SHADOW) == 0:
+                        require(event["detail"] not in ledger or not ledger[event["detail"]]["terminal"],
+                                "lifecycle duplicate nonshadow terminal PID")
+                        process(event["detail"])["terminal"] = True
                 if event["function"] == "open" and kind in {2, 3}:
                     totals["open_entries" if kind == 2 else "open_returns"] += 1
                 timeline.write((json.dumps(exported, separators=(",", ":"), ensure_ascii=True) + "\n").encode())
@@ -545,7 +558,7 @@ def inspect_capability(capture, toolkit, timeline):
             require(not report["started"] and not report["drained"] and totals["events"] == 0, "unavailable receipt claims started event capture")
         else:
             require(report["started"], "failed receipt must have started (otherwise unavailable)")
-        return {"revision": 3, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
+        return {"revision": 4, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
                 "transport_integrity": "consistent", "capture_status": report["status"], "capture_reason": report["reason"],
                 "producer_identity_checks_passed": report["identity_checks_passed"],
                 "producer_diagnostics": diagnostics,
@@ -557,7 +570,7 @@ def inspect_capability(capture, toolkit, timeline):
 
 
 def require_full_trace_acceptance(_summary=None):
-    raise InvalidCapability("darwin-capability-raw-v3 is capability-only; R02 full-trace acceptance is unconditionally rejected")
+    raise InvalidCapability("darwin-capability-raw-v4 is capability-only; R02 full-trace acceptance is unconditionally rejected")
 
 
 def export_files(path, timeline, encoded):
