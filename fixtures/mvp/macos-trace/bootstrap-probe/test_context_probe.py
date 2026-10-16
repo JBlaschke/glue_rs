@@ -37,9 +37,13 @@ class NativeContextProbeTests(unittest.TestCase):
 
     def call(self, args, env=None, own_group=True):
         before = snapshot()
-        p = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, env={} if env is None else env,
-                             cwd=self.directory, close_fds=True, start_new_session=own_group)
+        # subprocess.DEVNULL uses O_RDWR; the profile requires exact O_RDONLY.
+        # This privately opened source is closed in the enclosing test process
+        # immediately after Popen has mapped its owned child's stdin.
+        with open(os.devnull, "rb", buffering=0) as read_only_input:
+            p = subprocess.Popen(args, stdin=read_only_input, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, env={} if env is None else env,
+                                 cwd=self.directory, close_fds=True, start_new_session=own_group)
         try:
             stdout, stderr = p.communicate(timeout=3)
         except subprocess.TimeoutExpired:
