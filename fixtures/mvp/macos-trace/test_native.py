@@ -58,28 +58,28 @@ class NativeCapabilityTests(unittest.TestCase):
                     self.assertEqual(diagnostic["records"][1]["u64"], 1)
                 self.assertLess(len(result.stdout.encode()), 8192)
 
-    def test_v2_exact_layouts_preserve_zero_records_and_explicit_header_indexes(self):
+    def test_v3_exact_layouts_preserve_zero_records_and_explicit_header_indexes(self):
         result = subprocess.run([str(self.unit), "valid-layouts"], capture_output=True, text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)
         events = [json.loads(line) for line in result.stdout.splitlines()]
-        self.assertEqual([event["kind"] for event in events], list(range(1, 18)))
+        self.assertEqual([event["kind"] for event in events], list(range(1, 19)))
         for event in events:
             kind = event["kind"]
-            zero = 0 if kind in {1, 4, 5, 7} else 5 if kind == 6 else None
+            zero = 0 if kind in {1, 4, 5, 7} else 6 if kind == 18 else None
             self.assertEqual(event["header_record_indexes"], list(range(1, 6)) if zero == 0 else list(range(5)))
             self.assertTrue(all(record["action"] == 1 for record in event["records"]))
-            self.assertEqual(event["record_bytes"], {2: 120, 3: 96, 14: 1080, 15: 120, 16: 64}.get(kind, 56))
+            self.assertEqual(event["record_bytes"], {2: 120, 3: 96, 14: 1080, 15: 120, 16: 64, 18: 64}.get(kind, 56))
             if zero is not None:
-                self.assertEqual(event["records"][zero], {"action": 1, "size": 0, "offset": 12 if zero == 0 else 56, "hex": ""})
+                self.assertEqual(event["records"][zero], {"action": 1, "size": 0, "offset": 12 if zero == 0 else 64, "hex": ""})
             self.assertEqual([i for i, record in enumerate(event["records"]) if record["size"] == 0], [] if zero is None else [zero])
             raw_header = [int.from_bytes(bytes.fromhex(event["records"][i]["hex"]), "little") for i in event["header_record_indexes"]]
             self.assertEqual(raw_header, [event[name] for name in ["kind", "timestamp", "pid", "tid", "detail"]])
         self.assertEqual(events[13]["records"][5]["size"], 1024)
 
-    def test_v2_wrong_layouts_fail_before_event_publication(self):
+    def test_v3_wrong_layouts_fail_before_event_publication(self):
         result = subprocess.run([str(self.unit), "negative-layouts"], capture_output=True, text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("18 exact layout rejection controls passed", result.stdout)
+        self.assertIn("22 exact layout rejection controls passed", result.stdout)
 
     def test_diagnostic_count_message_bounds_and_original_failure_cause(self):
         result = subprocess.run([str(self.unit), "layout-limit"], capture_output=True, text=True, timeout=3)
@@ -98,7 +98,7 @@ class NativeCapabilityTests(unittest.TestCase):
         self.assertEqual(result.returncode, 77, result.stderr)
         receipt = json.loads((output / "capability.json").read_text())
         self.assertEqual(receipt["status"], "unavailable")
-        self.assertEqual((receipt["revision"], receipt["protocol"]), (2, "darwin-capability-raw-v2"))
+        self.assertEqual((receipt["revision"], receipt["protocol"]), (3, "darwin-capability-raw-v3"))
         self.assertFalse(receipt["started"])
         self.assertFalse(receipt["full_trace_acceptance"])
         self.assertTrue(receipt["identity_checks_passed"])
