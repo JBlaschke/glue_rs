@@ -8,7 +8,7 @@ acceptance. The wire codec lives separately in `bootstrap-wire`.
 the requested operation completed before the absolute monotonic deadline. Every
 other result is failure. Both output objects are required. `result.prefix` is
 zero-initialized and retains exactly `bytes_moved` confirmed bytes; unused bytes
-stay zero on every path. The error repeats that count and identifies stage,
+stay zero on every path. On failure, the error repeats that count and identifies stage,
 reason and original positive syscall errno when that syscall failed. Adapter,
 validation and poll-event errors have errno zero. Invalid output pointers cannot
 be diagnosed; all C objects/spans must be valid, mutually nonoverlapping and
