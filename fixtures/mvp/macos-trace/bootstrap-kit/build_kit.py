@@ -66,10 +66,17 @@ def strict_json(data):
             require(key not in result, 'duplicate JSON key')
             result[key] = value
         return result
+    def number(text):
+        require(len(text) <= 21, 'JSON integer text bound')
+        return int(text)
+    def no_float(_):
+        raise Refusal('floating JSON unsupported')
     try:
         return json.loads(data.decode('utf-8'), object_pairs_hook=pairs,
-                          parse_constant=lambda _: (_ for _ in ()).throw(Refusal('nonfinite JSON')))
-    except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
+                          parse_int=number, parse_float=no_float, parse_constant=no_float)
+    except Refusal:
+        raise
+    except (UnicodeError, ValueError, RecursionError) as exc:
         raise Refusal('invalid bounded JSON') from exc
 
 
