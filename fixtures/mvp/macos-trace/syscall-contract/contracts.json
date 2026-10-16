@@ -1,0 +1,3890 @@
+{
+  "calls": [
+    {
+      "arguments": [
+        "char *fname",
+        "char **argp",
+        "char **envp",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "spawn-or-exec",
+      "name": "__mac_execve",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 380,
+      "requirements": [
+        "bounded-path-and-spawn-descriptor-snapshots",
+        "ordered-file-and-port-actions",
+        "process-tree-and-exec-correlation",
+        "thread-cwd-and-cloexec"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fname": 0
+      },
+      "source_line": 561
+    },
+    {
+      "arguments": [
+        "char *path_p",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "__mac_get_file",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 382,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path_p": 0
+      },
+      "source_line": 564
+    },
+    {
+      "arguments": [
+        "char *path_p",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "__mac_get_link",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 384,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path_p": 0
+      },
+      "source_line": 566
+    },
+    {
+      "arguments": [
+        "char *path",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "__mac_get_mount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 425,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 640
+    },
+    {
+      "arguments": [
+        "char *type",
+        "char *path",
+        "int flags",
+        "caddr_t data",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "__mac_mount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 424,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "data": 3,
+        "filesystem_type": 0,
+        "flags": 2,
+        "mount_path": 1
+      },
+      "source_line": 638
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "__mac_set_fd",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 389,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 571
+    },
+    {
+      "arguments": [
+        "char *path_p",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "__mac_set_file",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 383,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path_p": 0
+      },
+      "source_line": 565
+    },
+    {
+      "arguments": [
+        "char *path_p",
+        "struct mac *mac_p"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "__mac_set_link",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 385,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path_p": 0
+      },
+      "source_line": 567
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "cwd-state",
+      "name": "__pthread_chdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 348,
+      "requirements": [
+        "process-and-thread-cwd",
+        "fd-directory-object-if-fchdir",
+        "root-namespace-change-rejection"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 529
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "cwd-state",
+      "name": "__pthread_fchdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 349,
+      "requirements": [
+        "process-and-thread-cwd",
+        "fd-directory-object-if-fchdir",
+        "root-namespace-change-rejection"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 530
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "access",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 33,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "path": 0
+      },
+      "source_line": 87
+    },
+    {
+      "arguments": [
+        "user_addr_t entries",
+        "size_t size",
+        "user_addr_t results",
+        "uid_t uid"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "access_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 284,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 431
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_cancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 316,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb": 1,
+        "fd": 0
+      },
+      "source_line": 487
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_error",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 317,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb": 0
+      },
+      "source_line": 488
+    },
+    {
+      "arguments": [
+        "int op",
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_fsync",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 313,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb": 1,
+        "operation": 0
+      },
+      "source_line": 484
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_read",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 318,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb": 0
+      },
+      "source_line": 489
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_return",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 314,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "aiocb": 0
+      },
+      "source_line": 485
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocblist",
+        "int nent",
+        "user_addr_t timeoutp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_suspend",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 315,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb_list": 0,
+        "count": 1,
+        "timeout": 2
+      },
+      "source_line": 486
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocblist",
+        "int nent",
+        "user_addr_t timeoutp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_suspend_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 421,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb_list": 0,
+        "count": 1,
+        "timeout": 2
+      },
+      "source_line": 635
+    },
+    {
+      "arguments": [
+        "user_addr_t aiocbp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "aio_write",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 319,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb": 0
+      },
+      "source_line": 490
+    },
+    {
+      "arguments": [
+        "int s",
+        "caddr_t name",
+        "socklen_t namelen"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "bind",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 104,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "s": 0
+      },
+      "source_line": 168
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const guardid_t *guard",
+        "u_int guardflags",
+        "const guardid_t *nguard",
+        "u_int nguardflags",
+        "int *fdflagsp"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "change_fdguard_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 444,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 674
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "cwd-state",
+      "name": "chdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 12,
+      "requirements": [
+        "process-and-thread-cwd",
+        "fd-directory-object-if-fchdir",
+        "root-namespace-change-rejection"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 57
+    },
+    {
+      "arguments": [
+        "char *path",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "chflags",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 34,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "path": 0
+      },
+      "source_line": 88
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "chmod",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 15,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 60
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "uid_t uid",
+        "gid_t gid",
+        "int mode",
+        "user_addr_t xsecurity"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "chmod_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 282,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 429
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int uid",
+        "int gid"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "chown",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 16,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 61
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "cwd-state",
+      "name": "chroot",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 61,
+      "requirements": [
+        "process-and-thread-cwd",
+        "fd-directory-object-if-fchdir",
+        "root-namespace-change-rejection"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 115
+    },
+    {
+      "arguments": [
+        "int src_dirfd",
+        "user_addr_t src",
+        "int dst_dirfd",
+        "user_addr_t dst",
+        "uint32_t flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "clonefileat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 462,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_dirfd": 2,
+        "destination_path": 3,
+        "flags": 4,
+        "source_dirfd": 0,
+        "source_path": 1
+      },
+      "source_line": 716
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "close",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 6,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 51
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "close_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 399,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 593
+    },
+    {
+      "arguments": [
+        "int s",
+        "caddr_t name",
+        "socklen_t namelen"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "connect",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 98,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "s": 0
+      },
+      "source_line": 157
+    },
+    {
+      "arguments": [
+        "int s",
+        "caddr_t name",
+        "socklen_t namelen"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "connect_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 409,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "s": 0
+      },
+      "source_line": 611
+    },
+    {
+      "arguments": [
+        "int socket",
+        "const sa_endpoints_t *endpoints",
+        "sae_associd_t associd",
+        "unsigned int flags",
+        "const struct iovec *iov",
+        "unsigned int iovcnt",
+        "size_t *len",
+        "sae_connid_t *connid"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "connectx",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 447,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 3
+      },
+      "source_line": 678
+    },
+    {
+      "arguments": [
+        "char *from",
+        "char *to",
+        "int mode",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "copyfile",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 227,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_path": 1,
+        "source_path": 0
+      },
+      "source_line": 335
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "delete",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 226,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 334
+    },
+    {
+      "arguments": [
+        "u_int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "dup",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 41,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 95
+    },
+    {
+      "arguments": [
+        "u_int from",
+        "u_int to"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "dup2",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 90,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "from": 0,
+        "to": 1
+      },
+      "source_line": 148
+    },
+    {
+      "arguments": [
+        "const char *path1",
+        "const char *path2",
+        "u_long options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "exchangedata",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 223,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_path": 1,
+        "source_path": 0
+      },
+      "source_line": 331
+    },
+    {
+      "arguments": [
+        "char *fname",
+        "char **argp",
+        "char **envp"
+      ],
+      "attempt_phase": "entry",
+      "family": "spawn-or-exec",
+      "name": "execve",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 59,
+      "requirements": [
+        "bounded-path-and-spawn-descriptor-snapshots",
+        "ordered-file-and-port-actions",
+        "process-tree-and-exec-correlation",
+        "thread-cwd-and-cloexec"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argv": 1,
+        "envp": 2,
+        "executable_path": 0
+      },
+      "source_line": 113
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int amode",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "faccessat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 466,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 720
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "cwd-state",
+      "name": "fchdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 13,
+      "requirements": [
+        "process-and-thread-cwd",
+        "fd-directory-object-if-fchdir",
+        "root-namespace-change-rejection"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 58
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fchflags",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 35,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0,
+        "flags": 1
+      },
+      "source_line": 89
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fchmod",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 124,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 202
+    },
+    {
+      "arguments": [
+        "int fd",
+        "uid_t uid",
+        "gid_t gid",
+        "int mode",
+        "user_addr_t xsecurity"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fchmod_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 283,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 430
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int mode",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "fchmodat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 467,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 721
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int uid",
+        "int gid"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fchown",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 123,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 201
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "uid_t uid",
+        "gid_t gid",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "fchownat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 468,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 722
+    },
+    {
+      "arguments": [
+        "int src_fd",
+        "int dst_dirfd",
+        "user_addr_t dst",
+        "uint32_t flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "fclonefileat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 517,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_dirfd": 1,
+        "destination_path": 2,
+        "flags": 3,
+        "source_fd": 0
+      },
+      "source_line": 820
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int cmd",
+        "long arg"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "fcntl",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 92,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argument": 2,
+        "command": 1,
+        "fd": 0
+      },
+      "source_line": 150
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int cmd",
+        "long arg"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "fcntl_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 406,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argument": 2,
+        "command": 1,
+        "fd": 0
+      },
+      "source_line": 607
+    },
+    {
+      "arguments": [
+        "int fd",
+        "u_long cmd",
+        "caddr_t data",
+        "u_int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "ffsctl",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 245,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argument": 2,
+        "command": 1,
+        "fd": 0,
+        "options": 3
+      },
+      "source_line": 353
+    },
+    {
+      "arguments": [
+        "const struct fhandle *u_fhp",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "indirect-open",
+      "name": "fhopen",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 248,
+      "requirements": [
+        "filehandle-or-object-id-decoder",
+        "filesystem-object-provenance"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "filehandle": 0,
+        "flags": 1
+      },
+      "source_line": 358
+    },
+    {
+      "arguments": [
+        "mach_port_name_t port"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "fileport_makefd",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 431,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "port": 0
+      },
+      "source_line": 649
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t portnamep"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "fileport_makeport",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 430,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0,
+        "port_output": 1
+      },
+      "source_line": 648
+    },
+    {
+      "arguments": [
+        "const char *type",
+        "int fd",
+        "int flags",
+        "void *data"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "fmount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 526,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "data": 3,
+        "fd": 1,
+        "filesystem_type": 0,
+        "flags": 2
+      },
+      "source_line": 834
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t attrname",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fremovexattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 239,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 347
+    },
+    {
+      "arguments": [
+        "uint32_t op",
+        "int dirfd",
+        "user_addr_t name1",
+        "user_addr_t name2",
+        "user_addr_t data",
+        "uint32_t flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "fs_snapshot",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 518,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "data": 4,
+        "dirfd": 1,
+        "flags": 5,
+        "name1": 2,
+        "name2": 3,
+        "operation": 0
+      },
+      "source_line": 821
+    },
+    {
+      "arguments": [
+        "const char *path",
+        "u_long cmd",
+        "caddr_t data",
+        "u_int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "fsctl",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 242,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argument": 2,
+        "command": 1,
+        "options": 3,
+        "path": 0
+      },
+      "source_line": 350
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct attrlist *alist",
+        "void *attributeBuffer",
+        "size_t bufferSize",
+        "u_long options"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fsetattrlist",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 229,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 337
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t attrname",
+        "user_addr_t value",
+        "size_t size",
+        "uint32_t position",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fsetxattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 237,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 345
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "user_addr_t ub",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "fstatat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 469,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 723
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "user_addr_t ub",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "fstatat64",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 470,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 724
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fsync",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 95,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 153
+    },
+    {
+      "arguments": [
+        "int fd"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "fsync_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 408,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 609
+    },
+    {
+      "arguments": [
+        "int fd",
+        "off_t length"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "ftruncate",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 201,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 297
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "funmount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 164,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0,
+        "flags": 1
+      },
+      "source_line": 260
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct timeval *tptr"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "futimes",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 139,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 223
+    },
+    {
+      "arguments": [
+        "const char *path",
+        "struct attrlist *alist",
+        "void *attributeBuffer",
+        "size_t bufferSize",
+        "u_long options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "getattrlist",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 220,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 328
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const char *path",
+        "struct attrlist *alist",
+        "void *attributeBuffer",
+        "size_t bufferSize",
+        "u_long options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "getattrlistat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 476,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 730
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t attrname",
+        "user_addr_t value",
+        "size_t size",
+        "uint32_t position",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "getxattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 234,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 342
+    },
+    {
+      "arguments": [
+        "int dmg_fd",
+        "const char *mountdir",
+        "uint32_t graft_type",
+        "graftdmg_args_un *gda"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "graftdmg",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 549,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "mountdir": 1
+      },
+      "source_line": 865
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const guardid_t *guard"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-state",
+      "name": "guarded_close_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 442,
+      "requirements": [
+        "fd-generation",
+        "close-on-exec-and-duplication-semantics",
+        "command-decoder-if-fcntl"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 672
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "const guardid_t *guard",
+        "u_int guardflags",
+        "int flags",
+        "int dpclass",
+        "int dpflags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "guarded_open_dprotected_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 484,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "class": 4,
+        "dpflags": 5,
+        "flags": 3,
+        "guard": 1,
+        "guardflags": 2,
+        "mode": 6,
+        "path": 0
+      },
+      "source_line": 747
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "const guardid_t *guard",
+        "u_int guardflags",
+        "int flags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "guarded_open_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 441,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 3,
+        "guard": 1,
+        "guardflags": 2,
+        "mode": 4,
+        "path": 0
+      },
+      "source_line": 671
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const guardid_t *guard",
+        "user_addr_t buf",
+        "user_size_t nbyte",
+        "off_t offset"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "guarded_pwrite_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 486,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 749
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const guardid_t *guard",
+        "user_addr_t cbuf",
+        "user_size_t nbyte"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "guarded_write_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 485,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 748
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const guardid_t *guard",
+        "struct iovec *iovp",
+        "int iovcnt"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "guarded_writev_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 487,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 750
+    },
+    {
+      "arguments": [
+        "int fd",
+        "u_long com",
+        "caddr_t data"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "ioctl",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 54,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argument": 2,
+        "command": 1,
+        "fd": 0
+      },
+      "source_line": 108
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const struct kevent *changelist",
+        "int nchanges",
+        "struct kevent *eventlist",
+        "int nevents",
+        "const struct timespec *timeout"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "kevent",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 363,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 544
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const struct kevent64_s *changelist",
+        "int nchanges",
+        "struct kevent64_s *eventlist",
+        "int nevents",
+        "unsigned int flags",
+        "const struct timespec *timeout"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "kevent64",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 369,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0,
+        "flags": 5
+      },
+      "source_line": 550
+    },
+    {
+      "arguments": [
+        "uint64_t id",
+        "const struct kevent_qos_s *changelist",
+        "int nchanges",
+        "struct kevent_qos_s *eventlist",
+        "int nevents",
+        "void *data_out",
+        "size_t *data_available",
+        "unsigned int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "kevent_id",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 375,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 7
+      },
+      "source_line": 556
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const struct kevent_qos_s *changelist",
+        "int nchanges",
+        "struct kevent_qos_s *eventlist",
+        "int nevents",
+        "void *data_out",
+        "size_t *data_available",
+        "unsigned int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "kevent_qos",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 374,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "fd": 0,
+        "flags": 7
+      },
+      "source_line": 555
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "uid_t owner",
+        "gid_t group"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "lchown",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 364,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 545
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t link"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "link",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 9,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_path": 1,
+        "source_path": 0
+      },
+      "source_line": 54
+    },
+    {
+      "arguments": [
+        "int fd1",
+        "user_addr_t path",
+        "int fd2",
+        "user_addr_t link",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "linkat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 471,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_dirfd": 2,
+        "destination_path": 3,
+        "flags": 4,
+        "source_dirfd": 0,
+        "source_path": 1
+      },
+      "source_line": 725
+    },
+    {
+      "arguments": [
+        "int mode",
+        "user_addr_t aiocblist",
+        "int nent",
+        "user_addr_t sigp"
+      ],
+      "attempt_phase": "entry",
+      "family": "asynchronous",
+      "name": "lio_listio",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 320,
+      "requirements": [
+        "bounded-nested-struct-snapshot",
+        "submission-and-completion-correlation",
+        "fd-generation-and-opcode",
+        "reject-unmodeled-async"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "aiocb_list": 1,
+        "count": 2,
+        "mode": 0,
+        "signal": 3
+      },
+      "source_line": 491
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t namebuf",
+        "size_t bufsize",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "listxattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 240,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 348
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "lstat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 190,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 286
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "lstat64",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 340,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 521
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub",
+        "user_addr_t xsecurity",
+        "user_addr_t xsecurity_size"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "lstat_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 280,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 427
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "int behav"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "madvise",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 75,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 133
+    },
+    {
+      "arguments": [
+        "void *regions",
+        "uint32_t region_count",
+        "void *link_info",
+        "uint32_t link_info_size"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "map_with_linking_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 550,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 866
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "user_addr_t vec"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "mincore",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 78,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 136
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 136,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 220
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "uid_t uid",
+        "gid_t gid",
+        "int mode",
+        "user_addr_t xsecurity"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkdir_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 292,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 439
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkdirat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 475,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 729
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkfifo",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 132,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 210
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "uid_t uid",
+        "gid_t gid",
+        "int mode",
+        "user_addr_t xsecurity"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkfifo_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 291,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 438
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mkfifoat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 553,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 869
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int mode",
+        "int dev"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mknod",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 14,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 59
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int mode",
+        "int dev"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "mknodat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 554,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 870
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "int prot",
+        "int flags",
+        "int fd",
+        "off_t pos"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "mmap",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 197,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "user_addr_t",
+      "selectors": {
+        "address": 0,
+        "fd": 4,
+        "flags": 3,
+        "length": 1,
+        "offset": 5,
+        "protection": 2
+      },
+      "source_line": 293
+    },
+    {
+      "arguments": [
+        "char *type",
+        "char *path",
+        "int flags",
+        "caddr_t data"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "mount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 167,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "data": 3,
+        "filesystem_type": 0,
+        "flags": 2,
+        "mount_path": 1
+      },
+      "source_line": 263
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "int prot"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "mprotect",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 74,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "address": 0,
+        "length": 1,
+        "protection": 2
+      },
+      "source_line": 132
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "uint32_t cryptid",
+        "uint32_t cputype",
+        "uint32_t cpusubtype"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "mremap_encrypted",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 489,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 753
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "msync",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 65,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "address": 0,
+        "flags": 2,
+        "length": 1
+      },
+      "source_line": 119
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "msync_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 405,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "address": 0,
+        "flags": 2,
+        "length": 1
+      },
+      "source_line": 606
+    },
+    {
+      "arguments": [
+        "caddr_ut addr",
+        "size_ut len"
+      ],
+      "attempt_phase": "entry",
+      "family": "mapping",
+      "name": "munmap",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 73,
+      "requirements": [
+        "mapping-generations",
+        "file-backed-object-and-offset",
+        "shared-write-capability",
+        "Mach-VM-alias-accounting"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "address": 0,
+        "length": 1
+      },
+      "source_line": 131
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "open",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 5,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "mode": 2,
+        "path": 0
+      },
+      "source_line": 50
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags",
+        "int class",
+        "int dpflags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "open_dprotected_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 216,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "class": 2,
+        "dpflags": 3,
+        "flags": 1,
+        "mode": 4,
+        "path": 0
+      },
+      "source_line": 324
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags",
+        "uid_t uid",
+        "gid_t gid",
+        "int mode",
+        "user_addr_t xsecurity"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "open_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 277,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "gid": 3,
+        "mode": 4,
+        "path": 0,
+        "security": 5,
+        "uid": 2
+      },
+      "source_line": 424
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "open_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 398,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "mode": 2,
+        "path": 0
+      },
+      "source_line": 592
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int flags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "openat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 463,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "flags": 2,
+        "mode": 3,
+        "path": 1
+      },
+      "source_line": 717
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int flags",
+        "int class",
+        "int dpflags",
+        "int mode",
+        "int authfd"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "openat_dprotected_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 218,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "authfd": 6,
+        "class": 3,
+        "dirfd": 0,
+        "dpflags": 4,
+        "flags": 2,
+        "mode": 5,
+        "path": 1
+      },
+      "source_line": 326
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int flags",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "open-request",
+      "name": "openat_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 464,
+      "requirements": [
+        "bounded-path-snapshot",
+        "path-correlation",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "verified-open-flags",
+        "returned-fd-identity"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "flags": 2,
+        "mode": 3,
+        "path": 1
+      },
+      "source_line": 718
+    },
+    {
+      "arguments": [
+        "user_addr_t fsid",
+        "user_addr_t objid",
+        "int oflags"
+      ],
+      "attempt_phase": "entry",
+      "family": "indirect-open",
+      "name": "openbyid_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 479,
+      "requirements": [
+        "filehandle-or-object-id-decoder",
+        "filesystem-object-provenance"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 2,
+        "fsid": 0,
+        "objid": 1
+      },
+      "source_line": 733
+    },
+    {
+      "arguments": [
+        "char *path",
+        "int name"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "pathconf",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 191,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 287
+    },
+    {
+      "arguments": [
+        "pid_t *pid",
+        "const char *path",
+        "const struct _posix_spawn_args_desc *adesc",
+        "char **argv",
+        "char **envp"
+      ],
+      "attempt_phase": "entry",
+      "family": "spawn-or-exec",
+      "name": "posix_spawn",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 244,
+      "requirements": [
+        "bounded-path-and-spawn-descriptor-snapshots",
+        "ordered-file-and-port-actions",
+        "process-tree-and-exec-correlation",
+        "thread-cwd-and-cloexec"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "argv": 3,
+        "envp": 4,
+        "executable_path": 1,
+        "pid_output": 0,
+        "spawn_descriptor": 2
+      },
+      "source_line": 352
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t buf",
+        "user_size_t nbyte",
+        "off_t offset"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "pwrite",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 154,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 238
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t buf",
+        "user_size_t nbyte",
+        "off_t offset"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "pwrite_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 415,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 624
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct iovec *iovp",
+        "int iovcnt",
+        "off_t offset"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "pwritev",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 541,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 853
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct iovec *iovp",
+        "int iovcnt",
+        "off_t offset"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "pwritev_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 543,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 855
+    },
+    {
+      "arguments": [
+        "char *path",
+        "char *buf",
+        "int count"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "readlink",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 58,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 112
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "user_addr_t buf",
+        "size_t bufsize"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "readlinkat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 473,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 727
+    },
+    {
+      "arguments": [
+        "int s",
+        "struct msghdr *msg",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "recvmsg",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 27,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 2,
+        "s": 0
+      },
+      "source_line": 73
+    },
+    {
+      "arguments": [
+        "int s",
+        "struct msghdr *msg",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "recvmsg_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 401,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 2,
+        "s": 0
+      },
+      "source_line": 596
+    },
+    {
+      "arguments": [
+        "int s",
+        "struct msghdr_x *msgp",
+        "u_int cnt",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "recvmsg_x",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 480,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "flags": 3,
+        "s": 0
+      },
+      "source_line": 735
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t attrname",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "removexattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 238,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 346
+    },
+    {
+      "arguments": [
+        "char *from",
+        "char *to"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "rename",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 128,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_path": 1,
+        "source_path": 0
+      },
+      "source_line": 206
+    },
+    {
+      "arguments": [
+        "int fromfd",
+        "char *from",
+        "int tofd",
+        "char *to"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "renameat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 465,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_dirfd": 2,
+        "destination_path": 3,
+        "source_dirfd": 0,
+        "source_path": 1
+      },
+      "source_line": 719
+    },
+    {
+      "arguments": [
+        "int fromfd",
+        "char *from",
+        "int tofd",
+        "char *to",
+        "u_int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "renameatx_np",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 488,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_dirfd": 2,
+        "destination_path": 3,
+        "flags": 4,
+        "source_dirfd": 0,
+        "source_path": 1
+      },
+      "source_line": 751
+    },
+    {
+      "arguments": [
+        "char *path"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "revoke",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 56,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 110
+    },
+    {
+      "arguments": [
+        "char *path"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "rmdir",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 137,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 221
+    },
+    {
+      "arguments": [
+        "const char *name",
+        "int oflag",
+        "int mode",
+        "int value"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "sem_open",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 268,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "user_addr_t",
+      "selectors": {},
+      "source_line": 415
+    },
+    {
+      "arguments": [
+        "const char *name"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "sem_unlink",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 270,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 417
+    },
+    {
+      "arguments": [
+        "int fd",
+        "int s",
+        "off_t offset",
+        "off_t *nbytes",
+        "struct sf_hdtr *hdtr",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "sendfile",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 337,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "destination_fd": 1,
+        "flags": 5,
+        "headers_and_trailers": 4,
+        "length_pointer": 3,
+        "offset": 2,
+        "source_fd": 0
+      },
+      "source_line": 515
+    },
+    {
+      "arguments": [
+        "int s",
+        "caddr_t msg",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "sendmsg",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 28,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 2,
+        "s": 0
+      },
+      "source_line": 74
+    },
+    {
+      "arguments": [
+        "int s",
+        "caddr_t msg",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "sendmsg_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 402,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 2,
+        "s": 0
+      },
+      "source_line": 597
+    },
+    {
+      "arguments": [
+        "int s",
+        "struct msghdr_x *msgp",
+        "u_int cnt",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "sendmsg_x",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 481,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "flags": 3,
+        "s": 0
+      },
+      "source_line": 736
+    },
+    {
+      "arguments": [
+        "const char *path",
+        "struct attrlist *alist",
+        "void *attributeBuffer",
+        "size_t bufferSize",
+        "u_long options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "setattrlist",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 221,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 329
+    },
+    {
+      "arguments": [
+        "int fd",
+        "const char *path",
+        "struct attrlist *alist",
+        "void *attributeBuffer",
+        "size_t bufferSize",
+        "uint32_t options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "setattrlistat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 524,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 832
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t attrname",
+        "user_addr_t value",
+        "size_t size",
+        "uint32_t position",
+        "int options"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "setxattr",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 236,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 344
+    },
+    {
+      "arguments": [
+        "const char *name",
+        "int oflag",
+        "int mode"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "shm_open",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 266,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 413
+    },
+    {
+      "arguments": [
+        "const char *name"
+      ],
+      "attempt_phase": "entry",
+      "family": "rights-or-namespace",
+      "name": "shm_unlink",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 267,
+      "requirements": [
+        "nested-sockaddr-or-message-control-snapshot",
+        "descriptor-or-Mach-fileport-provenance",
+        "namespace-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {},
+      "source_line": 414
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "stat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 188,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 284
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "stat64",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 338,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 519
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "user_addr_t ub",
+        "user_addr_t xsecurity",
+        "user_addr_t xsecurity_size"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-observation",
+      "name": "stat_extended",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 279,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 426
+    },
+    {
+      "arguments": [
+        "char *path",
+        "char *link"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "symlink",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 57,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "literal_target": 0,
+        "new_path": 1
+      },
+      "source_line": 111
+    },
+    {
+      "arguments": [
+        "user_addr_t *path1",
+        "int fd",
+        "user_addr_t path2"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "symlinkat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 474,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 1,
+        "literal_target": 0,
+        "new_path": 2
+      },
+      "source_line": 728
+    },
+    {
+      "arguments": [
+        "char *path",
+        "off_t length"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "truncate",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 200,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 296
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "undelete",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 205,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 301
+    },
+    {
+      "arguments": [
+        "const char *mountdir",
+        "uint64_t flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "ungraftdmg",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 555,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "mountdir": 0
+      },
+      "source_line": 871
+    },
+    {
+      "arguments": [
+        "user_addr_t path"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "unlink",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 10,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 55
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t path",
+        "int flag"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "unlinkat",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 472,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "dirfd": 0,
+        "path": 1
+      },
+      "source_line": 726
+    },
+    {
+      "arguments": [
+        "user_addr_t path",
+        "int flags"
+      ],
+      "attempt_phase": "entry",
+      "family": "opaque-control",
+      "name": "unmount",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 159,
+      "requirements": [
+        "request-specific-decoder",
+        "bounded-nested-payload-snapshot",
+        "reject-unmodeled-command"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "flags": 1,
+        "path": 0
+      },
+      "source_line": 249
+    },
+    {
+      "arguments": [
+        "char *path",
+        "struct timeval *tptr"
+      ],
+      "attempt_phase": "entry",
+      "family": "path-mutation",
+      "name": "utimes",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 138,
+      "requirements": [
+        "bounded-path-snapshot",
+        "process-or-thread-cwd",
+        "dirfd-object-if-relative",
+        "destination-object-policy"
+      ],
+      "return_type": "int",
+      "selectors": {
+        "path": 0
+      },
+      "source_line": 222
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t cbuf",
+        "user_size_t nbyte"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "write",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 4,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 49
+    },
+    {
+      "arguments": [
+        "int fd",
+        "user_addr_t cbuf",
+        "user_size_t nbyte"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "write_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 397,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 591
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct iovec *iovp",
+        "u_int iovcnt"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "writev",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 121,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 199
+    },
+    {
+      "arguments": [
+        "int fd",
+        "struct iovec *iovp",
+        "u_int iovcnt"
+      ],
+      "attempt_phase": "entry",
+      "family": "fd-mutation",
+      "name": "writev_nocancel",
+      "native_adapter_status": "requires-calibration-and-state",
+      "number": 412,
+      "requirements": [
+        "fd-generation",
+        "open-file-description-object",
+        "rights-and-output-policy"
+      ],
+      "return_type": "user_ssize_t",
+      "selectors": {
+        "fd": 0
+      },
+      "source_line": 617
+    }
+  ],
+  "fd_constraint": "Numeric FD and partial io.d fi_pathname are not object identities; fileglob/vnode generations and overlapping mutation handling remain required.",
+  "full_trace_acceptance": false,
+  "lifecycle_constraint": "Current probe pid is actor context, not proven lifecycle target. Actual v5 proc:::exit ran in parent while child exited; no target inference from pid.",
+  "protocol": "darwin-bsd-syscall-contract-v1",
+  "return_words": [
+    "primary_result",
+    "duplicate_primary_result",
+    "secondary_result",
+    "kernel_error",
+    "builtin_errno"
+  ],
+  "revision": 1,
+  "scope": "Pinned source argument inventory and bounded raw entry/return field selection; no pathname decoding or extraction verdict.",
+  "sdk": {
+    "canonical_name": "macosx27.0",
+    "headers": {
+      "sys/aio.h": {
+        "sha256": "580fb8281b21dc8ce1cc613dd3e4c1715b6b464665d8fa60bc64e8c3643beb82",
+        "size": 11902
+      },
+      "sys/fcntl.h": {
+        "sha256": "9aca8ca87031ab7b670617e5af8b15a0cad8f34f7ab3bdb5dd799eb153b3ad0e",
+        "size": 27609
+      },
+      "sys/mman.h": {
+        "sha256": "07adbf7f11a601e6461ca508a2deca037103008600608f8dbe93a4b0887d46e9",
+        "size": 11090
+      },
+      "sys/socket.h": {
+        "sha256": "14405cbcbbdf72944e0425f95e5f3627b534f25eefd0e93ba9544a31c9f85cd7",
+        "size": 32635
+      },
+      "sys/syscall.h": {
+        "sha256": "82f226f3d33f8afbef34c60e00c178b71ba3aef0e31626e25b36fdf431c2df54",
+        "size": 18981
+      }
+    },
+    "version": "27.0"
+  },
+  "sdk_only_reject": [
+    "aio_readv",
+    "aio_writev"
+  ],
+  "sources": {
+    "io.d": {
+      "sha256": "139cf91cc6b1e2aa0aa7c971a2cdff0e6d93a449abe2e3c864ae014fa4300cf3",
+      "size": 9731
+    },
+    "makesyscalls.sh": {
+      "sha256": "bd44c344880e121277d33c7539c05915a030a52c4ceab7c9f88e54f373293c67",
+      "size": 26506
+    },
+    "spawn.h": {
+      "sha256": "2bab0146f4274a3aed928b58671ef81510a62268058d107d2246314077a86d96",
+      "size": 3952
+    },
+    "spawn_internal.h": {
+      "sha256": "eb44e0877ec6ed3979017027ca815a2d4c0b124b97532babc19b00198c8e6871",
+      "size": 22358
+    },
+    "syscalls.master": {
+      "sha256": "7e866891439ad5b3464777d2cacc3b82fc2e7f439fb5a8686c3e6f160d5aeab5",
+      "size": 59004
+    },
+    "systrace.c": {
+      "sha256": "be8c6f8fca90cf95d97bd653056b2ad1c6b1c7a19ca36ba95eac5c848ac4efdd",
+      "size": 29192
+    }
+  },
+  "unavailable_in_pinned_source": [],
+  "unhandled_providers_reject": [
+    "mach_trap",
+    "proc",
+    "unknown"
+  ],
+  "xnu_commit": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+}
