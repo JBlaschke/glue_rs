@@ -94,10 +94,15 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-target-endpoints` | `d25ccf4` | Validate/copy five owned sources before child stdio mapping; 17 native controls on Mac and unprivileged Linux; independently reviewed; integrated as `04fea27` |
 | R02 | `codex/mvp-r02-bootstrap-io` | `135acc5`, `07b6a29`, `2279299` | Nonblocking fixed-record/EOF transport, original poll-error precedence and documentation clarification; 18 controls plus independent sanitizer review; integrated as `4362220`, `cfe0c81`, `4e59295` |
 | R02 | `codex/mvp-r02-bootstrap-signals` | `89997da`, `83148d9`, `12fff2f` | Single-attempt parent signal snapshot/restoration and owned-child reset/release; 15 controls and five extra independent sanitizer scenarios; no complete controller or privileged transition |
+| R02 | `codex/mvp-r02-bootstrap-request` | `9f30258`, `49b44cf` | Pure canonical request and complete READY comparison; 11 controls and two extra independent sanitizer groups; integrated as `50f52d5`, `d702927` |
+| R02 | `codex/mvp-r02-bootstrap-probe` | `aed1a3a`, `df062f1`, `53e9a1a`, `ac36669` | Fixed ordinary-user context self-report; 12 pure/13 native controls, actual failed root-regain check and independent raw report review; integrated through `885660b` |
+| R02 | `codex/mvp-r02-bootstrap-admission` | `41b75ec`, `3f6d388` | Parent-only protected physical path/ACL/root–Data profile, 15 controls and independent injected review; integrated as `e5e4b93`, `ead94f0`; native root positive unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-inspector` | `a16feac`, `d2bd45d` | Ordinary-user read-only root/Data and kernel-identity observation; three controls and independent source/kit reviews; guest run pending unlock |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
 | V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
 | V01 | `codex/mvp-v01-darwin-descriptor-ci` | `a3edd97` | Add descriptor controls to portable CI; 213 collected controls; local follow-up, no hosted run yet |
 | V01 | `codex/mvp-v01-bootstrap-primitives-ci` | `2f087d5` | Add wire, endpoint and pipe-I/O controls to portable CI; 259 collected controls; public push/hosted run awaiting separate owner approval |
+| V01 | `codex/mvp-v01-bootstrap-context-ci` | `this branch` | Add signal/request/probe/admission/inspector controls; 328 collected controls; local follow-up, no hosted run |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -108,16 +113,21 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
 | R04 | `codex/mvp-r04-credential-hosted-ci` | `5567bcd` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
 
-The fourteen automated Python suites collect 259 controls. On the development Mac
-with Python 3.15.0, 258 pass and the Linux-only unsupported-adapter check skips.
-Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 252 controls with seven
-explicit skips: two Darwin compiler checks and five Darwin descriptor controls.
-This combined run uses UID/GID 65534, so the nonprivileged credential and endpoint
-controls execute. Earlier root-container runs and their explicit skips stay frozen.
+The twenty automated Python suites collect 328 controls. On the development Mac
+with Python 3.15.0, 323 pass with five explicit skips: four Linux-only refusal
+checks and the inapplicable noncanonical-group negative (the actual vector is
+canonical, and the native positive runs). Native Linux arm64, Python 3.11.17 and
+glibc 2.28 pass 304 with 24 explicit skips: two Darwin compiler, five descriptor,
+four native signal, eleven native probe, one admission API and one inspector
+control. The Linux run uses UID/GID 65534; applicable nonprivileged credential and
+endpoint controls execute. Earlier root-container runs/skips remain frozen.
 These are unit/format checks, independent of full Darwin application acceptance.
-The exact driver, logs and 53 source/data pins are retained at
-`/private/tmp/glue-bootstrap-primitives-portable-v2-20261016`, manifest SHA256
-`b832ed22c95a4cb2e7be2833261f5c6b3bdd255239463251be7b2d2e6b4e579c`.
+The exact driver, logs and 76 source/data pins are retained at
+`/private/tmp/glue-bootstrap-context-portable-20261016`, manifest SHA256
+`e7c9a2dc64043ccef133e27632c98686b6da6880e3e2c5a7cd3cb8ff6571e4f2`.
+Independent driver/count/source review is retained at
+`/private/tmp/glue-bootstrap-context-independent-review-20261016`, manifest
+`46a4d8246916fa24e6ce226cd4ef31ece5b15fb777ac88a645b7d981d85eb474`.
 The descriptor helper additionally passes six injected-only ASan/UBSan control
 groups. Its native Mac controls close FD 4096 even after only the child's soft
 and hard limits become 64; parent limits and sentinel FDs remain unchanged.

@@ -314,6 +314,66 @@ all canonical policy bytes:
 `0ca7f14f811c6704a96a713e3f02474f284e6ec257303b0e516b023d012ba775`.
 The helper performs no fork, credential change, exec, tracing or VM action.
 
+`codex/mvp-r02-bootstrap-request` (`9f30258`, `49b44cf`, integrated `50f52d5`,
+`d702927`) adds the canonical bounded request and complete READY comparison.
+Eleven controls pass on Mac, Mac ASan/UBSan and unprivileged Linux; independent
+review adds guard-page and wide-scalar rejection groups. Request hashing and
+native admission remain outer-controller duties. The implicit closed argv
+template derives its digest argument after hashing, avoiding self-reference.
+Root review is `/private/tmp/glue-bootstrap-request-root-review-20261016`;
+independent review is `/private/tmp/glue-bootstrap-request-independent-review-20261016`.
+
+`codex/mvp-r02-bootstrap-probe` (`aed1a3a` through `ac36669`, integrated through
+`885660b`) supplies a separate fixed 256-byte post-exec self-report. Twelve pure
+controls pass on both hosts and Mac sanitizers. Thirteen native controls collect
+11 Mac passes plus two explicit skips; offline Linux passes the argument/native-
+unsupported checks with eleven Darwin skips. The genuine ordinary-user Mac
+positive checks actual IDs/groups/cwd/stdio/signal/FD context and observes
+`setuid(0)` fail with EPERM and unchanged IDs. This does not prove a root-to-
+nonroot transition or kernel exec. Separate test-only fixes supply the Darwin
+altstack wrapper size and deliberately open exact read-only stdin; the first
+DEVNULL O_RDWR failure is preserved. Evidence is
+`/private/tmp/glue-bootstrap-probe-native-20261016`, manifest
+`8aedd2eb2fe4cbae5fd4a23c769a9807762969228e36442231716f921fc8b673`.
+Independent review validates the actual report and six strict rejection controls
+at `/private/tmp/glue-bootstrap-probe-independent-review-20261016`.
+
+`codex/mvp-r02-bootstrap-admission` (`41b75ec`, `3f6d388`, integrated `e5e4b93`,
+`ead94f0`) walks eight held components in the closed physical root/Data fixture
+path and returns only checked ownership/type/mode/ACL/mount metadata. A source
+review found that fresh filesec storage alone cannot rule out an ACL-allocation
+false success; typed OWNER/GROUP/MODE presence and stat equality are mandatory
+before interpreting ACL absence. All 15 Mac and sanitizer controls pass;
+unprivileged Linux passes 14 with the Darwin read-only API control skipped.
+Native root admission remains unexecuted. Evidence and independent injected
+review are `/private/tmp/glue-bootstrap-admission-native-20261016` and
+`/private/tmp/glue-bootstrap-admission-independent-review-20261016`.
+
+`codex/mvp-r02-bootstrap-inspector` (`a16feac`, `d2bd45d`) adds a no-argument,
+ordinary-user read-only deployment observation. Three controls pass two and skip
+one platform case on each host. The strict-verified ad-hoc arm64 binary targets
+macOS 26.0 and links libSystem only. Host facts, source/build hashes and logs are
+at `/private/tmp/glue-bootstrap-inspector-native-20261016`, manifest
+`e839a35474a4e5641bdf9e6f4bf973563f8ebc154853d534dc3c514493495120`.
+Its independently reviewed kit is staged under
+`/private/tmp/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016`; the VM
+is locked and its read-only run awaits the owner unlocking it. No guest facts
+or privileged transition are inferred from host results. Guest SIP stays enabled.
+
+`codex/mvp-v01-bootstrap-context-ci` adds all six new suites. Twenty suites collect
+328 controls: Mac passes 323 with five explicit skips; unprivileged offline Linux
+passes 304 with 24 native/platform skips. Exact driver/logs/76 code-data identities
+are frozen at `/private/tmp/glue-bootstrap-context-portable-20261016`, manifest
+`e7c9a2dc64043ccef133e27632c98686b6da6880e3e2c5a7cd3cb8ff6571e4f2`.
+Independent review checks all five retained files, 76 source/data pins, exact
+twenty-suite driver/CI correspondence and every status/count/skip at
+`/private/tmp/glue-bootstrap-context-independent-review-20261016`, manifest
+`46a4d8246916fa24e6ce226cd4ef31ece5b15fb777ac88a645b7d981d85eb474`.
+Shell syntax and diff checks pass. This local source is beyond both the approved
+public `64a4dd2` run and the separately pending `2f087d5` push request.
+The complete nontracing controller is being implemented on a separate branch;
+privileged Darwin calibration, collector integration and full R02/M2 stay open.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
