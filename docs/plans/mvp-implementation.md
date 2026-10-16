@@ -81,11 +81,15 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-open-observer` | `1408f3a` | Calibrated single-thread named-open observations, 13 controls and 15 whole-stream calls from two actual v5 captures; no kernel path/object or extraction claim |
 | R02 | `codex/mvp-r02-darwin-syscall-coverage` | `9be06a1` | 161 pinned syscall declarations, argument/return facts and 18 controls; unresolved routes stay incomplete; integrated as `252b8a1` |
 | V01 | `codex/mvp-v01-darwin-observation-ci` | `4177ab9` | Portable baseline adds owned-open and source-contract suites; 126 collected controls |
+| R02 | `codex/mvp-r02-shadow-exit` | `a401d49` | Explicit target object/refcount distinguishes exec-shadow cleanup; integrated as `aa570d8` |
+| R02 | `codex/mvp-r02-darwin-shadow-reader` | `729bfea` | Exact raw-v4 layout, shadow and terminal checks; 55 controls; integrated as `ad6ff3f` |
+| R02 | `codex/mvp-r02-open-drain-order` | `d4e9e93` | Preserve queued open-only records after root wait; 14 native controls; integrated as `748a309` |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
-| R04 | `codex/mvp-r04-darwin-calibration-status` | `this branch` | Updated native failures and bounded calibration scope |
+| R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
+| R04 | `codex/mvp-r04-darwin-calibration-final` | `this branch` | Nine validated owned diagnostics; full extraction corpus remains open |
 
-The six automated Python suites pass 126 controls on the development Mac with
-Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 124
+The six automated Python suites pass 138 controls on the development Mac with
+Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 136
 controls; the two Darwin compiler checks are explicitly skipped there.
 These are unit/format checks, independent of full Darwin application acceptance.
 The Linux image was `83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
@@ -249,8 +253,14 @@ cases and fails all seven tree cases: old-image cleanup after exec shares the
 live PID and prematurely clears its watch. Four failed captures also reject
 their stdout identities because unobserved descendants append after the
 premature footer. Preserve all original bytes and failed gates. A target PID
-alone cannot prove termination of the active process image; that calibration
-remains in progress. These are owned diagnostics, with guest networking enabled,
+alone cannot prove termination of the active process image. V7/v8 retain the
+target object and raw shadow flag; all seven tree cases then complete, including
+failed-spawn parent continuation and explicit child termination. V7's two
+open-only failures expose queued events arriving after root wait. The focused
+drain fix produces v8 with all nine cases captured, 2,647 events, no drops/errors
+and consistent file identities under independent replay. Original failed
+streams remain unchanged. Guest SIP restoration is in progress. These are owned
+diagnostics, with guest networking enabled,
 and do not satisfy the offline product corpus.
 The physical host policy remains unchanged. No approved trace-capable hosted
 macOS runner is available. The capability transport and diagnostic reader do not supply the

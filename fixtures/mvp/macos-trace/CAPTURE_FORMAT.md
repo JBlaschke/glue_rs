@@ -125,7 +125,10 @@ Actual v4 guest evidence confirmed BEGIN framing, and the v5 corpus exercised
 the v2 lifecycle layouts. V5 also exposed a current-context exit attribution
 error during failed spawn. V3 removed that inference, but actual v6 guest records
 showed exec shadow objects sharing the live target PID. V4 retains their source-
-grounded discriminator; the new CTF field access and flag require guest calibration. See the
+grounded discriminator. Actual v7/v8 guest records validate the CTF field read
+and distinguish shadow `0x1e2` from nonshadow `0x1c2` in this owned corpus.
+V8 completes all nine diagnostic cases with consistent identities; full Darwin
+extraction acceptance remains false. See the
 [layout decision](../../../docs/decisions/mvp-r02-darwin-capability-layout-v2.md)
 and [target-exit decision](../../../docs/decisions/mvp-r02-darwin-target-exit.md),
 superseded by the [shadow-exit decision](../../../docs/decisions/mvp-r02-darwin-shadow-exit.md).

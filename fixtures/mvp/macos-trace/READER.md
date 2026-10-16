@@ -112,9 +112,11 @@ generation attestation. A nonshadow exit for an unknown target remains
 `created: false` and cannot complete the observed ledger. The raw address is
 not a generally reusable generation identity. Actual v6 captures showed that
 target PID alone could retire the live post-exec process during old-object
-cleanup; new guest evidence must separately calibrate the private CTF field
-reads and shadow discrimination. Source-matched synthetic controls cannot
-establish that native result. See the
+cleanup. Actual guest v7/v8 records calibrate the CTF field access for this owned
+corpus: old-image exits retain refcount `0x1e2` (shadow set), while observed live
+root/child terminals retain `0x1c2` (shadow clear). V8 completes all nine cases
+with consistent original file identities. This does not establish a general
+process-generation or filesystem oracle. See the
 [shadow exit decision](../../../docs/decisions/mvp-r02-darwin-shadow-exit.md).
 
 The revised producer's `layout-error` and `libdtrace-error` envelopes require

@@ -6,7 +6,17 @@ the host and copied to an approved guest without guest Python or compiler tools.
 Its raw syscall/process fixtures remain capability-only until a full decoder and
 oracle are implemented and validated.
 
-A root-authenticated wildcard preflight on the current host reported:
+The owned UTM guest completed all nine v8 diagnostics on 16 October 2026:
+2,647 original events, no reported drops/errors and consistent receipt identities
+under the [independent reader](READER.md). The captures calibrate exec-shadow
+cleanup, failed-spawn parent continuation, process-tree coverage and open-only
+queue draining in this corpus. The [open observer](OPEN_OBSERVATIONS.md) also
+replays the two v8 open-only streams, retaining 15 whole-stream calls. These
+root-run captures have networking enabled and do not satisfy the offline
+application corpus or full R02/M2. Guest SIP restoration is in progress; the
+physical host's policy remains unchanged.
+
+A root-authenticated wildcard preflight on the physical host reported:
 
 ```
 dtrace: failed to match syscall:::entry: System Integrity Protection is on
@@ -75,8 +85,8 @@ Before a complete Darwin backend can be accepted, actual captures must establish
 
 The Linux strace protocol and its oracle remain separate. A userspace libc
 interposer, `fs_usage` summary, parser-only test or file snapshot does not replace
-complete Darwin capture evidence. The current capture is intentionally kept
-small until the OS exposes the required syscall provider on an approved host.
+complete Darwin capture evidence. The native guest diagnostics supply the
+bounded calibration above; the physical-host failures below remain unchanged.
 
 ## Retained local result identities
 

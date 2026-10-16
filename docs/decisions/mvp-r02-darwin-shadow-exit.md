@@ -1,7 +1,7 @@
 # Darwin capability transport: retain exec shadow identity
 
-Status: implemented diagnostic candidate; new guest compilation and calibration
-required. Full Darwin/R02 acceptance remains false.
+Status: implemented and calibrated against the nine owned v8 guest diagnostics.
+Full Darwin/R02 acceptance remains false.
 
 The immutable v6 guest batch `glue-mvp-guest-native-v6-rYilzb7D` rejected all
 seven tree cases. Each initial exec produced an `exited` callback on its old
@@ -50,12 +50,20 @@ Synthetic controls cover the same-PID shadow sequence, duplicate/reuse/late
 activity and invalid identity/layout boundaries, but cannot calibrate the guest
 kernel. Keep all nine owned cases, deadlines, loss gates and failure evidence.
 
-Actual v7 completed all seven tree profiles, including failed spawn, but both
-open-only profiles rejected their first queued open during final drain. In that
-profile only, `waitpid` may mark the root terminal before the consumer sees its
-buffered records. Apply the current-activity terminal guard only to tree
-profiles, whose terminal state comes from ordered trace events. The open-only
-profile still requires real root wait, strict record validation, drain, loss
-checks and required open events. The reader already applies the open-profile
-wait terminal after reading its whole stream. No protocol or reader semantics
-change; preserve all original v7 failures and calibrate a new complete batch.
+Actual v7/v8 native CTF reads compile and capture old-image refcount `0x1e2`
+(shadow set), then live root/child terminals with `0x1c2` (clear). V7 completes
+all seven tree cases and retains failed-spawn parent opens. Its two open-only
+cases expose a separate queue-drain ordering bug: `waitpid` marks the root
+terminal before already-buffered syscall records reach the consumer. Branch
+`codex/mvp-r02-open-drain-order` (`d4e9e93`) applies the activity guard only to
+tree profiles, whose terminal evidence is in the event stream. The open-only
+profile still requires root wait, required events and complete drain. Fourteen
+native host controls cover that regression and the tree rejection boundaries.
+
+V8 `glue-mvp-guest-native-v8-dTVgGgQl` completes all nine cases, with 2,647
+original events, no drops/errors and unchanged receipt identities verified by
+the independent source-matched reader. Failed spawn retains child termination,
+continued parent success/ENOENT opens and the parent's own terminal. The seven
+failed v6 tree cases and two failed v7 open-only cases remain rejected and
+unchanged. These root-run diagnostics have networking enabled and cover
+capability calibration only.

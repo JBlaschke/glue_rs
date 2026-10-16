@@ -31,7 +31,10 @@ candidate completes the two open-only cases but fails all seven tree cases:
 macOS also cleans up an old exec image carrying the live PID. Four of those
 failed streams additionally reject stdout identities after unobserved children
 append beyond the premature footer. Those failures remain unchanged while
-process identity calibration continues; restoration of guest SIP is pending.
+process identity calibration continues. V7/v8 retain the exec-shadow flag and
+correct the separate open-only drain ordering. All nine v8 diagnostics now pass
+independent source-matched transport checks (2,647 events, no drops/errors,
+consistent hashes). Restoration of guest SIP is in progress.
 A complete Darwin decoder/oracle and M2 remain
 open: no missing execution is replaced with a cross-build, snapshot or skipped
 test.
@@ -52,12 +55,23 @@ Current documentation continues on `codex/mvp-r04-acceptance-followup`.
 
 The subsequent R02 branches and their integrated commits are listed in the
 [follow-up ledger](plans/mvp-implementation.md#task-branches). The strict reader
-has 43 controls and rejects changes to enabled-probe descriptors within a
+has 55 controls and rejects changes to enabled-probe descriptors within a
 session. The owned-open observer has 13 controls and replays all 15 calls in two
 completed v5 streams, retaining raw paths and flags without claiming resolved
 kernel paths or file objects. The source-contract table records 161 pinned
 syscall declarations and has 18 controls. None is a complete extraction oracle.
 Status documentation continues on `codex/mvp-r04-darwin-calibration-status`.
+
+`codex/mvp-r02-shadow-exit` (`a401d49`, integrated `aa570d8`),
+`codex/mvp-r02-darwin-shadow-reader` (`729bfea`, integrated `ad6ff3f`) and
+`codex/mvp-r02-open-drain-order` (`d4e9e93`, integrated `748a309`) implement the
+calibrated diagnostic fixes. The final six portable suites collect 138 controls:
+all pass on the Mac; Linux arm64 passes 136 with the two Darwin compiler checks
+skipped. Fourteen separate native SDK/signature/collector controls also pass.
+Final logs use `/private/tmp/glue-portable-darwin-final-*-20261016.log` and
+`/private/tmp/glue-darwin-open-drain-native-root-20261016.log`. This establishes
+owned capability transport, with full R02/M2 still open. Documentation continues
+on `codex/mvp-r04-darwin-calibration-final`.
 
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
