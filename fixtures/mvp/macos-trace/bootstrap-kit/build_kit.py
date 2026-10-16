@@ -458,6 +458,8 @@ class Build:
         finally:
             os.close(parent)
         self.commands = []
+        self.tool_cleanup_unresolved = False
+        self.active_tool = None
         self.env = {'PATH': '/usr/bin:/bin:/usr/sbin:/sbin', 'LC_ALL': 'C', 'TZ': 'UTC',
                     'MACOSX_DEPLOYMENT_TARGET': '26.0', 'SOURCE_DATE_EPOCH': '0'}
 
@@ -470,23 +472,38 @@ class Build:
 
     def run(self, label, argv):
         require(re.fullmatch(r'[a-z0-9-]+', label), 'command label')
+        require(not self.tool_cleanup_unresolved, 'previous build tool cleanup unresolved')
+        # subprocess.run reaps the direct command, not its possible descendants.
+        # Any failure below conservatively keeps this state sticky. It is not a
+        # process-containment mechanism or proof that failed outputs are stable.
+        self.tool_cleanup_unresolved = True
+        self.active_tool = label
         self.put('logs/' + label + '.argv.json', canonical(argv))
         out = self.output / ('logs/' + label + '.stdout')
         err = self.output / ('logs/' + label + '.stderr')
-        code, timed_out = None, False
+        code, timed_out, operation_errno = None, False, None
         try:
             with out.open('xb') as stdout, err.open('xb') as stderr:
                 done = subprocess.run(argv, stdout=stdout, stderr=stderr, timeout=60, env=self.env, cwd=self.output)
                 code = done.returncode
         except subprocess.TimeoutExpired:
             timed_out = True
-        record = {'argv': argv, 'returncode': code, 'timed_out': timed_out}
+        except OSError as exc:
+            operation_errno = exc.errno if type(exc.errno) is int and exc.errno > 0 else 0
+        good = not timed_out and operation_errno is None and code == 0 and out.stat().st_size <= MAX_JSON and err.stat().st_size <= MAX_JSON
+        record = {'argv': argv, 'returncode': code, 'timed_out': timed_out, 'operation_errno': operation_errno,
+                  'command_cleanup_unresolved': not good}
         self.commands.append(record)
         self.put('logs/' + label + '.status.json', canonical(record))
-        require(not timed_out and code == 0 and out.stat().st_size <= MAX_JSON and err.stat().st_size <= MAX_JSON, 'build command failed: ' + label)
-        return out.read_bytes()
+        require(good, 'build command failed: ' + label)
+        data = out.read_bytes()
+        require(len(data) <= MAX_JSON, 'build command output grew: ' + label)
+        self.tool_cleanup_unresolved = False
+        self.active_tool = None
+        return data
 
     def finish(self, result):
+        require(not self.tool_cleanup_unresolved, 'cannot inventory unresolved build tool outputs')
         result_bytes = canonical(result)
         lines = []
         fd = open_directory(self.output)
@@ -504,6 +521,23 @@ class Build:
         lines.append(digest(result_bytes) + '  result.json\n')
         self.put('SHA256SUMS', ''.join(lines).encode())
         self.put('result.json', result_bytes)
+
+    def retain_failure(self, exc):
+        if self.tool_cleanup_unresolved:
+            # Do not inspect/hash/finalize a directory that may still have live
+            # descendant writers. This marker and every raw file are partial.
+            self.put('failure.partial.json', canonical({
+                'schema': 'glue-bootstrap-kit-partial-failure-v1', 'status': 'partial-failure',
+                'error': str(exc)[:512], 'tool_label': self.active_tool,
+                'command_cleanup_unresolved': True, 'possible_live_descendants': True,
+                'tree_closed': False, 'inventory_complete': False,
+                'new_binaries_executed': False, 'installed': False,
+                'kernel_exec_proof': False, 'full_acceptance': False}))
+            return
+        failed = {'schema': 'glue-bootstrap-kit-result-v1', 'status': 'failed', 'error': str(exc)[:512],
+                  'new_binaries_executed': False, 'installed': False, 'kernel_exec_proof': False, 'full_acceptance': False}
+        if not (self.output / 'failure.json').exists(): self.put('failure.json', canonical(failed))
+        if not (self.output / 'result.json').exists() and not (self.output / 'SHA256SUMS').exists(): self.finish(failed)
 
 
 def construct(proof_path, kit_path, output):
@@ -577,10 +611,7 @@ def construct(proof_path, kit_path, output):
                       'installed': False, 'kernel_exec_proof': False, 'full_acceptance': False})
         return 0
     except BaseException as exc:
-        failed = {'schema': 'glue-bootstrap-kit-result-v1', 'status': 'failed', 'error': str(exc)[:512],
-                  'new_binaries_executed': False, 'installed': False, 'kernel_exec_proof': False, 'full_acceptance': False}
-        if not (build.output / 'failure.json').exists(): build.put('failure.json', canonical(failed))
-        if not (build.output / 'result.json').exists() and not (build.output / 'SHA256SUMS').exists(): build.finish(failed)
+        build.retain_failure(exc)
         raise
 
 
