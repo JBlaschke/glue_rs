@@ -22,6 +22,13 @@ captures. Thirteen additional entries retain explicit termination boundaries
 with no fabricated return. Pairing preserves raw provenance and supplies no
 filesystem or Mach effects decision.
 
+The [tree-open bridge](tree-open/README.md) retains 68 named-open observations
+across those process/thread lifetimes. The
+[Mach scalar observer](mach-msg2/README.md) retains 18 packed message-call
+observations in the Mach-enabled capture and reports the other six profiles as
+not enabled. Copied paths, numeric descriptors and message fields do not prove
+file objects, port identities or effects; both acceptance APIs remain closed.
+
 A root-authenticated wildcard preflight on the physical host reported:
 
 ```

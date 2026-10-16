@@ -89,6 +89,28 @@ arm64/Python 3.11 passes 153 with two Darwin compiler checks skipped. Logs are
 and independent review remain outside Git under the retention policy. Full
 Darwin R02/M2 acceptance remains open.
 
+`codex/mvp-r02-tree-open` (`ace2f55`, integrated `6b5b0ad`) observes named opens
+through the strict pairing API without changing the historical open-only API.
+Thirteen new controls pass. Independent replay of seven v8 tree captures yields
+68 whole-stream opens: 52 calibrated nonnegative result tuples and 16 ENOENT
+tuples, retaining every copied path byte, flag bit and observed identity.
+These differ from the 17 selected controlled pairs across all nine diagnostics.
+Evidence remains at `/private/tmp/glue-darwin-tree-open-evidence-20261016` and
+`/private/tmp/glue-tree-open-independent-review-20261016`.
+`codex/mvp-r02-mach-msg2-scalars` (`dcb1c5c`, integrated `8fc437a`) preserves
+all paired/raw provenance and decodes only source-grounded packed scalar fields.
+Six profiles explicitly report Mach tracing not enabled; the enabled capture
+has 18 selected message pairs. Sixteen controls and independent actual replay
+pass. Message bodies, consumed bytes, port objects, RPC results and completed
+effects remain unresolved, including the SIP-off KOBJECT_CALL caveat. Evidence
+remains at `/private/tmp/glue-mach-msg2-v8-replay-20261016`.
+`codex/mvp-v01-darwin-scalar-ci` adds both suites to portable CI. All nine suites
+collect 184 tests: all pass on macOS/Python 3.15, while offline Linux arm64/Python
+3.11 passes 182 with two Darwin compiler checks skipped. Logs are
+`/private/tmp/glue-portable-darwin-scalar-*-20261016.log`. Both observation APIs
+and CLIs reject full extraction acceptance. No hosted follow-up CI result is
+claimed while the new public branch push awaits approval.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
