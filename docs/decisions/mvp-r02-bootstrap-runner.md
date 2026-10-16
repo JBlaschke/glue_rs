@@ -152,7 +152,16 @@ cwd to request/READY, fd0/1/2+flags to declared stdio, and native report policy/
 empty environment/root-regain EPERM/post-attempt IDs. NP validity alone does not
 compare those requests. Probe stdout must be exactly256 bytes; stderr empty.
 
-Fixed outputs: request.bin, status.bin, probe.stdout, probe.stderr and result.json.
+Closed outputs: request.bin, status.bin, probe.stdout, probe.stderr, result.pending
+(failure artifact only) and result.json. Final metadata is written to pending
+only after other writers/resources and owned child are resolved; the held private
+dir is closed/checked before serialization. After pending write+close succeed,
+renamex_np(RENAME_EXCL) promotes it over the already-verified absolute physical
+path under the fresh root0700/sticky1777/no-other-privileged-mutator invariant.
+This is not generic pathname race-proofing. Close/write/rename failure leaves no
+final marker, with no retry. No close or fallible finalization follows promotion.
+Consumers additionally require normal CLI exit0: a fatal signal after rename can
+leave result.json, so its existence alone never establishes a completed result.
 The JSON has a closed schema with separate first parent failure, child ERROR,
 protocol fault, confirmed prefixes/counts, GO action/attempt/possibly-released,
 READY comparison, NP comparison, exact wait/reap, signal-restoration and file/
