@@ -1,9 +1,11 @@
 # Capability integrity reader
 
-`read_capability.py` validates `darwin-capability-raw-v1` and exports its raw
+`read_capability.py` validates revision 2, `darwin-capability-raw-v2`, and exports its raw
 timeline. It is a bounded diagnostic consumer, not a Darwin syscall decoder.
 Every summary retains `full_trace_acceptance: false`. Its acceptance API and
 `--acceptance` CLI option reject this format unconditionally.
+Raw-v1 receipts require their retained source-matched older reader; this reader
+does not reinterpret or upgrade old captures.
 
 Run on the host after copying an actual guest capture and its matching toolkit:
 
@@ -57,7 +59,8 @@ stay in received order; the reader does not invent a cross-CPU ordering.
 
 Validation requires exact JSON key sets/types, supported header/profile, bounded
 identities, the exact generated D program including root PID, inventory-matched
-probe descriptors, producer-specific record counts/actions/offsets/hex, and
+probe descriptors, exact clause record counts/actions/sizes/offsets/byte totals,
+explicit header record indexes, and
 agreement between exposed headers and their raw uint64 bytes. It recomputes
 event/open/callback totals. For `captured`, it additionally requires clean final
 completion fields, exactly one BEGIN and END, required open events, no retained
@@ -66,12 +69,24 @@ observed ledger. The open-only profile records root terminal state from the
 producer's root wait; this does not invent a proc exit event. The tree ledger is
 only the producer's observed PID ledger, not proof that every child was visible.
 
+Raw-v2 retains every descriptor, including the exact zero-width assignment
+descriptors: index 0, offset 12 for BEGIN/create/start/exec-success, or index 5,
+offset 56 for exit. Their action must be `DTRACEACT_DIFEXPR` (1), size must be
+zero and raw hex must be empty. The five uint64 header records start at offset
+16 and their explicit indexes must match the clause. Other zero-width records,
+arbitrary gaps, moved headers or skipped descriptors reject. The copyinstr
+record retains all 1024 configured bytes at offset 56. The actual guest v4
+diagnostic established the BEGIN layout; the other source-derived clause
+layouts remain strict candidates for subsequent actual calibration, with no
+kernel semantics or full-trace acceptance inferred from synthetic controls.
+
 The revised producer's `layout-error` and `libdtrace-error` envelopes require
 exact key sets, native integer bounds, bounded byte strings and at most sixteen
 combined diagnostics. Layout metadata keeps signed descriptor counts, a
 five-value header and at most twenty descriptors. A nonnull uint64 must belong
 to an in-range eight-byte record within an 8 KiB probe; the header must agree
-with those descriptor values. Null values do not prove data availability.
+with those descriptor values. Descriptor actions retain their native uint16
+bound. Null values do not prove data availability.
 These envelopes are allowed only for started, failed captures. They neither
 increment DTrace callback counters nor become events. A diagnostic explaining
 an event index gap, count mismatch or rejected layout cannot excuse it. A
@@ -105,4 +120,6 @@ python3 fixtures/mvp/macos-trace/test_read_capability.py -v
 Tests generate conspicuously synthetic records and dummy executable identities
 inside temporary directories. They prove reader behavior, not native provider or
 kernel capture. A Darwin-only control compares every generated D program with
-the actual reviewed C generator without starting DTrace.
+the actual reviewed C generator without starting DTrace. Another control
+compares every clause's synthetic C event output against the reader's strict
+layout, retaining zero-width descriptors rather than discarding them.
