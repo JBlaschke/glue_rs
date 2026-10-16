@@ -69,6 +69,16 @@ observed ledger. The open-only profile records root terminal state from the
 producer's root wait; this does not invent a proc exit event. The tree ledger is
 only the producer's observed PID ledger, not proof that every child was visible.
 
+Within one inspection, each EPID must retain its probe ID, complete descriptor
+tuple, kind, record-byte total, header indexes and action/size/offset layout.
+Each `(kind, probe ID)` in this fixed generated program must also retain one
+EPID. Changed bindings or duplicate enablings reject even when individual
+records, inventory and rebuilt hashes otherwise validate. Call-specific values
+are not identity. The two session-local maps each admit at most 8192 enablings;
+larger sessions fail the explicit diagnostic bound. No identities are evicted,
+and maps are never carried between captures. See the
+[binding decision](../../../docs/decisions/mvp-r02-darwin-enabling-bindings.md).
+
 Raw-v3 retains every descriptor, including the exact zero-width assignment
 descriptors: index 0, offset 12 for BEGIN/create/start/exec-success, or index 6,
 offset 64 for target-aware `exited`. Their action must be `DTRACEACT_DIFEXPR` (1), size must be

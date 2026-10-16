@@ -37,7 +37,7 @@ def event(index, kind, pid=600, detail=0, extra=(), raw_path=None):
     if raw_path is not None:
         raw_path = raw_path.ljust(1024, b"\0")
         records.append({"action": 1, "size": 1024, "offset": 56, "hex": raw_path.hex()})
-    return {"event": index, "cpu": 0, "epid": index, "probe_id": probe, "kind": kind,
+    return {"event": index, "cpu": 0, "epid": kind, "probe_id": probe, "kind": kind,
             "timestamp": words[1], "pid": pid, "tid": words[3], "detail": detail,
             "provider": provider, "module": "", "function": function, "name": name,
             "record_bytes": 1080 if kind == 14 else 16 + 8 * len(words),
@@ -121,6 +121,16 @@ class CapabilityReaderTests(unittest.TestCase):
     def write_diagnostics(self, diagnostics):
         self.report.update(status="failed", drained=False)
         (self.capture / "errors.jsonl").write_bytes(b"".join(encoded(value) for value in diagnostics))
+        self.save()
+
+    def two_open_calls(self):
+        self.events = [event(1, 1, 500), event(2, 2, extra=range(8)),
+                       event(3, 14, raw_path=b"/synthetic/first\0"),
+                       event(4, 3, extra=(3, 3, 0, 0, 0)), event(5, 2, extra=range(10, 18)),
+                       event(6, 14, raw_path=b"/synthetic/second\0"),
+                       event(7, 3, extra=((1 << 64) - 1,) * 3 + (2, 2)), event(8, 17, 500)]
+        self.report.update(events=8, open_entries=2, open_returns=2)
+        self.write_events()
         self.save()
 
     def test_consistent_synthetic_transport_exports_exact_raw_records_only(self):
@@ -285,6 +295,70 @@ class CapabilityReaderTests(unittest.TestCase):
         self.report["profile"] = "tree"
         self.save()
         self.rejected("program bytes/root/profile")
+
+    def test_session_epid_bindings_allow_changing_call_data(self):
+        self.two_open_calls()
+        # An enabling can observe a different process/thread/CPU in this unit
+        # model; these values and path/argument/result bytes are per-call data.
+        for index in (4, 5, 6):
+            value = self.events[index]
+            value.update(pid=601, tid=700, cpu=1)
+            for name, position in (("pid", 2), ("tid", 3)):
+                value["records"][position]["hex"] = value[name].to_bytes(8, "little").hex()
+        self.write_events()
+        self.save()
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual([value["raw"] for value in timeline], self.events)
+
+    def test_session_epid_phase_swaps_reject_after_rebuilt_hashes(self):
+        self.two_open_calls()
+        self.events[4]["epid"], self.events[6]["epid"] = self.events[6]["epid"], self.events[4]["epid"]
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_same_clause_cannot_switch_to_fresh_epid(self):
+        self.two_open_calls()
+        self.events[4]["epid"] = 1000
+        self.write_events()
+        self.save()
+        self.rejected("multiple EPIDs")
+
+    def test_session_epid_cannot_rebind_to_fresh_valid_probe_identity(self):
+        self.two_open_calls()
+        self.events[4]["probe_id"] = 1000
+        self.write_events()  # New probe also enters the rebuilt inventory.
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_epid_cannot_change_descriptor_tuple_after_inventory_rebuild(self):
+        self.two_open_calls()
+        # Give the first call a different, still structurally valid module. The
+        # inventory dictionary's last value is the original second-call tuple,
+        # so retain both as distinct valid probe IDs to reach session checks.
+        self.events[1].update(probe_id=1000, module="first-module")
+        self.events[4]["probe_id"] = 1001
+        self.events[4]["module"] = "second-module"
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_epid_cannot_alias_builtin_and_syscall_clause(self):
+        self.two_open_calls()
+        self.events[1]["epid"] = self.events[0]["epid"]
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_enabling_limit_rejects_without_large_allocations(self):
+        self.two_open_calls()
+        with mock.patch.object(reader, "MAX_ENABLINGS", 4):
+            self.rejected("enabling count exceeds diagnostic limit")
+        # Exactly five stable enabling identities occur, across eight events.
+        with mock.patch.object(reader, "MAX_ENABLINGS", 5):
+            self.assertEqual(self.inspect()[0]["totals"]["events"], 8)
 
     def test_prior_raw_receipts_are_explicitly_unsupported(self):
         for revision in (1, 2):
