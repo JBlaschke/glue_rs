@@ -29,11 +29,19 @@ def event(index, kind, pid=600, detail=0, extra=(), raw_path=None):
         provider, function, name = "mach_trap", "mach_test", "entry" if kind == 15 else "return"
     words = [kind, index * 100, pid, pid + 1, detail, *extra]
     records = [{"action": 1, "size": 8, "offset": 16 + 8 * i, "hex": value.to_bytes(8, "little").hex()} for i, value in enumerate(words)]
+    leading = kind in {1, 4, 5, 7}
+    if leading:
+        records.insert(0, {"action": 1, "size": 0, "offset": 12, "hex": ""})
+    if kind == 6:
+        records.append({"action": 1, "size": 0, "offset": 56, "hex": ""})
     if raw_path is not None:
-        records.append({"action": 1, "size": len(raw_path), "offset": 16 + 8 * len(words), "hex": raw_path.hex()})
+        raw_path = raw_path.ljust(1024, b"\0")
+        records.append({"action": 1, "size": 1024, "offset": 56, "hex": raw_path.hex()})
     return {"event": index, "cpu": 0, "epid": index, "probe_id": probe, "kind": kind,
             "timestamp": words[1], "pid": pid, "tid": words[3], "detail": detail,
-            "provider": provider, "module": "", "function": function, "name": name, "records": records}
+            "provider": provider, "module": "", "function": function, "name": name,
+            "record_bytes": 1080 if kind == 14 else 16 + 8 * len(words),
+            "header_record_indexes": list(range(1 if leading else 0, 6 if leading else 5)), "records": records}
 
 
 def layout_error():
@@ -41,7 +49,7 @@ def layout_error():
     records = [{"action": 1, "size": 0, "offset": 0, "u64": None}]
     records.extend({"action": 1, "size": 8, "offset": i * 8, "u64": value}
                    for i, value in enumerate((1, 1000, 600, 601, 0)))
-    return {"kind": "layout-error", "reason": "header-width", "cpu": -1, "epid": 7,
+    return {"kind": "layout-error", "reason": "record-layout", "cpu": -1, "epid": 7,
             "probe_id": 1, "provider": "dtrace", "module": "", "function": "", "name": "BEGIN",
             "event": 1, "nrecs": 6, "record_bytes": 40,
             "header": [record["u64"] for record in records[:5]], "records": records}
@@ -66,7 +74,7 @@ class CapabilityReaderTests(unittest.TestCase):
         self.events = [event(1, 1, 500), event(2, 2, detail=500, extra=range(8)),
                        event(3, 14, raw_path=b"/synthetic/input\0"),
                        event(4, 3, detail=500, extra=(3, 0, 0, 0, 0)), event(5, 17, 500)]
-        self.report = {"revision": 1, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
+        self.report = {"revision": 2, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
                        "status": "captured", "reason": "SYNTHETIC FORMAT TEST ONLY", "profile": "open",
                        "host": {"system": "Darwin", "release": "synthetic", "machine": "arm64", "product_version": "synthetic", "build": "synthetic"},
                        "elapsed_seconds": 0.1, "root_pid": 600, "root_wait_status": 0, "deadline_seconds": 15,
@@ -120,7 +128,7 @@ class CapabilityReaderTests(unittest.TestCase):
         self.assertEqual(summary["capture_status"], "captured")
         self.assertIs(summary["full_trace_acceptance"], False)
         self.assertEqual([item["raw"] for item in timeline], self.events)
-        self.assertEqual(timeline[2]["raw"]["records"][-1]["hex"], b"/synthetic/input\0".hex())
+        self.assertEqual(timeline[2]["raw"]["records"][-1]["hex"], b"/synthetic/input\0".ljust(1024, b"\0").hex())
         self.assertEqual(timeline[3]["raw_uint64_after_header"], [3, 0, 0, 0, 0])
         self.assertNotIn("path", timeline[2])
         self.assertNotIn("success", timeline[3])
@@ -166,7 +174,7 @@ class CapabilityReaderTests(unittest.TestCase):
 
     def test_receipt_missing_footer_duplicate_extra_and_wrong_types(self):
         original = encoded(self.report)
-        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":1', b'"revision":1,"revision":1'), original.replace(b'"revision":1', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
+        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":2', b'"revision":2,"revision":2'), original.replace(b'"revision":2', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
             with self.subTest(malformed=malformed[:70]):
                 (self.capture / "capability.json").write_bytes(malformed)
                 self.rejected("footer|JSON|header|status|elapsed")
@@ -277,6 +285,60 @@ class CapabilityReaderTests(unittest.TestCase):
         self.report["profile"] = "tree"
         self.save()
         self.rejected("program bytes/root/profile")
+
+    def test_raw_v1_receipts_are_explicitly_unsupported(self):
+        self.report.update(revision=1, protocol="darwin-capability-raw-v1")
+        self.save()
+        self.rejected("unsupported capability header")
+
+    def test_v2_exact_clause_layouts_preserve_zero_descriptors(self):
+        for kind in reader.KINDS:
+            with self.subTest(kind=kind):
+                extra = range({2: 8, 3: 5, 15: 8, 16: 1}.get(kind, 0))
+                value = event(1, kind, extra=extra, raw_path=b"synthetic\0" if kind == 14 else None)
+                inventory = {} if kind in {1, 17} else {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                exported = reader.typed_event(value, 1, "tree-mach", inventory)
+                self.assertEqual(exported["raw"], value)
+                self.assertEqual(exported["raw_uint64_after_header"], list(extra))
+                zero_indexes = [index for index, record in enumerate(value["records"]) if record["size"] == 0]
+                self.assertEqual(zero_indexes, [0] if kind in {1, 4, 5, 7} else [5] if kind == 6 else [])
+                for index in zero_indexes:
+                    self.assertEqual(exported["raw"]["records"][index]["hex"], "")
+
+    def test_v2_rejects_unrecognized_zero_width_record_layouts(self):
+        original = copy.deepcopy(self.events)
+        mutations = [lambda e: e[0]["records"][0].update(offset=16),
+                     lambda e: e[0]["records"][0].update(action=0),
+                     lambda e: e[0]["records"][0].update(hex="00"),
+                     lambda e: e[0]["records"].pop(0),
+                     lambda e: e[1]["records"].insert(0, {"action": 1, "size": 0, "offset": 12, "hex": ""}),
+                     lambda e: e[0].update(header_record_indexes=[0, 1, 2, 3, 4]),
+                     lambda e: e[1].update(header_record_indexes=[False, 1, 2, 3, 4]),
+                     lambda e: e[0].update(record_bytes=64),
+                     lambda e: e[0]["records"][1].update(offset=24),
+                     lambda e: e[2]["records"][-1].update(size=16, hex="00" * 16),
+                     lambda e: e[0].update(module="unexpected")]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                self.events = copy.deepcopy(original)
+                mutation(self.events)
+                self.write_events()
+                self.save()
+                self.rejected("layout|action|record|hex|BEGIN")
+        value = event(1, 6)
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        value["records"][-1]["offset"] = 48
+        with self.assertRaisesRegex(reader.InvalidCapability, "exact clause layout"):
+            reader.typed_event(value, 1, "tree", inventory)
+
+    def test_v2_header_bytes_kind_probe_and_profile_must_all_agree(self):
+        value = event(1, 4)
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        with self.assertRaisesRegex(reader.InvalidCapability, "profile"):
+            reader.typed_event(value, 1, "open", inventory)
+        value["records"][1]["hex"] = (5).to_bytes(8, "little").hex()
+        with self.assertRaisesRegex(reader.InvalidCapability, "decoded header"):
+            reader.typed_event(value, 1, "tree", inventory)
 
     def test_truncated_lines_and_bounded_input(self):
         for raw in (encoded(self.events[0])[:-1], b" " * (reader.MAX_LINE + 1) + b"\n"):
@@ -396,6 +458,7 @@ class CapabilityReaderTests(unittest.TestCase):
                      lambda d: d.update(record_bytes=-1), lambda d: d.update(header=[]),
                      lambda d: d["records"].pop(), lambda d: d["records"][0].update(extra=0),
                      lambda d: d["records"][0].update(action=-1),
+                     lambda d: d["records"][0].update(action=1 << 16),
                      lambda d: d.update(event=0), lambda d: d.update(event=6),
                      lambda d: d.update(provider="x" * 65), lambda d: d.update(probe_id=True),
                      lambda d: d.update(probe_id=None), lambda d: d.update(provider="\u0100")]
@@ -468,7 +531,7 @@ class CapabilityReaderTests(unittest.TestCase):
                 self.save()
                 self.rejected("truncated|duplicate JSON key|line bound")
         self.write_diagnostics([layout_error()])
-        (self.capture / "errors.jsonl").write_bytes(raw.replace(b"header-width", b"record-range"))
+        (self.capture / "errors.jsonl").write_bytes(raw.replace(b"record-layout", b"record-range"))
         self.rejected("hash mismatch")
 
     def test_tree_ledger_replay_does_not_end_at_root_exit(self):
@@ -512,6 +575,14 @@ class CapabilityReaderTests(unittest.TestCase):
                 self.save()
                 with contextlib.closing(reader.Directory(self.capture)) as directory:
                     self.assertEqual(reader.error_totals(directory, self.report), values)
+        result = subprocess.run([str(executable), "valid-layouts"], check=True, capture_output=True)
+        values = [json.loads(line) for line in result.stdout.splitlines()]
+        self.assertEqual([value["kind"] for value in values], list(range(1, 18)))
+        for value in values:
+            with self.subTest(c_producer_kind=value["kind"]):
+                inventory = {} if value["provider"] == "dtrace" else {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                exported = reader.typed_event(value, 1, "tree-mach", inventory)
+                self.assertEqual(exported["raw"], value)
 
 
 if __name__ == "__main__":
