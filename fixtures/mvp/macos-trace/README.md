@@ -13,8 +13,11 @@ cleanup, failed-spawn parent continuation, process-tree coverage and open-only
 queue draining in this corpus. The [open observer](OPEN_OBSERVATIONS.md) also
 replays the two v8 open-only streams, retaining 15 whole-stream calls. These
 root-run captures have networking enabled and do not satisfy the offline
-application corpus or full R02/M2. Guest SIP restoration is in progress; the
-physical host's policy remains unchanged.
+application corpus or full R02/M2. After guest-only restoration in Recovery and
+normal reboot, the running guest reports SIP enabled. All ten read-only metadata
+commands and the independent proof/hash review pass; the
+[separate restoration checkpoint](../../../docs/evidence/compact-mvp-darwin-restoration-2026-10-16/README.md)
+retains that observation. The physical host's policy remains unchanged.
 
 The [raw-call pairing adapter](call-pairing/README.md) independently validates
 capture/toolkit inputs and pairs 1,193 returned calls across the seven v8 tree

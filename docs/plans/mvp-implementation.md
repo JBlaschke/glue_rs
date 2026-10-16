@@ -94,7 +94,9 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
 | R04 | `codex/mvp-r04-macos-calibration-evidence` | `d44dd33` | Preliminary 1,372-file checkpoint restores and replays; SIP proof/publication pending; integrated as `aded39b` |
 | R04 | `codex/mvp-r04-darwin-followup-status` | `8567d38` | Approved public push; all nine native portable CI jobs passed in run `38895660723` |
-| R04 | `codex/mvp-r04-darwin-hosted-ci` | `this branch` | Record exact hosted CI metadata and pending running-guest SIP proof |
+| R04 | `codex/mvp-r04-darwin-hosted-ci` | `b824afb` | Record exact hosted CI metadata; running-guest SIP proof was pending at this checkpoint |
+| R04 | `codex/mvp-r04-darwin-restoration-evidence` | `439bb46` | Separate 57-file SIP-enabled proof and exact approved CI checkpoint; 59-member restore verifies |
+| R04 | `codex/mvp-r04-sip-restoration-status` | `this branch` | Record independently verified running-guest SIP restoration; no full Darwin acceptance |
 
 The nine automated Python suites pass 184 controls on the development Mac with
 Python 3.15.0. Native Linux arm64, Python 3.11.17 and glibc 2.28 pass 182
@@ -275,7 +277,13 @@ failed-spawn parent continuation and explicit child termination. V7's two
 open-only failures expose queued events arriving after root wait. The focused
 drain fix produces v8 with all nine cases captured, 2,647 events, no drops/errors
 and consistent file identities under independent replay. Original failed
-streams remain unchanged. Guest SIP restoration is in progress. These are owned
+streams remain unchanged. Guest-only restoration in Recovery and normal reboot
+are complete. The running guest's read-only status proof reports SIP enabled at
+2026-10-16T12:14:43Z; all ten commands exit zero, and all 35 indexed payload
+files plus their manifest verify unchanged. The separate
+[restoration checkpoint](../evidence/compact-mvp-darwin-restoration-2026-10-16/README.md)
+retains this observation and the exact approved nine-job portable CI result;
+older captures and checkpoints remain unchanged. These are owned
 diagnostics, with guest networking enabled,
 and do not satisfy the offline product corpus.
 The physical host policy remains unchanged. No approved trace-capable hosted

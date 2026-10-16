@@ -114,8 +114,8 @@ these explicit owned inputs:
 The frozen selection contains 1,372 ordinary files / 29,762,443 bytes. Its source
 inventory SHA-256 is
 `45bc7dfbe3cdd7b10711e8bc6589d55b3d44589d5af0180d57015c5437ead263`.
-A later restoration-proof checkpoint will use a separate version and output
-root. There is no broad copy of temporary directories, guest disk images,
+A later [restoration-proof checkpoint](../compact-mvp-darwin-restoration-2026-10-16/README.md)
+uses a separate version and output root. There is no broad copy of temporary directories, guest disk images,
 credentials or unrelated private data.
 Original capture and toolkit bytes are not rewritten. Absolute paths inside
 receipts and traces retain their original logical meaning after restoration.

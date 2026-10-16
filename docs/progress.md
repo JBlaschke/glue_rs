@@ -34,7 +34,8 @@ append beyond the premature footer. Those failures remain unchanged while
 process identity calibration continues. V7/v8 retain the exec-shadow flag and
 correct the separate open-only drain ordering. All nine v8 diagnostics now pass
 independent source-matched transport checks (2,647 events, no drops/errors,
-consistent hashes). Restoration of guest SIP is in progress.
+consistent hashes). After restoration in Recovery and normal reboot, the
+running guest reports SIP enabled; its read-only proof is independently verified.
 A complete Darwin decoder/oracle and M2 remain
 open: no missing execution is replaced with a cross-build, snapshot or skipped
 test.
@@ -118,11 +119,30 @@ Exact run/jobs metadata, source workflow/script and a hash manifest remain at
 `/private/tmp/glue-portable-darwin-followup-38895660723-20261016`; the review
 summary SHA256 is `b39c5caa9af6003cda46b2effe94e39d8851be6fc2ba3fb6a20138d8b829efc8`.
 This is portable CI evidence for that exact source, with no new full macOS
-product, signing, filesystem-trace or budget acceptance. The VM's Recovery
-reported SIP on after private authentication; normal reboot reached the login
-screen, and the running-guest status proof still awaits private login.
-`codex/mvp-r04-darwin-hosted-ci` records this result locally; it is not included
-in the approved `8567d38` push.
+product, signing, filesystem-trace or budget acceptance.
+`codex/mvp-r04-darwin-hosted-ci` (`b824afb`) records this result locally; it is
+not included in the approved `8567d38` push.
+
+The owner completed guest-only restoration in Recovery, selected full boot
+security, and unlocked the VM after normal reboot. The read-only running-guest
+status observation at 2026-10-16T12:14:43Z reports exactly
+`System Integrity Protection status: enabled.` All ten metadata commands exit
+zero; the 35 indexed payload files and their manifest verify unchanged. The
+script identifies `VirtualMac2,1`, arm64, macOS 26.6.2 / 25G83 and UID 501. It
+changes no settings and makes no full R02 claim. Its manifest SHA256 is
+`73c4f5abfd66ac9fdf61d7251b7d7a69cdceb02dc476b796fc790bda042512eb`.
+The independent review remains at
+`/private/tmp/glue-sip-restoration-independent-review-20261016`; retained status
+bytes establish SIP enabled, with Recovery/normal-boot context observed
+separately by the operator. They do not independently attest every boot-policy
+setting. The physical Mac's SIP settings remain unchanged.
+
+`codex/mvp-r04-darwin-restoration-evidence` (`439bb46`) retains a separate
+[restoration and hosted-CI checkpoint](evidence/compact-mvp-darwin-restoration-2026-10-16/README.md):
+57 selected files / 160,140 bytes, restored as 59 exact archive members with
+matching hashes, sizes and modes. Earlier checkpoints remain unchanged. The
+22,316-byte archive stays local; durable publication remains open.
+`codex/mvp-r04-sip-restoration-status` records the current restoration status.
 
 `codex/mvp-r04-macos-calibration-evidence` (`d44dd33`, integrated `aded39b`)
 commits the [preliminary Darwin checkpoint](evidence/compact-mvp-darwin-calibration-2026-10-15/README.md)
