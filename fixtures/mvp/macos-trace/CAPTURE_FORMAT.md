@@ -99,17 +99,36 @@ sentinel bounds detection of growth after the initial file-size check.
 
 Each event records consumer event index, CPU, enabled probe ID, provider/module/
 function/name and all trace records with action/size/offset and exact native byte
-hex. It exposes the first five uint64 fields as `kind`, `timestamp`, `pid`, `tid`,
-`detail`. Their raw bytes remain authoritative. `event` is a consumer sequence,
+hex. `record_bytes` retains the actual total probe size; exactly five
+`header_record_indexes` identify the validated uint64 payload fields exposed as
+`kind`, `timestamp`, `pid`, `tid`, `detail`. Their raw bytes remain authoritative.
+`event` is a consumer sequence,
 not a kernel sequence or an independent detector of lost events. The protocol is
-`darwin-capability-raw-v1`; the prepared binaries are native little-endian arm64.
+`darwin-capability-raw-v2`, receipt revision 2; the prepared binaries are native
+little-endian arm64. V1 captures and toolkits remain unchanged.
+
+The consumer selects an exact generated layout from the profile, provider, probe
+name and descriptor count before reading a kind. All actions must be DIFEXPR
+(1). BEGIN/create/start/exec-success require a leading size-zero assignment
+descriptor at index 0, offset 12; their five uint64 fields are at indexes 1–5.
+Exit requires a trailing size-zero assignment at index 5, offset 56. Its header
+and every other header use indexes 0–4. No other zero-width record is permitted.
+Every original descriptor is retained; zero-size records have empty `hex`.
+Scalar payloads are exactly eight bytes at offsets 16, 24, 32 and so on. The
+named-open string is exactly 1024 bytes at offset 56, retained as raw bytes.
+Total probe bytes are exactly 56 for five-scalar layouts, 120 for BSD/Mach entry,
+96 for BSD return, 64 for Mach return, and 1080 for named-open path. Wrong action,
+count, width, offset, profile, provider or decoded kind rejects the callback.
+Actual v4 guest evidence confirmed the BEGIN assignment layout; other lifecycle
+assignment positions remain source-grounded predictions pending the new guest
+corpus. See the [layout decision](../../../docs/decisions/mvp-r02-darwin-capability-layout-v2.md).
 
 A rejected callback emits a `layout-error` diagnostic with its reason, consumer
 event count, descriptor count, total probe byte size, first five record values
 (`header`) and up to twenty descriptor metadata entries. Each entry retains
 `action`, `size`, `offset` and `u64`; a value is null unless its record is exactly
-eight bytes and lies within a probe bounded to 8 KiB. Zero-width or invalid
-descriptors remain rejected. These metadata do not become accepted events and
+eight bytes and lies within a probe bounded to 8 KiB. Unexpected zero-width or
+invalid descriptors remain rejected. These metadata do not become accepted events and
 do not establish the actual kernel ABI. Work/stop/drain failures additionally
 retain `libdtrace-error` with the operation, actual libdtrace error number and a
 message bounded to 512 bytes. At most sixteen combined layout/libdtrace
