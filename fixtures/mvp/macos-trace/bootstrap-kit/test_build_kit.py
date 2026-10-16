@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import platform
 import shlex
 import shutil
 import stat
@@ -283,13 +284,15 @@ class UtilityRefusals(unittest.TestCase):
         cc=shutil.which(os.environ.get('CC','cc'))
         if not cc:raise RuntimeError('C compiler required')
         command=[cc,'-std=c11','-O2','-g0','-Wall','-Wextra','-Werror']
-        if os.sys.platform=='darwin':command+=['-arch','arm64','-mmacosx-version-min=26.0']
+        # Portable refusal executable targets the actual test host, including
+        # macOS15 CI. Production min26 is a separate compile-only check below.
+        if os.sys.platform=='darwin':command+=['-mmacosx-version-min='+platform.mac_ver()[0]]
         command += ['-I',str(HERE),str(HERE/'make_request.c'),str(HERE/'request_catalog.c'),str(stub),
                     str(HERE.parent/'bootstrap-admission/bootstrap_admission.c'),
                     str(HERE.parent/'bootstrap-request/bootstrap_request.c'),str(HERE.parent/'bootstrap-wire/bootstrap_wire.c'),
                     str(HERE.parent/'target-credentials/target_credentials.c'),'-o',str(cls.binary)]
         subprocess.run(command,check=True,timeout=30)
-        if os.sys.platform=='darwin':kit.macho(cls.binary.read_bytes())
+        cls.command=command
 
     @classmethod
     def tearDownClass(cls):cls.temp.cleanup()
@@ -303,6 +306,14 @@ class UtilityRefusals(unittest.TestCase):
         for argv in (['--uid','501'],['--catalog','x'],['--simulate-provider-failure','extra']):
             done=subprocess.run([str(self.binary),*argv],capture_output=True,timeout=5)
             self.assertEqual(done.returncode,2);self.assertEqual(done.stdout,b'')
+
+    @unittest.skipUnless(os.sys.platform=='darwin','exact min26 Mach-O compilation requires Darwin SDK')
+    def test_production_minimum_compile_only_never_execute(self):
+        exact=Path(self.temp.name)/'make-request-min26'
+        # Last deployment option overrides the portable host option. Never run
+        # this binary, including when the host happens to support its minimum.
+        subprocess.run(self.command[:-2]+['-arch','arm64','-mmacosx-version-min=26.0','-o',str(exact)],check=True,timeout=30)
+        self.assertEqual(kit.macho(exact.read_bytes())['minimum_macos'],'26.0')
 
 
 if __name__=='__main__':unittest.main()
