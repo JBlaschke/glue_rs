@@ -292,6 +292,28 @@ Shell syntax and diff checks pass. These local follow-ups remain outside the
 approved public `64a4dd2` push and its hosted run. The complete nonroot controller,
 privileged Darwin calibration and full R02/M2 remain open; guest SIP stays enabled.
 
+`codex/mvp-r02-bootstrap-signals` records its decision in `89997da`, implements
+the lifecycle in `83148d9` and clarifies fresh-state ownership in `12fff2f`.
+The parent snapshots its mask/SIGPIPE policy, rejects caught handlers and unsafe
+SIGCHLD/autoreaping, then verifies blocked setup signals and temporary ignored
+SIGPIPE. Only the known direct child can reset/check/release the declared
+default-action/no-altstack policy; pending signals prevent release. Parent
+restoration attempts both steps once, preserving the first failure and separate
+verified outcomes. The caller must use fresh state and one attempt.
+Fifteen groups collect 14 native Mac passes plus one Linux-only skip; offline
+unprivileged Linux passes 11 with four Darwin-native skips. Mac ASan/UBSan passes
+ten injected/data groups, with native controls explicitly skipped because the
+instrumentation installs caught handlers. Initial native ENOMEM exposed the
+Darwin libc zero-size alternate-stack-disable behavior; SIGSTKSZ fixes the
+disable request without installing storage. Earlier failed logs are preserved.
+Evidence is `/private/tmp/glue-bootstrap-signals-native-20261016`, manifest
+`8cdfbc4cf251eb740dd478096f28edd1b3c8bbdfd633f0529c9b41918b1b1298`.
+Independent review adds five injected fault scenarios under ASan/UBSan and checks
+all canonical policy bytes:
+`/private/tmp/glue-bootstrap-signals-independent-review-20261016`, manifest
+`0ca7f14f811c6704a96a713e3f02474f284e6ec257303b0e516b023d012ba775`.
+The helper performs no fork, credential change, exec, tracing or VM action.
+
 `codex/mvp-v01-darwin-observation-ci` adds the owned-open observation and
 pinned syscall-contract suites to the portable baseline. All six Python suites
 collect 126 controls: 126 pass on macOS arm64/Python 3.15 and 124 pass with two
