@@ -31,7 +31,7 @@
 
 enum { BEGIN_EVENT=1, SYSCALL_ENTRY, SYSCALL_RETURN, CREATE_EVENT, START_EVENT,
        EXIT_EVENT, EXEC_SUCCESS, EXEC_FAILURE, LWP_CREATE, LWP_START, LWP_EXIT,
-       SPAWN_SUCCESS, SPAWN_FAILURE, OPEN_PATH, MACH_ENTRY, MACH_RETURN, END_EVENT };
+       SPAWN_SUCCESS, SPAWN_FAILURE, OPEN_PATH, MACH_ENTRY, MACH_RETURN, END_EVENT, EXITED_TARGET };
 struct process { pid_t pid; bool created, terminal; };
 struct capture {
     FILE *events, *errors, *inventory;
@@ -170,7 +170,7 @@ static bool select_layout(const struct capture *state, const dtrace_probedata_t 
         else if (!strcmp(probe->dtpd_name,"return")) kind=SYSCALL_RETURN;
     } else if (state->tree && !strcmp(probe->dtpd_provider,"proc")) {
         const struct { const char *name; int kind; } names[]={
-            {"create",CREATE_EVENT},{"start",START_EVENT},{"exit",EXIT_EVENT},
+            {"create",CREATE_EVENT},{"start",START_EVENT},{"exit",EXIT_EVENT},{"exited",EXITED_TARGET},
             {"exec-success",EXEC_SUCCESS},{"exec-failure",EXEC_FAILURE},{"lwp-create",LWP_CREATE},
             {"lwp-start",LWP_START},{"lwp-exit",LWP_EXIT},{"spawn-success",SPAWN_SUCCESS},{"spawn-failure",SPAWN_FAILURE},
         };
@@ -182,8 +182,8 @@ static bool select_layout(const struct capture *state, const dtrace_probedata_t 
     }
     if (!kind) return false;
     bool leading=kind==BEGIN_EVENT || kind==CREATE_EVENT || kind==START_EVENT || kind==EXEC_SUCCESS;
-    int zero=leading ? 0 : kind==EXIT_EVENT ? 5 : -1;
-    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==MACH_RETURN || kind==OPEN_PATH ? 6 : 5;
+    int zero=leading ? 0 : kind==EXITED_TARGET ? 6 : -1;
+    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==MACH_RETURN || kind==OPEN_PATH || kind==EXITED_TARGET ? 6 : 5;
     *layout=(struct layout){.kind=kind,.count=payloads+(zero>=0),.zero=zero,.first=leading ? 1 : 0,
                             .bytes=kind==OPEN_PATH ? 1080 : 16+(uint32_t)payloads*8};
     return true;
@@ -213,7 +213,7 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
         if (record->dtrd_action!=DTRACEACT_DIFEXPR) goto invalid;
         int payload=i-(layout.zero>=0 && i>layout.zero);
         uint32_t expected_size=i==layout.zero ? 0 : layout.kind==OPEN_PATH && i==5 ? 1024 : 8;
-        uint32_t expected_offset=i==layout.zero ? (i==0 ? 12 : 56) : 16+(uint32_t)payload*8;
+        uint32_t expected_offset=i==layout.zero ? (i==0 ? 12 : 64) : 16+(uint32_t)payload*8;
         rejection="record-layout";
         if (record->dtrd_size!=expected_size || record->dtrd_offset!=expected_offset) goto invalid;
     }
@@ -224,6 +224,8 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     if (header[0]!=(uint64_t)layout.kind) goto invalid;
     rejection="header-pid";
     if (header[2]>INT_MAX) goto invalid;
+    rejection="header-target";
+    if ((layout.kind==CREATE_EVENT || layout.kind==EXITED_TARGET) && (header[4]==0 || header[4]>INT_MAX)) goto invalid;
     rejection="header-detail";
     if ((layout.kind==BEGIN_EVENT || layout.kind==END_EVENT || layout.kind==LWP_START || layout.kind==LWP_EXIT ||
          layout.kind==SPAWN_SUCCESS || layout.kind==OPEN_PATH) && header[4]!=0) goto invalid;
@@ -249,10 +251,10 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     } else if (header[0]==START_EVENT || header[0]==EXEC_SUCCESS) {
         struct process *process=process_for(state,(pid_t)header[2]);
         if (process) process->created=true;
-    } else if (header[0]==EXIT_EVENT) {
-        struct process *process=process_for(state,(pid_t)header[2]);
+    } else if (header[0]==EXITED_TARGET) {
+        struct process *process=process_for(state,(pid_t)header[4]);
         if (process) process->terminal=true;
-        if ((pid_t)header[2]==state->root) state->root_terminal=true;
+        if ((pid_t)header[4]==state->root) state->root_terminal=true;
     }
     if (!strcmp(data->dtpda_pdesc->dtpd_func,"open")) {
         if (header[0]==SYSCALL_ENTRY) ++state->open_entries;
@@ -303,9 +305,11 @@ static int write_program(FILE *output, pid_t root, const char *profile) {
         for (size_t i=0;i<sizeof(events)/sizeof(events[0]);++i) {
             fprintf(output,"proc:::%s /watched[pid]/ { ",events[i].probe);
             event_header(output,events[i].kind,events[i].detail);
-            if (events[i].kind==EXIT_EVENT) fputs("watched[pid]=0; ",output);
             fputs("}\n",output);
         }
+        fputs("proc:::exited /watched[args[0]->pr_pid]/ { ",output);
+        event_header(output,EXITED_TARGET,"args[0]->pr_pid");
+        fputs("trace((uint64_t)arg1); watched[args[0]->pr_pid]=0; }\n",output);
     }
     if (mach) for (int which=0;which<2;++which) {
         fprintf(output,"mach_trap:::%s /watched[pid]/ { ",which ? "return" : "entry");
@@ -541,7 +545,7 @@ int main(int argc, char **argv) {
     size_t product_size=sizeof(product),build_size=sizeof(build);
     if (sysctlbyname("kern.osproductversion",product,&product_size,NULL,0)) strcpy(product,"unavailable");
     if (sysctlbyname("kern.osversion",build,&build_size,NULL,0)) strcpy(build,"unavailable");
-    fprintf(report,"{\"revision\":2,\"protocol\":\"darwin-capability-raw-v2\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
+    fprintf(report,"{\"revision\":3,\"protocol\":\"darwin-capability-raw-v3\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
     json_string(report,state.failed ? state.reason : "owned fixture exited, required open events observed, observed tree drained");
     fputs(",\"profile\":",report); json_string(report,profile);
     fputs(",\"host\":{\"system\":",report); json_string(report,host.sysname);

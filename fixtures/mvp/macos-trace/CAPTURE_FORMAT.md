@@ -53,7 +53,7 @@ parent directory and requires ENOENT, so it creates no file. Its raw spawn data
 does not decode the opaque action list or itself establish mutation coverage.
 
 The profile `open` requires named open entry/return and records the entry path.
-`tree` adds wildcard BSD entry/return and required proc create/start/exit,
+`tree` adds wildcard BSD entry/return and required proc create/start/exit/exited,
 exec-success/failure, spawn-success/failure and lwp-create/start/exit probes.
 `tree-mach` additionally requires Mach trap entry/return probes. Probe clause
 availability and kernel type translation are checked by libdtrace at runtime;
@@ -104,24 +104,29 @@ hex. `record_bytes` retains the actual total probe size; exactly five
 `kind`, `timestamp`, `pid`, `tid`, `detail`. Their raw bytes remain authoritative.
 `event` is a consumer sequence,
 not a kernel sequence or an independent detector of lost events. The protocol is
-`darwin-capability-raw-v2`, receipt revision 2; the prepared binaries are native
-little-endian arm64. V1 captures and toolkits remain unchanged.
+`darwin-capability-raw-v3`, receipt revision 3; the prepared binaries are native
+little-endian arm64. V1/V2 captures and toolkits remain unchanged.
 
 The consumer selects an exact generated layout from the profile, provider, probe
 name and descriptor count before reading a kind. All actions must be DIFEXPR
 (1). BEGIN/create/start/exec-success require a leading size-zero assignment
 descriptor at index 0, offset 12; their five uint64 fields are at indexes 1–5.
-Exit requires a trailing size-zero assignment at index 5, offset 56. Its header
-and every other header use indexes 0–4. No other zero-width record is permitted.
+Exited-target (kind 18) requires a trailing size-zero assignment at index 6,
+offset 64, following six scalar fields. Context-only exit (kind 6) has five
+scalar fields and no assignment. Both and every other header use indexes 0–4.
+No other zero-width record is permitted.
 Every original descriptor is retained; zero-size records have empty `hex`.
 Scalar payloads are exactly eight bytes at offsets 16, 24, 32 and so on. The
 named-open string is exactly 1024 bytes at offset 56, retained as raw bytes.
 Total probe bytes are exactly 56 for five-scalar layouts, 120 for BSD/Mach entry,
-96 for BSD return, 64 for Mach return, and 1080 for named-open path. Wrong action,
+96 for BSD return, 64 for Mach return/exited-target, and 1080 for named-open path. Wrong action,
 count, width, offset, profile, provider or decoded kind rejects the callback.
-Actual v4 guest evidence confirmed the BEGIN assignment layout; other lifecycle
-assignment positions remain source-grounded predictions pending the new guest
-corpus. See the [layout decision](../../../docs/decisions/mvp-r02-darwin-capability-layout-v2.md).
+Actual v4 guest evidence confirmed BEGIN framing, and the v5 corpus exercised
+the v2 lifecycle layouts. V5 also exposed a current-context exit attribution
+error during failed spawn. V3 removes that inference and requires target-aware
+exited records; the new target clause awaits actual guest calibration. See the
+[layout decision](../../../docs/decisions/mvp-r02-darwin-capability-layout-v2.md)
+and [target-exit decision](../../../docs/decisions/mvp-r02-darwin-target-exit.md).
 
 A rejected callback emits a `layout-error` diagnostic with its reason, consumer
 event count, descriptor count, total probe byte size, first five record values
@@ -143,23 +148,28 @@ even when a rejected-record diagnostic explains the gap.
 | 3 | BSD syscall return | ppid; arg0, arg1, arg2, arg3, DTrace errno |
 | 4 | proc create | translated child PID |
 | 5 | proc start | observed ppid |
-| 6 | proc exit | raw arg0 lifecycle code (`CLD_*`), not application exit status |
+| 6 | proc exit context | raw arg0 lifecycle code (`CLD_*`); current PID is not a terminal target |
 | 7 / 8 | exec success / failure | ppid / raw arg0 error |
 | 9 | lwp create | translated thread ID; retain raw width for ABI inspection |
 | 10 / 11 | lwp start / exit | zero |
 | 12 / 13 | spawn success / failure | zero / raw arg0 error |
 | 14 | named open path | zero; bounded copyinstr record |
 | 15 / 16 | Mach trap entry / return | ppid; raw arg0..arg7 / raw arg0 |
+| 18 | proc exited target | translated target PID; subsequent raw arg1 exit value |
 
 For kind 6, the collector records `proc:::exit`'s `arg0` unchanged. The inspected
 Apple [exit implementation](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_exit.c)
-emits `CLD_EXITED` there; it separately emits `proc:::exited` with a target
-process and exit value. This collector does not subscribe to `proc:::exited`.
-The receipt's `root_wait_status` comes from the collector's `waitpid` call and
-is separate from the lifecycle code; the raw protocol does not establish
-application exit statuses for descendants. Published source guides this
-distinction but does not substitute for calibration against the actual guest
-kernel.
+emits `CLD_EXITED` there; current probe PID can be a surviving parent performing
+failed-spawn cleanup for its child. Kind 6 therefore changes neither watches nor
+the terminal ledger. The required `proc:::exited` clause selects the translated
+target PID in `args[0]`, retains that target in detail and raw `arg1` in its sixth
+scalar record, then clears only that target's watch entry. Only kind 18 marks a
+target terminal. Target detail for exited and create must be in 1..INT_MAX
+before a PID conversion. Parent errno, thread exit or missing records cannot
+substitute for this target evidence. The raw exit value remains unclassified;
+the receipt's `root_wait_status` is separately supplied by actual `waitpid`.
+Published source guides this distinction but does not substitute for new guest
+calibration of the target-aware clause.
 
 ## Remaining hard acceptance blockers
 
