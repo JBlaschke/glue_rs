@@ -36,6 +36,17 @@ def event(index, kind, pid=600, detail=0, extra=(), raw_path=None):
             "provider": provider, "module": "", "function": function, "name": name, "records": records}
 
 
+def layout_error():
+    """Conspicuously synthetic rejected metadata; not an accepted event."""
+    records = [{"action": 1, "size": 0, "offset": 0, "u64": None}]
+    records.extend({"action": 1, "size": 8, "offset": i * 8, "u64": value}
+                   for i, value in enumerate((1, 1000, 600, 601, 0)))
+    return {"kind": "layout-error", "reason": "header-width", "cpu": -1, "epid": 7,
+            "probe_id": 1, "provider": "dtrace", "module": "", "function": "", "name": "BEGIN",
+            "event": 1, "nrecs": 6, "record_bytes": 40,
+            "header": [record["u64"] for record in records[:5]], "records": records}
+
+
 class CapabilityReaderTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="glue synthetic capability ü ")
@@ -98,6 +109,11 @@ class CapabilityReaderTests(unittest.TestCase):
     def rejected(self, pattern):
         with self.assertRaisesRegex(reader.InvalidCapability, pattern):
             self.inspect()
+
+    def write_diagnostics(self, diagnostics):
+        self.report.update(status="failed", drained=False)
+        (self.capture / "errors.jsonl").write_bytes(b"".join(encoded(value) for value in diagnostics))
+        self.save()
 
     def test_consistent_synthetic_transport_exports_exact_raw_records_only(self):
         summary, timeline = self.inspect()
@@ -335,6 +351,126 @@ class CapabilityReaderTests(unittest.TestCase):
         self.save()
         self.rejected("callback totals")
 
+    def test_diagnostics_remain_failed_separate_from_fault_drop_totals(self):
+        values = [layout_error(), {"kind": "libdtrace-error", "operation": "drain", "error": -1, "message": "synthetic failure \u00ff"}]
+        self.write_diagnostics(values)
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["producer_diagnostics"], values)
+        self.assertEqual(summary["capture_status"], "failed")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual(len(timeline), 5)
+        self.report["errors"] = 2
+        self.save()
+        self.rejected("callback totals")
+
+    def test_diagnostics_cannot_excuse_event_gaps_or_receipt_totals(self):
+        self.write_diagnostics([layout_error()])
+        self.events[0]["event"] = 2
+        self.write_events()
+        self.save()
+        self.rejected("event index gap")
+        self.events[0]["event"] = 1
+        self.report["events"] = 6
+        self.write_events()
+        self.save()
+        self.rejected("receipt total")
+
+    def test_diagnostics_require_failed_started_status_and_combined_count_bound(self):
+        value = {"kind": "libdtrace-error", "operation": "work", "error": 5, "message": "synthetic"}
+        self.write_diagnostics([value] * 16)
+        self.assertEqual(len(self.inspect()[0]["producer_diagnostics"]), 16)
+        self.write_diagnostics([value] * 17)
+        self.rejected("exceeds sixteen")
+        for status, started in (("captured", True), ("unavailable", False), ("failed", False)):
+            with self.subTest(status=status, started=started):
+                self.write_diagnostics([value])
+                self.report.update(status=status, started=started)
+                self.save()
+                self.rejected("started failed capture")
+
+    def test_layout_diagnostic_exact_keys_types_counts_and_event_bounds(self):
+        original = layout_error()
+        mutations = [lambda d: d.update(extra=0), lambda d: d.update(reason="new-reason"),
+                     lambda d: d.update(cpu=True), lambda d: d.update(epid=1 << 32),
+                     lambda d: d.update(nrecs=1 << 31), lambda d: d.update(nrecs=True),
+                     lambda d: d.update(record_bytes=-1), lambda d: d.update(header=[]),
+                     lambda d: d["records"].pop(), lambda d: d["records"][0].update(extra=0),
+                     lambda d: d["records"][0].update(action=-1),
+                     lambda d: d.update(event=0), lambda d: d.update(event=6),
+                     lambda d: d.update(provider="x" * 65), lambda d: d.update(probe_id=True),
+                     lambda d: d.update(probe_id=None), lambda d: d.update(provider="\u0100")]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+        self.write_diagnostics([original, original])
+        self.rejected("increasing receipt count")
+
+    def test_layout_diagnostic_null_and_uint64_read_safety(self):
+        original = layout_error()
+        mutations = [lambda d: d["records"][0].update(u64=1),
+                     lambda d: d["records"][1].update(offset=40),
+                     lambda d: d["records"][1].update(size=9),
+                     lambda d: d.update(record_bytes=8193),
+                     lambda d: d["records"][1].update(u64=True),
+                     lambda d: d["records"][1].update(u64=1 << 64),
+                     lambda d: d["header"].__setitem__(1, True),
+                     lambda d: d["header"].__setitem__(1, 2)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+        for count in (-1, -(1 << 31), 0, 21, (1 << 31) - 1):
+            with self.subTest(count=count):
+                value = copy.deepcopy(original)
+                value.update(nrecs=count, record_bytes=(1 << 32) - 1,
+                             records=[{"action": 0, "size": 0, "offset": (1 << 32) - 1, "u64": None} for _ in range(max(0, min(count, 20)))],
+                             header=[None] * 5, probe_id=None,
+                             provider=None, module=None, function=None, name=None)
+                self.write_diagnostics([value])
+                self.assertEqual(self.inspect()[0]["producer_diagnostics"], [value])
+        # A null data pointer means even an in-range record remains unread.
+        value = copy.deepcopy(original)
+        value["header"] = [None] * 5
+        for record in value["records"]:
+            record["u64"] = None
+        self.write_diagnostics([value])
+        self.assertEqual(self.inspect()[0]["producer_diagnostics"], [value])
+
+    def test_libdtrace_diagnostic_exact_schema_message_and_native_integer_bounds(self):
+        original = {"kind": "libdtrace-error", "operation": "work", "error": 5, "message": "x" * 512}
+        self.write_diagnostics([original])
+        self.assertEqual(self.inspect()[0]["producer_diagnostics"], [original])
+        mutations = [lambda d: d.update(operation="setup"), lambda d: d.update(error=True),
+                     lambda d: d.update(error=1 << 31), lambda d: d.update(message="x" * 513),
+                     lambda d: d.update(message="\u0100"), lambda d: d.update(message="nul\0byte"),
+                     lambda d: d.update(message=None), lambda d: d.update(extra=0)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+
+    def test_malformed_truncated_and_changed_diagnostic_stream_rejected(self):
+        self.write_diagnostics([layout_error()])
+        raw = (self.capture / "errors.jsonl").read_bytes()
+        for malformed in (raw[:-1], raw.replace(b'"cpu":-1', b'"cpu":-1,"cpu":-1'), b"{" + b" " * reader.MAX_LINE + b"\n"):
+            with self.subTest(malformed=malformed[:50]):
+                (self.capture / "errors.jsonl").write_bytes(malformed)
+                self.save()
+                self.rejected("truncated|duplicate JSON key|line bound")
+        self.write_diagnostics([layout_error()])
+        (self.capture / "errors.jsonl").write_bytes(raw.replace(b"header-width", b"record-range"))
+        self.rejected("hash mismatch")
+
     def test_tree_ledger_replay_does_not_end_at_root_exit(self):
         self.report["profile"] = "tree-mach"
         self.events = [event(1, 1, 500), event(2, 4, detail=601), event(3, 6),
@@ -362,6 +498,20 @@ class CapabilityReaderTests(unittest.TestCase):
             with self.subTest(profile=profile):
                 result = subprocess.run([str(executable), profile], check=True, capture_output=True)
                 self.assertEqual(result.stdout, reader.producer_program(600, profile))
+
+    @unittest.skipUnless(platform.system() == "Darwin", "producer C diagnostics require Darwin headers")
+    def test_actual_reviewed_c_diagnostics_match_strict_reader(self):
+        executable = self.root / "synthetic-c-diagnostics"
+        subprocess.run(["/usr/bin/cc", "-Wno-deprecated-declarations", str(reader.SOURCE / "test-native.c"), "-ldtrace", "-o", str(executable)], check=True, capture_output=True)
+        for mode in ("layout", "layout-range", "layout-wide", "layout-limit", "libdtrace-error"):
+            with self.subTest(mode=mode):
+                result = subprocess.run([str(executable), mode], check=True, capture_output=True)
+                values = [json.loads(line) for line in result.stdout.splitlines()]
+                self.write_diagnostics(values)
+                self.report["events"] = 16 if mode == "layout-limit" else 5
+                self.save()
+                with contextlib.closing(reader.Directory(self.capture)) as directory:
+                    self.assertEqual(reader.error_totals(directory, self.report), values)
 
 
 if __name__ == "__main__":

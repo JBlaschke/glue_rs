@@ -31,7 +31,9 @@ MAX_RAW = 128 * 1024 * 1024
 MAX_FILE = 64 * 1024 * 1024
 MAX_LINE = 64 * 1024
 UINT64 = (1 << 64) - 1
+UINT32 = (1 << 32) - 1
 INT_MAX = (1 << 31) - 1
+LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-width", "header-kind", "header-pid", "event-output"}
 SOURCE = Path(__file__).resolve().parent
 
 
@@ -279,9 +281,58 @@ def producer_program(root, profile):
     return result.encode("ascii")
 
 
+def diagnostic_string(value, limit, label):
+    # json_string maps each native byte to a JSON character, not UTF-8 text.
+    string(value, limit, label)
+    require(all(ord(character) <= 255 for character in value), label + ": outside producer byte alphabet")
+
+
+def layout_diagnostic(entry):
+    """Validate rejected-layout metadata without treating it as event data."""
+    keys(entry, {"kind", "reason", "cpu", "epid", "probe_id", "provider", "module", "function", "name", "event", "nrecs", "record_bytes", "header", "records"}, "layout diagnostic")
+    require(type(entry["reason"]) is str and entry["reason"] in LAYOUT_REASONS, "unknown layout diagnostic reason")
+    integer(entry["cpu"], -(1 << 31), INT_MAX, "diagnostic CPU")
+    integer(entry["epid"], 0, UINT32, "diagnostic EPID")
+    names = ("provider", "module", "function", "name")
+    if entry["probe_id"] is None:
+        require(all(entry[name] is None for name in names), "absent diagnostic probe has nonnull names")
+    else:
+        integer(entry["probe_id"], 0, UINT32, "diagnostic probe ID")
+        for name, limit in zip(names, (64, 64, 128, 64)):
+            diagnostic_string(entry[name], limit, "diagnostic " + name)
+    integer(entry["event"], 1, UINT64, "diagnostic event")
+    count = integer(entry["nrecs"], -(1 << 31), INT_MAX, "diagnostic nrecs")
+    size = integer(entry["record_bytes"], 0, UINT32, "diagnostic record bytes")
+    require(type(entry["header"]) is list and len(entry["header"]) == 5, "diagnostic header must have five values")
+    records = entry["records"]
+    require(type(records) is list and len(records) == max(0, min(count, 20)), "diagnostic descriptor count differs")
+    for record in records:
+        keys(record, {"action", "size", "offset", "u64"}, "diagnostic descriptor")
+        for name in ("action", "size", "offset"):
+            integer(record[name], 0, UINT32, "diagnostic descriptor " + name)
+        value = record["u64"]
+        if value is not None:
+            integer(value, 0, UINT64, "diagnostic descriptor u64")
+            require(size <= 8192 and record["size"] == 8 and record["offset"] <= size and
+                    record["size"] <= size - record["offset"], "diagnostic value outside bounded eight-byte record")
+        # A null data pointer also yields null for an otherwise in-range record.
+        # Metadata cannot establish that pointer's availability independently.
+    for index, value in enumerate(entry["header"]):
+        expected = records[index]["u64"] if index < len(records) else None
+        require(type(value) is type(expected) and value == expected, "diagnostic header differs from descriptor values")
+
+
+def libdtrace_diagnostic(entry):
+    keys(entry, {"kind", "operation", "error", "message"}, "libdtrace diagnostic")
+    require(type(entry["operation"]) is str and entry["operation"] in {"work", "stop", "drain"}, "unknown libdtrace operation")
+    integer(entry["error"], -(1 << 31), INT_MAX, "libdtrace error")
+    diagnostic_string(entry["message"], 512, "libdtrace message")
+
+
 def error_totals(directory, report):
     """Check callback transport counts; setup text has no callback meaning."""
     total_drops, total_errors, size = 0, 0, 0
+    diagnostics, last_layout_event = [], 0
     hasher = hashlib.sha256()
     with directory.open("errors.jsonl", MAX_FILE) as stream:
         while line := stream.readline(MAX_LINE + 1):
@@ -308,12 +359,24 @@ def error_totals(directory, report):
                 integer(entry["fault"], -(1 << 31), INT_MAX, "fault")
                 integer(entry["action"], -(1 << 31), INT_MAX, "error action")
                 total_errors += 1
+            elif entry["kind"] in {"layout-error", "libdtrace-error"}:
+                require(report["status"] == "failed" and report["started"], "producer diagnostics require a started failed capture")
+                require(len(diagnostics) < 16, "producer diagnostic count exceeds sixteen")
+                if entry["kind"] == "layout-error":
+                    layout_diagnostic(entry)
+                    require(last_layout_event < entry["event"] <= report["events"], "diagnostic event outside increasing receipt count")
+                    last_layout_event = entry["event"]
+                else:
+                    libdtrace_diagnostic(entry)
+                diagnostics.append(entry)
+                continue
             else:
                 raise InvalidCapability("unknown callback error kind")
             integer(entry["cpu"], -(1 << 31), INT_MAX, "error CPU")
             string(entry["message"], MAX_LINE, "error message")
     require({"size": size, "sha256": hasher.hexdigest()} == report["evidence"]["errors.jsonl"], "error stream hash mismatch")
     require(total_drops == report["drops"] and total_errors == report["errors"], "callback totals differ from retained error records")
+    return diagnostics
 
 
 def typed_event(event, expected_index, profile, inventory):
@@ -386,7 +449,7 @@ def inspect_capability(capture, toolkit, timeline):
         for name in EVIDENCE - {"events.jsonl"}:
             require(evidence.hash(name, MAX_FILE) == report["evidence"][name], "evidence hash mismatch: " + name)
         require(report["evidence"]["watchdog.json"]["size"] == 0, "watchdog fired: final receipt is invalid")
-        error_totals(evidence, report)
+        diagnostics = error_totals(evidence, report)
         inventory_bytes = evidence.read("probes.tsv", 8 * 1024 * 1024)
         require(digest(inventory_bytes) == report["evidence"]["probes.tsv"], "probe inventory changed after identity read")
         inventory = probe_inventory(inventory_bytes)
@@ -441,6 +504,7 @@ def inspect_capability(capture, toolkit, timeline):
         return {"revision": 1, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
                 "transport_integrity": "consistent", "capture_status": report["status"], "capture_reason": report["reason"],
                 "producer_identity_checks_passed": report["identity_checks_passed"],
+                "producer_diagnostics": diagnostics,
                 "full_trace_acceptance": False, "acceptance_rejection": "This capability format cannot satisfy the R02 full-trace oracle.",
                 "scope": "No syscall result, pathname, FD, process generation, mutation or kernel coverage interpretation.",
                 "host": report["host"], "profile": report["profile"], "argv": report["argv"], "fixture": matching[0],

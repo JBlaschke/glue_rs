@@ -41,7 +41,8 @@ The export contains:
 
 - `summary.json`: transport consistency, producer status and reason, host, argv,
   counts, observed process ledger, toolkit/receipt/reader identities and the
-  unconditional full-trace rejection.
+  unconditional full-trace rejection. `producer_diagnostics` retains validated
+  rejected-layout/libdtrace metadata separately from callback fault/drop counts.
 - `timeline.jsonl`: consumer index, producer kind label, original event object
   with exact typed byte hex, and subsequent numeric records represented as raw
   native little-endian uint64 values.
@@ -64,6 +65,18 @@ errors, an empty watchdog file and a consistent replay of the producer's
 observed ledger. The open-only profile records root terminal state from the
 producer's root wait; this does not invent a proc exit event. The tree ledger is
 only the producer's observed PID ledger, not proof that every child was visible.
+
+The revised producer's `layout-error` and `libdtrace-error` envelopes require
+exact key sets, native integer bounds, bounded byte strings and at most sixteen
+combined diagnostics. Layout metadata keeps signed descriptor counts, a
+five-value header and at most twenty descriptors. A nonnull uint64 must belong
+to an in-range eight-byte record within an 8 KiB probe; the header must agree
+with those descriptor values. Null values do not prove data availability.
+These envelopes are allowed only for started, failed captures. They neither
+increment DTrace callback counters nor become events. A diagnostic explaining
+an event index gap, count mismatch or rejected layout cannot excuse it. A
+failed, internally inconsistent capture still rejects without publishing an
+export, while its original files remain untouched.
 
 Limits include 1 MiB receipt, 128 entries per flat directory, 256 processes,
 1,000,000 events, 128 MiB event JSONL, 64 KiB lines, 8 KiB typed probe offsets,
