@@ -61,7 +61,7 @@ static const struct synthetic_layout layouts[]={
     {11,"proc",".","lwp-exit",5,-1,56},{12,"proc",".","spawn-success",5,-1,56},
     {13,"proc",".","spawn-failure",5,-1,56},{14,"syscall","open","entry",6,-1,1080},
     {15,"mach_trap","mach_test","entry",13,-1,120},{16,"mach_trap","mach_test","return",6,-1,64},
-    {17,"dtrace","","END",5,-1,56},{18,"proc",".","exited",7,6,64},
+    {17,"dtrace","","END",5,-1,56},{18,"proc",".","exited",8,-1,80},
 };
 struct synthetic_event {
     dtrace_eprobedesc_t *description;
@@ -99,9 +99,10 @@ static void event(struct capture *state, uint64_t kind, uint64_t pid, uint64_t d
     free(sample.description);
 }
 static void negative_layouts(void) {
-    for (int test=0;test<22;++test) {
-        int kind=test==5 ? 17 : test==6 ? 18 : test==14 || test==18 || test==19 ? 4 : test==15 ? 15 : test==20 || test==21 ? 18 : 1;
+    for (int test=0;test<26;++test) {
+        int kind=test==5 ? 17 : test==6 ? 18 : test==14 || test==18 || test==19 ? 4 : test==15 ? 15 : test>=20 ? 18 : 1;
         struct synthetic_event sample; make_event(&sample,kind,100,0);
+        if (test>=22) { uint64_t target=200; memcpy(sample.bytes+48,&target,8); }
         struct capture state={.events=tmpfile(),.errors=tmpfile(),.tree=true,.mach=true};
         const char *reason="record-layout";
         switch (test) {
@@ -125,13 +126,40 @@ static void negative_layouts(void) {
         case 17: sample.description->dtepd_size=8193; reason="record-bytes"; break;
         case 18: case 20: reason="header-target"; break; /* zero target */
         case 19: case 21: { uint64_t value=(uint64_t)INT_MAX+1; memcpy(sample.bytes+48,&value,8); reason="header-target"; break; }
+        case 22: { uint64_t value=0; memcpy(sample.bytes+64,&value,8); reason="target-identity"; break; }
+        case 23: { uint64_t value=(uint64_t)UINT32_MAX+1; memcpy(sample.bytes+72,&value,8); reason="target-identity"; break; }
+        case 24: sample.description->dtepd_nrecs=7; reason="record-count"; break;
+        case 25: sample.description->dtepd_rec[6].dtrd_size=0; break;
         }
         assert(consume_probe(&sample.data,&state)==DTRACE_CONSUME_ABORT && state.failed);
         assert(!strcmp(state.reason,reason));
         rewind(state.events); assert(fgetc(state.events)==EOF);
         fclose(state.events); fclose(state.errors); free(sample.description);
     }
-    puts("22 exact layout rejection controls passed; synthetic only");
+    puts("26 exact layout rejection controls passed; synthetic only");
+}
+static void shadow_exit(struct capture *state, uint64_t current_pid, uint64_t target_pid) {
+    struct synthetic_event sample; make_event(&sample,EXITED_TARGET,current_pid,target_pid);
+    uint64_t refcount=PINNED_P_REF_SHADOW|UINT32_C(0x102);
+    memcpy(sample.bytes+72,&refcount,8);
+    assert(consume_probe(&sample.data,state)==DTRACE_CONSUME_NEXT);
+    free(sample.description);
+}
+static void terminal_rejections(void) {
+    for (int test=0;test<5;++test) {
+        struct capture state={.events=tmpfile(),.errors=tmpfile(),.root=100,.tree=true,.mach=true};
+        process_for(&state,100)->created=true;
+        if (test<3) event(&state,EXITED_TARGET,0,100);
+        if (test==4) event(&state,EXITED_TARGET,0,200);
+        struct synthetic_event sample;
+        make_event(&sample,test==0 ? SYSCALL_ENTRY : test==1 ? EXEC_SUCCESS : test==2 ? EXITED_TARGET : CREATE_EVENT,
+                   test==2 ? 0 : 100,test==4 ? 200 : test>=2 ? 100 : 0);
+        long before=ftell(state.events);
+        assert(consume_probe(&sample.data,&state)==DTRACE_CONSUME_ABORT && state.failed);
+        assert(!strcmp(state.reason,"lifecycle-state") && ftell(state.events)==before);
+        free(sample.description); fclose(state.events); fclose(state.errors);
+    }
+    puts("5 postterminal and PID reuse rejection controls passed; synthetic only");
 }
 int main(int argc, char **argv) {
     if (argc==2 && !strcmp(argv[1],"valid-layouts")) {
@@ -144,6 +172,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     if (argc==2 && !strcmp(argv[1],"negative-layouts")) { negative_layouts(); return 0; }
+    if (argc==2 && !strcmp(argv[1],"terminal-rejections")) { terminal_rejections(); return 0; }
     if (argc==2 && !strncmp(argv[1],"layout",6)) { rejected_layout(argv[1]); return 0; }
     if (argc==2 && !strcmp(argv[1],"libdtrace-error")) {
         struct capture state={.errors=tmpfile()}; assert(state.errors);
@@ -172,6 +201,12 @@ int main(int argc, char **argv) {
     struct capture state={.events=tmpfile(),.errors=tmpfile(),.root=100,.tree=true,.mach=true};
     assert(state.events && state.errors);
     process_for(&state,100)->created=true;
+    event(&state,EXEC_SUCCESS,100,0);
+    /* Exact observed v6 failure shape: old exec thread has PID zero, but the
+     * target PID aliases the live new object. Only the raw shadow bit decides. */
+    shadow_exit(&state,0,100);
+    assert(!state.root_terminal && !process_for(&state,100)->terminal);
+    event(&state,SYSCALL_ENTRY,100,0);
     event(&state,CREATE_EVENT,100,200);
     event(&state,EXIT_EVENT,100,1);
     assert(!state.root_terminal && !process_for(&state,100)->terminal && !process_for(&state,200)->terminal);
@@ -180,6 +215,10 @@ int main(int argc, char **argv) {
     assert(process_for(&state,200)->terminal && !process_for(&state,100)->terminal && !all_terminal(&state));
     event(&state,SYSCALL_ENTRY,100,0); /* Parent continues after child exit. */
     event(&state,EXITED_TARGET,300,100); /* Target, not current PID, closes root. */
+    assert(all_terminal(&state));
+    shadow_exit(&state,0,100); /* Late old-object cleanup remains raw context. */
+    assert(all_terminal(&state));
+    event(&state,LWP_EXIT,100,0); /* Final thread cleanup is context, not activity. */
     assert(all_terminal(&state));
     dtrace_dropdata_t drop={.dtdda_drops=3,.dtdda_msg="synthetic loss"};
     assert(drop_event(&drop,&state)==DTRACE_HANDLE_ABORT);
