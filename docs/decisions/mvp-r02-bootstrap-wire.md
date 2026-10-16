@@ -41,9 +41,10 @@ DUPLICATE=8, MISSING_KEEP=9, EOF=10, EXTRA=11, TIMEOUT=12, SHORT=13,
 UNSUPPORTED=14, ADAPTER=15, REPLACEMENT=16, SET_ID=17. No arbitrary stage/reason
 codes or reason-to-stage authorization inference is permitted.
 
-Mutation bits have numeric values1 credential-attempt and2 descriptor-helper
-close-attempt; all other bits reject. These identify the two setup primitives,
-not every later gate close. Before CREDENTIALS, credential-attempt is forbidden;
+Mutation bits have numeric values1 `tc` credential-helper attempt and2 `td`
+nonkeep-cleanup-helper close-attempt; all other bits reject. These identify the two setup primitives,
+not every later gate close. For ERROR phases, before CREDENTIALS the
+credential-attempt bit is forbidden;
 at CREDENTIALS it may be absent or present. CWD and later require it. Before
 DESCRIPTORS the descriptor-attempt bit is forbidden; at DESCRIPTORS and later
 it is optional, because an exact keep set can need no closes. Once READY has
@@ -69,9 +70,13 @@ or ERROR0; READY→ATTEMPT1 or ERROR1; ATTEMPT→ERROR2. ERROR is terminal. At m
 three records are accepted. Any malformed, wrong-binding, out-of-order or extra
 record poisons state permanently, retaining the first protocol fault and any
 first reported ERROR. EOF seals state: START/READY are incomplete; ERROR reports
-failure; ATTEMPT means only ended without a reported exec error. No EOF result
+failure; ATTEMPT means only ended without a reported exec error. Every ERROR prevents launch regardless of attempted flags. No EOF result
 proves exec success. A record after sealed EOF poisons state. Repeated EOF
 classification is idempotent; it is not a clock/trace/liveness assertion.
+
+Standalone codecs/binding checks do not compare READY observations to actual
+requested UID/GID/groups/cwd/signal policy. A full parent/reader must make those
+comparisons before GO.
 
 The C models are not wire layouts. Encode outputs are fixed-size caller-owned
 arrays and are cleared before validation; decode outputs are fully cleared on
