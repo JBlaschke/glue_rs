@@ -31,7 +31,9 @@ struct bs_state {
  int mask_attempted, pipe_attempted, prepared, reset_attempted, child_reset;
  int release_attempted, restore_attempted, pipe_restored, mask_restored;
 };
-/* On preparation failure, if a mutation was attempted, restore once before exit.
+/* Output state must not already own an active/unrestored attempt: preparation
+ * clears it, so never reuse it to discard a previous mask/disposition snapshot.
+ * On preparation failure, if a mutation was attempted, restore once before exit.
  * Do not fork after any failure. Native unsupported rejects before callbacks. */
 int bs_prepare_parent(const struct bs_operations *, struct bs_state *, struct bs_error *);
 /* Owner PID captured by preparation BEFORE fork; never infer it in child.

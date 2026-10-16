@@ -12,6 +12,9 @@ operation table. If preparation attempted either mutation, the controller must
 call `bs_restore_parent` once after endpoint/child cleanup even when preparation
 failed. Do not fork after a preparation failure. The state is initialized only
 by preparation; callers never edit or alias it with other API arguments.
+Preparation requires fresh unowned storage; never prepare over an active or
+unrestored attempt and lose its saved mask/disposition. The intended controller
+performs one attempt and exits after cleanup.
 
 Only a child with a different PID and the selected original controller as parent
 may reset/check/release policy. Reset installs default actions and empty handler
