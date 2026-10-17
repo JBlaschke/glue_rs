@@ -66,9 +66,11 @@ is accepted. A failed stop is not retried through drain or cleanup.
 `close` is attempted once even after partial/failed start. The backend must report
 success only after resolving all of its resources and writers. A late successful
 close can record resource closure while retaining a deadline failure. The parent
-separately confirms its GO close and all remaining channels, writers, FDs and
-signal restoration; these are trusted caller declarations, not observations the
-coordinator obtains. A failed/ambiguous close never becomes safe finalization.
+separately confirms its GO close, the attempt's bootstrap/target/trace channels
+and writers, admission FDs and signal restoration. These are trusted caller
+declarations, not observations the coordinator obtains. Keep the backend context
+alive through the report's owner/clock callbacks. A failed/ambiguous close never
+becomes safe lifecycle finalization.
 Each close-result report is consumed once before interpreting its errno or
 observing the current owner. A negative malformed errno or a positive close
 error remains unresolved even if a later report attempts to replace it with0.
@@ -84,6 +86,11 @@ END, stop and drain. It is only an additional parent prerequisite. Probe
 comparison, real event provenance, native target identity and the parent's
 existing result-promotion policy remain independent requirements. Primary error
 precedence survives cleanup; the first cleanup error is retained separately.
+Final metadata authoring has separate caller-owned sidecar/pending writers and
+a held output directory. Every such resource must close before result promotion,
+even after parent completion succeeds. A metadata close failure forbids promotion;
+`ts_finalization_safe` alone never grants publication permission. See the
+[resource-boundary decision](../../../../docs/decisions/mvp-r02-trace-parent-completion.md).
 
 ## Handoff seams and remaining work
 
