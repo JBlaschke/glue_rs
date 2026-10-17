@@ -14,6 +14,9 @@ import sys
 HERE = Path(__file__).resolve().parent
 PARSER = HERE.parent / 'bootstrap-kit/build_kit.py'
 PARSER_SHA = '5b9332b7d426037f7443eb61cdca0097116dee9610c35260d683f846709c04a9'
+# Unchanged reviewed ordinary inspector; no caller/environment override.
+INSPECTOR_PATH = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016/inspect-deployment'
+INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
 # A reviewed literal binding, not caller-provided authentication or a registry API.
 APPROVED = {
     'kit_manifest_sha256': '098b758fe740d61efccd2ef34d3fe8cf00caba82e281dbc752e419e7a973995c',
@@ -152,6 +155,24 @@ def render(plan):
     p.require(type(plan['expected_ids']) is list and len(plan['expected_ids']) == 4, 'actual IDs')
     for value in plan['expected_ids']:
         p.integer(value, 1, 2147483647)
+    groups = plan['expected_groups']
+    p.require(type(groups) is list and 1 <= len(groups) <= 16, 'actual groups')
+    for value in groups:
+        p.integer(value, 0, 2147483647)
+    p.require(plan['expected_ids'][0] == plan['expected_ids'][1] and
+              plan['expected_ids'][2] == plan['expected_ids'][3] == groups[0] and
+              len(set(groups)) == len(groups), 'canonical actual credentials')
+    for key in ('root_mount', 'data_mount'):
+        mount = plan[key]
+        p.exact_keys(mount, ('device', 'fsid'))
+        p.integer(mount['device'], 1)
+        p.require(type(mount['fsid']) is list and len(mount['fsid']) == 2, 'actual FSID')
+        for word in mount['fsid']:
+            p.integer(word, -(1 << 31), (1 << 31) - 1)
+        p.require(any(mount['fsid']), 'zero actual FSID')
+    p.require(plan['root_mount'] != plan['data_mount'], 'root equals Data')
+    p.require(plan['guest_os'] == {'model': 'VirtualMac2,1', 'kernel': '25.6.0',
+                                  'version': '26.6.2', 'build': '25G83'}, 'closed guest OS profile')
     for case in CASES:
         p.require(plan['outputs'][case] == tmp + 'glue-bs-' + nonce + '-' + case, 'native output path')
         p.require(len(Path(plan['outputs'][case]).name) <= 64 and re.fullmatch('[A-Za-z0-9._-]+', Path(plan['outputs'][case]).name), 'native output leaf')
@@ -159,6 +180,33 @@ def render(plan):
     values = {k.upper(): v for k, v in values.items()}
     values['ENABLED'] = '1' if EXECUTION_ENABLED else '0'
     values['UID'] = str(plan['expected_ids'][0])
+    values['INSPECTOR_PATH'] = shlex.quote(INSPECTOR_PATH)
+    values['INSPECTOR_SHA'] = shlex.quote(INSPECTOR_SHA)
+    current_checks = []
+    def current(key, kind, expected):
+        current_checks.append('current_json_matches ' + shlex.quote(key) + ' ' + kind + ' ' +
+                              shlex.quote(str(expected)) + ' || return 2')
+    for key, expected in {'schema': 'glue-bootstrap-deployment-observation-v1',
+                          'model': plan['guest_os']['model'], 'kernel_release': plan['guest_os']['kernel']}.items():
+        current(key, 'string', expected)
+    for key, expected in {'tc_compatible': 'true', 'settings_changed': 'false',
+                          'executable_admission': 'false', 'full_acceptance': 'false'}.items():
+        current(key, 'bool', expected)
+    for key, seq in (('ids', plan['expected_ids']), ('groups', groups)):
+        current(key, 'array', len(seq))
+        for i, value in enumerate(seq):
+            current(key + '.' + str(i), 'integer', value)
+    current('components', 'array', 5)
+    for i, name in enumerate(('/', 'System', 'Volumes', 'Data', 'Library')):
+        prefix = 'components.' + str(i)
+        current_checks.append('current_json_dictionary ' + prefix + ' || return 2')
+        current(prefix + '.name', 'string', name)
+        mount = plan['root_mount' if i < 3 else 'data_mount']
+        current(prefix + '.device', 'integer', mount['device'])
+        current(prefix + '.fsid', 'array', 2)
+        for j, word in enumerate(mount['fsid']):
+            current(prefix + '.fsid.' + str(j), 'integer', word)
+    values['CURRENT_DEPLOYMENT_CHECKS'] = '\n    '.join(current_checks)
     values['KIT_SHA'] = shlex.quote(APPROVED['kit_manifest_sha256'])
     for case in CASES:
         values['OUT_' + case.upper()] = shlex.quote(plan['outputs'][case])
