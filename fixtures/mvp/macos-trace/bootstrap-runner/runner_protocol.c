@@ -19,32 +19,42 @@ int nr_status_init(struct nr_status_stream *s,const struct bw_binding *b) {
     if(f!=BW_OK)return wire_fail(s,f);
     return 0;
 }
-static int finish(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o) {
+static int finish(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o,
+                  int observed,const struct bio_observer *v) {
     struct bio_result r;struct bio_error e;
-    int rc=bio_require_eof(fd,d,o,&r,&e);
+    int rc=observed?bio_require_eof_observed(fd,d,o,v,&r,&e):bio_require_eof(fd,d,o,&r,&e);
     if(append(s,&r))return wire_fail(s,BW_FAULT_EXTRA);
     if(rc)return io_fail(s,&e);
     s->end=bw_state_finish(&s->wire);s->ended=1;
     if(s->end==BW_END_INVALID)return wire_fail(s,BW_FAULT_STATE);
     return 1;
 }
-int nr_status_next(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o) {
+static int next(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o,
+                 int observed,const struct bio_observer *v) {
     if(!s)return -1;
     if(s->failed || s->ended)return wire_fail(s,BW_FAULT_STATE);
-    if(s->wire.phase==BW_REPORTED_ERROR || s->wire.accepted_records>=3)return finish(s,fd,d,o);
+    if(s->wire.phase==BW_REPORTED_ERROR || s->wire.accepted_records>=3)return finish(s,fd,d,o,observed,v);
     struct bio_result r;struct bio_error e;
-    int rc=bio_read_record(fd,BW_STATUS_SIZE,d,o,&r,&e);
+    int rc=observed?bio_read_record_observed(fd,BW_STATUS_SIZE,d,o,v,&r,&e):
+                    bio_read_record(fd,BW_STATUS_SIZE,d,o,&r,&e);
     if(append(s,&r))return wire_fail(s,BW_FAULT_EXTRA);
     if(rc) {
         if(e.stage==BIO_STAGE_READ && e.reason==BIO_REASON_TRUNCATED && e.system_errno==0 && r.bytes_moved==0)
             /* Record-mode zero read lacks a post-read clock check. Require a
              * second bounded EOF operation at the SAME deadline before sealing. */
-            return finish(s,fd,d,o);
+            return finish(s,fd,d,o,observed,v);
         return io_fail(s,&e);
     }
     enum bw_fault f=bw_state_push(&s->wire,r.prefix,BW_STATUS_SIZE);
     if(f!=BW_OK)return wire_fail(s,f);
     return 0;
+}
+int nr_status_next(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o) {
+    return next(s,fd,d,o,0,NULL);
+}
+int nr_status_next_observed(struct nr_status_stream *s,int fd,struct bio_time d,
+                            const struct bio_operations *o,const struct bio_observer *v) {
+    return next(s,fd,d,o,1,v);
 }
 int nr_probe_compare(const struct br_request *r,const struct bw_binding *b,
                      const uint64_t flags[3],const struct np_report *p) {
