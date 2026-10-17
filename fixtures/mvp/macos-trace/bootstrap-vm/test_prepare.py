@@ -132,6 +132,27 @@ class PreparationTests(unittest.TestCase):
         self.assertNotIn(' ] && [ ', outer.split('root_phase()')[0].split('/bin/sh -c ')[1])
         self.assertIn('|| exit 2;', outer)
 
+    def test_request_digest_failures_cannot_compare_equal_empty_outputs(self):
+        # Extract the actual narrow helper; substitute only digest with shell
+        # builtins. No rendered phase, hashing tool, root tool or file I/O runs.
+        template = (HERE / 'root-stage.sh.in').read_text()
+        helper = template.split('request_digests_match() {', 1)[1].split('\n}\n', 1)[0]
+        helper = 'request_digests_match() {' + helper + '\n}\n'
+        digest = ('digest() { case "$1" in fail) return 1 ;; empty) return 0 ;; '
+                  'invalid) printf "%064d" 0; printf z ;; '
+                  'other) printf "%064d" 1 ;; *) printf "%064d" 0 ;; esac; }\n')
+        for left, right, wanted in [('fail','fail',2), ('fail','ok',2), ('ok','fail',2),
+                                    ('empty','empty',2), ('invalid','invalid',2),
+                                    ('ok','other',2), ('ok','ok',0)]:
+            script = ('set -eu; ' + digest + helper +
+                      'request_digests_match "$1" "$2" || exit $?; printf reached')
+            done = subprocess.run(['/bin/sh', '-c', script, 'control', left, right],
+                                  capture_output=True, timeout=5)
+            self.assertEqual(done.returncode, wanted, (left, right, done.stderr))
+            self.assertEqual(done.stdout, b'reached' if wanted == 0 else b'')
+        self.assertIn('request_digests_match "$STAGE/$C.request.bin" "$source" || return 2', template)
+        self.assertIn("printf '%s\\n' \"$staged_hash\" > \"$STAGE/$C.input.sha256\"", template)
+
     def test_derived_packet_exact_inventory_and_existing_output_untouched(self):
         values = fixture()
         with tempfile.TemporaryDirectory() as name:

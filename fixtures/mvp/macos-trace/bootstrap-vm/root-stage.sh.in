@@ -29,6 +29,13 @@ digest() {
     case "$hash" in *[!0-9a-f]*) return 1 ;; esac
     printf '%s\n' "$hash"
 }
+request_digests_match() {
+    staged_hash=$(digest "$1") || return 2
+    source_hash=$(digest "$2") || return 2
+    [ "${#staged_hash}" -eq 64 ] && [ "${#source_hash}" -eq 64 ] || return 2
+    case "$staged_hash$source_hash" in *[!0-9a-f]*) return 2 ;; esac
+    [ "$staged_hash" = "$source_hash" ] || return 2
+}
 directory "$STAGE" 0:700 || exit 2
 
 install_file() {
@@ -124,8 +131,8 @@ run_case() {
     [ "$size" -ge 208 ] && [ "$size" -le 16385 ] || return 2
     /usr/bin/head -c 16386 "$source" > "$STAGE/$C.request.bin"
     [ "$(/usr/bin/stat -f '%z' "$STAGE/$C.request.bin")" = "$size" ] || return 2
-    [ "$(digest "$STAGE/$C.request.bin")" = "$(digest "$source")" ] || return 2
-    digest "$STAGE/$C.request.bin" > "$STAGE/$C.input.sha256"
+    request_digests_match "$STAGE/$C.request.bin" "$source" || return 2
+    printf '%s\n' "$staged_hash" > "$STAGE/$C.input.sha256"
     if [ "$C" = denied ]; then /bin/chmod 0700 "$BUILD"; directory "$BUILD" 0:700 || return 2; fi
     native=0
     /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/bootstrap-runner" \
