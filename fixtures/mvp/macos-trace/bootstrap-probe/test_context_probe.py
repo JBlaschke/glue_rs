@@ -9,9 +9,40 @@ import struct
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 DIGEST = hashlib.sha256(b"owned probe native unit request v1\n").hexdigest()
+
+
+def compile_checked(command):
+    result = subprocess.run(command, capture_output=True, timeout=30)
+    if result.returncode:
+        raise RuntimeError(
+            f"compiler exited {result.returncode}: {command!r}\n"
+            f"stdout:\n{result.stdout.decode(errors='replace')}\n"
+            f"stderr:\n{result.stderr.decode(errors='replace')}"
+        )
+
+
+class CompilerInvocationTests(unittest.TestCase):
+    def test_failed_compile_exposes_stdout_and_stderr(self):
+        command = ["cc", "-Werror", "owned-fixture.c"]
+        result = subprocess.CompletedProcess(command, 1, b"compiler stdout\n", b"error: owned diagnostic\n")
+        with patch.object(subprocess, "run", return_value=result) as run:
+            with self.assertRaises(RuntimeError) as caught:
+                compile_checked(command)
+        self.assertIn("compiler exited 1", str(caught.exception))
+        self.assertIn("compiler stdout", str(caught.exception))
+        self.assertIn("error: owned diagnostic", str(caught.exception))
+        run.assert_called_once_with(command, capture_output=True, timeout=30)
+
+    def test_successful_compile_is_not_replayed(self):
+        command = ["cc", "owned-fixture.c"]
+        result = subprocess.CompletedProcess(command, 0, b"", b"")
+        with patch.object(subprocess, "run", return_value=result) as run:
+            compile_checked(command)
+        run.assert_called_once_with(command, capture_output=True, timeout=30)
 
 
 def snapshot():
@@ -30,10 +61,9 @@ class NativeContextProbeTests(unittest.TestCase):
         cls.probe, cls.driver = cls.directory / "context-probe", cls.directory / "context-driver"
         common = ["cc", "-std=c11", "-Wall", "-Wextra", "-Werror", "-O2"]
         libs = ["-lproc"] if platform.system() == "Darwin" else []
-        subprocess.run(common + [str(HERE / "probe_report.c"), str(HERE / "context_probe.c"),
-                                 *libs, "-o", str(cls.probe)], check=True, capture_output=True, timeout=30)
-        subprocess.run(common + [str(HERE / "test_context_probe_driver.c"), "-o", str(cls.driver)],
-                       check=True, capture_output=True, timeout=30)
+        compile_checked(common + [str(HERE / "probe_report.c"), str(HERE / "context_probe.c"),
+                                  *libs, "-o", str(cls.probe)])
+        compile_checked(common + [str(HERE / "test_context_probe_driver.c"), "-o", str(cls.driver)])
 
     def call(self, args, env=None, own_group=True):
         before = snapshot()
