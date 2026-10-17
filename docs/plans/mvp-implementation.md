@@ -1003,6 +1003,56 @@ functional verdict on the tests they wrote. Original input bytes and physical
 metadata remain unchanged. Partial source/basis manifests in this compact audit
 are clearly named references rather than incomplete nested evidence trees.
 
+### Approved public source checkpoint and current VM preflight
+
+The owner approved and root pushed exactly `e2c728bcdb25ceb151f8f434859c668faf0abcd0`
+to `codex/mvp-r04-owned-trace-source-status`. Public
+[run 39074320935](https://github.com/JBlaschke/glue_rs/actions/runs/39074320935)
+completed all nine declared jobs successfully, on push attempt 1, at
+2026-10-17T22:18:53Z. The 104-file local retention record is
+`/private/tmp/glue-public-e2c-ci-monitor-20lgn127`, manifest
+`d6c9c6d65938597d7be955bdca05256b9cf6101ff0abd8634d2e0e4fc17f9d07`.
+It retains actual metadata/log GET argv, statuses and streams, all nine completed
+job logs (835,267 bytes), exact checkout SHA, matrix/runner identities and final
+completion metadata. Initial network and ANSI-log read failures are preserved;
+the read-only log retrieval adjustment did not rerun the workflow. This public
+checkpoint configures 30 Python suites. The later local 35-suite stack and its
+composed controls are not attributed to this hosted run.
+
+Every earlier published `origin/codex/mvp-*` tip is an ancestor of `e2c728b`.
+The preferred next merge is that one branch into `main`, preserving ancestry
+with a merge commit. The original 26-card stack is already merged through
+PR #34. The newer local stack ending at `adc5fbc` contains the reader, packet,
+case and SIM follow-ups and belongs in a later separately validated public
+checkpoint. Alternate local development branches are not extra merge inputs.
+No merge, branch deletion or new PR was performed during this check.
+
+The unchanged read-only inspector ran again in the current guest before
+Recovery. All six commands returned zero; the 28-file proof is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-UpQXf3Yc`,
+manifest `069b98a8ce2a1917ff8d9ad440f20f1e140595ebcc78e77f5cd68ef8e9ddf2aa`.
+It reports SIP enabled at 2026-10-17T22:23:13.747047000Z, VirtualMac2,1,
+Darwin 25.6.0 arm64/macOS 26.6.2 (25G83), IDs 501/501/20/20, root device
+16777231/FSID `[16777236,27]` and Data device 16777231/FSID `[16777231,27]`.
+These remain pre-Recovery observations, not disabled-SIP admission. The distinct
+77-file proof/toolkit/CI peer review is
+`/private/tmp/glue-fresh-proof-ci-peer-t979xc3g`, manifest
+`a300f005529f6a68e6075b3772c2698c43316deabc4e6b1117d5811f239b7641`.
+It verifies complete inventories, original inspector provenance, literal command
+receipts and all nine CI logs, with unchanged input bytes and physical metadata.
+
+The external source-only registry candidate is
+`/private/tmp/glue-trace-registry-candidate-8x9wjgbm`, 83 files, manifest
+`e909d5af8f142f95800d26119cb582517428c93474ab6de35c5da55a03e883bf`.
+Its 41 native/core/wrapper pins match current, committed and public `e2c728b`
+bytes, including the recursive 39-file C/header closure and ordered 2/19/6 TU
+lists. Source parsing and locking pass; the external candidate has no proofs.
+The production registry remains null/empty. A fresh exact post-reboot disabled
+proof, independent review, committed admission, signed reproducible kit,
+current-kit retention and reviewed packet activation still precede tracing.
+No native provider run, SIM calibration, full Darwin oracle, R02/M2 closure or
+durable evidence publication follows from these source and preflight records.
+
 
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux

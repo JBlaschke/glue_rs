@@ -8,8 +8,15 @@ integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
 executed target/runtime cells, commands and open evidence. Follow-up work uses
 new feature branches; no release asset has been published.
 
-The CI failures are repaired. Approved source `162f91a` on the public deployment
-branch passes all nine jobs in [run12](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631).
+The CI failures are repaired. The latest approved public source `e2c728b` on
+`codex/mvp-r04-owned-trace-source-status` passes all nine jobs in
+[run 39074320935](https://github.com/JBlaschke/glue_rs/actions/runs/39074320935).
+It contains every earlier published MVP follow-up branch and is the next merge
+point into `main`; merging its ancestors individually is unnecessary. Prefer a
+merge commit to preserve ancestry. Newer local reader/packet/case/SIM work follows
+in a separate reviewed checkpoint after publication and hosted CI.
+Earlier approved source `162f91a` on the public deployment branch also passes
+all nine jobs in [run12](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631).
 The two earlier failed runs remain unchanged. Native Ubuntu GCC13 additionally
 passes all22 Python suites (334 passes,25 explicit skips); its one changed
 production source and updated lock were independently reviewed.
@@ -46,8 +53,8 @@ tracing/script source pins match before/after/committed bytes in the repeated ru
 The first run omitted the executed fetch shell helper from its source inventory;
 it remains retained, and the corrected inventory covers every tracked script.
 Exact outer command
-argv/status/streams are retained. This is local Python/C validation, with no
-newer hosted or Rust-suite run.
+argv/status/streams are retained. These are local Python/C receipts; the later
+public `e2c728b` matrix separately covers this 30-suite checkpoint.
 
 The independent fixed raw reader is now integrated at `ac7e27a`. Its 16 controls
 pass on both Mac and native offline Linux arm64 without skips, including complete
@@ -82,10 +89,14 @@ publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
 Documentation continues on `codex/mvp-r04-trace-sim-status`.
-The updated public push request is fixed at `e2c728b` on
-`codex/mvp-r04-owned-trace-source-status`; it replaces the earlier `ae48aee`
-request and excludes this newer raw reader.
-It also excludes the later packet/case and SIM metadata follow-ups.
+The approved push of `e2c728b` replaced the earlier `ae48aee` request and completed
+the nine-job matrix on its first attempt. It excludes the newer raw reader,
+packet/case and SIM metadata follow-ups. A fresh ordinary-user guest inspection
+also passed all six commands and again reports SIP enabled. Its literal current
+device/FSID observations are a pre-Recovery baseline, not tracing admission.
+The external 41-source tracing registry candidate matches `e2c728b` exactly;
+the production registry remains empty until a fresh independently reviewed
+post-reboot disabled-SIP proof exists. No new tracing diagnostic has run.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
