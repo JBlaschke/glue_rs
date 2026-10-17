@@ -133,7 +133,17 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-observed-io` | `ab1f3a2`, `fbcc2cf` | Cooperative observer variants retain legacy ABI, original deadline, bounded waits, confirmed prefixes and error precedence;27 strict/27 sanitizer controls pass |
 | R02 | `codex/mvp-r02-bootstrap-observer-inputs` | `b25d51a`, `cb19a8c` | Advance only BIO C/H pins among 34 sources to reviewed `fbcc2cf`; both actual proofs and historical kit03 unchanged |
 | V01 | `codex/mvp-v01-trace-session-ci` | `cb26b09` | Add two model suites; all 26 Python suites pass locally on Mac and native offline Linux arm64 with explicit platform skips; no newer hosted run |
-| R04 | `codex/mvp-r04-bootstrap-nontracing-status` | branch tip, based on `cb26b09` | Record successful actual retention03/packet04 and independent nontracing replay; complete Darwin oracle/M2 remain open |
+| R04 | `codex/mvp-r04-bootstrap-nontracing-status` | `ae48aee`, based on `cb26b09` | Record successful actual retention03/packet04 and independent nontracing replay; exact public push remains pending approval |
+| R02 | `codex/mvp-r02-observed-status-protocol` | `c27f06c`, `b778bc3`; integrated `a002720`, `cfe24fb` | Explicit observed status/EOF entry, opaque failed prefixes and unchanged legacy path;11 strict/11 sanitizer groups |
+| R02 | `codex/mvp-r02-trace-parent-completion` | `fd53af1`, `6ee2f85`; integrated `f97e9a0`, `463bb9d` | Clarify lifecycle versus final metadata resource closure; no token/layout/predicate change |
+| R02 | `codex/mvp-r02-owned-trace-backend` | `6a23ac2` through `a2d8119`; integrated through `6c75976` | Fixed BSD/Mach/proc adapter, exact inventory/EPID/raw layouts and separate native/close errors; source-isolated controls and SDK link only |
+| R02 | `codex/mvp-r02-owned-trace-parent` | `79d5fd4`, `21ab4c0`; integrated `e96d0bb`, `d08dd5f` | Separate tracing parent, once-only GO/cleanup/closure/promotion; transient cleanup-clock bug fixed;10 strict/10 sanitizer groups |
+| R02 | `codex/mvp-r02-owned-trace-runner` | `5240b05` through `d08dd5f` | Integrate reviewed protocol/coordinator/backend/parent; default build remains nontracing; no native calibration |
+| V01 | `codex/mvp-v01-owned-trace-ci` | `abecae2` | Add exactly three protocol/backend/parent control suites; Darwin-only skips remain explicit |
+| R02 | `codex/mvp-r02-owned-trace-kit` | `5a1d2b9`, `24ba156`; integrated `f3f0ad1`, `a395ead` | Frozen tracing policy with empty registry, exact disabled SIP and runner-only libdtrace;23 legacy/12 new controls |
+| R02 | `codex/mvp-r02-owned-trace-inputs` | `b356590`, `7f15c40` | Update six of 34 default source pins plus host-parser literal; both proofs/kit03 approval preserved; actual historical checker replay0 |
+| V01 | `codex/mvp-v01-owned-trace-kit-ci` | `9f281f1` | Add one kit suite; all 30 Python suites pass locally on Mac/native offline Linux arm64; no new hosted or Rust run |
+| R04 | `codex/mvp-r04-owned-trace-source-status` | branch tip, based on `9f281f1` | Record reviewed tracing source, empty deployment admission and local aggregate; Darwin oracle/M2 remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -669,8 +679,99 @@ counts pass; input metadata/bytes stay unchanged. The aggregate has writable
 permissions: a complete named inventory is not an immutable-permission claim.
 Container policy/outer status are root-witnessed transcription; child logs and
 native platform/UID are direct captures, with no embedded outer-container receipt.
-Native backend/runner adoption, tracing receipts and SIP-approved
-calibration remain open, along with the full Darwin oracle/corpus/budgets and M2.
+At that26-suite checkpoint native backend/runner adoption remained open. The
+subsequent source integration follows below; native calibration and the complete
+Darwin oracle/corpus/budgets and M2 remain open.
+
+### Owned tracing source integration and 30-suite checkpoint
+
+The [separate-parent decision](../decisions/mvp-r02-owned-trace-runner.md)
+preserves the ordinary build/CLI/receipt and selects tracing only through the
+fixed compile recipe. Observed protocol `cfe24fb` preserves failed status/GO
+prefixes without decoding or replay; eleven strict/eleven sanitizer groups pass.
+Its 49-file peer record is `/private/tmp/glue-observed-status-peer-review-NkHFbx`,
+manifest `8496e647d9b5c6919eeac3b9a641c778869728b1de335303cadc01cc352a999a`.
+
+The backend integrated through `6c75976` requires the complete fixed
+BSD/Mach/proc inventory and exact enabled count. It validates native layouts,
+probe/EPID identities and raw writes before coordinator delivery; actual consumed
+BEGIN supplies readiness. Target nonshadow exit and queued END are distinct from
+current-context/shadow cleanup. Actual POSIX/libdtrace errors, callback statuses
+and every writer-close outcome remain separate. Its final validation is
+`/private/tmp/glue-owned-trace-backend-closed-9okh8wbf`, manifest
+`5af4d0b5258a6132a64957b530941cbc8414377f482d54795d60724a689ad68e`;
+the 62-file peer record is `/private/tmp/glue-owned-trace-backend-peer-review-a7fnqrg3`,
+manifest `0afbb1bd2643a15220035e96680d74a8a880995719e39917bf7cb21baac80923`.
+
+Parent `d08dd5f` enters only after actual fork/full READY comparison, consumes
+readiness/BEGIN before once-only GO, pumps observed status/wait/cleanup, and
+retires kill ownership on reap/ECHILD before later fallible observations. The
+initial parent allowed cleanup work against the longer attempt deadline after
+a transient cleanup-clock failure. The repaired source requires valid shared
+cleanup binding; the new control fails against original source and passes the
+repair. Ten strict/ten sanitizer groups pass. Backend context remains alive
+through parent reporting, and all sidecar/pending/held-directory closure gates
+precede the final exclusive rename. The 50-file validation record are at
+`/private/tmp/glue-owned-trace-parent-repair-validation-nxj4d4bs`, manifest
+`a074cc5fd2d5e78bf2a03150345367021cb96907f08c3005830ded1494d20a5b`;
+the 90-file peer record is `/private/tmp/glue-owned-trace-parent-peer-review-s3zqo5jp`,
+manifest `a963ae1f07f2661c8f16270f86593a3fa0c71b6337af4cf7436eaef540bfadd2`.
+Legacy controls remain separately retained. Linked SDK tracing binaries were
+never executed; injected models supply no native provider/exec evidence.
+
+The [tracing kit policy](../decisions/mvp-r02-owned-trace-kit.md), integrated as
+`a395ead`, uses frozen internal policies without changing default schemas/CLI,
+enabled-SIP admission or legacy recipe bytes. Only `owned-trace-runner` defines
+tracing and links exactly libSystem plus libdtrace. Its registry remains null
+revision with empty source/compile/proof lists; construction refuses before
+source/proof/output/tool access. All 23 legacy and 12 new controls pass. Validation
+is `/private/tmp/glue-owned-trace-kit-validation-7va390eo`, manifest
+`130b5097b2909824f436908ebebd4ed9d2bcf814563f6189872129c7006b0795`;
+the 37-file peer record is `/private/tmp/glue-owned-trace-kit-peer-review-wdlie6bs`,
+manifest `0b35edb1eeb6a306954274d738ce8b3f0d535b85114d6570d1fb49c5c89de7bc`.
+
+Separate [registration](../decisions/mvp-r02-owned-trace-inputs.md) `7f15c40`
+updates exactly six of 34 default hashes, preserves 28 others, both actual proofs
+and all compile lists, and pins source revision `a395ead`. Only the existing
+legacy preparer's parser hash changes. Clean committed source loading passes
+34/34. The actual historical checker replay returns0 with identical native
+results; only parser/preparer source identities differ. All four input trees'
+bytes and file/directory metadata remain unchanged. Its record is
+`/private/tmp/glue-owned-trace-input-registration-20261017-01`, manifest
+`4ccf8f8e10bd3b4a85d95e3b975e9f50892b3b37b0e501a34dcdf0cc5fed6cfa`.
+The 73-file independent review is
+`/private/tmp/glue-owned-trace-registration-peer-review-you9emkw`, manifest
+`f1e34366a980d389c07ffd1074dccbd562d1185964c8140aee79d6fb369c4cf3`.
+It verifies all source pins, both report identities and all four actual input
+trees twice, without rerunning the checker or loader. The root record remains
+writable; the separate peer record has read-only permissions.
+No new kit or guest run follows from this registration; tracing admission stays
+empty and kit03 retains its historical lock.
+
+CI `abecae2` adds three invocations and `9f281f1` adds one. The complete local
+run of all 30 Python suites collects 454 controls per host: Mac 448 pass/six skip;
+native Linux arm64 GCC 14 passes 413 with 41 explicit skips. Parent promotion models
+are Darwin-only (all 10 skip elsewhere); Linux runs the backend refusal and skips
+its two SDK models, while the kit adds one Linux SDK skip. The481-file record is
+`/private/tmp/glue-owned-trace-portable-controls-20261017-01`, manifest
+`f34e22e8fdc31b70e53580d3ef2dd36d949b36012f6a8f45752d77fb45c2b40f`.
+All 157 selected source pins equal before/after/committed `9f281f1` bytes. The
+selection includes every tracked macos-trace file and the CI/evidence-bundle
+scripts; it is narrower than the earlier 198-pin inventory of all scripts.
+Actual outer Mac/container argv, completion status and streams are captured,
+alongside 60 suite receipts. The cached native image and offline/read-only/
+UID 65534/capability-drop/256MiB/64-PID policy remain fixed. Record permissions
+remain writable, with no hostile-actor immutability or rootless-engine claim.
+No Rust, hosted CI, provider or new guest execution is included.
+
+An independent streaming raw reader, separate tracing packet/checker, fresh
+post-SIP-reboot proof, reviewed trace source admission, actual kit construction
+and protected-install retention still precede guest calibration. SIM has no GO
+and must retain its actual failed-trace/normal-exit-or-kill facts; it cannot borrow
+positive success eligibility. Absolute monotonic/DTrace timestamp domains have
+not been equated. The VM and physical host remain SIP enabled. Full native
+process-tree effects, extraction verdicts, Mac corpus/budgets and R02/M2 remain
+open; no raw exports or newer source have been published.
 
 
 The credential primitive independently passes 14 native unprivileged controls

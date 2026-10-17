@@ -25,20 +25,34 @@ attempt and a normal exit 120; it does not prove signal-caused termination.
 Bootstrap messages and probe context remain producer observations, with
 `tracing=false`, `exec_proved=false` and `full_acceptance=false`.
 
-The reviewed trace-session coordinator (`68d22d1`) and cooperative pipe-I/O
-observer (`fbcc2cf`) are implemented locally. Their separate controls and peer
-reviews pass. Registration at `cb19a8c` advances exactly two of 34 source hashes,
-preserving both actual deployment proofs; kit03 keeps its historical lock.
-CI wiring at `cb26b09` adds both suites. All 26 current Python suites collect 418
-controls: Mac 413 pass/five skip; native offline Linux arm64 GCC 14 passes 390 with
-28 explicit skips. All 198 recorded source pins match before/after and committed
-bytes. This is local Python/C validation, with no newer hosted or Rust-suite run.
-The coordinator and observer have no native tracing/runner adoption yet.
+The reviewed coordinator and cooperative pipe-I/O observer now connect to a
+separately compiled owned tracing parent (`d08dd5f`) and fixed libdtrace backend
+(`6c75976`). Independent source/model reviews pass, including the repaired
+transient cleanup-clock failure: tracing work cannot borrow the longer attempt
+budget after cleanup binding fails. The native SDK binaries compile/link but
+remain unexecuted; no provider or new guest diagnostic has run.
+
+The separate tracing kit profile (`a395ead`) preserves the legacy policy and
+requires exact disabled-SIP proof plus runner-only libdtrace linkage. Its registry
+remains null/empty and refuses construction. Registration `7f15c40` updates six
+of the existing 34 default source pins and the legacy host-parser literal,
+preserving both enabled-SIP proofs and kit03's fixed approval. Replaying the
+actual nontracing batch succeeds with identical native results and unchanged
+input bytes/metadata; only the two host source identities change in its report.
+
+CI at `9f281f1` invokes 30 Python suites collecting 454 controls: Mac 448 pass/six
+skip; native offline Linux arm64 GCC 14 passes 413 with 41 explicit skips. All 157
+selected source pins match before/after/committed bytes. Exact outer command
+argv/status/streams are retained. This is local Python/C validation, with no
+newer hosted or Rust-suite run. Independent raw tracing validation, a fresh
+deployment proof, admitted tracing kit and separate guest packet/checker remain
+required before native calibration.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-nontracing-status`.
+Documentation continues on `codex/mvp-r04-owned-trace-source-status`; the earlier
+`ae48aee` public push request remains separately scoped to its fixed branch.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
