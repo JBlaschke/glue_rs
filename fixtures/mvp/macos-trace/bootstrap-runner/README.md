@@ -99,3 +99,48 @@ no native tracing or execution evidence:
 python3 -B test_runner_protocol_observed.py -v
 NR_STATUS_TEST_CFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' python3 -B test_runner_protocol_observed.py -v
 ```
+
+The separate `build-traced.sh NEW_BINARY [REVIEWED_GENERATED_CATALOG.c]` recipe
+defines `GLUE_OWNED_TRACING` and links the fixed owned-context libdtrace backend.
+It accepts the same closed request/output CLI. There is no runtime tracing,
+target, argv, backend or provider selector and no nontracing fallback. The default
+`build.sh` and its nontracing receipt remain unchanged. This source adoption has
+no tracing deployment/profile admission or new kit registration; do not run it
+under the historical nontracing kit or checker.
+
+The tracing parent creates the backend only after complete READY comparison,
+consumes provider readiness and BEGIN, claims GO once immediately before an
+observed write, and never repeats partial or complete failed GO. Post-READY status
+and strict EOF use the observed codec; failed prefixes remain opaque. Actual
+reap/ECHILD retires coordinator ownership before later clock/pump checks. Cleanup
+binds one request-limited deadline for child wait and backend stop/drain/close.
+Clock failure still permits once-only best-effort closure and poisons success.
+
+Tracing outputs add the fixed backend files `program.d`, `probes.tsv`,
+`events.jsonl`, `errors.jsonl` and a bounded `trace.json` sidecar. The result schema
+is `glue-owned-traced-bootstrap-diagnostic-v1` with `tracing:true` and the fixed
+sidecar reference. `exec_proved` and `full_acceptance` remain false. Pre-READY
+refusals explicitly have no session; they do not claim captured events. The
+sidecar records coordinator callback statuses separately from native POSIX errno
+and libdtrace codes; bounded native message bytes are hex encoded.
+
+Parent transport/admission/signal closure is reported while backend context is
+still alive, after backend writers close. Snapshot/destroy follows that report;
+only pure coordinator observations follow destruction. Sidecar, pending writer
+and held-directory closure are separately required before exclusive result
+promotion, which is the last fallible operation. Unresolved resources suppress
+the result; resolved failures may retain a failed diagnostic. A simulated denied
+release may retain normal child exit120 and never becomes tracing success.
+
+Run the actual parent/trace/files/coordinator integration controls with:
+
+```
+python3 -B test_owned_trace_parent.py -v
+NR_TRACE_TEST_CFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' python3 -B test_owned_trace_parent.py -v
+```
+
+All process, file and backend boundaries in these controls are isolated models;
+they perform no fork, kill, target exec, privilege transition or provider call.
+An SDK compile/link of the tracing recipe is separate and need not execute its
+binary. No source control or link result proves kernel exec, provider availability,
+complete trace coverage or R02/M2 acceptance.

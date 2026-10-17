@@ -8,9 +8,12 @@
 #include "../target-descriptors/target_descriptors.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef GLUE_OWNED_TRACING
+#include "runner_trace.h"
+#endif
 
 enum nr_stage {NR_NONE,NR_PREFLIGHT,NR_SIGNAL,NR_REQUEST,NR_CATALOG,NR_ADMISSION,NR_OUTPUT,
- NR_ENDPOINTS,NR_FORK,NR_PROCESS_GROUP,NR_READY,NR_GO,NR_STATUS,NR_WAIT,NR_PROBE,NR_CLEANUP,NR_FINALIZE};
+ NR_ENDPOINTS,NR_FORK,NR_PROCESS_GROUP,NR_READY,NR_GO,NR_STATUS,NR_WAIT,NR_PROBE,NR_CLEANUP,NR_FINALIZE,NR_TRACE};
 enum nr_reason {NR_NO_ERROR,NR_INVALID,NR_UNSUPPORTED,NR_NOT_ROOT,NR_UNCONFIGURED,
  NR_SYSCALL,NR_MISMATCH,NR_TIMEOUT,NR_CLOCK,NR_HELPER,NR_INCOMPLETE,NR_PROTOCOL,NR_REPORTED,
  NR_CHILD_STATUS,NR_LOST_CHILD,NR_OWNERSHIP};
@@ -32,6 +35,9 @@ struct nr_attempt {
  struct nr_status_stream stream;struct bw_status ready;int ready_matched,probe_matched;
  struct bio_result go_result;struct bio_error go_error;int go_attempted,go_closed;
  enum br_fault ready_fault;enum np_fault probe_fault;
+#ifdef GLUE_OWNED_TRACING
+ struct nr_trace trace;
+#endif
 };
 int nr_fail(struct nr_attempt *,enum nr_stage,enum nr_reason,int,int);
 int nr_close_owned(struct nr_attempt *,int *,enum nr_stage);
