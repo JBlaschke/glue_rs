@@ -121,7 +121,11 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-bootstrap-restart-status` | `c36b711`, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted launch/reboot, second failed install and actual guest mode observations preserved |
 | R02 | `codex/mvp-r02-bootstrap-mode-guards` | `46d61f3` | Exact full BSD mode/type guards,14 preparer/18 checker controls; integrated as `dec2488` after decision `fabae45` |
 | R02 | `codex/mvp-r02-bootstrap-mode-integration` | `409dc4b`, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation/review/staging; launch reached private guest authentication |
-| R04 | `codex/mvp-r04-bootstrap-request-stop-status` | branch tip, based on `409dc4b` | Packet03 installation/signatures pass; ordinary positive request refuses before output/cases; bounded metadata retained, current deployment reobservation pending |
+| R04 | `codex/mvp-r04-bootstrap-request-stop-status` | `bd0e49d`, based on `409dc4b` | Packet03 installation/signatures pass; ordinary positive request refuses before output/cases; bounded metadata and fresh deployment observation retained |
+| R02 | `codex/mvp-r02-bootstrap-retain-install` | `2de4103` decision | Fixed reversible same-parent retention of the completed kit02 installation; actual packet03 and owned controls reviewed, guest move pending |
+| R02 | `codex/mvp-r02-reboot-proof-registration` | `28fe9b5`, `41c3f5c`; integrated `8b329f4`, `c24ddb4` | Append-only actual reboot-proof registration,34 source pins unchanged,23 kit controls and independent review pass |
+| R02 | `codex/mvp-r02-bootstrap-current-preflight` | `65fc322`, `5f90c48`; integrated `a61225d`, `c9e845b` | Actual native observation and typed identity/mount checks before sudo;19 preparer/18 checker controls pass independently |
+| R04 | `codex/mvp-r04-bootstrap-current-status` | branch tip, based on `c9e845b` | Fresh proof, rebuilt kit03, preflight and retention-packet checkpoint; no fresh guest run or full Darwin acceptance |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -465,11 +469,61 @@ device is16777231, root FSID `[16777236,27]` and Data FSID `[16777231,27]`.
 The old catalog binds device16777230, root `[16777236,26]` and Data
 `[16777230,26]`. These current tuples necessarily reject that compiled catalog;
 the precise branch taken in the earlier helper remains a source-grounded
-inference rather than an instruction trace. Independent current-proof review
-and a separate append-only registration are in progress. A fresh build must
-bind the reviewed current tuples; no observation is normalized, old kit relabeled
-or runtime override introduced. The existing completed installation must be
-preserved separately before any future fresh-prefix installation.
+inference rather than an instruction trace. The closed independent current-proof
+review is `/private/tmp/glue-deployment-fresh-independent-review-vt3qcmj0`,
+manifest `ac654ed36717a52fdbeadd3fcd09853265b0bcdc117befc2efe4836156bb1cc8`.
+Append-only registration preserves the earlier proof and all34 production source
+pins. Its23 controls pass; the separate source review is
+`/private/tmp/glue-bootstrap-reboot-registration-independent-review-20261017-01`,
+manifest `8dcd6dd7c21844c8d0b8bef0a29d54d3a7ffeff4d1e1083d6ba8cdfb040c97fb`.
+No observation is normalized, old kit relabeled or runtime override introduced.
+
+Actual fresh kit03 is `/private/tmp/glue-bootstrap-native-kit-20261017-03`,
+136 files, manifest
+`ea67cfba1dab8dc51c44e514ca6ff8a00f703e665cbc89c17f996b3e02f4efae`.
+Build ID `1b85f0ac3d3ec2de7df50004ee2732d8d5c049adb44193383245050f800fa11d`
+binds the current registered source map and fresh proof. Catalog SHA256 is
+`c566af88348f4823aa93c67fa11ce851f210742c1b0b79ab792b3cb192e39e69`.
+The actual builder returns0 and all21 recorded tool commands pass; both signed
+trials have identical bytes. Its closed receipt is
+`/private/tmp/glue-bootstrap-kit03-builder-receipt-20261017`, manifest
+`5f9556fe22aa4e9764bf2184163ec704c4324e580624550a9eab1dbca04cb030`.
+The combined artifact/catalog independent review is
+`/private/tmp/glue-bootstrap-kit03-independent-review-20261017-04`, manifest
+`1910f6a1a1274fb41b32030e1a62dff2bf6a218b6d2db1788c3ebb50d6db0e22`.
+It passively verifies source/TU closure, exact command records, full hashes,
+Mach-O/CodeDirectory structure and both compiled catalogs/current mount tuples.
+Recorded strict codesign success remains distinct from passive signature checks;
+unused signature-allocation tails are retained and fully hashed, with no invented
+zero-tail requirement. No new kit binary executes during build or review.
+
+The reviewed preflight uses the unchanged literal native inspector and exact
+binary hash. Before sudo it requires a normal successful, bounded ordinary-user
+observation, typed JSON extraction, exact IDs/ordered groups, scope, OS and all
+five current component device/FSID bindings. Tool failure cannot pass by emitting
+expected text. It does not alter the packet/evidence schemas or native admission.
+Independent focused19 preparer/18 checker tests pass without skips at source
+`5f90c48`: `/private/tmp/glue-bootstrap-current-preflight-root-review-20261017-01`,
+manifest `8f845c59bb4ac4decdc7ff09bc1b6ccbb463f96fcab96b40c217e7edadb2de89`.
+These focused runs do not claim a new aggregate run of all24 portable suites.
+
+The completed kit02 installation must be preserved before fresh installation.
+[The retention decision](../decisions/mvp-r02-bootstrap-retain-install.md) requires
+the exact old stage/closed tree/signatures, absent old outputs and a fresh fixed
+same-parent archive. It verifies full five-entry identities before/after one
+`mv -n`, with no deletion, repair, retry or automatic restoration. This assumes
+a stable protected parent and no concurrent privileged mutator; it is not an
+atomic hostile-mutator exclusion primitive. Actual host packet03 is
+`/private/tmp/glue-bootstrap-retain-packet-reviewed-20261017-03`, manifest
+`6d92594dee41b9dc908f6be4f3cadc2c1e9b1d56ad83a4903bcfe8a118c53557`.
+Its independent26-file source/control review is
+`/private/tmp/glue-retain03-independent-review-pkz4o9y1`, manifest
+`f2a4a881b941db657cfc87e94b9cf0b20fcc8d9033020500082639e0a18a8185`.
+An earlier draft's omitted regular-device checks are preserved as a finding;
+the fresh packet rejects wrong devices before mutation. Three owned native move
+boundaries,21 existing read-only guards and10 focused field/inode controls pass.
+Neither retention packet nor fresh diagnostic has been staged/executed yet.
+SIP stays enabled. Protected bootstrap, native cases, tracing and R02/M2 remain open.
 
 
 The credential primitive independently passes 14 native unprivileged controls
