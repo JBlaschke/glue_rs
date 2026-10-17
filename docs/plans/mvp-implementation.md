@@ -125,7 +125,9 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-retain-install` | `2de4103` decision | Fixed reversible same-parent retention of the completed kit02 installation; actual packet03 and owned controls reviewed, guest move pending |
 | R02 | `codex/mvp-r02-reboot-proof-registration` | `28fe9b5`, `41c3f5c`; integrated `8b329f4`, `c24ddb4` | Append-only actual reboot-proof registration,34 source pins unchanged,23 kit controls and independent review pass |
 | R02 | `codex/mvp-r02-bootstrap-current-preflight` | `65fc322`, `5f90c48`; integrated `a61225d`, `c9e845b` | Actual native observation and typed identity/mount checks before sudo;19 preparer/18 checker controls pass independently |
-| R04 | `codex/mvp-r04-bootstrap-current-status` | branch tip, based on `c9e845b` | Fresh proof, rebuilt kit03, preflight and retention-packet checkpoint; no fresh guest run or full Darwin acceptance |
+| R04 | `codex/mvp-r04-bootstrap-current-status` | `14c1839`, based on `c9e845b` | Fresh proof, rebuilt kit03, preflight and retention-packet checkpoint; no fresh guest run or full Darwin acceptance |
+| R02 | `codex/mvp-r02-bootstrap-kit03-binding` | `58fbff0`, `8b068b1`; integrated `f1b4106`, `d295691` | Single literal actual kit03/new-proof binding, combined artifact/catalog audit;19/18 focused controls pass, kit02 refuses unchanged |
+| R04 | `codex/mvp-r04-bootstrap-kit03-handoff` | branch tip, based on `d295691` | Reviewed actual packet04 and retention03 staged unchanged; preservation launcher at private guest authentication, no new native outcome |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -522,8 +524,44 @@ Its independent26-file source/control review is
 An earlier draft's omitted regular-device checks are preserved as a finding;
 the fresh packet rejects wrong devices before mutation. Three owned native move
 boundaries,21 existing read-only guards and10 focused field/inode controls pass.
-Neither retention packet nor fresh diagnostic has been staged/executed yet.
-SIP stays enabled. Protected bootstrap, native cases, tracing and R02/M2 remain open.
+The reviewed literal kit03 binding preserves all policy/templates/schemas and
+changes only its six approval hashes/IDs plus admitted-proof identity. The same
+combined audit supplies both artifact and catalog review fields explicitly.
+Actual kit03 passes pure loading and kit02 refuses as an unregistered manifest;
+both kits, the combined audit and builder receipt retain identical before/after
+physical inventories. Focused19 preparer/18 checker controls pass without skips:
+`/private/tmp/glue-bootstrap-kit03-binding-controls-20261017-01`, manifest
+`0c83951ed599d05447a151266e9b489000300ac0429ba17f262e9a660d455f27`.
+
+Fresh actual packet04, nonce `da1aaf9a396020b3`, is prepared from committed
+`d295691` at `/private/tmp/glue-bootstrap-vm-packet-reviewed-20261017-04`,
+15 files, manifest
+`3464a9b713df68fe0b58a6f1a47a950af6158baae961ca067f2f626b252d661a`.
+Its actual normal-zero host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-04`, manifest
+`d86b12b020c33ef9a568dd372172322a6ed7999ebae1c2d08def7bf9294070b2`.
+All nine selected members equal kit03; scripts render from exact saved committed
+source and pass syntax checks. The independent42-file actual-packet review is
+`/private/tmp/glue-packet04-independent-review-awwpfdgd`, manifest
+`7bb4d6fce8f1b491b8b33b943848d390d14d4b47a23e142235b9b84d2f1f84eb`.
+It independently verifies plan/proof/current tuples, the root/outer/launch hash
+DAG, guards, preflight before authentication, closure and export gates.
+
+The separate copy driver's source-only review is
+`/private/tmp/glue-packet04-stage-driver-source-review-7p7em49t`, manifest
+`9827ba31974232b44c82c2bc5c79068916fe75efa8ab4655d9b2dc862c9be631`.
+The driver returns0 and stages retention03's5 files and packet04's15 files into
+exclusive fresh toolkit directories, with source inventories unchanged and
+destination bytes/modes equal. The closed staging checkpoint is
+`/private/tmp/glue-bootstrap-kit03-stage-root-checkpoint-20261017`, manifest
+`cb46016403c09ae7f7fa06e8db48937534dcc950df821fcf5b87090a43901854`.
+Guest paths end in `bootstrap-retain-kit02-packet03-20261017-03` and
+`bootstrap-vm-da1aaf9a396020b3`. The preservation launcher's exact no-argument
+command was visually checked before Return; it is now at private guest sudo
+authentication. No root phase, retained move or fresh native case outcome is
+observed yet. The diagnostic is ready after successful retention verification;
+none of the failed packets is edited or rerun. SIP stays enabled. Protected
+bootstrap, native cases, tracing and R02/M2 remain open.
 
 
 The credential primitive independently passes 14 native unprivileged controls

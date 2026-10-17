@@ -44,14 +44,17 @@ pass, preserving both observations. A new host kit binds the current tuples,
 builds twice with identical signed bytes and passes independent artifact/catalog
 review. A separate preflight checks the actual native observation and typed
 identity/mount fields before authentication;19 preparer/18 checker controls pass
-independently. The completed old installation has a reviewed, reversible
-same-parent retention packet; it has not yet been moved, and the fresh diagnostic
-has not run. The failed packets remain unchanged.
+independently. A literal binding now accepts only kit03 and refuses kit02; its
+19/18 focused controls also pass. The completed old installation has a reviewed,
+reversible same-parent retention packet. Both that packet and a separately
+reviewed fresh diagnostic are staged byte-for-byte; the preservation launcher
+has reached private guest authentication. No move or fresh native case is yet
+observed. The failed packets remain unchanged.
 All four owned cases remain unverified. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-current-status`.
+Documentation continues on `codex/mvp-r04-bootstrap-kit03-handoff`.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
