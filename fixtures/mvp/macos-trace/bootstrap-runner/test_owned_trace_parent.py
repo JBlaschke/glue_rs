@@ -11,7 +11,7 @@ import unittest
 HERE = Path(__file__).resolve().parent
 BASE = HERE.parent
 CASES = ('lifecycle', 'failures', 'poisoned-status', 'wait-ownership', 'closure',
-         'simulated', 'readiness')
+         'simulated', 'readiness', 'cleanup-clock')
 
 
 @unittest.skipUnless(platform.system() == 'Darwin', 'source-isolated promotion controls use the Darwin finalizer')

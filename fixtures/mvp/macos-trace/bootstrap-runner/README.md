@@ -88,7 +88,7 @@ fresh separately reviewed kit and authorization. The native runner is not yet
 adopted by the tracing collector.
 
 `nr_status_next_observed` is an explicit internal status-codec seam for a trusted
-`bio_observer`; the native parent still uses the legacy entry point. The shared
+`bio_observer`; the default nontracing parent still uses the legacy entry point. The shared
 decoder uses observed record reads and strict EOF checks, including zero-record
 fallback, with the caller's unchanged absolute deadline. Missing callbacks fail
 closed. Failed partial or complete I/O prefixes remain retained and undecoded;
