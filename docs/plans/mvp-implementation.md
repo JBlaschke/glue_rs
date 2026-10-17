@@ -314,8 +314,8 @@ The first enabled packet `c10ed2e4ce0404bd` was launched and visibly reached its
 private sudo password prompt. Before authentication completion was observed,
 the owner reported that host memory exhaustion crashed the VM. UTM was observed
 stopped, then running again at its restored guest desktop after host unlock.
-Automated keyboard input is currently not reaching guest Terminal, so the fixed
-read-only interruption inspection has not executed. No completed-run receipt,
+At the first restart checkpoint, automated keyboard input was not reaching guest
+Terminal and the fixed read-only interruption inspection had not executed. No completed-run receipt,
 closure, protected installation or case success is inferred. The old packet and
 private partial directories are not edited, retried, inventoried or repaired.
 
@@ -335,8 +335,52 @@ then copied all15 files unchanged into read-only toolkit share folder
 `bootstrap-vm-6ae386cc044ff2a1`. The separate restaging checkpoint is
 `/private/tmp/glue-bootstrap-vm-restage-root-checkpoint-20261017`, manifest
 `7a56018bb4bdfca5a4eff0404d51c4a5a63cbe7210a5b2ec6b0332ed913778b5`.
-No fresh guest script or payload has executed. Guest interruption inspection and
-private authentication remain prerequisites; full Darwin R02/M2 remains open.
+At that restaging checkpoint no fresh guest script or payload had executed.
+Guest interruption inspection and private authentication remained prerequisites;
+full Darwin R02/M2 remains open.
+
+The subsequent read-only interruption inspection completed to its final marker
+and returned to the guest shell. Its exact six-file record is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-interruption-c10ed2e4-20261017-01`,
+manifest `cee18554af18d4801de250b8cc8a283ca0b4aeb18504c8cd35df83f30434acb0`.
+It records boot sec1792247668, SIP enabled, the same501/20 identity and16 ordered
+groups, all eight old fixed paths absent (including the protected fixture prefix)
+and all seven old metadata files absent. The OS reboot removed the temporary
+workspace; the agent did not delete or repair it. Independent review is
+`/private/tmp/glue-interruption-independent-review-4y3kqnqx`, manifest
+`793bab3c0d87b7b0727057f51b8e2583cecc214e7752c30a226a317bea1cd2bb`.
+A later UI status-print command lost shifted characters and did not capture an
+actual shell status; final-marker/inventory observations are recorded separately.
+
+Fresh packet `6ae386cc044ff2a1` then passed preflight/private authentication and
+returned without exporting a normal-zero run receipt. Only fixed ordinary-user
+wrapper metadata was inspected, with no native case payload read. The13-file
+inspection at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-launch-stop-6ae386cc-20261017-01`
+has manifest `11ba2d99a9c5b34a2852a77d452c63ade4c2377a67cfb08aa27657f448006ca7`:
+outer status1, preflight0/install2, empty wrapper streams, no case statuses and
+no root stage, fixture prefix or native output directories. Its `paths.tsv`
+retains literal `\\t` separators on present rows; absent rows/metadata use tabs.
+It is not silently normalized or relabeled as a successful batch.
+
+An ordinary-user guest mode observation completed separately:
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-mode-observation-6ae386cc-20261017-01`,
+manifest `a3082f87cb8bfab5513750b94336acbee44708c2a5fc89df930b0c6a1db2a7ad`.
+All five existing root/Library ancestors have full mode40755. Private/tmp has
+full mode41777, while BSD `stat %Lp` prints only777; the bootstrap's expected
+`0:1777` comparison therefore refuses before creating the stager. A bounded
+mode/type guard repair is being implemented on
+`codex/mvp-r02-bootstrap-mode-guards`; no failed packet is edited or rerun, and
+no protected directory/security setting is repaired to fit the check.
+Joint independent source/metadata review is
+`/private/tmp/glue-launch-stop-independent-review-o0p34cb4`, manifest
+`dd7649b1cd9ca3b81e35a5249de8296c3d9bb4a2e78afb037ad20a5850eca8b1`.
+The exact failing branch remains an inference from the closed metadata and
+source; no branch trace or native closure is claimed. The separate root
+checkpoint binds both independent reviews, all three inspection inventories
+and their unchanged source scripts:
+`/private/tmp/glue-bootstrap-vm-early-stop-root-checkpoint-20261017`, manifest
+`8ae8259cac2dc997d90dec78b5f463e50fc6f8e84c2a0535826871d5786a8a5f`.
 
 
 The credential primitive independently passes 14 native unprivileged controls

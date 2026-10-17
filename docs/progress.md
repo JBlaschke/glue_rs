@@ -23,11 +23,13 @@ controls pass on both native hosts, with no newer hosted run. All24 local Mac
 Python suites subsequently completed:387 collected,382 passed and five expected
 skips, independently checked against105 unchanged source pins. The first staged
 packet reached private sudo authentication before the owner reported a VM crash
-from host memory exhaustion. The VM is running again at its desktop; inspection
-of the interrupted launch is pending because automated guest input is not reaching
-Terminal. Its private partial files remain untouched. A fresh packet passed
-independent review and is staged in the read-only share without execution.
-All four owned cases remain unverified. The full Darwin extraction
+from host memory exhaustion. After reboot, read-only inspection confirms SIP
+enabled and all old temporary paths/the protected fixture prefix absent. A fresh
+reviewed packet authenticated, then refused installation before root staging or
+any native case. The shell's BSD `stat %Lp` check discards the sticky bit and
+cannot match its expected1777; the actual guest reports full mode41777 and low
+permissions777. A separate feature branch is correcting every mode/type guard
+with regression controls. All four owned cases remain unverified. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
