@@ -7,6 +7,8 @@ The six recorded commands succeeded, including strict signature verification and
 the exact SIP-enabled status. Raw observations stay local. Registration requires
 an independent audit of those bytes and its manifest identity in the registry;
 self-consistent synthetic input cannot register itself.
+The independent audit manifest is
+`d5a899e5659dde3f5ac02b6d7dad754204a85fafcfa906fd339e4935fb58e279`.
 
 The source lock uses reviewed production/build-controller bytes from `3d500d4`.
 It includes every quoted header needed by the probe, runner, request writer and

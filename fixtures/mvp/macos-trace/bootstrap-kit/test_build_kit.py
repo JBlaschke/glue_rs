@@ -17,6 +17,7 @@ import unittest
 from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
+UNCONFIGURED = HERE / 'unconfigured-inputs.fixture.json'
 spec = importlib.util.spec_from_file_location('kit_builder', HERE / 'build_kit.py')
 kit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(kit)
@@ -100,15 +101,26 @@ def synthetic_proof_trees(proof, inspector):
 
 
 class KitControls(unittest.TestCase):
-    def test_default_registry_cannot_build_or_create_output(self):
-        value=kit.registry((HERE/'reviewed-inputs.json').read_bytes())
+    def test_unconfigured_fixture_refuses_before_source_proof_or_output_work(self):
+        value=kit.registry(UNCONFIGURED.read_bytes())
         self.assertIsNone(value['source_revision']);self.assertEqual(value['sources'],{});self.assertEqual(value['proofs'],[])
         with tempfile.TemporaryDirectory(prefix='glue-kit-deny-') as temp:
+            out=Path(temp)/'new-kit'
+            with patch.object(kit,'REGISTRY',UNCONFIGURED), \
+                 patch.object(kit,'locked_sources',side_effect=AssertionError('must not inspect sources')), \
+                 patch.object(kit,'admitted_proof',side_effect=AssertionError('must not inspect proof')), \
+                 patch.object(kit,'Build',side_effect=AssertionError('must not create output')):
+                with self.assertRaisesRegex(kit.Refusal,'no independently reviewed actual guest proof'):
+                    kit.construct(Path(temp),Path(temp),out)
+            self.assertFalse(out.exists())
+
+    def test_production_cli_rejects_unreviewed_inputs_without_output(self):
+        with tempfile.TemporaryDirectory(prefix='glue-kit-cli-deny-') as temp:
             out=Path(temp)/'new-kit'
             done=subprocess.run([os.sys.executable,'-B',str(HERE/'build_kit.py'),'--guest-proof',temp,
                 '--inspector-kit',temp,'--output',str(out)],capture_output=True,timeout=5)
             self.assertEqual(done.returncode,1);self.assertFalse(out.exists())
-            self.assertIn(b'no independently reviewed actual guest proof',done.stderr)
+            self.assertEqual(done.stdout,b'')
 
     def test_closed_cli_no_trust_override(self):
         done=subprocess.run([os.sys.executable,'-B',str(HERE/'build_kit.py'),'--trust','x'],capture_output=True,timeout=5)
@@ -122,7 +134,7 @@ class KitControls(unittest.TestCase):
             with self.assertRaises(kit.Refusal):kit.integer(x)
 
     def test_registry_schema_lists_and_duplicate_proofs(self):
-        value=json.loads((HERE/'reviewed-inputs.json').read_bytes())
+        value=json.loads(UNCONFIGURED.read_bytes())
         for change in ({'unknown':1},{'source_revision':True},{'probe_sources':[{}]}, {'sources':{'../escape':'0'*64}},
                        {'sources':{'fixtures/mvp/macos-trace/bootstrap-kit/reviewed-inputs.json':'0'*64}}):
             trial=copy.deepcopy(value);trial.update(change)
@@ -208,7 +220,7 @@ class KitControls(unittest.TestCase):
                 with self.subTest(key=key),self.assertRaises(kit.Refusal):kit.admitted_proof(proof,inspector,{'proofs':[entry]})
 
     def test_source_lock_refuses_unconfigured_and_dirty_before_reading_sources(self):
-        empty=kit.registry((HERE/'reviewed-inputs.json').read_bytes())
+        empty=kit.registry(UNCONFIGURED.read_bytes())
         with self.assertRaisesRegex(kit.Refusal,'not configured/frozen'):kit.locked_sources(HERE.parents[3],empty)
         rules=copy.deepcopy(empty);rules.update(source_revision='a'*40,sources={'x.c':'b'*64},probe_sources=['x.c'],runner_sources=['x.c'],request_sources=['x.c'])
         with patch.object(kit,'git',return_value=b' M x.c\n'):

@@ -1,9 +1,10 @@
 # Reviewed bootstrap kit construction
 
 This prepares inputs for a later separately reviewed protected installation and
-NONTRACING bootstrap attempt. The checked-in registry is **unconfigured**: no
-actual guest proof or frozen runner closure is admitted yet. The default command
-fails before compilation or output creation. Unit fixtures cannot enable it.
+NONTRACING bootstrap attempt. The checked-in registry admits one independently
+reviewed observation from the owned macOS VM and the 34 production/controller
+source files at `3d500d4`. Unregistered proof or changed sources refuse before
+compilation/output creation. Unit fixtures cannot register real guest facts.
 
 ```sh
 python3 -B fixtures/mvp/macos-trace/bootstrap-kit/build_kit.py \
@@ -23,9 +24,13 @@ manifest files. Manifests list exactly the regular single-link members (no links
 special files, duplicate entries, extra files or empty directories). JSON rejects
 duplicate keys, nonfinite values and coercion of integer fields, including bools.
 
-An approved follow-up must configure `reviewed-inputs.json` with the independently
-reviewed **actual** proof/inspector manifest identities, its independent audit
-manifest, exact guest OS/kernel values and the complete immutable source closure.
+`reviewed-inputs.json` pins the independently reviewed **actual** proof/inspector
+manifest identities, its independent audit manifest, exact guest OS/kernel values
+and the complete immutable source closure. The registered proof is
+`glue-bootstrap-deployment-v1-A8mkN4hy`; raw proof remains local. Its root and Data
+device numbers are equal and its FSIDs differ: the complete mount tuple matters.
+The explicit empty `unconfigured-inputs.fixture.json` preserves portable refusal
+controls independently of this production registry's configured state.
 This registry is a review workflow guard. It does not authenticate an administrator
 or turn self-consistent hashes into execution authorization. It is committed and
 verified separately, never included in its own source digest. The frozen closure
@@ -102,6 +107,7 @@ separately reviewed attempt changes its permissions. There is no bypass flag.
 The C helpers accept caller-supplied unit data with stable, valid, nonalias storage.
 Their successful normalization is not native validation. Tests compile pure C
 codecs and compare independent Python `struct`/SHA vectors, plus strict parser,
-metadata, group, bounds, output and refusal controls. No actual guest-backed kit,
-protected installation, successful credential transition, kernel execution proof,
-syscall effect classification or full R02/M2 acceptance is claimed here.
+metadata, group, bounds, output and refusal controls. These tests do not execute a
+configured kit or protected launch. Construction/installation/transition records
+are separate from unit coverage; kernel execution, syscall effect classification
+and full R02/M2 acceptance remain separate gates.
