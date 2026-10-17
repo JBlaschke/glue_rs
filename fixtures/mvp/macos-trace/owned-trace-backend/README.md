@@ -49,6 +49,7 @@ retried. `dtrace_close` returns void: the adapter relies on library cleanup and
 does not invent a successful syscall or kernel resource readback.
 
 `otb_snapshot` retains immutable binding/deadlines, first and close errors,
+a separate writer-close error and per-file close outcomes,
 lifecycle observations and output counts. `system_errno` records actual POSIX
 failures; `libdtrace_code` records actual libdtrace status, with its bounded
 message. `callback_error` is explicitly an adapter status mapping for the

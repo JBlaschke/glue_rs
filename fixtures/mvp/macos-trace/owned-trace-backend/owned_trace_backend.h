@@ -20,7 +20,11 @@ struct otb_error {
 };
 struct otb_snapshot {
  struct ts_binding binding; uint64_t original_attempt_deadline_ns, cleanup_deadline_ns;
- struct otb_error first_error, close_error;
+ struct otb_error first_error, close_error, writer_close_error;
+ /* Fixed bit/index order: program.d, probes.tsv, events.jsonl, errors.jsonl.
+  * Native close outcomes survive an earlier close-phase clock/deadline fault. */
+ unsigned writer_close_attempted_mask, writer_close_failed_mask;
+ int writer_close_errno[4];
  uint64_t events, raw_bytes, diagnostic_bytes, inventory_bytes, drops, faults;
  unsigned inventory_probes, expected_matches, enabled_matches, enablings;
  unsigned begin_count, terminal_count, end_count;
