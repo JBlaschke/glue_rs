@@ -69,6 +69,12 @@ close can record resource closure while retaining a deadline failure. The parent
 separately confirms its GO close and all remaining channels, writers, FDs and
 signal restoration; these are trusted caller declarations, not observations the
 coordinator obtains. A failed/ambiguous close never becomes safe finalization.
+Each close-result report is consumed once before interpreting its errno or
+observing the current owner. A negative malformed errno or a positive close
+error remains unresolved even if a later report attempts to replace it with0.
+`ts_gate_close_failed` and `ts_parent_close_failed` explicitly retain a failed
+closure/resource-restoration observation whose saved errno is0; this does not
+require inventing an errno for a semantic restoration failure.
 
 `ts_finalization_safe` requires known reap, backend close and parent resource
 closure and can be true for a failed attempt. `ts_success_eligible` additionally
@@ -106,7 +112,7 @@ precedence survives cleanup; the first cleanup error is retained separately.
 Run `python3 -B test_trace_session.py -v`. It compiles and executes only a pure
 injected C model executable with strict warnings. Set
 `GLUE_TRACE_SESSION_SANITIZE=1` for AddressSanitizer/UndefinedBehaviorSanitizer.
-The ten model groups exercise successful completion and queued post-reap events;
+The eleven model groups exercise successful completion and queued post-reap events;
 missing/late/duplicate/mismatched BEGIN; unchanged deadlines/cleanup budgets;
 partial or failed GO and BW; error precedence and cleanup pumping; reap/ECHILD;
 backend/drop/output/stop/drain/close failures; once-only operations; ordering,

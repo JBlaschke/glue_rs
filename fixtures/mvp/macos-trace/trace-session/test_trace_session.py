@@ -43,6 +43,7 @@ class SessionModels(unittest.TestCase):
     def test_reaped_and_echild_end_kill_eligibility(self): self.check_model('wait')
     def test_backend_faults_once_only_close_and_failure_finalization(self): self.check_model('backend')
     def test_stop_terminal_end_and_single_drain_order(self): self.check_model('drain')
+    def test_malformed_or_owner_failed_close_report_cannot_be_repaired(self): self.check_model('close-reports')
     def test_arguments_owner_snapshot_and_resource_bounds(self): self.check_model('boundaries')
 
 

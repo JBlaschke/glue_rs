@@ -135,14 +135,21 @@ static int go_result(struct ts_session *s,size_t bytes,int error,int failed) {
 }
 int ts_go_result(struct ts_session *s,size_t bytes,int error) {return go_result(s,bytes,error,0);}
 int ts_go_failed(struct ts_session *s,size_t bytes,int error) {return go_result(s,bytes,error,1);}
-int ts_gate_close_result(struct ts_session *s,int error) {
- if(owned(s,TS_STAGE_PARENT))return -1;
- if(s->gate_close_seen || error<0)return fail(s,TS_STAGE_PARENT,TS_INVALID,0,0);
- s->gate_close_seen=1;s->gate_closed=!error;
- int bad=0;if(error){fail(s,TS_STAGE_PARENT,TS_PARENT_FAILURE,error,0);bad=1;}
- if(before(s,TS_STAGE_PARENT,deadline(s)))bad=1;
+static int close_result(struct ts_session *s,int error,int failed,int parent) {
+ if(!s || s->tag!=TS_TAG || !s->configured)return -1;
+ int *seen=parent?&s->parent_close_seen:&s->gate_close_seen;
+ int *closed=parent?&s->parent_closed:&s->gate_closed;
+ if(*seen)return fail(s,TS_STAGE_PARENT,TS_INVALID,0,0);
+ /* Consume the actual-result report before fallible observations. A malformed
+  * or failed report never becomes closed through a later corrected report. */
+ *seen=1;*closed=0;int bad=0;
+ if(error<0 || (parent&&s->child!=TS_CHILD_REAPED)){fail(s,TS_STAGE_PARENT,TS_INVALID,0,0);bad=1;}
+ else {*closed=!failed&&!error;if(failed||error){fail(s,TS_STAGE_PARENT,TS_PARENT_FAILURE,error,0);bad=1;}}
+ if(owned(s,TS_STAGE_PARENT) || before(s,TS_STAGE_PARENT,deadline(s)))bad=1;
  return bad?-1:0;
 }
+int ts_gate_close_result(struct ts_session *s,int error) {return close_result(s,error,0,0);}
+int ts_gate_close_failed(struct ts_session *s,int error) {return close_result(s,error,1,0);}
 int ts_bootstrap_sealed(struct ts_session *s) {
  if(owned(s,TS_STAGE_BOOTSTRAP))return -1;
  if(s->bootstrap_seen || !s->go_complete || !s->gate_closed)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,0);
@@ -224,13 +231,9 @@ int ts_close(struct ts_session *s) {
  return bad?-1:0;
 }
 int ts_parent_close_result(struct ts_session *s,int error) {
- if(owned(s,TS_STAGE_PARENT))return -1;
- if(s->parent_close_seen || error<0 || s->child!=TS_CHILD_REAPED)return fail(s,TS_STAGE_PARENT,TS_INVALID,0,0);
- s->parent_close_seen=1;s->parent_closed=!error;
- int bad=0;if(error){fail(s,TS_STAGE_PARENT,TS_PARENT_FAILURE,error,0);bad=1;}
- if(before(s,TS_STAGE_PARENT,deadline(s)))bad=1;
- return bad?-1:0;
+ return close_result(s,error,0,1);
 }
+int ts_parent_close_failed(struct ts_session *s,int error) {return close_result(s,error,1,1);}
 int ts_finalization_safe(const struct ts_session *s) {
  return s && s->tag==TS_TAG && s->child==TS_CHILD_REAPED && s->closed && s->gate_closed && s->parent_closed;
 }
