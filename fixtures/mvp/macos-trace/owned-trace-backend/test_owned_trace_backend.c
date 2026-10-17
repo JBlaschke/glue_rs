@@ -15,6 +15,7 @@
 static uint64_t model_now=UINT64_C(1000000000);
 static int clock_failure,close_failure,write_failure_fd=-1,write_expire_fd=-1,write_zero_fd=-1,write_eintr_fd=-1,owned_closes;
 static uint64_t write_expire_time;
+static int close_failure_at;
 static int model_clock(clockid_t c,struct timespec *t) {
  assert(c==CLOCK_MONOTONIC);
  if(clock_failure==1 || clock_failure==2){errno=clock_failure==2?EOVERFLOW:EIO;return -1;}
@@ -23,7 +24,7 @@ static int model_clock(clockid_t c,struct timespec *t) {
 }
 static int model_close(int fd) {
  owned_closes++;int rc=close(fd);assert(!rc);
- if(close_failure){close_failure=0;errno=EINTR;return -1;}return 0;
+ if(close_failure || owned_closes==close_failure_at){close_failure=0;close_failure_at=0;errno=EINTR;return -1;}return 0;
 }
 static ssize_t model_write(int fd,const void *p,size_t n) {
  if(fd==write_expire_fd){write_expire_fd=-1;model_now=write_expire_time;errno=EINTR;return -1;}
@@ -111,6 +112,7 @@ dtrace_workstatus_t dtrace_work(dtrace_hdl_t *h,FILE *out,dtrace_consume_probe_f
 struct fixture {struct otb_backend *b;struct ts_operations ops;struct ts_binding binding;int directory;char path[128];uint64_t deadline;unsigned delivered[9];};
 static void reset(void) {
  model_now=UINT64_C(1000000000);clock_failure=close_failure=0;write_failure_fd=write_expire_fd=write_zero_fd=write_eintr_fd=-1;owned_closes=0;
+ close_failure_at=0;
  opened=went=stopped=library_closed=work_calls=open_failure=missing_mach=work_done=work_drop=work_fault=0;
  queued_count=0;make_probes();
  match_count=17;
@@ -126,8 +128,7 @@ static int collector(void *context,const struct ts_event *event) {struct fixture
 static void enqueue(unsigned kind) {assert(queued_count<32);queue[queued_count++]=(struct queued){.kind=kind};}
 static void begin(struct fixture *f) {int e=0;assert(!f->ops.start_fn(f->b,&f->binding,f->deadline,&e));assert(!f->delivered[TS_PROVIDER_READY]);enqueue(1);assert(!f->ops.pump_fn(f->b,TS_BOOTSTRAP,f->deadline,collector,f,&e));assert(f->delivered[TS_PROVIDER_READY]==1&&f->delivered[TS_BEGIN]==1);}
 static void cleanup(struct fixture *f) {
- int e=0;if(!f->b->view.close_attempted)(void)f->ops.close_fn(f->b,f->deadline,&e);
- assert(!otb_destroy(&f->b));assert(!close(f->directory));
+ int e=0;if(f->b){if(!f->b->view.close_attempted)(void)f->ops.close_fn(f->b,f->deadline,&e);assert(!otb_destroy(&f->b));}assert(!close(f->directory));
  for(unsigned i=0;i<4;i++){char path[256];snprintf(path,sizeof(path),"%s/%s",f->path,file_names[i]);if(unlink(path))assert(errno==ENOENT);}
  assert(!rmdir(f->path));
 }
@@ -175,6 +176,17 @@ static void bounds_and_faults(void) {
  assert(strstr(diagnostic_text,"\"kind\":\"work-status\",\"status\":17"));cleanup(&f);
 }
 static void deadline_and_closure(void) {
+ for(unsigned broken_clock=0;broken_clock<2;broken_clock++) {
+  reset();struct fixture combined;initialize(&combined);begin(&combined);close_failure_at=4;
+  if(broken_clock)clock_failure=1;else model_now=combined.deadline;int combined_error=0;
+  assert(combined.ops.close_fn(combined.b,combined.deadline,&combined_error)==-1);
+  assert(combined.b->view.first_error.reason==(broken_clock?OTB_CLOCK:OTB_DEADLINE));
+  assert(combined.b->view.close_error.reason==(broken_clock?OTB_CLOCK:OTB_DEADLINE));
+  assert(combined.b->view.writer_close_error.reason==OTB_POSIX&&combined.b->view.writer_close_error.system_errno==EINTR);
+  assert(combined.b->view.writer_close_attempted_mask==15&&combined.b->view.writer_close_failed_mask==8&&combined.b->view.writer_close_errno[3]==EINTR);
+  assert(!combined.b->view.resources_closed&&owned_closes==4&&library_closed==1);assert(otb_destroy(&combined.b)==-1);
+  free(combined.b);combined.b=NULL;clock_failure=0;model_now=UINT64_C(1000000000);cleanup(&combined);
+ }
  for(unsigned malformed=0;malformed<2;malformed++) {
   reset();struct fixture clock_fixture;initialize(&clock_fixture);begin(&clock_fixture);clock_failure=malformed?3:2;int clock_error=0;
   assert(clock_fixture.ops.close_fn(clock_fixture.b,clock_fixture.deadline,&clock_error)==-1);
