@@ -8,26 +8,22 @@ integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
 executed target/runtime cells, commands and open evidence. Follow-up work uses
 new feature branches; no release asset has been published.
 
-The latest follow-up pushed the approved controller source `3d500d4` and ran its
-nine portable jobs. Seven passed; both Linux baselines failed on the same
-signal-test compiler warning. The approved `78f4072` push fixes that warning;
-its run11 passes seven jobs but reaches a second Linux compiler failure.
-Native Ubuntu GCC13 reproduces a discarded `write()` result in the context
-probe. The minimal follow-up consumes it, exposes compiler stderr in tests and
-passes focused Mac controls. Native Ubuntu GCC13 completes all22 suites
-(334 passes,25 skips), with independent source-lock review.
-The original formatting-only fix separately passed all22 suites with native
-arm64 GCC14 (331 passes,25 skips). Both failed hosted records remain unchanged.
+The CI failures are repaired. Approved source `162f91a` on the public deployment
+branch passes all nine jobs in [run12](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631).
+The two earlier failed runs remain unchanged. Native Ubuntu GCC13 additionally
+passes all22 Python suites (334 passes,25 explicit skips); its one changed
+production source and updated lock were independently reviewed.
+
 The owned VM's read-only deployment inspection passed with SIP enabled and was
-independently reviewed. `codex/mvp-r02-bootstrap-reviewed-inputs` (`5200be9`)
-registers that exact proof and 34 reviewed build inputs; the adjusted kit suite
-passes 22 Mac/21 Linux tests with one Linux skip. A fresh configured host build
-completed all 21 commands and produced byte-identical ad-hoc-signed programs in
-two builds, without executing them. The exact failed hosted run, local fix,
-proof and kit inventories are recorded in the
+independently reviewed. The configured host kit builds twice with identical
+ad-hoc-signed bytes. New local-only `bootstrap-vm` preparation and offline checking
+have independent reviews; source-enabled host checks pass10 preparer/18 checker
+controls. A fresh packet passed independent review and is staged in the read-only VM
+share; private unlock/authentication and the four owned cases are still pending. The full Darwin extraction
+oracle, corpus/budgets, M2 and durable evidence publication remain open.
+Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-ubuntu-ci-status`.
-Protected guest execution, complete Darwin extraction acceptance and M2 remain open.
+Documentation continues on `codex/mvp-r04-bootstrap-vm-handoff`.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

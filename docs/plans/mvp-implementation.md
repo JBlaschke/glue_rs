@@ -111,7 +111,12 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-bootstrap-deployment-status` | `78f4072` | Record actual deployment inspection, configured reproducible kit and exact hosted failure; no protected guest execution or full Darwin acceptance |
 | V01 | `codex/mvp-v01-bootstrap-probe-gcc13` | `a805834`, integrated `863e327` | Consume best-effort diagnostic write result without retry; expose compiler failures; native Ubuntu GCC13 reproduction and focused Mac checks pass |
 | R02 | `codex/mvp-r02-bootstrap-ubuntu-inputs` | `df5fb63`, `d2d0d0a` | Deliberately advance one of 34 source hashes to `863e327`; actual proof and earlier kit unchanged; kit suite22 Mac passes and committed source/proof admission passes |
-| R04 | `codex/mvp-r04-bootstrap-ubuntu-ci-status` | `this branch` | Record failed run11 and the second compiler fix; no new guest execution or full Darwin acceptance |
+| R04 | `codex/mvp-r04-bootstrap-ubuntu-ci-status` | `162f91a` | Approved repair push to the deployment-status branch; run12 passes all nine portable jobs |
+| R02 | `codex/mvp-r02-bootstrap-vm` | `b956dd4`, `c460fd4`, `02a4247`, `fba154e` | Closed host packet/guest scripts; explicit inline guards and checked request digests; ten host controls and independent source review |
+| R02 | `codex/mvp-r02-bootstrap-vm-checker` | `97d2be4`, `8012e98` | Strict offline canonical request/status/probe/result/terminal checks;18 controls on both native hosts and two independent reviews; no kernel exec/full acceptance |
+| R02 | `codex/mvp-r02-bootstrap-vm-integration` | `ad9ea78` through `75c565e` | Integrate the separate decisions/implementation/guard/checker commits locally;10 preparer and18 checker controls pass |
+| R02 | `codex/mvp-r02-bootstrap-vm-reviewed-run` | `a17f82b`, `0affe28` | Enable only the reviewed source policy, retain closed kit binding and no runtime override; freshly rendered packet still requires inspection/private guest authentication |
+| R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `this branch` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -239,7 +244,46 @@ deployment proof; clean committed `locked_sources` and actual proof admission
 both pass. The independent one-source lock review has manifest
 `7497befbbe6651c465dbd1fe6903c8aac0f245aa4e098562938ad4e23ad094e4`.
 The earlier kit02 remains its original `3d500d4` artifact. Neither
-failed hosted run is relabeled successful; the corrected hosted run is pending.
+failed hosted run is relabeled successful. The corrected run passes all nine jobs as recorded below.
+
+### Corrected hosted CI and local VM preparation
+
+After explicit approval of `162f91ad63394a149feb584861397d7089d4fa2f`, the repair
+was pushed to the same `codex/mvp-r04-bootstrap-deployment-status` branch.
+[Run 39021989631 (#12)](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631)
+passes all nine native baseline/Lua55/packaging jobs. Exact checkout SHA, native
+labels, six required steps, Rust/Clippy1.88 and final markers were checked in
+all nine logs. The43-file frozen run is
+`/private/tmp/glue-portable-bootstrap-ubuntu-39021989631-20261017`, manifest
+`e6dadfb21a25ba2dcad2c6a2f14d33c6e42ff3ddc670da19b7976f790509ebba`.
+Its offline verifier reproduces the exact successful summary. An initial attempt
+to push this newer source was rejected by automatic approval review because the
+prior approval covered only `78f4072`; no rejected action executed. The subsequent
+exact162 approval and successful push/read-back are retained separately.
+This is portable CI evidence, not privileged guest or complete Darwin acceptance.
+
+The new local-only `bootstrap-vm` component prepares a fixed derived subset of
+kit02, three source-rendered scripts and a bounded plan. The separate checker
+validates terminal gates before reading case payloads, then decodes canonical
+request/status/probe bytes and strict result JSON with all cross-case bindings.
+Independent preparer review has manifest
+`7c6166f6bcf3bf5ba6b3237b8cc851953774da398094f8e58a4013ad04a162a4`.
+Independent checker reviews have manifests
+`15f531d3b848c5fb252c6ced490d15efab5d41bd05c6fffdb7cee5dc030201ac`
+and `c6cf77d3983631b6d01c4390354662ad627ae7b39e1f4a4c1815880c05fdcca8`.
+The source enablement retains every closed guard and changes no production kit
+input. The enabled-source host controls pass10 preparer/18 checker tests on Mac;
+the earlier checker also passes18 on offline unprivileged Linux arm64. These are
+format/model/syntax checks and execute no generated script, root phase or kit
+binary. The old disabled packet remains immutable. A fresh enabled packet has been independently reviewed and copied unchanged to
+the existing read-only VM toolkit share, manifest
+`e6e0f15937e6c9cead7fbc6dcfd589a7dee91d526ca7d434ec3a65d5ce377aed`.
+Its independent packet review has manifest
+`2049dc2bf5c133a98a40892a670e287e94660b368b41f9800815bf905bf6e79a`.
+The staged folder is `bootstrap-vm-c10ed2e4ce0404bd`; source remains local-only.
+The VM is at its lock screen. No guest script or payload has started; private
+unlock/authentication and all four owned cases remain pending. The script checks
+SIP enabled and changes no security settings.
 
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux
