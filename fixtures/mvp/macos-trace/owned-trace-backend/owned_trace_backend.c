@@ -396,8 +396,10 @@ static int work(struct otb_backend *b,enum otb_stage stage,uint64_t d,ts_consume
  b->consume=consume;b->consume_context=argument;b->callback_deadline=d;
  dtrace_workstatus_t rc=dtrace_work(b->handle,NULL,consume_probe,NULL,b);
  if(rc==DTRACE_WORKSTATUS_ERROR && !b->failed)native_failure(b,stage,"work",dtrace_errno(b->handle));
- if(rc!=DTRACE_WORKSTATUS_ERROR && rc!=DTRACE_WORKSTATUS_OKAY && rc!=DTRACE_WORKSTATUS_DONE)
-  failure(b,stage,OTB_LIBDTRACE,0,(int)rc,EPROTO,"invalid work status");
+ if(rc!=DTRACE_WORKSTATUS_ERROR && rc!=DTRACE_WORKSTATUS_OKAY && rc!=DTRACE_WORKSTATUS_DONE) {
+  failure(b,stage,OTB_ORDER,0,0,EPROTO,"invalid work status");
+  struct line l={0};add(&l,"{\"kind\":\"work-status\",\"status\":%d}\n",(int)rc);callback_diagnostic(b,&l);
+ }
  if(b->failed)fault(b,TS_BACKEND_FAULT);
  b->consume=NULL;b->consume_context=NULL;
  *done=rc==DTRACE_WORKSTATUS_DONE;
