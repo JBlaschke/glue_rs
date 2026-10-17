@@ -661,10 +661,10 @@ All 198 source pins equal before/after/committed bytes. An initial local driver'
 assertion counted the informational version probe as a suite and stopped before
 any test; its source and empty output directory remain preserved. The corrected
 driver runs the 26 exact suite argv. These are local Python/C controls, with no
-new Rust, hosted CI, provider or guest execution. The separate23-file independent
+new Rust, hosted CI, provider or guest execution. The separate 23-file independent
 aggregate review is `/private/tmp/glue-trace-portable-controls-review-5qie5L`,
 manifest `0e338a1d9a03c7bb65aea1ca5ab8e72488d1dad724e4a876405e9d8d6e15b17f`.
-All420 payloads, both nested manifests,52 command statuses and verbose case
+All 420 payloads, both nested manifests, 52 command statuses and verbose case
 counts pass; input metadata/bytes stay unchanged. The aggregate has writable
 permissions: a complete named inventory is not an immutable-permission claim.
 Container policy/outer status are root-witnessed transcription; child logs and
