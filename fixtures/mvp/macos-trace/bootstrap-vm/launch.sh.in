@@ -1,0 +1,28 @@
+#!/bin/sh
+# Separate ordinary-user run receipt; no authentication or root operations here.
+set -eu
+umask 077
+set -C
+[ "$#" -eq 0 ] || exit 2
+[ @@ENABLED@@ = 1 ] || { echo 'execution disabled pending independent review' >&2; exit 2; }
+PACKET=@@GUEST_PACKET@@
+RECEIPT=@@GUEST_RUN_RECEIPT@@
+EXPORT=@@GUEST_RECEIPT_EXPORT@@
+[ "$(/usr/bin/id -ru)" = @@UID@@ ] && [ "$(/usr/bin/id -u)" = @@UID@@ ] || exit 2
+[ ! -e "$RECEIPT" ] && [ ! -L "$RECEIPT" ] || exit 2
+/bin/mkdir -m 0700 "$RECEIPT"
+[ "$(/usr/bin/shasum -a 256 "$PACKET/outer.sh")" = "@@OUTER_SHA_RAW@@  $PACKET/outer.sh" ] || exit 2
+printf '%s\000' /bin/sh "$PACKET/outer.sh" > "$RECEIPT/outer.argv"
+rc=0
+/usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC /bin/sh "$PACKET/outer.sh" > "$RECEIPT/outer.stdout" 2> "$RECEIPT/outer.stderr" || rc=$?
+printf '%s\n' "$rc" > "$RECEIPT/outer.status"
+# Never inventory/export a failed or uncertain run: original bytes may be live.
+[ "$rc" = 0 ] || exit "$rc"
+[ -d '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] && [ ! -L '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] || exit 1
+[ ! -e "$EXPORT" ] && [ ! -L "$EXPORT" ] || exit 1
+/bin/mkdir -m 0700 "$EXPORT"
+for name in outer.argv outer.status outer.stdout outer.stderr; do /bin/cat "$RECEIPT/$name" > "$EXPORT/$name"; done
+(
+    cd "$EXPORT"
+    for name in outer.argv outer.status outer.stdout outer.stderr; do /usr/bin/shasum -a 256 "$name"; done
+) > "$EXPORT/SHA256SUMS"
