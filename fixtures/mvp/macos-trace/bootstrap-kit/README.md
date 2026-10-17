@@ -1,8 +1,8 @@
 # Reviewed bootstrap kit construction
 
 This prepares inputs for a later separately reviewed protected installation and
-NONTRACING bootstrap attempt. The checked-in registry admits one independently
-reviewed observation from the owned macOS VM and the 34 production/controller
+NONTRACING bootstrap attempt. The checked-in registry admits two independently
+reviewed observations from the owned macOS VM and the 34 production/controller
 source files at `863e327` (the minimal Ubuntu compiler follow-up). Unregistered
 proof or changed sources refuse before
 compilation/output creation. Unit fixtures cannot register real guest facts.
@@ -27,9 +27,15 @@ duplicate keys, nonfinite values and coercion of integer fields, including bools
 
 `reviewed-inputs.json` pins the independently reviewed **actual** proof/inspector
 manifest identities, its independent audit manifest, exact guest OS/kernel values
-and the complete immutable source closure. The registered proof is
-`glue-bootstrap-deployment-v1-A8mkN4hy`; raw proof remains local. Its root and Data
-device numbers are equal and its FSIDs differ: the complete mount tuple matters.
+and the complete immutable source closure. The original registered proof is
+`glue-bootstrap-deployment-v1-A8mkN4hy`; the fresh proof after the VM reboot is
+`glue-bootstrap-deployment-v1-Pf78Qtnu`. Both raw proofs remain local, and the
+original registry entry remains unchanged. Their root and Data device numbers
+are equal within each observation and their FSIDs differ: the complete mount
+tuple matters. The reboot changed device `16777230` to `16777231`, root FSID
+`[16777236,26]` to `[16777236,27]`, and Data FSID `[16777230,26]` to
+`[16777231,27]`. These are literal observations, without a stable-across-reboot
+identity claim or a normalization rule.
 The explicit empty `unconfigured-inputs.fixture.json` preserves portable refusal
 controls independently of this production registry's configured state.
 This registry is a review workflow guard. It does not authenticate an administrator
@@ -116,3 +122,7 @@ and full R02/M2 acceptance remain separate gates.
 The earlier reproducible kit02 retains its original `3d500d4` source lock and
 audits. Updating this registry does not rebuild or relabel that frozen kit. See
 [the source-lock follow-up](../../../../docs/decisions/mvp-r02-bootstrap-reviewed-inputs.md#ubuntu-compiler-follow-up--17-october).
+Its compiled mount tuples differ from the fresh observation, and its existing
+protected prefix must not be repaired or retried. The new proof requires a fresh
+kit, new build-ID prefix and separate kit/packet review before any later launch.
+See [the reboot-proof decision](../../../../docs/decisions/mvp-r02-bootstrap-reboot-proof.md).
