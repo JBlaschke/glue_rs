@@ -86,3 +86,16 @@ No privileged positive, credential-transition, protected guest admission or
 end-to-end target execution has been performed by these controls; those require a
 fresh separately reviewed kit and authorization. The native runner is not yet
 adopted by the tracing collector.
+
+`nr_status_next_observed` is an explicit internal status-codec seam for a trusted
+`bio_observer`; the native parent still uses the legacy entry point. The shared
+decoder uses observed record reads and strict EOF checks, including zero-record
+fallback, with the caller's unchanged absolute deadline. Missing callbacks fail
+closed. Failed partial or complete I/O prefixes remain retained and undecoded;
+poisoned streams perform no further I/O. These cooperative model controls supply
+no native tracing or execution evidence:
+
+```
+python3 -B test_runner_protocol_observed.py -v
+NR_STATUS_TEST_CFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' python3 -B test_runner_protocol_observed.py -v
+```

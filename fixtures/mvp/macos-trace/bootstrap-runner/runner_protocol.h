@@ -17,6 +17,11 @@ struct nr_status_stream {
  * 0 means one accepted record, 1 confirmed on-time EOF, -1 failure. None is exec. */
 int nr_status_init(struct nr_status_stream *,const struct bw_binding *);
 int nr_status_next(struct nr_status_stream *,int,struct bio_time,const struct bio_operations *);
+/* Explicit cooperative progress, including strict EOF/fallback, at the original
+ * absolute deadline. Observer/callback are required; failed I/O prefixes remain
+ * opaque and poison the stream even when a complete record was received. */
+int nr_status_next_observed(struct nr_status_stream *,int,struct bio_time,
+                            const struct bio_operations *,const struct bio_observer *);
 /* Pure comparison of supplied declarations, not provenance or kernel proof. */
 int nr_probe_compare(const struct br_request *,const struct bw_binding *,
                      const uint64_t expected_status_flags[3],const struct np_report *);
