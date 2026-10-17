@@ -752,12 +752,18 @@ CI `abecae2` adds three invocations and `9f281f1` adds one. The complete local
 run of all 30 Python suites collects 454 controls per host: Mac 448 pass/six skip;
 native Linux arm64 GCC 14 passes 413 with 41 explicit skips. Parent promotion models
 are Darwin-only (all 10 skip elsewhere); Linux runs the backend refusal and skips
-its two SDK models, while the kit adds one Linux SDK skip. The481-file record is
-`/private/tmp/glue-owned-trace-portable-controls-20261017-01`, manifest
-`f34e22e8fdc31b70e53580d3ef2dd36d949b36012f6a8f45752d77fb45c2b40f`.
-All 157 selected source pins equal before/after/committed `9f281f1` bytes. The
-selection includes every tracked macos-trace file and the CI/evidence-bundle
-scripts; it is narrower than the earlier 198-pin inventory of all scripts.
+its two SDK models, while the kit adds one Linux SDK skip. The first 481-file
+record at `/private/tmp/glue-owned-trace-portable-controls-20261017-01`, manifest
+`f34e22e8fdc31b70e53580d3ef2dd36d949b36012f6a8f45752d77fb45c2b40f`,
+passes all controls but omits executed `scripts/fetch-evidence.sh` from its 157
+selected source pins. It remains unchanged with that source-closure limitation.
+The repaired driver inventories every tracked macos-trace file and script and
+repeats all 30 exact suites. Its 538-file record is
+`/private/tmp/glue-owned-trace-portable-controls-20261017-02`, manifest
+`302bb2f8e1316a35fec00dd3856d5d6956f5abee90836674e0cf63000797d8f7`.
+Both hosts again pass the same 454 controls. All 214 source pins equal
+before/after/committed `35c0abd` bytes; that commit changes only progress/ledger
+documentation from `9f281f1`, outside the selected runtime/script sources.
 Actual outer Mac/container argv, completion status and streams are captured,
 alongside 60 suite receipts. The cached native image and offline/read-only/
 UID 65534/capability-drop/256MiB/64-PID policy remain fixed. Record permissions

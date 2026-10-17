@@ -41,8 +41,11 @@ actual nontracing batch succeeds with identical native results and unchanged
 input bytes/metadata; only the two host source identities change in its report.
 
 CI at `9f281f1` invokes 30 Python suites collecting 454 controls: Mac 448 pass/six
-skip; native offline Linux arm64 GCC 14 passes 413 with 41 explicit skips. All 157
-selected source pins match before/after/committed bytes. Exact outer command
+skip; native offline Linux arm64 GCC 14 passes 413 with 41 explicit skips. All 214
+tracing/script source pins match before/after/committed bytes in the repeated run.
+The first run omitted the executed fetch shell helper from its source inventory;
+it remains retained, and the corrected inventory covers every tracked script.
+Exact outer command
 argv/status/streams are retained. This is local Python/C validation, with no
 newer hosted or Rust-suite run. Independent raw tracing validation, a fresh
 deployment proof, admitted tracing kit and separate guest packet/checker remain
