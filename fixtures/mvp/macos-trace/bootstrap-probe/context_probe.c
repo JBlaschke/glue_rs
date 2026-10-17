@@ -36,7 +36,8 @@ static void diagnostic(const char *stage, int error) {
     do {digits[count++]=(char)('0'+value%10);value/=10;}while(value&&count<sizeof(digits));
     while(count&&used<sizeof(message))message[used++]=digits[--count];
     if(used<sizeof(message))message[used++]='\n';
-    (void)write(2,message,used); /* Best effort, never retry or change signals. */
+    ssize_t written=write(2,message,used);
+    (void)written; /* Best effort, never retry or change signals. */
 }
 static void die(const char *stage, int error) { diagnostic(stage,error);_exit(1); }
 #if defined(__APPLE__)
