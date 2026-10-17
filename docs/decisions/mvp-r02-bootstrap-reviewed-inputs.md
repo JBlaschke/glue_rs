@@ -36,3 +36,21 @@ Registration enables only the existing host build workflow. It does not install
 or execute the resulting binaries, change guest security settings, establish
 privileged credential transitions or prove kernel exec/tracing effects. A later
 protected guest attempt still requires a concrete reviewed kit and orchestration.
+
+## Ubuntu compiler follow-up — 17 October
+
+The next hosted checkpoint (`78f4072`, run 39020970722) reaches the context-probe
+compile and exposes Ubuntu GCC 13's `warn_unused_result` diagnostic on the
+best-effort error write. Consuming the result in a local `ssize_t` and then
+explicitly ignoring that local preserves the single write, no-retry behavior.
+The test now includes compiler stdout/stderr when compilation fails. The native
+Ubuntu GCC 13 reproduction rejects the old source and accepts the fixed source;
+focused native Mac controls also pass. No warning is disabled.
+
+The production source lock must deliberately advance to the integrated fix
+`863e3279cb701676cc90d32507f7513742abd695`. Exactly one of its 34 source hashes,
+`bootstrap-probe/context_probe.c`, changes. The deployment proof and other 33
+source bytes remain unchanged. Registration does not rebuild or reinterpret the
+already frozen kit02: that kit and its separate approved VM packet continue to
+identify their original `3d500d4` inputs, binaries and audits. A future builder run
+uses the new source lock and must produce its own new output and inventory.
