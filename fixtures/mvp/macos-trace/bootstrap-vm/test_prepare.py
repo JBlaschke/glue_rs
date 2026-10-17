@@ -66,7 +66,7 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(plan['root_mount']['device'], plan['data_mount']['device'])
         self.assertNotEqual(plan['root_mount'], plan['data_mount'])
         self.assertEqual(plan['expected_groups'], [20, 12, 0])
-        self.assertFalse(plan['execution_enabled'])
+        self.assertIs(plan['execution_enabled'], vm.EXECUTION_ENABLED)
         self.assertTrue(plan['build_dir'].endswith(vm.APPROVED['build_id']))
         for path in plan['outputs'].values():
             self.assertLessEqual(len(Path(path).name), 64)
@@ -74,7 +74,7 @@ class PreparationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 vm.make_plan(result, observed, nonce)
 
-    def test_render_hash_dag_closed_phases_disabled_and_shell_syntax_only(self):
+    def test_render_hash_dag_closed_phases_policy_and_shell_syntax_only(self):
         _, _, result, observed = fixture()
         plan = vm.make_plan(result, observed, '0123456789abcdef')
         scripts = vm.render(plan)
@@ -84,7 +84,7 @@ class PreparationTests(unittest.TestCase):
         self.assertIn(vm.sha(scripts['outer.sh']).encode(), scripts['launch.sh'])
         self.assertNotIn(vm.sha(scripts['outer.sh']).encode(), scripts['root-stage.sh'])
         for source in scripts.values():
-            self.assertIn(b'[ 0 = 1 ]', source)
+            self.assertIn(f'[ {int(vm.EXECUTION_ENABLED)} = 1 ]'.encode(), source)
             self.assertNotIn(b'@@', source)
             self.assertNotIn(b'eval ', source)
             self.assertNotIn(b'SUDO_UID', source)
@@ -107,7 +107,7 @@ class PreparationTests(unittest.TestCase):
         for key, value in [('root_stage', '/tmp/other'), ('guest_work', '/tmp/other'),
                            ('build_dir', '/arbitrary/program'), ('expected_ids', ['501; false',501,20,20]),
                            ('expected_ids', [True,True,20,20]), ('evidence_files', ['../../private']),
-                           ('execution_enabled', True), ('full_acceptance', 0)]:
+                           ('execution_enabled', not vm.EXECUTION_ENABLED), ('full_acceptance', 0)]:
             plan = copy.deepcopy(original);plan[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
                 vm.render(plan)

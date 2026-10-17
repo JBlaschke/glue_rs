@@ -8,11 +8,11 @@ it does not run any tool, build, authenticate, stage a share or execute scripts.
 normal builder-zero receipt are review-workflow inputs, not administrator-proof
 authentication. Source/proof hashes do not themselves authorize root execution.
 
-**Execution is disabled in every rendered script.** `EXECUTION_ENABLED=False`
-must remain until the offline checker and exact orchestration bytes receive
-independent review and a separately authorized source follow-up enables them.
-There is no runtime flag/environment fallback. Do not copy/run a packet in a VM
-merely because preparation succeeded.
+The source policy is enabled for the one reviewed kit after independent preparer
+and checker reviews. There is no runtime flag/environment fallback. Inspect each
+freshly rendered packet before staging or launching it in the owned VM; successful
+preparation alone is insufficient. The earlier disabled packet remains unchanged.
+See [the reviewed-run decision](../../../../docs/decisions/mvp-r02-bootstrap-vm-reviewed-run.md).
 
 The packet is an explicit subset, not the complete builder output. Its own exact
 `SHA256SUMS` inventories `payload/{context-probe,bootstrap-runner,make-request}`,
@@ -30,7 +30,7 @@ source/metadata/FD/privileged mutation are explicit preconditions. The ordinary
 packet writer uses physical input traversal/exclusive output but is not a
 hostile-concurrent-mutator sandbox.
 
-Future reviewed execution has exactly one no-argument entry, `launch.sh`, from
+Reviewed execution has exactly one no-argument entry, `launch.sh`, from
 the literal shared packet path. Launch uses a clean environment for the ordinary
 outer script and records its exact NUL argv, stdout/stderr and actual exitstatus.
 Failed launches retain private partial receipts, without inventory/export.

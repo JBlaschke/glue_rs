@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare a closed, execution-disabled NONTRACING VM packet. Never runs tools."""
+"""Prepare a closed, reviewed NONTRACING VM packet. Never runs tools."""
 import argparse
 import hashlib
 import importlib.util
@@ -23,7 +23,7 @@ APPROVED = {
     'catalog_review_manifest_sha256': '44da57195e8d6b0687f9921d71695cc507a909a1a1ec300db00d7b604a540b90',
     'builder_receipt_manifest_sha256': '42ea3e6d47faf97def1cda88cd3e413bf76935d8b22688fb8db6a94962678497',
 }
-EXECUTION_ENABLED = False  # Separate orchestration/checker approval must change source.
+EXECUTION_ENABLED = True  # Reviewed fixed kit/orchestration/checker; no runtime override.
 PROGRAMS = ('context-probe', 'bootstrap-runner', 'make-request')
 CASES = ('positive', 'simulated', 'denied', 'trailing')
 METADATA = {'catalog.bin': 'catalog.bin', 'recipe.json': 'recipe.json',
