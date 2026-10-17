@@ -194,8 +194,15 @@ All 21 recorded tool commands succeeded. Two separate builds of each of the thre
 ad-hoc-signed programs have identical bytes. Build ID is
 `a75d54bba97103ec8b15dd7be7beb5b8eb23de5bfdda624ad2fcd9f224ab84d5`.
 The catalog binds the actual observed root/Data tuples and signed probe identity.
-The programs have not been executed or installed by the builder. This checkpoint
-does not establish a privileged Darwin transition, kernel exec, extraction
+Independent kit/tooling/signature review passes, manifest
+`af1034b7bf2d4d70f3db9c361f1fd44ef2262e8e156f30910a66e7c6bec0d591`.
+Separate catalog/source/modern-GCC evidence review passes, manifest
+`44da57195e8d6b0687f9921d71695cc507a909a1a1ec300db00d7b604a540b90`.
+The root-observed normal builder exit and final registration test logs are retained
+at `/private/tmp/glue-bootstrap-configured-root-checkpoint-20261017`, manifest
+`42ea3e6d47faf97def1cda88cd3e413bf76935d8b22688fb8db6a94962678497`.
+The programs have not been executed or installed by the builder or reviewers.
+This checkpoint does not establish a privileged Darwin transition, kernel exec, extraction
 oracle, product corpus, performance budgets or M2. These newer source changes
 remain local pending separate publication approval.
 
