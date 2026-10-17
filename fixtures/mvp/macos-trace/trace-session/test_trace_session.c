@@ -57,16 +57,20 @@ static void deadlines(void){struct ts_session s;struct model m;
 static void go_once(void){struct ts_session s;struct model m;
  const size_t counts[]={0,1,63,64};for(unsigned i=0;i<4;i++){armed(&s,&m);assert(!ts_claim_go(&s));assert(ts_go_result(&s,counts[i],EIO));assert(s.go_possibly_released&&s.go_bytes==counts[i]&&!s.go_complete);assert(ts_claim_go(&s));assert(ts_go_result(&s,64,0)&&s.go_bytes==counts[i]);}
  armed(&s,&m);assert(!ts_claim_go(&s));m.now=m.expected_deadline;assert(ts_go_result(&s,64,0)&&s.go_bytes==64&&!s.go_complete);assert(ts_claim_go(&s));
+ armed(&s,&m);assert(!ts_claim_go(&s));assert(ts_go_failed(&s,64,0));assert(s.go_bytes==64&&!s.go_complete&&s.error.reason==TS_PARENT_FAILURE&&s.error.system_errno==0);assert(ts_go_result(&s,64,0));assert(ts_go_failed(&s,64,0));assert(ts_claim_go(&s));
  armed(&s,&m);assert(!ts_gate_close_result(&s,0));assert(ts_claim_go(&s)&&!s.go_possibly_released);
  armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(ts_gate_close_result(&s,EIO));assert(ts_gate_close_result(&s,0)&&!s.gate_closed);
 }
 static void bootstrap(void){struct ts_session s;struct model m;const size_t prefixes[]={0,1,255,256,511,512,769};
  for(unsigned i=0;i<7;i++){armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(ts_bootstrap_failed(&s,prefixes[i],EPROTO));assert(s.bootstrap_prefix_bytes==prefixes[i]&&!s.bootstrap_sealed);assert(ts_bootstrap_sealed(&s));assert(ts_claim_go(&s));}
+ armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(ts_bootstrap_failed(&s,257,0));assert(s.error.reason==TS_PARENT_FAILURE&&s.error.system_errno==0&&s.error.detail==257&&s.bootstrap_prefix_bytes==257);assert(ts_bootstrap_sealed(&s));
  armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(!ts_child_reaped(&s,0));finish(&s,&m);assert(ts_finalization_safe(&s)&&!ts_success_eligible(&s));
 }
 static void cleanup_pumping(void){struct ts_session s;struct model m;armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(ts_bootstrap_failed(&s,257,EPROTO));struct ts_error original=s.error;cleanup(&s,&m);m.pump_error=EINTR;assert(ts_pump(&s,TS_CLEANUP));m.pump_error=0;enqueue(&m,TS_ACTIVITY,0);assert(!ts_pump(&s,TS_CLEANUP));assert(!ts_claim_kill(&s)&&!ts_kill_eligible(&s));assert(ts_claim_kill(&s));assert(ts_child_reaped(&s,9));assert(!ts_kill_eligible(&s));assert(!ts_stop(&s));assert(!ts_drain(&s));assert(!ts_parent_close_result(&s,0));assert(!ts_close(&s));assert(same_error(&original,&s.error));assert(s.cleanup_error.reason==TS_BACKEND&&s.cleanup_error.system_errno==EINTR);assert(ts_finalization_safe(&s)&&!ts_success_eligible(&s));}
 static void wait_ownership(void){struct ts_session s;struct model m;
  released(&s,&m);m.now=m.expected_deadline;assert(ts_child_reaped(&s,0));assert(s.child==TS_CHILD_REAPED&&!ts_kill_eligible(&s));assert(ts_claim_kill(&s));
+ released(&s,&m);m.owner=101;assert(ts_child_reaped(&s,0));assert(s.child==TS_CHILD_REAPED&&s.error.reason==TS_WRONG_OWNER);m.owner=100;assert(!ts_kill_eligible(&s)&&ts_claim_kill(&s));
+ released(&s,&m);m.owner=101;assert(ts_child_lost(&s));assert(s.child==TS_CHILD_LOST&&s.error.reason==TS_LOST_CHILD);m.owner=100;assert(!ts_kill_eligible(&s)&&ts_claim_kill(&s));
  released(&s,&m);assert(ts_child_lost(&s));assert(s.child==TS_CHILD_LOST&&!ts_kill_eligible(&s));assert(ts_claim_kill(&s));cleanup(&s,&m);assert(!ts_stop(&s));assert(ts_drain(&s)&&m.drains==0);assert(!ts_close(&s)&&m.closes==1);assert(!ts_finalization_safe(&s));
 }
 static void backend_faults(void){struct ts_session s;struct model m;
@@ -90,5 +94,8 @@ static void boundaries(void){struct ts_session s;struct model m;initial(&s,&m,20
  setup(&s,&m);assert(ts_start(&s)&&m.starts==1);assert(ts_pump(&s,TS_CLEANUP)&&m.pumps==0);
  armed(&s,&m);for(unsigned i=1;i<TS_MAX_PUMPS;i++)assert(!ts_pump(&s,TS_BOOTSTRAP));assert(ts_pump(&s,TS_BOOTSTRAP)&&m.pumps==TS_MAX_PUMPS&&s.error.reason==TS_LIMIT);
  armed(&s,&m);m.bulk_events=TS_MAX_EVENTS;assert(ts_pump(&s,TS_BOOTSTRAP)&&s.error.reason==TS_LIMIT);
+ /* A trusted READY caller already owns this fixed child even when session
+  * initialization fails only on owner/time observation. Cleanup must survive. */
+ for(unsigned fault=0;fault<3;fault++){initial(&s,&m,200);struct ts_session early={0};o=operations(&m);if(fault==0)m.clock_error=EIO;else if(fault==1)m.now=m.expected_deadline;else m.owner=101;assert(ts_init(&early,&m.binding,m.expected_deadline,200,&o));assert(early.configured&&!early.initialized&&ts_kill_eligible(&early));struct ts_error first=early.error;if(fault==2)assert(ts_claim_kill(&early));m.clock_error=0;m.owner=100;assert(!ts_claim_kill(&early)&&!ts_kill_eligible(&early));(void)ts_gate_close_result(&early,0);assert(ts_child_reaped(&early,9));cleanup(&early,&m);assert(!ts_parent_close_result(&early,0));assert(!ts_close(&early)&&m.closes==0&&m.starts==0);assert(ts_finalization_safe(&early)&&!ts_success_eligible(&early)&&same_error(&first,&early.error));}
 }
 int main(int argc,char**argv){assert(argc==2);if(!strcmp(argv[1],"success"))success();else if(!strcmp(argv[1],"readiness"))readiness();else if(!strcmp(argv[1],"deadlines"))deadlines();else if(!strcmp(argv[1],"go"))go_once();else if(!strcmp(argv[1],"bootstrap"))bootstrap();else if(!strcmp(argv[1],"cleanup"))cleanup_pumping();else if(!strcmp(argv[1],"wait"))wait_ownership();else if(!strcmp(argv[1],"backend"))backend_faults();else if(!strcmp(argv[1],"drain"))drain_order();else if(!strcmp(argv[1],"boundaries"))boundaries();else return 2;puts(argv[1]);return 0;}
