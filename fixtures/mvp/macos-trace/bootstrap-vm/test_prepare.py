@@ -117,6 +117,21 @@ class PreparationTests(unittest.TestCase):
             else:plan['outputs']['other'] = '/arbitrary'
             with self.assertRaises(ValueError):vm.render(plan)
 
+    def test_inline_guard_first_false_AND_operand_cannot_reach_later_command(self):
+        # Only shell builtins in an isolated ordinary process. Never invokes
+        # root tools, a rendered phase, authentication or filesystem operations.
+        for predicate, expected in [('false && true', 2), ('true && false', 2), ('false', 2), ('true', 0)]:
+            script = 'set -eu; ' + vm.inline_guard(predicate) + 'printf reached'
+            done = subprocess.run(['/bin/sh', '-c', script], capture_output=True, timeout=5)
+            self.assertEqual(done.returncode, expected)
+            self.assertEqual(done.stdout, b'reached' if expected == 0 else b'')
+        _, _, result, observed = fixture()
+        outer = vm.render(vm.make_plan(result, observed, '0123456789abcdef'))['outer.sh'].decode()
+        # Both independently rendered inline shims guard every predicate. A
+        # source FIFO cannot slip past the nonlast -f predicate into head.
+        self.assertNotIn(' ] && [ ', outer.split('root_phase()')[0].split('/bin/sh -c ')[1])
+        self.assertIn('|| exit 2;', outer)
+
     def test_derived_packet_exact_inventory_and_existing_output_untouched(self):
         values = fixture()
         with tempfile.TemporaryDirectory() as name:
