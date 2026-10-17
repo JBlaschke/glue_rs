@@ -73,3 +73,46 @@ SIGPIPE is ignored only inside that private test process and checked/restored;
 production code never changes it. Native forked writers have a parent-owned
 monotonic wait deadline and an exact unreaped-child kill/reap path. Python adds
 an outer subprocess timeout. Tests never execute a target or change credentials.
+
+## Cooperative observation
+
+The three `_observed` variants require a separate trusted `bio_observer` with a
+progress callback. They copy its table once and share the original transport
+core. Legacy functions and the six-operation table keep their existing API and
+behavior. New diagnostic enum values are appended after the old values.
+
+Observed calls cap each poll timeout at20ms, while retaining the same absolute
+deadline and4096-step bound. They pump before polls, after validated nonfatal
+poll results and after confirmed record progress or successful EOF. Each pump
+receives the original normalized deadline, and a successful callback is followed
+by the original clock/deadline checks before further pipe I/O. Timeout, EINTR,
+EAGAIN and partial progress cannot renew a deadline. The quantum bounds requested
+poll duration, not stalled kernel/callback execution; callbacks remain cooperative.
+
+The observer returns0 on success or-1 on explicit failure without an errno;
+other return values are adapter errors. Its context may retain the separately
+validated tracing/session fault. BIO reports `observer/observer` with errno0
+without fabricating a syscall failure. Callbacks preserve pipe identities,
+aliases, flags, signals and API storage and must not reenter the transport or
+perform I/O on its pipe.
+
+Fatal/anomalous poll results keep their original stage/reason/errno before a
+later observer or clock can replace them. Fatal/truncated/zero-progress I/O and
+confirmed trailing EOF bytes likewise retain the existing refusal order. A
+failed observer after partial or complete record delivery leaves every confirmed
+byte and count intact, and returns failure without further reads/writes. Such
+records remain opaque; even a fully delivered failed GO must never be replayed.
+
+Run `python3 -B fixtures/mvp/macos-trace/bootstrap-io/test_observed_io.py -v`.
+Its nine injected groups cover capped waits/pumping across timeout/EINTR/EAGAIN,
+original deadlines and rollback, semantic observer faults, complete and partial
+failed transfers, poll/I/O/trailing-error precedence, strict EOF and bounded
+frozen-clock retries. Use the same `BIO_TEST_CFLAGS` sanitizer options above.
+These models do not open native pipes, fork, trace or execute a target. Existing
+native private-pipe controls still test the legacy APIs separately.
+
+No runner, tracing coordinator or native backend adopts these entry points yet.
+The registered source map and already captured kit03 evidence retain their
+historical identities; a subsequent reviewed source registration/build and actual
+integration are separate steps. See
+[the observation decision](../../../../docs/decisions/mvp-r02-bootstrap-observed-io.md).

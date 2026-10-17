@@ -13,6 +13,8 @@
 #define NS_PER_MS UINT64_C(1000000)
 struct run {
     struct bio_operations ops;
+    struct bio_observer observer;
+    int observed;
     struct bio_result *result;
     struct bio_error *error;
     uint64_t deadline, last;
@@ -48,9 +50,19 @@ static int check_time(struct run *r, uint64_t *now) {
     if (*now >= r->deadline) return fail(r, BIO_STAGE_CLOCK, BIO_REASON_DEADLINE, 0);
     return 0;
 }
+static int observe(struct run *r, uint64_t *now) {
+    if (!r->observed) return 0;
+    struct bio_time d = {r->deadline / NS_PER_SECOND, r->deadline % NS_PER_SECOND};
+    int rc = r->observer.progress_fn(r->observer.context, d);
+    if (rc != 0)
+        return fail(r, BIO_STAGE_OBSERVER,
+                    rc == -1 ? BIO_REASON_OBSERVER : BIO_REASON_ADAPTER, 0);
+    return check_time(r, now);
+}
 static int transfer(int fd, const unsigned char *input, size_t length,
                     int writing, int eof, struct bio_time deadline,
                     const struct bio_operations *operations,
+                    int observed, const struct bio_observer *observer,
                     struct bio_result *result, struct bio_error *error) {
     struct run r;
     memset(&r, 0, sizeof(r));
@@ -68,6 +80,10 @@ static int transfer(int fd, const unsigned char *input, size_t length,
         !operations->write_fn)
         return fail(&r, BIO_STAGE_OPERATIONS, BIO_REASON_ARGUMENT, 0);
     r.ops = *operations;
+    if (observed && (!observer || !observer->progress_fn))
+        return fail(&r, BIO_STAGE_OPERATIONS, BIO_REASON_ARGUMENT, 0);
+    r.observed = observed;
+    if (observed) r.observer = *observer;
     unsigned char source[BIO_MAX_RECORD_BYTES] = {0};
     if (writing) memcpy(source, input, length);
     int reason = flatten(deadline, &r.deadline);
@@ -95,8 +111,10 @@ static int transfer(int fd, const unsigned char *input, size_t length,
     short wanted = writing ? POLLOUT : POLLIN;
     for (unsigned step = 0; step < BIO_MAX_STEPS; step++) {
         if (check_time(&r, &now)) return -1;
+        if (observe(&r, &now)) return -1;
         uint64_t remaining = r.deadline - now;
         int timeout = (int)((remaining + NS_PER_MS - 1) / NS_PER_MS);
+        if (r.observed && timeout > BIO_OBSERVER_POLL_MS) timeout = BIO_OBSERVER_POLL_MS;
         short events = 0;
         e = 0;
         rc = r.ops.poll_fn(r.ops.context, fd, wanted, timeout, &events, &e);
@@ -121,6 +139,7 @@ static int transfer(int fd, const unsigned char *input, size_t length,
                 return fail(&r, BIO_STAGE_POLL, BIO_REASON_POLL_EVENT, 0);
         }
         if (check_time(&r, &now)) return -1;
+        if (observe(&r, &now)) return -1;
         if (rc != 1) continue;
         unsigned char chunk[BIO_MAX_RECORD_BYTES] = {0};
         size_t moved = result->bytes_moved;
@@ -138,27 +157,42 @@ static int transfer(int fd, const unsigned char *input, size_t length,
         if (amount == 0) {
             if (writing) return fail(&r, io_stage, BIO_REASON_ZERO_PROGRESS, 0);
             if (!eof) return fail(&r, io_stage, BIO_REASON_TRUNCATED, 0);
-            return check_time(&r, &now);
+            if (check_time(&r, &now)) return -1;
+            return observe(&r, &now);
         }
         memcpy(result->prefix + moved, writing ? source + moved : chunk, (size_t)amount);
         result->bytes_moved += (size_t)amount;
         if (check_time(&r, &now)) return -1;
         if (eof) return fail(&r, BIO_STAGE_EOF, BIO_REASON_TRAILING, 0);
+        if (observe(&r, &now)) return -1;
         if (result->bytes_moved == length) return 0;
     }
     return fail(&r, BIO_STAGE_POLL, BIO_REASON_RETRY_LIMIT, 0);
 }
 int bio_read_record(int fd, size_t n, struct bio_time d, const struct bio_operations *o,
                     struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, n, 0, 0, d, o, r, e);
+    return transfer(fd, NULL, n, 0, 0, d, o, 0, NULL, r, e);
 }
 int bio_write_record(int fd, const unsigned char *p, size_t n, struct bio_time d,
                      const struct bio_operations *o, struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, p, n, 1, 0, d, o, r, e);
+    return transfer(fd, p, n, 1, 0, d, o, 0, NULL, r, e);
 }
 int bio_require_eof(int fd, struct bio_time d, const struct bio_operations *o,
                     struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, 0, 0, 1, d, o, r, e);
+    return transfer(fd, NULL, 0, 0, 1, d, o, 0, NULL, r, e);
+}
+int bio_read_record_observed(int fd, size_t n, struct bio_time d, const struct bio_operations *o,
+                             const struct bio_observer *v, struct bio_result *r, struct bio_error *e) {
+    return transfer(fd, NULL, n, 0, 0, d, o, 1, v, r, e);
+}
+int bio_write_record_observed(int fd, const unsigned char *p, size_t n, struct bio_time d,
+                              const struct bio_operations *o, const struct bio_observer *v,
+                              struct bio_result *r, struct bio_error *e) {
+    return transfer(fd, p, n, 1, 0, d, o, 1, v, r, e);
+}
+int bio_require_eof_observed(int fd, struct bio_time d, const struct bio_operations *o,
+                             const struct bio_observer *v, struct bio_result *r, struct bio_error *e) {
+    return transfer(fd, NULL, 0, 0, 1, d, o, 1, v, r, e);
 }
 static int native_clock(void *c, struct bio_time *t, int *e) {
     (void)c;
@@ -210,13 +244,13 @@ const struct bio_operations *bio_native_operations(void) {
 }
 const char *bio_stage_name(enum bio_stage s) {
     static const char *const names[] = {"none", "argument", "operations", "endpoint", "clock",
-                                      "poll", "read", "write", "eof"};
+                                      "poll", "read", "write", "eof", "observer"};
     return (unsigned)s < sizeof(names) / sizeof(names[0]) ? names[s] : "unknown";
 }
 const char *bio_reason_name(enum bio_reason s) {
     static const char *const names[] = {"none", "argument", "length", "not-pipe", "access",
         "nonblock", "time-format", "time-overflow", "max-future", "clock-rollback", "deadline",
         "syscall", "adapter", "poll-invalid", "poll-event", "poll-error", "truncated",
-        "zero-progress", "trailing", "retry-limit"};
+        "zero-progress", "trailing", "retry-limit", "observer"};
     return (unsigned)s < sizeof(names) / sizeof(names[0]) ? names[s] : "unknown";
 }
