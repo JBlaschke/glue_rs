@@ -57,15 +57,23 @@ focused new suite. The new record pins all 217 tracing/script sources. An
 independent passive audit verifies its complete inventory, source identities,
 actual command receipts and the stated composition with the earlier aggregate.
 The reader supplies raw transport facts, with no native capture,
-GO/session/closure verdict, clock
-domain equivalence, exec or extraction claim. A fresh deployment proof, admitted
-tracing kit and separate guest packet/complete case checker remain required
-before native calibration.
+GO/session/closure verdict, clock-domain equivalence, exec or extraction claim.
+The separate complete positive/denied case checker is integrated at `e1db60e`;
+its 11 synthetic groups pass. The separate packet at `5f96d29` remains
+hard-disabled before input/output access. The repairs require successful command
+and array reads, the actual endpoint sentinel and clean positive pump counts.
+A fresh deployment proof, admitted tracing kit and reviewed packet activation
+remain required before native calibration. SIM still refuses as uncalibrated.
+CI `e40d33e` adds the three packet/gate/case suites. Their 43 controls pass on
+each Mac and native offline Linux arm64 host without skips. All 229 selected source
+pins match before/after/committed bytes. Coverage combines these focused results
+with the earlier 30-suite aggregate and raw-reader suite; no single 34-suite run
+or newer hosted result is claimed.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-owned-trace-reader-status`.
+Documentation continues on `codex/mvp-r04-trace-packet-cases-status`.
 The updated public push request is fixed at `e2c728b` on
 `codex/mvp-r04-owned-trace-source-status`; it replaces the earlier `ae48aee`
 request and excludes this newer raw reader.

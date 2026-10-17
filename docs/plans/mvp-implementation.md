@@ -146,7 +146,11 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-owned-trace-source-status` | `e2c728b`, based on `9f281f1` | Reviewed tracing source, empty admission, source-inventory repair and local aggregate; exact public push pending approval |
 | R02 | `codex/mvp-r02-owned-trace-check` | `634efaf`, `3dc12ce`, `fb1d76a`; integrated `1b89364`, `47cc16f`, `ac7e27a` | Independent fixed raw program/inventory/event validator; repaired valid-baseline mutation controls, 16 portable passes; no case/session/native verdict |
 | V01 | `codex/mvp-v01-owned-trace-check-ci` | `a1f0e88` | Add one raw-reader invocation (31 configured); focused 16 controls pass on both native development hosts, separately composed with prior 30 aggregate |
-| R04 | `codex/mvp-r04-owned-trace-reader-status` | branch tip, based on `a1f0e88` | Record raw-reader source/controls and preserve the fixed older public checkpoint |
+| R04 | `codex/mvp-r04-owned-trace-reader-status` | `519e2ff`, `e9f3d80`, based on `a1f0e88` | Record raw-reader source/controls and independent composed-coverage audit; preserve the fixed older public checkpoint |
+| R02 | `codex/mvp-r02-owned-trace-cases` | `7ee2d0f`, `983b9e4`; integrated `fb790b7`, `e1db60e` | Pure complete positive/denied case consistency; 11 synthetic control groups; trusted caller provenance and SIM refusal |
+| R02 | `codex/mvp-r02-bootstrap-trace-vm` | `5bf1d81`, `db3ff37`, `5622f9e`, `be85b24`; integrated through `5f96d29` | Separate hard-disabled packet, checked operation status and exact closure gates; endpoint/pump/array regressions repaired |
+| V01 | `codex/mvp-v01-trace-packet-cases-ci` | `e40d33e` | Add exactly three packet/gate/case suites; 34 configured; focused 43 controls pass on each Mac/native offline Linux arm64 host |
+| R04 | `codex/mvp-r04-trace-packet-cases-status` | branch tip, based on `e40d33e` | Record integrated packet/case sources, focused controls and remaining native admission/calibration |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -839,6 +843,92 @@ It independently verifies all focused and basis inventories, 217 source pins,
 exact CI/driver deltas, both native command receipts and the 30-plus-one coverage
 composition without executing tests or reviewed tools. Both original input
 trees retain identical bytes and physical metadata before/after the audit.
+
+### Disabled tracing packet and complete case checks
+
+The [complete-case decision](../decisions/mvp-r02-owned-trace-cases.md) and source
+`983b9e4`, integrated as `e1db60e`, add a separate pure positive/denied consistency
+layer. It links catalog/request/BW/NP bytes to every traced result/sidecar field,
+including PID/context/digests, exact GO/status/reap/resource closure, native versus
+callback errors, inventory/observed EPID counts and the exact raw-to-session event
+projection. Twenty vendored pure codec definitions are AST-identical to the
+pinned legacy reader, with an exact dependency closure; the legacy full checker,
+packet loader and producer are never imported or relabeled. Caller identities,
+roster and RawFacts provenance remain trusted. Declared clocks are checked only
+where recorded; original budget derivation and timestamp-domain equivalence are
+not inferred. SIM/unknown selectors refuse before inspecting payloads.
+
+Eleven complete synthetic control groups pass, with valid positive/denied
+baselines before single-field corruption and explicit baselines for all three
+denied wait/kill race pairs. The 14-file component record is
+`/private/tmp/glue-owned-trace-cases-validation-2rckv9n5`, manifest
+`ab910974d01f3ff7cf003ce66f7f6dd9147c7ab4dc4f4d977a5ea8bac3236e52`.
+Root's independent passive 27-file audit is
+`/var/folders/_1/4wfvp9l93ln8l9rfqbv8qm_w0000gp/T/glue-owned-trace-cases-root-peer-bjm4lf69`,
+manifest `f87f709accdf6139d1991b00118810bc41a479cc5d350d481b0cae2bfb94e622`.
+All five snapshots equal committed/current source; the original input tree's
+bytes and physical metadata remain unchanged. No tests or native tool ran during
+that passive audit.
+
+The [separate packet decision](../decisions/mvp-r02-bootstrap-trace-vm.md), source
+`be85b24` integrated as `5f96d29`, adds eight new host/template files. Public CLI
+approval/execution/SIM constants remain null/false and refuse before helper or
+supplied input/output access. Synthetic rendering emits literal disabled guards
+and an unapproved marker; changing constants alone cannot activate it. Legacy
+preparer/checker/templates, kit03 approval, registries and limits are unchanged.
+The fixed new profile has three artifacts, fresh paths, exact current deployment
+checks, physical/full-mode/signature guards and distinct bounded export limits.
+Promoted small metadata must resolve child, signals, gate, session, backend,
+writers, snapshot and destroy before raw roster/read/export or denied-mode
+restoration. Full raw/case validation remains a later layer. SIM always refuses,
+so this revision cannot complete the four-case batch, even after a successful
+individual positive case.
+
+Review corrected shell status loss, ambiguous negative array-index lookup and
+two source/fixture contradictions. Expected stdout from a failed read never
+passes; array counts require successful typed reads. Successful endpoints retain
+role 5/fd -1; a clean positive has bootstrap and waiting pumps, no cleanup pumps,
+and a coherent total. The denied matrix remains exactly `(30720,false)`,
+`(30720,true)` or `(9,true)`, with no widening of SIM. Final component controls
+comprise 16 preparation and 16 gate groups plus separate syntax-only and
+activation-refusal captures. Generated privileged phases were never executed.
+The earlier passing models are preserved as superseded, not native compatibility
+evidence. Final 120-file record:
+`/private/tmp/glue-bootstrap-trace-vm-final-controls-8x8fhex3`, manifest
+`9b9be055d96c055406f6b36d7d78ecf866575e8557fb65a4048f57fb4b22ebb0`.
+All 30 retained source pins equal integrated committed/current bytes.
+
+The independent six-file preparer/template review is
+`/private/tmp/glue-bootstrap-trace-prepare-peer-s7llvbk3`, manifest
+`a0b06bee5de33e9fec2fbd2d28caca135b7c0432242b2ff8070001309e3ed063`.
+Its author explicitly excludes the two gates they implemented. Their final
+18-file gate control record is
+`/private/tmp/glue-bootstrap-trace-gates-final-rsy8285s`, manifest
+`7fce4d218b538e787ab7c7569244425dcf6d1ceb3047126d1fe26830751332a5`.
+The separate independent C-versus-original-gate audit is
+`/private/tmp/glue-trace-gate-c-audit-lq3ens7_`, manifest
+`373913ca1fab6d54663b368045ea0984068e8253879cee9585f01421db12c59e`.
+Root separately verifies final source adoption and all named inventories/hashes.
+
+CI `e40d33e` adds exactly three invocations; deleting them restores `a1f0e88`'s
+31-suite script byte-for-byte. The focused 283-file record is
+`/private/tmp/glue-owned-trace-packet-case-portable-controls-20261017-01`, manifest
+`85547276ed099da8480fc3839aca45734ba4c15b89e873f117248834c51cbc7a`.
+Both actual outer receipts complete zero, with exact NUL argv/status/streams;
+each Mac/native offline Linux arm64 child collects and passes 43 controls with
+no skips. All 229 selected tracing/script sources match before/after snapshots,
+copied bytes and committed `e40d33e`. Relative to `a1f0e88`, only CI changes
+existing selected bytes; twelve packet/case files are added. Composing the prior
+30-suite 454-control aggregate, focused raw-reader 16 and these three suites
+accounts for 513 controls per host: Mac 507 pass/six skip; Linux 472 pass/41 skip.
+There is no single 34-suite run, newer hosted/Rust result or native provider run.
+
+SIP remains enabled in the VM. Fresh exact post-reboot proof, tracing source/proof
+admission, a reproducible signed kit, separate current-kit retention, reviewed
+packet activation and narrow SIM calibration remain prerequisites for native
+work. No actual kit/proof/export, guest, staging, sudo/SIP, publication or network
+operation belongs to these source changes. Kernel exec, full extraction/effect
+oracle, Darwin corpus/budgets, R02, M2 and durable evidence publication remain open.
 
 
 The credential primitive independently passes 14 native unprivileged controls
