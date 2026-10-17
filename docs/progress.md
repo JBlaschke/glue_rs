@@ -32,7 +32,8 @@ permissions777. A separate feature branch is correcting every mode/type guard
 with regression controls. The repair is now integrated at `dec2488` on
 `codex/mvp-r02-bootstrap-mode-integration`:14 preparer and18 checker controls
 pass, with an independent review and60 additional exact-mode/type controls.
-A fresh packet is prepared from the unchanged kit for separate rendered review;
+A fresh packet from the unchanged kit passes separate rendered review and is
+staged unchanged. Its launch has reached the private guest authentication prompt;
 the failed packets remain unchanged. All four owned cases remain unverified. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the

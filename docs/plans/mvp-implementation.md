@@ -120,7 +120,7 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
 | R04 | `codex/mvp-r04-bootstrap-restart-status` | `c36b711`, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted launch/reboot, second failed install and actual guest mode observations preserved |
 | R02 | `codex/mvp-r02-bootstrap-mode-guards` | `46d61f3` | Exact full BSD mode/type guards,14 preparer/18 checker controls; integrated as `dec2488` after decision `fabae45` |
-| R02 | `codex/mvp-r02-bootstrap-mode-integration` | branch tip, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation; actual four-case execution remains pending |
+| R02 | `codex/mvp-r02-bootstrap-mode-integration` | branch tip, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation/review/staging; launch at private guest authentication, four-case results pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -406,7 +406,20 @@ The host preparation receipt is
 `f3d23282cffc78af0c396d83b2ec70196f12aaed90a2616987104bd5285c0e05`.
 Preparation returned0, preserved all nine selected kit members and passed
 syntax-only checks for all three rendered scripts. Independent actual-packet
-review precedes staging and execution. No new native success, tracing, extraction
+review passes exact trees/modes, selected kit bytes, canonical plan, passive
+template reconstruction and the script SHA/size dependency chain. Its27-file
+closed record is `/private/tmp/glue-packet03-independent-review-q617wqtk`,
+manifest `1154d4ec1db84f29d45139867eba8ad2eda800feddc28e6e291cd125823f437c`.
+The new packet is staged byte/mode-identically at its literal shared path.
+The separate root checkpoint is
+`/private/tmp/glue-bootstrap-vm-mode-stage-root-checkpoint-20261017`, manifest
+`ad2db2714e0f68ec20151626350d12d9016b6572df96ab55151de55d93c35057`.
+An initial host staging check refused the fractional elapsed-time field when
+using the strict native-plan JSON parser; that read-only failure preceded all
+copying. Host receipt parsing was corrected separately; packet/native parsing
+and all source remain unchanged. The reviewed no-argument launch reached its
+private guest authentication prompt in the SIP-enabled VM. Authentication and
+the four-case results remain pending. No new native success, tracing, extraction
 verdict, hosted run or public source publication is claimed.
 
 
