@@ -16,7 +16,9 @@ static uint64_t model_now=UINT64_C(1000000000);
 static int clock_failure,close_failure,write_failure_fd=-1,write_expire_fd=-1,write_zero_fd=-1,write_eintr_fd=-1,owned_closes;
 static uint64_t write_expire_time;
 static int model_clock(clockid_t c,struct timespec *t) {
- assert(c==CLOCK_MONOTONIC);if(clock_failure){errno=EIO;return -1;}
+ assert(c==CLOCK_MONOTONIC);
+ if(clock_failure==1 || clock_failure==2){errno=clock_failure==2?EOVERFLOW:EIO;return -1;}
+ if(clock_failure==3){t->tv_sec=1;t->tv_nsec=1000000000L;return 0;}
  t->tv_sec=(time_t)(model_now/1000000000);t->tv_nsec=(long)(model_now%1000000000);return 0;
 }
 static int model_close(int fd) {
@@ -173,6 +175,13 @@ static void bounds_and_faults(void) {
  assert(strstr(diagnostic_text,"\"kind\":\"work-status\",\"status\":17"));cleanup(&f);
 }
 static void deadline_and_closure(void) {
+ for(unsigned malformed=0;malformed<2;malformed++) {
+  reset();struct fixture clock_fixture;initialize(&clock_fixture);begin(&clock_fixture);clock_failure=malformed?3:2;int clock_error=0;
+  assert(clock_fixture.ops.close_fn(clock_fixture.b,clock_fixture.deadline,&clock_error)==-1);
+  assert(clock_fixture.b->view.first_error.reason==OTB_CLOCK&&clock_fixture.b->view.first_error.callback_error==EOVERFLOW);
+  assert(clock_fixture.b->view.first_error.system_errno==(malformed?0:EOVERFLOW));
+  assert(owned_closes==4&&library_closed==1&&clock_fixture.b->view.resources_closed);clock_failure=0;cleanup(&clock_fixture);
+ }
  reset();struct fixture changed;initialize(&changed);begin(&changed);model_now=changed.deadline-UINT64_C(500000000);int changed_error=0;
  assert(changed.ops.pump_fn(changed.b,TS_BOOTSTRAP,changed.deadline+UINT64_C(100000000),collector,&changed,&changed_error)==-1);
  assert(changed.b->view.first_error.reason==OTB_BINDING&&!changed.b->view.cleanup_deadline_ns);cleanup(&changed);

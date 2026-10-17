@@ -93,9 +93,10 @@ static int native_failure(struct otb_backend *b,enum otb_stage stage,const char 
 static int status_error(struct otb_backend *b,int *error) {
  *error=b->view.first_error.callback_error?b->view.first_error.callback_error:EIO;return -1;
 }
-static int actual_clock(uint64_t *out,int *error) {
+static int actual_clock(uint64_t *out,int *error,int *native_errno) {
+ *native_errno=0;
  struct timespec t;
- if(clock_gettime(CLOCK_MONOTONIC,&t)){*error=errno;return -1;}
+ if(clock_gettime(CLOCK_MONOTONIC,&t)){*error=errno;*native_errno=errno;return -1;}
  if(t.tv_sec<0 || t.tv_nsec<0 || t.tv_nsec>=1000000000L ||
     (uint64_t)t.tv_sec>(UINT64_MAX-(uint64_t)t.tv_nsec)/NS_SECOND){*error=EOVERFLOW;return -1;}
  *out=(uint64_t)t.tv_sec*NS_SECOND+(uint64_t)t.tv_nsec;*error=0;return 0;
@@ -106,8 +107,8 @@ static int owner(struct otb_backend *b,enum otb_stage stage) {
   failure(b,stage,OTB_OWNER,0,0,EPERM,"controller ownership changed");
 }
 static int time_before(struct otb_backend *b,enum otb_stage stage,uint64_t d,int require_before) {
- uint64_t n=0;int e=0;
- if(actual_clock(&n,&e))return failure(b,stage,OTB_CLOCK,e==EOVERFLOW?0:e,0,e,"monotonic clock failed");
+ uint64_t n=0;int e=0,native_errno=0;
+ if(actual_clock(&n,&e,&native_errno))return failure(b,stage,OTB_CLOCK,native_errno,0,e,"monotonic clock failed");
  if(b->clock_seen && n<b->last_clock)return failure(b,stage,OTB_CLOCK,0,0,EPROTO,"monotonic clock rolled back");
  b->clock_seen=1;b->last_clock=n;
  if(require_before && n>=d)return failure(b,stage,OTB_DEADLINE,0,0,ETIMEDOUT,"absolute deadline expired");
@@ -131,7 +132,7 @@ static uint32_t operation_owner(void *context,int *error) {
  *error=0;return (uint32_t)p;
 }
 static int operation_clock(void *context,uint64_t *now,int *error) {
- (void)context;return actual_clock(now,error);
+ (void)context;int native_errno=0;return actual_clock(now,error,&native_errno);
 }
 static int emit(struct otb_backend *b,enum ts_event_kind kind) {
  if(!b->consume)return failure(b,b->draining?OTB_DRAIN:OTB_PUMP,OTB_CONSUMER,0,0,EPROTO,"event outside pump/drain");
@@ -475,8 +476,8 @@ int otb_create(struct otb_backend **out,int fd,const struct ts_binding *binding,
  status=fcntl(fd,F_GETFL);
  if(status<0 || fstat(fd,&s)){invalid.reason=OTB_POSIX;invalid.system_errno=errno;invalid.callback_error=errno;*error=invalid;return -1;}
  if(!S_ISDIR(s.st_mode) || !(flags&FD_CLOEXEC) || (status&O_ACCMODE)!=O_RDONLY){*error=invalid;return -1;}
- uint64_t now=0;int e=0;
- if(actual_clock(&now,&e)){invalid.reason=OTB_CLOCK;invalid.system_errno=e==EOVERFLOW?0:e;invalid.callback_error=e;*error=invalid;return -1;}
+ uint64_t now=0;int e=0,native_errno=0;
+ if(actual_clock(&now,&e,&native_errno)){invalid.reason=OTB_CLOCK;invalid.system_errno=native_errno;invalid.callback_error=e;*error=invalid;return -1;}
  if(attempt<=now || attempt-now>UINT64_C(10000000000)){invalid.reason=OTB_DEADLINE;invalid.callback_error=ETIMEDOUT;*error=invalid;return -1;}
  struct otb_backend *b=calloc(1,sizeof(*b));
  if(!b){invalid.reason=OTB_POSIX;invalid.system_errno=errno;invalid.callback_error=errno;*error=invalid;return -1;}
