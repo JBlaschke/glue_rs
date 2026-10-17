@@ -458,7 +458,15 @@ static int close_backend(void *context,uint64_t d,int *error) {
  if(b->handle){dtrace_hdl_t *handle=b->handle;b->handle=NULL;dtrace_close(handle);}
  for(unsigned i=0;i<4;i++)if(b->files[i]>=0) {
   int fd=b->files[i];b->files[i]=-1;
-  if(close(fd)){failure(b,OTB_CLOSE,OTB_POSIX,errno,0,errno,"writer close failed; ownership unresolved");closed=0;bad=-1;}
+  b->view.writer_close_attempted_mask|=1u<<i;
+  if(close(fd)) {
+   int saved=errno;b->view.writer_close_failed_mask|=1u<<i;b->view.writer_close_errno[i]=saved;
+   if(b->view.writer_close_error.reason==OTB_OK) {
+    b->view.writer_close_error=(struct otb_error){OTB_CLOSE,OTB_POSIX,saved,0,saved,{0}};
+    snprintf(b->view.writer_close_error.message,sizeof(b->view.writer_close_error.message),"%s close failed; ownership unresolved",file_names[i]);
+   }
+   failure(b,OTB_CLOSE,OTB_POSIX,saved,0,saved,"writer close failed; ownership unresolved");closed=0;bad=-1;
+  }
  }
  b->view.resources_closed=closed;
  if(time_before(b,OTB_CLOSE,d,1))bad=-1;
