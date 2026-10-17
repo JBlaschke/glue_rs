@@ -1,16 +1,17 @@
-# Owned-probe trace-session coordinator models
+# Owned-probe trace-session coordinator
 
 This internal C interface coordinates an injected backend for exactly the owned
 context-probe fixture. It does not provide a native backend, launch a process,
 call libdtrace, change signals/credentials, perform FD/filesystem operations or
-decode raw trace/BW records. No existing runner, builder, kit, packet or capture
-reader uses it. A model event is not native provider or kernel-exec evidence.
+decode raw trace/BW records. The separately compiled tracing parent now adopts
+it through the fixed native adapter; the ordinary build stays nontracing. A model
+event is not native provider or kernel-exec evidence.
 
 `ts_init` snapshots the trusted controller/actual still-owned child binding,
 request/catalog digests, original absolute monotonic attempt deadline and exact
 request cleanup budget. Caller storage is zero-initialized once, nonalias and
 stable; only the owner calls this single-threaded API. Callbacks and context are
-trusted internal inputs for models and a future separately reviewed adapter;
+trusted internal inputs for models and the separately reviewed native adapter;
 there is no command-line, runtime backend, arbitrary executable or argv selector.
 The coordinator neither proves ownership from a supplied PID nor authenticates
 the supplied digests. The parent must derive them from its real fork/request.
@@ -22,7 +23,7 @@ but cannot interrupt a stalled kernel call or malicious callback. It bounds
 consumed events and pump calls separately, without counter wraparound. There is
 no sleep, watchdog or hidden retry.
 
-The future adapter must validate raw descriptor/layout/provider/enabling and
+The adapter must validate raw descriptor/layout/provider/enabling and
 output bounds before delivering a consumed event to the supplied sink. The sink
 additionally checks the fixed session binding and legal event sequence. These
 context tags do not transform an injected event into kernel attestation. Exactly
@@ -92,27 +93,23 @@ even after parent completion succeeds. A metadata close failure forbids promotio
 `ts_finalization_safe` alone never grants publication permission. See the
 [resource-boundary decision](../../../../docs/decisions/mvp-r02-trace-parent-completion.md).
 
-## Handoff seams and remaining work
+## Integration and remaining work
 
-1. In `bootstrap-runner/runner_parent.c`, enter only after the complete READY
-   comparison sets `ready_matched`, before the original GO deadline check/write.
-   Provider setup and consumed BEGIN must finish within that same deadline.
-2. `bootstrap-io` currently polls one FD for the remaining deadline. A separate
-   integration must provide cooperative pumping during BW reads, GO writes and
-   EOF checks, preserving confirmed prefixes and the original absolute deadline.
-   Pump during `wait_until` and the existing cleanup wait as well.
-3. After actual reap, stop and drain queued events, retaining terminal/END and
-   every backend/output/close fault. Close all trace resources before the parent
-   can promote its final result. Keep its no-fallible-work-after-promotion rule.
-4. Do not embed `capture-native`'s CLI wrapper: it forks another target, releases
-   before consuming BEGIN, installs signal handlers and requires named open
-   calibration absent from context-probe. Its watchdog does not clear an
-   inherited blocked mask and may hold unwanted channel/writer aliases.
-5. A native adapter, independently validated receipt/profile, actual provider
-   calibration, source-map/build-ID/kit changes and separately reviewed guest
-   execution are still required. The existing raw capability reader and old
-   captures retain their original contracts. Full Darwin object/effect coverage,
-   extraction verdicts, budgets and R02/M2 acceptance remain open.
+The source-selected tracing parent enters after complete READY comparison and
+consumes provider readiness/BEGIN before once-only GO. Cooperative BIO and status
+variants pump during bounded reads, writes and EOF checks without renewing the
+original deadline or replaying failed prefixes. Wait and valid shared cleanup
+also pump. Reap/ECHILD retires kill ownership before later fallible observations.
+After stop/drain, backend and parent resource closure precede separate final
+metadata closure and the last fallible result rename. A failed cleanup-clock or
+binding cannot authorize tracing work against the longer attempt deadline.
+
+The fixed adapter's source/model/SDK-link reviews do not establish native
+availability. A fresh policy-reboot proof, admitted tracing source/kit, independent
+receipt checking and separately reviewed guest execution still precede native
+calibration. Do not embed `capture-native`'s distinct launch/watchdog wrapper.
+Historical readers/captures keep their contracts. Full Darwin object/effect
+coverage, extraction verdicts, budgets and R02/M2 acceptance remain open.
 
 ## Controls
 

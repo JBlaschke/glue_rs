@@ -769,6 +769,12 @@ alongside 60 suite receipts. The cached native image and offline/read-only/
 UID 65534/capability-drop/256MiB/64-PID policy remain fixed. Record permissions
 remain writable, with no hostile-actor immutability or rootless-engine claim.
 No Rust, hosted CI, provider or new guest execution is included.
+The separate 1,046-file independent CI/aggregate review is
+`/private/tmp/glue-owned-trace-aggregate-peer-review-5klfrdes`, manifest
+`448943bbf2a41f198913ab9200e8f248654c8f5b29489c14ddbcaf2a92776b0a`.
+It verifies both complete records and nested inventories, all source identities,
+all command/count/skip receipts and the source-selection repair. Both inputs'
+bytes and physical metadata stay unchanged. No suites are rerun by the reviewer.
 
 An independent streaming raw reader, separate tracing packet/checker, fresh
 post-SIP-reboot proof, reviewed trace source admission, actual kit construction

@@ -37,15 +37,16 @@ The same exclusive output, two identical signed builds, exact source closure,
 tool cleanup and final inventory rules apply. Installation, retention and an
 independent tracing receipt checker remain separate work.
 
-Legacy CLI, default helper policy, enabled-SIP admission, recipe bytes and
-registry stay unchanged. Refactoring the shared helper changes its source hash;
-the unchanged legacy source registry therefore correctly refuses that new
-checkout until a separate reviewed registration. No self-hash bypass or source
-registration is performed here; historical kits retain their exact bytes.
-The existing bootstrap-VM preparer/checker also keeps its literal helper parser
-SHA unchanged, so it refuses the refactored helper before reading kit inputs.
-That barrier needs a separate reviewed parser repin; this profile does not alter
-the fixed approved kit/proof or VM policy.
+The profile feature preserves the legacy CLI, default helper policy, enabled-SIP
+admission and recipe bytes. Its shared-helper refactor initially leaves the
+legacy source registry and VM parser literal stale, which correctly refuses
+construction/checking. The separate
+[source registration](../../../../docs/decisions/mvp-r02-owned-trace-inputs.md)
+updates six of the existing 34 default source pins and that exact parser literal,
+preserving both proofs, compile lists and kit03's fixed approval. The historical
+nontracing checker replay then passes with identical native results and unchanged
+input bytes/metadata. Historical kits keep their exact locks. This tracing
+registry remains empty; no tracing deployment is admitted by the default repin.
 
 Run `python3 -B test_build_kit.py -v` and the legacy
 `../bootstrap-kit/test_build_kit.py` controls. New checks use synthetic proof trees,

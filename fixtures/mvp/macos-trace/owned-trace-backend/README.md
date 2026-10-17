@@ -2,8 +2,10 @@
 
 This internal native libdtrace adapter implements `ts_operations` for the one
 owned context probe. It has no CLI, launch, privilege transition, GO, kill or
-signal operations. Neither the runner nor any kit, registry, VM packet or
-historical reader adopts it. Native calibration and full R02/M2 remain open.
+signal operations. The separately compiled tracing parent adopts it after READY;
+the ordinary nontracing build and historical reader keep their existing paths.
+The separate tracing kit profile remains unconfigured, with no admitted native
+kit or guest run. Native calibration and full R02/M2 remain open.
 
 After independently comparing complete READY and retaining the actual unreaped
 child, a trusted parent calls `otb_create` with its binding, original absolute
@@ -55,7 +57,7 @@ failures; `libdtrace_code` records actual libdtrace status, with its bounded
 message. `callback_error` is explicitly an adapter status mapping for the
 coordinator's callback convention and never POSIX provenance. Fault/drop raw
 diagnostics retain their own native fields. Counts do not replace the coordinator
-and future parent's strict bootstrap/reap/closure/promotion gates. Destroy only
+and the parent's strict bootstrap/reap/closure/promotion gates. Destroy only
 frees storage after resolved close or before any start; it performs no cleanup.
 
 Run `python3 -B test_owned_trace_backend.py -v` and optionally
