@@ -74,7 +74,11 @@ int ts_go_result(struct ts_session *, size_t confirmed_bytes, int operation_erro
 /* Explicit failed BIO result, including semantic/clock failures with errno0
  * and even all64 confirmed bytes. It consumes the same once-only result slot. */
 int ts_go_failed(struct ts_session *, size_t confirmed_bytes, int system_errno);
+/* Result reports are consumed once, even malformed errno or owner-observation
+ * failure. Reported0 means the actual close succeeded; negative errno is invalid
+ * and permanently leaves closure unresolved. These functions never retry close. */
 int ts_gate_close_result(struct ts_session *, int operation_error);
+int ts_gate_close_failed(struct ts_session *, int system_errno); /*explicit failure, errno0 allowed*/
 /* Called only after the parent's independent strict BW codec+EOF check. No
  * opaque prefix is decoded here. Failure retains the confirmed prefix count. */
 int ts_bootstrap_sealed(struct ts_session *);
@@ -90,6 +94,7 @@ int ts_close(struct ts_session *);
 /* The trusted parent confirms all its channels/writers/FDs and signal policy
  * resolved/restored. This declaration is not checked by the coordinator. */
 int ts_parent_close_result(struct ts_session *, int operation_error);
+int ts_parent_close_failed(struct ts_session *, int system_errno); /*explicit failure, errno0 allowed*/
 int ts_finalization_safe(const struct ts_session *); /*may be true for failure*/
 int ts_success_eligible(const struct ts_session *); /*additional prerequisite only*/
 #endif
