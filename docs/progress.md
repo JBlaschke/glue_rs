@@ -33,12 +33,16 @@ with regression controls. The repair is now integrated at `dec2488` on
 `codex/mvp-r02-bootstrap-mode-integration`:14 preparer and18 checker controls
 pass, with an independent review and60 additional exact-mode/type controls.
 A fresh packet from the unchanged kit passes separate rendered review and is
-staged unchanged. Its launch has reached the private guest authentication prompt;
-the failed packets remain unchanged. All four owned cases remain unverified. The full Darwin extraction
+staged unchanged. After private authentication, installation passes and all three
+payload signatures verify. The ordinary positive request helper then refuses
+its protected-directory observation before emitting bytes or starting any case.
+Separate bounded wrapper/request metadata records preserve that outcome while
+current deployment values are reobserved; the failed packets remain unchanged.
+All four owned cases remain unverified. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r02-bootstrap-mode-integration`.
+Documentation continues on `codex/mvp-r04-bootstrap-request-stop-status`.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

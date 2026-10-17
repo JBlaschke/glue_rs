@@ -120,7 +120,8 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
 | R04 | `codex/mvp-r04-bootstrap-restart-status` | `c36b711`, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted launch/reboot, second failed install and actual guest mode observations preserved |
 | R02 | `codex/mvp-r02-bootstrap-mode-guards` | `46d61f3` | Exact full BSD mode/type guards,14 preparer/18 checker controls; integrated as `dec2488` after decision `fabae45` |
-| R02 | `codex/mvp-r02-bootstrap-mode-integration` | branch tip, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation/review/staging; launch at private guest authentication, four-case results pending |
+| R02 | `codex/mvp-r02-bootstrap-mode-integration` | `409dc4b`, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation/review/staging; launch reached private guest authentication |
+| R04 | `codex/mvp-r04-bootstrap-request-stop-status` | branch tip, based on `409dc4b` | Packet03 installation/signatures pass; ordinary positive request refuses before output/cases; bounded metadata retained, current deployment reobservation pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -421,6 +422,54 @@ and all source remain unchanged. The reviewed no-argument launch reached its
 private guest authentication prompt in the SIP-enabled VM. Authentication and
 the four-case results remain pending. No new native success, tracing, extraction
 verdict, hosted run or public source publication is claimed.
+
+After the owner completed private authentication, packet03 returned to the guest
+shell without a normal-zero receipt or complete batch export. A separate
+ordinary-user metadata inspection completed to its final marker and preserved
+13 files at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-launch-stop-1ee4bbe2-20261017-01`,
+manifest `95b5168bf41425ea2d97db3f2dad94d25ccd731588c83a5c0fb32efd5c40bd88`.
+The batch records preflight0/install0, installation status0 and outer status1.
+Strict signature verification succeeds for all three payloads. The root0700
+stager and root0755 fixture prefix exist; all four native output directories
+and all case wrapper statuses/stderr are absent. SIP remains enabled with the
+same boot and ordinary ID/group observations. This proves progress past the
+repaired shell guards, without proving a native case or protected child closure.
+
+A second bounded ordinary-user inspection records only request-helper status,
+stderr and output metadata. Its8 files are at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-request-stop-1ee4bbe2-20261017-01`,
+manifest `e2067625d92dda64f37cb2f25b2b6034259a0e12001378e929e4a480c1517c16`.
+The positive helper returns1 with exact stderr
+`make-request: protected cwd observation or close failed`; its single-link
+ordinary0600 output is empty. Later request files/statuses/stderr are absent.
+The existing source therefore stops at the positive request's status guard,
+before size validation or any case. That diagnostic combines open, callback,
+metadata-policy and close failures; the exact underlying cause is not yet known.
+No request is regenerated, packet retried or native case payload read.
+The wrapper record's independent review is
+`/private/tmp/glue-packet03-stop-evidence-independent-review-v6qwuozt`, manifest
+`b3fa18f71422714f8f36f7e909e9df03a7f7a5632cb7fd017e0b66a15a042865`.
+The request record's independent review is
+`/private/tmp/glue-packet03-request-evidence-independent-review-ad7j6z_s`,
+manifest `665064e86767239936bd3b6059e4bf628fb7408c64bb59661642aa65af287c3a`.
+Their exact source and raw captures remain unchanged; all retained review hashes
+also verify independently at the integration root.
+The unchanged read-only deployment inspector then completed all six commands
+with status0 and returned `inspection_failed=0` to the guest shell. Its new
+28-file observation is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-Pf78Qtnu`,
+manifest `ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f`.
+The complete semantic metadata/IDs/groups remain valid, but current root/Data
+device is16777231, root FSID `[16777236,27]` and Data FSID `[16777231,27]`.
+The old catalog binds device16777230, root `[16777236,26]` and Data
+`[16777230,26]`. These current tuples necessarily reject that compiled catalog;
+the precise branch taken in the earlier helper remains a source-grounded
+inference rather than an instruction trace. Independent current-proof review
+and a separate append-only registration are in progress. A fresh build must
+bind the reviewed current tuples; no observation is normalized, old kit relabeled
+or runtime override introduced. The existing completed installation must be
+preserved separately before any future fresh-prefix installation.
 
 
 The credential primitive independently passes 14 native unprivileged controls
