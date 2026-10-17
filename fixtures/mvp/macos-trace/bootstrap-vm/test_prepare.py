@@ -3,6 +3,8 @@ import hashlib
 import importlib.util
 import os
 from pathlib import Path
+import re
+import shlex
 import stat
 import subprocess
 import sys
@@ -39,6 +41,50 @@ def fixture():
         if original != 'SHA256SUMS':
             data[original] = b'synthetic detached metadata; never a reviewed kit\n'
     return data, b'synthetic original inventory\n', result, observation()
+
+
+def mode_helpers():
+    # Only the two read-only predicates, never a generated root phase.
+    template = (HERE / 'root-stage.sh.in').read_text()
+    return '\n'.join(re.search(r'^' + name + r'\(\) \{\n.*?^\}', template,
+                               re.M | re.S).group() for name in ('directory', 'regular'))
+
+
+def inline_mode_predicates():
+    _, _, result, observed = fixture()
+    outer = vm.render(vm.make_plan(result, observed, '0123456789abcdef'))['outer.sh'].decode()
+    predicates = []
+    for line in outer.splitlines():
+        if '/bin/sh -c ' not in line:
+            continue
+        shim = shlex.split(line.split('/bin/sh -c ', 1)[1])[0]
+        for match in re.finditer(r'\[ "\$\((/usr/bin/stat -f ([^)]*))\)" = ([^ ]+) \]', shim):
+            fmt = shlex.split(match[2])[0]
+            if fmt.startswith('%u:'):
+                predicates.append((match.group(), fmt, match[3]))
+    return predicates
+
+
+# Model BSD stat's documented formats rather than assuming every format returns
+# the same value. Thus the old %Lp predicates fail these behavior controls.
+MODE_STAT = '''mode_stat() {
+    case "$2" in
+        %u:%p) printf '%s:%s\\n' "$MODEL_UID" "$MODEL_FULL" ;;
+        %u:%p:%l) printf '%s:%s:%s\\n' "$MODEL_UID" "$MODEL_FULL" "$MODEL_LINKS" ;;
+        %u:%Lp) printf '%s:%s\\n' "$MODEL_UID" "$MODEL_LOW" ;;
+        %u:%Lp:%l) printf '%s:%s:%s\\n' "$MODEL_UID" "$MODEL_LOW" "$MODEL_LINKS" ;;
+        *) return 2 ;;
+    esac
+}
+'''
+
+
+def modeled_predicate(source, argv, mode, uid=0, links=1):
+    script = ('set -eu; ' + MODE_STAT + source.replace('/usr/bin/stat', 'mode_stat'))
+    env = {'MODEL_UID': str(uid), 'MODEL_FULL': format(mode, 'o'),
+           'MODEL_LOW': format(mode & 0o777, 'o'), 'MODEL_LINKS': str(links)}
+    return subprocess.run(['/bin/sh', '-c', script, 'mode-control', *argv],
+                          env=env, capture_output=True, timeout=5)
 
 
 class PreparationTests(unittest.TestCase):
@@ -152,6 +198,111 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(done.stdout, b'reached' if wanted == 0 else b'')
         self.assertIn('request_digests_match "$STAGE/$C.request.bin" "$source" || return 2', template)
         self.assertIn("printf '%s\\n' \"$staged_hash\" > \"$STAGE/$C.input.sha256\"", template)
+
+    def test_inline_full_mode_predicates_preserve_sticky_type_and_failure_edges(self):
+        predicates = inline_mode_predicates()
+        self.assertEqual(len(predicates), 5)  # Bootstrap tmp, then both copies of the two script guards.
+        self.assertEqual({(fmt, expected) for _, fmt, expected in predicates},
+                         {('%u:%p', '0:41777'), ('%u:%p', '0:40700'),
+                          ('%u:%p:%l', '0:100500:1')})
+        for predicate, _, expected in predicates:
+            mode = int(expected.split(':')[1], 8)
+            variants = [(mode, 0, 1, True), (mode, 1, 1, False),
+                        (mode ^ 0o1000, 0, 1, False), (mode ^ 0o2000, 0, 1, False),
+                        (mode ^ 0o4000, 0, 1, False), (mode ^ 0o010, 0, 1, False),
+                        ((mode & 0o7777) | (stat.S_IFDIR if stat.S_ISREG(mode) else stat.S_IFREG), 0, 1, False)]
+            if stat.S_ISREG(mode):
+                variants.append((mode, 0, 2, False))
+            for actual, uid, links, wanted in variants:
+                with self.subTest(expected=expected, actual=oct(actual), uid=uid, links=links):
+                    done = modeled_predicate(predicate + ' || exit 2; printf reached', [], actual, uid, links)
+                    self.assertEqual(done.returncode, 0 if wanted else 2, done.stderr)
+                    self.assertEqual(done.stdout, b'reached' if wanted else b'')
+
+    def test_root_mode_helpers_reject_mode_type_owner_link_and_symlink_models(self):
+        helpers = mode_helpers()
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name).resolve();directory = root/'directory';directory.mkdir()
+            regular = root/'regular';regular.write_bytes(b'not executable\n')
+            link = root/'link';link.symlink_to(directory, target_is_directory=True)
+            for kind, path, modes in [('directory', directory, (0o40700, 0o40755)),
+                                      ('regular', regular, (0o100500, 0o100555, 0o100600))]:
+                for mode in modes:
+                    expected = '0:' + format(mode, 'o') + (':1' if kind == 'regular' else '')
+                    command = helpers + '\n' + kind + ' "$1" "$2" || exit 2; printf reached'
+                    for actual, uid, links, wanted in [(mode,0,1,True), (mode,1,1,False),
+                            (mode | 0o1000,0,1,False), (mode | 0o2000,0,1,False),
+                            (mode | 0o4000,0,1,False), (mode ^ 0o010,0,1,False),
+                            ((mode & 0o7777) | (stat.S_IFREG if kind == 'directory' else stat.S_IFDIR),0,1,False)]:
+                        with self.subTest(kind=kind, mode=oct(mode), actual=oct(actual), uid=uid):
+                            done = modeled_predicate(command, [str(path), expected], actual, uid, links)
+                            self.assertEqual(done.returncode, 0 if wanted else 2, done.stderr)
+                            self.assertEqual(done.stdout, b'reached' if wanted else b'')
+                    if kind == 'regular':
+                        self.assertEqual(modeled_predicate(command, [str(path), expected], mode, links=2).returncode, 2)
+            for kind, path, expected in [('directory', link, '0:40755'),
+                                         ('regular', directory, '0:100600:1'),
+                                         ('directory', regular, '0:40755')]:
+                done = modeled_predicate(helpers + '\n' + kind + ' "$1" "$2" || exit 2',
+                                         [str(path), expected], int(expected.split(':')[1], 8))
+                self.assertEqual(done.returncode, 2, done.stderr)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'requires native BSD stat')
+    def test_native_bsd_mode_helpers_discriminate_sticky_setid_and_regular_modes(self):
+        helpers = mode_helpers()
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name).resolve();directory = root/'directory';directory.mkdir()
+            regular = root/'regular';regular.write_bytes(b'not executable\n')
+            for kind, path, modes, accepted in [
+                    ('directory', directory, (0o700,0o755,0o777,0o1777), (0o700,0o755)),
+                    ('regular', regular, (0o500,0o555,0o600,0o1500), (0o500,0o555,0o600))]:
+                for mode in modes:
+                    os.chmod(path, mode)
+                    self.assertEqual(stat.S_IMODE(path.stat().st_mode), mode)
+                    native = subprocess.run(['/usr/bin/stat', '-f', '%u:%p:%Lp', str(path)],
+                                            capture_output=True, timeout=5, check=True).stdout
+                    full = (stat.S_IFDIR if kind == 'directory' else stat.S_IFREG) | mode
+                    self.assertEqual(native, f'{os.getuid()}:{full:o}:{mode & 0o777:o}\n'.encode())
+                    for wanted in accepted:
+                        expected = f'{os.getuid()}:{(full & ~0o7777) | wanted:o}' + (':1' if kind == 'regular' else '')
+                        command = helpers + '\n' + kind + ' "$1" "$2" || exit 2; printf reached'
+                        done = subprocess.run(['/bin/sh', '-c', command, 'native-mode', str(path), expected],
+                                              capture_output=True, timeout=5)
+                        with self.subTest(kind=kind, actual=oct(mode), wanted=oct(wanted)):
+                            self.assertEqual(done.returncode, 0 if mode == wanted else 2, done.stderr)
+                            self.assertEqual(done.stdout, b'reached' if mode == wanted else b'')
+            os.chmod(regular, 0o600);os.link(regular, root/'alias')
+            done = subprocess.run(['/bin/sh', '-c', helpers + '\nregular "$1" "$2" || exit 2',
+                                   'native-links', str(regular), f'{os.getuid()}:100600:1'],
+                                  capture_output=True, timeout=5)
+            self.assertEqual(done.returncode, 2, done.stderr)
+        # Darwin can clear set-ID bits on ordinary-user chmod. Observe the
+        # existing OS-owned set-ID control instead; never execute or modify it.
+        special = Path('/usr/bin/newgrp')
+        info = special.lstat()
+        self.assertTrue(stat.S_ISREG(info.st_mode))
+        self.assertEqual((info.st_uid, stat.S_IMODE(info.st_mode), info.st_nlink), (0, 0o4555, 1))
+        native = subprocess.run(['/usr/bin/stat', '-f', '%u:%p:%Lp', str(special)],
+                                capture_output=True, timeout=5, check=True)
+        self.assertEqual(native.stdout, b'0:104555:555\n')
+        done = subprocess.run(['/bin/sh', '-c', helpers + '\nregular "$1" "$2" || exit 2',
+                               'native-setid', str(special), '0:100555:1'],
+                              capture_output=True, timeout=5)
+        self.assertEqual(done.returncode, 2, done.stderr)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'requires native BSD stat and physical Data private/tmp')
+    def test_native_private_tmp_exact_rendered_guard_accepts_full_sticky_mode(self):
+        predicates = [predicate for predicate, _, _ in inline_mode_predicates()
+                      if '/System/Volumes/Data/private/tmp)' in predicate]
+        self.assertEqual(len(predicates), 1)
+        done = subprocess.run(['/bin/sh', '-c', predicates[0] + ' || exit 2; printf reached'],
+                              capture_output=True, timeout=5)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertEqual(done.stdout, b'reached')
+        # Demonstrate the actual historical bug, without running the old phase.
+        low = subprocess.run(['/usr/bin/stat', '-f', '%u:%Lp', '/System/Volumes/Data/private/tmp'],
+                             capture_output=True, timeout=5, check=True)
+        self.assertEqual(low.stdout, b'0:777\n')
 
     def test_derived_packet_exact_inventory_and_existing_output_untouched(self):
         values = fixture()

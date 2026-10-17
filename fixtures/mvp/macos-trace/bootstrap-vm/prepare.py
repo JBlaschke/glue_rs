@@ -178,13 +178,14 @@ def render(plan):
     identities = inline_guard('[ "$(/usr/bin/id -ru)" = 0 ]') + inline_guard('[ "$(/usr/bin/id -u)" = 0 ]')
     check = 'set -eu; ' + identities
     check += inline_guard('[ -d ' + shlex.quote(stage) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(stage) + ' ]')
-    check += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp ' + shlex.quote(stage) + ')" = 0:700 ]')
+    # BSD %p retains the file type and special bits; %Lp silently drops both.
+    check += inline_guard('[ "$(/usr/bin/stat -f %u:%p ' + shlex.quote(stage) + ')" = 0:40700 ]')
     check += inline_guard('[ -f ' + shlex.quote(script) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(script) + ' ]')
-    check += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp:%l ' + shlex.quote(script) + ')" = 0:500:1 ]')
+    check += inline_guard('[ "$(/usr/bin/stat -f %u:%p:%l ' + shlex.quote(script) + ')" = 0:100500:1 ]')
     check += inline_guard('[ "$(/usr/bin/shasum -a 256 ' + shlex.quote(script) + ')" = ' + shlex.quote(sha(root) + '  ' + script) + ' ]')
     values['ROOT_CHECK'] = shlex.quote(check + 'exec /bin/sh ' + shlex.quote(script) + ' "$1"')
     bootstrap = 'set -eu; umask 077; set -C; ' + identities
-    bootstrap += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp /System/Volumes/Data/private/tmp)" = 0:1777 ]')
+    bootstrap += inline_guard('[ "$(/usr/bin/stat -f %u:%p /System/Volumes/Data/private/tmp)" = 0:41777 ]')
     bootstrap += inline_guard('[ ! -e ' + shlex.quote(stage) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(stage) + ' ]')
     bootstrap += '/bin/mkdir -m 0700 ' + shlex.quote(stage) + '; /bin/chmod -N ' + shlex.quote(stage) + '; '
     source = plan['guest_packet'] + '/root-stage.sh'

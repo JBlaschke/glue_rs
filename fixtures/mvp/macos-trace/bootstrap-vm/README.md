@@ -49,6 +49,13 @@ writer then validates native typed admission metadata; the native controller
 rechecks the exact mount/ACL/profile and probe before its child attempt. The shell
 does not claim to reproduce that native filesec API before installation.
 
+Every numeric shell mode guard uses BSD `stat -f '%p'`, the full octal value
+including file type and special bits. Exact directory modes are `40700`,
+`40755`, or sticky private/tmp `41777`; regular modes are `100500`, `100555`,
+or `100600`, with their required owner and single-link count. `%Lp` would omit
+the sticky/set-ID bits and cannot validate these contracts. Physical/no-symlink
+checks remain separate. See [the mode-guard decision](../../../../docs/decisions/mvp-r02-bootstrap-vm-mode-guards.md).
+
 The four fixed cases are positive, simulated provider failure, denied cwd and
 trailing request LAST. Denied mode restoration is behind the known-closure gate;
 there is no EXIT trap that restores on uncertainty. Result presence alone or CLI2
@@ -68,8 +75,13 @@ The separate normal-zero outer run receipt is mandatory for later host checking.
 The checker must reject incomplete/failed gates before reading case payloads.
 
 Focused controls run with `python3 -B test_prepare.py -v`. They exercise only
-host parser/renderer/output boundaries and `sh -n`, never generated script
-execution, sudo, native payloads or VM operations. No privileged transition,
+host parser/renderer/output boundaries, `sh -n`, and extracted read-only mode
+predicates. Portable stat-format models retain type/special bits, owner and
+link count. Native macOS controls observe BSD stat on temporary ordinary-user
+objects, the existing OS-owned set-ID `newgrp` metadata, and physical Data
+private/tmp; they discriminate sticky1777 from777 and complete regular modes.
+They never execute generated phases, sudo, native payloads or VM operations.
+No privileged transition,
 kernel exec, tracing, extraction verdict or full R02/M2 acceptance is claimed.
 Syscall stalls/arbitrary descendants remain outside the native deadlines; no
 watchdog, retry or fabricated closure is introduced here.
