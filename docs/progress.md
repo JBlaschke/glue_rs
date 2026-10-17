@@ -70,14 +70,22 @@ pins match before/after/committed bytes. Coverage combines these focused results
 with the earlier 30-suite aggregate and raw-reader suite; no single 34-suite run
 or newer hosted result is claimed. An independent passive audit verifies the
 complete inventories, source closure and actual command/completion receipts.
+The separate SIM metadata predicate at `036d76f` retains literal unknown errors
+and wait/kill observations only after declared cleanup. It returns no SIM pass
+or calibration approval and performs no collection or file/VM operation. Its
+20 focused controls pass on both hosts at CI `783ff41`, with all 233 source pins
+matching before/after/committed bytes. Coverage for 35 configured suites combines
+the retained runs; no single 35-suite run is claimed. Separate passive source and
+CI/composition audits pass, with unchanged original inputs.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-trace-packet-cases-status`.
+Documentation continues on `codex/mvp-r04-trace-sim-status`.
 The updated public push request is fixed at `e2c728b` on
 `codex/mvp-r04-owned-trace-source-status`; it replaces the earlier `ae48aee`
 request and excludes this newer raw reader.
+It also excludes the later packet/case and SIM metadata follow-ups.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

@@ -150,7 +150,10 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-trace-cases` | `7ee2d0f`, `983b9e4`; integrated `fb790b7`, `e1db60e` | Pure complete positive/denied case consistency; 11 synthetic control groups; trusted caller provenance and SIM refusal |
 | R02 | `codex/mvp-r02-bootstrap-trace-vm` | `5bf1d81`, `db3ff37`, `5622f9e`, `be85b24`; integrated through `5f96d29` | Separate hard-disabled packet, checked operation status and exact closure gates; endpoint/pump/array regressions repaired |
 | V01 | `codex/mvp-v01-trace-packet-cases-ci` | `e40d33e` | Add exactly three packet/gate/case suites; 34 configured; focused 43 controls pass on each Mac/native offline Linux arm64 host |
-| R04 | `codex/mvp-r04-trace-packet-cases-status` | branch tip, based on `e40d33e` | Record integrated packet/case sources, focused controls and remaining native admission/calibration |
+| R04 | `codex/mvp-r04-trace-packet-cases-status` | `d00dda7`, `424a071`, based on `e40d33e` | Record integrated packet/case sources, focused controls and independent audit; remaining native admission/calibration |
+| R02 | `codex/mvp-r02-trace-sim-metadata` | `af74a56`, `8609046`; integrated `66d1b46`, `036d76f` | Pure metadata collection predicate; preserve unknown errors/wait/kill without SIM acceptance; no collector or activation |
+| V01 | `codex/mvp-v01-trace-sim-ci` | `783ff41` | Add one pure SIM suite; 35 configured; focused 20 controls pass on both native development hosts |
+| R04 | `codex/mvp-r04-trace-sim-status` | branch tip, based on `783ff41` | Record SIM source/controls and remaining native admission/calibration |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -937,6 +940,68 @@ packet activation and narrow SIM calibration remain prerequisites for native
 work. No actual kit/proof/export, guest, staging, sudo/SIP, publication or network
 operation belongs to these source changes. Kernel exec, full extraction/effect
 oracle, Darwin corpus/budgets, R02, M2 and durable evidence publication remain open.
+
+### Pure SIM diagnostic metadata
+
+The [SIM metadata decision](../decisions/mvp-r02-trace-sim-metadata.md) precedes
+source `8609046`, integrated as `036d76f`. This is a pure bounded bytes/status
+predicate, with no collector, CLI, renderer, file/raw/VM operation or activation.
+Exact schemas, types, array shapes, error namespaces and source-defined resource
+shapes must describe known reap/gate/signals/parent/backend closure. Failed
+create, allocated-but-unstarted and started/failed-start remain distinct; a
+configured-but-uninitialized session and backend-started/session-not-started
+clock failure are represented without inventing successful resource closure.
+Writer masks are fixed creation prefixes; any failed close refuses eligibility.
+Original bytes and all parsed fields are retained in frozen slotted structures.
+Actual wait/kill and unknown tracing/end/drain errors remain literal observations.
+Every returned SIM pass/calibration/exec/full-acceptance flag is false. Promotion,
+pending absence, invocation/outer status and physical copying remain future
+caller duties; producer declarations are not authenticated kernel evidence.
+
+The final 89-file component record is
+`/private/tmp/glue-trace-sim-metadata-controls-heuedd1h`, manifest
+`8198f197a4af0ed32b09007d3ad256d91596197bd439fa96f2315a5c759f2411`.
+All 34 source pins match integrated committed/current bytes. It retains the
+direct 20-group passing source-bound capture, with independently literal
+complete baselines before focused corruption. Earlier unbound draft streams
+remain explicitly superseded. Fixture review corrected empty-capture hashes,
+cleanup error propagation, init/start state, observer counts and native error
+messages; those passing drafts are not native compatibility evidence. The direct
+10-file test handoff is `/private/tmp/glue-trace-sim-tests-final-sgwga86y`, manifest
+`e8ca80091ecf4d3ebef6264965bbd1cb98f436eab93a870f39e0741db40f18f0`.
+All existing packet/checker/kit/legacy sources remain unchanged.
+
+The independent 45-file functional source/control peer review is
+`/private/tmp/glue-trace-sim-peer-review-mxjo1zzb`, manifest
+`494fd5fcc17748dac5c9e702463ffcdd338955888e3d6ac9799ca405560a4cc0`.
+It verifies every producer/direct-test payload, all 34 source identities and 17
+unchanged native contracts, exact resource shapes, source-grounded complete
+fixtures, 20 controls and the all-false/deep-freeze boundary. No test or reviewed
+module is imported/rerun. Original producer and source bytes/metadata remain
+unchanged. Root separately verifies the component, direct and peer inventories.
+
+CI `783ff41` adds one invocation; removing it restores `e40d33e` byte-for-byte.
+The focused 267-file record is
+`/private/tmp/glue-owned-trace-sim-portable-controls-20261017-01`, manifest
+`244dd431a0efb9dd6679bcea21eb7bd632f2b2121e27ed73ab8f8ca5083dc2a2`.
+Both actual outer commands and the two suite commands complete zero. Each Mac
+and native offline Linux arm64 host collects/passes 20 with no skips; all 233
+selected source pins match before/after snapshots, retained copies and committed
+`783ff41`. Only CI changes existing selected bytes relative to `e40d33e`, and four
+SIM files are added. Coverage composes the prior 454-control aggregate, raw16,
+packet/case43 and SIM20: 533 controls per host, Mac 527 pass/six skip and Linux
+492 pass/41 skip. No single 35-suite run, hosted/Rust result, provider/guest run,
+actual collection, proof/kit admission or R02/M2 closure follows.
+
+The compact 53-file independent CI/receipt/source-composition audit is
+`/private/tmp/glue-trace-sim-ci-peer-final-krtom3gd`, manifest
+`68663cc9e8363a68a081ee4dab304e55b8c72cb55081ce4d9af070a554c7b48a`.
+It verifies all 266 current payloads, both nested runs, 233 source identities,
+driver/CI deltas, exact method/command/completion receipts and all three basis
+references without rerunning tests. Its author excludes an independent
+functional verdict on the tests they wrote. Original input bytes and physical
+metadata remain unchanged. Partial source/basis manifests in this compact audit
+are clearly named references rather than incomplete nested evidence trees.
 
 
 The credential primitive independently passes 14 native unprivileged controls
