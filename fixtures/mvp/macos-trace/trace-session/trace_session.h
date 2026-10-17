@@ -91,10 +91,15 @@ int ts_begin_cleanup(struct ts_session *, uint64_t original_cleanup_deadline_ns)
 int ts_stop(struct ts_session *);
 int ts_drain(struct ts_session *);
 int ts_close(struct ts_session *);
-/* The trusted parent confirms all its channels/writers/FDs and signal policy
- * resolved/restored. This declaration is not checked by the coordinator. */
+/* The trusted parent confirms the attempt's bootstrap/target/trace channels,
+ * writers and admission FDs resolved, and its signal policy restored. This
+ * declaration is not checked by the coordinator. Final metadata authoring FDs
+ * and the held output directory belong to the caller's separate finalizer;
+ * that caller must close them before result promotion. Keep operations.context
+ * alive through this report's owner/clock callbacks. */
 int ts_parent_close_result(struct ts_session *, int operation_error);
 int ts_parent_close_failed(struct ts_session *, int system_errno); /*explicit failure, errno0 allowed*/
+/* Lifecycle prerequisite only; never permission to publish final metadata. */
 int ts_finalization_safe(const struct ts_session *); /*may be true for failure*/
 int ts_success_eligible(const struct ts_session *); /*additional prerequisite only*/
 #endif
