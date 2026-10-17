@@ -10,8 +10,14 @@ new feature branches; no release asset has been published.
 
 The latest follow-up pushed the approved controller source `3d500d4` and ran its
 nine portable jobs. Seven passed; both Linux baselines failed on the same
-signal-test compiler warning. A formatting-only local fix passes all 22 suites
-with native arm64 GCC 14 (331 passes, 25 skips); its hosted rerun is pending.
+signal-test compiler warning. The approved `78f4072` push fixes that warning;
+its run11 passes seven jobs but reaches a second Linux compiler failure.
+Native Ubuntu GCC13 reproduces a discarded `write()` result in the context
+probe. The minimal follow-up consumes it, exposes compiler stderr in tests and
+passes focused Mac controls. Native Ubuntu GCC13 completes all22 suites
+(334 passes,25 skips), with independent source-lock review.
+The original formatting-only fix separately passed all22 suites with native
+arm64 GCC14 (331 passes,25 skips). Both failed hosted records remain unchanged.
 The owned VM's read-only deployment inspection passed with SIP enabled and was
 independently reviewed. `codex/mvp-r02-bootstrap-reviewed-inputs` (`5200be9`)
 registers that exact proof and 34 reviewed build inputs; the adjusted kit suite
@@ -20,7 +26,7 @@ completed all 21 commands and produced byte-identical ad-hoc-signed programs in
 two builds, without executing them. The exact failed hosted run, local fix,
 proof and kit inventories are recorded in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-deployment-status`.
+Documentation continues on `codex/mvp-r04-bootstrap-ubuntu-ci-status`.
 Protected guest execution, complete Darwin extraction acceptance and M2 remain open.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,

@@ -51,6 +51,7 @@ The production source lock must deliberately advance to the integrated fix
 `863e3279cb701676cc90d32507f7513742abd695`. Exactly one of its 34 source hashes,
 `bootstrap-probe/context_probe.c`, changes. The deployment proof and other 33
 source bytes remain unchanged. Registration does not rebuild or reinterpret the
-already frozen kit02: that kit and its separate approved VM packet continue to
-identify their original `3d500d4` inputs, binaries and audits. A future builder run
+already frozen kit02: that kit retains its original `3d500d4` inputs, binaries
+and audits. A later VM packet derived from it must retain those identities; at
+this checkpoint no actual VM packet has been prepared or approved. A future builder run
 uses the new source lock and must produce its own new output and inventory.

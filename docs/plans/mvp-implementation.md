@@ -108,7 +108,10 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-bootstrap-controller-ci` | `3d500d4` | Approved public push; run `39019048941` passed seven of nine jobs; both Linux baselines failed on the same test-only compiler warning |
 | V01 | `codex/mvp-v01-bootstrap-hosted-fix` | `4eb0354`, integrated `7cfbac1` | Brace the signal test loop for modern GCC; native Linux arm64 GCC 14 runs all 22 suites: 331 passes/25 skips; patched hosted run pending |
 | R02 | `codex/mvp-r02-bootstrap-reviewed-inputs` | `37856ca`, `5200be9` | Register independently reviewed actual guest proof and 34 production/build sources; separate explicit empty-registry controls; kit suite passes 22 Mac/21 Linux plus one skip |
-| R04 | `codex/mvp-r04-bootstrap-deployment-status` | `this branch` | Record actual deployment inspection, configured reproducible kit and exact hosted failure; no protected guest execution or full Darwin acceptance |
+| R04 | `codex/mvp-r04-bootstrap-deployment-status` | `78f4072` | Record actual deployment inspection, configured reproducible kit and exact hosted failure; no protected guest execution or full Darwin acceptance |
+| V01 | `codex/mvp-v01-bootstrap-probe-gcc13` | `a805834`, integrated `863e327` | Consume best-effort diagnostic write result without retry; expose compiler failures; native Ubuntu GCC13 reproduction and focused Mac checks pass |
+| R02 | `codex/mvp-r02-bootstrap-ubuntu-inputs` | `df5fb63`, `d2d0d0a` | Deliberately advance one of 34 source hashes to `863e327`; actual proof and earlier kit unchanged; kit suite22 Mac passes and committed source/proof admission passes |
+| R04 | `codex/mvp-r04-bootstrap-ubuntu-ci-status` | `this branch` | Record failed run11 and the second compiler fix; no new guest execution or full Darwin acceptance |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -179,7 +182,8 @@ typed mount/ACL/identity observations; review manifest
 `d5a899e5659dde3f5ac02b6d7dad754204a85fafcfa906fd339e4935fb58e279`.
 The actual root/Data `st_dev` values match while their FSIDs differ. The policy
 compares the complete tuple; no observation was normalized to fit an assumption.
-The registry locks 34 production/build sources at `3d500d4` and this exact proof.
+The first registration at `5200be9` locks 34 production/build sources at
+`3d500d4` and this exact proof.
 Its independent registration-review manifest is
 `92d13cf6714249e5e42b62c7f3531f59ae6fc4505fb49e809294121b42f1d47e`.
 The updated kit suite passes 22 tests on Mac and 21 with one Darwin SDK skip on
@@ -205,6 +209,37 @@ The programs have not been executed or installed by the builder or reviewers.
 This checkpoint does not establish a privileged Darwin transition, kernel exec, extraction
 oracle, product corpus, performance budgets or M2. These newer source changes
 remain local pending separate publication approval.
+
+### Ubuntu GCC 13 follow-up
+
+The owner-approved deployment checkpoint `78f4072` was pushed unchanged and
+started [run 39020970722 (#11)](https://github.com/JBlaschke/glue_rs/actions/runs/39020970722).
+All seven macOS-baseline/Lua55/packaging jobs passed again. The two Linux
+baselines pass the earlier signal-test loop and then fail in context-probe
+compilation. The old test hid compiler stderr; the retained hosted record does
+not invent a diagnostic that was absent from its logs. Exact run metadata and
+all nine logs are `/private/tmp/glue-portable-bootstrap-deployment-39020970722-20261017`,
+manifest `f2f30d5facb0714731a59f8a24e692f1831c699c4fe5263a6e1f55cee2d7675a`.
+
+A separate native arm64 reproduction with cached Ubuntu GCC13.3.0 identifies
+`-Werror=unused-result` on the probe's best-effort error `write()`. The minimal
+fix consumes that return in a local `ssize_t`, preserving exactly one write and
+no retry or signal change. Compilation errors now include their captured
+stdout/stderr, with two focused diagnostic controls. Mac probe controls collect
+15:13 passes and two explicit skips. The current kit suite passes22 on Mac.
+The fixed-source native Ubuntu GCC13 run completes all22 portable Python suites:
+359 collected,334 passes and25 explicit skips. Exact logs/toolchain/commands,
+source-before/after and the patch are retained at
+`/private/tmp/glue-context-probe-hosted-repro-20261017`, manifest
+`dd98b1b37709d9626f7a5939744621004cdd57a6d6272eda29d1776c3f6c1dd6`.
+This covers the original fix commit `a805834`, byte-identical in the integrated
+`863e327`; the later one-source registry update has separate focused checks.
+The source registry advances exactly one hash, retaining the other33 and actual
+deployment proof; clean committed `locked_sources` and actual proof admission
+both pass. The independent one-source lock review has manifest
+`7497befbbe6651c465dbd1fe6903c8aac0f245aa4e098562938ad4e23ad094e4`.
+The earlier kit02 remains its original `3d500d4` artifact. Neither
+failed hosted run is relabeled successful; the corrected hosted run is pending.
 
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux
