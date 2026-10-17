@@ -47,8 +47,7 @@ install_file() {
 install() {
     # These protected existing ancestors are never chmod/chown/ACL-repaired.
     for parent in / /System /System/Volumes /System/Volumes/Data /System/Volumes/Data/Library; do
-        [ -d "$parent" ] && [ ! -L "$parent" ] || return 1
-        [ "$(/usr/bin/stat -f '%u' "$parent")" = 0 ] || return 1
+        directory "$parent" 0:755 || return 1
     done
     [ ! -e "$PREFIX" ] && [ ! -L "$PREFIX" ] || return 1
     /bin/mkdir -m 0700 "$PREFIX"

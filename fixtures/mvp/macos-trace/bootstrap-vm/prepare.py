@@ -121,6 +121,12 @@ def substitute(template, values):
     return template.encode()
 
 
+def inline_guard(command):
+    # POSIX set -e exempts nonlast AND-list operands. Every closed predicate
+    # needs its own explicit failure edge before a later privileged operation.
+    return command + ' || exit 2; '
+
+
 def render(plan):
     p = primitives()
     p.exact_keys(plan, ('schema', 'approval', 'build_id', 'catalog_sha256', 'artifacts', 'expected_ids', 'expected_groups',
@@ -169,21 +175,22 @@ def render(plan):
     values['ROOT_LIMIT'] = str(len(root) + 1)
     stage = plan['root_stage']
     script = stage + '/root-stage.sh'
-    check = 'set -eu; [ "$(/usr/bin/id -ru)" = 0 ] && [ "$(/usr/bin/id -u)" = 0 ]; '
-    check += '[ -d ' + shlex.quote(stage) + ' ] && [ ! -L ' + shlex.quote(stage) + ' ]; '
-    check += '[ "$(/usr/bin/stat -f %u:%Lp ' + shlex.quote(stage) + ')" = 0:700 ]; '
-    check += '[ -f ' + shlex.quote(script) + ' ] && [ ! -L ' + shlex.quote(script) + ' ]; '
-    check += '[ "$(/usr/bin/stat -f %u:%Lp:%l ' + shlex.quote(script) + ')" = 0:500:1 ]; '
-    check += '[ "$(/usr/bin/shasum -a 256 ' + shlex.quote(script) + ')" = ' + shlex.quote(sha(root) + '  ' + script) + ' ]; '
+    identities = inline_guard('[ "$(/usr/bin/id -ru)" = 0 ]') + inline_guard('[ "$(/usr/bin/id -u)" = 0 ]')
+    check = 'set -eu; ' + identities
+    check += inline_guard('[ -d ' + shlex.quote(stage) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(stage) + ' ]')
+    check += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp ' + shlex.quote(stage) + ')" = 0:700 ]')
+    check += inline_guard('[ -f ' + shlex.quote(script) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(script) + ' ]')
+    check += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp:%l ' + shlex.quote(script) + ')" = 0:500:1 ]')
+    check += inline_guard('[ "$(/usr/bin/shasum -a 256 ' + shlex.quote(script) + ')" = ' + shlex.quote(sha(root) + '  ' + script) + ' ]')
     values['ROOT_CHECK'] = shlex.quote(check + 'exec /bin/sh ' + shlex.quote(script) + ' "$1"')
-    bootstrap = 'set -eu; umask 077; set -C; '
-    bootstrap += '[ "$(/usr/bin/stat -f %u:%Lp /System/Volumes/Data/private/tmp)" = 0:1777 ]; '
-    bootstrap += '[ ! -e ' + shlex.quote(stage) + ' ] && [ ! -L ' + shlex.quote(stage) + ' ]; '
+    bootstrap = 'set -eu; umask 077; set -C; ' + identities
+    bootstrap += inline_guard('[ "$(/usr/bin/stat -f %u:%Lp /System/Volumes/Data/private/tmp)" = 0:1777 ]')
+    bootstrap += inline_guard('[ ! -e ' + shlex.quote(stage) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(stage) + ' ]')
     bootstrap += '/bin/mkdir -m 0700 ' + shlex.quote(stage) + '; /bin/chmod -N ' + shlex.quote(stage) + '; '
     source = plan['guest_packet'] + '/root-stage.sh'
-    bootstrap += '[ -f ' + shlex.quote(source) + ' ] && [ ! -L ' + shlex.quote(source) + ' ]; '
+    bootstrap += inline_guard('[ -f ' + shlex.quote(source) + ' ]') + inline_guard('[ ! -L ' + shlex.quote(source) + ' ]')
     bootstrap += '/usr/bin/head -c ' + str(len(root) + 1) + ' ' + shlex.quote(source) + ' > ' + shlex.quote(script) + '; '
-    bootstrap += '[ "$(/usr/bin/stat -f %z ' + shlex.quote(script) + ')" = ' + str(len(root)) + ' ]; '
+    bootstrap += inline_guard('[ "$(/usr/bin/stat -f %z ' + shlex.quote(script) + ')" = ' + str(len(root)) + ' ]')
     bootstrap += '/bin/chmod -N ' + shlex.quote(script) + '; /bin/chmod 0500 ' + shlex.quote(script) + '; '
     values['ROOT_BOOTSTRAP'] = shlex.quote(bootstrap + check + 'exec /bin/sh ' + shlex.quote(script) + ' install')
     values['EVIDENCE_LIST'] = '\n'.join(plan['evidence_files'])
