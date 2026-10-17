@@ -923,6 +923,14 @@ existing selected bytes; twelve packet/case files are added. Composing the prior
 accounts for 513 controls per host: Mac 507 pass/six skip; Linux 472 pass/41 skip.
 There is no single 34-suite run, newer hosted/Rust result or native provider run.
 
+The independent 312-file focused-control peer audit is
+`/private/tmp/glue-trace-packet-case-portable-peer-7mm2o57f`, manifest
+`fe0ce78de3f1be9303bb8c4b11cf1bf97f09ef38378ddd50e709cf11dab64fd0`.
+It verifies all current/basis inventories, 229 source identities, the exact CI
+and driver changes, six suite and two outer completion receipts, repository
+import/source-read closure and the stated composition without rerunning tools.
+All three original input trees retain identical bytes and physical metadata.
+
 SIP remains enabled in the VM. Fresh exact post-reboot proof, tracing source/proof
 admission, a reproducible signed kit, separate current-kit retention, reviewed
 packet activation and narrow SIM calibration remain prerequisites for native

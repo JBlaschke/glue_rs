@@ -68,7 +68,8 @@ CI `e40d33e` adds the three packet/gate/case suites. Their 43 controls pass on
 each Mac and native offline Linux arm64 host without skips. All 229 selected source
 pins match before/after/committed bytes. Coverage combines these focused results
 with the earlier 30-suite aggregate and raw-reader suite; no single 34-suite run
-or newer hosted result is claimed.
+or newer hosted result is claimed. An independent passive audit verifies the
+complete inventories, source closure and actual command/completion receipts.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
