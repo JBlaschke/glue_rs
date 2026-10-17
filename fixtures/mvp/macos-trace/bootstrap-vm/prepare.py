@@ -13,7 +13,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 PARSER = HERE.parent / 'bootstrap-kit/build_kit.py'
-PARSER_SHA = '5b9332b7d426037f7443eb61cdca0097116dee9610c35260d683f846709c04a9'
+PARSER_SHA = '440cdc2cadf5d86acae91e313c266b815d1c40130b4ce53d58a77e36b13fff48'
 # Unchanged reviewed ordinary inspector; no caller/environment override.
 INSPECTOR_PATH = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016/inspect-deployment'
 INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
