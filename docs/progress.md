@@ -1,12 +1,27 @@
 # Implementation progress
 
-## Compact MVP implementation — 16 October 2026
+## Compact MVP implementation — 17 October 2026
 
 The 26 cards have separate `codex/mvp-*` feature branches. The owner merged the
 integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
 [The task/compatibility ledger](plans/mvp-implementation.md) records all branches,
 executed target/runtime cells, commands and open evidence. Follow-up work uses
 new feature branches; no release asset has been published.
+
+The latest follow-up pushed the approved controller source `3d500d4` and ran its
+nine portable jobs. Seven passed; both Linux baselines failed on the same
+signal-test compiler warning. A formatting-only local fix passes all 22 suites
+with native arm64 GCC 14 (331 passes, 25 skips); its hosted rerun is pending.
+The owned VM's read-only deployment inspection passed with SIP enabled and was
+independently reviewed. `codex/mvp-r02-bootstrap-reviewed-inputs` (`5200be9`)
+registers that exact proof and 34 reviewed build inputs; the adjusted kit suite
+passes 22 Mac/21 Linux tests with one Linux skip. A fresh configured host build
+completed all 21 commands and produced byte-identical ad-hoc-signed programs in
+two builds, without executing them. The exact failed hosted run, local fix,
+proof and kit inventories are recorded in the
+[17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
+Documentation continues on `codex/mvp-r04-bootstrap-deployment-status`.
+Protected guest execution, complete Darwin extraction acceptance and M2 remain open.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

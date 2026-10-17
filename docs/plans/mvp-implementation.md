@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-16 October 2026. Product authority remains [the plan](../../PLAN.md),
+17 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -97,15 +97,18 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-request` | `9f30258`, `49b44cf` | Pure canonical request and complete READY comparison; 11 controls and two extra independent sanitizer groups; integrated as `50f52d5`, `d702927` |
 | R02 | `codex/mvp-r02-bootstrap-probe` | `aed1a3a`, `df062f1`, `53e9a1a`, `ac36669` | Fixed ordinary-user context self-report; 12 pure/13 native controls, actual failed root-regain check and independent raw report review; integrated through `885660b` |
 | R02 | `codex/mvp-r02-bootstrap-admission` | `41b75ec`, `3f6d388` | Parent-only protected physical path/ACL/root–Data profile, 15 controls and independent injected review; integrated as `e5e4b93`, `ead94f0`; native root positive unexecuted |
-| R02 | `codex/mvp-r02-bootstrap-inspector` | `a16feac`, `d2bd45d` | Ordinary-user read-only root/Data and kernel-identity observation; three controls and independent source/kit reviews; guest run pending unlock |
+| R02 | `codex/mvp-r02-bootstrap-inspector` | `a16feac`, `d2bd45d` | Ordinary-user read-only root/Data and kernel-identity observation; actual guest run and independent source/proof review passed on 17 October; SIP enabled |
 | R02 | `codex/mvp-r02-bootstrap-runner` | `093629b` through `7c50621` | Fixed compiled-catalog nontracing owned-probe controller; seven Mac/Linux controls, five sanitizer controls plus two exclusions; integrated through `6cc8a7d`; protected guest/root transition unexecuted |
-| R02 | `codex/mvp-r02-bootstrap-kit` | `d62964c` through `bbd82ca` | Guarded host-only kit builder and ordinary-user canonical request writer; 21 Mac/20 Linux passes plus one skip, independent codec/workflow reviews; integrated through `02495ac`; registry empty, configured build unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-kit` | `d62964c` through `bbd82ca` | Guarded host-only kit builder and ordinary-user canonical request writer; original controls and independent reviews; integrated through `02495ac`; configured build now completed in the reviewed-input follow-up below |
 | V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
 | V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
 | V01 | `codex/mvp-v01-darwin-descriptor-ci` | `a3edd97` | Add descriptor controls to portable CI; 213 collected controls; local follow-up, no hosted run yet |
 | V01 | `codex/mvp-v01-bootstrap-primitives-ci` | `2f087d5` | Add wire, endpoint and pipe-I/O controls to portable CI; 259 collected controls; unpublished earlier checkpoint, see latest controller CI follow-up |
 | V01 | `codex/mvp-v01-bootstrap-context-ci` | `7156e80` | Add signal/request/probe/admission/inspector controls; 328 collected controls; local follow-up, no hosted run |
-| V01 | `codex/mvp-v01-bootstrap-controller-ci` | `this branch` | Add runner/guarded-kit controls; 22 suites/356 controls; composed local coverage, no single full-driver or hosted run for this source |
+| V01 | `codex/mvp-v01-bootstrap-controller-ci` | `3d500d4` | Approved public push; run `39019048941` passed seven of nine jobs; both Linux baselines failed on the same test-only compiler warning |
+| V01 | `codex/mvp-v01-bootstrap-hosted-fix` | `4eb0354`, integrated `7cfbac1` | Brace the signal test loop for modern GCC; native Linux arm64 GCC 14 runs all 22 suites: 331 passes/25 skips; patched hosted run pending |
+| R02 | `codex/mvp-r02-bootstrap-reviewed-inputs` | `37856ca`, `5200be9` | Register independently reviewed actual guest proof and 34 production/build sources; separate explicit empty-registry controls; kit suite passes 22 Mac/21 Linux plus one skip |
+| R04 | `codex/mvp-r04-bootstrap-deployment-status` | `this branch` | Record actual deployment inspection, configured reproducible kit and exact hosted failure; no protected guest execution or full Darwin acceptance |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -116,7 +119,8 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
 | R04 | `codex/mvp-r04-credential-hosted-ci` | `5567bcd` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
 
-Portable CI now invokes 22 Python suites collecting 356 controls. Local coverage
+At the `3d500d4` checkpoint, portable CI invokes 22 Python suites collecting
+356 controls. Its earlier local coverage
 joins the frozen 20-suite run with separately executed final runner (7) and kit
 (21) suites, verifying 104 source/data/decision pins and exact current CI argv.
 This is composed coverage, not a single 22-suite driver run or a complete portable
@@ -146,8 +150,55 @@ both native hosts. Root review is retained at
 confirmed-prefix checks never turn pipe EOF into exec-success proof, and a
 failed GO write must be treated as possibly delivered. Protected native controller
 execution and collector integration remain open.
-The hosted nine-job run above covers the earlier `64a4dd2` source; these
-follow-ups have not been pushed or checked on hosted runners.
+The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
+`3d500d4` run and its two Linux failures are recorded separately below.
+
+## 17 October: deployment, configured kit and hosted follow-up
+
+The owner-approved `3d500d4a607ef5c5ed5cc907f2a12cacd2c658e8` was pushed unchanged to
+`codex/mvp-v01-bootstrap-controller-ci`. The superseded `2f087d5` request did not
+produce a duplicate push/run. [Run 39019048941](https://github.com/JBlaschke/glue_rs/actions/runs/39019048941)
+passed macOS baseline and all six Lua55/packaging jobs. Both Linux baselines
+failed at the same signal test loop because GCC treats its indentation as an
+error. The retained run remains failed; the formatting-only fix changes no
+production source. Native arm64 GCC 14.2.1 reproduces the warning before the fix
+and then passes all 22 suites (331 passes, 25 skips). This is local fix evidence,
+not a successful patched hosted run. Exact failed CI metadata/logs are retained at
+`/private/tmp/glue-portable-bootstrap-controller-39019048941-20261017`, manifest
+`69083e6ea605e3f5b45c5167563c2c68484ee8223e907af8357748cc7f42e0ac`.
+Fix evidence is `/private/tmp/glue-bootstrap-hosted-fix-native-20261017`, manifest
+`ba7e4474d2fd0d4400c08099175a0b2679c688d28f59721a5a2d565414009d48`.
+
+The read-only ordinary-user inspector completed all six commands in the owned
+VM: binary hash, strict signature, SIP, OS, kernel and actual observation.
+SIP remains enabled. Its 27 indexed payloads are retained at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-A8mkN4hy`,
+manifest `ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a`.
+Independent review verifies the original bytes, six-source provenance and full
+typed mount/ACL/identity observations; review manifest
+`d5a899e5659dde3f5ac02b6d7dad754204a85fafcfa906fd339e4935fb58e279`.
+The actual root/Data `st_dev` values match while their FSIDs differ. The policy
+compares the complete tuple; no observation was normalized to fit an assumption.
+The registry locks 34 production/build sources at `3d500d4` and this exact proof.
+Its independent registration-review manifest is
+`92d13cf6714249e5e42b62c7f3531f59ae6fc4505fb49e809294121b42f1d47e`.
+The updated kit suite passes 22 tests on Mac and 21 with one Darwin SDK skip on
+native Linux arm64. No aggregate full-driver count is claimed for that update.
+
+The first configured build stopped when the sandbox denied Clang temporary-file
+access. Its directory remains an explicitly incomplete failure without a final
+inventory. A fresh build with local tool access completed with CLI exit zero:
+`/private/tmp/glue-bootstrap-native-kit-20261017-02`, manifest
+`098b758fe740d61efccd2ef34d3fe8cf00caba82e281dbc752e419e7a973995c`.
+All 21 recorded tool commands succeeded. Two separate builds of each of the three
+ad-hoc-signed programs have identical bytes. Build ID is
+`a75d54bba97103ec8b15dd7be7beb5b8eb23de5bfdda624ad2fcd9f224ab84d5`.
+The catalog binds the actual observed root/Data tuples and signed probe identity.
+The programs have not been executed or installed by the builder. This checkpoint
+does not establish a privileged Darwin transition, kernel exec, extraction
+oracle, product corpus, performance budgets or M2. These newer source changes
+remain local pending separate publication approval.
+
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux
 forked-child transition to UID/GID 65534 and groups `[65534]` preserves parent
