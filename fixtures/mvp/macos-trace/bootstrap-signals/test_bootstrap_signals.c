@@ -135,7 +135,8 @@ static int policy(void) {
  unsigned k=0;for(int n=1;n<=31;n++) if(n!=SIGKILL && n!=SIGSTOP) { CHECK(b.out[20+4*k]==0 && b.out[23+4*k]==n);k++; }
  CHECK(b.before==0xa5 && b.after==0xa5);s.tag=0;
  CHECK(bs_policy_bytes(&s,b.out,&used,&e)==-1 && used==0);
- for(size_t i=0;i<sizeof(b.out);i++) CHECK(b.out[i]==0);return 0;
+ for(size_t i=0;i<sizeof(b.out);i++) { CHECK(b.out[i]==0); }
+ return 0;
 }
 #ifdef __APPLE__
 static double now(void) { struct timespec t;if(clock_gettime(CLOCK_MONOTONIC,&t))return -1;return (double)t.tv_sec+(double)t.tv_nsec/1e9; }
