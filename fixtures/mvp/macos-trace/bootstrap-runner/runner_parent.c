@@ -22,10 +22,18 @@ static int child_ends(struct nr_attempt *a) {
  * consumes ownership; never signal it again. ECHILD also forbids later signals. */
 static int wait_once(struct nr_attempt *a) {
  int status=0;pid_t n=waitpid(a->child,&status,WNOHANG);int saved=errno;
- if(n==a->child){a->reaped=1;a->wait_status=status;return 1;}
+ if(n==a->child){a->reaped=1;a->wait_status=status;
+#ifdef GLUE_OWNED_TRACING
+  nr_trace_child_result(a,0,status);
+#endif
+  return 1;}
  if(n==0)return 0;
  if(n==-1 && saved==EINTR)return 0;
- if(n==-1 && saved==ECHILD){a->lost_child=1;return nr_fail(a,NR_WAIT,NR_LOST_CHILD,saved,-1);}
+ if(n==-1 && saved==ECHILD){a->lost_child=1;
+#ifdef GLUE_OWNED_TRACING
+  nr_trace_child_result(a,1,0);
+#endif
+  return nr_fail(a,NR_WAIT,NR_LOST_CHILD,saved,-1);}
  return nr_fail(a,NR_WAIT,NR_SYSCALL,n==-1?saved:EIO,-1);
 }
 static int wait_until(struct nr_attempt *a,struct bio_time deadline) {
@@ -35,6 +43,10 @@ static int wait_until(struct nr_attempt *a,struct bio_time deadline) {
   if(nr_before(a,deadline,NR_WAIT))return -1;
   int rc=wait_once(a);
   if(nr_before(a,deadline,NR_WAIT))return -1;
+#ifdef GLUE_OWNED_TRACING
+  int pumped=nr_trace_pump(a,a->trace.cleanup_attempted?TS_CLEANUP:TS_WAITING);
+  if(pumped && !a->trace.cleanup_attempted)return -1;
+#endif
   if(rc)return rc>0?0:-1;
   struct timespec nap={0,1000000};
   if(nanosleep(&nap,NULL) && errno!=EINTR)return nr_fail(a,NR_WAIT,NR_SYSCALL,errno,-1);
@@ -73,44 +85,98 @@ int nr_execute(struct nr_attempt *a) {
  a->ready_fault=br_ready_compare(&a->request,&expected,&a->ready,&be);
  if(a->ready_fault!=BR_OK)return nr_fail(a,NR_READY,NR_MISMATCH,0,(int)be.field);
  a->ready_matched=1;
+#ifdef GLUE_OWNED_TRACING
+ if(nr_trace_start(a))return -1;
+#endif
  if(nr_before(a,a->deadline,NR_GO))return -1;
  if(a->request.release_action==BR_SEND_GO) {
   uint8_t go[BW_GO_SIZE];if(bw_go_encode(&binding,go)!=BW_OK)return nr_fail(a,NR_GO,NR_PROTOCOL,0,-1);
+#ifdef GLUE_OWNED_TRACING
+  if(nr_trace_claim_go(a))return -1;
+  a->go_attempted=1;
+  int written=bio_write_record_observed(a->gate[1],go,sizeof(go),a->deadline,bio_native_operations(),&a->trace.observer,&a->go_result,&a->go_error);
+  if(written)(void)nr_fail(a,NR_GO,NR_HELPER,a->go_error.system_errno,(int)a->go_error.reason);
+  int reported=nr_trace_go_result(a,written);
+  int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;a->go_closed=!closed;
+  if(nr_trace_gate_result(a,closed,close_errno))reported=-1;
+  if(written || reported || closed)return -1;
+#else
   a->go_attempted=1;
   int written=bio_write_record(a->gate[1],go,sizeof(go),a->deadline,bio_native_operations(),&a->go_result,&a->go_error);
   int closed=nr_close_owned(a,&a->gate[1],NR_GO);a->go_closed=1;
   if(written)return nr_fail(a,NR_GO,NR_HELPER,a->go_error.system_errno,(int)a->go_error.reason);
   if(closed)return -1;
+#endif
  } else {
+#ifdef GLUE_OWNED_TRACING
+  int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;a->go_closed=!closed;
+  int reported=nr_trace_gate_result(a,closed,close_errno);
+  if(closed || reported)return -1;
+#else
   if(nr_close_owned(a,&a->gate[1],NR_GO))return -1;
   a->go_closed=1;
+#endif
  }
+#ifdef GLUE_OWNED_TRACING
+ do {rc=nr_status_next_observed(&a->stream,a->status[0],a->deadline,bio_native_operations(),&a->trace.observer);}while(rc==0);
+ if(rc<0 || a->stream.end!=BW_END_ATTEMPT_WITHOUT_REPORTED_EXEC_ERROR) {
+  (void)nr_fail(a,NR_STATUS,rc<0?NR_PROTOCOL:a->stream.wire.has_reported_error?NR_REPORTED:NR_INCOMPLETE,0,-1);
+  nr_trace_bootstrap_result(a,0);return -1;
+ }
+ nr_trace_bootstrap_result(a,1);
+ if(a->error.stage!=NR_NONE)return -1;
+#else
  do {rc=nr_status_next(&a->stream,a->status[0],a->deadline,bio_native_operations());}while(rc==0);
  if(rc<0)return nr_fail(a,NR_STATUS,NR_PROTOCOL,0,-1);
  if(a->stream.end!=BW_END_ATTEMPT_WITHOUT_REPORTED_EXEC_ERROR)
   return nr_fail(a,NR_STATUS,a->stream.wire.has_reported_error?NR_REPORTED:NR_INCOMPLETE,0,-1);
+#endif
  if(wait_until(a,a->deadline))return -1;
  if(!WIFEXITED(a->wait_status) || WEXITSTATUS(a->wait_status)!=0)return nr_fail(a,NR_WAIT,NR_CHILD_STATUS,0,-1);
  return 0;
 }
 void nr_cleanup(struct nr_attempt *a) {
  struct nr_error original=a->error;a->error=(struct nr_error){NR_NONE,NR_NO_ERROR,0,0};
+#ifdef GLUE_OWNED_TRACING
+ nr_trace_begin_cleanup(a);
+#endif
  if(!a->ownership_uncertain) {
+#ifdef GLUE_OWNED_TRACING
+  if(a->gate[1]>=0) {
+   int closed=nr_close_owned(a,&a->gate[1],NR_CLEANUP);int close_errno=closed?errno:0;a->go_closed=!closed;
+   (void)nr_trace_gate_result(a,closed,close_errno);
+  } else if(a->trace.session_present && !a->trace.session.gate_close_seen) {
+   (void)nr_trace_gate_result(a,1,0);
+  }
+#else
   if(nr_close_owned(a,&a->gate[1],NR_CLEANUP)){}a->go_closed=1;
+#endif
   if(a->forked && !a->reaped && !a->lost_child) {
    int observed=wait_once(a);
    if(observed==0) {
+#ifdef GLUE_OWNED_TRACING
+    if(!nr_trace_claim_kill(a)) {
+#endif
     a->kill_attempted=1;
     if(kill(a->child,SIGKILL) && errno!=ESRCH)nr_fail(a,NR_CLEANUP,NR_SYSCALL,errno,-1);
+#ifdef GLUE_OWNED_TRACING
+    }
+    if(a->trace.cleanup_valid)(void)wait_until(a,a->trace.cleanup_deadline);
+    else (void)wait_once(a); /* No new budget after a failed clock. */
+#else
     struct bio_time cleanup;
     if(!nr_deadline(a,(unsigned)a->request.cleanup_ms,&cleanup))
      (void)wait_until(a,cleanup);
+#endif
    }
   }
   (void)child_ends(a);
   for(unsigned i=0;i<2;i++){(void)nr_close_owned(a,&a->gate[i],NR_CLEANUP);(void)nr_close_owned(a,&a->status[i],NR_CLEANUP);}
   for(size_t i=0;i<a->admission.owned_count;i++)(void)nr_close_owned(a,&a->admission.components[i].fd,NR_CLEANUP);
  }
+#ifdef GLUE_OWNED_TRACING
+ nr_trace_close_backend(a);
+#endif
  if(a->signals_initialized) {
   a->signals_restored=1;
   if(bs_restore_parent(&a->signals,&a->signal_restore_error))nr_fail(a,NR_CLEANUP,NR_HELPER,a->signal_restore_error.system_errno,(int)a->signal_restore_error.stage);
@@ -157,6 +223,9 @@ int nr_native_run_once(const char *request_path,const char *output_path) {
   if(nr_finish_outputs(&a))return 2;
   return a.error.stage==NR_NONE&&a.probe_matched?0:1;
  }
+#ifdef GLUE_OWNED_TRACING
+ (void)nr_trace_parent_closed(&a,1);
+#endif
  return 2;
 #endif
 }

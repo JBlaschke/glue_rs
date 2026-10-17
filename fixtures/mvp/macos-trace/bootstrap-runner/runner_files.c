@@ -10,6 +10,13 @@
 #ifdef __APPLE__
 #include <sys/stdio.h>
 #endif
+#ifdef GLUE_OWNED_TRACING
+#define NR_RECEIPT_SCHEMA "glue-owned-traced-bootstrap-diagnostic-v1"
+#define NR_RECEIPT_TRACING "true"
+#else
+#define NR_RECEIPT_SCHEMA "glue-owned-bootstrap-diagnostic-v1"
+#define NR_RECEIPT_TRACING "false"
+#endif
 static int write_all(struct nr_attempt *a,int fd,const uint8_t *p,size_t n,enum nr_stage stage) {
  while(n) {ssize_t r=write(fd,p,n);if(r<=0)return nr_fail(a,stage,NR_SYSCALL,r<0?errno:EIO,-1);p+=(size_t)r;n-=(size_t)r;}
  return 0;
@@ -130,7 +137,13 @@ static int capture(struct nr_attempt *a,const char *name,const struct stat *expe
 static void hex(const uint8_t *p,size_t n,char *out) {static const char h[]="0123456789abcdef";for(size_t i=0;i<n;i++){out[2*i]=h[p[i]>>4];out[2*i+1]=h[p[i]&15];}out[2*n]=0;}
 int nr_finish_outputs(struct nr_attempt *a) {
  if(a->output_fd<0 || !a->output_path[0] || a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped) ||
-    (a->signals_initialized&&!a->signals_restored))return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+    (a->signals_initialized&&!a->signals_restored)) {
+  (void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#ifdef GLUE_OWNED_TRACING
+  (void)nr_trace_parent_closed(a,1);
+#endif
+  return -1;
+ }
  uint8_t stdout_bytes[NP_REPORT_SIZE],stderr_byte[4096],stdout_sha[32]={0},stderr_sha[32]={0},status_sha[32]={0};
  size_t out_n=0,err_n=0;
  int stdout_valid=0,stderr_valid=0;
@@ -141,7 +154,12 @@ int nr_finish_outputs(struct nr_attempt *a) {
  }
  /* A capture-reader close can fail AFTER the entry guard. Do not create or
   * promote any further result metadata with ambiguous resource resolution. */
- if(a->close_failed)return -1;
+ if(a->close_failed){
+#ifdef GLUE_OWNED_TRACING
+  (void)nr_trace_parent_closed(a,1);
+#endif
+  return -1;
+ }
  if(stdout_valid && stderr_valid && a->error.stage==NR_NONE) {
   struct np_report report;
   a->probe_fault=np_report_decode(stdout_bytes,out_n,a->request_sha,&report);
@@ -150,8 +168,25 @@ int nr_finish_outputs(struct nr_attempt *a) {
    nr_fail(a,NR_PROBE,NR_MISMATCH,0,(int)a->probe_fault);
   else a->probe_matched=1;
  }
- if(nr_write_new(a,"status.bin",a->stream.raw,a->stream.used))return -1;
- if(nr_sha_bytes(a->stream.raw,a->stream.used,status_sha))return nr_fail(a,NR_FINALIZE,NR_HELPER,0,-1);
+ int status_failed=nr_write_new(a,"status.bin",a->stream.raw,a->stream.used);
+ if(!status_failed && nr_sha_bytes(a->stream.raw,a->stream.used,status_sha))status_failed=nr_fail(a,NR_FINALIZE,NR_HELPER,0,-1);
+ if(status_failed){
+#ifdef GLUE_OWNED_TRACING
+  (void)nr_trace_parent_closed(a,1);
+#endif
+  return -1;
+ }
+#ifdef GLUE_OWNED_TRACING
+ int unresolved=a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped);
+ for(unsigned i=0;i<5;i++)if(a->sources[i]>=0)unresolved=1;
+ for(unsigned i=0;i<2;i++)if(a->gate[i]>=0 || a->status[i]>=0)unresolved=1;
+ for(size_t i=0;i<a->endpoints.owned_count;i++)if(a->endpoints.copies[i]>=0)unresolved=1;
+ for(size_t i=0;i<a->admission.owned_count;i++)if(a->admission.components[i].fd>=0)unresolved=1;
+ if(a->signals_initialized && (!a->signals_restored || !a->signals.pipe_restored || !a->signals.mask_restored))unresolved=1;
+ if(nr_trace_parent_closed(a,unresolved))return -1;
+ if(!nr_trace_success(a))(void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+ if(nr_trace_write_sidecar(a))return -1;
+#endif
  char request_h[65],catalog_h[65],policy_h[65],status_h[65],stdout_h[65],stderr_h[65],source_h[65],recipe_h[65],probe_h[65];
  hex(a->request_sha,32,request_h);hex(a->catalog_sha,32,catalog_h);hex(a->policy_sha,32,policy_h);hex(status_sha,32,status_h);
  hex(stdout_sha,32,stdout_h);hex(stderr_sha,32,stderr_h);hex(a->catalog->runner_static_sources_sha256,32,source_h);
@@ -164,7 +199,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
  char json[8192];
  const struct bw_status *ce=&a->stream.wire.reported_error;
  int n=snprintf(json,sizeof(json),
-  "{\"schema\":\"glue-owned-bootstrap-diagnostic-v1\",\"tracing\":false,\"exec_proved\":false,\"full_acceptance\":false,\"identity_policy\":\"request-declarations-compared-to-observations\","
+  "{\"schema\":\"" NR_RECEIPT_SCHEMA "\",\"tracing\":" NR_RECEIPT_TRACING ",\"exec_proved\":false,\"full_acceptance\":false,\"identity_policy\":\"request-declarations-compared-to-observations\","
   "\"consistent_owned_probe\":%s,\"controller_pid\":%ld,\"child_pid\":%ld,"
   "\"parent_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
   "\"cleanup_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
@@ -189,6 +224,13 @@ int nr_finish_outputs(struct nr_attempt *a) {
   a->signals.prepared?"true":"false",a->signals_restored?"true":"false",a->signals.pipe_restored?"true":"false",a->signals.mask_restored?"true":"false",a->signal_restore_error.stage,a->signal_restore_error.reason,a->signal_restore_error.system_errno,
   request_h,catalog_h,policy_h,status_h,stdout_h,stderr_h,probe_h,source_h,recipe_h,stdout_valid?"true":"false",stderr_valid?"true":"false",out_n,err_n);
  int rc=0;if(n<0 || (size_t)n>=sizeof(json))rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
+#ifdef GLUE_OWNED_TRACING
+ if(!rc) {
+  int extra=snprintf(json+(size_t)n-2,sizeof(json)-(size_t)n+2,",\"trace_sidecar\":\"trace.json\",\"trace_finalization_safe\":true,\"trace_success_eligible\":%s}\n",nr_trace_success(a)?"true":"false");
+  if(extra<0 || (size_t)extra>=sizeof(json)-(size_t)n+2)rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
+  else n=n-2+extra;
+ }
+#endif
  if(!rc)rc=write_all(a,pending,(const uint8_t*)json,(size_t)n,NR_FINALIZE);
  if(nr_close_owned(a,&pending,NR_FINALIZE))rc=-1;
  if(rc)return -1;
