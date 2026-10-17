@@ -30,6 +30,9 @@ preflight precedes authentication in the outer template. Full BSD type/mode,
 special-bit, owner, single-link, size/hash, physical path and strict-signature
 checks guard trusted destinations; no old prefix or arbitrary command is
 repaired or reused. Environments and NUL argv are explicit.
+Read-only command captures must return success before their expected bytes are
+compared. A failed operation that prints the expected bytes is still a failure;
+typed array counts use positive successful reads rather than negative lookups.
 
 `gates.py` is a pure small metadata gate, **not an offline checker or raw trace
 validator**. It generates the same typed predicates and identity/deadline

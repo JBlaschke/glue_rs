@@ -112,8 +112,11 @@ def predicates(case):
         trace[error + '.message_hex'] = ''
     for key in ('stage', 'reason', 'errno', 'component', 'metadata_step'):
         result['helpers.admission.' + key] = 0
-    for key in ('stage', 'reason', 'errno', 'role', 'fd'):
+    for key in ('stage', 'reason', 'errno'):
         result['helpers.endpoints.' + key] = 0
+    # te_prepare_owned_sources clears to explicit sentinels, not a zero error
+    # struct; runner_files serializes the actual role/fd fields unchanged.
+    result.update({'helpers.endpoints.role': 5, 'helpers.endpoints.fd': -1})
     for key in ('stage', 'reason', 'errno'):
         result['helpers.signal_prepare.' + key] = 0
     for i, name in enumerate(BACKEND_FILES):
@@ -172,8 +175,8 @@ def relations(case):
     rel += [('range', 'trace', key, low, high) for key, low, high in (
         ('session.attempt_deadline_ns', 1, U64), ('session.cleanup_deadline_ns', 1, U64),
         ('backend.original_attempt_deadline_ns', 1, U64), ('backend.cleanup_deadline_ns', 1, U64),
-        ('session.last_ns', 0, U64), ('session.total_pumps', 1, 65536),
-        ('session.pumps.0', 1, 65536), ('session.pumps.1', 0, 65536), ('session.pumps.2', 0, 65536),
+        ('session.last_ns', 0, U64), ('session.total_pumps', 2, 65536),
+        ('session.pumps.0', 1, 65536), ('session.pumps.1', 1, 65536), ('session.pumps.2', 0, 0),
         ('session.events', 4, 1000000), ('backend.events', 3, 1000000),
         ('backend.raw_bytes', 1, 134217728), ('backend.inventory_bytes', 1, 1048576),
         ('backend.inventory_probes', 17, 8192), ('backend.expected_matches', 17, 8192),
@@ -363,8 +366,9 @@ gate_cleanup_remaining() {
 def shell_checks():
     """Fixed shell checks with injected bounded metadata reader primitives.
 
-    meta_value(which,key,type), meta_type(which,key,type), meta_absent(which,key),
-    meta_expect(which,key,type,expected); $native is the observed CLI status.
+    meta_value(which,key,type), meta_expect(which,key,type,expected);
+    $native is the observed CLI status. Typed raw array reads return their
+    element count; their operation must succeed before comparing that count.
     Trusted variables: expected_request_sha256 and expected_catalog_sha256.
     No raw read, mode change, external helper or generated phase is emitted.
     """
@@ -383,8 +387,9 @@ def shell_checks():
                 text = ('true' if value else 'false') if type(value) is bool else str(value)
                 lines.append('    meta_expect ' + which + ' ' + shlex.quote(key) + ' ' + kind + ' ' + shlex.quote(text) + ' || return 2')
         for key, length in arrays():
-            lines.append('    meta_type trace ' + key + ' array || return 2')
-            lines.append('    meta_absent trace ' + key + '.' + str(length) + ' || return 2')
+            # A failed index extraction cannot establish absence. A positively
+            # successful typed array-count observation establishes exact shape.
+            lines.append('    meta_expect trace ' + key + ' array ' + str(length) + ' || return 2')
         for row in relations(case):
             op, *args = row
             if op == 'literal':
