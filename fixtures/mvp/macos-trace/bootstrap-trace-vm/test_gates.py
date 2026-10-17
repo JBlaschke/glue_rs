@@ -1,5 +1,7 @@
 """Pure metadata and standalone injected shell gates; no generated phase runs."""
 import copy
+from pathlib import Path
+import re
 import shlex
 import subprocess
 import unittest
@@ -27,7 +29,7 @@ def fixture():
         parent_error=dict(stage=0, reason=0, errno=0, detail=0),
         cleanup_error=dict(stage=0, reason=0, errno=0, detail=0),
         helpers=dict(admission=dict(stage=0, reason=0, errno=0, component=0, metadata_step=0),
-            endpoints=dict(stage=0, reason=0, errno=0, role=0, fd=0),
+            endpoints=dict(stage=0, reason=0, errno=0, role=5, fd=-1),
             signal_prepare=dict(stage=0, reason=0, errno=0)),
         child_error=dict(present=False, stage=0, reason=0, errno=0, flags=0, detail=0),
         protocol=dict(records=2, bytes=512, wire_fault=0, io_stage=0, io_reason=0, io_errno=0, eof_class=3),
@@ -47,9 +49,9 @@ def fixture():
     session = dict(binding=binding, attempt_deadline_ns=10000000000,
         cleanup_deadline_ns=12000000000, cleanup_ms=2000, cleanup_attempted=1, cleanup_bound=1,
         error=error(), cleanup_error=error(), configured=1, initialized=1,
-        start_attempted=1, backend_touched=1, last_ns=11000000000, total_pumps=1,
+        start_attempted=1, backend_touched=1, last_ns=11000000000, total_pumps=2,
         child=1, wait_status=0, kill_claimed=0, started=1, provider_ready=1,
-        begin=1, terminal=1, end=1, pumps=[1,0,0], events=4, go_claim_attempted=1,
+        begin=1, terminal=1, end=1, pumps=[1,1,0], events=4, go_claim_attempted=1,
         go_possibly_released=1, go_result_seen=1, go_complete=1, go_bytes=64,
         bootstrap_seen=1, bootstrap_sealed=1, bootstrap_prefix_bytes=512,
         gate_close_seen=1, gate_closed=1, stop_attempted=1, stopped=1,
@@ -118,13 +120,12 @@ def check(case, result, trace, native=None, request=REQUEST, catalog=CATALOG):
         result, trace, request_sha256=request, catalog_sha256=catalog)
 
 
-def shell_stub(objects):
-    values, types, present = [], [], []
+def shell_stub(objects, fault=None):
+    values = []
     def walk(which, obj, path=''):
-        if path:
-            present.append(which + ':' + path)
         if type(obj) in (dict, list):
-            types.append((which + ':' + path + ':' + ('array' if type(obj) is list else 'dictionary')))
+            if type(obj) is list:
+                values.append((which + ':' + path + ':array', str(len(obj))))
             items = enumerate(obj) if type(obj) is list else obj.items()
             for key, value in items:
                 walk(which, value, path + ('.' if path else '') + str(key))
@@ -134,21 +135,20 @@ def shell_stub(objects):
             values.append((which + ':' + path + ':' + kind, text))
     for which, obj in objects.items(): walk(which,obj)
     lines = ['meta_value() { case "$1:$2:$3" in']
-    lines += ['  '+shlex.quote(k)+') printf \'%s\\n\' '+shlex.quote(v)+' ;;' for k,v in values]
-    lines += ['  *) return 2 ;;','esac; }','meta_type() { case "$1:$2:$3" in']
-    lines += ['  '+shlex.quote(k)+') return 0 ;;' for k in types]
-    lines += ['  *) return 2 ;;','esac; }','meta_absent() { case "$1:$2" in']
-    lines += ['  '+shlex.quote(k)+') return 2 ;;' for k in present]
-    lines += ['  *) return 0 ;;','esac; }',
+    for key,value in values:
+        failed = fault is not None and key == ':'.join(fault)
+        lines.append('  '+shlex.quote(key)+') printf \'%s\\n\' '+shlex.quote(value)
+                     + ('; return 7' if failed else '') + ' ;;')
+    lines += ['  *) return 2 ;;','esac; }',
               'meta_expect() { mm=$(meta_value "$1" "$2" "$3") || return 2; [ "$mm" = "$4" ]; }']
     return '\n'.join(lines)
 
 
-def shell_check(case, result, trace, *, native=None, request=REQUEST, catalog=CATALOG):
+def shell_check(case, result, trace, *, native=None, request=REQUEST, catalog=CATALOG, fault=None):
     # Only module-emitted metadata functions and literal test stubs execute.
     # Never read/render/source a generated root/outer/launch phase.
     status = 0 if case == 'positive' else 1
-    code = '\n'.join([shell_stub({'result':result, 'trace':trace}), gates.shell_checks(),
+    code = '\n'.join([shell_stub({'result':result, 'trace':trace}, fault=fault), gates.shell_checks(),
         'native='+shlex.quote(str(status if native is None else native)),
         'expected_request_sha256='+shlex.quote(request),
         'expected_catalog_sha256='+shlex.quote(catalog), 'gate_'+case])
@@ -222,9 +222,22 @@ class Gates(unittest.TestCase):
             ('backend.inventory_probes',8193),('backend.enablings',18),
             ('backend.events',1000001),('backend.raw_bytes',134217729),
             ('backend.inventory_bytes',1048577),('backend.diagnostic_bytes',1),
-            ('backend.drops',1),('backend.faults',1),('session.total_pumps',2),
-            ('session.pumps.0',65537),('session.events',5)]:
+            ('backend.drops',1),('backend.faults',1),('session.total_pumps',1),('session.total_pumps',3),
+            ('session.pumps.0',65537),('session.pumps.1',0),
+            ('session.pumps.2',1),('session.events',5)]:
             with self.subTest(path=path): self.refusal('trace',path,value,shell=True)
+        # Coherently update the total so a sum mismatch cannot mask a missing
+        # per-phase success constraint. The complete baseline is accepted.
+        for pumps,total,reason in (([2,0,0],2,'session.pumps.1'),
+                                   ([1,1,1],3,'session.pumps.2'),
+                                   ([0,2,0],2,'session.pumps.0'),
+                                   ([1,0,0],1,'session.total_pumps')):
+            result,trace=fixture()
+            self.assertTrue(check('positive',result,trace))
+            trace['session'].update(pumps=pumps,total_pumps=total)
+            with self.subTest(pumps=pumps),self.assertRaisesRegex(ValueError,re.escape(reason)):
+                check('positive',result,trace)
+            self.assertEqual(shell_check('positive',result,trace).returncode,2)
         result,trace=fixture()
         trace['backend']['events']=10  # shadow/lwp cleanup do not all reach TS
         self.assertTrue(check('positive',result,trace))
@@ -245,6 +258,31 @@ class Gates(unittest.TestCase):
             ('trace','create_error.message_hex','ff'),('trace','session.cleanup_error.callback_error',110)]
         for which,path,value in mutations:
             with self.subTest(path=path): self.refusal(which,path,value)
+
+    def test_native_endpoint_success_sentinels_not_old_zero_error_fixture(self):
+        # Read-only primary source assertions ground the independently literal
+        # fixture. No helper is compiled, imported, executed or used to generate
+        # metadata; enum/serializer drift requires a new contract review.
+        base=Path(__file__).resolve().parent.parent
+        header=(base/'target-endpoints/target_endpoints.h').read_text()
+        implementation=(base/'target-endpoints/target_endpoints.c').read_text()
+        serializer=(base/'bootstrap-runner/runner_files.c').read_text()
+        roles=re.search(r'enum te_role \{([^}]+)\}',header).group(1)
+        self.assertEqual([x.strip() for x in roles.split(',')],
+            ['TE_STDIN','TE_STDOUT','TE_STDERR','TE_GATE_READER','TE_STATUS_WRITER','TE_NO_ROLE'])
+        self.assertIn('(struct te_error){TE_STAGE_NONE, TE_REASON_NONE, 0, TE_NO_ROLE, -1, 0, 0}',implementation)
+        self.assertIn('a->endpoint_error.system_errno,a->endpoint_error.role,a->endpoint_error.fd',serializer)
+        for case,make in [('positive',fixture),('denied',denied_fixture)]:
+            result,trace=make()
+            self.assertEqual(result['helpers']['endpoints'],dict(stage=0,reason=0,errno=0,role=5,fd=-1))
+            self.assertTrue(check(case,result,trace))
+            self.assertEqual(shell_check(case,result,trace).returncode,0)
+            for role,fd in ((0,0),(5,0),(0,-1),(4,-1),(5,-2),(True,-1),(5,False)):
+                result,trace=make()
+                result['helpers']['endpoints'].update(role=role,fd=fd)
+                with self.subTest(case=case,role=role,fd=fd):
+                    with self.assertRaises(ValueError): check(case,result,trace)
+                    self.assertEqual(shell_check(case,result,trace).returncode,2)
 
     def test_exact_arrays_not_numeric_key_objects_or_extra_elements(self):
         for path,bad in [('backend.writer_close_errno',{'0':0,'1':0,'2':0,'3':0}),
@@ -311,6 +349,31 @@ class Gates(unittest.TestCase):
         result,trace=fixture();del trace['backend']['binding']['request_sha256']
         with self.assertRaises(ValueError): check('positive',result,trace)
         self.assertEqual(shell_check('positive',result,trace).returncode,2)
+
+    def test_checked_array_count_refuses_expected_bytes_with_failed_read(self):
+        for case,inputs in [('positive',fixture()),('denied',denied_fixture())]:
+            for path in ('backend.writer_close_files','backend.writer_close_errno','session.pumps'):
+                with self.subTest(case=case,path=path):
+                    # The injected reader emits the correct typed array count,
+                    # then fails. Equality alone must never authorize a gate.
+                    done=shell_check(case,*inputs,fault=('trace',path,'array'))
+                    self.assertEqual(done.returncode,2,done.stderr)
+                    self.assertEqual(done.stdout,b'')
+        snippet=gates.shell_checks()
+        self.assertNotIn('meta_absent',snippet)
+        self.assertNotIn('meta_type',snippet)
+        self.assertIn('meta_expect trace backend.writer_close_errno array 4',snippet)
+
+    def test_prior_negative_absence_inferred_success_from_read_failure(self):
+        # Regression explanation only: the prior negative probe blessed an
+        # operation failure as absence, even after an extra element was read.
+        # This standalone synthetic helper is not a generated guest phase.
+        old='''read_extra() { printf 'extra-element\\n'; return 7; }
+old_absent() { if read_extra >/dev/null 2>&1; then return 2; fi; }
+old_absent
+'''
+        done=subprocess.run(['/bin/sh','-c',old],capture_output=True,timeout=5)
+        self.assertEqual(done.returncode,0)
 
 
 if __name__=='__main__': unittest.main()

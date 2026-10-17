@@ -96,14 +96,6 @@ meta_expect() {
     actual=$(meta_value "$1" "$2" "$3") || return 2
     [ "$actual" = "$4" ]
 }
-meta_type() {
-    meta_path "$1" || return 2
-    /usr/bin/plutil -extract "$2" json -expect "$3" -o /dev/null "$metadata"
-}
-meta_absent() {
-    meta_path "$1" || return 2
-    if /usr/bin/plutil -extract "$2" json -o /dev/null "$metadata" >/dev/null 2>&1; then return 2; fi
-}
 @@METADATA_GATES@@
 metadata_gate() {
     # Only these two bounded promoted metadata files are read before closure.

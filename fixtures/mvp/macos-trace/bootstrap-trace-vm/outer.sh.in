@@ -94,13 +94,13 @@ printf '%s\000' /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/s
     /bin/sh -c @@ROOT_BOOTSTRAP@@ > "$E/install.argv"
 rc=0
 /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
-    /bin/sh -c @@ROOT_BOOTSTRAP@@ > "$E/install.stdout" 2> "$E/install.stderr" || rc=$?
+    /bin/sh -c @@ROOT_BOOTSTRAP@@ </dev/null > "$E/install.stdout" 2> "$E/install.stderr" || rc=$?
 printf '%s\n' "$rc" > "$E/install.status"
 printf 'install\t%s\n' "$rc" >> "$E/batch.tsv"
 [ "$rc" = 0 ] || exit 1
 root_phase() {
     /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
-        /bin/sh -c @@ROOT_CHECK@@ glue-bootstrap-trace "$1"
+        /bin/sh -c @@ROOT_CHECK@@ glue-bootstrap-trace "$1" </dev/null
 }
 root_argv() {
     printf '%s\000' /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
