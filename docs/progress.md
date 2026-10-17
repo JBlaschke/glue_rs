@@ -29,11 +29,15 @@ reviewed packet authenticated, then refused installation before root staging or
 any native case. The shell's BSD `stat %Lp` check discards the sticky bit and
 cannot match its expected1777; the actual guest reports full mode41777 and low
 permissions777. A separate feature branch is correcting every mode/type guard
-with regression controls. All four owned cases remain unverified. The full Darwin extraction
+with regression controls. The repair is now integrated at `dec2488` on
+`codex/mvp-r02-bootstrap-mode-integration`:14 preparer and18 checker controls
+pass, with an independent review and60 additional exact-mode/type controls.
+A fresh packet is prepared from the unchanged kit for separate rendered review;
+the failed packets remain unchanged. All four owned cases remain unverified. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-restart-status`.
+Documentation continues on `codex/mvp-r02-bootstrap-mode-integration`.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

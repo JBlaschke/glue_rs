@@ -118,7 +118,9 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-vm-reviewed-run` | `a17f82b`, `0affe28` | Enable only the reviewed source policy, retain closed kit binding and no runtime override; freshly rendered packet still requires inspection/private guest authentication |
 | R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `448a86a` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
 | V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
-| R04 | `codex/mvp-r04-bootstrap-restart-status` | branch tip, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted VM launch preserved, restart observed, private guest inspection/authentication still pending |
+| R04 | `codex/mvp-r04-bootstrap-restart-status` | `c36b711`, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted launch/reboot, second failed install and actual guest mode observations preserved |
+| R02 | `codex/mvp-r02-bootstrap-mode-guards` | `46d61f3` | Exact full BSD mode/type guards,14 preparer/18 checker controls; integrated as `dec2488` after decision `fabae45` |
+| R02 | `codex/mvp-r02-bootstrap-mode-integration` | branch tip, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation; actual four-case execution remains pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -369,7 +371,7 @@ manifest `a3082f87cb8bfab5513750b94336acbee44708c2a5fc89df930b0c6a1db2a7ad`.
 All five existing root/Library ancestors have full mode40755. Private/tmp has
 full mode41777, while BSD `stat %Lp` prints only777; the bootstrap's expected
 `0:1777` comparison therefore refuses before creating the stager. A bounded
-mode/type guard repair is being implemented on
+mode/type guard repair was implemented on
 `codex/mvp-r02-bootstrap-mode-guards`; no failed packet is edited or rerun, and
 no protected directory/security setting is repaired to fit the check.
 Joint independent source/metadata review is
@@ -381,6 +383,31 @@ checkpoint binds both independent reviews, all three inspection inventories
 and their unchanged source scripts:
 `/private/tmp/glue-bootstrap-vm-early-stop-root-checkpoint-20261017`, manifest
 `8ae8259cac2dc997d90dec78b5f463e50fc6f8e84c2a0535826871d5786a8a5f`.
+
+Decision `d3956a9` and implementation `46d61f3` are integrated as `fabae45`
+and `dec2488` on `codex/mvp-r02-bootstrap-mode-integration`. Every numeric shell
+guard now uses full BSD `stat %p`, retaining file type and all special bits:
+directories40700/40755, private/tmp41777 and regular files100500/100555/100600,
+with the existing owner/link/content/signature/physical/freshness checks.
+Fourteen preparer and18 checker controls pass without skips. The old-source
+sticky-mode regression fails as intended. Independent review additionally passes
+48 combined-special-bit controls and12 native owned-temp controls; no generated
+phase, native kit or privileged operation runs in these tests. Its closed record
+is `/private/tmp/glue-bootstrap-mode-guards-independent-review-20261017-02`,
+manifest `f33417b46f64a0305e05de30b6332fc637c769a9dc1a1b2c83570d62d3c225b4`.
+An earlier optional socket-fixture attempt was sandbox-denied and remains a
+separate incomplete review harness; no socket control result is claimed.
+
+Fresh packet03, nonce `1ee4bbe2b443c268`, was prepared from the unchanged literal
+kit02 at `dec2488`. Its15-file packet manifest is
+`e00fb4a1d634c52dcdd59a7872e460b59babb0fc6f6f082dfd3916a61202c390`.
+The host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-03`, manifest
+`f3d23282cffc78af0c396d83b2ec70196f12aaed90a2616987104bd5285c0e05`.
+Preparation returned0, preserved all nine selected kit members and passed
+syntax-only checks for all three rendered scripts. Independent actual-packet
+review precedes staging and execution. No new native success, tracing, extraction
+verdict, hosted run or public source publication is claimed.
 
 
 The credential primitive independently passes 14 native unprivileged controls
