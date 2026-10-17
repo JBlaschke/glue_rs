@@ -10,10 +10,14 @@ actual unreaped unprivileged bootstrap child. Creation snapshots that explicit
 binding, the original absolute attempt deadline and a borrowed held private
 output directory. Allocate backend resources only after that confirmation;
 open/enable DTrace only through the coordinator's once-only start callback.
-The only profile is the exact owned context probe: BSD syscall entry/return,
+The only profile is the exact owned context probe: BSD syscall and Mach trap entry/return,
 exec success/failure, context exit/thread cleanup, unexpected create/spawn and
 the calibrated exited-target address/refcount shadow discriminator. It has no
 named-open calibration requirement or general descendant-coverage claim.
+Mach fields retain the historical tree-mach scalar layouts as raw observations;
+they do not decode port identities/effects or authorize filesystem behavior.
+Every required BSD/Mach/proc provider clause must match; no smaller fallback
+profile is selected when a provider is unavailable.
 
 Keep fixed exclusive program.d, probes.tsv, events.jsonl and errors.jsonl outputs.
 Before delivering a coordinator event, validate the actual probe inventory,
