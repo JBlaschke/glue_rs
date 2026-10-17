@@ -79,7 +79,11 @@ single mutations, hostile JSON/name/integer/boundary cases, source exceptions,
 8192-probe capacity and a streaming128MiB fixture with bounded traced memory.
 It exercises the separate event-count guard directly because the raw-byte cap
 prevents reaching one million valid records in the current verbose JSON shape.
-Fixtures and their PASS results supply no native ABI/provider calibration.
+Every descriptor/header/JSON/integer mutation replaces a record in a complete
+accepted lifecycle, with an explicit passing baseline and intended rejection
+reason. A regression control records why a lone non-BEGIN record was an invalid
+baseline for the earlier mutation harness. Fixtures and their PASS results
+supply no native ABI/provider calibration.
 
 Raw order proves neither GO permission/write, successful kernel exec, enabled
 probe counts, actual stop/drain/DONE, child reap, writer/resource closure nor

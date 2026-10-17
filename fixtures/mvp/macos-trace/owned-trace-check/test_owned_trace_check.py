@@ -195,20 +195,26 @@ class RawControls(unittest.TestCase):
         self.refuse(event_lines=iter(()), match='incomplete')
 
     def test_json_key_and_number_grammar_hostility(self):
-        good = line(event(1), 1)
-        bad = [good.replace(b'"event":1', b'"event":1,"event":1'),
-               good.replace(b'"action":1', b'"action":1,"action":1', 1),
-               good.replace(b'"event":1', b'"event":1.0'),
-               good.replace(b'"event":1', b'"event":1e0'),
-               good.replace(b'"event":1', b'"event":NaN'),
-               good.replace(b'"event":1', b'"event":Infinity'),
-               good.replace(b'"event":1', b'"event":' + b'1' * 100),
-               good.replace(b'"cpu":7,', b''), good.replace(b'"cpu":7', b'"extra":0,"cpu":7'),
-               b'[]\n', b'null\n', b'"text"\n', b'[' * 1500 + b']' * 1500 + b'\n',
-               good.replace(b'"records":[', b'"records":{'), good[:-3] + b'\n']
-        for item in bad:
+        baseline = lines([event(1), event(18), event(17)])
+        self.assertEqual(validate(event_lines=baseline).events, 3)
+        good = baseline[0]
+        bad = [(good.replace(b'"event":1', b'"event":1,"event":1'), 'duplicate JSON key'),
+               (good.replace(b'"action":1', b'"action":1,"action":1', 1), 'duplicate JSON key'),
+               (good.replace(b'"event":1', b'"event":1.0'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":1e0'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":NaN'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":Infinity'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":' + b'1' * 100), 'JSON integer token bound'),
+               (good.replace(b'"cpu":7,', b''), 'event object keys'),
+               (good.replace(b'"cpu":7', b'"extra":0,"cpu":7'), 'event object keys'),
+               (b'[]\n', 'event object keys'), (b'null\n', 'event object keys'),
+               (b'"text"\n', 'event object keys'),
+               (b'[' * 1500 + b']' * 1499 + b'\n', 'malformed JSON event'),
+               (good.replace(b'"records":[', b'"records":{'), 'malformed JSON event'),
+               (good[:-3] + b'\n', 'malformed JSON event')]
+        for item, reason in bad:
             with self.subTest(item=item[:40]):
-                self.refuse(event_lines=[item])
+                self.refuse(event_lines=[item] + baseline[1:], match=reason)
         # Source failures propagate, never produce partial facts.
         def broken_source():
             yield good
@@ -217,47 +223,83 @@ class RawControls(unittest.TestCase):
             validate(event_lines=broken_source())
 
     def test_strict_integer_types_and_ranges(self):
+        original = event(1)
+        baseline = lines([original, event(18), event(17)])
+        self.assertEqual(validate(event_lines=baseline).events, 3)
         for key in ('event', 'cpu', 'epid', 'probe_id', 'record_bytes', 'kind', 'timestamp', 'pid', 'tid', 'detail'):
             for value in (True, False, None, '1', 1.0, -1, 1 << 64):
                 item = event(1)
                 item[key] = value
-                self.refuse(event_lines=[line(item, 1) if key != 'event' else
-                                         json.dumps(item).encode() + b'\n'])
-        for key, value in (('cpu', 1 << 31), ('epid', 0), ('epid', 1 << 32),
-                           ('probe_id', 0), ('probe_id', 1 << 32)):
+                first = line(item, 1) if key != 'event' else json.dumps(item).encode() + b'\n'
+                self.refuse(event_lines=[first] + baseline[1:],
+                            match='JSON number|ordinal|range|size|inventory|integer')
+        for key, value, reason in (('cpu', 1 << 31, 'CPU range'), ('epid', 0, 'EPID range'),
+                                  ('epid', 1 << 32, 'EPID range'), ('probe_id', 0, 'probe ID range'),
+                                  ('probe_id', 1 << 32, 'probe ID range')):
             item = event(1); item[key] = value
-            self.refuse(event_lines=[line(item, 1)])
-        for key in ('action', 'size', 'offset'):
+            self.refuse(event_lines=[line(item, 1)] + baseline[1:], match=reason)
+        for key, reason in (('action', 'record action'), ('size', 'record width'), ('offset', 'record offset')):
             item = event(1); item['records'][0][key] = True
-            self.refuse(event_lines=[line(item, 1)])
+            self.refuse(event_lines=[line(item, 1)] + baseline[1:], match=reason)
         item = event(1); item['header_record_indexes'][0] = True
-        self.refuse(event_lines=[line(item, 1)])
+        self.refuse(event_lines=[line(item, 1)] + baseline[1:], match='header record indexes')
 
     def test_every_descriptor_and_header_single_mutation(self):
-        for kind in (1, 2, 3, 5, 6, 7, 15, 16, 18):
+        def context(item, original_kind):
+            # Every unmodified record sits in a complete accepted lifecycle.
+            if original_kind == 1:
+                return [item, event(18), event(17)]
+            if original_kind == 17:
+                return [event(1), event(18), item]
+            if original_kind == 18:
+                return [event(1), item, event(17)]
+            return [event(1), item, event(18), event(17)]
+
+        for kind in (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18):
             original = event(kind)
+            baseline = context(original, kind)
+            self.assertEqual(validate(baseline).events, len(baseline))
             for index in range(len(original['records'])):
-                for key, value in (('action', 2), ('size', 4), ('offset', 13), ('hex', '')):
+                for key, value, reason in (('action', 2, 'record action'),
+                                           ('size', 4, 'record width'),
+                                           ('offset', 13, 'record offset'),
+                                           ('hex', '', 'scalar hex')):
                     item = copy.deepcopy(original)
                     if item['records'][index][key] == value:
                         value = '00'  # zero assignment requires empty bytes
                     item['records'][index][key] = value
                     with self.subTest(kind=kind, index=index, key=key):
-                        self.refuse(event_lines=[line(item, 1)])
-            for key, value in (('record_bytes', original['record_bytes'] + 8),
-                               ('header_record_indexes', [0, 1, 2, 3, 99]),
-                               ('records', original['records'][:-1]),
-                               ('records', original['records'] + original['records'][:1])):
+                        self.refuse(context(item, kind), match=reason)
+            for key, value, reason in (('record_bytes', original['record_bytes'] + 8, 'record byte size'),
+                                      ('header_record_indexes', [0, 1, 2, 3, 99], 'header record indexes'),
+                                      ('records', original['records'][:-1], 'record count'),
+                                      ('records', original['records'] + original['records'][:1], 'record count')):
                 item = copy.deepcopy(original); item[key] = value
-                self.refuse(event_lines=[line(item, 1)])
-        for field in ('kind', 'timestamp', 'pid', 'tid', 'detail'):
-            item = event(1); item[field] += 1
-            self.refuse(event_lines=[line(item, 1)])
-        for value in ('gg' * 8, 'AA' * 8, '00 ' * 8, '0' * 15, '0' * 17, 0):
-            item = event(1); item['records'][1]['hex'] = value
-            self.refuse(event_lines=[line(item, 1)])
-        item = event(1); item['records'][2]['hex'] = struct.pack('>Q', item['timestamp']).hex()
-        self.refuse(event_lines=[line(item, 1)], match='raw/header')
+                self.refuse(context(item, kind), match=reason)
+            for index in range(len(original['records'])):
+                for key in ('action', 'size', 'offset', 'hex'):
+                    item = copy.deepcopy(original); del item['records'][index][key]
+                    self.refuse(context(item, kind), match='record object keys')
+                item = copy.deepcopy(original); item['records'][index]['extra'] = 0
+                self.refuse(context(item, kind), match='record object keys')
+            for field in ('kind', 'timestamp', 'pid', 'tid', 'detail'):
+                item = copy.deepcopy(original); item[field] += 1
+                reason = 'event kind differs from inventory' if field == 'kind' else 'raw/header disagreement'
+                self.refuse(context(item, kind), match=reason)
+            first_scalar = int(SHAPES[kind][1])
+            for value in ('gg' * 8, 'AA' * 8, '00 ' * 8, '0' * 15, '0' * 17, 0):
+                item = copy.deepcopy(original); item['records'][first_scalar]['hex'] = value
+                self.refuse(context(item, kind), match='scalar hex')
+            item = copy.deepcopy(original)
+            item['records'][first_scalar + 1]['hex'] = struct.pack('>Q', item['timestamp']).hex()
+            self.refuse(context(item, kind), match='raw/header disagreement')
+
+    def test_old_standalone_mutation_context_was_not_a_valid_baseline(self):
+        # Regression explanation: the old lone-record context rejected unchanged
+        # non-BEGIN events, so a loose layout check could still look green there.
+        for kind in (2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18):
+            self.refuse(event_lines=[line(event(kind), 1)], match='event before BEGIN')
+        self.refuse(event_lines=[line(event(1), 1)], match='incomplete')
 
     def test_inventory_event_binding_and_epid_bijection(self):
         for key, value in (('provider', 'mach_trap'), ('module', 'changed'),
@@ -279,8 +321,12 @@ class RawControls(unittest.TestCase):
             item = event(kind); change_scalar(item, index, value)
             records = [item, event(18), event(17)] if kind == 1 else \
                       [event(1), event(18), item] if kind == 17 else \
+                      [event(1), item, event(17)] if kind == 18 else \
                       [event(1), item, event(18), event(17)]
-            self.refuse(records)
+            baseline = [event(1), event(18), event(17)] if kind in (1, 17, 18) else \
+                       [event(1), event(kind), event(18), event(17)]
+            self.assertEqual(validate(baseline).events, len(baseline))
+            self.refuse(records, match='identity|parent|detail|exited|timestamp range|actor PID range|thread ID range')
         # No cross-domain or even raw timestamp-order assertion: both remain opaque.
         items = [event(1), event(2), event(18), event(17)]
         change_scalar(items[1], 1, 1)
