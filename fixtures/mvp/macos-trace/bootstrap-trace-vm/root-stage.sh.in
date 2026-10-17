@@ -1,0 +1,270 @@
+#!/bin/sh
+# Prototype only: a reviewed activation/render change is required before use.
+set -eu
+umask 077
+set -C
+LC_ALL=C
+export LC_ALL
+[ @@ENABLED@@ = 1 ] || { echo 'tracing execution is unconfigured' >&2; exit 2; }
+[ "$#" -eq 1 ] || exit 2
+@@READ_MATCH@@
+@@LAST_BYTE_ZERO@@
+PACKET=@@GUEST_PACKET@@
+WORK=@@GUEST_WORK@@
+STAGE=@@ROOT_STAGE@@
+BUILD=@@BUILD_DIR@@
+PREFIX=/System/Volumes/Data/Library/GlueMVPFixtures
+expected_catalog_sha256=@@CATALOG_SHA@@
+read_match 0 /usr/bin/id -ru && read_match 0 /usr/bin/id -u || exit 2
+read_match @@GUEST_MODEL@@ /usr/sbin/sysctl -n hw.model || exit 2
+read_match 'System Integrity Protection status: disabled.' /usr/bin/csrutil status || exit 2
+directory() {
+    [ -d "$1" ] && [ ! -L "$1" ] || return 2
+    read_match "$2" /usr/bin/stat -f %u:%p "$1"
+}
+regular() {
+    [ -f "$1" ] && [ ! -L "$1" ] || return 2
+    read_match "$2" /usr/bin/stat -f %u:%p:%l "$1"
+}
+digest() {
+    line=$(/usr/bin/shasum -a 256 "$1") || return 2
+    hash=${line%% *}
+    [ "${#hash}" = 64 ] || return 2
+    case "$hash" in *[!0-9a-f]*) return 2 ;; esac
+    printf '%s\n' "$hash"
+}
+bounded() {
+    regular "$1" "$2" || return 2
+    count=$(/usr/bin/stat -f %z "$1") || return 2
+    case "$count" in ''|*[!0-9]*) return 2 ;; esac
+    [ "$count" -le "$3" ] || return 2
+}
+directory "$STAGE" 0:40700 || exit 2
+directory /System/Volumes/Data/private/tmp 0:41777 || exit 2
+for parent in / /System /System/Volumes /System/Volumes/Data /System/Volumes/Data/Library; do
+    directory "$parent" 0:40755 || exit 2
+done
+for parent in /Volumes '/Volumes/My Shared Files' '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit' "$PACKET" "$PACKET/payload"; do
+    [ -d "$parent" ] && [ ! -L "$parent" ] || exit 2
+done
+install_file() {
+    name=$1 size=$2 expected=$3
+    source="$PACKET/payload/$name"
+    [ -f "$source" ] && [ ! -L "$source" ] || return 2
+    /usr/bin/head -c "$((size+1))" "$source" > "$BUILD/$name" || return 2
+    bounded "$BUILD/$name" 0:100600:1 "$size" || return 2
+    [ "$count" = "$size" ] && read_match "$expected" digest "$BUILD/$name" || return 2
+    /bin/chmod -N "$BUILD/$name" || return 2
+    /bin/chmod 0555 "$BUILD/$name" || return 2
+    regular "$BUILD/$name" 0:100555:1 || return 2
+    /usr/bin/codesign --verify --strict --verbose=2 "$BUILD/$name" || return 2
+}
+install() {
+    for parent in / /System /System/Volumes /System/Volumes/Data /System/Volumes/Data/Library; do
+        directory "$parent" 0:40755 || return 2
+    done
+    # Fresh only; an existing prefix needs separate reviewed retention.
+    [ ! -e "$PREFIX" ] && [ ! -L "$PREFIX" ] || return 2
+    /bin/mkdir -m 0700 "$PREFIX" || return 2
+    /bin/chmod -N "$PREFIX" || return 2
+    /bin/mkdir -m 0700 "$BUILD" || return 2
+    /bin/chmod -N "$BUILD" || return 2
+@@INSTALL_FILES@@
+    /bin/chmod 0755 "$BUILD" || return 2
+    /bin/chmod 0755 "$PREFIX" || return 2
+    directory "$BUILD" 0:40755 && directory "$PREFIX" 0:40755 || return 2
+    printf '%s\n' @@KIT_SHA@@ > "$STAGE/installed"
+}
+select_case() {
+    C=$1
+    case "$C" in
+        positive) OUTPUT=@@OUT_POSITIVE@@ ;;
+        simulated) OUTPUT=@@OUT_SIMULATED@@ ;;
+        denied) OUTPUT=@@OUT_DENIED@@ ;;
+        trailing) OUTPUT=@@OUT_TRAILING@@ ;;
+        *) return 2 ;;
+    esac
+}
+meta_path() {
+    case "$1" in result) metadata="$OUTPUT/result.json" ;; trace) metadata="$OUTPUT/trace.json" ;; *) return 2 ;; esac
+}
+meta_value() {
+    meta_path "$1" || return 2
+    /usr/bin/plutil -extract "$2" raw -expect "$3" -o - "$metadata"
+}
+meta_expect() {
+    actual=$(meta_value "$1" "$2" "$3") || return 2
+    [ "$actual" = "$4" ]
+}
+meta_type() {
+    meta_path "$1" || return 2
+    /usr/bin/plutil -extract "$2" json -expect "$3" -o /dev/null "$metadata"
+}
+meta_absent() {
+    meta_path "$1" || return 2
+    if /usr/bin/plutil -extract "$2" json -o /dev/null "$metadata" >/dev/null 2>&1; then return 2; fi
+}
+@@METADATA_GATES@@
+metadata_gate() {
+    # Only these two bounded promoted metadata files are read before closure.
+    directory "$OUTPUT" 0:40700 || return 2
+    bounded "$OUTPUT/result.json" 0:100600:1 8192 || return 2
+    [ "$count" -gt 0 ] || return 2
+    bounded "$OUTPUT/trace.json" 0:100600:1 16384 || return 2
+    [ "$count" -gt 0 ] || return 2
+    [ ! -e "$OUTPUT/result.pending" ] && [ ! -L "$OUTPUT/result.pending" ] || return 2
+    case "$C" in
+        positive) gate_positive ;;
+        simulated) gate_simulated ;;
+        denied) gate_denied ;;
+        *) return 2 ;;
+    esac
+}
+output_roster() {
+    # Called ONLY after metadata_gate; no raw enumeration is used as a gate.
+    if [ "$C" = denied ]; then
+        expected='probe.stderr
+probe.stdout
+request.bin
+result.json
+status.bin
+trace.json'
+    else
+        expected='errors.jsonl
+events.jsonl
+probe.stderr
+probe.stdout
+probes.tsv
+program.d
+request.bin
+result.json
+status.bin
+trace.json'
+    fi
+    read_match "$expected" /bin/ls -A1 "$OUTPUT" || return 2
+    for raw_role in $expected; do
+        role_cap "$raw_role" || return 2
+        bounded "$OUTPUT/$raw_role" 0:100600:1 "$cap" || return 2
+    done
+}
+roles_for_case() {
+    case "$C" in
+@@CASE_ROLES@@
+        *) return 2 ;;
+    esac
+}
+role_cap() {
+    case "$1" in
+@@ROLE_CAPS@@
+        *) return 2 ;;
+    esac
+}
+run_case() {
+    select_case "$1" || return 2
+    regular "$STAGE/installed" 0:100600:1 || return 2
+    read_match @@KIT_SHA@@ /bin/cat "$STAGE/installed" || return 2
+    for parent in "$WORK" "$WORK/evidence" "$WORK/evidence/requests"; do
+        directory "$parent" @@UID@@:40700 || return 2
+    done
+    directory "$PREFIX" 0:40755 && directory "$BUILD" 0:40755 || return 2
+    [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
+    printf 'started\n' > "$STAGE/$C.started" || return 2
+    source="$WORK/evidence/requests/$C.bin"
+    bounded "$source" @@UID@@:100600:1 16385 || return 2
+    size=$count
+    [ "$size" -ge 208 ] || return 2
+    /usr/bin/head -c 16386 "$source" > "$STAGE/$C.request.bin" || return 2
+    bounded "$STAGE/$C.request.bin" 0:100600:1 16385 || return 2
+    [ "$count" = "$size" ] || return 2
+    expected_request_sha256=$(digest "$STAGE/$C.request.bin") || return 2
+    read_match "$expected_request_sha256" digest "$source" || return 2
+    printf '%s\n' "$expected_request_sha256" > "$STAGE/$C.input.sha256" || return 2
+    if [ "$C" = trailing ]; then
+        regular "$STAGE/positive.accepted" 0:100600:1 || return 2
+        bounded "$STAGE/positive.request.bin" 0:100600:1 16384 || return 2
+        [ "$size" = "$((count+1))" ] || return 2
+        /usr/bin/head -c "$count" "$STAGE/$C.request.bin" > "$STAGE/trailing.prefix" || return 2
+        /usr/bin/cmp -s "$STAGE/trailing.prefix" "$STAGE/positive.request.bin" || return 2
+        last_byte_zero "$STAGE/$C.request.bin" "$count" /usr/bin/od || return 2
+    fi
+    if [ "$C" = denied ]; then
+        directory "$BUILD" 0:40755 || return 2
+        /bin/chmod 0700 "$BUILD" || return 2
+        directory "$BUILD" 0:40700 || return 2
+    fi
+    printf '%s\000' /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+        "$BUILD/owned-trace-runner" --request "$STAGE/$C.request.bin" --output "$OUTPUT" > "$STAGE/$C.native.argv" || return 2
+    native=0
+    /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+        "$BUILD/owned-trace-runner" --request "$STAGE/$C.request.bin" --output "$OUTPUT" </dev/null \
+        > "$STAGE/$C.native.stdout" 2> "$STAGE/$C.native.stderr" || native=$?
+    printf '%s\n' "$native" > "$STAGE/$C.native.status" || return 2
+    if [ "$C" = trailing ]; then
+        [ "$native" = 2 ] && [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
+        printf 'true\n' > "$STAGE/$C.output.absent" || return 2
+    else
+        case "$native" in 0|1) ;; *) return 2 ;; esac
+        metadata_gate || return 2
+        output_roster || return 2
+        # No EXIT trap, wildcard repair or failure bucket can restore mode.
+        if [ "$C" = denied ]; then
+            /bin/chmod 0755 "$BUILD" || return 2
+            directory "$BUILD" 0:40755 || return 2
+        fi
+    fi
+    printf 'accepted\n' > "$STAGE/$C.accepted"
+}
+export_file() {
+    select_case "$1" || return 2
+    regular "$STAGE/$C.accepted" 0:100600:1 || return 2
+    read_match accepted /bin/cat "$STAGE/$C.accepted" || return 2
+    bounded "$STAGE/$C.input.sha256" 0:100600:1 65 || return 2
+    expected_request_sha256=$(/bin/cat "$STAGE/$C.input.sha256") || return 2
+    bounded "$STAGE/$C.native.status" 0:100600:1 4 || return 2
+    native=$(/bin/cat "$STAGE/$C.native.status") || return 2
+    if [ "$C" = trailing ]; then
+        [ "$native" = 2 ] && [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
+    else
+        metadata_gate || return 2
+        output_roster || return 2
+    fi
+    roles_for_case || return 2
+    role=$2 found=0
+    for allowed in $roles; do [ "$allowed" != "$role" ] || found=1; done
+    [ "$found" = 1 ] || return 2
+    role_cap "$role" || return 2
+    case "$role" in
+        input.sha256|native.argv|native.stdout|native.stderr|native.status|output.absent) source="$STAGE/$C.$role" ;;
+        *) source="$OUTPUT/$role" ;;
+    esac
+    bounded "$source" 0:100600:1 "$cap" || return 2
+    file_size=$count expected_hash= expected_size=
+    case "$role" in
+        request.bin) expected_hash=$(meta_value result identities.request_sha256 string) || return 2
+            expected_size=$(/usr/bin/stat -f %z "$STAGE/$C.request.bin") || return 2 ;;
+        status.bin) expected_hash=$(meta_value result identities.status_sha256 string) || return 2
+            expected_size=$(meta_value result protocol.bytes integer) || return 2 ;;
+        probe.stdout) expected_hash=$(meta_value result identities.stdout_sha256 string) || return 2
+            expected_size=$(meta_value result stdout_bytes integer) || return 2 ;;
+        probe.stderr) expected_hash=$(meta_value result identities.stderr_sha256 string) || return 2
+            expected_size=$(meta_value result stderr_bytes integer) || return 2 ;;
+        events.jsonl) expected_size=$(meta_value trace backend.raw_bytes integer) || return 2 ;;
+        probes.tsv) expected_size=$(meta_value trace backend.inventory_bytes integer) || return 2 ;;
+        errors.jsonl) expected_size=$(meta_value trace backend.diagnostic_bytes integer) || return 2 ;;
+    esac
+    if [ -n "$expected_size" ]; then [ "$file_size" = "$expected_size" ] || return 2; fi
+    if [ -n "$expected_hash" ]; then
+        [ "${#expected_hash}" = 64 ] || return 2
+        case "$expected_hash" in *[!0-9a-f]*) return 2 ;; esac
+        read_match "$expected_hash" digest "$source" || return 2
+    fi
+    /usr/bin/head -c "$cap" "$source"
+}
+case "$1" in
+    install) install ;;
+    case-positive|case-simulated|case-denied|case-trailing) run_case "${1#case-}" ;;
+    export-*) phase=${1#export-}; c=${phase%%:*}; role=${phase#*:}
+        [ "$phase" != "$role" ] || exit 2
+        export_file "$c" "$role" ;;
+    *) exit 2 ;;
+esac

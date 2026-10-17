@@ -1,0 +1,185 @@
+#!/bin/sh
+# Separate disabled tracing orchestration. Never called by host controls.
+set -eu
+umask 077
+set -C
+LC_ALL=C
+export LC_ALL
+[ @@ENABLED@@ = 1 ] || { echo 'tracing execution is unconfigured' >&2; exit 2; }
+[ "$#" -eq 0 ] || exit 2
+@@READ_MATCH@@
+PACKET=@@GUEST_PACKET@@
+WORK=@@GUEST_WORK@@
+BUILD=@@BUILD_DIR@@
+EXPORT=@@GUEST_EXPORT@@
+read_match @@UID@@ /usr/bin/id -ru && read_match @@UID@@ /usr/bin/id -u || exit 2
+read_match @@GUEST_MODEL@@ /usr/sbin/sysctl -n hw.model || exit 2
+read_match @@GUEST_VERSION@@ /usr/bin/sw_vers -productVersion || exit 2
+read_match @@GUEST_BUILD@@ /usr/bin/sw_vers -buildVersion || exit 2
+read_match @@GUEST_KERNEL@@ /usr/bin/uname -mrs || exit 2
+read_match 'System Integrity Protection status: disabled.' /usr/bin/csrutil status || exit 2
+for ancestor in /Volumes '/Volumes/My Shared Files' '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit' "$PACKET"; do
+    [ -d "$ancestor" ] && [ ! -L "$ancestor" ] || exit 2
+done
+read_match 0:41777 /usr/bin/stat -f %u:%p /System/Volumes/Data/private/tmp || exit 2
+[ ! -e "$WORK" ] && [ ! -L "$WORK" ] || exit 2
+/bin/mkdir -m 0700 "$WORK"
+/bin/chmod -N "$WORK"
+read_match @@UID@@:40700 /usr/bin/stat -f %u:%p "$WORK" || exit 2
+/bin/mkdir -m 0700 "$WORK/evidence" "$WORK/evidence/requests" "$WORK/evidence/cases" "$WORK/evidence/exports"
+for c in positive simulated denied trailing; do
+    /bin/mkdir -m 0700 "$WORK/evidence/cases/$c" "$WORK/evidence/exports/$c"
+done
+E="$WORK/evidence"
+# GLUE_CURRENT_PREFLIGHT_BEGIN
+typed_json_matches() {
+    value=$(/usr/bin/plutil -extract "$2" raw -expect "$3" -o - "$1") || return 2
+    [ "$value" = "$4" ] || return 2
+}
+typed_json_dictionary() {
+    /usr/bin/plutil -extract "$2" json -expect dictionary -o /dev/null "$1" || return 2
+}
+plutil_capabilities() {
+    printf '{"b":true,"n":7,"s":"ok","a":[1,2],"d":{"0":1,"1":2}}\n' > "$WORK/plutil-fixture.json" || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" b bool true || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" n integer 7 || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" s string ok || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" a array 2 || return 2
+    typed_json_dictionary "$WORK/plutil-fixture.json" d || return 2
+    if /usr/bin/plutil -extract b raw -expect integer -o - "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+    if /usr/bin/plutil -extract a json -expect dictionary -o /dev/null "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+    if /usr/bin/plutil -extract d raw -expect array -o - "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+}
+current_json_matches() {
+    typed_json_matches "$WORK/current-observation.json" "$1" "$2" "$3" || return 2
+}
+current_json_dictionary() {
+    typed_json_dictionary "$WORK/current-observation.json" "$1" || return 2
+}
+current_deployment_matches() {
+    INSPECTOR=@@INSPECTOR_PATH@@
+    [ -d '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016' ] && [ ! -L '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016' ] || return 2
+    [ -f "$INSPECTOR" ] && [ ! -L "$INSPECTOR" ] || return 2
+    inspector_hash=$(/usr/bin/shasum -a 256 "$INSPECTOR") || return 2
+    [ "$inspector_hash" = "@@INSPECTOR_SHA@@  $INSPECTOR" ] || return 2
+    /usr/bin/codesign --verify --strict --verbose=2 "$INSPECTOR" > "$WORK/current-signature.stdout" 2> "$WORK/current-signature.stderr" || return 2
+    inspector_status=0
+    /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$INSPECTOR" > "$WORK/current-observation.json" 2> "$WORK/current-inspector.stderr" || inspector_status=$?
+    printf '%s\n' "$inspector_status" > "$WORK/current-inspector.status" || return 2
+    [ "$inspector_status" = 0 ] || return 2
+    for name in current-observation.json current-inspector.stderr; do
+        [ -f "$WORK/$name" ] && [ ! -L "$WORK/$name" ] || return 2
+        current_mode=$(/usr/bin/stat -f %u:%p:%l "$WORK/$name") || return 2
+        [ "$current_mode" = @@UID@@:100600:1 ] || return 2
+    done
+    [ ! -s "$WORK/current-inspector.stderr" ] || return 2
+    current_size=$(/usr/bin/stat -f %z "$WORK/current-observation.json") || return 2
+    case "$current_size" in ''|*[!0-9]*) return 2 ;; esac
+    [ "$current_size" -gt 0 ] && [ "$current_size" -le 262144 ] || return 2
+    @@CURRENT_DEPLOYMENT_CHECKS@@
+}
+# GLUE_CURRENT_PREFLIGHT_END
+# Typed capability, exact current inspector and SIP checks precede authentication.
+plutil_capabilities || exit 2
+(
+    cd "$PACKET"
+    /usr/bin/shasum -a 256 -c SHA256SUMS
+) > "$WORK/packet-verification.log"
+current_deployment_matches || exit 2
+/bin/cat "$PACKET/plan.json" > "$E/plan.json"
+printf 'schema\tglue-bootstrap-trace-vm-batch-v1\npreflight\t0\n' > "$E/batch.tsv"
+# No other operation may prompt for or retain a password.
+/usr/bin/sudo -v
+printf '%s\000' /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+    /bin/sh -c @@ROOT_BOOTSTRAP@@ > "$E/install.argv"
+rc=0
+/usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+    /bin/sh -c @@ROOT_BOOTSTRAP@@ > "$E/install.stdout" 2> "$E/install.stderr" || rc=$?
+printf '%s\n' "$rc" > "$E/install.status"
+printf 'install\t%s\n' "$rc" >> "$E/batch.tsv"
+[ "$rc" = 0 ] || exit 1
+root_phase() {
+    /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+        /bin/sh -c @@ROOT_CHECK@@ glue-bootstrap-trace "$1"
+}
+root_argv() {
+    printf '%s\000' /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+        /bin/sh -c @@ROOT_CHECK@@ glue-bootstrap-trace "$1"
+}
+# All fixed requests precede denied-cwd mode changes.
+for c in positive simulated denied; do
+    rc=0
+    if [ "$c" = simulated ]; then
+        printf '%s\000' /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" --simulate-provider-failure > "$E/requests/$c.argv"
+        /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" --simulate-provider-failure > "$E/requests/$c.bin" 2> "$E/requests/$c.stderr" || rc=$?
+    else
+        printf '%s\000' /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" > "$E/requests/$c.argv"
+        /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" > "$E/requests/$c.bin" 2> "$E/requests/$c.stderr" || rc=$?
+    fi
+    printf '%s\n' "$rc" > "$E/requests/$c.status"
+    [ "$rc" = 0 ] && [ ! -s "$E/requests/$c.stderr" ] || exit 1
+    n=$(/usr/bin/stat -f %z "$E/requests/$c.bin") || exit 1
+    [ "$n" -ge 208 ] && [ "$n" -le 16384 ] || exit 1
+done
+/bin/cat "$E/requests/positive.bin" > "$E/requests/trailing.bin"
+printf '\000' >> "$E/requests/trailing.bin"
+for c in positive simulated denied trailing; do
+    root_argv "case-$c" > "$E/case-$c.argv"
+    rc=0
+    root_phase "case-$c" > "$E/case-$c.stdout" 2> "$E/case-$c.stderr" || rc=$?
+    printf '%s\n' "$rc" > "$E/case-$c.status"
+    printf '%s\t%s\n' "$c" "$rc" >> "$E/batch.tsv"
+    # The wrapper, unlike native CLI1, is zero only after every case gate.
+    # Uncalibrated SIM returns2 here. No raw export or batch export follows.
+    [ "$rc" = 0 ] || exit 1
+    case "$c" in
+@@CASE_ROLES@@
+        *) exit 2 ;;
+    esac
+    for role in $roles; do
+        root_argv "export-$c:$role" > "$E/exports/$c/$role.argv"
+        rc=0
+        root_phase "export-$c:$role" > "$E/cases/$c/$role" 2> "$E/exports/$c/$role.stderr" || rc=$?
+        printf '%s\n' "$rc" > "$E/exports/$c/$role.status"
+        [ "$rc" = 0 ] || exit 1
+    done
+done
+printf 'complete\t0\n' >> "$E/batch.tsv"
+/bin/cat > "$WORK/evidence-limits.tsv" <<'GLUE_FIXED_LIMITS'
+@@EVIDENCE_LIMITS@@
+GLUE_FIXED_LIMITS
+# The fixed roster streams large trace files; no legacy helper limit is widened.
+for ancestor in /Volumes '/Volumes/My Shared Files' '/Volumes/My Shared Files/glue-mvp-macos-vm-results'; do
+    [ -d "$ancestor" ] && [ ! -L "$ancestor" ] || exit 1
+done
+[ ! -e "$EXPORT" ] && [ ! -L "$EXPORT" ] || exit 1
+/bin/mkdir -m 0700 "$EXPORT" "$EXPORT/requests" "$EXPORT/cases" "$EXPORT/exports"
+for c in positive simulated denied trailing; do /bin/mkdir -m 0700 "$EXPORT/cases/$c" "$EXPORT/exports/$c"; done
+for parent in "$E" "$E/requests" "$E/cases" "$E/exports"; do
+    [ -d "$parent" ] && [ ! -L "$parent" ] || exit 1
+    read_match @@UID@@:40700 /usr/bin/stat -f %u:%p "$parent" || exit 1
+done
+for c in positive simulated denied trailing; do
+    for parent in "$E/cases/$c" "$E/exports/$c"; do
+        [ -d "$parent" ] && [ ! -L "$parent" ] || exit 1
+        read_match @@UID@@:40700 /usr/bin/stat -f %u:%p "$parent" || exit 1
+    done
+done
+total=0
+tab=$(printf '\t') || exit 1
+while IFS="$tab" read -r cap name; do
+    [ -f "$E/$name" ] && [ ! -L "$E/$name" ] || exit 1
+    read_match @@UID@@:100600:1 /usr/bin/stat -f %u:%p:%l "$E/$name" || exit 1
+    size=$(/usr/bin/stat -f %z "$E/$name") || exit 1
+    case "$size" in ''|*[!0-9]*) exit 1 ;; esac
+    [ "$size" -le "$cap" ] || exit 1
+    total=$((total+size))
+    [ "$total" -le 283115520 ] || exit 1
+    /usr/bin/head -c "$cap" "$E/$name" > "$EXPORT/$name" || exit 1
+    read_match "$size" /usr/bin/stat -f %z "$EXPORT/$name" || exit 1
+done < "$WORK/evidence-limits.tsv"
+(
+    cd "$EXPORT"
+    while IFS="$tab" read -r cap name; do /usr/bin/shasum -a 256 "$name" || exit 1; done < "$WORK/evidence-limits.tsv"
+) > "$EXPORT/SHA256SUMS"
+printf 'evidence=%s\n' "$EXPORT"
