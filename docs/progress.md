@@ -18,7 +18,8 @@ The owned VM's read-only deployment inspection passed with SIP enabled and was
 independently reviewed. The configured host kit builds twice with identical
 ad-hoc-signed bytes. New local-only `bootstrap-vm` preparation and offline checking
 have independent reviews; source-enabled host checks pass10 preparer/18 checker
-controls. A fresh packet passed independent review and is staged in the read-only VM
+controls. Two local baseline invocations now automate those suites;28/28 affected
+controls pass on both native hosts, with no newer hosted run. A fresh packet passed independent review and is staged in the read-only VM
 share; private unlock/authentication and the four owned cases are still pending. The full Darwin extraction
 oracle, corpus/budgets, M2 and durable evidence publication remain open.
 Exact source branches, commands and frozen records are in the

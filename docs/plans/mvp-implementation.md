@@ -116,7 +116,8 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-vm-checker` | `97d2be4`, `8012e98` | Strict offline canonical request/status/probe/result/terminal checks;18 controls on both native hosts and two independent reviews; no kernel exec/full acceptance |
 | R02 | `codex/mvp-r02-bootstrap-vm-integration` | `ad9ea78` through `75c565e` | Integrate the separate decisions/implementation/guard/checker commits locally;10 preparer and18 checker controls pass |
 | R02 | `codex/mvp-r02-bootstrap-vm-reviewed-run` | `a17f82b`, `0affe28` | Enable only the reviewed source policy, retain closed kit binding and no runtime override; freshly rendered packet still requires inspection/private guest authentication |
-| R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `this branch` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
+| R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `448a86a` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
+| V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -284,6 +285,19 @@ The staged folder is `bootstrap-vm-c10ed2e4ce0404bd`; source remains local-only.
 The VM is at its lock screen. No guest script or payload has started; private
 unlock/authentication and all four owned cases remain pending. The script checks
 SIP enabled and changes no security settings.
+
+The staging/root-exit/test-log checkpoint is
+`/private/tmp/glue-bootstrap-vm-stage-root-checkpoint-20261017`, manifest
+`37a518f2ba31a73ac0a2078b3fa7174a38c545233f2c39e58b035f115fa2ca60`.
+The V01 follow-up adds only the preparer/checker invocations immediately after
+kit controls. Both affected suites pass28/28 with no skips on Mac and native
+unprivileged offline Linux arm64. Exact command/toolchain/logs/source pins are
+`/private/tmp/glue-bootstrap-vm-ci-native-20261017`, manifest
+`6c62e983d8ac6f728985c4557e7bb91e46031d5a8cf1a41920a5b7c86e2f00ef`.
+The local baseline now invokes24 Python suites collecting387 controls; no single
+387-control driver or hosted run is claimed. Green hosted run12 covers the
+separate earlier `162f91a` source, before the new local VM component/CI additions.
+
 
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux
