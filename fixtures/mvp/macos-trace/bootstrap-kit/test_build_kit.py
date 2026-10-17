@@ -70,7 +70,7 @@ def synthetic_macho(commands=None, cpu_subtype=0):
     return struct.pack('<8I',0xfeedfacf,0x100000c,cpu_subtype,2,len(commands),size,0,0)+b''.join(commands)+bytes(16)
 
 
-def synthetic_proof_trees(proof, inspector):
+def synthetic_proof_trees(proof, inspector, *, output_name='glue-bootstrap-deployment-v1-aB012345', observed=None):
     """Parser fixtures only; no production registry or native construction."""
     binary=b'nonexecutable synthetic parser data';wrapper=b'synthetic wrapper parser data\n'
     binary_sha=hashlib.sha256(binary).hexdigest()
@@ -78,7 +78,7 @@ def synthetic_proof_trees(proof, inspector):
         source_manifest_sha256='a'*64,minimum_macos='26.0',signature='strict-verified development ad-hoc',
         guest_execution_completed=False,privilege_required=False,settings_changed=False,purpose='synthetic parser data')
     inspector_id=write_tree(inspector,{'KIT.json':kit.canonical(metadata),'run-inspector.sh':wrapper,'inspect-deployment':binary})
-    output=kit.GUEST_RESULTS+'/glue-bootstrap-deployment-v1-aB012345'
+    output=kit.GUEST_RESULTS+'/'+output_name
     commands={'binary-check':['/usr/bin/shasum','-a','256','-c',output+'/binary-check.sha256'],
         'signature':['/usr/bin/codesign','--verify','--strict','--verbose=2',kit.GUEST_KIT+'/inspect-deployment'],
         'sip':['/usr/bin/csrutil','status'],'os':['/usr/bin/sw_vers'],'kernel':['/usr/bin/uname','-mrs'],
@@ -92,11 +92,11 @@ def synthetic_proof_trees(proof, inspector):
     members['sip.stdout']=b'System Integrity Protection status: enabled.\n'
     members['kernel.stdout']=b'Darwin 26.6.0 arm64\n'
     members['os.stdout']=b'ProductName:\tmacOS\nProductVersion:\t26.6.2\nBuildVersion:\t25A1\n'
-    members['observation.stdout']=kit.canonical(sample_observation())
+    members['observation.stdout']=kit.canonical(sample_observation() if observed is None else observed)
     proof_id=write_tree(proof,members)
     entry=dict(manifest_sha256=proof_id,review_manifest_sha256='b'*64,inspector_manifest_sha256=inspector_id,
         wrapper_sha256=hashlib.sha256(wrapper).hexdigest(),binary_sha256=binary_sha,inspector_source_commit='d2bd45d',
-        guest_output_name='glue-bootstrap-deployment-v1-aB012345',kernel_release='26.6.0',os_version='26.6.2',os_build='25A1')
+        guest_output_name=output_name,kernel_release='26.6.0',os_version='26.6.2',os_build='25A1')
     return entry,members
 
 
@@ -218,6 +218,40 @@ class KitControls(unittest.TestCase):
                 trial=dict(members);trial[key]=data
                 entry['manifest_sha256']=write_tree(proof,trial)
                 with self.subTest(key=key),self.assertRaises(kit.Refusal):kit.admitted_proof(proof,inspector,{'proofs':[entry]})
+
+    def test_multiple_boot_proofs_select_exact_manifest_and_preserve_mount_tuples(self):
+        # Explicit synthetic parser data: no registry mutation or native run.
+        with tempfile.TemporaryDirectory(prefix='glue-kit-reboot-parser-') as temp:
+            base=Path(temp).resolve();inspector=base/'inspector';inspector.mkdir()
+            entries=[];observations=[];proofs=[]
+            for boot,name in enumerate(('aB012345','cD678901')):
+                observed=sample_observation()
+                for i,component in enumerate(observed['components']):
+                    component['device']=30+boot
+                    component['fsid']=[40 if i<3 else 30+boot,50+boot]
+                proof=base/('proof-'+str(boot));proof.mkdir()
+                entry,_=synthetic_proof_trees(proof,inspector,
+                    output_name='glue-bootstrap-deployment-v1-'+name,observed=observed)
+                entries.append(entry);observations.append(observed);proofs.append(proof)
+            rules=kit.registry(kit.canonical(dict(kit.registry(UNCONFIGURED.read_bytes()),proofs=entries)))
+            catalogs=[]
+            for boot,proof in enumerate(proofs):
+                admitted,observed=kit.admitted_proof(proof,inspector,rules)
+                self.assertEqual(admitted,entries[boot]);self.assertEqual(observed,observations[boot])
+                # The second tuple stays distinct even when both device numbers
+                # coincide. Independently decode all six catalog scalar fields.
+                mount_profile={key:{k:observed['components'][index][k] for k in ('device','fsid')}
+                    for key,index in (('root',0),('data',3))}
+                raw=kit.catalog_bytes('a'*64,mount_profile,1234,*(['b'*64]*4))
+                self.assertEqual(struct.unpack_from('>QiiQii',raw,24),
+                    (30+boot,40,50+boot,30+boot,30+boot,50+boot))
+                catalogs.append(raw)
+                with self.assertRaisesRegex(kit.Refusal,'not been independently reviewed'):
+                    kit.admitted_proof(proof,inspector,{'proofs':[entries[1-boot]]})
+            self.assertNotEqual(catalogs[0],catalogs[1])
+            mixed=copy.deepcopy(observations[1]);mixed['components'][4]['fsid']=observations[0]['components'][4]['fsid']
+            with self.assertRaisesRegex(kit.Refusal,'root/Data transition'):
+                kit.observation(kit.canonical(mixed))
 
     def test_source_lock_refuses_unconfigured_and_dirty_before_reading_sources(self):
         empty=kit.registry(UNCONFIGURED.read_bytes())

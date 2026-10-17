@@ -15,6 +15,18 @@
       "os_version": "26.6.2",
       "review_manifest_sha256": "d5a899e5659dde3f5ac02b6d7dad754204a85fafcfa906fd339e4935fb58e279",
       "wrapper_sha256": "e58ba58269ce9bc39dbffcca0112325d6aaa6cb49550a5dddbc8b6329556e500"
+    },
+    {
+      "binary_sha256": "c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a",
+      "guest_output_name": "glue-bootstrap-deployment-v1-Pf78Qtnu",
+      "inspector_manifest_sha256": "d5f5519e2f59eff40114297e6c4bdef952f40968352bfe2154e1e4efd96e6505",
+      "inspector_source_commit": "d2bd45d",
+      "kernel_release": "25.6.0",
+      "manifest_sha256": "ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f",
+      "os_build": "25G83",
+      "os_version": "26.6.2",
+      "review_manifest_sha256": "ac654ed36717a52fdbeadd3fcd09853265b0bcdc117befc2efe4836156bb1cc8",
+      "wrapper_sha256": "e58ba58269ce9bc39dbffcca0112325d6aaa6cb49550a5dddbc8b6329556e500"
     }
   ],
   "request_sources": [
