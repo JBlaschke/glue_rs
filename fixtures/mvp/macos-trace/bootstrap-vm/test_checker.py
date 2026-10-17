@@ -310,9 +310,11 @@ class SyntheticWorkflowTests(TreeUtilities, unittest.TestCase):
     """Full checker paths with a visibly synthetic, unit-only approval replacement.
 
     No artifact is native proof and no rendered script is ever executed. Public
-    CLI has no such replacement/enable option; the real source policy stays off.
+    CLI has no such replacement/enable option; unit substitutions never change
+    the real source policy.
     """
-    def setup_workflow(self, root, enabled=True):
+    def setup_workflow(self, root, enabled=True,
+                       proof_manifest_sha='ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f'):
         producer = c._producer()
         oldplan, rawcat = fixture()
         binary = b'synthetic-non-executable-probe\n' * 100
@@ -340,7 +342,7 @@ class SyntheticWorkflowTests(TreeUtilities, unittest.TestCase):
                     'components': components, 'settings_changed': False, 'executable_admission': False, 'full_acceptance': False}
         original = {'catalog.bin': rawcat, 'result.json': canonical(result),
                     'admitted-proof.json': canonical({'observation': observed, 'full_acceptance': False,
-                        'registry_entry': {'manifest_sha256': 'ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a'}}),
+                        'registry_entry': {'manifest_sha256': proof_manifest_sha}}),
                     'recipe.json': b'{}\n', 'source-lock.json': b'{}\n'}
         original.update({'kit/' + n: value for n, value in artifacts.items()})
         fullmanifest = b''.join((c.sha(value) + '  ' + name + '\n').encode() for name, value in sorted(original.items()))
@@ -415,6 +417,15 @@ class SyntheticWorkflowTests(TreeUtilities, unittest.TestCase):
             report = self.check(self.setup_workflow(Path(tmp).resolve()))
             self.assertEqual(len(report['cases']), 3)
             self.assertFalse(report['tracing']); self.assertFalse(report['exec_proved']); self.assertFalse(report['full_acceptance'])
+
+    def test_old_or_unknown_proof_refuses_even_with_rebuilt_outer_inventories(self):
+        for proof in ('ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a', '0' * 64):
+            with self.subTest(proof=proof), tempfile.TemporaryDirectory() as tmp:
+                values = self.setup_workflow(Path(tmp).resolve(), proof_manifest_sha=proof)
+                # Refuse closed packet metadata before opening any case evidence.
+                values[2].rename(values[2].with_name('unopened-evidence'))
+                with self.assertRaisesRegex(c.Refusal, 'kit/proof scope'):
+                    self.check(values)
 
     def test_source_disabled_refuses_before_export_reads(self):
         with tempfile.TemporaryDirectory() as tmp:

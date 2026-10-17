@@ -416,7 +416,7 @@ def _packet(producer, packet):
     require(result['schema'] == 'glue-bootstrap-kit-result-v1' and result['status'] == 'built-reproducibly' and
             all(result[k] is False for k in ('new_binaries_executed', 'installed', 'kernel_exec_proof', 'full_acceptance')) and
             proof['full_acceptance'] is False and proof['registry_entry']['manifest_sha256'] ==
-            'ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a', 'kit/proof scope')
+            producer.APPROVED_PROOF_MANIFEST_SHA, 'kit/proof scope')
     plan = p.strict_json(data['plan.json'])
     require(type(plan) is dict and type(plan.get('nonce')) is str, 'plan object')
     require(data['plan.json'] == p.canonical(producer.make_plan(result, observed, plan['nonce'])),

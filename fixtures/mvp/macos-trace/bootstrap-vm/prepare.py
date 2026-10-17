@@ -17,6 +17,7 @@ PARSER_SHA = '5b9332b7d426037f7443eb61cdca0097116dee9610c35260d683f846709c04a9'
 # Unchanged reviewed ordinary inspector; no caller/environment override.
 INSPECTOR_PATH = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016/inspect-deployment'
 INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
+APPROVED_PROOF_MANIFEST_SHA = 'ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f'
 # A reviewed literal binding, not caller-provided authentication or a registry API.
 APPROVED = {
     'kit_manifest_sha256': 'ea67cfba1dab8dc51c44e514ca6ff8a00f703e665cbc89c17f996b3e02f4efae',
@@ -86,7 +87,7 @@ def load_kit(path):
     proof = p.strict_json(data['admitted-proof.json'])
     observed = p.observation(p.canonical(proof['observation']))
     p.require(proof['full_acceptance'] is False and proof['registry_entry']['manifest_sha256'] ==
-              'ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f', 'deployment binding')
+              APPROVED_PROOF_MANIFEST_SHA, 'deployment binding')
     return data, manifest, result, observed
 
 
