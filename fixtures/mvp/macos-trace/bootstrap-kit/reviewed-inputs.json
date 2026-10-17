@@ -44,7 +44,7 @@
     "fixtures/mvp/macos-trace/target-endpoints/target_endpoints.c"
   ],
   "schema": "glue-bootstrap-kit-inputs-v1",
-  "source_revision": "3d500d4a607ef5c5ed5cc907f2a12cacd2c658e8",
+  "source_revision": "863e3279cb701676cc90d32507f7513742abd695",
   "sources": {
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.c": "6ce683cff07bef135fa28c5bc452bdec1200fae5dc9cdcb5d7410ec1b877a2f1",
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.h": "6993e854c5b9bcef941eca12aabca98627a2bbf0bdba8e3b1658cddfe9891923",
@@ -54,7 +54,7 @@
     "fixtures/mvp/macos-trace/bootstrap-kit/make_request.c": "394b8ef5196768437f47b161515737c093ce2056d9ce68bc28353a7f601fa1c3",
     "fixtures/mvp/macos-trace/bootstrap-kit/request_catalog.c": "b40050bf3354b62ce2aafeced89f46a0f5836e6d9ba319aa65946ee4247667cb",
     "fixtures/mvp/macos-trace/bootstrap-kit/request_catalog.h": "8669723cbbeeeed50b96231df2952d43c241e493f313fa363a87313b9485604d",
-    "fixtures/mvp/macos-trace/bootstrap-probe/context_probe.c": "a1c099be27ab3e62099ef0b5dddba829c4233defc978af1fc2991d1b480871d1",
+    "fixtures/mvp/macos-trace/bootstrap-probe/context_probe.c": "301da8e75fc0ababc60aa5706d265162c0a3bf926325ac1196a95417a38f468a",
     "fixtures/mvp/macos-trace/bootstrap-probe/probe_report.c": "e76406b42f24ea8f2eef6e6c32ac13fe07105fc3494b8c172bf2b010d68688c1",
     "fixtures/mvp/macos-trace/bootstrap-probe/probe_report.h": "aa58c67d9ac156539bb6aefdb4eec75e4068b31b1c9a6127cdf7bd4210ddd02c",
     "fixtures/mvp/macos-trace/bootstrap-request/bootstrap_request.c": "dacb786aadffc5e1b7439e97d0ec47e46b52ad097596116f2ba0b844f11f0d85",

@@ -3,7 +3,8 @@
 This prepares inputs for a later separately reviewed protected installation and
 NONTRACING bootstrap attempt. The checked-in registry admits one independently
 reviewed observation from the owned macOS VM and the 34 production/controller
-source files at `3d500d4`. Unregistered proof or changed sources refuse before
+source files at `863e327` (the minimal Ubuntu compiler follow-up). Unregistered
+proof or changed sources refuse before
 compilation/output creation. Unit fixtures cannot register real guest facts.
 
 ```sh
@@ -111,3 +112,7 @@ metadata, group, bounds, output and refusal controls. These tests do not execute
 configured kit or protected launch. Construction/installation/transition records
 are separate from unit coverage; kernel execution, syscall effect classification
 and full R02/M2 acceptance remain separate gates.
+
+The earlier reproducible kit02 retains its original `3d500d4` source lock and
+audits. Updating this registry does not rebuild or relabel that frozen kit. See
+[the source-lock follow-up](../../../../docs/decisions/mvp-r02-bootstrap-reviewed-inputs.md#ubuntu-compiler-follow-up--17-october).
