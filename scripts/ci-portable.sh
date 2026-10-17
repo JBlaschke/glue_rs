@@ -39,6 +39,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-trace-kit/test_build_kit.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-vm/test_prepare.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-vm/test_checker.py -v
         python3 fixtures/mvp/macos-trace/trace-session/test_trace_session.py -v
