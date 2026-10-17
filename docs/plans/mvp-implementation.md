@@ -118,6 +118,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-bootstrap-vm-reviewed-run` | `a17f82b`, `0affe28` | Enable only the reviewed source policy, retain closed kit binding and no runtime override; freshly rendered packet still requires inspection/private guest authentication |
 | R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `448a86a` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
 | V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
+| R04 | `codex/mvp-r04-bootstrap-restart-status` | branch tip, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted VM launch preserved, restart observed, private guest inspection/authentication still pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -282,9 +283,9 @@ the existing read-only VM toolkit share, manifest
 Its independent packet review has manifest
 `2049dc2bf5c133a98a40892a670e287e94660b368b41f9800815bf905bf6e79a`.
 The staged folder is `bootstrap-vm-c10ed2e4ce0404bd`; source remains local-only.
-The VM is at its lock screen. No guest script or payload has started; private
-unlock/authentication and all four owned cases remain pending. The script checks
-SIP enabled and changes no security settings.
+At that staging checkpoint the VM was at its lock screen and no guest script or
+payload had started. The script checks SIP enabled and changes no security
+settings; the subsequent interrupted launch is recorded below.
 
 The staging/root-exit/test-log checkpoint is
 `/private/tmp/glue-bootstrap-vm-stage-root-checkpoint-20261017`, manifest
@@ -294,9 +295,48 @@ kit controls. Both affected suites pass28/28 with no skips on Mac and native
 unprivileged offline Linux arm64. Exact command/toolchain/logs/source pins are
 `/private/tmp/glue-bootstrap-vm-ci-native-20261017`, manifest
 `6c62e983d8ac6f728985c4557e7bb91e46031d5a8cf1a41920a5b7c86e2f00ef`.
-The local baseline now invokes24 Python suites collecting387 controls; no single
-387-control driver or hosted run is claimed. Green hosted run12 covers the
+The local baseline now invokes24 Python suites collecting387 controls. Green hosted run12 covers the
 separate earlier `162f91a` source, before the new local VM component/CI additions.
+
+All24 direct Python suite invocations at `ad59dfa` subsequently completed on the
+local Mac:387 collected,382 passes, five expected skips and zero failures. Four
+skips are Linux-only unsupported-adapter checks; one negative group-order branch
+skips because the actual groups are canonical, while its positive native control
+passes. No Rust/Lua CI driver or new hosted run is inferred. The77-file closed
+record at `/private/tmp/glue-portable-python24-mac-v2-20261017` has manifest
+`40163357625e96bcf09212eab91d4ccc9ab8137bee108d8d808a31653c6a0c67`.
+Independent review reconciled all24 argv vectors, raw test lines, counts, exits,
+stream hashes and105 unchanged Git/source pins without rerunning the tests:
+`/private/tmp/glue-python24-mac-independent-review-20261017`, manifest
+`3fbe63809e29f041f323b0365246f03be78df82e8b6957148dd8fffc752fa1a2`.
+
+The first enabled packet `c10ed2e4ce0404bd` was launched and visibly reached its
+private sudo password prompt. Before authentication completion was observed,
+the owner reported that host memory exhaustion crashed the VM. UTM was observed
+stopped, then running again at its restored guest desktop after host unlock.
+Automated keyboard input is currently not reaching guest Terminal, so the fixed
+read-only interruption inspection has not executed. No completed-run receipt,
+closure, protected installation or case success is inferred. The old packet and
+private partial directories are not edited, retried, inventoried or repaired.
+
+One fresh host-only packet was prepared normally from the unchanged reviewed
+kit02 at `ad59dfa`: `/private/tmp/glue-bootstrap-vm-packet-reviewed-20261017-02`,
+nonce `6ae386cc044ff2a1`, manifest
+`50a5801a75101d585e8f4d800a3371c82b0b5751f991404ba180d4fce30f2181`.
+Its15 files retain the same nine kit members and three source-rendered scripts;
+syntax checks exit zero. The separate host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-02`, manifest
+`4b180f3466662254247cb4aecc809519d55c1bcd0408c3aad3f8acdbe0d81dbf`.
+Independent packet/receipt review passed without execution:
+`/private/tmp/glue-bootstrap-vm-packet02-independent-review-20261017`, manifest
+`7666ef69283914849dc22cb17de488c6d92c66845abd9808c12788d5871568fa`.
+Root rechecked exact source rendering, canonical plan and both complete trees,
+then copied all15 files unchanged into read-only toolkit share folder
+`bootstrap-vm-6ae386cc044ff2a1`. The separate restaging checkpoint is
+`/private/tmp/glue-bootstrap-vm-restage-root-checkpoint-20261017`, manifest
+`7a56018bb4bdfca5a4eff0404d51c4a5a63cbe7210a5b2ec6b0332ed913778b5`.
+No fresh guest script or payload has executed. Guest interruption inspection and
+private authentication remain prerequisites; full Darwin R02/M2 remains open.
 
 
 The credential primitive independently passes 14 native unprivileged controls
