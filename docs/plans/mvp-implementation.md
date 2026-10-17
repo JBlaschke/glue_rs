@@ -128,6 +128,12 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-bootstrap-current-status` | `14c1839`, based on `c9e845b` | Fresh proof, rebuilt kit03, preflight and retention-packet checkpoint; no fresh guest run or full Darwin acceptance |
 | R02 | `codex/mvp-r02-bootstrap-kit03-binding` | `58fbff0`, `8b068b1`; integrated `f1b4106`, `d295691` | Single literal actual kit03/new-proof binding, combined artifact/catalog audit;19/18 focused controls pass, kit02 refuses unchanged |
 | R04 | `codex/mvp-r04-bootstrap-kit03-handoff` | branch tip, based on `d295691` | Reviewed actual packet04 and retention03 staged unchanged; preservation launcher at private guest authentication, no new native outcome |
+| R02 | `codex/mvp-r02-bootstrap-checker-proof-binding` | `45627d1`, `476b081` | Share the existing admitted-proof constant; reject old/unknown packet proof before evidence reads;19 preparer/19 checker controls and independent review pass |
+| R02 | `codex/mvp-r02-trace-session-integration` | `4520e73` through `68d22d1` | Integrate reviewed owned-child tracing lifecycle models, once-only GO/closure and fixed deadlines; no native backend/runner adoption |
+| R02 | `codex/mvp-r02-bootstrap-observed-io` | `ab1f3a2`, `fbcc2cf` | Cooperative observer variants retain legacy ABI, original deadline, bounded waits, confirmed prefixes and error precedence;27 strict/27 sanitizer controls pass |
+| R02 | `codex/mvp-r02-bootstrap-observer-inputs` | `b25d51a`, `cb19a8c` | Advance only BIO C/H pins among 34 sources to reviewed `fbcc2cf`; both actual proofs and historical kit03 unchanged |
+| V01 | `codex/mvp-v01-trace-session-ci` | `cb26b09` | Add two model suites; all 26 Python suites pass locally on Mac and native offline Linux arm64 with explicit platform skips; no newer hosted run |
+| R04 | `codex/mvp-r04-bootstrap-nontracing-status` | branch tip, based on `cb26b09` | Record successful actual retention03/packet04 and independent nontracing replay; complete Darwin oracle/M2 remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -557,11 +563,107 @@ destination bytes/modes equal. The closed staging checkpoint is
 `cb46016403c09ae7f7fa06e8db48937534dcc950df821fcf5b87090a43901854`.
 Guest paths end in `bootstrap-retain-kit02-packet03-20261017-03` and
 `bootstrap-vm-da1aaf9a396020b3`. The preservation launcher's exact no-argument
-command was visually checked before Return; it is now at private guest sudo
-authentication. No root phase, retained move or fresh native case outcome is
-observed yet. The diagnostic is ready after successful retention verification;
-none of the failed packets is edited or rerun. SIP stays enabled. Protected
-bootstrap, native cases, tracing and R02/M2 remain open.
+command was visually checked before Return. Private guest authentication then
+completed; the actual retention and fresh nontracing outcomes follow. None of
+the failed packets is edited or rerun. SIP stays enabled.
+
+### Completed kit03 nontracing diagnostic and tracing prerequisites
+
+Retention03 returns0. Its five-file actual export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-retained-install-1ee4bbe2b443c268-03`,
+manifest `5227e705f2b760c308f335da232eade4b14b6a1046b03919f068a0fdf0699490`.
+The old protected installation is preserved at
+`/System/Volumes/Data/Library/GlueMVPFixtures-retained-a75d54bb-1ee4bbe2`.
+Exact argv, 12 strict signature lines and the five-entry final identity vector
+verify. The reviewed source enforces equality before/after the single move;
+separate raw before-vectors were not emitted. The stable-parent/no-concurrent-
+privileged-mutator assumption remains explicit.
+
+Packet04 then returns0 through its normal outer receipt. The actual 52-file batch
+is `/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-batch-da1aaf9a396020b3`,
+manifest `b2654ce96a03860c41a17b26effd411f0da1b6955dd99c43237b8b8eef739cfb`.
+Its five-file outer receipt is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-run-receipt-da1aaf9a396020b3`,
+manifest `c688fdcb146e49bcb6450460b6edd9dc0ee3bc89879f30a50bc401c551cf8029`.
+Preflight/install/all four case wrappers/complete return0; native statuses are
+0/1/1/2 as declared. Positive has READY+ATTEMPT, a 256-byte context report,
+strict EOF class 3 and wait 0. SIM has READY+ERROR, no GO, empty captures,
+EOF class 2 and raw wait 30720 (normal exit 120); `kill_attempted=true` remains
+recorded and is not reinterpreted as signal-caused termination. Denied has one
+ERROR before READY/GO, errno 13, empty captures, EOF class 2 and normal exit 120.
+Positive/denied request bytes match; SIM changes only release action. The 441-byte
+trailing request is the canonical 440 bytes plus one NUL and refuses before output.
+
+The original host checker stops before evidence/case reads because it repeats
+the old proof literal. Its failed checkpoint remains unchanged at
+`/private/tmp/glue-bootstrap-kit03-run-root-checkpoint-20261017`, manifest
+`5fefe9d5315118c8b56486eb65ea81e59b47d83c152ee1fff93f0efa2f34ca9e`.
+Decision `45627d1` and repair `476b081` share the preparer's existing admitted
+proof constant, retaining policy/templates/schemas. Rebuilt-inventory old and
+unknown proof controls refuse before renamed evidence is read. Focused 19/19
+controls pass, with independent source review at
+`/private/tmp/glue-checker-proof-source-review-Wn0xDe`, manifest
+`e70dd5d8867e98325c7bf4afaf9a3699b42f40191ee2d0491b99fc15bdf76c9e`.
+
+The repaired actual checker returns0 without rerunning native cases or changing
+exports. Its21-file root checkpoint is
+`/private/tmp/glue-bootstrap-kit03-run-root-checkpoint-20261017-02`, manifest
+`6c1913ca6fef3b2ecbbfb82382d8dd8f684086750b8fc27ac6de541eaf6c2025`.
+The independent140-file review is
+`/private/tmp/glue-kit03-actual-result-review-wDKNY4`, manifest
+`c0fb82f1237f50e235a9991784f641b71c3dc1df35578a46d9d62f08e1ea4962`.
+It checks 14 terminal gates before case payloads, independently decodes BR/BW/NP
+and catalog relationships, replays the actual checker byte-for-byte and verifies
+all input inventories unchanged. These are strict owned nontracing diagnostics:
+producer reports do not establish kernel exec or extraction proof.
+
+The [trace-session decision](../decisions/mvp-r02-trace-session-coordinator.md)
+defines the fixed owned-child coordinator. Original feature commits `0cddfdc`
+through `cacb5a8` integrate as `4520e73` through `68d22d1`. Readiness and actual
+BEGIN precede once-only GO; pumping, reap/ECHILD ownership, cleanup, queued terminal
+drain and all closure reports preserve original deadlines and first errors.
+Eleven strict/eleven sanitizer model groups pass; independent review adds 14
+strict/14 sanitizer groups. Its44-file review is
+`/private/tmp/glue-trace-session-independent-review-mpnnvzwy`, manifest
+`2be89890d5ad9f22adccd369a0f847ba55d20112b7ab8795c3a43a5311081d21`.
+The models supply no native provider or kernel event validation.
+
+The [observed-I/O decision](../decisions/mvp-r02-bootstrap-observed-io.md)
+and `fbcc2cf` add explicit cooperative variants without changing legacy APIs or
+their operation table. Polls cap at min(remaining ceiling timeout,20ms), keep the
+original deadline/retry bound and retain confirmed prefixes on failure, even a
+fully written failedGO. Fatal poll/I/O and confirmed trailing-byte errors retain
+their original precedence. Nine new and 18 legacy groups pass strict and ASan/UBSan
+(27+27, no skips). The initial trailing-error ordering bug is preserved as a
+failing reconstructed regression and fixed in committed source. The51-file peer
+source review is `/private/tmp/glue-bio-observer-source-review-dGeMdp`, manifest
+`4718ca0ad470988ffea370ab3a53067886d40f1f2a46cc8b79cebc16aadb76e2`.
+Callbacks remain trusted/cooperative and cannot interrupt kernel stalls.
+
+Registration `cb19a8c` advances exactly BIO C/H among the 34 source pins and
+`source_revision` to committed `fbcc2cf`; all 32 other pins, both proofs, compile
+unit lists and parser stay unchanged. Clean committed source loading passes 34/34.
+Its eight-file independent review is
+`/private/tmp/glue-bio-source-registration-review-pCuCrN`, manifest
+`464a2613891e719d952ce74a7e6dec397836e46ba043ffb89454d7cb8e8b8eb6`.
+No new kit is built; historical kit03/export identities remain unchanged.
+
+CI `cb26b09` adds exactly two baseline Python test invocations. Its seven-file
+source review is `/private/tmp/glue-trace-session-ci-source-review-m4wbWV`,
+manifest `9621d455db0922e167ca557940a77d3f9df20526373357aac29137d0c0cc71c3`.
+All 26 suites collect 418 controls locally: Mac 413 pass/five skip; native offline
+Linux arm64 GCC 14 passes 390 with28 explicit skips. The cached image is
+`83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
+with network none, read-only checkout/root, UID 65534, 256 MB memory and 64-PID bound.
+The421-file checkpoint is `/private/tmp/glue-trace-portable-controls-20261017-01`,
+manifest `a9628a65d2dd6b602094f71c45b1f42090f2b08bf18e370dfcbc06a13d30d47a`.
+All 198 source pins equal before/after/committed bytes. An initial local driver's
+assertion counted the informational version probe as a suite and stopped before
+any test; its source and empty output directory remain preserved. The corrected
+driver runs the 26 exact suite argv. These are local Python/C controls, with no
+new Rust, hosted CI, provider or guest execution. Independent aggregate review
+is pending. Native backend/runner adoption, tracing receipts and SIP-approved
+calibration remain open, along with the full Darwin oracle/corpus/budgets and M2.
 
 
 The credential primitive independently passes 14 native unprivileged controls

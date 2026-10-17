@@ -14,47 +14,31 @@ The two earlier failed runs remain unchanged. Native Ubuntu GCC13 additionally
 passes all22 Python suites (334 passes,25 explicit skips); its one changed
 production source and updated lock were independently reviewed.
 
-The owned VM's read-only deployment inspection passed with SIP enabled and was
-independently reviewed. The configured host kit builds twice with identical
-ad-hoc-signed bytes. New local-only `bootstrap-vm` preparation and offline checking
-have independent reviews; source-enabled host checks pass10 preparer/18 checker
-controls. Two local baseline invocations now automate those suites;28/28 affected
-controls pass on both native hosts, with no newer hosted run. All24 local Mac
-Python suites subsequently completed:387 collected,382 passed and five expected
-skips, independently checked against105 unchanged source pins. The first staged
-packet reached private sudo authentication before the owner reported a VM crash
-from host memory exhaustion. After reboot, read-only inspection confirms SIP
-enabled and all old temporary paths/the protected fixture prefix absent. A fresh
-reviewed packet authenticated, then refused installation before root staging or
-any native case. The shell's BSD `stat %Lp` check discards the sticky bit and
-cannot match its expected1777; the actual guest reports full mode41777 and low
-permissions777. A separate feature branch is correcting every mode/type guard
-with regression controls. The repair is now integrated at `dec2488` on
-`codex/mvp-r02-bootstrap-mode-integration`:14 preparer and18 checker controls
-pass, with an independent review and60 additional exact-mode/type controls.
-A fresh packet from the unchanged kit passes separate rendered review and is
-staged unchanged. After private authentication, installation passes and all three
-payload signatures verify. The ordinary positive request helper then refuses
-its protected-directory observation before emitting bytes or starting any case.
-Separate bounded wrapper/request metadata records preserve that outcome. The
-fresh read-only observation confirms changed device/FSID tuples after reboot;
-the old compiled catalog must reject those values. The exact earlier failing
-instruction remains untraced. Independent review and append-only registration
-pass, preserving both observations. A new host kit binds the current tuples,
-builds twice with identical signed bytes and passes independent artifact/catalog
-review. A separate preflight checks the actual native observation and typed
-identity/mount fields before authentication;19 preparer/18 checker controls pass
-independently. A literal binding now accepts only kit03 and refuses kit02; its
-19/18 focused controls also pass. The completed old installation has a reviewed,
-reversible same-parent retention packet. Both that packet and a separately
-reviewed fresh diagnostic are staged byte-for-byte; the preservation launcher
-has reached private guest authentication. No move or fresh native case is yet
-observed. The failed packets remain unchanged.
-All four owned cases remain unverified. The full Darwin extraction
-oracle, corpus/budgets, M2 and durable evidence publication remain open.
+The SIP-enabled VM completed the reviewed same-parent preservation of kit02,
+then installed kit03 and ran its four-case nontracing bootstrap diagnostic.
+The positive probe passed, simulated and denied execution returned their exact
+expected errors, and a request with one trailing byte refused before output.
+The raw exports and earlier failed packets remain unchanged. A stale duplicate
+proof literal initially stopped the host checker before case reads; the reviewed
+repair at `476b081` permits the independently replayed batch. SIM records a kill
+attempt and a normal exit 120; it does not prove signal-caused termination.
+Bootstrap messages and probe context remain producer observations, with
+`tracing=false`, `exec_proved=false` and `full_acceptance=false`.
+
+The reviewed trace-session coordinator (`68d22d1`) and cooperative pipe-I/O
+observer (`fbcc2cf`) are implemented locally. Their separate controls and peer
+reviews pass. Registration at `cb19a8c` advances exactly two of 34 source hashes,
+preserving both actual deployment proofs; kit03 keeps its historical lock.
+CI wiring at `cb26b09` adds both suites. All 26 current Python suites collect 418
+controls: Mac 413 pass/five skip; native offline Linux arm64 GCC 14 passes 390 with
+28 explicit skips. All 198 recorded source pins match before/after and committed
+bytes. This is local Python/C validation, with no newer hosted or Rust-suite run.
+The coordinator and observer have no native tracing/runner adoption yet.
+The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
+publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-bootstrap-kit03-handoff`.
+Documentation continues on `codex/mvp-r04-bootstrap-nontracing-status`.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
