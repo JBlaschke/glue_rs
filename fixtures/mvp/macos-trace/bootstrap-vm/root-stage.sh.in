@@ -16,11 +16,12 @@ PREFIX=/System/Volumes/Data/Library/GlueMVPFixtures
 
 directory() {
     [ -d "$1" ] && [ ! -L "$1" ] || return 1
-    [ "$(/usr/bin/stat -f '%u:%Lp' "$1")" = "$2" ]
+    # Complete octal mode includes type and special bits; %Lp omits both.
+    [ "$(/usr/bin/stat -f '%u:%p' "$1")" = "$2" ]
 }
 regular() {
     [ -f "$1" ] && [ ! -L "$1" ] || return 1
-    [ "$(/usr/bin/stat -f '%u:%Lp:%l' "$1")" = "$2" ]
+    [ "$(/usr/bin/stat -f '%u:%p:%l' "$1")" = "$2" ]
 }
 digest() {
     line=$(/usr/bin/shasum -a 256 "$1") || return 1
@@ -36,25 +37,25 @@ request_digests_match() {
     case "$staged_hash$source_hash" in *[!0-9a-f]*) return 2 ;; esac
     [ "$staged_hash" = "$source_hash" ] || return 2
 }
-directory "$STAGE" 0:700 || exit 2
+directory "$STAGE" 0:40700 || exit 2
 
 install_file() {
     name=$1 size=$2 expected=$3
     source="$PACKET/payload/$name"
     [ -f "$source" ] && [ ! -L "$source" ] || return 1
     /usr/bin/head -c "$((size+1))" "$source" > "$BUILD/$name"
-    regular "$BUILD/$name" 0:600:1 || return 1
+    regular "$BUILD/$name" 0:100600:1 || return 1
     [ "$(/usr/bin/stat -f '%z' "$BUILD/$name")" = "$size" ] || return 1
     [ "$(digest "$BUILD/$name")" = "$expected" ] || return 1
     /bin/chmod -N "$BUILD/$name"
     /bin/chmod 0555 "$BUILD/$name"
-    regular "$BUILD/$name" 0:555:1 || return 1
+    regular "$BUILD/$name" 0:100555:1 || return 1
     /usr/bin/codesign --verify --strict --verbose=2 "$BUILD/$name"
 }
 install() {
     # These protected existing ancestors are never chmod/chown/ACL-repaired.
     for parent in / /System /System/Volumes /System/Volumes/Data /System/Volumes/Data/Library; do
-        directory "$parent" 0:755 || return 1
+        directory "$parent" 0:40755 || return 1
     done
     [ ! -e "$PREFIX" ] && [ ! -L "$PREFIX" ] || return 1
     /bin/mkdir -m 0700 "$PREFIX"
@@ -65,7 +66,7 @@ install() {
     # All payload writers are closed; known bytes/signatures already checked.
     /bin/chmod 0755 "$BUILD"
     /bin/chmod 0755 "$PREFIX"
-    directory "$BUILD" 0:755 && directory "$PREFIX" 0:755 || return 1
+    directory "$BUILD" 0:40755 && directory "$PREFIX" 0:40755 || return 1
     printf '%s\n' @@KIT_SHA@@ > "$STAGE/installed"
 }
 select_case() {
@@ -85,7 +86,7 @@ expect() {
 }
 value() { /usr/bin/plutil -extract "$1" raw -expect "$2" -o - "$OUTPUT/result.json"; }
 closed() {
-    regular "$OUTPUT/result.json" 0:600:1 || return 1
+    regular "$OUTPUT/result.json" 0:100600:1 || return 1
     [ "$(/usr/bin/stat -f '%z' "$OUTPUT/result.json")" -le 8192 ] || return 1
     expect schema string glue-owned-bootstrap-diagnostic-v1 || return 1
     for key in tracing exec_proved full_acceptance wait.lost; do expect "$key" bool false || return 1; done
@@ -126,14 +127,14 @@ run_case() {
     [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
     printf 'started\n' > "$STAGE/$C.started"  # Once only; never retry a case.
     source="$WORK/evidence/requests/$C.bin"
-    regular "$source" @@UID@@:600:1 || return 2
+    regular "$source" @@UID@@:100600:1 || return 2
     size=$(/usr/bin/stat -f '%z' "$source")
     [ "$size" -ge 208 ] && [ "$size" -le 16385 ] || return 2
     /usr/bin/head -c 16386 "$source" > "$STAGE/$C.request.bin"
     [ "$(/usr/bin/stat -f '%z' "$STAGE/$C.request.bin")" = "$size" ] || return 2
     request_digests_match "$STAGE/$C.request.bin" "$source" || return 2
     printf '%s\n' "$staged_hash" > "$STAGE/$C.input.sha256"
-    if [ "$C" = denied ]; then /bin/chmod 0700 "$BUILD"; directory "$BUILD" 0:700 || return 2; fi
+    if [ "$C" = denied ]; then /bin/chmod 0700 "$BUILD"; directory "$BUILD" 0:40700 || return 2; fi
     native=0
     /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/bootstrap-runner" \
         --request "$STAGE/$C.request.bin" --output "$OUTPUT" </dev/null \
@@ -151,7 +152,7 @@ run_case() {
     if [ "$C" = denied ]; then
         # No EXIT trap can bypass the proven-closure gate.
         /bin/chmod 0755 "$BUILD"
-        directory "$BUILD" 0:755 || return 2
+        directory "$BUILD" 0:40755 || return 2
     fi
     expected_case || return 1
 }
@@ -169,7 +170,7 @@ export_file() {
             case "$role" in request.bin) cap=16384 ;; status.bin) cap=769 ;; probe.stdout) cap=256 ;; probe.stderr) cap=4096 ;; result.json) cap=8192 ;; esac ;;
         *) return 2 ;;
     esac
-    regular "$source" 0:600:1 || return 2
+    regular "$source" 0:100600:1 || return 2
     file_size=$(/usr/bin/stat -f '%z' "$source")
     [ "$file_size" -le "$cap" ] || return 2
     # Compare closed-file observations before export as well as in the later
