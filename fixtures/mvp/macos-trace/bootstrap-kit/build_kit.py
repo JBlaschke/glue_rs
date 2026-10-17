@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Reviewed, host-only kit construction. Never runs a newly built executable."""
 import argparse
+from dataclasses import dataclass
 import hashlib
 import json
 import os
@@ -24,6 +25,50 @@ GUEST_RESULTS = '/Volumes/My Shared Files/glue-mvp-macos-vm-results'
 HEX = re.compile(r'[0-9a-f]{64}\Z')
 SOURCE_NAME = re.compile(r'[A-Za-z0-9_./-]+\Z')
 COMMANDS = ('binary-check', 'signature', 'sip', 'os', 'kernel', 'observation')
+BASE_FLAGS = ('-arch', 'arm64', '-mmacosx-version-min=26.0', '-std=c11', '-O2', '-g0', '-Wall', '-Wextra', '-Werror')
+SYSTEM_DEPENDENCIES = (b'/usr/lib/libSystem.B.dylib',)
+
+
+@dataclass(frozen=True)
+class ArtifactPolicy:
+    name: str
+    source_key: str
+    compiler_flags: tuple = ()
+    link_flags: tuple = ('-lproc',)
+    dependencies: tuple = SYSTEM_DEPENDENCIES
+    expected_sources: tuple = ()
+
+
+@dataclass(frozen=True)
+class KitPolicy:
+    registry_relative: str
+    registry_schema: str
+    sip_stdout: bytes
+    sip_label: str
+    recipe_schema: str
+    build_id_schema: str
+    result_schema: str
+    partial_failure_schema: str
+    signing_prefix: str
+    error_prefix: str
+    artifacts: tuple
+    guard_paths: tuple
+    required_helpers: tuple
+    excluded_runner_parts: tuple = ('/bootstrap-kit/', '/bootstrap-probe/')
+    tracing: bool = False
+
+
+LEGACY_POLICY = KitPolicy(
+    'fixtures/mvp/macos-trace/bootstrap-kit/reviewed-inputs.json',
+    'glue-bootstrap-kit-inputs-v1', b'System Integrity Protection status: enabled.\n', 'enabled',
+    'glue-bootstrap-kit-recipe-v1', 'glue-bootstrap-kit-build-id-v1',
+    'glue-bootstrap-kit-result-v1', 'glue-bootstrap-kit-partial-failure-v1',
+    'glue.mvp.bootstrap', 'bootstrap-kit',
+    (ArtifactPolicy('context-probe', 'probe_sources'), ArtifactPolicy('bootstrap-runner', 'runner_sources'),
+     ArtifactPolicy('make-request', 'request_sources')),
+    ('fixtures/mvp/macos-trace/bootstrap-kit/build_kit.py',
+     'fixtures/mvp/macos-trace/bootstrap-kit/reviewed-inputs.json'),
+    ('fixtures/mvp/macos-trace/bootstrap-kit/build_kit.py',))
 
 
 class Refusal(ValueError):
@@ -234,19 +279,22 @@ def observation(data):
     return value
 
 
-def registry(data):
+def registry(data, *, policy=LEGACY_POLICY):
     value = strict_json(data)
     exact_keys(value, ('schema', 'source_revision', 'sources', 'probe_sources', 'runner_sources', 'request_sources', 'proofs'))
-    require(value['schema'] == 'glue-bootstrap-kit-inputs-v1', 'registry schema')
+    require(value['schema'] == policy.registry_schema, 'registry schema')
     require(type(value['sources']) is dict and len(value['sources']) <= 128, 'source closure bound')
     for name, identity in value['sources'].items():
         relative_name(name); sha(identity)
-        require(name != 'fixtures/mvp/macos-trace/bootstrap-kit/reviewed-inputs.json', 'registry cannot enter its own source digest')
+        require(name != policy.registry_relative, 'registry cannot enter its own source digest')
     for key in ('probe_sources', 'runner_sources', 'request_sources'):
         seq = value[key]
         require(type(seq) is list and len(seq) <= 32 and all(type(n) is str for n in seq) and len(set(seq)) == len(seq), 'compile source list')
         for name in seq:
             require(type(name) is str and name in value['sources'] and name.endswith('.c') and not name.endswith('/catalog_unconfigured.c'), 'unlocked/default compile source')
+        selected = next(a for a in policy.artifacts if a.source_key == key)
+        if selected.expected_sources and seq:
+            require(tuple(seq) == selected.expected_sources, 'compile sources differ from fixed artifact profile')
     require(type(value['proofs']) is list and len(value['proofs']) <= 8, 'proof registry bound')
     identities = set()
     for p in value['proofs']:
@@ -261,10 +309,13 @@ def registry(data):
             require(type(p[key]) is str and re.fullmatch(r'[A-Za-z0-9.]{1,32}', p[key]), 'registered OS text')
     if value['source_revision'] is not None:
         require(type(value['source_revision']) is str and re.fullmatch(r'[0-9a-f]{40}', value['source_revision']), 'source revision')
+    elif policy.tracing:
+        require(not value['sources'] and not value['proofs'] and all(not value[k] for k in ('probe_sources', 'runner_sources', 'request_sources')),
+                'unconfigured tracing registry must be completely empty')
     return value
 
 
-def admitted_proof(proof_path, kit_path, rules):
+def admitted_proof(proof_path, kit_path, rules, *, policy=LEGACY_POLICY):
     # A registry entry is a reviewed workflow input, not an administrator-proof
     # trust root. Self-consistency or a caller-provided hash cannot add an entry.
     fd = open_directory(proof_path)
@@ -301,7 +352,7 @@ def admitted_proof(proof_path, kit_path, rules):
     target = GUEST_KIT + '/inspect-deployment'
     require(proof['binary-check.sha256'] == (entry['binary_sha256'] + '  ' + target + '\n').encode() and
             proof['binary-check.stdout'] == (target + ': OK\n').encode(), 'guest binary hash check')
-    require(proof['sip.stdout'] == b'System Integrity Protection status: enabled.\n', 'SIP is not exactly enabled')
+    require(proof['sip.stdout'] == policy.sip_stdout, 'SIP is not exactly ' + policy.sip_label)
     require(proof['kernel.stdout'] == ('Darwin ' + entry['kernel_release'] + ' arm64\n').encode(), 'guest kernel/architecture')
     try:
         os_lines = proof['os.stdout'].decode('ascii').splitlines()
@@ -351,8 +402,16 @@ def generated_catalog(build_id, profile, size, identities, raw):
             'const struct bk_request_catalog *bk_compiled_request_catalog(void){return &v;}\n').encode()
 
 
-def macho(data):
+def artifact_policy(policy, name):
+    require(type(name) is str, 'artifact selector type')
+    selected = next((item for item in policy.artifacts if item.name == name), None)
+    require(selected is not None, 'unknown artifact selector')
+    return selected
+
+
+def macho(data, *, policy=LEGACY_POLICY, artifact=None):
     """Bounded load-command provenance check; not a general Mach-O verifier."""
+    selected = artifact_policy(policy, policy.artifacts[1].name if artifact is None else artifact)
     require(type(data) is bytes and len(data) <= 4194304 and len(data) >= 32, 'executable bytes bound')
     magic, cpu, subtype, kind, count, size, flags, reserved = struct.unpack_from('<8I', data)
     require(magic == 0xfeedfacf and cpu == 0x100000c and subtype == 0 and kind == 2 and reserved == 0 and 1 <= count <= 128 and
@@ -386,10 +445,10 @@ def macho(data):
             require(length == 24 and any(raw[8:24]), 'UUID command size/value')
             uuids.append(raw[8:24].hex())
         at += length
-    require(at == 32 + size and loads == [b'/usr/lib/libSystem.B.dylib'] and dylinkers == [b'/usr/lib/dyld'] and
+    require(at == 32 + size and tuple(loads) == selected.dependencies and dylinkers == [b'/usr/lib/dyld'] and
             len(builds) == 1 and signatures == 1 and len(uuids) == 1, 'dyld/libSystem/minimum/signature/UUID provenance')
     return {'architecture': 'arm64', 'minimum_macos': '26.0', 'sdk_word': builds[0][1],
-            'dependencies': ['/usr/lib/libSystem.B.dylib'], 'dylinker': '/usr/lib/dyld', 'uuid': uuids[0]}
+            'dependencies': [name.decode('ascii') for name in selected.dependencies], 'dylinker': '/usr/lib/dyld', 'uuid': uuids[0]}
 
 
 def git(repo, *args):
@@ -398,7 +457,7 @@ def git(repo, *args):
     return done.stdout
 
 
-def locked_sources(repo, rules):
+def locked_sources(repo, rules, *, policy=LEGACY_POLICY):
     require(rules['source_revision'] is not None and rules['sources'] and all(rules[k] for k in ('probe_sources', 'runner_sources', 'request_sources')), 'runner/source closure is not configured/frozen')
     require(not git(repo, 'status', '--porcelain=v1', '--untracked-files=all'), 'dirty/untracked checkout refused')
     require(git(repo, 'merge-base', '--is-ancestor', rules['source_revision'], 'HEAD') == b'', 'unrelated source revision')
@@ -409,10 +468,9 @@ def locked_sources(repo, rules):
             data = read_member(root, name)
             require(digest(data) == identity and git(repo, 'show', rules['source_revision'] + ':' + name) == data, 'source lock mismatch')
             result[name] = data
-        for name in ('build_kit.py', 'reviewed-inputs.json'):
-            path = 'fixtures/mvp/macos-trace/bootstrap-kit/' + name
+        for path in policy.guard_paths:
             require(git(repo, 'show', 'HEAD:' + path) == read_member(root, path), 'uncommitted builder/registry')
-        require('fixtures/mvp/macos-trace/bootstrap-kit/build_kit.py' in result, 'builder absent from closure')
+        require(all(name in result for name in policy.required_helpers), 'builder absent from closure')
         return result
     finally:
         os.close(root)
@@ -447,9 +505,10 @@ def outside_repository(output, repository):
 
 
 class Build:
-    def __init__(self, output, repository):
+    def __init__(self, output, repository, *, policy=LEGACY_POLICY):
         # No existing output, overwrite, cleanup or recursive deletion.
         self.output = Path(output)
+        self.policy = policy
         outside_repository(self.output, repository)
         parent = open_directory(self.output.parent)
         try:
@@ -531,28 +590,51 @@ class Build:
             # Do not inspect/hash/finalize a directory that may still have live
             # descendant writers. This marker and every raw file are partial.
             self.put('failure.partial.json', canonical({
-                'schema': 'glue-bootstrap-kit-partial-failure-v1', 'status': 'partial-failure',
+                'schema': self.policy.partial_failure_schema, 'status': 'partial-failure',
                 'error': str(exc)[:512], 'tool_label': self.active_tool,
                 'command_cleanup_unresolved': True, 'possible_live_descendants': True,
                 'tree_closed': False, 'inventory_complete': False,
                 'new_binaries_executed': False, 'installed': False,
                 'kernel_exec_proof': False, 'full_acceptance': False}))
             return
-        failed = {'schema': 'glue-bootstrap-kit-result-v1', 'status': 'failed', 'error': str(exc)[:512],
+        failed = {'schema': self.policy.result_schema, 'status': 'failed', 'error': str(exc)[:512],
                   'new_binaries_executed': False, 'installed': False, 'kernel_exec_proof': False, 'full_acceptance': False}
         if not (self.output / 'failure.json').exists(): self.put('failure.json', canonical(failed))
         if not (self.output / 'result.json').exists() and not (self.output / 'SHA256SUMS').exists(): self.finish(failed)
 
 
-def construct(proof_path, kit_path, output):
+def recipe_for(version, sdk, sdk_version, rules, *, policy=LEGACY_POLICY):
+    recipe = {'schema': policy.recipe_schema, 'compiler': digest(version), 'sdk': sdk, 'sdk_version': sdk_version,
+              'compiler_tool': '/usr/bin/xcrun --sdk macosx clang', 'flags': list(BASE_FLAGS), 'sign_tool': '/usr/bin/codesign',
+              'sign_flags': ['--force', '--sign', '-', '--timestamp=none', '--identifier', policy.signing_prefix + '.{name}.{build_id}'],
+              'source_root_mapping': '/glue-sources', 'generated_catalog': '{generated_catalog}',
+              'probe_sources': rules['probe_sources'], 'runner_sources': rules['runner_sources'], 'request_sources': rules['request_sources'],
+              'full_acceptance': False}
+    if policy.tracing:
+        recipe['sip_policy'] = 'exact-disabled'
+        recipe['artifacts'] = [{'name': a.name, 'source_key': a.source_key, 'compiler_flags': list(a.compiler_flags),
+                                'link_flags': list(a.link_flags), 'dependencies': [d.decode('ascii') for d in a.dependencies]}
+                               for a in policy.artifacts]
+    return recipe
+
+
+def compile_command(common, source_root, rules, generated, output, artifact, *, policy=LEGACY_POLICY):
+    selected = artifact_policy(policy, artifact)
+    command = list(common) + list(selected.compiler_flags) + [str(source_root / n) for n in rules[selected.source_key]]
+    if selected.source_key != 'probe_sources': command += [str(generated)]
+    return command + list(selected.link_flags) + ['-o', str(output)]
+
+
+def construct(proof_path, kit_path, output, *, policy=LEGACY_POLICY):
     # Do not add test injection/trust options to this native entry point.
-    rules = registry(REGISTRY.read_bytes())
-    require(rules['proofs'], 'no independently reviewed actual guest proof is configured')
     repo = HERE.parents[3]
-    sources = locked_sources(repo, rules)
-    entry, observed = admitted_proof(proof_path, kit_path, rules)
+    registry_path = REGISTRY if policy is LEGACY_POLICY else repo / policy.registry_relative
+    rules = registry(registry_path.read_bytes(), policy=policy)
+    require(rules['proofs'], 'no independently reviewed actual guest proof is configured')
+    sources = locked_sources(repo, rules, policy=policy)
+    entry, observed = admitted_proof(proof_path, kit_path, rules, policy=policy)
     require(platform.system() == 'Darwin' and platform.machine() == 'arm64' and os.getuid() != 0 and os.geteuid() != 0, 'ordinary native Darwin arm64 build host required')
-    build = Build(output, repo)
+    build = Build(output, repo, policy=policy)
     try:
         for name, data in sources.items(): build.put('sources/' + name, data)
         build.put('source-lock.json', canonical(rules))
@@ -562,18 +644,13 @@ def construct(proof_path, kit_path, output):
         sdk_version = build.run('sdk-version', ['/usr/bin/xcrun', '--sdk', 'macosx', '--show-sdk-version']).decode().strip()
         require(sdk.startswith('/Applications/') or sdk.startswith('/Library/Developer/'), 'unexpected SDK root')
         require('\n' not in sdk and '\0' not in sdk and re.fullmatch(r'[0-9.]+', sdk_version), 'SDK identity')
-        flags = ['-arch', 'arm64', '-mmacosx-version-min=26.0', '-std=c11', '-O2', '-g0', '-Wall', '-Wextra', '-Werror']
-        recipe = {'schema': 'glue-bootstrap-kit-recipe-v1', 'compiler': digest(version), 'sdk': sdk, 'sdk_version': sdk_version,
-                  'compiler_tool': '/usr/bin/xcrun --sdk macosx clang', 'flags': flags, 'sign_tool': '/usr/bin/codesign',
-                  'sign_flags': ['--force', '--sign', '-', '--timestamp=none', '--identifier', 'glue.mvp.bootstrap.{name}.{build_id}'],
-                  'source_root_mapping': '/glue-sources', 'generated_catalog': '{generated_catalog}',
-                  'probe_sources': rules['probe_sources'], 'runner_sources': rules['runner_sources'], 'request_sources': rules['request_sources'],
-                  'full_acceptance': False}
+        flags = list(BASE_FLAGS)
+        recipe = recipe_for(version, sdk, sdk_version, rules, policy=policy)
         recipe_sha = digest(canonical(recipe))
         static_sha = digest(canonical(rules['sources']))
         probe_sha = digest(canonical({n: rules['sources'][n] for n in rules['sources'] if '/bootstrap-probe/' in n}))
-        runner_sha = digest(canonical({n: s for n, s in rules['sources'].items() if '/bootstrap-kit/' not in n and '/bootstrap-probe/' not in n}))
-        identity = digest(canonical({'schema': 'glue-bootstrap-kit-build-id-v1', 'sources': static_sha,
+        runner_sha = digest(canonical({n: s for n, s in rules['sources'].items() if not any(part in n for part in policy.excluded_runner_parts)}))
+        identity = digest(canonical({'schema': policy.build_id_schema, 'sources': static_sha,
                                     'recipe': recipe_sha, 'guest_manifest': entry['manifest_sha256']}))
         build.put('recipe.json', canonical(recipe))
         profile = {name: {'device': observed['components'][i]['device'], 'fsid': observed['components'][i]['fsid']}
@@ -586,18 +663,17 @@ def construct(proof_path, kit_path, output):
             generated = directory / 'catalog.generated.c'
             common = ['/usr/bin/xcrun', '--sdk', 'macosx', 'clang', *flags, '-isysroot', sdk, '-I', str(source_root),
                       '-ffile-prefix-map=' + str(source_root) + '=/glue-sources', '-fmacro-prefix-map=' + str(source_root) + '=/glue-sources']
-            for name, key in (('context-probe', 'probe_sources'), ('bootstrap-runner', 'runner_sources'), ('make-request', 'request_sources')):
+            for selected in policy.artifacts:
+                name, key = selected.name, selected.source_key
                 path = directory / name
-                command = common + [str(source_root / n) for n in rules[key]]
-                if key != 'probe_sources': command += [str(generated)]
-                command += ['-lproc', '-o', str(path)]
+                command = compile_command(common, source_root, rules, generated, path, name, policy=policy)
                 build.run(trial + '-' + name + '-compile', command)
-                build.run(trial + '-' + name + '-sign', ['/usr/bin/codesign', '--force', '--sign', '-', '--timestamp=none', '--identifier', 'glue.mvp.bootstrap.' + name + '.' + identity, str(path)])
+                build.run(trial + '-' + name + '-sign', ['/usr/bin/codesign', '--force', '--sign', '-', '--timestamp=none', '--identifier', policy.signing_prefix + '.' + name + '.' + identity, str(path)])
                 build.run(trial + '-' + name + '-verify', ['/usr/bin/codesign', '--verify', '--strict', '--verbose=2', str(path)])
                 fd = open_directory(build.output)
                 try: data = read_member(fd, 'builds/' + trial + '/' + name, 4194304)
                 finally: os.close(fd)
-                provenance = macho(data)
+                provenance = macho(data, policy=policy, artifact=name)
                 if name == 'context-probe':
                     raw = catalog_bytes(identity, profile, len(data), digest(data), probe_sha, runner_sha, recipe_sha)
                     require(catalog is None or raw == catalog, 'probe/catalog builds differ')
@@ -610,7 +686,7 @@ def construct(proof_path, kit_path, output):
         for name in artifacts:
             build.put('kit/' + name, (build.output / 'builds/first' / name).read_bytes())
             os.chmod(build.output / 'kit' / name, 0o555)
-        build.finish({'schema': 'glue-bootstrap-kit-result-v1', 'status': 'built-reproducibly', 'build_id': identity,
+        build.finish({'schema': policy.result_schema, 'status': 'built-reproducibly', 'build_id': identity,
                       'catalog_sha256': digest(catalog), 'artifacts': artifacts, 'new_binaries_executed': False,
                       'installed': False, 'kernel_exec_proof': False, 'full_acceptance': False})
         return 0
@@ -619,16 +695,16 @@ def construct(proof_path, kit_path, output):
         raise
 
 
-def main():
+def main(*, policy=LEGACY_POLICY):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--guest-proof', required=True, type=Path)
     parser.add_argument('--inspector-kit', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
     try:
-        return construct(args.guest_proof, args.inspector_kit, args.output)
+        return construct(args.guest_proof, args.inspector_kit, args.output, policy=policy)
     except (Refusal, OSError, subprocess.SubprocessError, UnicodeError) as exc:
-        print('bootstrap-kit: ' + str(exc)[:512], file=sys.stderr)
+        print(policy.error_prefix + ': ' + str(exc)[:512], file=sys.stderr)
         return 1
 
 
