@@ -832,6 +832,14 @@ The previous 30 suites are referenced, not rerun: composed coverage accounts for
 claimed. The fixed `e2c728b` public checkpoint excludes this reader; its pending
 push request replaces the earlier `ae48aee` request.
 
+The 271-file focused-control peer audit is
+`/private/tmp/glue-owned-trace-check-portable-peer-5m08d0xj`, manifest
+`a082258cddb746e3ac2188f93fe021d366ef6d857c6967a625298c308f0a5b1a`.
+It independently verifies all focused and basis inventories, 217 source pins,
+exact CI/driver deltas, both native command receipts and the 30-plus-one coverage
+composition without executing tests or reviewed tools. Both original input
+trees retain identical bytes and physical metadata before/after the audit.
+
 
 The credential primitive independently passes 14 native unprivileged controls
 and five additional injected-only ASan/UBSan controls. Its isolated Linux

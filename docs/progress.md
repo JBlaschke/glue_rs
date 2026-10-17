@@ -53,8 +53,11 @@ The independent fixed raw reader is now integrated at `ac7e27a`. Its 16 controls
 pass on both Mac and native offline Linux arm64 without skips, including complete
 valid mutation baselines and the 128 MiB streaming boundary. CI at `a1f0e88` now
 configures 31 suites: coverage combines the preceding 30-suite aggregate and this
-focused new suite. The new record pins all 217 tracing/script sources. It supplies
-raw transport facts, with no native capture, GO/session/closure verdict, clock
+focused new suite. The new record pins all 217 tracing/script sources. An
+independent passive audit verifies its complete inventory, source identities,
+actual command receipts and the stated composition with the earlier aggregate.
+The reader supplies raw transport facts, with no native capture,
+GO/session/closure verdict, clock
 domain equivalence, exec or extraction claim. A fresh deployment proof, admitted
 tracing kit and separate guest packet/complete case checker remain required
 before native calibration.
