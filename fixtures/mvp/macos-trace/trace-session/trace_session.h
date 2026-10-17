@@ -71,11 +71,14 @@ int ts_start(struct ts_session *);
 int ts_pump(struct ts_session *, enum ts_phase);
 int ts_claim_go(struct ts_session *); /*0 grants one use; mark possible release first.*/
 int ts_go_result(struct ts_session *, size_t confirmed_bytes, int operation_error);
+/* Explicit failed BIO result, including semantic/clock failures with errno0
+ * and even all64 confirmed bytes. It consumes the same once-only result slot. */
+int ts_go_failed(struct ts_session *, size_t confirmed_bytes, int system_errno);
 int ts_gate_close_result(struct ts_session *, int operation_error);
 /* Called only after the parent's independent strict BW codec+EOF check. No
  * opaque prefix is decoded here. Failure retains the confirmed prefix count. */
 int ts_bootstrap_sealed(struct ts_session *);
-int ts_bootstrap_failed(struct ts_session *, size_t confirmed_prefix_bytes, int operation_error);
+int ts_bootstrap_failed(struct ts_session *, size_t confirmed_prefix_bytes, int system_errno); /*errno0 allowed*/
 int ts_child_reaped(struct ts_session *, uint32_t raw_wait_status);
 int ts_child_lost(struct ts_session *); /*actual ECHILD; never authorizes kill.*/
 int ts_kill_eligible(const struct ts_session *); /*owner-only state observation*/

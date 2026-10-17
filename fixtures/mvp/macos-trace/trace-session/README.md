@@ -33,11 +33,15 @@ poison success. An observed terminal prevents GO even before wait observes reap.
 
 `ts_claim_go` grants permission once and immediately marks possible release.
 `ts_go_result` retains the confirmed byte count; zero, partial, failed, late or
-even fully delivered failed writes never permit replay. The parent supplies
+even fully delivered failed writes never permit replay. `ts_go_failed` explicitly
+reports a failed BIO result even when all64 bytes were confirmed and its saved
+errno is0; no errno is fabricated to represent a semantic or clock fault.
+The parent supplies
 `ts_bootstrap_sealed` only after its independent strict BW validation and EOF
 check (the fixed successful stream contains READY+ATTEMPT,512 bytes). On failure,
 `ts_bootstrap_failed` retains the opaque confirmed prefix count up to769; no
-prefix is decoded, repaired or promoted by this component.
+prefix is decoded, repaired or promoted by this component. Calling that failure
+entry point latches failure even with errno0 (for example strict EOF/framing).
 
 Pump calls distinguish bootstrap, owned-child wait and cleanup. Cleanup binds
 its separate absolute deadline exactly once, within the original request's
@@ -46,10 +50,14 @@ EINTR or repeated calls. Entering cleanup while the child is live without an
 existing failure poisons success, preventing cleanup time from extending a
 successful attempt. Cleanup pumping remains possible after an earlier fault.
 
-Reap permanently records the consumed child ownership before checking its time
-or status. Actual ECHILD permanently records lost ownership. Neither state can
+Reap permanently records the consumed child ownership before any later fallible
+owner/time observation. Actual ECHILD permanently records lost ownership.
+Neither state can
 grant a later kill claim; one live-child kill claim is only a state permission,
-not a signal operation or descendant-containment mechanism. Stop occurs after
+not a signal operation or descendant-containment mechanism. A valid fixed child
+binding retains owner-checked cleanup eligibility when initialization fails on
+clock, deadline or owner observation; full initialization success is needed for
+starting capture. Stop occurs after
 the child ceases to be live. Drain is attempted once only after known reap and a
 successful stop; queued terminal events may first arrive during that drain.
 Terminal and END must both precede a successful drain return. No event after END

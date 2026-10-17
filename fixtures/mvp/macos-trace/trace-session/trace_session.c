@@ -124,15 +124,17 @@ int ts_claim_go(struct ts_session *s) {
  if(before(s,TS_STAGE_GO,s->attempt_deadline_ns))return -1;
  s->go_possibly_released=1;return 0;
 }
-int ts_go_result(struct ts_session *s,size_t bytes,int error) {
+static int go_result(struct ts_session *s,size_t bytes,int error,int failed) {
  if(owned(s,TS_STAGE_GO))return -1;
  if(!s->go_possibly_released || s->go_result_seen || bytes>64 || error<0)return fail(s,TS_STAGE_GO,TS_INVALID,0,bytes);
  s->go_result_seen=1;s->go_bytes=bytes;
  int bad=0;
- if(error || bytes!=64){fail(s,TS_STAGE_GO,TS_PARENT_FAILURE,error,bytes);bad=1;}
+ if(failed || error || bytes!=64){fail(s,TS_STAGE_GO,TS_PARENT_FAILURE,error,bytes);bad=1;}
  if(before(s,TS_STAGE_GO,s->attempt_deadline_ns))bad=1;
  s->go_complete=!bad;return bad?-1:0;
 }
+int ts_go_result(struct ts_session *s,size_t bytes,int error) {return go_result(s,bytes,error,0);}
+int ts_go_failed(struct ts_session *s,size_t bytes,int error) {return go_result(s,bytes,error,1);}
 int ts_gate_close_result(struct ts_session *s,int error) {
  if(owned(s,TS_STAGE_PARENT))return -1;
  if(s->gate_close_seen || error<0)return fail(s,TS_STAGE_PARENT,TS_INVALID,0,0);
@@ -150,26 +152,28 @@ int ts_bootstrap_sealed(struct ts_session *s) {
 }
 int ts_bootstrap_failed(struct ts_session *s,size_t prefix,int error) {
  if(owned(s,TS_STAGE_BOOTSTRAP))return -1;
- if(s->bootstrap_seen || prefix>TS_STATUS_CAPACITY || error<=0)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,prefix);
+ if(s->bootstrap_seen || prefix>TS_STATUS_CAPACITY || error<0)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,prefix);
  s->bootstrap_seen=1;s->bootstrap_prefix_bytes=prefix;
  return fail(s,TS_STAGE_BOOTSTRAP,TS_PARENT_FAILURE,error,prefix);
 }
 int ts_child_reaped(struct ts_session *s,uint32_t status) {
- if(owned(s,TS_STAGE_WAIT))return -1;
+ if(!s || s->tag!=TS_TAG || !s->configured)return -1;
  if(s->child!=TS_CHILD_LIVE)return fail(s,TS_STAGE_WAIT,TS_INVALID,0,0);
- /* Consumed wait ownership is permanent, even if this observation is late. */
+ /* Trusted caller reports a consumed actual wait. Permanently retire ownership
+  * BEFORE any fallible owner/time observation can fail or later recover. */
  s->child=TS_CHILD_REAPED;s->wait_status=status;int bad=0;
  if(status){fail(s,TS_STAGE_WAIT,TS_CHILD_FAILURE,0,status);bad=1;}
- if(before(s,TS_STAGE_WAIT,deadline(s)))bad=1;
+ if(owned(s,TS_STAGE_WAIT) || before(s,TS_STAGE_WAIT,deadline(s)))bad=1;
  return bad?-1:0;
 }
 int ts_child_lost(struct ts_session *s) {
- if(owned(s,TS_STAGE_WAIT))return -1;
+ if(!s || s->tag!=TS_TAG || !s->configured)return -1;
  if(s->child!=TS_CHILD_LIVE)return fail(s,TS_STAGE_WAIT,TS_INVALID,0,0);
- s->child=TS_CHILD_LOST;return fail(s,TS_STAGE_WAIT,TS_LOST_CHILD,0,0);
+ s->child=TS_CHILD_LOST;fail(s,TS_STAGE_WAIT,TS_LOST_CHILD,0,0);
+ (void)owned(s,TS_STAGE_WAIT);return -1;
 }
 int ts_kill_eligible(const struct ts_session *s) {
- return s && s->tag==TS_TAG && s->initialized && s->child==TS_CHILD_LIVE && !s->kill_claimed;
+ return s && s->tag==TS_TAG && s->configured && s->child==TS_CHILD_LIVE && !s->kill_claimed;
 }
 int ts_claim_kill(struct ts_session *s) {
  if(owned(s,TS_STAGE_WAIT))return -1;
