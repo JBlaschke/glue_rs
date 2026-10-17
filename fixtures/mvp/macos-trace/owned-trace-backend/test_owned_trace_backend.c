@@ -40,6 +40,7 @@ static ssize_t model_write(int fd,const void *p,size_t n) {
 static dtrace_probedesc_t probes[19];
 static int opened,went,stopped,library_closed,work_calls,open_failure,missing_mach,work_done,work_drop,work_fault;
 static unsigned match_count=17;
+static int work_override;
 static dtrace_handle_drop_f *drop_callback;static dtrace_handle_err_f *error_callback;static void *backend_context;
 struct queued {unsigned kind,epid;int bad_action,bad_offset,bad_count,bad_inventory;uint64_t pid,detail,refcount;};
 static struct queued queue[32];static unsigned queued_count;
@@ -99,6 +100,7 @@ static int deliver(dtrace_consume_probe_f *consume,void *context,const struct qu
 }
 dtrace_workstatus_t dtrace_work(dtrace_hdl_t *h,FILE *out,dtrace_consume_probe_f *consume,dtrace_consume_rec_f *record,void *context) {
  (void)h;assert(!out&&!record);work_calls++;
+ if(work_override)return (dtrace_workstatus_t)work_override;
  if(work_drop){dtrace_dropdata_t d={0};d.dtdda_drops=2;d.dtdda_total=2;d.dtdda_msg="model drop";assert(drop_callback(&d,backend_context)==DTRACE_HANDLE_ABORT);return DTRACE_WORKSTATUS_ERROR;}
  if(work_fault){dtrace_errdata_t d={0};d.dteda_fault=3;d.dteda_msg="model fault";assert(error_callback(&d,backend_context)==DTRACE_HANDLE_ABORT);return DTRACE_WORKSTATUS_ERROR;}
  for(unsigned i=0;i<queued_count;i++)if(deliver(consume,context,&queue[i])==DTRACE_CONSUME_ABORT){queued_count=0;return DTRACE_WORKSTATUS_ERROR;}
@@ -110,6 +112,7 @@ static void reset(void) {
  opened=went=stopped=library_closed=work_calls=open_failure=missing_mach=work_done=work_drop=work_fault=0;
  queued_count=0;make_probes();
  match_count=17;
+ work_override=0;
 }
 static void initialize(struct fixture *f) {
  memset(f,0,sizeof(*f));snprintf(f->path,sizeof(f->path),"/private/tmp/glue-otb-model-XXXXXX");assert(mkdtemp(f->path));
@@ -163,6 +166,11 @@ static void bounds_and_faults(void) {
  }
  for(unsigned which=0;which<2;which++){reset();initialize(&f);begin(&f);work_drop=which==0;work_fault=which==1;assert(f.ops.pump_fn(f.b,TS_BOOTSTRAP,f.deadline,collector,&f,&e)==-1);assert(which?f.b->view.faults==1:f.b->view.drops==2);assert(!f.b->view.first_error.system_errno);cleanup(&f);}
  reset();initialize(&f);begin(&f);work_done=1;assert(f.ops.pump_fn(f.b,TS_BOOTSTRAP,f.deadline,collector,&f,&e)==-1);assert(f.b->view.first_error.reason==OTB_INCOMPLETE);cleanup(&f);
+ reset();initialize(&f);begin(&f);work_override=17;
+ assert(f.ops.pump_fn(f.b,TS_BOOTSTRAP,f.deadline,collector,&f,&e)==-1);
+ assert(f.b->view.first_error.reason==OTB_ORDER&&!f.b->view.first_error.system_errno&&!f.b->view.first_error.libdtrace_code&&e==EPROTO);
+ int diagnostic_fd=openat(f.directory,"errors.jsonl",O_RDONLY);assert(diagnostic_fd>=0);char diagnostic_text[2048]={0};ssize_t diagnostic_n=read(diagnostic_fd,diagnostic_text,sizeof(diagnostic_text)-1);assert(diagnostic_n>0);assert(!close(diagnostic_fd));
+ assert(strstr(diagnostic_text,"\"kind\":\"work-status\",\"status\":17"));cleanup(&f);
 }
 static void deadline_and_closure(void) {
  reset();struct fixture changed;initialize(&changed);begin(&changed);model_now=changed.deadline-UINT64_C(500000000);int changed_error=0;
