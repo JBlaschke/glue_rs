@@ -4,7 +4,9 @@
 creates an exclusive derived packet outside the repository. It copies three
 unchanged native executables, selected detached metadata and fixed shell scripts;
 it does not run any tool, build, authenticate, stage a share or execute scripts.
-`APPROVED` records the actual kit02 audit bindings. The independent reviews and
+`APPROVED` records the actual kit03 audit bindings. One combined independent
+artifact/catalog review supplies both review fields; they do not name two audits.
+The review and
 normal builder-zero receipt are review-workflow inputs, not administrator-proof
 authentication. Source/proof hashes do not themselves authorize root execution.
 
@@ -12,7 +14,10 @@ The source policy is enabled for the one reviewed kit after independent preparer
 and checker reviews. There is no runtime flag/environment fallback. Inspect each
 freshly rendered packet before staging or launching it in the owned VM; successful
 preparation alone is insufficient. The earlier disabled packet remains unchanged.
-See [the reviewed-run decision](../../../../docs/decisions/mvp-r02-bootstrap-vm-reviewed-run.md).
+See [the reviewed-run decision](../../../../docs/decisions/mvp-r02-bootstrap-vm-reviewed-run.md)
+and [the kit03 binding](../../../../docs/decisions/mvp-r02-bootstrap-kit03-binding.md).
+The current preparer refuses kit02; its prior packets/results and protected
+prefix stay unchanged.
 
 The packet is an explicit subset, not the complete builder output. Its own exact
 `SHA256SUMS` inventories `payload/{context-probe,bootstrap-runner,make-request}`,
@@ -23,7 +28,7 @@ path/hash. The original complete inventory is detached provenance only.
 
 `plan.json` fixes a 16-hex batch nonce, physical private/tmp work/stager/output
 paths, the full64-hex protected build cwd, actual guest mount tuples and actual
-ID/group observations. Root and Data legitimately share device16777230 while
+ID/group observations. Kit03 root and Data legitimately share device16777231 while
 their FSIDs differ; tuple comparison preserves both fields. It also lists the
 complete allowed evidence names. Stable caller-owned namespaces and no concurrent
 source/metadata/FD/privileged mutation are explicit preconditions. The ordinary

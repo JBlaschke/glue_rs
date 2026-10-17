@@ -19,12 +19,13 @@ INSPECTOR_PATH = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-i
 INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
 # A reviewed literal binding, not caller-provided authentication or a registry API.
 APPROVED = {
-    'kit_manifest_sha256': '098b758fe740d61efccd2ef34d3fe8cf00caba82e281dbc752e419e7a973995c',
-    'build_id': 'a75d54bba97103ec8b15dd7be7beb5b8eb23de5bfdda624ad2fcd9f224ab84d5',
-    'catalog_sha256': '95c943c36e36b7ccab9e20d3540260e61fa41eb38d880411cb7b865713cc58ab',
-    'kit_review_manifest_sha256': 'af1034b7bf2d4d70f3db9c361f1fd44ef2262e8e156f30910a66e7c6bec0d591',
-    'catalog_review_manifest_sha256': '44da57195e8d6b0687f9921d71695cc507a909a1a1ec300db00d7b604a540b90',
-    'builder_receipt_manifest_sha256': '42ea3e6d47faf97def1cda88cd3e413bf76935d8b22688fb8db6a94962678497',
+    'kit_manifest_sha256': 'ea67cfba1dab8dc51c44e514ca6ff8a00f703e665cbc89c17f996b3e02f4efae',
+    'build_id': '1b85f0ac3d3ec2de7df50004ee2732d8d5c049adb44193383245050f800fa11d',
+    'catalog_sha256': 'c566af88348f4823aa93c67fa11ce851f210742c1b0b79ab792b3cb192e39e69',
+    # One combined independent artifact/catalog audit supplies both scopes.
+    'kit_review_manifest_sha256': '1910f6a1a1274fb41b32030e1a62dff2bf6a218b6d2db1788c3ebb50d6db0e22',
+    'catalog_review_manifest_sha256': '1910f6a1a1274fb41b32030e1a62dff2bf6a218b6d2db1788c3ebb50d6db0e22',
+    'builder_receipt_manifest_sha256': '5f9556fe22aa4e9764bf2184163ec704c4324e580624550a9eab1dbca04cb030',
 }
 EXECUTION_ENABLED = True  # Reviewed fixed kit/orchestration/checker; no runtime override.
 PROGRAMS = ('context-probe', 'bootstrap-runner', 'make-request')
@@ -85,7 +86,7 @@ def load_kit(path):
     proof = p.strict_json(data['admitted-proof.json'])
     observed = p.observation(p.canonical(proof['observation']))
     p.require(proof['full_acceptance'] is False and proof['registry_entry']['manifest_sha256'] ==
-              'ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a', 'deployment binding')
+              'ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f', 'deployment binding')
     return data, manifest, result, observed
 
 
