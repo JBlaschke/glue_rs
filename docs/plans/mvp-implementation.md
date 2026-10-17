@@ -143,7 +143,10 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-trace-kit` | `5a1d2b9`, `24ba156`; integrated `f3f0ad1`, `a395ead` | Frozen tracing policy with empty registry, exact disabled SIP and runner-only libdtrace;23 legacy/12 new controls |
 | R02 | `codex/mvp-r02-owned-trace-inputs` | `b356590`, `7f15c40` | Update six of 34 default source pins plus host-parser literal; both proofs/kit03 approval preserved; actual historical checker replay0 |
 | V01 | `codex/mvp-v01-owned-trace-kit-ci` | `9f281f1` | Add one kit suite; all 30 Python suites pass locally on Mac/native offline Linux arm64; no new hosted or Rust run |
-| R04 | `codex/mvp-r04-owned-trace-source-status` | branch tip, based on `9f281f1` | Record reviewed tracing source, empty deployment admission and local aggregate; Darwin oracle/M2 remain open |
+| R04 | `codex/mvp-r04-owned-trace-source-status` | `e2c728b`, based on `9f281f1` | Reviewed tracing source, empty admission, source-inventory repair and local aggregate; exact public push pending approval |
+| R02 | `codex/mvp-r02-owned-trace-check` | `634efaf`, `3dc12ce`, `fb1d76a`; integrated `1b89364`, `47cc16f`, `ac7e27a` | Independent fixed raw program/inventory/event validator; repaired valid-baseline mutation controls, 16 portable passes; no case/session/native verdict |
+| V01 | `codex/mvp-v01-owned-trace-check-ci` | `a1f0e88` | Add one raw-reader invocation (31 configured); focused 16 controls pass on both native development hosts, separately composed with prior 30 aggregate |
+| R04 | `codex/mvp-r04-owned-trace-reader-status` | branch tip, based on `a1f0e88` | Record raw-reader source/controls and preserve the fixed older public checkpoint |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -784,6 +787,50 @@ positive success eligibility. Absolute monotonic/DTrace timestamp domains have
 not been equated. The VM and physical host remain SIP enabled. Full native
 process-tree effects, extraction verdicts, Mac corpus/budgets and R02/M2 remain
 open; no raw exports or newer source have been published.
+
+### Independent owned raw reader
+
+The [raw-reader decision](../decisions/mvp-r02-owned-trace-check.md) introduces
+only pure byte/stream validation. Final source `fb1d76a`, integrated as
+`ac7e27a`, independently reconstructs the exact target-bound fixed program,
+requires all 17 inventory categories, checks stable probe/EPID bindings and
+reconstructs each arm64 little-endian scalar from its exact native descriptor.
+One BEGIN, actual target nonshadow terminal and END are required; shadow exits
+and allowed post-terminal thread cleanup remain distinct. Error bytes refuse
+before event iteration. Facts are returned only after complete exhaustion.
+Observed EPIDs do not prove enabled inventory counts. Caller-supplied PIDs/read
+bounds remain trusted; GO, stop/drain/DONE, reap, parent/resource closure,
+deadline derivation and timestamp-domain equivalence remain separate checks.
+
+Root review found that several initial mutation fixtures were standalone records
+that would also fail without mutation because their lifecycle was incomplete.
+The repair changes tests/docs only: complete valid baselines now precede each
+mutation, intended rejection reasons are checked, and terminal mutation contexts
+avoid duplicate-terminal masking. Final 16 controls pass, including 8,192-probe
+capacity and exact 134,217,728-byte generated streaming input with a measured
+Python allocation peak below 8 MiB for that fixture. This is not a general RSS
+budget. The original 15-control record remains unchanged and superseded.
+Final validation is `/private/tmp/glue-owned-trace-check-validation-u2zig128`,
+manifest `9fe84987bac90f5714f5b5b7d1d2d09ec7220fa35e41878c1ea2b68b1ead585f`.
+The 49-file independent review is
+`/private/tmp/glue-owned-trace-check-peer-review-9cjaz4mc`, manifest
+`48ec52fcba0fd29ee29f6f54a670e59228e17eee4495c69a6199648873724f57`.
+It verifies both records, source/SDK contracts, repaired controls and unchanged
+input bytes/metadata without executing the parser, tests or any native program.
+
+CI `a1f0e88` adds exactly one invocation; removing that line restores the prior
+30-suite script byte-for-byte. A focused run executes this new suite on Mac and
+native offline Linux arm64, each collecting/passing 16 with no skips. The
+251-file record is `/private/tmp/glue-owned-trace-check-portable-controls-20261017-01`,
+manifest `f49318094e02b2cf0d338d4591282ee32675c56b6710ca2db470f0bcd31a0b9c`.
+All 217 selected tracing/script sources equal before/after/committed `a1f0e88`
+bytes. Relative to the preceding aggregate, only three component READMEs and
+the new CI line change existing selected files; three new reader files are added.
+The previous 30 suites are referenced, not rerun: composed coverage accounts for
+470 controls per host (Mac 464 pass/six skip, Linux 429 pass/41 skip). No single
+31-suite run, hosted result, new Rust suite or native provider execution is
+claimed. The fixed `e2c728b` public checkpoint excludes this reader; its pending
+push request replaces the earlier `ae48aee` request.
 
 
 The credential primitive independently passes 14 native unprivileged controls

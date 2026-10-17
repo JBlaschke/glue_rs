@@ -47,15 +47,25 @@ The first run omitted the executed fetch shell helper from its source inventory;
 it remains retained, and the corrected inventory covers every tracked script.
 Exact outer command
 argv/status/streams are retained. This is local Python/C validation, with no
-newer hosted or Rust-suite run. Independent raw tracing validation, a fresh
-deployment proof, admitted tracing kit and separate guest packet/checker remain
-required before native calibration.
+newer hosted or Rust-suite run.
+
+The independent fixed raw reader is now integrated at `ac7e27a`. Its 16 controls
+pass on both Mac and native offline Linux arm64 without skips, including complete
+valid mutation baselines and the 128 MiB streaming boundary. CI at `a1f0e88` now
+configures 31 suites: coverage combines the preceding 30-suite aggregate and this
+focused new suite. The new record pins all 217 tracing/script sources. It supplies
+raw transport facts, with no native capture, GO/session/closure verdict, clock
+domain equivalence, exec or extraction claim. A fresh deployment proof, admitted
+tracing kit and separate guest packet/complete case checker remain required
+before native calibration.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-owned-trace-source-status`; the earlier
-`ae48aee` public push request remains separately scoped to its fixed branch.
+Documentation continues on `codex/mvp-r04-owned-trace-reader-status`.
+The updated public push request is fixed at `e2c728b` on
+`codex/mvp-r04-owned-trace-source-status`; it replaces the earlier `ae48aee`
+request and excludes this newer raw reader.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native
