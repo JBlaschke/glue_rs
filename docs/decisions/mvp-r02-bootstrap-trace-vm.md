@@ -41,6 +41,13 @@ outcomes stop before raw handling or restoration. These are source-enforced
 owned workflow observations under a stable private namespace, not hostile
 mutator containment or independent kernel liveness/exec attestation.
 
+Denied's once-only cleanup kill can race natural exit120 after the pre-READY
+ERROR. Its separate closed wait/kill matrix is exactly (30720,false),
+(30720,true), or (9,true). Raw9 without a kill claim and every other pair fail.
+The same exact child ERROR/strict EOF, no READY/GO/session/backend and clean
+reap/helper/signal/resource gates still apply. This source-derived cleanup race
+does not admit any SIM shape or rewrite the observed native facts.
+
 SIM is deliberately uncalibrated: retain actual no-GO/wait/kill/error facts, but
 reject every unreviewed SIM shape. Do not promise clean terminal/END/drain or
 accept a permissive failure bucket. Separate diagnostic calibration and a fixed
