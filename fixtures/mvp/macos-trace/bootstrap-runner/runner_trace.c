@@ -17,6 +17,7 @@ static int fault(struct nr_attempt *a,enum nr_stage stage) {
 }
 int nr_trace_pump(struct nr_attempt *a,enum ts_phase phase) {
  if(!a->trace.session_present || !a->trace.session.started)return 0;
+ if(phase==TS_CLEANUP && (!a->trace.cleanup_valid || !a->trace.session.cleanup_bound))return fault(a,NR_CLEANUP);
  int rc=ts_pump(&a->trace.session,phase);
  return rc || (phase!=TS_CLEANUP && a->trace.session.error.reason!=TS_OK)?fault(a,phase==TS_CLEANUP?NR_CLEANUP:NR_TRACE):0;
 }
@@ -93,9 +94,12 @@ void nr_trace_begin_cleanup(struct nr_attempt *a) {
 void nr_trace_close_backend(struct nr_attempt *a) {
  struct nr_trace *t=&a->trace;struct ts_session *s=&t->session;
  if(!t->session_present)return;
- if(s->started && s->child!=TS_CHILD_LIVE && !s->stop_attempted)
+ /* A failed cleanup clock/binding must not authorize work against the longer
+  * attempt deadline after a transient recovery. Only once-only close remains. */
+ int bounded=t->cleanup_valid && s->cleanup_bound;
+ if(bounded && s->started && s->child!=TS_CHILD_LIVE && !s->stop_attempted)
   if(ts_stop(s))(void)fault(a,NR_CLEANUP);
- if(s->stopped && s->child==TS_CHILD_REAPED && !s->drain_attempted)
+ if(bounded && s->stopped && s->child==TS_CHILD_REAPED && !s->drain_attempted)
   if(ts_drain(s))(void)fault(a,NR_CLEANUP);
  if(!s->close_attempted)if(ts_close(s))(void)fault(a,NR_CLEANUP);
 }

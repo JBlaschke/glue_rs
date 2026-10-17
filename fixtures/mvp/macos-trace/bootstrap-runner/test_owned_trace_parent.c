@@ -19,7 +19,7 @@
 #include <sys/stdio.h>
 #endif
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"line %d: %s\n",__LINE__,#x);exit(1);}}while(0)
-enum mode {GOOD,DENIED,START_FAIL,GO_PARTIAL,GO_FULL,STATUS_FULL,EOF_FAIL,LOST,REAP_CLOCK,CLOSE_FAIL,GATE_FAIL,SIDECAR_FAIL,PENDING_FAIL,DIR_FAIL,SIM,READINESS_FAIL};
+enum mode {GOOD,DENIED,START_FAIL,GO_PARTIAL,GO_FULL,STATUS_FULL,EOF_FAIL,LOST,REAP_CLOCK,CLOSE_FAIL,GATE_FAIL,SIDECAR_FAIL,PENDING_FAIL,DIR_FAIL,SIM,READINESS_FAIL,CLEANUP_CLOCK_ONCE};
 struct otb_backend {struct otb_snapshot snapshot;int alive;};
 static struct {
  enum mode mode;struct nr_attempt *attempt;struct otb_backend backend;
@@ -45,7 +45,7 @@ int nr_before(struct nr_attempt *a,struct bio_time d,enum nr_stage stage) {
  if(m.now>=d.seconds*UINT64_C(1000000000)+d.nanoseconds)return nr_fail(a,stage,NR_TIMEOUT,0,-1);return 0;
 }
 int nr_deadline(struct nr_attempt *a,unsigned budget,struct bio_time *out) {
- CHECK(budget==100&&++m.deadlines==1);if(m.clock_bad)return nr_fail(a,NR_CLEANUP,NR_CLOCK,0,-1);
+ CHECK(budget==100&&++m.deadlines==1);if(m.mode==CLEANUP_CLOCK_ONCE){CHECK(UINT64_C(2000000000)-m.now>UINT64_C(100000000));return nr_fail(a,NR_CLEANUP,NR_CLOCK,0,-1);}if(m.clock_bad)return nr_fail(a,NR_CLEANUP,NR_CLOCK,0,-1);
  m.cleanup=m.now+UINT64_C(100000000);*out=(struct bio_time){m.cleanup/1000000000,m.cleanup%1000000000};return 0;
 }
 int nr_sha_bytes(const uint8_t *p,size_t n,uint8_t out[32]) {(void)p;(void)n;memset(out,0,32);return 0;}
@@ -57,8 +57,8 @@ static pid_t model_getpgid(pid_t p){CHECK(p==200);return 200;}
 static pid_t model_wait(pid_t p,int *status,int flags){
  CHECK(p==200&&flags==WNOHANG);m.waits++;
  if(m.mode==LOST){errno=ECHILD;return -1;}
- if(m.mode!=GOOD&&m.mode!=REAP_CLOCK&&m.mode!=SIM&&!m.kills)return 0;
- if(m.waits==1&&m.mode==GOOD)return 0;
+ if(m.mode!=GOOD&&m.mode!=REAP_CLOCK&&m.mode!=SIM&&m.mode!=CLEANUP_CLOCK_ONCE&&!m.kills)return 0;
+ if(m.waits==1&&(m.mode==GOOD||m.mode==CLEANUP_CLOCK_ONCE))return 0;
  *status=m.mode==SIM?120<<8:0;m.wait_done=1;
  if(m.mode==REAP_CLOCK)m.clock_bad=1;
  return 200;
@@ -153,5 +153,6 @@ static void wait_ownership(void){struct nr_attempt a;init(&a,LOST);CHECK(nr_exec
  init(&a,REAP_CLOCK);CHECK(nr_execute(&a)==-1&&a.reaped&&a.trace.session.child==TS_CHILD_REAPED);nr_cleanup(&a);CHECK(!m.kills&&m.closes==1&&m.deadlines==1&&a.cleanup_error.stage!=NR_NONE);CHECK(nr_finish_outputs(&a)==0&&!nr_trace_success(&a)&&m.promotions==1&&!m.backend.alive);}
 static void closure(void){for(enum mode mode=CLOSE_FAIL;mode<=DIR_FAIL;mode++){struct nr_attempt a;init(&a,mode);(void)nr_execute(&a);nr_cleanup(&a);CHECK(nr_finish_outputs(&a)==-1&&!m.promotions);CHECK(m.closes==1);if(mode>=SIDECAR_FAIL)CHECK(a.trace.session.parent_close_seen&&a.trace.session.parent_closed&&a.trace.destroyed);if(mode!=CLOSE_FAIL)CHECK(!m.backend.alive);else CHECK(a.trace.snapshot.writer_close_failed_mask==8&&a.trace.snapshot.writer_close_errno[3]==EINTR&&a.trace.snapshot.close_error.system_errno==0&&a.trace.snapshot.writer_close_error.system_errno==EINTR);}}
 static void simulated(void){struct nr_attempt a;init(&a,SIM);CHECK(nr_execute(&a)==-1&&!m.go_writes&&!a.go_attempted);nr_cleanup(&a);CHECK(a.reaped&&WIFEXITED(a.wait_status)&&WEXITSTATUS(a.wait_status)==120&&!m.kills);CHECK(nr_finish_outputs(&a)==0&&!nr_trace_success(&a));}
+static void cleanup_clock(void){struct nr_attempt a;init(&a,CLEANUP_CLOCK_ONCE);CHECK(nr_execute(&a)==0&&a.reaped);nr_cleanup(&a);CHECK(m.deadlines==1&&!a.trace.cleanup_valid&&!a.trace.session.cleanup_bound&&m.cleanup==0);CHECK(!m.stops&&!m.drains&&m.closes==1&&!m.kills);CHECK(a.error.stage==NR_CLEANUP&&a.error.reason==NR_CLOCK);CHECK(nr_finish_outputs(&a)==0&&!nr_trace_success(&a)&&m.promotions==1&&!m.backend.alive);}
 static void readiness(void){struct nr_attempt a;init(&a,READINESS_FAIL);CHECK(nr_execute(&a)==-1&&!m.go_writes&&!a.trace.session.go_claim_attempted);nr_cleanup(&a);CHECK(a.reaped&&m.kills==1&&m.closes==1);CHECK(nr_finish_outputs(&a)==0&&!nr_trace_success(&a));}
-int main(int argc,char **argv){CHECK(argc==2);if(!strcmp(argv[1],"start-failure-json")){struct nr_attempt a;init(&a,START_FAIL);CHECK(nr_execute(&a)==-1);nr_cleanup(&a);CHECK(nr_finish_outputs(&a)==0);fputs(m.sidecar,stdout);fputs(m.receipt,stdout);return 0;}if(!strcmp(argv[1],"json")){lifecycle();fputs(m.sidecar,stdout);fputs(m.receipt,stdout);return 0;}const struct{const char *name;void(*run)(void);}cases[]={{"lifecycle",lifecycle},{"failures",failures},{"poisoned-status",poisoned_status},{"wait-ownership",wait_ownership},{"closure",closure},{"simulated",simulated},{"readiness",readiness}};for(size_t i=0;i<sizeof(cases)/sizeof(cases[0]);i++)if(!strcmp(argv[1],cases[i].name)){cases[i].run();puts(argv[1]);return 0;}return 2;}
+int main(int argc,char **argv){CHECK(argc==2);if(!strcmp(argv[1],"start-failure-json")){struct nr_attempt a;init(&a,START_FAIL);CHECK(nr_execute(&a)==-1);nr_cleanup(&a);CHECK(nr_finish_outputs(&a)==0);fputs(m.sidecar,stdout);fputs(m.receipt,stdout);return 0;}if(!strcmp(argv[1],"json")){lifecycle();fputs(m.sidecar,stdout);fputs(m.receipt,stdout);return 0;}const struct{const char *name;void(*run)(void);}cases[]={{"lifecycle",lifecycle},{"failures",failures},{"poisoned-status",poisoned_status},{"wait-ownership",wait_ownership},{"closure",closure},{"simulated",simulated},{"readiness",readiness},{"cleanup-clock",cleanup_clock}};for(size_t i=0;i<sizeof(cases)/sizeof(cases[0]);i++)if(!strcmp(argv[1],cases[i].name)){cases[i].run();puts(argv[1]);return 0;}return 2;}
