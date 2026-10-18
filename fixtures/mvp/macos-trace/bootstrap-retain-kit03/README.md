@@ -64,8 +64,12 @@ It never repairs permissions, retries, deletes old data or executes a payload.
 Actual rename success is separate from source preparation and inspection.
 
 Run `python3 fixtures/mvp/macos-trace/bootstrap-retain-kit03/test_prepare.py` for
-bounded source/physical-file controls. They compile both generated programs
-without running their root mains. Native file tests adapt only their temporary
+bounded source/physical-file controls. Shell syntax checks always run separately
+from Perl compilation. The latter first probes `Digest::SHA`, `JSON::PP`, `Fcntl`
+and `Errno` through `/usr/bin/perl`, and skips only an explicit missing declared
+module; unexpected probe failures fail the control. Both generated Perl programs
+are compiled without running their root mains when those dependencies exist.
+Native file tests adapt only their temporary
 fixture owner's UID to the host account; production guest policy remains 0/501.
 The tool proves neither tracing, kernel exec, extraction nor full R02/M2 acceptance.
 See [the decision](../../../../docs/decisions/mvp-r02-bootstrap-retain-kit03.md).
