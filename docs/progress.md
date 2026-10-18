@@ -17,18 +17,22 @@ the failed native directory is explicitly partial and has no final inventory.
 
 The separately reviewed two-case calibration source `d733783` and completed-kit
 preservation source `6d3884f` are integrated with their original feature commits
-preserved. The16 new calibration and16 original preparer controls pass; preservation
-has nine passing Mac controls. Both new calibration CLIs still refuse activation; the
+preserved. Test portability repairs `e35987a` and `9cea001` are integrated through
+`283a94e`. The affected five suites compose to 77 Mac passes and Linux 70 passes
+with seven explicit skips, using the unchanged prior suites and repaired pair.
+This is composed coverage across runs. Both new calibration CLIs still refuse activation; the
 old four-case/SIM policy remains disabled. A concrete reviewed read-only kit03
-inspection packet is staged but has not run. Mutating retention remains disabled.
+inspection packet completed successfully. Both Library installations and exact
+kit03 signatures survive; all 30 historical temporary roots are observed absent.
+Its independent review is pending. Mutating retention remains disabled.
 CI `7fdf01f` adds exactly two invocations (37 configured suites). The first five
 affected Linux suites collect76 controls:68 pass,6 skip and2 test-portability
-failures. Narrow repairs are in progress; no complete37-suite or hosted result
+failures. Those receipts remain preserved; the repaired pair passes with its
+declared skips. No complete37-suite or newer hosted result
 is claimed.
 
 The temporary guest-only SIP window remains OPEN, with restoration after the
-tracing session still required. The physical Mac's SIP is unchanged. The VM
-needs its display woken before inspection can continue. Full Darwin extraction
+tracing session still required. The physical Mac's SIP is unchanged. Full Darwin extraction
 oracle/corpus/budgets, R02/M2 and durable evidence publication remain open.
 The latest approved public checkpoint is still `e2c728b` with nine green jobs;
 newer local source has not been published. Details and exact evidence identities

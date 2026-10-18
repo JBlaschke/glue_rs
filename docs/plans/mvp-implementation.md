@@ -156,9 +156,11 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-trace-sim-status` | branch tip, based on `783ff41` | Record SIM source/controls and remaining native admission/calibration |
 | R02 | `codex/mvp-r02-trace-registry-admission` | `f8e50d1`, `e365c53`, `9a294d4` | Fresh disabled proof/41 fixed sources admitted; explicit empty fixture;23/12 kit controls and actual committed admission pass |
 | R02 | `codex/mvp-r02-trace-calibration-vm` | `bdd4e41`, `62dd8b1`, `d733783`; merged `ded13fb` | Separate fixed two-case packet/physical checker, initially hard-disabled;16 new/16 original controls and independent review pass |
-| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation;9 Mac controls; actual inspection/rename pending |
+| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation; actual inspection complete, independent review/rename pending |
 | V01 | `codex/mvp-v01-trace-calibration-retention-ci` | `7fdf01f` | Exactly two new invocations (37 configured); first Linux run preserves two test portability failures, no newer hosted run |
-| R04 | `codex/mvp-r04-trace-build-status` | branch tip, based on `7fdf01f` | Fresh tracing proof/admission and reproducible unexecuted native kit; guest window and acceptance remain open |
+| R02 | `codex/mvp-r02-trace-calibration-portable-controls` | `e35987a`; integrated before `283a94e` | Remove Python-version-dependent test digest; production source unchanged;16 Mac/Linux passes |
+| R02 | `codex/mvp-r02-kit03-portable-controls` | `9cea001`; integrated `283a94e` | Exact Perl dependency probe and separate shell syntax control;10 Mac passes, Linux5 passes/5 declared skips |
+| R04 | `codex/mvp-r04-trace-build-status` | branch tip, based on `283a94e` | Fresh tracing proof/admission, reproducible unexecuted native kit and successful read-only inventory; guest window and acceptance remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -322,21 +324,69 @@ Source metadata has seconds-resolution limits; coordinated stable namespace
 is required, with no assertion that a lock excludes another root process.
 Retention remains null/false until an actual physical inventory and independent
 review bind every observed tree. The fixed attempt record prevents a new packet
-from retrying an uncertain future move. No rename has occurred. Guest display
-wake is pending before the read-only packet can launch.
+from retrying an uncertain future move. No rename has occurred.
+
+The actual read-only inventory completed after private human authentication.
+Its 23-file export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-kit03-inspect-2d0913f96f54a01b`,
+manifest `563731431c81c3ee0790f5451cfad108bacd3b09f1a0c54667615659f0d03724`.
+Root verifies every 22 payload hash and exact roster, zero root-phase status,
+the expected receipt path and restored empty shell prompt. Both Library
+installations remain present with exact kit03 hashes and strict signature checks;
+all 30 inspected historical temporary roots report absent. No cause is inferred,
+and missing guest checkpoints will not be recreated. Independent review is
+pending. Existing retention validation requires completed temporary trees, so a
+separate reviewed decision/admission is needed before a move. The workflow
+coordination receipt is
+`/private/tmp/glue-kit03-exclusive-coordination-20261018-01/coordination.json`,
+SHA256 `39b44c8b675d9b3429c0ed899a33de2af618d7831bde10c4f3e1b03fd2e09012`.
+It records the root-controlled owned fixture slot and delegated exclusions,
+without claiming an OS-wide process census or exclusion of arbitrary root writers.
 
 CI `7fdf01f` adds only two baseline invocations for37 configured suites. The
 first five-suite native offline Linux run collects76 controls:68 pass,6 skip,
 2 fail. All three earlier suites pass; new calibration's Python-version-specific
 AST dump hash differs between3.12/3.15, and the cached image's Perl is present
-without Digest::SHA. Both are test-portability repairs in progress. The294-file
+without Digest::SHA. The294-file
 failure record is `/private/tmp/glue-trace-calibration-retention-linux-zp2q4aa3`,
 manifest `5c88f2a1711bdd5432fffb3bf1c6aa73bd51118523dde73fa350900309d1a326`.
 All251 tracked tracing/script/workflow pins match copied/committed/before/after
 bytes and metadata. Actual raw receipts stay unchanged. The provisional driver
 only parsed skip totals for an OK terminal line, undercounting failed-suite
 skips; the record retains it plus a separate corrected76/68/6/2 interpretation.
-No complete37-suite or newer hosted run is claimed. All source branches and merged commits remain
+
+Test-only repairs `e35987a` and `9cea001` change only the two new test modules and
+their READMEs. Production source and the other 247 captured source paths remain
+unchanged. Calibration removes the Python-version-dependent AST dump digest,
+preserving functional guard/shared-loader controls. Retention probes fixed system
+Perl modules, skips only recognized missing-module outcomes, fails unexpected
+probe errors, and checks shell syntax independently. Their Mac 16/10-control
+receipts are `/private/tmp/glue-trace-calibration-portable-controls-ahic2sg9`
+(25 files, manifest `92c8f98aced71f35bc9265056ec3bcdd19bc9028c6d15d1570860835db4fea30`)
+and `/private/tmp/glue-kit03-portable-controls-macos-u2ia577r`
+(12 files, manifest `b1c139a95879a4d485109961d2df9569ee91b58383a194480b4e752333207fd5`).
+
+At integrated source `283a94e`, the actual two-suite offline native Linux retry
+collects 26 controls:21 pass and five skip. Four skips require native macOS; one
+requires the missing declared Perl modules. Shell syntax passes separately.
+Both suite commands and outer container return 0. The 279-file retry record is
+`/private/tmp/glue-trace-calibration-retention-linux-repair-azsot_am`, manifest
+`3e70af83af21a501c02da89dbcd957b64d35103ce8334233114cfe547ecb58f0`.
+All 251 source pins match copied/committed/before/after identities. The corrected
+driver parses skips in both OK and FAILED terminal summaries; earlier raw
+receipts remain unchanged.
+
+An independent passive audit verifies both full Linux records, both Mac repair
+records, exact CI/container argv and completion facts, 502 Git source comparisons
+and unchanged dependencies of the prior passing suites. Its 15-file record is
+`/private/tmp/glue-affected-ci-composition-peer-osz49tv9`, manifest
+`bc7011973b1eeceb60f6eccfc684700565fb41ccbf40cf63a32c1880686b65e7`.
+The affected five suites compose to 77 Mac passes/zero skips and Linux 70 passes/
+seven skips across separate runs. The Mac retention producer asserts its source
+metadata interval without retaining a separate full before/after metadata pair;
+current committed byte pins and actual receipts support the composition.
+This does not establish a single combined current-HEAD run or a full 37-suite run.
+No newer hosted run is claimed. All source branches and merged commits remain
 local beyond the explicitly approved public `e2c728b` checkpoint. Native tracing,
 full Darwin oracle/corpus/budgets, R02/M2, security restoration and durable
 publication remain open.
@@ -575,7 +625,7 @@ An earlier optional socket-fixture attempt was sandbox-denied and remains a
 separate incomplete review harness; no socket control result is claimed.
 
 Fresh packet03, nonce `1ee4bbe2b443c268`, was prepared from the unchanged literal
-kit02 at `dec2488`. Its15-file packet manifest is
+kit02 at `dec2488`. Its 15-file packet manifest is
 `e00fb4a1d634c52dcdd59a7872e460b59babb0fc6f6f082dfd3916a61202c390`.
 The host preparation receipt is
 `/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-03`, manifest
