@@ -6,7 +6,6 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import unittest
@@ -139,25 +138,46 @@ class PreparationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'fresh absolute'):
                 p.prepare('inspect', out)
 
-    @unittest.skipUnless(shutil.which('perl'), 'core Perl unavailable')
-    def test_both_programs_compile_without_running_them(self):
+    def rendered_programs(self):
         approved = {'inspection_approval': p.INSPECTION_APPROVAL,
             'inspection_manifest_sha256': '1'*64, 'inspection_review_manifest_sha256': '2'*64,
             'coordination_receipt_sha256': '3'*64, 'snapshot': baseline()}
         with patch.object(p, 'APPROVED', approved), patch.object(p, 'RETENTION_ENABLED', True):
-            for mode in ('inspect', 'retain'):
-                files = p.render(mode, '0123456789abcdef')
-                for command, source in ((['/bin/sh', '-n'], files['launch.sh']),
-                                        ([shutil.which('perl'), '-c'], files['root.pl'])):
-                    done = subprocess.run(command, input=source, capture_output=True)
-                    self.assertEqual(done.returncode, 0, done.stderr)
-                if mode == 'retain':
-                    self.assertEqual(files['root.pl'].count(b"'/bin/mv'"), 1)
-                    self.assertIn(b'fresh physical state differs', files['root.pl'])
-                    self.assertIn(b'source still exists', files['root.pl'])
-                    self.assertNotIn(b'/bin/chmod', files['root.pl'])
-                    self.assertNotIn(b'/bin/chown', files['root.pl'])
-                    self.assertNotIn(b'/bin/rm', files['root.pl'])
+            return {mode: p.render(mode, '0123456789abcdef') for mode in ('inspect', 'retain')}
+
+    def test_both_shell_programs_parse_without_running_them(self):
+        for mode, files in self.rendered_programs().items():
+            done = subprocess.run(['/bin/sh', '-n'], input=files['launch.sh'], capture_output=True)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            if mode == 'retain':
+                self.assertEqual(files['root.pl'].count(b"'/bin/mv'"), 1)
+                self.assertIn(b'fresh physical state differs', files['root.pl'])
+                self.assertIn(b'source still exists', files['root.pl'])
+                self.assertNotIn(b'/bin/chmod', files['root.pl'])
+                self.assertNotIn(b'/bin/chown', files['root.pl'])
+                self.assertNotIn(b'/bin/rm', files['root.pl'])
+
+    def test_both_perl_programs_compile_without_running_them(self):
+        env = {'PATH': '/usr/bin:/bin', 'LC_ALL': 'C', 'TZ': 'UTC'}
+        missing = []
+        for module in ('Digest::SHA', 'JSON::PP', 'Fcntl', 'Errno'):
+            probe = subprocess.run(['/usr/bin/perl', '-M' + module, '-e', 'exit 0'],
+                                   capture_output=True, timeout=5, env=env)
+            if probe.returncode == 0:
+                self.assertEqual((probe.stdout, probe.stderr), (b'', b''))
+                continue
+            expected = ("Can't locate " + module.replace('::', '/') + '.pm in @INC').encode()
+            if probe.returncode == 2 and probe.stdout == b'' and probe.stderr.startswith(expected):
+                missing.append(module)
+            else:
+                self.fail('unexpected system Perl dependency probe failure: ' +
+                          repr((module, probe.returncode, probe.stdout, probe.stderr)))
+        if missing:
+            self.skipTest('system Perl modules unavailable: ' + ', '.join(missing))
+        for files in self.rendered_programs().values():
+            done = subprocess.run(['/usr/bin/perl', '-c'], input=files['root.pl'],
+                                  capture_output=True, timeout=5, env=env)
+            self.assertEqual(done.returncode, 0, done.stderr)
 
 
 @unittest.skipUnless(__import__('sys').platform == 'darwin',
