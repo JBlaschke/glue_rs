@@ -164,7 +164,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-calibration-admission` | `ecb37f0`, `0ea577a`; merged `d821900` | Admit only actual kit02 and exact 14-payload packet; 16 existing/15 new Mac controls pass; actual packet independently reviewed |
 | R02 | `codex/mvp-r02-kit03-retention-admission` | `1e74198`, `d04d91a`, `f75aae6`; merged `9b638cd` | Exact observed two-Library/30-absence profile, durable marker, status-aware retain guards and aligned receipt hash; 17 Mac controls pass |
 | V01 | `codex/mvp-v01-trace-admission-ci` | `d73fceb` | Add one packet-admission invocation; 38 configured suites; focused three-suite Linux run passes with five explicit skips |
-| R04 | `codex/mvp-r04-trace-packet-status` | branch tip, based on `9b638cd` | Record concrete host packets and focused target checks; actual guest retention/tracing and SIP restoration remain pending |
+| R04 | `codex/mvp-r04-trace-packet-status` | branch tip, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private, native diagnosis and SIP restoration pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -457,7 +457,8 @@ are explicitly qualified; preparation/render/admission dependencies stay fixed.
 Root stages exact bytes/modes as
 `/private/tmp/glue-mvp-macos-vm-toolkit/bootstrap-trace-calibration-269bf09070bc81f8`;
 the staging receipt is `/private/tmp/glue-trace-calibration-stage-20261018-01`.
-No packet script or native payload has run in the guest.
+At this preparation/staging checkpoint, no packet script or native payload had
+run in the guest; the actual later attempt is recorded below.
 
 At integrated `9b638cd`, actual retention preparation and deterministic
 packet/render/manifest comparison also return zero. The four-file packet is
@@ -477,8 +478,44 @@ Root verifies every peer inventory member and stages all four exact files/modes 
 the staging receipt is `/private/tmp/glue-kit03-retention-stage-20261018-01`.
 After human wake/focus, root visually verifies the complete launcher command
 before Return. Fresh UI observation then shows the guest at its private sudo
-password prompt after preflight. No root-phase or rename completion is yet
-established; a later actual outcome remains separate from these reviews.
+password prompt after preflight. This preparation review does not itself
+establish the later rename outcome.
+
+After human authentication, the actual preservation export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-kit03-retain-0d1560914528a4f1`: 23 files,
+manifest `22f67bec1c0e1d364d204f845ac6c995e1f140c703c326e63db9a7e7e45cc550`.
+All five captured commands return zero. The complete canonical root result
+reports retained true and raw move status0 for the one `/bin/mv -n` from
+`/System/Volumes/Data/Library/GlueMVPFixtures` to
+`/System/Volumes/Data/Library/GlueMVPFixtures-retained-1b85f0ac-da1aaf9a`.
+The approved snapshot and all six before/after strict signature records match.
+Source-enforced checks require source absence, inode/byte/roster preservation,
+the unchanged earlier Library archive and all 30 named temporary-root absences.
+The exact no-LF durable attempt bytes independently regenerate to
+`c7eee3e5262447186045f1de4b22aad12ce42163afe2a334355c10d9167935eb`, matching
+the report; the guest attempt file is not independently opened. Root checks all
+22 export payload hashes and the full report. Independent result review
+`/private/tmp/glue-kit03-actual-retention-result-peer-q0n21oyu` has 41 files,
+manifest `5d2b2eef6279ca42be12a7994e992784fb3ae8cdbf9e7baaffd09ac5e9f191d1`;
+root verifies all 40 payload hashes and exact recursive membership. Runtime
+source matches prepared `9b638cd`; current `7773380` differs only in status docs.
+
+Root next visually verifies and submits the exact staged tracing launcher once.
+The immediate screenshot fails with ScreenCaptureKit -3811; a later fresh
+screenshot shows the submitted command and restored empty prompt. No relaunch
+is performed. Neither expected completed host export exists. Bounded read-only
+UI heads of the fixed private receipt show outer status1 and no visible outer
+stderr; the batch checkpoint reports preflight0, install0 and positive2, with
+empty visible first-case wrapper streams. These are UI transcriptions of private
+receipts, not an independently retained command export. Positive2 is a wrapper
+refusal and does not establish native status2. The denied case is not reached.
+Native return status, promoted metadata and closure cause remain unestablished;
+root performs no manual native-output raw enumeration, hashing, inventory or
+export during diagnosis. The precise generated gate reached is unknown: a later
+roster/context check can also refuse after metadata closure. Read-only
+root status inspection requires fresh private guest authentication; SIP remains
+in the approved temporary disabled window. No successful calibration or full
+Darwin acceptance follows from this partial attempt.
 
 CI `d73fceb` adds exactly one invocation, for 38 configured suites. A focused
 native offline Linux arm64 run of the three affected exact CI commands at clean

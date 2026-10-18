@@ -1,6 +1,6 @@
 # Implementation progress
 
-## Reviewed tracing packets — 18 October 2026
+## Preservation complete; tracing diagnosis — 18 October 2026
 
 The fresh normal-boot guest proof reports exactly disabled SIP and passes an
 independent complete source/command/observation review. Registration `9a294d4`
@@ -11,9 +11,10 @@ separate explicit empty-registry fixture. The two affected kit suites pass all
 The ordinary-user native host build now succeeds: all 21 compiler/signature/tool
 commands return0, and all three signed programs are byte-identical across two
 builds. The catalog derives its root/Data tuples from the new guest observation.
-The binaries remain unexecuted and uninstalled; independent kit and catalog
-reviews both pass. Earlier failed preflight/compiler attempts remain separate;
-the failed native directory is explicitly partial and has no final inventory.
+Independent kit and catalog reviews both pass; the later guest installation
+checkpoint is recorded below. Earlier failed preflight/compiler attempts remain
+separate; the failed native directory is explicitly partial and has no final
+inventory.
 
 The separate two-case lane now admits only the reviewed actual kit (`0ea577a`).
 Its concrete packet is prepared, independently reviewed and staged with exact
@@ -25,10 +26,18 @@ The read-only kit03 inspection and independent review pass. Both Library
 installations survive; all 30 historical temporary roots are observed absent.
 The named retention policy (`f75aae6`) binds that exact state and unchanged
 historical exports, with a durable Library attempt marker and one guarded move.
-Its concrete packet is prepared, independently reviewed and staged. The guest
-launcher passes its preflight and awaits private sudo authentication; no completed
-retention outcome is established.
-No installation has moved and no new tracing binary has run.
+Its concrete packet is prepared, independently reviewed and staged. Actual
+preservation now succeeds: all five captured commands return zero, the old kit03
+prefix moves to its fixed Library archive, and the bound inode/byte/signature
+checks pass. Root verifies the result and the independent complete review.
+
+The tracing launcher then returns without a completed export. Bounded read-only
+UI checks of its private receipt show outer status1, preflight0, install0 and
+positive-wrapper2; the denied case is not reached. The native return status and
+closure cause remain unknown. Root performs no manual raw-output enumeration,
+hashing or export during diagnosis; the precise generated gate reached is unknown.
+The original attempt stays private and is not rerun; further read-only diagnosis
+awaits private guest authentication.
 
 The affected Mac controls pass all 48 tests across the two focused receipts.
 One focused native Linux run at `9b638cd` collects 48: 43 pass and five expected
