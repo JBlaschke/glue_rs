@@ -17,6 +17,7 @@ CORE_SHA = '440cdc2cadf5d86acae91e313c266b815d1c40130b4ce53d58a77e36b13fff48'
 WRAPPER_SHA = '53a136ec3b3728bbb5e977bc0d962c287f49e21b43614082caead8e2597d44f1'
 INSPECTOR_PATH = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016/inspect-deployment'
 INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
+KIT_CONTRACT_SHA = 'a16e2e25b78acb5c7d85ffbf9805941f9634b84003c43b515d3f8ccbd1de2fc2'
 APPROVED = None
 EXECUTION_ENABLED = False
 SIM_POLICY = None  # No uncalibrated normal120/kill/failed-END shape is accepted.
@@ -160,44 +161,12 @@ def make_plan(result, observed, entry, nonce):
 
 def load_kit(path):
     enabled()
-    p, trace = primitives()
-    required = ('kit_manifest_sha256','kit_review_manifest_sha256','catalog_review_manifest_sha256',
-        'builder_receipt_manifest_sha256','build_id','catalog_sha256','recipe_sha256',
-        'source_lock_sha256','source_revision','observation_sha256','proof_entry','artifacts')
-    p.exact_keys(APPROVED, required)
-    for k in required:
-        if k not in ('source_revision','proof_entry','artifacts'):
-            p.sha(APPROVED[k])
-    require(type(APPROVED['source_revision']) is str and re.fullmatch('[0-9a-f]{40}',APPROVED['source_revision']), 'approved source revision')
-    data = p.verified_tree(path,APPROVED['kit_manifest_sha256'])
-    fd = p.open_directory(path)
-    try: manifest = p.read_member(fd,'SHA256SUMS',p.MAX_JSON)
-    finally: os.close(fd)
-    require(sha(manifest) == APPROVED['kit_manifest_sha256'],'kit manifest changed')
-    result = p.strict_json(data['result.json'])
-    require(result['schema'] == 'glue-owned-trace-kit-result-v1' and result['status'] == 'built-reproducibly','tracing kit result')
-    require(result['build_id'] == APPROVED['build_id'] and result['catalog_sha256'] == APPROVED['catalog_sha256'],'kit identity')
-    require(all(result[k] is False for k in ('new_binaries_executed','installed','kernel_exec_proof','full_acceptance')),'kit scope')
-    p.exact_keys(result['artifacts'],PROGRAMS); p.exact_keys(APPROVED['artifacts'],PROGRAMS)
-    for name in PROGRAMS:
-        a = result['artifacts'][name]; raw = data['kit/' + name]
-        require({k:a[k] for k in ('sha256','size')} == APPROVED['artifacts'][name],'approved artifact')
-        require(sha(raw) == a['sha256'] and len(raw) == a['size'] and raw == data['builds/first/' + name] == data['builds/second/' + name],'artifact bytes')
-        require(trace.macho(raw,artifact=name) == a['provenance'],'artifact provenance')
-        for trial in ('first','second'):
-            for phase in ('compile','sign','verify'):
-                status = p.strict_json(data['logs/' + trial + '-' + name + '-' + phase + '.status.json'])
-                require(status['returncode'] == 0 and status['timed_out'] is False and status['operation_errno'] is None and status['command_cleanup_unresolved'] is False,'build/signature terminal status')
-    require(sha(data['catalog.bin']) == APPROVED['catalog_sha256'] and sha(data['recipe.json']) == APPROVED['recipe_sha256'],'catalog/recipe binding')
-    recipe = p.strict_json(data['recipe.json']); require(recipe['schema'] == 'glue-owned-trace-kit-recipe-v1' and recipe['sip_policy'] == 'exact-disabled','tracing recipe')
-    require(sha(data['source-lock.json']) == APPROVED['source_lock_sha256'],'source registry binding')
-    source_lock = trace.registry(data['source-lock.json'])
-    require(source_lock['source_revision'] == APPROVED['source_revision'] and source_lock['sources'],'frozen tracing sources')
-    proof = p.strict_json(data['admitted-proof.json']); p.exact_keys(proof,('registry_entry','observation','full_acceptance'))
-    require(proof['full_acceptance'] is False and proof['registry_entry'] == APPROVED['proof_entry'] and proof['registry_entry'] in source_lock['proofs'],'fresh registered proof binding')
-    observed = p.observation(p.canonical(proof['observation']))
-    require(sha(p.canonical(observed)) == APPROVED['observation_sha256'],'literal deployment observation')
-    return data,manifest,result,observed,proof['registry_entry']
+    contract = HERE / 'kit_contract.py'
+    require(sha(contract.read_bytes()) == KIT_CONTRACT_SHA, 'reviewed kit contract source differs')
+    spec = importlib.util.spec_from_file_location('glue_trace_vm_kit_contract', contract)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.load_approved_kit(path, APPROVED, primitives)
 
 
 def substitute(template, values):
