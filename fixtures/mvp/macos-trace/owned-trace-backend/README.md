@@ -4,8 +4,11 @@ This internal native libdtrace adapter implements `ts_operations` for the one
 owned context probe. It has no CLI, launch, privilege transition, GO, kill or
 signal operations. The separately compiled tracing parent adopts it after READY;
 the ordinary nontracing build and historical reader keep their existing paths.
-The separate tracing kit profile remains unconfigured, with no admitted native
-kit or guest run. Native calibration and full R02/M2 remain open.
+Earlier registered sources, kits and guest attempts remain fixed. This repaired
+adapter needs a separate source registration, fresh kit and packet before another
+guest diagnostic. Native calibration and full R02/M2 remain open.
+The earlier private native1 attempt's1257-versus1051 count difference motivates
+this repair; its particular cause and repaired native behavior remain unproved.
 
 After independently comparing complete READY and retaining the actual unreaped
 child, a trusted parent calls `otb_create` with its binding, original absolute
@@ -19,9 +22,22 @@ The single fixed profile requires BSD syscall entry/return, Mach trap entry/retu
 and process lifecycle clauses. It has no named-open calibration requirement or
 smaller fallback profile. Mach values remain raw scalars; no object, port,
 filesystem effect, complete coverage or authorization decision is made. The
-generated program selects exactly one clause per selected inventory probe.
-Enabled match count must equal that inventory count, including BEGIN/END;
-the snapshot retains both expected and actual counts.
+generated program has seventeen fixed, nonoverlapping selectors. Compilation
+precedes inventory: public `dtrace_stmt_iter` visits at most512 statements and
+retains at most17 distinct ECB descriptions, counting shared action statements
+once. Exact compiled selector fields must match the fixed program, including
+bare BEGIN/END's empty provider/module/function and zero ID; their physical
+matches must still be the `dtrace` BEGIN/END probes. Unexpected normalization,
+missing/additional selectors or duplicate kinds refuse before enabling.
+
+Public `dtrace_probe_iter` then enumerates each compiled selector once. Every
+selector needs a nonempty set of the expected physical kind; malformed names,
+zero/duplicate IDs, duplicate full name tuples and overlaps refuse. Total
+inventory remains bounded at8192 probes with the original byte/deadline limits.
+The sum of these selector matches is the expected count. Exactly-once coverage
+also makes it equal the retained unique inventory count, including BEGIN/END.
+`dpi_matches` must equal that expectation before `dtrace_go`; the snapshot keeps
+expected and actual counts. No recount, retry or weaker comparison is used.
 
 Actual events must match the retained inventory, exact historical v8 native
 descriptor shapes and one-to-one session EPID/clause bindings. Raw JSONL retains
@@ -66,6 +82,9 @@ Darwin controls compile a source-isolated TU defining all used DTrace functions,
 without linking libdtrace. They exercise actual adapter code with fake probe
 buffers and ordinary temporary files: strict session completion, BSD/Mach raw
 shapes, shadow exit attribution, partial enabling, inventory/layout/EPID faults,
+compile-time probe creation, repeated statements sharing one ECB, exact selector
+validation, missing/additional/overlapping matches, iteration failures and bounds,
+and enabled counts one below/above the independently retained expectation,
 output limits/errors, drop/fault callbacks, immutable deadlines, once-only drain
 and close, failed-start cleanup, expiry, clock failure and rollback. A separate
 actual SDK compile/link includes `-ldtrace` but never runs that resulting binary.
