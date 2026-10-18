@@ -32,8 +32,10 @@ small pinned `../bootstrap-trace-vm/kit_contract.py`; its early SIM guard still
 runs before loading that helper. No module policy globals are overridden.
 Shared core/wrapper/gates/raw/case/codec source pins are checked. Native sources,
 both builders, registries and historical nontracing policy remain unchanged.
-The normalized original loader body is pinned to f8e50d1 and exercised against
-an independent valid injected verified-tree boundary plus terminal mutations.
+Structural equality with the original f8e50d1 loader body is retained in the
+closed source review; it is not a Python-version-dependent runtime AST hash
+assertion. The loader is exercised against an independent valid injected
+verified-tree boundary plus terminal mutations.
 
 The new templates preserve bounded physical root-owned promoted result/trace
 checks and pending absence BEFORE any native-output raw enumeration/read/hash.
@@ -79,8 +81,8 @@ C/BW/NP and scalar-transport synthetic pairs before mutations; original serializ
 are transcribed from the accepted case/raw control fixtures, not a producer or
 validator generator. Tests cover all denied pairs, physical exact exports,
 strict receipts/schema/context/case links, gate-before-raw, tail/bounds, source
-and close failures, bounded FIFO subprocess, private directories, loader body
-normalization/behavior, helper pins, closed CLI and generated shell syntax.
+and close failures, bounded FIFO subprocess, private directories, old guard
+preservation and loader behavior, helper pins, closed CLI and generated shell syntax.
 Only a small read-only operation helper runs with injected host commands;
 no generated privileged phase is executed. These controls establish no actual
 provider/ABI calibration, installation, export safety under privileged mutation,
