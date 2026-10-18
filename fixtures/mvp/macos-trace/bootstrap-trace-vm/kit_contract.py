@@ -51,4 +51,3 @@ def load_approved_kit(path, approved, primitives):
     observed = p.observation(p.canonical(proof['observation']))
     require(sha(p.canonical(observed)) == approved['observation_sha256'],'literal deployment observation')
     return data,manifest,result,observed,proof['registry_entry']
-

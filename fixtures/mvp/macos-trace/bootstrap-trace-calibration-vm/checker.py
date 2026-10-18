@@ -13,7 +13,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 CHECKING_ENABLED = False
-PREPARE_SHA = 'c71bfa5c5718cb1830f8bd948b00eb396a030968d4ef9d72ebad2d6031d44951'
+PREPARE_SHA = 'b057c98263ca692979c285e30d8ea9bdf5fad08cc9a7e100fb4f868c89a8ea4e'
 LIBRARY_PINS = {
     'owned_trace_check': ('owned-trace-check/owned_trace_check.py', '0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a'),
     'legacy_codecs': ('owned-trace-cases/legacy_codecs.py', '62161b4932ed355f0af7228cb0a9ca6794bcf2aef66ebc84237f862506f9f9a9'),

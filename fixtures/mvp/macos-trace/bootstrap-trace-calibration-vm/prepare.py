@@ -12,7 +12,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 SHARED = HERE.parent / 'bootstrap-trace-vm/prepare.py'
-SHARED_SHA = '80c2105df0c9019db7a677d880173441d87b4cf73065cbffdfb4c0c0088c0c8b'
+SHARED_SHA = '3549edd7c6418ea9f40c9c791c919573dcf9ae6ea9d9eb609a849787de4e1719'
 APPROVED = None
 EXECUTION_ENABLED = False
 PROGRAMS = ('context-probe', 'owned-trace-runner', 'make-request')
