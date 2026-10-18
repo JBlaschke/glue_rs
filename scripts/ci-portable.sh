@@ -50,6 +50,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/owned-trace-cases/test_owned_trace_cases.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-sim/test_sim_metadata.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-trace-calibration-vm/test_calibration.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-trace-calibration-vm/test_packet_admission.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-retain-kit03/test_prepare.py -v
         # Native SDK/signature controls keep their separate target receipts.
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
