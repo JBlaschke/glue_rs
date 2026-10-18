@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bounded fixed-pair checker; no native operation, currently unconfigured CLI."""
+"""Bounded fixed-pair checker; no native operation, source-bound packet CLI."""
 import argparse
 from dataclasses import dataclass, field
 import hashlib
@@ -12,8 +12,8 @@ import stat
 import sys
 
 HERE = Path(__file__).resolve().parent
-CHECKING_ENABLED = False
-PREPARE_SHA = 'b057c98263ca692979c285e30d8ea9bdf5fad08cc9a7e100fb4f868c89a8ea4e'
+CHECKING_ENABLED = True
+PREPARE_SHA = '32728f45845e1d7aec1f3e3c99a7fb17edca710d0f84e177a6a6bafd684e5487'
 LIBRARY_PINS = {
     'owned_trace_check': ('owned-trace-check/owned_trace_check.py', '0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a'),
     'legacy_codecs': ('owned-trace-cases/legacy_codecs.py', '62161b4932ed355f0af7228cb0a9ca6794bcf2aef66ebc84237f862506f9f9a9'),
@@ -65,11 +65,12 @@ class PairFacts:
     exec_proved: bool = field(default=False,init=False)
     full_acceptance: bool = field(default=False,init=False)
 
-def metadata_pair(plan, read):
+def metadata_pair(plan, read, *, _policy=None):
     """Fixed bounded reads only; read callback must enforce its own physical caps."""
     prep=preparer();p,unused=prep.primitives()
-    commands=prep.root_commands(plan)
-    expected=prep.plan_from_identity(plan['build_id'],plan['catalog_sha256'],plan['artifacts'],plan['observation'],plan['proof_entry'],plan['nonce'])
+    policy=prep.POLICY if _policy is None else _policy
+    commands=prep.root_commands(plan,_policy=policy)
+    expected=prep.plan_from_identity(plan['build_id'],plan['catalog_sha256'],plan['artifacts'],plan['observation'],plan['proof_entry'],plan['nonce'],_policy=policy)
     require(p.canonical(plan)==p.canonical(expected),'unreviewed calibration plan')
     require(read('plan.json',262144)==p.canonical(plan),'evidence plan differs')
     require(read('batch.tsv',4096)==b'schema\tglue-bootstrap-trace-calibration-batch-v1\npreflight\t0\ninstall\t0\npositive\t0\ndenied\t0\ncomplete\t0\n','incomplete calibration batch')
@@ -101,11 +102,12 @@ def metadata_pair(plan, read):
         result[case]=(r,t,frozenset(roster),native)
     return result,(device,inode)
 
-def complete_pair(plan,catalog,read,event_lines, gated):
+def complete_pair(plan,catalog,read,event_lines, gated, *, _policy=None):
     """Called only after metadata_pair and physical exact-inventory verification."""
     prep=preparer();raw_module,unused,cases=libraries()
     metadata,context=gated
-    commands=prep.root_commands(plan)
+    policy=prep.POLICY if _policy is None else _policy
+    commands=prep.root_commands(plan,_policy=policy)
     require(sha(catalog)==plan['catalog_sha256'],'catalog binding')
     require(context[0]==plan['observation']['components'][3]['device'],'installed current device')
     facts=[]
@@ -181,7 +183,7 @@ class Tree:
             require(len(data)<=cap and len(data)==before[6] and stamp(os.fstat(fd))==before,'changed/oversized member')
             return bytes(data)
         finally: os.close(fd)
-    def inventory(self,limits):
+    def inventory(self,limits, *, total_limit=135*1024*1024+262144):
         wanted=set(limits)|{'SHA256SUMS'};dirs={''}
         for name in wanted:
             parts=name.split('/')
@@ -205,7 +207,7 @@ class Tree:
                     else:
                         require(name in wanted and stat.S_ISREG(s.st_mode) and s.st_nlink==1,'extra/special member')
                         require(s.st_size<=limits.get(name,262144),'member inventory cap');names.add(name);total+=s.st_size
-                        require(total<=135*1024*1024+262144,'total evidence bound')
+                        require(total<=total_limit,'total tree bound')
         visit(self.fd,'');require(names==wanted,'missing evidence member')
     def lines(self,name,expected_hash):
         fd,before=self.checked(name,128*1024*1024)
@@ -220,7 +222,7 @@ class Tree:
                 require(total==before[6] and h.hexdigest()==expected_hash and stamp(os.fstat(fd))==before,'event hash/identity changed')
         finally:os.close(fd)
 
-def check_export(plan,catalog,evidence,run_receipt):
+def check_export(plan,catalog,evidence,run_receipt, *, _policy=None):
     """Trusted canonical plan/catalog caller; CLI additionally requires activation."""
     prep=preparer();p,unused=prep.primitives()
     with Tree(run_receipt) as receipt:
@@ -231,7 +233,7 @@ def check_export(plan,catalog,evidence,run_receipt):
         require(set(rm)=={'outer.argv','outer.status','outer.stdout','outer.stderr'},'outer inventory')
         for name,h in rm.items(): require(sha(receipt.read(name,65536))==h,'outer hash')
     with Tree(evidence) as tree:
-        gated=metadata_pair(plan,tree.read)
+        gated=metadata_pair(plan,tree.read,_policy=_policy)
         tree.inventory(plan['evidence_limits'])
         manifest=p.parse_manifest(tree.read('SHA256SUMS',262144))
         require(set(manifest)==set(plan['evidence_files']),'evidence manifest roster')
@@ -243,12 +245,62 @@ def check_export(plan,catalog,evidence,run_receipt):
         # Also bind the metadata/control bytes already used by the gate.
         for name,cap in plan['evidence_limits'].items():
             if name!='cases/positive/events.jsonl':read(name,cap)
-        return complete_pair(plan,catalog,read,lambda name:tree.lines(name,manifest[name]),gated)
+        return complete_pair(plan,catalog,read,lambda name:tree.lines(name,manifest[name]),gated,_policy=_policy)
 
-def check(packet,evidence,run_receipt):
-    require(CHECKING_ENABLED is True,'calibration checker is not configured')
-    prep=preparer();prep.enabled()  # before supplied paths/helper imports
-    raise ValueError('calibration activation and packet admission require a later reviewed source change')
+def _packet(tree, prep, policy):
+    """Private injected boundary; production supplies a held physical Tree only."""
+    prep.enabled(_policy=policy)
+    p,unused=prep.primitives()
+    approved=prep.approval(policy)
+    limits=prep.packet_limits(_policy=policy)
+    manifest_bytes=tree.read('SHA256SUMS',4096)
+    manifest=p.parse_manifest(manifest_bytes)
+    require(set(manifest)==set(limits) and len(manifest)==14,'packet manifest roster')
+    canonical_manifest=''.join(manifest[n]+'  '+n+'\n' for n in sorted(manifest)).encode('ascii')
+    require(manifest_bytes==canonical_manifest,'noncanonical packet manifest')
+    for item in prep.selected_members(_policy=policy):
+        require(manifest[item['member']]==item['sha256'],'packet approved manifest link')
+    # Enforce exact physical roster and per-role lengths before reading payloads.
+    tree.inventory(limits,total_limit=sum(limits.values())+4096)
+    data={}
+    for item in prep.selected_members(_policy=policy):
+        name=item['member'];raw=tree.read(name,item['size'])
+        require(len(raw)==item['size'] and sha(raw)==item['sha256'],'packet approved member differs: '+name)
+        require(manifest[name]==item['sha256'],'packet approved manifest link')
+        data[name]=raw
+    def json_member(name):return p.strict_json(data['metadata/'+name])
+    result=json_member('build-result.json');proof=json_member('admitted-proof.json')
+    recipe=json_member('recipe.json');lock=json_member('source-lock.json')
+    p.exact_keys(proof,('registry_entry','observation','full_acceptance'))
+    require(proof['full_acceptance'] is False and proof['registry_entry']==approved['proof_entry'],'packet proof identity')
+    require(recipe['schema']=='glue-owned-trace-kit-recipe-v1' and recipe['sip_policy']=='exact-disabled','packet recipe policy')
+    require(lock['schema']=='glue-owned-trace-kit-inputs-v1' and lock['source_revision']==approved['source_revision'] and lock['sources'] and approved['proof_entry'] in lock['proofs'],'packet source/proof link')
+    require(sha(data['metadata/catalog.bin'])==approved['catalog_sha256'] and sha(data['metadata/recipe.json'])==approved['recipe_sha256'] and sha(data['metadata/source-lock.json'])==approved['source_lock_sha256'],'packet fixed identity links')
+    require(sha(data['metadata/build-SHA256SUMS'])==approved['kit_manifest_sha256'],'packet original kit inventory link')
+    observed=p.observation(p.canonical(proof['observation']))
+    raw_plan=tree.read('plan.json',limits['plan.json']);plan=p.strict_json(raw_plan)
+    require(type(plan) is dict and type(plan.get('nonce')) is str,'packet plan object/nonce')
+    expected=prep.make_plan(result,observed,proof['registry_entry'],plan['nonce'],_policy=policy)
+    require(raw_plan==p.canonical(expected),'packet canonical plan differs')
+    expected_members={'plan.json':raw_plan,'derived-subset.json':p.canonical(prep.subset(_policy=policy)),**prep.render(expected,_policy=policy)}
+    for name,wanted in expected_members.items():
+        raw=raw_plan if name=='plan.json' else tree.read(name,limits[name])
+        require(raw==wanted and sha(raw)==manifest[name],'packet canonical member differs: '+name)
+    return expected,data['metadata/catalog.bin']
+
+def load_packet(path, *, _policy=None):
+    """Admit only source-bound exact packet bytes; never execute their scripts."""
+    require(_policy is None or (_policy.approved_json is not None and _policy.execution is True),'calibration checker is not configured')
+    prep=preparer();policy=prep.POLICY if _policy is None else _policy
+    prep.enabled(_policy=policy)  # before supplied path opens
+    with Tree(path) as tree:return _packet(tree,prep,policy)
+
+def check(packet,evidence,run_receipt, *, _policy=None):
+    require(CHECKING_ENABLED is True and (_policy is None or (_policy.approved_json is not None and _policy.execution is True)),'calibration checker is not configured')
+    prep=preparer();policy=prep.POLICY if _policy is None else _policy
+    prep.enabled(_policy=policy)  # before supplied paths
+    plan,catalog=load_packet(packet,_policy=policy)
+    return check_export(plan,catalog,evidence,run_receipt,_policy=policy)
 
 def main():
     cli=argparse.ArgumentParser(description=__doc__)
