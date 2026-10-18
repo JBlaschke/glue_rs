@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -15,6 +16,26 @@ HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('kit03_prepare', HERE / 'prepare.py')
 p = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p)
+
+
+def unconfigured_module():
+    """Private module copy; production approval/gates are never changed."""
+    fixture = json.loads((HERE / 'unconfigured-inputs.fixture.json').read_bytes())
+    spec = importlib.util.spec_from_file_location('kit03_unconfigured_fixture', HERE / 'prepare.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert set(fixture) == {'APPROVED', 'RETENTION_ENABLED'}
+    for key, value in fixture.items():
+        setattr(module, key, value)
+    return module
+
+
+def actual_baseline():
+    # Independent exact snapshot fixture, copied from the read-only phase
+    # receipt rather than constructed by the approval loader or validator.
+    data = (HERE / 'actual-snapshot.fixture.json').read_bytes()
+    assert hashlib.sha256(data).hexdigest() == '18e3a2d7d69cb1a25affab756329d7dab396d48e51275fa032da4ca62e5f0346'
+    return json.loads(data)
 
 
 def tree(files, uid=0, gid=0, mode=0o40700):
@@ -95,13 +116,93 @@ class PreparationTests(unittest.TestCase):
         self.assertLess(files['launch.sh'].index(b'components.4.filesystem'),
                         files['launch.sh'].index(b'/usr/bin/sudo -v'))
 
-    def test_disabled_retention_refuses_before_io(self):
+    def test_unconfigured_fixture_retention_refuses_before_io(self):
+        fixture = unconfigured_module()
         with patch.object(Path, 'read_bytes', side_effect=AssertionError('I/O before guard')):
             with self.assertRaisesRegex(ValueError, 'retention approval'):
-                p.prepare('retain', Path('/not-created'))
-        with patch.object(p, 'INSPECTION_APPROVAL', None), patch.object(Path, 'read_bytes', side_effect=AssertionError):
+                fixture.prepare('retain', Path('/not-created'))
+        fixture.INSPECTION_APPROVAL = None
+        with patch.object(Path, 'read_bytes', side_effect=AssertionError):
             with self.assertRaisesRegex(ValueError, 'fresh inspection approval'):
-                p.prepare('inspect', Path('/not-created'))
+                fixture.prepare('inspect', Path('/not-created'))
+
+    def test_actual_profile_accepts_exact_inspection_and_rejects_each_changed_root(self):
+        original = actual_baseline()
+        self.assertIs(p.validate_actual_snapshot(original, 16777234), original)
+        self.assertEqual((len(original['parents']), len(original['roots'])), (7, 32))
+        self.assertEqual(sum(x is None for x in original['roots'].values()), 30)
+        self.assertEqual([len(original['roots'][r]) for r in p.ROOTS[:2]], [5, 5])
+        # The complete checkpoint contract and actual observed-absence contract
+        # have distinct positive baselines and refuse one another.
+        with self.assertRaises(ValueError):
+            p.validate_snapshot(original, 16777234)
+        with self.assertRaises(ValueError):
+            p.validate_actual_snapshot(baseline(), 16777234)
+        for root in p.ROOTS[2:]:
+            changed = copy.deepcopy(original)
+            changed['roots'][root] = tree({})
+            with self.subTest(root=root), self.assertRaisesRegex(ValueError, 'temporary root'):
+                p.validate_actual_snapshot(changed, 16777234)
+        mutations = []
+        changed = copy.deepcopy(original); changed['roots'][p.ROOTS[1]] = None; mutations.append(changed)
+        changed = copy.deepcopy(original); changed['roots'][p.ROOTS[1]].pop(); mutations.append(changed)
+        changed = copy.deepcopy(original); changed['roots']['/unreviewed'] = None; mutations.append(changed)
+        for root in p.ROOTS[:2]:
+            for field, value in (('device', 1), ('inode', True), ('inode', 999), ('uid', 501),
+                                 ('gid', 20), ('mode', 0o104555), ('links', 2), ('sha256', '0'*64),
+                                 ('size', 42)):
+                changed = copy.deepcopy(original); changed['roots'][root][2][field] = value
+                mutations.append(changed)
+        for parent in p.PARENTS:
+            for field, value in (('device', 1), ('inode', 999), ('uid', True), ('gid', 20), ('mode', 0o44755)):
+                changed = copy.deepcopy(original); changed['parents'][parent][field] = value
+                mutations.append(changed)
+        for i, changed in enumerate(mutations):
+            with self.subTest(i=i), self.assertRaises(ValueError):
+                p.validate_actual_snapshot(changed, 16777234)
+
+    def test_literal_approval_historical_and_coordination_bindings(self):
+        a = p.retention_approval()
+        self.assertEqual(a['snapshot'], actual_baseline())
+        self.assertEqual(a['inspection_manifest_sha256'], '563731431c81c3ee0790f5451cfad108bacd3b09f1a0c54667615659f0d03724')
+        self.assertEqual(a['inspection_review']['manifest_sha256'], 'bd56990e6ddc6a067b52d780c2706d96d1e275425f129737108ac499ff2869d1')
+        self.assertEqual(a['coordination']['receipt_sha256'], '39b44c8b675d9b3429c0ed899a33de2af618d7831bde10c4f3e1b03fd2e09012')
+        self.assertEqual(a['coordination']['manifest_sha256'], '5257549ebf1eb5f803b503861530f02883eb7e78badafa211cb043993aa8a397')
+        expected = {
+            'historical_kit03': 'ea67cfba1dab8dc51c44e514ca6ff8a00f703e665cbc89c17f996b3e02f4efae',
+            'historical_packet04': '3464a9b713df68fe0b58a6f1a47a950af6158baae961ca067f2f626b252d661a',
+            'historical_batch': 'b2654ce96a03860c41a17b26effd411f0da1b6955dd99c43237b8b8eef739cfb',
+            'historical_outer': 'c688fdcb146e49bcb6450460b6edd9dc0ee3bc89879f30a50bc401c551cf8029',
+            'historical_review': 'c0fb82f1237f50e235a9991784f641b71c3dc1df35578a46d9d62f08e1ea4962'}
+        self.assertEqual({k: v['manifest_sha256'] for k, v in a['historical_host'].items()}, expected)
+        originals = [a]
+        for key in ('inspection_manifest_sha256', 'snapshot_sha256', 'profile', 'attempt_path'):
+            changed = copy.deepcopy(a); changed[key] = 'unreviewed'; originals.append(changed)
+        for key, field in (('coordination', 'receipt_sha256'), ('coordination', 'manifest_sha256'),
+                           ('inspection_review', 'manifest_sha256')):
+            changed = copy.deepcopy(a); changed[key][field] = '0'*64; originals.append(changed)
+        for name in expected:
+            changed = copy.deepcopy(a); changed['historical_host'][name]['manifest_sha256'] = '0'*64
+            originals.append(changed)
+        read_bytes = Path.read_bytes
+        for i, changed in enumerate(originals):
+            # Even equivalent whitespace is a changed source approval file.
+            data = json.dumps(changed, indent=2).encode()
+            def read(path):
+                return data if path == HERE / 'actual-retention-approval.json' else read_bytes(path)
+            with self.subTest(i=i), patch.object(Path, 'read_bytes', read), self.assertRaisesRegex(ValueError, 'literal retention approval'):
+                p.retention_approval()
+
+    def test_closed_cli_rejects_overrides_before_output(self):
+        with tempfile.TemporaryDirectory() as td:
+            output = Path(td) / 'must-not-exist'
+            for flag in ('--approval', '--profile', '--snapshot', '--source', '--archive',
+                         '--attempt', '--coordination', '--enable'):
+                done = subprocess.run([sys.executable, str(HERE/'prepare.py'), 'retain',
+                    '--output', str(output), flag, 'unreviewed'], capture_output=True, timeout=5)
+                self.assertEqual(done.returncode, 2, done.stderr)
+                self.assertEqual(done.stdout, b'')
+                self.assertFalse(output.exists())
 
     def test_complete_synthetic_state_and_contract_mutations(self):
         original = baseline()
@@ -139,11 +240,90 @@ class PreparationTests(unittest.TestCase):
                 p.prepare('inspect', out)
 
     def rendered_programs(self):
-        approved = {'inspection_approval': p.INSPECTION_APPROVAL,
-            'inspection_manifest_sha256': '1'*64, 'inspection_review_manifest_sha256': '2'*64,
-            'coordination_receipt_sha256': '3'*64, 'snapshot': baseline()}
-        with patch.object(p, 'APPROVED', approved), patch.object(p, 'RETENTION_ENABLED', True):
-            return {mode: p.render(mode, '0123456789abcdef') for mode in ('inspect', 'retain')}
+        return {mode: p.render(mode, '0123456789abcdef') for mode in ('inspect', 'retain')}
+
+    def test_inspection_rendering_unchanged_from_actual_inspection_source(self):
+        expected = {'root.pl': '43fc1e43eea4d265d27054e93217a6d09809b2689143fbc7597f64da844e6fd7',
+                    'launch.sh': '000379fb15146670b18bb3384148977da495419c43e3373475f1e7a06a70428d',
+                    'plan.json': '13144d288ed6ccd061f44aa03b24cf88e45063532c2f2a212389026bbe90181b'}
+        self.assertEqual({n: p.sha(b) for n, b in p.render('inspect', '0123456789abcdef').items()}, expected)
+
+    def test_durable_attempt_and_single_move_ordering(self):
+        files = p.render('retain', '0123456789abcdef')
+        plan = json.loads(files['plan.json'])
+        source = files['root.pl']
+        marker = b"$ATTEMPT = '/System/Volumes/Data/Library/GlueMVPFixtures-retain-attempt-1b85f0ac-da1aaf9a';"
+        ordered = [marker, b"fail('archive already exists')", b"fail('retention already attempted')",
+            b'my $before = snapshot(0', b"fail('fresh physical state differs')", b'my $before_signatures = signatures(0)',
+            b"mkdir($ATTEMPT, 0700)", b"no_acl($ATTEMPT)", b"fail('attempt identity')", b'sysopen(my $attempt_file,',
+            b"close($attempt_file) or fail('attempt close')", b"my @move = ('/bin/mv', '-n', $PREFIX, $ARCHIVE)",
+            b"fail('uncertain rename status')", b"fail('source still exists')", b'my $after = snapshot(1',
+            b"fail('relocated tree or preserved checkpoint changed')", b'my $after_signatures = signatures(1)',
+            b"report({schema=>'glue-kit03-retained-install-v1'"]
+        positions = [source.index(x) for x in ordered]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(source.count(b"'/bin/mv'"), 1)
+        self.assertIn(b'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW, 0600', source)
+        self.assertEqual(source.count(b'$ATTEMPT = '), 2)  # old unused common value, then durable override
+        self.assertEqual(plan['attempt_path'], p.ATTEMPT)
+        self.assertEqual(plan['retention_approval'], p.retention_approval())
+        self.assertEqual(plan['source_sha256']['actual-retention-approval.json'], p.ACTUAL_APPROVAL_SHA)
+        for command in (b'/bin/rm', b'/bin/chown', b'/bin/chmod'):
+            self.assertNotIn(command, source)
+
+    def test_retain_checked_command_outputs_preserve_failure_status(self):
+        # Run only the pure checked-output helper against harmless text stubs.
+        # Expected bytes from a failed operation must never authorize mutation.
+        for stub, success in (("printf '%s' expected", True),
+                              ("printf '%s' expected; exit 7", False),
+                              ("printf '%s' wrong", False),
+                              ("exit 7", False)):
+            done = subprocess.run(['/bin/sh', '-c', p.CHECKED_EQUAL +
+                '\nchecked_equal expected /bin/sh -c "$1" || exit 2\n', 'control', stub],
+                capture_output=True, timeout=5)
+            self.assertEqual(done.returncode, 0 if success else 2, done.stderr)
+            self.assertEqual((done.stdout, done.stderr), (b'', b''))
+        files = p.render('retain', '0123456789abcdef')
+        launch = files['launch.sh'].decode()
+        plan = json.loads(files['plan.json'])
+        bootstrap = plan['root_phase_argv'][-1]
+        self.assertNotIn('[ "$(' , launch)
+        self.assertNotIn('[ "$(' , bootstrap)
+        for command in ('/usr/bin/id -ru', '/usr/bin/id -u', '/usr/sbin/sysctl -n hw.model',
+                        '/usr/bin/sw_vers -productVersion', '/usr/bin/sw_vers -buildVersion',
+                        '/usr/bin/uname -mrs', '/usr/bin/csrutil status'):
+            line = next(line for line in launch.splitlines() if command in line)
+            self.assertIn('checked_equal ', line)
+        self.assertEqual(bootstrap.count('checked_equal '), 6)
+        with self.assertRaisesRegex(ValueError, 'reviewed launcher source'):
+            p.retain_launcher((HERE/'launch.sh.in').read_text() + '\n')
+
+    def test_extracted_read_only_marker_guard_refuses_any_existing_entry(self):
+        common = (HERE/'inventory.pl').read_text()
+        status = common[common.index('sub status_of {'):common.index('# Perl stat timestamps')]
+        root = p.root_program('retain').decode()
+        start = root.index("fail('archive already exists')")
+        checks = root[start:root.index('my $before = snapshot(0', start)]
+        self.assertNotIn('mkdir', checks)
+        self.assertNotIn('system', checks)
+        self.assertNotIn('/bin/mv', checks)
+        # Execute only two extracted read-only existence guards and status_of,
+        # never a generated phase/root main or any mutation/guest command.
+        source = 'use strict; use warnings; use Errno qw(ENOENT); sub fail {die $_[0]}\n' + status
+        source += 'my ($ARCHIVE,$ATTEMPT)=@ARGV;\n' + checks + 'print "ready\\n";\n'
+        with tempfile.TemporaryDirectory() as td:
+            archive, attempt = Path(td)/'archive', Path(td)/'attempt'
+            def check(expected):
+                done = subprocess.run(['/usr/bin/perl', '-e', source, str(archive), str(attempt)],
+                                      capture_output=True, timeout=5)
+                self.assertEqual(done.returncode == 0, expected, done.stderr)
+                self.assertEqual(done.stdout, b'ready\n' if expected else b'')
+            check(True)
+            attempt.mkdir(); check(False); attempt.rmdir()
+            attempt.write_bytes(b'partial'); check(False); attempt.unlink()
+            attempt.symlink_to(Path(td)/'absent'); check(False); attempt.unlink()
+            os.mkfifo(attempt, 0o600); check(False); attempt.unlink()
+            archive.mkdir(); check(False)
 
     def test_both_shell_programs_parse_without_running_them(self):
         for mode, files in self.rendered_programs().items():

@@ -56,3 +56,11 @@ closed CLI and generated syntax without running generated root mains. Root
 owns concrete packet review and any later preparation/staging/guest action;
 this source step performs none. Scope remains nontracing maintenance, with
 exec/full acceptance false and the guest SIP restoration window still open.
+
+Retain-only rendering also checks the operation status before comparing native
+credential/platform/SIP, typed-fixture, copied-size and root-bootstrap id/stat/hash
+outputs. The earlier template can accept expected stdout from a failed command.
+Keep inspection bytes unchanged; require the exact launcher template hash and
+each exact transition count when rendering retain. Extracted pure helper controls
+must refuse expected-text/nonzero stubs. This is an explicit mutating-source
+transition, not a claim that the historical inspection captured those raw exits.
