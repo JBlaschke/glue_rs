@@ -83,7 +83,9 @@ An existing entry of any type refuses. The marker survives ordinary temporary
 directory loss and remains on every later outcome; no power-loss/fsync or hostile
 writer guarantee is claimed. The common inventory's old unused temporary marker
 variable is overridden in retain main before its first use, preserving actual
-inspection bytes. Retention then requires source absence and the same
+inspection bytes. Both approval and attempt `snapshot_sha256` fields hash the
+canonical snapshot JSON plus one LF; the attempt record file itself remains
+canonical JSON without a trailing LF. Retention then requires source absence and the same
 prefix/build/file device and inode identities, unchanged bytes/modes/rosters,
 unchanged old archive and all30 temporary-root absences, followed by three strict
 relocated signatures. The fixed destination is

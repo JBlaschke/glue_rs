@@ -407,7 +407,7 @@ my $attempt_stat = status_of($ATTEMPT) // fail('attempt disappeared');
 fail('attempt identity') unless $attempt_stat->[0] == $DATA_DEVICE && $attempt_stat->[2] == 040700 &&
     $attempt_stat->[4] == 0 && $attempt_stat->[5] == 0;
 my $attempt_bytes = canonical({schema=>'glue-kit03-retention-attempt-v1',
-    snapshot_sha256=>sha256_hex(canonical($before)), source=>$PREFIX, archive=>$ARCHIVE,
+    snapshot_sha256=>sha256_hex(canonical($before) . "\\n"), source=>$PREFIX, archive=>$ARCHIVE,
     approval=>$approval});
 sysopen(my $attempt_file, "$ATTEMPT/attempt.json", O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW, 0600)
     or fail('exclusive attempt record');

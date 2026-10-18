@@ -358,6 +358,27 @@ class PreparationTests(unittest.TestCase):
             done = subprocess.run(['/usr/bin/perl', '-c'], input=files['root.pl'],
                                   capture_output=True, timeout=5, env=env)
             self.assertEqual(done.returncode, 0, done.stderr)
+        # Evaluate only the extracted pure attempt-record expression, without
+        # any generated root main, filesystem operation or guest command.
+        source = p.root_program('retain').decode()
+        start = source.index('my $attempt_bytes = canonical(')
+        expression = source[start:source.index('sysopen(my $attempt_file,', start)]
+        model = '''use strict; use warnings; use JSON::PP; use Digest::SHA qw(sha256_hex);
+my $JSON = JSON::PP->new->canonical->ascii;
+sub canonical {return $JSON->encode($_[0]);}
+my ($before,$approval) = map {$JSON->decode($_)} @ARGV;
+my $PREFIX = '/System/Volumes/Data/Library/GlueMVPFixtures';
+my $ARCHIVE = '/System/Volumes/Data/Library/GlueMVPFixtures-retained-1b85f0ac-da1aaf9a';
+'''
+        model += expression + 'print $attempt_bytes or die;\n'
+        done = subprocess.run(['/usr/bin/perl', '-e', model,
+            p.canonical(actual_baseline()).decode(), p.canonical(p.retention_approval()).decode()],
+            capture_output=True, timeout=5, env=env)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        attempt = json.loads(done.stdout)
+        self.assertEqual(attempt['snapshot_sha256'],
+                         '18e3a2d7d69cb1a25affab756329d7dab396d48e51275fa032da4ca62e5f0346')
+        self.assertEqual(attempt['snapshot_sha256'], attempt['approval']['snapshot_sha256'])
 
 
 @unittest.skipUnless(__import__('sys').platform == 'darwin',
