@@ -29,8 +29,8 @@ def synthetic():
     entry={k:'d'*64 for k in ('manifest_sha256','review_manifest_sha256','inspector_manifest_sha256','wrapper_sha256','binary_sha256')}
     entry.update(inspector_source_commit='e'*40,guest_output_name='glue-bootstrap-deployment-v1-TEST0001',kernel_release='25.6.0',os_version='26.6.2',os_build='25G83')
     artifacts={n:dict(sha256=str(i+1)*64,size=100+i) for i,n in enumerate(prep.PROGRAMS)}
-    plan=prep.plan_from_identity('b'*64,check.sha(positive['catalog']),artifacts,observed,entry,'0123456789abcdef')
-    p,unused=prep.primitives();commands=prep.root_commands(plan);data={'plan.json':p.canonical(plan),'batch.tsv':b'schema\tglue-bootstrap-trace-calibration-batch-v1\npreflight\t0\ninstall\t0\npositive\t0\ndenied\t0\ncomplete\t0\n'}
+    plan=prep.plan_from_identity('b'*64,check.sha(positive['catalog']),artifacts,observed,entry,'0123456789abcdef',_policy=prep.UNCONFIGURED)
+    p,unused=prep.primitives();commands=prep.root_commands(plan,_policy=prep.UNCONFIGURED);data={'plan.json':p.canonical(plan),'batch.tsv':b'schema\tglue-bootstrap-trace-calibration-batch-v1\npreflight\t0\ninstall\t0\npositive\t0\ndenied\t0\ncomplete\t0\n'}
     def receipt(stem,args,stdout=b'',stderr=b''):
         data.update({stem+'.argv':check.argv_bytes(args),stem+'.status':b'0\n',stem+'.stdout':stdout,stem+'.stderr':stderr})
     receipt('install',commands['install'])
@@ -63,8 +63,8 @@ def write_tree(path,data):
 def pure(plan,catalog,data):
     def read(name,cap):
         raw=data[name];check.require(len(raw)<=cap,'injected cap');return raw
-    gated=check.metadata_pair(plan,read)
-    return check.complete_pair(plan,catalog,read,lambda name:iter(data[name].splitlines(keepends=True)),gated)
+    gated=check.metadata_pair(plan,read,_policy=prep.UNCONFIGURED)
+    return check.complete_pair(plan,catalog,read,lambda name:iter(data[name].splitlines(keepends=True)),gated,_policy=prep.UNCONFIGURED)
 
 class CalibrationControls(unittest.TestCase):
     @classmethod
@@ -84,16 +84,16 @@ class CalibrationControls(unittest.TestCase):
         plan,cat,data,receipt=self.baseline()
         with tempfile.TemporaryDirectory(prefix='glue-calibration-synthetic-') as d:
             e=Path(d).resolve()/'e';r=Path(d).resolve()/'r';write_tree(e,data);write_tree(r,receipt)
-            facts=check.check_export(plan,cat,e,r);self.assertEqual(facts.positive.raw_events,3)
+            facts=check.check_export(plan,cat,e,r,_policy=prep.UNCONFIGURED);self.assertEqual(facts.positive.raw_events,3)
     def test_03_refusal_before_helpers_and_supplied_paths(self):
         with patch.object(prep,'shared',side_effect=AssertionError('helper IO')):
-            for call in (lambda:prep.prepare('/absent','/no-output'),lambda:prep.load_kit('/absent')):
+            for call in (lambda:prep.prepare('/absent','/no-output',_policy=prep.UNCONFIGURED),lambda:prep.load_kit('/absent',_policy=prep.UNCONFIGURED)):
                 with self.assertRaisesRegex(ValueError,'not configured'):call()
         with patch.object(check,'preparer',side_effect=AssertionError('helper IO')):
-            with self.assertRaisesRegex(ValueError,'not configured'):check.check('/absent','/absent','/absent')
+            with self.assertRaisesRegex(ValueError,'not configured'):check.check('/absent','/absent','/absent',_policy=prep.UNCONFIGURED)
         with tempfile.TemporaryDirectory(prefix='glue-calibration-cli-') as d:
             for module,args in [('prepare.py',['--kit',d+'/missing','--output',d+'/new']),('checker.py',['--packet',d+'/missing','--evidence',d+'/missing','--run-receipt',d+'/missing'])]:
-                cmd=[sys.executable,'-B',str(HERE/module),*args];r=subprocess.run(cmd,capture_output=True);self.assertEqual(r.returncode,1);self.assertIn(b'not configured',r.stderr)
+                cmd=[sys.executable,'-B',str(HERE/module),*args];r=subprocess.run(cmd,capture_output=True);self.assertEqual(r.returncode,1)
                 for flag in ('--enable','--case','--proof','--hash','--target','--provider','--approval'):
                     r=subprocess.run(cmd+[flag,'override'],capture_output=True);self.assertEqual(r.returncode,2)
             self.assertFalse((Path(d)/'new').exists())
@@ -102,13 +102,13 @@ class CalibrationControls(unittest.TestCase):
         with patch.object(old,'primitives',side_effect=AssertionError('helper IO')):
             with self.assertRaisesRegex(ValueError,'not configured'):old.load_kit('/absent')
     def test_05_fixed_renderer_and_syntax_only(self):
-        plan,cat,data,receipt=self.baseline();scripts=prep.render(plan)
+        plan,cat,data,receipt=self.baseline();scripts=prep.render(plan,_policy=prep.UNCONFIGURED)
         with tempfile.TemporaryDirectory(prefix='glue-calibration-syntax-') as d:
             for name,raw in scripts.items():
                 self.assertNotIn(b'@@',raw);self.assertIn(b'[ 0 = 1 ]',raw);path=Path(d)/name;path.write_bytes(raw)
                 r=subprocess.run(['/bin/sh','-n',str(path)],capture_output=True);self.assertEqual(r.returncode,0,r.stderr)
-        for flag,value in [('EXECUTION_ENABLED',True),('APPROVED',{})]:
-            with patch.object(prep,flag,value),self.assertRaises(ValueError):prep.render(plan)
+        for policy in (prep._Admission(None,(),True),prep._Admission(b'{}',(),False)):
+            with self.assertRaises(ValueError):prep.render(plan,_policy=policy)
         root=scripts['root-stage.sh'].decode();outer=scripts['outer.sh'].decode()
         self.assertNotIn('case-simulated',root);self.assertNotIn('case-trailing',root);self.assertNotIn('for c in positive simulated',outer)
         self.assertLess(root.index('metadata_gate || return 2',root.index('run_case()')),root.index('output_roster || return 2',root.index('run_case()')))
@@ -120,10 +120,10 @@ class CalibrationControls(unittest.TestCase):
             changed=deepcopy(data);r=json.loads(changed['cases/'+case+'/result.json']);r['signals']['mask_restored']=False;changed['cases/'+case+'/result.json']=encode(r)
             touched=[]
             def read(name,cap):touched.append(name);return changed[name]
-            with self.assertRaises(ValueError):check.metadata_pair(plan,read)
+            with self.assertRaises(ValueError):check.metadata_pair(plan,read,_policy=prep.UNCONFIGURED)
             self.assertFalse(any(n.endswith(('events.jsonl','program.d','probes.tsv','status.bin','request.bin','probe.stdout')) for n in touched))
         changed=deepcopy(data);changed['cases/positive/result.json']=b'{"schema":"x","schema":"x"}'
-        with self.assertRaisesRegex(ValueError,'duplicate'):check.metadata_pair(plan,lambda n,c:changed[n])
+        with self.assertRaisesRegex(ValueError,'duplicate'):check.metadata_pair(plan,lambda n,c:changed[n],_policy=prep.UNCONFIGURED)
     def test_07_command_completion_and_exact_argv(self):
         plan,cat,data,receipt=self.baseline()
         for name in data:
@@ -150,12 +150,12 @@ class CalibrationControls(unittest.TestCase):
                 yield data[name].splitlines(keepends=True)[0]
                 raise OSError('injected read failure')
             finally:touched.append('closed')
-        with self.assertRaises(OSError):check.complete_pair(plan,cat,lambda n,c:data[n],broken,check.metadata_pair(plan,lambda n,c:data[n]))
+        with self.assertRaises(OSError):check.complete_pair(plan,cat,lambda n,c:data[n],broken,check.metadata_pair(plan,lambda n,c:data[n],_policy=prep.UNCONFIGURED),_policy=prep.UNCONFIGURED)
         self.assertEqual(touched,['closed'])
         def close_fault(name):
             try:yield from data[name].splitlines(keepends=True)
             finally:raise OSError('injected close failure')
-        with self.assertRaises(OSError):check.complete_pair(plan,cat,lambda n,c:data[n],close_fault,check.metadata_pair(plan,lambda n,c:data[n]))
+        with self.assertRaises(OSError):check.complete_pair(plan,cat,lambda n,c:data[n],close_fault,check.metadata_pair(plan,lambda n,c:data[n],_policy=prep.UNCONFIGURED),_policy=prep.UNCONFIGURED)
     def test_10_physical_links_extra_manifest_hash_and_mutation(self):
         plan,cat,data,receipt=self.baseline()
         for change in ('extra','link','hash','outer','longline','tail'):
@@ -171,7 +171,7 @@ class CalibrationControls(unittest.TestCase):
                         if x.is_file():x.unlink()
                         elif x.is_dir():x.rmdir()
                     e.rmdir();write_tree(e,changed)
-                with self.subTest(change=change),self.assertRaises((ValueError,OSError)):check.check_export(plan,cat,e,r)
+                with self.subTest(change=change),self.assertRaises((ValueError,OSError)):check.check_export(plan,cat,e,r,_policy=prep.UNCONFIGURED)
     def test_11_operation_failure_even_with_expected_stdout(self):
         with tempfile.TemporaryDirectory(prefix='glue-calibration-operation-') as d:
             script=Path(d)/'read';script.write_text('#!/bin/sh\nprintf "expected\\n"\nexit 7\n');script.chmod(0o700)
@@ -182,7 +182,7 @@ class CalibrationControls(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='glue-calibration-read-') as d:
             e=Path(d).resolve()/'e';r=Path(d).resolve()/'r';write_tree(e,data);write_tree(r,receipt)
             with patch.object(check.os,'read',side_effect=OSError('read fault')):
-                with self.assertRaises(OSError):check.check_export(plan,cat,e,r)
+                with self.assertRaises(OSError):check.check_export(plan,cat,e,r,_policy=prep.UNCONFIGURED)
     def test_12_dependency_pins_and_streaming_no_legacy_limit_change(self):
         self.assertEqual(prep.sha(prep.SHARED.read_bytes()),prep.SHARED_SHA)
         self.assertEqual(check.sha((HERE/'prepare.py').read_bytes()),check.PREPARE_SHA)
@@ -203,10 +203,10 @@ class PhysicalBoundaryControls(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='glue-calibration-directory-') as d:
             e=Path(d).resolve()/'e';r=Path(d).resolve()/'r';write_tree(e,data);write_tree(r,receipt)
             (e/'cases').chmod(0o755)
-            with self.assertRaisesRegex(ValueError,'nonprivate'):check.check_export(plan,cat,e,r)
+            with self.assertRaisesRegex(ValueError,'nonprivate'):check.check_export(plan,cat,e,r,_policy=prep.UNCONFIGURED)
             (e/'cases').chmod(0o700)
             for i in range(150):(e/('extra'+str(i))).write_bytes(b'')
-            with self.assertRaises(ValueError):check.check_export(plan,cat,e,r)
+            with self.assertRaises(ValueError):check.check_export(plan,cat,e,r,_policy=prep.UNCONFIGURED)
     def test_15_actual_read_close_failure_prevents_return(self):
         with tempfile.TemporaryDirectory(prefix='glue-calibration-close-') as d:
             root=Path(d).resolve();(root/'file').write_bytes(b'x')
