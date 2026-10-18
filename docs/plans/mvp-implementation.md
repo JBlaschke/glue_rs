@@ -161,6 +161,10 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-calibration-portable-controls` | `e35987a`; integrated before `283a94e` | Remove Python-version-dependent test digest; production source unchanged;16 Mac/Linux passes |
 | R02 | `codex/mvp-r02-kit03-portable-controls` | `9cea001`; integrated `283a94e` | Exact Perl dependency probe and separate shell syntax control;10 Mac passes, Linux5 passes/5 declared skips |
 | R04 | `codex/mvp-r04-trace-build-status` | branch tip, based on `283a94e` | Fresh tracing proof/admission, reproducible unexecuted native kit and successful read-only inventory; guest window and acceptance remain open |
+| R02 | `codex/mvp-r02-trace-calibration-admission` | `ecb37f0`, `0ea577a`; merged `d821900` | Admit only actual kit02 and exact 14-payload packet; 16 existing/15 new Mac controls pass; actual packet independently reviewed |
+| R02 | `codex/mvp-r02-kit03-retention-admission` | `1e74198`, `d04d91a`, `f75aae6`; merged `9b638cd` | Exact observed two-Library/30-absence profile, durable marker, status-aware retain guards and aligned receipt hash; 17 Mac controls pass |
+| V01 | `codex/mvp-v01-trace-admission-ci` | `d73fceb` | Add one packet-admission invocation; 38 configured suites; focused three-suite Linux run passes with five explicit skips |
+| R04 | `codex/mvp-r04-trace-packet-status` | branch tip, based on `9b638cd` | Record concrete host packets and focused target checks; actual guest retention/tracing and SIP restoration remain pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -393,6 +397,104 @@ This does not establish a single combined current-HEAD run or a full 37-suite ru
 No newer hosted run is claimed. All source branches and merged commits remain
 local beyond the explicitly approved public `e2c728b` checkpoint. Native tracing,
 full Darwin oracle/corpus/budgets, R02/M2, security restoration and durable
+publication remain open.
+
+### Concrete two-case admission and preservation packets
+
+Decision `ecb37f0` precedes the fixed-kit admission at `0ea577a`. Production binds
+the successful tracing kit02, all three artifacts, six metadata byte identities
+and the prior kit/catalog/builder/proof reviews. Its checker admits an exact
+bounded fourteen-payload packet before evidence checks; regenerated manifests
+cannot grant trust to changed payloads or scripts. Synthetic configured policies
+exist only at explicit private test boundaries. All old four-case, shared loader,
+metadata gates, raw/case/codec, native, builder, registry and template bytes stay
+unchanged. The 59-file Mac control record is
+`/private/tmp/glue-trace-calibration-admission-controls-e29p63ge`, manifest
+`8910445f85543acfb6cde93df28ebbddf5f96e66a4fffdcb60c1952fa598f491`.
+Actual 16/15-test commands both return zero with no skips; 27 source pins and nine
+actual kit input identities remain unchanged through that capture.
+
+Decision `1e74198` precedes the separately named observed-state retention
+contract. It preserves the old completed-tree predicate and unchanged inspection
+rendering. The actual profile binds the exact two Library trees, all 30 observed
+temporary-root absences and historical host references. No missing guest file is
+recreated or represented as freshly observed. Retain-only command-output checks
+also require successful command status. The attempt marker moves to a protected
+Library sibling, outside the source/archive trees, before the sole `mv -n`.
+Normal temporary-directory loss cannot clear that marker; power-loss/fsync and
+hostile-writer exclusion are not claimed. A preexisting marker or changed fresh
+snapshot refuses.
+
+The original 33-file control record at `d04d91a` is
+`/private/tmp/glue-kit03-retention-admission-controls-x8e2s6v5`, manifest
+`08974985679688f4b68a21614b3af417ba0e4bc9e2b16d23f21910ad1c9e15ed`.
+Its 17 controls pass; the original capture's later full-stat assertion fails only
+on a manifest access-time update. The exact before/after facts and assertion are
+preserved. Peer review then caught different LF conventions for a same-named
+snapshot digest. Final `f75aae6` aligns both snapshot fields to canonical JSON
+plus LF; the attempt file itself remains canonical JSON without LF. The successor
+20-file record is `/private/tmp/glue-kit03-retention-hash-controls-apeskzai`,
+manifest `22cc8bcfba7af52d046f79a676bbf9f565f1041c7e7a20d5f620a080e6853fff`.
+All 17 focused controls pass, including the extracted independent Perl/Python
+hash comparison. Eleven tested source pins equal the clean committed source;
+input bytes and non-atime metadata are unchanged. Root and passive source peers
+find no remaining blocker. Actual rename remains separate.
+
+At integrated source `d821900`, the actual host preparer and read-only packet
+admission both return zero. The tracing packet is
+`/private/tmp/glue-trace-calibration-packet-20261018-01`, 15 files with manifest
+`bbfbccd152ed5bf76d3350826c2775e940dc5db2b650c3a5b99533a8f7d4a61c`.
+Its 43-file actual command receipt is
+`/private/tmp/glue-trace-calibration-host-prepare-20261018-01`, manifest
+`1feff1c8d30f17cf93332111037d6bcc88061c62d4f7f68adf5c75c96ae9dcd2`.
+All 252 source and 143 kit input identities match before/after, excluding atime.
+The independent 55-file actual packet review is
+`/private/tmp/glue-trace-actual-packet-peer-9ja4_1qa`, manifest
+`72837314733d00766f25a8e5d5cd34a5a2287b2b6e0171162a83b720b218e3f8`.
+It checks every member/mode, all nine copied kit identities and separately
+regenerated canonical plan/subset/scripts. Later CI and retention source changes
+are explicitly qualified; preparation/render/admission dependencies stay fixed.
+Root stages exact bytes/modes as
+`/private/tmp/glue-mvp-macos-vm-toolkit/bootstrap-trace-calibration-269bf09070bc81f8`;
+the staging receipt is `/private/tmp/glue-trace-calibration-stage-20261018-01`.
+No packet script or native payload has run in the guest.
+
+At integrated `9b638cd`, actual retention preparation and deterministic
+packet/render/manifest comparison also return zero. The four-file packet is
+`/private/tmp/glue-kit03-retention-packet-20261018-01`, manifest
+`acb3e552ac38453398c9ee13032db065cc3b21fef463c78044b9a8855c614d25`.
+Its 43-file receipt is `/private/tmp/glue-kit03-retention-host-prepare-20261018-01`,
+manifest `b41e59dd518b98bc9b9ae7c9c4e30ca394283125ad41e6b5c603b79255b4e32f`.
+All 255 source and 136 historical kit input identities remain equal across
+preparation, excluding atime. Its fixed nonce is `0d1560914528a4f1`.
+The independent 73-file actual packet peer is
+`/private/tmp/glue-kit03-actual-retention-packet-peer-kck5j3wd`, manifest
+`8d4de46b76405b9353e431725999303752aa8d15c88046762c55084f099aefb8`.
+Physical membership, actual command receipts, source bindings, canonical payloads/
+plan/root argv, marker/hash conventions and source-enforced move checks pass.
+Root verifies every peer inventory member and stages all four exact files/modes as
+`/private/tmp/glue-mvp-macos-vm-toolkit/kit03-retain-0d1560914528a4f1`;
+the staging receipt is `/private/tmp/glue-kit03-retention-stage-20261018-01`.
+After human wake/focus, root visually verifies the complete launcher command
+before Return. Fresh UI observation then shows the guest at its private sudo
+password prompt after preflight. No root-phase or rename completion is yet
+established; a later actual outcome remains separate from these reviews.
+
+CI `d73fceb` adds exactly one invocation, for 38 configured suites. A focused
+native offline Linux arm64 run of the three affected exact CI commands at clean
+`9b638cd` returns zero: 48 collected, 43 pass and five explicit skips (four native
+macOS groups and one missing declared Perl dependency group). All 255 copied/
+committed/current source pins and before/after non-atime identities agree. The
+310-file record is `/private/tmp/glue-trace-admission-linux-9d86vdpd`, manifest
+`7b9aeb54a253afe41211582d6cdf69cb406ceb290dd380c45dbb087996b62f4e`.
+Its complete inner inventory, actual per-suite and outer receipts are bound by
+that manifest; root verifies every member hash and exact named membership.
+Normal exits do not establish independent descendant-cleanup proof. The
+initial sandbox denial reaches no container/test; a separate authorized local
+service invocation uses only the cached image with pull-never/network-none,
+UID 65534, read-only source/root/control and the prior resource/capability limits.
+No complete 38-suite or newer hosted run is claimed. The temporary guest-only SIP
+window remains open, and full Darwin oracle/corpus/budgets, R02/M2 and durable
 publication remain open.
 
 ## 17 October: deployment, configured kit and hosted follow-up

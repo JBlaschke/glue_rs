@@ -1,6 +1,6 @@
 # Implementation progress
 
-## Tracing kit checkpoint — 18 October 2026
+## Reviewed tracing packets — 18 October 2026
 
 The fresh normal-boot guest proof reports exactly disabled SIP and passes an
 independent complete source/command/observation review. Registration `9a294d4`
@@ -15,22 +15,26 @@ The binaries remain unexecuted and uninstalled; independent kit and catalog
 reviews both pass. Earlier failed preflight/compiler attempts remain separate;
 the failed native directory is explicitly partial and has no final inventory.
 
-The separately reviewed two-case calibration source `d733783` and completed-kit
-preservation source `6d3884f` are integrated with their original feature commits
-preserved. Test portability repairs `e35987a` and `9cea001` are integrated through
-`283a94e`. The affected five suites compose to 77 Mac passes and Linux 70 passes
-with seven explicit skips, using the unchanged prior suites and repaired pair.
-This is composed coverage across runs. Both new calibration CLIs still refuse activation; the
-old four-case/SIM policy remains disabled. A concrete reviewed read-only kit03
-inspection packet completed successfully. Both Library installations and exact
-kit03 signatures survive; all 30 historical temporary roots are observed absent.
-Its independent review passes, including all 71 historical file pins. Mutating
-retention remains disabled pending the separate admission change.
-CI `7fdf01f` adds exactly two invocations (37 configured suites). The first five
-affected Linux suites collect76 controls:68 pass,6 skip and2 test-portability
-failures. Those receipts remain preserved; the repaired pair passes with its
-declared skips. No complete37-suite or newer hosted result
-is claimed.
+The separate two-case lane now admits only the reviewed actual kit (`0ea577a`).
+Its concrete packet is prepared, independently reviewed and staged with exact
+bytes and modes. Packet admission binds all fourteen payloads, canonical scripts
+and fixed metadata before checking a diagnostic result. The old four-case/SIM
+policy remains disabled.
+
+The read-only kit03 inspection and independent review pass. Both Library
+installations survive; all 30 historical temporary roots are observed absent.
+The named retention policy (`f75aae6`) binds that exact state and unchanged
+historical exports, with a durable Library attempt marker and one guarded move.
+Its concrete packet is prepared, independently reviewed and staged. The guest
+launcher passes its preflight and awaits private sudo authentication; no completed
+retention outcome is established.
+No installation has moved and no new tracing binary has run.
+
+The affected Mac controls pass all 48 tests across the two focused receipts.
+One focused native Linux run at `9b638cd` collects 48: 43 pass and five expected
+platform/dependency skips. CI `d73fceb` adds one invocation for 38 configured
+suites. Earlier portability failures and their repairs remain preserved. No
+complete 38-suite or newer hosted result is claimed.
 
 The temporary guest-only SIP window remains OPEN, with restoration after the
 tracing session still required. The physical Mac's SIP is unchanged. Full Darwin extraction
@@ -38,7 +42,7 @@ oracle/corpus/budgets, R02/M2 and durable evidence publication remain open.
 The latest approved public checkpoint is still `e2c728b` with nine green jobs;
 newer local source has not been published. Details and exact evidence identities
 are in the [18 October checkpoint](plans/mvp-implementation.md#18-october-fresh-guest-only-tracing-window).
-Documentation continues on `codex/mvp-r04-trace-build-status`.
+Documentation continues on `codex/mvp-r04-trace-packet-status`.
 
 ## Compact MVP implementation — 17 October 2026
 
