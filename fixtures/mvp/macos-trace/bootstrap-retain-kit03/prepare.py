@@ -15,6 +15,7 @@ HERE = Path(__file__).resolve().parent
 CORE = HERE.parent / 'bootstrap-kit/build_kit.py'
 CORE_SHA = '440cdc2cadf5d86acae91e313c266b815d1c40130b4ce53d58a77e36b13fff48'
 INVENTORY_SHA = '02e02538a71b2829bb684611d91d8f40bdbc7fa10bb6dd08bbaefa2c37e7a070'
+LAUNCH_SHA = '21ae0a3e0ece592e7cb53752753d0e150bdb2f87860e7c6ad924a308716cdfe5'
 COMPLETED_SHA = '28ce38d54156cb2c20121448ed539dd91db7da8f79dd682fa742af137661ef2f'
 INSPECTOR = '/Volumes/My Shared Files/glue-mvp-macos-vm-toolkit/bootstrap-inspector-v1-20261016/inspect-deployment'
 INSPECTOR_SHA = 'c78b9ddab7bb9feb15d8575847018b88d3dc6c8c520037867fa7ed82b2b2b77a'
@@ -112,10 +113,14 @@ INSPECTION_APPROVAL = {'proof_manifest_sha256': 'cd57a36af2a9db11f7d24105485137f
                  'settings_changed': False,
                  'executable_admission': False,
                  'full_acceptance': False}}
-APPROVED = None
-RETENTION_ENABLED = False
+ACTUAL_PROFILE = 'kit03-library-intact-tmp-absent-20261018'
+ACTUAL_APPROVAL_SHA = 'cc3c78ab9f1ee781a727c40e84ed214a0c998b7bc19a375f4b2310ea3c2f271f'
+ACTUAL_SNAPSHOT_SHA = '18e3a2d7d69cb1a25affab756329d7dab396d48e51275fa032da4ca62e5f0346'
+APPROVED = ACTUAL_PROFILE
+RETENTION_ENABLED = True
 PREFIX = '/System/Volumes/Data/Library/GlueMVPFixtures'
 ARCHIVE = '/System/Volumes/Data/Library/GlueMVPFixtures-retained-1b85f0ac-da1aaf9a'
+ATTEMPT = '/System/Volumes/Data/Library/GlueMVPFixtures-retain-attempt-1b85f0ac-da1aaf9a'
 BUILD = '1b85f0ac3d3ec2de7df50004ee2732d8d5c049adb44193383245050f800fa11d'
 TMP = '/System/Volumes/Data/private/tmp/'
 NONCES = ('c10ed2e4ce0404bd', '6ae386cc044ff2a1', '1ee4bbe2b443c268', 'da1aaf9a396020b3')
@@ -132,6 +137,13 @@ ARTIFACTS = {
     'context-probe': (52912, 'b15f974ed14129d738b8963d8d8d865502e73e9be11436105468e071ee8cbf67'),
     'make-request': (72240, '28dea7f9bc8aaabb0ce1421e55522b8cf4a9f7efa6e3b79aa8a4ae6f92c164b8'),
 }
+CHECKED_EQUAL = '''checked_equal() {
+    _checked_expected=$1
+    shift
+    _checked_actual=$("$@") || return 2
+    [ "$_checked_actual" = "$_checked_expected" ]
+}
+'''
 
 
 def require(value, message):
@@ -151,7 +163,7 @@ def enabled(mode):
     require(mode in ('inspect', 'retain'), 'fixed operation')
     require(INSPECTION_APPROVAL is not None, 'fresh inspection approval is not configured')
     if mode == 'retain':
-        require(APPROVED is not None and RETENTION_ENABLED is True,
+        require(APPROVED == ACTUAL_PROFILE and RETENTION_ENABLED is True,
                 'retention approval/execution is not configured')
 
 
@@ -180,8 +192,8 @@ def completed_pins():
     return json.loads(data)['files']
 
 
-def validate_snapshot(snapshot, device):
-    """Admit only a complete physically inspected fixed forest, never an override."""
+def validate_forest(snapshot, device):
+    """Shared physical shape and live-kit checks; no checkpoint acceptance policy."""
     p = primitives()
     p.exact_keys(snapshot, ('parents', 'roots'))
     p.exact_keys(snapshot['parents'], PARENTS)
@@ -245,6 +257,22 @@ def validate_snapshot(snapshot, device):
         m = live[BUILD + '/' + name]
         require(m['mode'] == 0o100555 and m['uid'] == m['gid'] == 0 and
                 m['size'] == size and m['sha256'] == digest, 'kit payload')
+    return snapshot
+
+
+def validate_actual_snapshot(snapshot, device):
+    """Only the literal two-Library-tree/all30-tmp-absent observation is admitted."""
+    validate_forest(snapshot, device)
+    require(all(snapshot['roots'][root] is None for root in ROOTS[2:]),
+            'observed temporary root is present')
+    require(snapshot['roots'][ROOTS[1]] is not None, 'retained kit02 checkpoint absent')
+    require(sha(canonical(snapshot)) == ACTUAL_SNAPSHOT_SHA, 'literal inspected forest differs')
+    return snapshot
+
+
+def validate_snapshot(snapshot, device):
+    """Historical complete-checkpoint predicate; never a production fallback."""
+    validate_forest(snapshot, device)
     # Preserve failed old checkpoints as observed, but admit only the completed
     # packet04 byte contract for the installation being moved.
     nonce = NONCES[-1]
@@ -311,6 +339,33 @@ def validate_snapshot(snapshot, device):
     return snapshot
 
 
+def retention_approval():
+    enabled('retain')
+    data = (HERE / 'actual-retention-approval.json').read_bytes()
+    require(sha(data) == ACTUAL_APPROVAL_SHA, 'literal retention approval differs')
+    p = primitives()
+    a = p.strict_json(data)
+    p.exact_keys(a, ('schema', 'profile', 'inspection_approval', 'inspection_export',
+        'inspection_manifest_sha256', 'inspection_review', 'inspection_sources',
+        'inspection_packet_manifest_sha256', 'coordination', 'historical_host',
+        'snapshot_sha256', 'snapshot', 'attempt_path', 'historical_tmp_absence_cause_established',
+        'atomic_hostile_mutator_exclusion_claimed', 'native_payload_executed',
+        'tracing', 'exec_proved', 'full_acceptance'))
+    require(a['schema'] == 'glue-kit03-observed-retention-approval-v1' and
+            a['profile'] == ACTUAL_PROFILE and a['attempt_path'] == ATTEMPT,
+            'fixed retention profile')
+    require(a['inspection_approval'] == inspection_approval(), 'retention deployment differs')
+    require(a['snapshot_sha256'] == ACTUAL_SNAPSHOT_SHA, 'fixed snapshot pin')
+    for k in ('historical_tmp_absence_cause_established', 'atomic_hostile_mutator_exclusion_claimed',
+              'native_payload_executed', 'tracing', 'exec_proved', 'full_acceptance'):
+        require(a[k] is False, 'retention scope')
+    validate_actual_snapshot(a['snapshot'], a['inspection_approval']['observation']['components'][3]['device'])
+    # These immutable named host references were independently checked before
+    # source admission. They are historical evidence, not fresh guest contents.
+    completed_pins()
+    return a
+
+
 def root_program(mode):
     enabled(mode)
     a = inspection_approval()
@@ -332,18 +387,13 @@ report({schema=>'glue-kit03-physical-inspection-v1', snapshot=>$after,
     tracing=>JSON::PP::false, exec_proved=>JSON::PP::false, full_acceptance=>JSON::PP::false});
 '''
     else:
-        p = primitives()
-        p.exact_keys(APPROVED, ('inspection_approval', 'inspection_manifest_sha256',
-            'inspection_review_manifest_sha256', 'coordination_receipt_sha256', 'snapshot'))
-        require(APPROVED['inspection_approval'] == a, 'retention deployment differs')
-        for k in ('inspection_manifest_sha256', 'inspection_review_manifest_sha256', 'coordination_receipt_sha256'):
-            p.sha(APPROVED[k])
-        validate_snapshot(APPROVED['snapshot'], device)
-        data = canonical(APPROVED).decode().strip()
+        data = canonical(retention_approval()).decode().strip()
         # Canonical JSON has no apostrophes from accepted keys/paths/hex values.
         require("'" not in data, 'approval quoting')
-        main = "my $approval = $JSON->decode('" + data + "');\n" + '''
+        main = "$ATTEMPT = '" + ATTEMPT + "';\n"
+        main += "my $approval = $JSON->decode('" + data + "');\n" + '''
 fail('archive already exists') if status_of($ARCHIVE);
+fail('retention already attempted') if status_of($ATTEMPT);
 my $before = snapshot(0, $DATA_DEVICE);
 verify_kit03($before);
 fail('fresh physical state differs') unless canonical($before) eq canonical($approval->{snapshot});
@@ -357,7 +407,8 @@ my $attempt_stat = status_of($ATTEMPT) // fail('attempt disappeared');
 fail('attempt identity') unless $attempt_stat->[0] == $DATA_DEVICE && $attempt_stat->[2] == 040700 &&
     $attempt_stat->[4] == 0 && $attempt_stat->[5] == 0;
 my $attempt_bytes = canonical({schema=>'glue-kit03-retention-attempt-v1',
-    snapshot_sha256=>sha256_hex(canonical($before)), source=>$PREFIX, archive=>$ARCHIVE});
+    snapshot_sha256=>sha256_hex(canonical($before) . "\\n"), source=>$PREFIX, archive=>$ARCHIVE,
+    approval=>$approval});
 sysopen(my $attempt_file, "$ATTEMPT/attempt.json", O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW, 0600)
     or fail('exclusive attempt record');
 print $attempt_file $attempt_bytes or fail('attempt write');
@@ -375,6 +426,7 @@ my $after_signatures = signatures(1);
 report({schema=>'glue-kit03-retained-install-v1', source=>$PREFIX, archive=>$ARCHIVE,
     move_argv=>\\@move, move_raw_status=>$move_status, snapshot=>$after,
     attempt_path=>$ATTEMPT, attempt_record_sha256=>sha256_hex($attempt_bytes),
+    retention_approval=>$approval,
     before_signatures=>$before_signatures, after_signatures=>$after_signatures,
     native_payload_executed=>JSON::PP::false, security_settings_changed=>JSON::PP::false,
     retained=>JSON::PP::true, tracing=>JSON::PP::false, exec_proved=>JSON::PP::false,
@@ -408,6 +460,32 @@ def current_checks(observed):
     return '\n'.join(lines)
 
 
+def retain_launcher(source):
+    """Exact reviewed transitions; inspect keeps the historical template bytes."""
+    require(sha(source.encode()) == LAUNCH_SHA, 'reviewed launcher source differs')
+    replacements = (
+        ('EXPORT=@@EXPORT@@\n', 'EXPORT=@@EXPORT@@\n' + CHECKED_EQUAL),
+        ('[ "$(/usr/bin/id -ru)" = 501 ] && [ "$(/usr/bin/id -u)" = 501 ] || exit 2',
+         'checked_equal 501 /usr/bin/id -ru && checked_equal 501 /usr/bin/id -u || exit 2'),
+        ('[ "$(/usr/sbin/sysctl -n hw.model)" = VirtualMac2,1 ] || exit 2',
+         'checked_equal VirtualMac2,1 /usr/sbin/sysctl -n hw.model || exit 2'),
+        ('[ "$(/usr/bin/sw_vers -productVersion)" = 26.6.2 ] && [ "$(/usr/bin/sw_vers -buildVersion)" = 25G83 ] || exit 2',
+         'checked_equal 26.6.2 /usr/bin/sw_vers -productVersion && checked_equal 25G83 /usr/bin/sw_vers -buildVersion || exit 2'),
+        ('[ "$(/usr/bin/uname -mrs)" = \'Darwin 25.6.0 arm64\' ] || exit 2',
+         'checked_equal \'Darwin 25.6.0 arm64\' /usr/bin/uname -mrs || exit 2'),
+        ('[ "$(/usr/bin/csrutil status)" = \'System Integrity Protection status: disabled.\' ] || exit 2',
+         'checked_equal \'System Integrity Protection status: disabled.\' /usr/bin/csrutil status || exit 2'),
+        ('[ "$(/bin/cat "$WORK/typed.stdout")" = 2 ] || exit 2',
+         'checked_equal 2 /bin/cat "$WORK/typed.stdout" || exit 2'),
+        ('[ "$(/usr/bin/stat -f %z "$EXPORT/$name")" = "$size" ] || exit 2',
+         'checked_equal "$size" /usr/bin/stat -f %z "$EXPORT/$name" || exit 2'),
+    )
+    for before, after in replacements:
+        require(source.count(before) == 1, 'reviewed launcher transition differs')
+        source = source.replace(before, after, 1)
+    return source
+
+
 def render(mode, nonce):
     enabled(mode)
     require(type(nonce) is str and re.fullmatch('[0-9a-f]{16}', nonce), 'fresh nonce')
@@ -419,19 +497,25 @@ def render(mode, nonce):
     export = '/Volumes/My Shared Files/glue-mvp-macos-vm-results/glue-kit03-' + mode + '-' + nonce
     q = shlex.quote
     guard = lambda s: s + ' || exit 2; '
+    def equal(command, expected):
+        if mode == 'retain':
+            return guard('checked_equal ' + expected + ' ' + command)
+        return guard('[ "$(' + command + ')" = ' + expected + ' ]')
     code = 'set -eu; umask 077; set -C; '
-    code += guard('[ "$(/usr/bin/id -ru)" = 0 ]') + guard('[ "$(/usr/bin/id -u)" = 0 ]')
+    if mode == 'retain':
+        code += CHECKED_EQUAL.strip() + '; '
+    code += equal('/usr/bin/id -ru', '0') + equal('/usr/bin/id -u', '0')
     code += guard('[ -d ' + q(TMP[:-1]) + ' ] && [ ! -L ' + q(TMP[:-1]) + ' ]')
-    code += guard('[ "$(/usr/bin/stat -f %u:%g:%p:%d ' + q(TMP[:-1]) + ')" = ' +
-                  q('0:0:41777:' + str(a['observation']['components'][3]['device'])) + ' ]')
+    code += equal('/usr/bin/stat -f %u:%g:%p:%d ' + q(TMP[:-1]),
+                  q('0:0:41777:' + str(a['observation']['components'][3]['device'])))
     code += guard('[ ! -e ' + q(stage) + ' ] && [ ! -L ' + q(stage) + ' ]')
     code += '/bin/mkdir -m 0700 ' + q(stage) + '; /bin/chmod -N ' + q(stage) + '; '
     code += guard('[ -f ' + q(packet + '/root.pl') + ' ] && [ ! -L ' + q(packet + '/root.pl') + ' ]')
     code += '/usr/bin/head -c ' + str(len(root)+1) + ' ' + q(packet + '/root.pl') + ' > ' + q(stage + '/root.pl') + '; '
-    code += guard('[ "$(/usr/bin/stat -f %z ' + q(stage + '/root.pl') + ')" = ' + str(len(root)) + ' ]')
+    code += equal('/usr/bin/stat -f %z ' + q(stage + '/root.pl'), str(len(root)))
     code += '/bin/chmod -N ' + q(stage + '/root.pl') + '; /bin/chmod 0500 ' + q(stage + '/root.pl') + '; '
-    code += guard('[ "$(/usr/bin/stat -f %u:%g:%p:%l ' + q(stage + '/root.pl') + ')" = 0:0:100500:1 ]')
-    code += guard('[ "$(/usr/bin/shasum -a 256 ' + q(stage + '/root.pl') + ')" = ' + q(sha(root) + '  ' + stage + '/root.pl') + ' ]')
+    code += equal('/usr/bin/stat -f %u:%g:%p:%l ' + q(stage + '/root.pl'), '0:0:100500:1')
+    code += equal('/usr/bin/shasum -a 256 ' + q(stage + '/root.pl'), q(sha(root) + '  ' + stage + '/root.pl'))
     code += 'exec /usr/bin/perl ' + q(stage + '/root.pl')
     argv = ['/usr/bin/sudo', '-n', '/usr/bin/env', '-i', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin',
             'LC_ALL=C', 'TZ=UTC', '/bin/sh', '-c', code]
@@ -439,11 +523,13 @@ def render(mode, nonce):
         'INSPECTOR': q(INSPECTOR), 'INSPECTOR_SHA': q(INSPECTOR_SHA),
         'PHASE': ' '.join(q(x) for x in argv), 'CURRENT_CHECKS': current_checks(a['observation'])}
     launch = (HERE / 'launch.sh.in').read_text()
+    if mode == 'retain':
+        launch = retain_launcher(launch)
     for k, v in values.items():
         launch = launch.replace('@@' + k + '@@', v)
     require(not re.search('@@[A-Z_]+@@', launch), 'unfilled template')
     plan = {'schema': 'glue-kit03-preservation-plan-v1', 'operation': mode,
-        'inspection_approval': a, 'retention_approval': APPROVED if mode == 'retain' else None,
+        'inspection_approval': a, 'retention_approval': retention_approval() if mode == 'retain' else None,
         'guest_packet': packet, 'guest_work': work, 'root_stage': stage, 'guest_export': export,
         'root_phase_argv': argv, 'root_sha256': sha(root), 'root_size': len(root),
         'source_sha256': {'inventory.pl': INVENTORY_SHA, 'completed-files.json': COMPLETED_SHA,
@@ -453,6 +539,11 @@ def render(mode, nonce):
         'exclusive_fixture_slot_required': True, 'atomic_hostile_mutator_exclusion_claimed': False,
         'native_payload_executed': False, 'security_settings_changed': False,
         'tracing': False, 'exec_proved': False, 'full_acceptance': False}
+    if mode == 'retain':
+        plan['source_sha256']['actual-retention-approval.json'] = ACTUAL_APPROVAL_SHA
+        plan['source_sha256']['launch.sh.in'] = LAUNCH_SHA
+        plan['attempt_path'] = ATTEMPT
+        plan['retention_profile'] = ACTUAL_PROFILE
     return {'root.pl': root, 'launch.sh': launch.encode(), 'plan.json': canonical(plan)}
 
 
