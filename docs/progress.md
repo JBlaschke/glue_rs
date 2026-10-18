@@ -24,7 +24,8 @@ This is composed coverage across runs. Both new calibration CLIs still refuse ac
 old four-case/SIM policy remains disabled. A concrete reviewed read-only kit03
 inspection packet completed successfully. Both Library installations and exact
 kit03 signatures survive; all 30 historical temporary roots are observed absent.
-Its independent review is pending. Mutating retention remains disabled.
+Its independent review passes, including all 71 historical file pins. Mutating
+retention remains disabled pending the separate admission change.
 CI `7fdf01f` adds exactly two invocations (37 configured suites). The first five
 affected Linux suites collect76 controls:68 pass,6 skip and2 test-portability
 failures. Those receipts remain preserved; the repaired pair passes with its

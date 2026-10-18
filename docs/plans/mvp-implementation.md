@@ -156,7 +156,7 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-trace-sim-status` | branch tip, based on `783ff41` | Record SIM source/controls and remaining native admission/calibration |
 | R02 | `codex/mvp-r02-trace-registry-admission` | `f8e50d1`, `e365c53`, `9a294d4` | Fresh disabled proof/41 fixed sources admitted; explicit empty fixture;23/12 kit controls and actual committed admission pass |
 | R02 | `codex/mvp-r02-trace-calibration-vm` | `bdd4e41`, `62dd8b1`, `d733783`; merged `ded13fb` | Separate fixed two-case packet/physical checker, initially hard-disabled;16 new/16 original controls and independent review pass |
-| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation; actual inspection complete, independent review/rename pending |
+| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation; actual inspection and independent review pass, rename pending |
 | V01 | `codex/mvp-v01-trace-calibration-retention-ci` | `7fdf01f` | Exactly two new invocations (37 configured); first Linux run preserves two test portability failures, no newer hosted run |
 | R02 | `codex/mvp-r02-trace-calibration-portable-controls` | `e35987a`; integrated before `283a94e` | Remove Python-version-dependent test digest; production source unchanged;16 Mac/Linux passes |
 | R02 | `codex/mvp-r02-kit03-portable-controls` | `9cea001`; integrated `283a94e` | Exact Perl dependency probe and separate shell syntax control;10 Mac passes, Linux5 passes/5 declared skips |
@@ -334,8 +334,12 @@ Root verifies every 22 payload hash and exact roster, zero root-phase status,
 the expected receipt path and restored empty shell prompt. Both Library
 installations remain present with exact kit03 hashes and strict signature checks;
 all 30 inspected historical temporary roots report absent. No cause is inferred,
-and missing guest checkpoints will not be recreated. Independent review is
-pending. Existing retention validation requires completed temporary trees, so a
+and missing guest checkpoints will not be recreated. The independent seven-file
+review is `/private/tmp/glue-kit03-inventory-peer-hwuddezi`, manifest
+`bd56990e6ddc6a067b52d780c2706d96d1e275425f129737108ac499ff2869d1`.
+It verifies all command receipts, exact source/packet/context bindings and all 71
+historical completed-file pins against unchanged durable host exports. Existing
+retention validation requires completed temporary trees, so a
 separate reviewed decision/admission is needed before a move. The workflow
 coordination receipt is
 `/private/tmp/glue-kit03-exclusive-coordination-20261018-01/coordination.json`,
