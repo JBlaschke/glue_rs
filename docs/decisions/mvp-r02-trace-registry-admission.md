@@ -46,3 +46,13 @@ catalog, recipe/build/artifact identities are derived from actual reviewed
 proof/toolchain/build bytes later. No build, artifact/provider execution, guest
 operation, packet activation, proof publication or R02/M2 acceptance occurs in
 this decision-only step.
+
+Admission test separation: retain the former null/empty tracing registry as an
+explicit `unconfigured-inputs.fixture.json`. Route empty-registry parser, early
+refusal and no-output controls to a clearly labeled test-only empty fixture
+profile; its tracing policy differs only in that fixture path. Keep production
+registry/CLI checks distinct, with no synthetic configured production construct.
+This changes no builder/helper or any of the 41 pinned source bytes. After the
+registry commit, verify the clean committed source lock and actual registered
+proof read-only, without constructing a native kit. Retain both affected kit
+suite receipts and unchanged actual proof/inspector input inventories.
