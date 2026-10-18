@@ -1,0 +1,87 @@
+#!/bin/sh
+# Creates only its fresh private receipts/root stage; inspected trees are read-only.
+set -eu
+umask 077
+set -C
+[ "$#" -eq 0 ] || exit 2
+WORK=@@WORK@@
+PACKET=@@PACKET@@
+EXPORT=@@EXPORT@@
+[ "$(/usr/bin/id -ru)" = 501 ] && [ "$(/usr/bin/id -u)" = 501 ] || exit 2
+[ "$(/usr/sbin/sysctl -n hw.model)" = VirtualMac2,1 ] || exit 2
+[ "$(/usr/bin/sw_vers -productVersion)" = 26.6.2 ] && [ "$(/usr/bin/sw_vers -buildVersion)" = 25G83 ] || exit 2
+[ "$(/usr/bin/uname -mrs)" = 'Darwin 25.6.0 arm64' ] || exit 2
+[ "$(/usr/bin/csrutil status)" = 'System Integrity Protection status: disabled.' ] || exit 2
+[ ! -e "$WORK" ] && [ ! -L "$WORK" ] || exit 2
+/bin/mkdir -m 0700 "$WORK"
+# All streams/argv/status below are actual receipts, not planned command status.
+printf '%s\000' /usr/bin/shasum -a 256 -c SHA256SUMS > "$WORK/packet-check.argv"
+printf '%s\n' "$PACKET" > "$WORK/packet-check.cwd"
+rc=0
+(
+    cd "$PACKET"
+    /usr/bin/shasum -a 256 -c SHA256SUMS
+) > "$WORK/packet-check.stdout" 2> "$WORK/packet-check.stderr" || rc=$?
+printf '%s\n' "$rc" > "$WORK/packet-check.status"
+[ "$rc" = 0 ] || exit 2
+/bin/cat "$PACKET/plan.json" > "$WORK/plan.json"
+INSPECTOR=@@INSPECTOR@@
+[ -f "$INSPECTOR" ] && [ ! -L "$INSPECTOR" ] || exit 2
+inspector_hash=$(/usr/bin/shasum -a 256 "$INSPECTOR") || exit 2
+[ "$inspector_hash" = "@@INSPECTOR_SHA@@  $INSPECTOR" ] || exit 2
+printf '%s\000' /usr/bin/codesign --verify --strict --verbose=2 "$INSPECTOR" > "$WORK/signature.argv"
+rc=0
+/usr/bin/codesign --verify --strict --verbose=2 "$INSPECTOR" > "$WORK/signature.stdout" 2> "$WORK/signature.stderr" || rc=$?
+printf '%s\n' "$rc" > "$WORK/signature.status"
+[ "$rc" = 0 ] || exit 2
+printf '%s\000' /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$INSPECTOR" > "$WORK/current.argv"
+rc=0
+/usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$INSPECTOR" > "$WORK/current.stdout" 2> "$WORK/current.stderr" || rc=$?
+printf '%s\n' "$rc" > "$WORK/current.status"
+[ "$rc" = 0 ] && [ ! -s "$WORK/current.stderr" ] || exit 2
+current_size=$(/usr/bin/stat -f %z "$WORK/current.stdout") || exit 2
+[ "$current_size" -gt 0 ] && [ "$current_size" -le 262144 ] || exit 2
+typed() {
+    actual=$(/usr/bin/plutil -extract "$1" raw -expect "$2" -o - "$WORK/current.stdout") || return 2
+    [ "$actual" = "$3" ]
+}
+typed_dictionary() {
+    /usr/bin/plutil -extract "$2" json -expect dictionary -o /dev/null "$1" || return 2
+}
+# Check typed-array/dictionary behavior before trusting native observation fields.
+printf '{"a":[1,2],"d":{"0":1,"1":2},"b":true}\n' > "$WORK/typed-fixture.json"
+/usr/bin/plutil -extract a raw -expect array -o - "$WORK/typed-fixture.json" > "$WORK/typed.stdout" 2> "$WORK/typed.stderr" || exit 2
+[ "$(/bin/cat "$WORK/typed.stdout")" = 2 ] || exit 2
+if /usr/bin/plutil -extract d raw -expect array -o /dev/null "$WORK/typed-fixture.json" >/dev/null 2>&1; then exit 2; fi
+if /usr/bin/plutil -extract b raw -expect integer -o /dev/null "$WORK/typed-fixture.json" >/dev/null 2>&1; then exit 2; fi
+@@CURRENT_CHECKS@@
+printf '%s\000' /usr/bin/perl -V > "$WORK/perl.argv"
+rc=0
+/usr/bin/perl -V > "$WORK/perl.stdout" 2> "$WORK/perl.stderr" || rc=$?
+printf '%s\n' "$rc" > "$WORK/perl.status"
+[ "$rc" = 0 ] || exit 2
+# Human credentials stay in the guest's sudo prompt, after the read-only preflight.
+/usr/bin/sudo -v
+printf '%s\000' @@PHASE@@ > "$WORK/phase.argv"
+rc=0
+@@PHASE@@ > "$WORK/phase.stdout" 2> "$WORK/phase.stderr" || rc=$?
+printf '%s\n' "$rc" > "$WORK/phase.status"
+# On any failure leave the exact private receipt and staged script untouched.
+[ "$rc" = 0 ] || exit "$rc"
+[ -d '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] && [ ! -L '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] || exit 2
+[ ! -e "$EXPORT" ] && [ ! -L "$EXPORT" ] || exit 2
+/bin/mkdir -m 0700 "$EXPORT"
+for name in plan.json packet-check.argv packet-check.cwd packet-check.stdout packet-check.stderr packet-check.status signature.argv signature.stdout signature.stderr signature.status current.argv current.stdout current.stderr current.status perl.argv perl.stdout perl.stderr perl.status phase.argv phase.stdout phase.stderr phase.status; do
+    [ -f "$WORK/$name" ] && [ ! -L "$WORK/$name" ] || exit 2
+    size=$(/usr/bin/stat -f %z "$WORK/$name") || exit 2
+    [ "$size" -le 2097152 ] || exit 2
+    /usr/bin/head -c 2097153 "$WORK/$name" > "$EXPORT/$name"
+    [ "$(/usr/bin/stat -f %z "$EXPORT/$name")" = "$size" ] || exit 2
+done
+(
+    cd "$EXPORT"
+    for name in plan.json packet-check.argv packet-check.cwd packet-check.stdout packet-check.stderr packet-check.status signature.argv signature.stdout signature.stderr signature.status current.argv current.stdout current.stderr current.status perl.argv perl.stdout perl.stderr perl.status phase.argv phase.stdout phase.stderr phase.status; do
+        /usr/bin/shasum -a 256 "$name"
+    done
+) > "$EXPORT/SHA256SUMS"
+printf 'preservation_receipt=%s\n' "$EXPORT"

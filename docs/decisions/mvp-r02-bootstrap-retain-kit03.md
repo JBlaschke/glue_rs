@@ -23,7 +23,9 @@ identities. Historical kit and packet hashes identify their unchanged bytes;
 old device/FSID tuples are never current observations. The root phase verifies
 all approved preserved trees before the move, runs `/bin/mv -n` once, requires
 source absence and unchanged destination inode/tree, then verifies all preserved
-checkpoints again. Any uncertainty stops without retry, cleanup, chmod, chown,
+checkpoints again. A fixed exclusive private attempt record, created only after
+validation and before the move, prevents another packet from retrying an uncertain
+rename. This new receipt is retained on every outcome. Any uncertainty stops without retry, cleanup, chmod, chown,
 ACL repair or target execution. Failed receipts remain private, and success is
 not inferred from a partial receipt or rename exit status alone.
 
@@ -32,6 +34,8 @@ are workflow preconditions. Root must coordinate an exclusive owned-VM staging
 slot, with no other privileged test, installation or manual fixture changes from
 inspection through retention. An ordinary lock file does not exclude another
 root process, and this tool makes no atomic hostile-mutator exclusion claim.
+Perl stat timestamps have seconds resolution; identity/hash comparisons require
+this stable coordinated namespace and do not exclude adversarial rapid writes.
 Fresh native inspector proof verifies the current mount/ancestor policy; no
 source-only test substitutes for that guest observation or coordination.
 
