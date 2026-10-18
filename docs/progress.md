@@ -1,5 +1,40 @@
 # Implementation progress
 
+## Tracing kit checkpoint — 18 October 2026
+
+The fresh normal-boot guest proof reports exactly disabled SIP and passes an
+independent complete source/command/observation review. Registration `9a294d4`
+freezes the 41 tracing sources at `e2c728b`, preserving the legacy policy and a
+separate explicit empty-registry fixture. The two affected kit suites pass all
+23/12 controls. Actual committed source-lock/proof admission also passes.
+
+The ordinary-user native host build now succeeds: all 21 compiler/signature/tool
+commands return0, and all three signed programs are byte-identical across two
+builds. The catalog derives its root/Data tuples from the new guest observation.
+The binaries remain unexecuted and uninstalled; independent kit and catalog
+reviews both pass. Earlier failed preflight/compiler attempts remain separate;
+the failed native directory is explicitly partial and has no final inventory.
+
+The separately reviewed two-case calibration source `d733783` and completed-kit
+preservation source `6d3884f` are integrated with their original feature commits
+preserved. The16 new calibration and16 original preparer controls pass; preservation
+has nine passing Mac controls. Both new calibration CLIs still refuse activation; the
+old four-case/SIM policy remains disabled. A concrete reviewed read-only kit03
+inspection packet is staged but has not run. Mutating retention remains disabled.
+CI `7fdf01f` adds exactly two invocations (37 configured suites). The first five
+affected Linux suites collect76 controls:68 pass,6 skip and2 test-portability
+failures. Narrow repairs are in progress; no complete37-suite or hosted result
+is claimed.
+
+The temporary guest-only SIP window remains OPEN, with restoration after the
+tracing session still required. The physical Mac's SIP is unchanged. The VM
+needs its display woken before inspection can continue. Full Darwin extraction
+oracle/corpus/budgets, R02/M2 and durable evidence publication remain open.
+The latest approved public checkpoint is still `e2c728b` with nine green jobs;
+newer local source has not been published. Details and exact evidence identities
+are in the [18 October checkpoint](plans/mvp-implementation.md#18-october-fresh-guest-only-tracing-window).
+Documentation continues on `codex/mvp-r04-trace-build-status`.
+
 ## Compact MVP implementation — 17 October 2026
 
 The 26 cards have separate `codex/mvp-*` feature branches. The owner merged the

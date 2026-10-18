@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-17 October 2026. Product authority remains [the plan](../../PLAN.md),
+18 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -143,7 +143,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-trace-kit` | `5a1d2b9`, `24ba156`; integrated `f3f0ad1`, `a395ead` | Frozen tracing policy with empty registry, exact disabled SIP and runner-only libdtrace;23 legacy/12 new controls |
 | R02 | `codex/mvp-r02-owned-trace-inputs` | `b356590`, `7f15c40` | Update six of 34 default source pins plus host-parser literal; both proofs/kit03 approval preserved; actual historical checker replay0 |
 | V01 | `codex/mvp-v01-owned-trace-kit-ci` | `9f281f1` | Add one kit suite; all 30 Python suites pass locally on Mac/native offline Linux arm64; no new hosted or Rust run |
-| R04 | `codex/mvp-r04-owned-trace-source-status` | `e2c728b`, based on `9f281f1` | Reviewed tracing source, empty admission, source-inventory repair and local aggregate; exact public push pending approval |
+| R04 | `codex/mvp-r04-owned-trace-source-status` | `e2c728b`, based on `9f281f1` | Approved public source push; all nine portable jobs pass in run `39074320935`; native tracing remains unexecuted |
 | R02 | `codex/mvp-r02-owned-trace-check` | `634efaf`, `3dc12ce`, `fb1d76a`; integrated `1b89364`, `47cc16f`, `ac7e27a` | Independent fixed raw program/inventory/event validator; repaired valid-baseline mutation controls, 16 portable passes; no case/session/native verdict |
 | V01 | `codex/mvp-v01-owned-trace-check-ci` | `a1f0e88` | Add one raw-reader invocation (31 configured); focused 16 controls pass on both native development hosts, separately composed with prior 30 aggregate |
 | R04 | `codex/mvp-r04-owned-trace-reader-status` | `519e2ff`, `e9f3d80`, based on `a1f0e88` | Record raw-reader source/controls and independent composed-coverage audit; preserve the fixed older public checkpoint |
@@ -154,6 +154,11 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-sim-metadata` | `af74a56`, `8609046`; integrated `66d1b46`, `036d76f` | Pure metadata collection predicate; preserve unknown errors/wait/kill without SIM acceptance; no collector or activation |
 | V01 | `codex/mvp-v01-trace-sim-ci` | `783ff41` | Add one pure SIM suite; 35 configured; focused 20 controls pass on both native development hosts |
 | R04 | `codex/mvp-r04-trace-sim-status` | branch tip, based on `783ff41` | Record SIM source/controls and remaining native admission/calibration |
+| R02 | `codex/mvp-r02-trace-registry-admission` | `f8e50d1`, `e365c53`, `9a294d4` | Fresh disabled proof/41 fixed sources admitted; explicit empty fixture;23/12 kit controls and actual committed admission pass |
+| R02 | `codex/mvp-r02-trace-calibration-vm` | `bdd4e41`, `62dd8b1`, `d733783`; merged `ded13fb` | Separate fixed two-case packet/physical checker, initially hard-disabled;16 new/16 original controls and independent review pass |
+| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation;9 Mac controls; actual inspection/rename pending |
+| V01 | `codex/mvp-v01-trace-calibration-retention-ci` | `7fdf01f` | Exactly two new invocations (37 configured); first Linux run preserves two test portability failures, no newer hosted run |
+| R04 | `codex/mvp-r04-trace-build-status` | branch tip, based on `7fdf01f` | Fresh tracing proof/admission and reproducible unexecuted native kit; guest window and acceptance remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -197,6 +202,144 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 18 October: fresh guest-only tracing window
+
+The owner approved a temporary SIP change only in `glue-mvp-macos-trace`, with
+restoration afterward. Recovery displayed the disabled setting after private
+owner authentication; the VM rebooted normally. The physical Mac's SIP remains
+outside this change. The fresh ordinary-user inspector completed all six fixed
+commands with literal status0 and reports exactly disabled SIP. No tracing
+provider has run in this window yet; security restoration remains open.
+
+The28-file proof is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-Ap5KkPYA`,
+manifest `cd57a36af2a9db11f7d24105485137f7afb2ad9743161db190d7ed6c7ca361fd`.
+The72-file independent review is
+`/private/tmp/glue-disabled-proof-peer-ppxvxcea`, manifest
+`2b3c60fc811ed292cd3e33a33851ba751a1de8c3667c5c2df8f4062000d80dfb`.
+Root independently verifies its complete membership and hashes. The review binds
+all27 proof payloads, unchanged nine-payload inspector, historical/current source
+provenance, exact NUL command argv/status/streams and every literal deployment
+field. Actual observation time is 2026-10-18T10:54:00.765135000Z, model
+VirtualMac2,1, Darwin25.6.0 arm64, macOS26.6.2/25G83. Credentials remain
+IDs[501,501,20,20] and the full16-group vector. Every component now has
+device16777234, rootFSID[16777236,26] and DataFSID[16777234,26]. These changed
+post-reboot tuples replace no historical catalog and are not normalized.
+
+The open security chronology is
+`/private/tmp/glue-owned-trace-sip-window-20261018-01`. Its UI observations are
+explicitly labeled transcription, with no independent Recovery/wrapper exit or
+authenticated boot-ID claim. The independent review retains an exact earlier
+OPEN snapshot. The actual six child command receipts are retained separately.
+Stable owned namespaces and original writable input permissions remain explicit;
+complete hash inventories do not establish immutable or administrator-proof data.
+
+Admission decision `f8e50d1` and test-separation addendum `e365c53` precede registry
+commit `9a294d4`. Exact 41 source pins match the closed candidate and frozen
+`e2c728b`, with ordered2/19/6 translation units. The one ten-field proof entry
+binds the exact fresh proof and independent review above. Both builders, all
+native sources, default registry and legacy preparer/checker/templates remain
+unchanged. Explicit unconfigured tracing data retains empty/refusal controls;
+production CLI override rejection remains direct. The52-file admission record is
+`/private/tmp/glue-trace-registry-admission-controls-9_icse7o`, manifest
+`2de83cbfd2645c2ead4b1e56f079f6834430e6bf35b7c09897da51a58eaa8967`.
+Legacy23 and tracing12 controls pass, no skips. The clean committed lock loads
+41/41 sources and actual admitted_proof returns every reviewed literal field.
+
+The successful native build is
+`/private/tmp/glue-owned-trace-native-kit-20261018-02`:143 files, manifest
+`825d99567feb42bce9915e46e590436291ebffaa2dd1b28ed5c2bb9db124ffde`.
+Its33-file actual builder-command record is
+`/private/tmp/glue-owned-trace-host-build-receipt-20261018-03`, manifest
+`34640346684b2e7332f6ee7dbde715b8b366c88940d3f35b698fa0d5e0eba73d`.
+All21 SDK/compiler/sign/verify commands return0, with no timeout or unresolved
+cleanup flag. All three signed programs match across first/second/kit copies:
+probe52912 SHA`5aed421f11750b0d49c83300f2b8e818309b1fc886e8c535ab9e31f3b40b38e5`,
+runner164528 SHA`ddd14bbe29b38e0f02427dad92fa16c74c63fc2bc04eda1980681475a6b9c1bc`,
+request72240 SHA`236e78b2f38a79b5711e5d152526b9cfaf3d8735b8ecb0a8287bce81dd376818`.
+BuildID is `69de4c44aa5d083c2cba64b1ee83b1978577ee61f46221ca64f620d3413d155f`,
+catalog `65f3b9ed3d72f7ce79fdf314be0a40ba249bcb4d4d1c1263d281c328c3e47904`,
+recipe `3a55ff7ff82f5673d68b92ef9fc4230eaf656f8a31208daed8e687c15d839689`
+and source-lock `f2943d170c27c3ee5eb3c8b151efc2986d840c92c867505f7aa6b669f167d5af`.
+Only the runner links libdtrace after libSystem; probe/request remain libSystem-only.
+ARM64/min26 and exact fresh root/Data tuples pass root checks. No generated
+program runs or installation occurs. The36-file independent kit review is
+`/private/tmp/glue-owned-trace-kit-peer-ncx_2oeb`, manifest
+`0162fb433e3490b53a4cf13fd26591abb5107118732f29261aa3d0d759428273`;
+the34-file distinct catalog review is
+`/private/tmp/glue-trace-kit-catalog-peer-74x0yl88`, manifest
+`8a120aa2be0dcc52b72a36261aa5b25c5deca0d86d8411561b84cfce0c3b196a`.
+Both pass; root independently verifies exact membership/hashes. Reviews bind all
+source/tool/artifact/proof/catalog fields and independently parse native Mach-O,
+CodeDirectory/page hashes and generated catalog/accessor data. Logical request
+vectors use explicitly synthetic inodes and run no utility. An initial reviewer
+assumption that unused signature allocation bytes must be zero is retained as a
+superseded reviewer-only control failure; exact signed artifact bytes, embedded
+signature/page hashes and actual strict signature receipts pass the fixed policy.
+All successful input bytes/metadata remain unchanged; failed native01 is untouched.
+
+Wrapper01 initially treated a zero-status Git environment warning as failure and
+stopped before builder invocation. Wrapper02 reached the first compile but the
+sandbox denied compiler temporary files. Both remain separate. Failed native
+output01 stays PARTIAL/unresolved, with no final inventory, repair or reuse;
+only bounded partial diagnostic metadata/stderr was read. Wrapper02's outer
+possible_live_descendants=false described only its own timeout/error check and
+does not override the builder's partial/unresolved marker; its interpretation
+record explains this limitation. Wrapper03 records bounded Git warnings and
+conservatively marks nonzero builder completion unresolved. It succeeds with
+host compiler temporary-file access and a fresh native output02.
+
+The fixed two-case source is `d733783` after decision `bdd4e41`, integrated through
+merge `ded13fb`. Its64-file producer record is
+`/private/tmp/glue-trace-calibration-validation-alncxz9s`, manifest
+`e5dc1b4f462bae54969da2122d44a80cc55b3146d24363eabc23ad855bbe0bb9`;
+the56-file independent peer is `/private/tmp/glue-trace-calibration-peer-4l1hv7pq`,
+manifest `5b851a165869ce24c10dad9636cb5c6f7e426d2669fa4f3f412f67e05d8b4bd6`.
+New16/original16 controls pass with complete independent synthetic pairs,
+metadata-before-raw, exact receipts/context/rosters, exhausted128MiB streaming,
+FIFO refusal, bounded enumeration and physical read/close failure controls.
+The tiny shared kit-loader extraction preserves the original guarded behavior;
+old four-case templates/gates/raw/case/native/build inputs stay unchanged.
+Both new CLIs remain hard-disabled pending actual kit/packet admission and
+reviewed activation; caller-trusted check_export consistency is not packet
+provenance or native calibration. SIM remains refused.
+
+Completed-kit preservation source `6d3884f`, after decision `66ff4ea`, integrates
+through merge `44e78a6`. Its22-file source/control record is
+`/private/tmp/glue-kit03-retention-controls-yed710e_`, manifest
+`9138a13d8a96240dcb72cdf38b94ec87310f889a2ef54543fc73b86908fbe2ec`.
+Nine Mac controls pass; both generated Perl programs compile without executing
+root mains. The actual read-only inspection packet has four files, manifest
+`48b56da4c14377d07cf133cf21e97a106eff798d082604910d493c364eaa3a13`.
+Root verifies its sources, controls and exact staged bytes under the actual
+shared toolkit; the3-file root review is
+`/private/tmp/glue-kit03-inspection-root-review-20261018-01`, manifest
+`952bc5bb72a700736c56f88173b28a2bc7ca43c69ee780cebc9f9f4e4ce973d4`.
+It inspects only the fixed kit/32 historical roots/seven parents with bounded
+core Perl reads, exact types/owners/modes/links/ACLs/hash/identity/signature checks.
+Source metadata has seconds-resolution limits; coordinated stable namespace
+is required, with no assertion that a lock excludes another root process.
+Retention remains null/false until an actual physical inventory and independent
+review bind every observed tree. The fixed attempt record prevents a new packet
+from retrying an uncertain future move. No rename has occurred. Guest display
+wake is pending before the read-only packet can launch.
+
+CI `7fdf01f` adds only two baseline invocations for37 configured suites. The
+first five-suite native offline Linux run collects76 controls:68 pass,6 skip,
+2 fail. All three earlier suites pass; new calibration's Python-version-specific
+AST dump hash differs between3.12/3.15, and the cached image's Perl is present
+without Digest::SHA. Both are test-portability repairs in progress. The294-file
+failure record is `/private/tmp/glue-trace-calibration-retention-linux-zp2q4aa3`,
+manifest `5c88f2a1711bdd5432fffb3bf1c6aa73bd51118523dde73fa350900309d1a326`.
+All251 tracked tracing/script/workflow pins match copied/committed/before/after
+bytes and metadata. Actual raw receipts stay unchanged. The provisional driver
+only parsed skip totals for an OK terminal line, undercounting failed-suite
+skips; the record retains it plus a separate corrected76/68/6/2 interpretation.
+No complete37-suite or newer hosted run is claimed. All source branches and merged commits remain
+local beyond the explicitly approved public `e2c728b` checkpoint. Native tracing,
+full Darwin oracle/corpus/budgets, R02/M2, security restoration and durable
+publication remain open.
 
 ## 17 October: deployment, configured kit and hosted follow-up
 
