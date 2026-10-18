@@ -164,7 +164,8 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-calibration-admission` | `ecb37f0`, `0ea577a`; merged `d821900` | Admit only actual kit02 and exact 14-payload packet; 16 existing/15 new Mac controls pass; actual packet independently reviewed |
 | R02 | `codex/mvp-r02-kit03-retention-admission` | `1e74198`, `d04d91a`, `f75aae6`; merged `9b638cd` | Exact observed two-Library/30-absence profile, durable marker, status-aware retain guards and aligned receipt hash; 17 Mac controls pass |
 | V01 | `codex/mvp-v01-trace-admission-ci` | `d73fceb` | Add one packet-admission invocation; 38 configured suites; focused three-suite Linux run passes with five explicit skips |
-| R04 | `codex/mvp-r04-trace-packet-status` | branch tip, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private, native diagnosis and SIP restoration pending |
+| R04 | `codex/mvp-r04-trace-packet-status` | `161de67`, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private |
+| R02 | `codex/mvp-r02-trace-match-accounting` | decision `476c350`, implementation `490a8c3` | Derive bounded inventory from compiled selectors; independent review and normal/sanitized SDK/model controls pass; fresh native calibration and SIP restoration pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -498,7 +499,8 @@ the report; the guest attempt file is not independently opened. Root checks all
 `/private/tmp/glue-kit03-actual-retention-result-peer-q0n21oyu` has 41 files,
 manifest `5d2b2eef6279ca42be12a7994e992784fb3ae8cdbf9e7baaffd09ac5e9f191d1`;
 root verifies all 40 payload hashes and exact recursive membership. Runtime
-source matches prepared `9b638cd`; current `7773380` differs only in status docs.
+source matches prepared `9b638cd`; documentation checkpoint `161de67` differs
+only in status docs.
 
 Root next visually verifies and submits the exact staged tracing launcher once.
 The immediate screenshot fails with ScreenCaptureKit -3811; a later fresh
@@ -509,13 +511,87 @@ stderr; the batch checkpoint reports preflight0, install0 and positive2, with
 empty visible first-case wrapper streams. These are UI transcriptions of private
 receipts, not an independently retained command export. Positive2 is a wrapper
 refusal and does not establish native status2. The denied case is not reached.
-Native return status, promoted metadata and closure cause remain unestablished;
-root performs no manual native-output raw enumeration, hashing, inventory or
-export during diagnosis. The precise generated gate reached is unknown: a later
-roster/context check can also refuse after metadata closure. Read-only
-root status inspection requires fresh private guest authentication; SIP remains
-in the approved temporary disabled window. No successful calibration or full
-Darwin acceptance follows from this partial attempt.
+At that point native status and the exact generated gate are unknown. After
+human private authentication, bounded read-only UI inspection of the exact
+saved native status and metadata reports native1. The files are private regular
+root-owned single-link0600 files, with status2 bytes, result2,128 bytes and trace
+2,780 bytes; `result.pending` is absent. No raw output is opened or enumerated.
+The result reports READY matched, GO attempted/possibly released false and
+bytes0, gate closed, child3142 reaped with raw wait status9 by controller3141,
+and trace finalization safe with success eligibility false. Parent error is
+17/9/0/detail6 and cleanup error12/9/0/detail6. The trace reports started0,
+provider-ready0, zero event/pump/BEGIN/terminal/END counts, and resources closed
+with all four writer closes attempted and none failed. Its first backend error
+is stage2/reason7/callback100, with the literal message
+`enabled match count differs from exact selected inventory`: inventory and
+expected matches1,051, enabled matches1,257, inventory bytes35,552 and raw
+bytes0. These are bounded UI transcriptions, not a retained native result or
+independent cleanup attestation. The positive wrapper rejects native1 before
+its generated raw roster/export. No manual raw hash, inventory or export is
+performed, and the failed attempt is not rerun or promoted.
+
+Decision `476c350` on `codex/mvp-r02-trace-match-accounting` requires compilation
+before bounded public-SDK statement/selector inventory, exact fixed selector
+coverage and unique physical probe identities, followed by exact enabled-count
+equality before `dtrace_go`. The earlier inventory assumes equivalence between
+precompile physical probes and compiled ECB match counts. Compilation/probe
+lookup may provision probes, but the particular guest count difference has no
+established mechanism. Existing kits, source registrations and packets remain
+immutable; repaired source needs separate admission and a fresh kit/packet.
+No successful calibration or full Darwin acceptance follows from this attempt.
+
+Implementation `490a8c3` changes only the backend C, its source-isolated C
+controls and README. Public SDK statement iteration retains at most 512 action
+statements and 17 distinct ECB pointers; exact selectors include bare BEGIN/END's
+empty provider fields while their physical matches must belong to `dtrace`.
+Each selector must have nonempty valid physical matches, with globally unique
+IDs/name tuples, at most 8,192 probes and the original byte/deadline bounds.
+The expected selector sum must equal the unique inventory count and then the
+actual enabled count before GO. The fixed generated program, header/API,
+metadata schemas, provider/event/readiness/cleanup contracts and old source
+registrations/kits/packets remain unchanged. No count relaxation or retry is added.
+
+The focused controls record is
+`/private/tmp/glue-compiled-match-controls-20261018-01`: 59 files, manifest
+`51b8aff92819169856b68ab0e158863907bb6d1457e4c9a47ab30a3ceae816c0`.
+Final normal and ASan/UBSan attempt02 each return0 with two Darwin groups passing
+and one portable-only skip. The isolated model defines all DTrace functions;
+real SDK adapter binaries compile/link but are never executed. Exact outer NUL
+argv/cwd/status/streams/completion and eight before/after source pins are retained;
+inner compiler commands are defined in copied source, not separate raw receipts.
+No timeout/output bound is hit, and normal exit is not independent descendant
+cleanup proof. Initial passing attempt01 remains separate; attempt02 follows
+the final static table-size assertion. Root verifies all 58 payload hashes,
+exact recursive membership, final raw receipts and current source copies.
+
+Independent final source/diff/receipt review finds no actionable issue. Its
+record `/private/tmp/glue-compiled-selector-final-review-zrb37kyt` has 84 files,
+manifest `d10a651f699aa5b577b64870d18bc04c888f60b87891862bee0c25803b8d6dfc`;
+root reads the complete report and verifies all 83 payload hashes and membership.
+The preceding public-SDK/Apple-source design review is separately retained at
+`/private/tmp/glue-compiled-selector-design-review-a9449thm`: 15 files, manifest
+`6b498a51607e1ab73067f1f27826d406e18b17f29812b51f7ed5b121c24a3a5f`.
+Root verifies every member and the report. Cached Apple source is not established
+as identical to the guest binary. These records establish model/SDK and source
+verification, not repaired native calibration or the particular mismatch cause.
+
+A new source registration must bind the committed repair while preserving the
+historical registry/proof inputs. A subsequent restored/re-disabled boot needs
+fresh literal deployment observations and independent review before deriving
+the next catalog and kit. Mechanical acceptance of an old registered proof is
+not current-boot readiness. Fresh build/signing/kit identities cannot reuse the
+old artifact hashes. Before installing another kit, the current tracing
+installation `69de4c44...155f` needs its own bounded inspection/preservation;
+kit03's nontracing retention approval does not cover it or failed trace outputs.
+
+The guest cleanly shuts down for security restoration; fresh UTM state shows
+Start enabled and Stop disabled. Subsequent UTM control/observation calls time
+out, so the human is asked to open this VM's Recovery Terminal. A later recovered
+observation shows the running VM's normal login screen, without reading a new
+SIP status. Closing its console returns noWindowsAvailable, and reconnect times
+out; no credentials are entered. The temporary
+SIP window remains open pending restoration and normal-boot verification;
+physical host security settings are unchanged.
 
 CI `d73fceb` adds exactly one invocation, for 38 configured suites. A focused
 native offline Linux arm64 run of the three affected exact CI commands at clean

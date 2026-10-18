@@ -1,6 +1,6 @@
 # Implementation progress
 
-## Preservation complete; tracing diagnosis — 18 October 2026
+## Tracing match-accounting repair — 18 October 2026
 
 The fresh normal-boot guest proof reports exactly disabled SIP and passes an
 independent complete source/command/observation review. Registration `9a294d4`
@@ -32,12 +32,26 @@ prefix moves to its fixed Library archive, and the bound inode/byte/signature
 checks pass. Root verifies the result and the independent complete review.
 
 The tracing launcher then returns without a completed export. Bounded read-only
-UI checks of its private receipt show outer status1, preflight0, install0 and
-positive-wrapper2; the denied case is not reached. The native return status and
-closure cause remain unknown. Root performs no manual raw-output enumeration,
-hashing or export during diagnosis; the precise generated gate reached is unknown.
-The original attempt stays private and is not rerun; further read-only diagnosis
-awaits private guest authentication.
+UI checks show outer status1, preflight0, install0 and positive-wrapper2; the
+denied case is not reached. After private authentication, bounded saved metadata
+shows native status1: enabled matches1,257 differ from the precompile inventory
+and expectation1,051. GO is not attempted or possibly released. The parent
+reports the child reaped, gate closed and resources closed/finalization safe,
+with success eligibility false. These are UI transcriptions, not an exported
+native result or independent cleanup attestation. The positive gate rejects
+native1 before its raw roster/export. No manual raw enumeration, hashing or
+export is performed; the failed original remains private and is not rerun.
+
+Decision `476c350` and repair `490a8c3` on
+`codex/mvp-r02-trace-match-accounting` derive the exact inventory and expected
+count from validated compiled selectors, retaining exact enabled-count equality
+before GO. Independent source/receipt review finds no actionable issues. Normal
+and ASan/UBSan backend suites each pass both Darwin groups, with one explicit
+portable-only skip; real SDK binaries compile/link without execution. Root
+verifies all receipt/review hashes and current source identities. Native repair
+and the particular provisioning/overlap cause remain unproved. A retry requires
+new source admission, fresh post-reboot proof, kit and packet, and separate
+inspection/preservation of the currently installed tracing kit.
 
 The affected Mac controls pass all 48 tests across the two focused receipts.
 One focused native Linux run at `9b638cd` collects 48: 43 pass and five expected
@@ -45,13 +59,17 @@ platform/dependency skips. CI `d73fceb` adds one invocation for 38 configured
 suites. Earlier portability failures and their repairs remain preserved. No
 complete 38-suite or newer hosted result is claimed.
 
-The temporary guest-only SIP window remains OPEN, with restoration after the
-tracing session still required. The physical Mac's SIP is unchanged. Full Darwin extraction
+The temporary guest-only SIP window remains OPEN. The guest shuts down cleanly
+for restoration, but UTM control then times out. A later recovered observation
+shows its normal login screen; Recovery Terminal access remains requested from
+the human. Restoration and normal-boot verification are still required.
+The physical Mac's SIP is unchanged. Full Darwin extraction
 oracle/corpus/budgets, R02/M2 and durable evidence publication remain open.
 The latest approved public checkpoint is still `e2c728b` with nine green jobs;
 newer local source has not been published. Details and exact evidence identities
 are in the [18 October checkpoint](plans/mvp-implementation.md#18-october-fresh-guest-only-tracing-window).
-Documentation continues on `codex/mvp-r04-trace-packet-status`.
+The prior documentation checkpoint is `161de67` on
+`codex/mvp-r04-trace-packet-status`; follow-up work uses the separate repair branch.
 
 ## Compact MVP implementation — 17 October 2026
 
