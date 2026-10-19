@@ -22,6 +22,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v
         python3 fixtures/mvp/macos-trace/call-pairing/test_pair_calls.py -v
         python3 fixtures/mvp/macos-trace/tree-open/test_observe_tree_open.py -v
+        python3 fixtures/mvp/macos-trace/tree-open-intent/test_observe_tree_open_intent.py -v
         python3 fixtures/mvp/macos-trace/mach-msg2/test_observe_msg2.py -v
         python3 fixtures/mvp/macos-trace/target-credentials/test_target_credentials.py -v
         python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
