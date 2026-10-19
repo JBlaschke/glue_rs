@@ -1,5 +1,76 @@
 # Implementation progress
 
+## Tracing match-accounting repair — 18 October 2026
+
+The fresh normal-boot guest proof reports exactly disabled SIP and passes an
+independent complete source/command/observation review. Registration `9a294d4`
+freezes the 41 tracing sources at `e2c728b`, preserving the legacy policy and a
+separate explicit empty-registry fixture. The two affected kit suites pass all
+23/12 controls. Actual committed source-lock/proof admission also passes.
+
+The ordinary-user native host build now succeeds: all 21 compiler/signature/tool
+commands return0, and all three signed programs are byte-identical across two
+builds. The catalog derives its root/Data tuples from the new guest observation.
+Independent kit and catalog reviews both pass; the later guest installation
+checkpoint is recorded below. Earlier failed preflight/compiler attempts remain
+separate; the failed native directory is explicitly partial and has no final
+inventory.
+
+The separate two-case lane now admits only the reviewed actual kit (`0ea577a`).
+Its concrete packet is prepared, independently reviewed and staged with exact
+bytes and modes. Packet admission binds all fourteen payloads, canonical scripts
+and fixed metadata before checking a diagnostic result. The old four-case/SIM
+policy remains disabled.
+
+The read-only kit03 inspection and independent review pass. Both Library
+installations survive; all 30 historical temporary roots are observed absent.
+The named retention policy (`f75aae6`) binds that exact state and unchanged
+historical exports, with a durable Library attempt marker and one guarded move.
+Its concrete packet is prepared, independently reviewed and staged. Actual
+preservation now succeeds: all five captured commands return zero, the old kit03
+prefix moves to its fixed Library archive, and the bound inode/byte/signature
+checks pass. Root verifies the result and the independent complete review.
+
+The tracing launcher then returns without a completed export. Bounded read-only
+UI checks show outer status1, preflight0, install0 and positive-wrapper2; the
+denied case is not reached. After private authentication, bounded saved metadata
+shows native status1: enabled matches1,257 differ from the precompile inventory
+and expectation1,051. GO is not attempted or possibly released. The parent
+reports the child reaped, gate closed and resources closed/finalization safe,
+with success eligibility false. These are UI transcriptions, not an exported
+native result or independent cleanup attestation. The positive gate rejects
+native1 before its raw roster/export. No manual raw enumeration, hashing or
+export is performed; the failed original remains private and is not rerun.
+
+Decision `476c350` and repair `490a8c3` on
+`codex/mvp-r02-trace-match-accounting` derive the exact inventory and expected
+count from validated compiled selectors, retaining exact enabled-count equality
+before GO. Independent source/receipt review finds no actionable issues. Normal
+and ASan/UBSan backend suites each pass both Darwin groups, with one explicit
+portable-only skip; real SDK binaries compile/link without execution. Root
+verifies all receipt/review hashes and current source identities. Native repair
+and the particular provisioning/overlap cause remain unproved. A retry requires
+new source admission, fresh post-reboot proof, kit and packet, and separate
+inspection/preservation of the currently installed tracing kit.
+
+The affected Mac controls pass all 48 tests across the two focused receipts.
+One focused native Linux run at `9b638cd` collects 48: 43 pass and five expected
+platform/dependency skips. CI `d73fceb` adds one invocation for 38 configured
+suites. Earlier portability failures and their repairs remain preserved. No
+complete 38-suite or newer hosted result is claimed.
+
+The temporary guest-only SIP window remains OPEN. The guest shuts down cleanly
+for restoration, but UTM control then times out. A later recovered observation
+shows its normal login screen; Recovery Terminal access remains requested from
+the human. Restoration and normal-boot verification are still required.
+The physical Mac's SIP is unchanged. Full Darwin extraction
+oracle/corpus/budgets, R02/M2 and durable evidence publication remain open.
+The latest approved public checkpoint is still `e2c728b` with nine green jobs;
+newer local source has not been published. Details and exact evidence identities
+are in the [18 October checkpoint](plans/mvp-implementation.md#18-october-fresh-guest-only-tracing-window).
+The prior documentation checkpoint is `161de67` on
+`codex/mvp-r04-trace-packet-status`; follow-up work uses the separate repair branch.
+
 ## Compact MVP implementation — 17 October 2026
 
 The 26 cards have separate `codex/mvp-*` feature branches. The owner merged the
@@ -8,8 +79,15 @@ integrated `codex/mvp-r04-docs` stack into `main` at `96e6958` (PR #34).
 executed target/runtime cells, commands and open evidence. Follow-up work uses
 new feature branches; no release asset has been published.
 
-The CI failures are repaired. Approved source `162f91a` on the public deployment
-branch passes all nine jobs in [run12](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631).
+The CI failures are repaired. The latest approved public source `e2c728b` on
+`codex/mvp-r04-owned-trace-source-status` passes all nine jobs in
+[run 39074320935](https://github.com/JBlaschke/glue_rs/actions/runs/39074320935).
+It contains every earlier published MVP follow-up branch and is the next merge
+point into `main`; merging its ancestors individually is unnecessary. Prefer a
+merge commit to preserve ancestry. Newer local reader/packet/case/SIM work follows
+in a separate reviewed checkpoint after publication and hosted CI.
+Earlier approved source `162f91a` on the public deployment branch also passes
+all nine jobs in [run12](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631).
 The two earlier failed runs remain unchanged. Native Ubuntu GCC13 additionally
 passes all22 Python suites (334 passes,25 explicit skips); its one changed
 production source and updated lock were independently reviewed.
@@ -46,16 +124,50 @@ tracing/script source pins match before/after/committed bytes in the repeated ru
 The first run omitted the executed fetch shell helper from its source inventory;
 it remains retained, and the corrected inventory covers every tracked script.
 Exact outer command
-argv/status/streams are retained. This is local Python/C validation, with no
-newer hosted or Rust-suite run. Independent raw tracing validation, a fresh
-deployment proof, admitted tracing kit and separate guest packet/checker remain
-required before native calibration.
+argv/status/streams are retained. These are local Python/C receipts; the later
+public `e2c728b` matrix separately covers this 30-suite checkpoint.
+
+The independent fixed raw reader is now integrated at `ac7e27a`. Its 16 controls
+pass on both Mac and native offline Linux arm64 without skips, including complete
+valid mutation baselines and the 128 MiB streaming boundary. CI at `a1f0e88` now
+configures 31 suites: coverage combines the preceding 30-suite aggregate and this
+focused new suite. The new record pins all 217 tracing/script sources. An
+independent passive audit verifies its complete inventory, source identities,
+actual command receipts and the stated composition with the earlier aggregate.
+The reader supplies raw transport facts, with no native capture,
+GO/session/closure verdict, clock-domain equivalence, exec or extraction claim.
+The separate complete positive/denied case checker is integrated at `e1db60e`;
+its 11 synthetic groups pass. The separate packet at `5f96d29` remains
+hard-disabled before input/output access. The repairs require successful command
+and array reads, the actual endpoint sentinel and clean positive pump counts.
+A fresh deployment proof, admitted tracing kit and reviewed packet activation
+remain required before native calibration. SIM still refuses as uncalibrated.
+CI `e40d33e` adds the three packet/gate/case suites. Their 43 controls pass on
+each Mac and native offline Linux arm64 host without skips. All 229 selected source
+pins match before/after/committed bytes. Coverage combines these focused results
+with the earlier 30-suite aggregate and raw-reader suite; no single 34-suite run
+or newer hosted result is claimed. An independent passive audit verifies the
+complete inventories, source closure and actual command/completion receipts.
+The separate SIM metadata predicate at `036d76f` retains literal unknown errors
+and wait/kill observations only after declared cleanup. It returns no SIM pass
+or calibration approval and performs no collection or file/VM operation. Its
+20 focused controls pass on both hosts at CI `783ff41`, with all 233 source pins
+matching before/after/committed bytes. Coverage for 35 configured suites combines
+the retained runs; no single 35-suite run is claimed. Separate passive source and
+CI/composition audits pass, with unchanged original inputs.
 The full Darwin extraction oracle, macOS corpus/budgets, M2 and durable evidence
 publication remain open. SIP stays enabled in the VM and on the physical host.
 Exact source branches, commands and frozen records are in the
 [17 October checkpoint](plans/mvp-implementation.md#17-october-deployment-configured-kit-and-hosted-follow-up).
-Documentation continues on `codex/mvp-r04-owned-trace-source-status`; the earlier
-`ae48aee` public push request remains separately scoped to its fixed branch.
+Documentation continues on `codex/mvp-r04-trace-sim-status`.
+The approved push of `e2c728b` replaced the earlier `ae48aee` request and completed
+the nine-job matrix on its first attempt. It excludes the newer raw reader,
+packet/case and SIM metadata follow-ups. A fresh ordinary-user guest inspection
+also passed all six commands and again reports SIP enabled. Its literal current
+device/FSID observations are a pre-Recovery baseline, not tracing admission.
+The external 41-source tracing registry candidate matches `e2c728b` exactly;
+the production registry remains empty until a fresh independently reviewed
+post-reboot disabled-SIP proof exists. No new tracing diagnostic has run.
 
 Implemented: schema-one compact distributions, deterministic atomic builder,
 ELF/Mach-O closure and optional normalization, Lua54/55 helpers/projects/native

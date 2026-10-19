@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-17 October 2026. Product authority remains [the plan](../../PLAN.md),
+18 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -143,7 +143,29 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-trace-kit` | `5a1d2b9`, `24ba156`; integrated `f3f0ad1`, `a395ead` | Frozen tracing policy with empty registry, exact disabled SIP and runner-only libdtrace;23 legacy/12 new controls |
 | R02 | `codex/mvp-r02-owned-trace-inputs` | `b356590`, `7f15c40` | Update six of 34 default source pins plus host-parser literal; both proofs/kit03 approval preserved; actual historical checker replay0 |
 | V01 | `codex/mvp-v01-owned-trace-kit-ci` | `9f281f1` | Add one kit suite; all 30 Python suites pass locally on Mac/native offline Linux arm64; no new hosted or Rust run |
-| R04 | `codex/mvp-r04-owned-trace-source-status` | branch tip, based on `9f281f1` | Record reviewed tracing source, empty deployment admission and local aggregate; Darwin oracle/M2 remain open |
+| R04 | `codex/mvp-r04-owned-trace-source-status` | `e2c728b`, based on `9f281f1` | Approved public source push; all nine portable jobs pass in run `39074320935`; native tracing remains unexecuted |
+| R02 | `codex/mvp-r02-owned-trace-check` | `634efaf`, `3dc12ce`, `fb1d76a`; integrated `1b89364`, `47cc16f`, `ac7e27a` | Independent fixed raw program/inventory/event validator; repaired valid-baseline mutation controls, 16 portable passes; no case/session/native verdict |
+| V01 | `codex/mvp-v01-owned-trace-check-ci` | `a1f0e88` | Add one raw-reader invocation (31 configured); focused 16 controls pass on both native development hosts, separately composed with prior 30 aggregate |
+| R04 | `codex/mvp-r04-owned-trace-reader-status` | `519e2ff`, `e9f3d80`, based on `a1f0e88` | Record raw-reader source/controls and independent composed-coverage audit; preserve the fixed older public checkpoint |
+| R02 | `codex/mvp-r02-owned-trace-cases` | `7ee2d0f`, `983b9e4`; integrated `fb790b7`, `e1db60e` | Pure complete positive/denied case consistency; 11 synthetic control groups; trusted caller provenance and SIM refusal |
+| R02 | `codex/mvp-r02-bootstrap-trace-vm` | `5bf1d81`, `db3ff37`, `5622f9e`, `be85b24`; integrated through `5f96d29` | Separate hard-disabled packet, checked operation status and exact closure gates; endpoint/pump/array regressions repaired |
+| V01 | `codex/mvp-v01-trace-packet-cases-ci` | `e40d33e` | Add exactly three packet/gate/case suites; 34 configured; focused 43 controls pass on each Mac/native offline Linux arm64 host |
+| R04 | `codex/mvp-r04-trace-packet-cases-status` | `d00dda7`, `424a071`, based on `e40d33e` | Record integrated packet/case sources, focused controls and independent audit; remaining native admission/calibration |
+| R02 | `codex/mvp-r02-trace-sim-metadata` | `af74a56`, `8609046`; integrated `66d1b46`, `036d76f` | Pure metadata collection predicate; preserve unknown errors/wait/kill without SIM acceptance; no collector or activation |
+| V01 | `codex/mvp-v01-trace-sim-ci` | `783ff41` | Add one pure SIM suite; 35 configured; focused 20 controls pass on both native development hosts |
+| R04 | `codex/mvp-r04-trace-sim-status` | branch tip, based on `783ff41` | Record SIM source/controls and remaining native admission/calibration |
+| R02 | `codex/mvp-r02-trace-registry-admission` | `f8e50d1`, `e365c53`, `9a294d4` | Fresh disabled proof/41 fixed sources admitted; explicit empty fixture;23/12 kit controls and actual committed admission pass |
+| R02 | `codex/mvp-r02-trace-calibration-vm` | `bdd4e41`, `62dd8b1`, `d733783`; merged `ded13fb` | Separate fixed two-case packet/physical checker, initially hard-disabled;16 new/16 original controls and independent review pass |
+| R02 | `codex/mvp-r02-kit03-retention` | `66ff4ea`, `6d3884f`; merged `44e78a6` | Fixed bounded read-only inspection and initially disabled preservation; actual inspection and independent review pass, rename pending |
+| V01 | `codex/mvp-v01-trace-calibration-retention-ci` | `7fdf01f` | Exactly two new invocations (37 configured); first Linux run preserves two test portability failures, no newer hosted run |
+| R02 | `codex/mvp-r02-trace-calibration-portable-controls` | `e35987a`; integrated before `283a94e` | Remove Python-version-dependent test digest; production source unchanged;16 Mac/Linux passes |
+| R02 | `codex/mvp-r02-kit03-portable-controls` | `9cea001`; integrated `283a94e` | Exact Perl dependency probe and separate shell syntax control;10 Mac passes, Linux5 passes/5 declared skips |
+| R04 | `codex/mvp-r04-trace-build-status` | branch tip, based on `283a94e` | Fresh tracing proof/admission, reproducible unexecuted native kit and successful read-only inventory; guest window and acceptance remain open |
+| R02 | `codex/mvp-r02-trace-calibration-admission` | `ecb37f0`, `0ea577a`; merged `d821900` | Admit only actual kit02 and exact 14-payload packet; 16 existing/15 new Mac controls pass; actual packet independently reviewed |
+| R02 | `codex/mvp-r02-kit03-retention-admission` | `1e74198`, `d04d91a`, `f75aae6`; merged `9b638cd` | Exact observed two-Library/30-absence profile, durable marker, status-aware retain guards and aligned receipt hash; 17 Mac controls pass |
+| V01 | `codex/mvp-v01-trace-admission-ci` | `d73fceb` | Add one packet-admission invocation; 38 configured suites; focused three-suite Linux run passes with five explicit skips |
+| R04 | `codex/mvp-r04-trace-packet-status` | `161de67`, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private |
+| R02 | `codex/mvp-r02-trace-match-accounting` | decision `476c350`, implementation `490a8c3` | Derive bounded inventory from compiled selectors; independent review and normal/sanitized SDK/model controls pass; fresh native calibration and SIP restoration pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -187,6 +209,406 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 18 October: fresh guest-only tracing window
+
+The owner approved a temporary SIP change only in `glue-mvp-macos-trace`, with
+restoration afterward. Recovery displayed the disabled setting after private
+owner authentication; the VM rebooted normally. The physical Mac's SIP remains
+outside this change. The fresh ordinary-user inspector completed all six fixed
+commands with literal status0 and reports exactly disabled SIP. No tracing
+provider has run in this window yet; security restoration remains open.
+
+The28-file proof is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-Ap5KkPYA`,
+manifest `cd57a36af2a9db11f7d24105485137f7afb2ad9743161db190d7ed6c7ca361fd`.
+The72-file independent review is
+`/private/tmp/glue-disabled-proof-peer-ppxvxcea`, manifest
+`2b3c60fc811ed292cd3e33a33851ba751a1de8c3667c5c2df8f4062000d80dfb`.
+Root independently verifies its complete membership and hashes. The review binds
+all27 proof payloads, unchanged nine-payload inspector, historical/current source
+provenance, exact NUL command argv/status/streams and every literal deployment
+field. Actual observation time is 2026-10-18T10:54:00.765135000Z, model
+VirtualMac2,1, Darwin25.6.0 arm64, macOS26.6.2/25G83. Credentials remain
+IDs[501,501,20,20] and the full16-group vector. Every component now has
+device16777234, rootFSID[16777236,26] and DataFSID[16777234,26]. These changed
+post-reboot tuples replace no historical catalog and are not normalized.
+
+The open security chronology is
+`/private/tmp/glue-owned-trace-sip-window-20261018-01`. Its UI observations are
+explicitly labeled transcription, with no independent Recovery/wrapper exit or
+authenticated boot-ID claim. The independent review retains an exact earlier
+OPEN snapshot. The actual six child command receipts are retained separately.
+Stable owned namespaces and original writable input permissions remain explicit;
+complete hash inventories do not establish immutable or administrator-proof data.
+
+Admission decision `f8e50d1` and test-separation addendum `e365c53` precede registry
+commit `9a294d4`. Exact 41 source pins match the closed candidate and frozen
+`e2c728b`, with ordered2/19/6 translation units. The one ten-field proof entry
+binds the exact fresh proof and independent review above. Both builders, all
+native sources, default registry and legacy preparer/checker/templates remain
+unchanged. Explicit unconfigured tracing data retains empty/refusal controls;
+production CLI override rejection remains direct. The52-file admission record is
+`/private/tmp/glue-trace-registry-admission-controls-9_icse7o`, manifest
+`2de83cbfd2645c2ead4b1e56f079f6834430e6bf35b7c09897da51a58eaa8967`.
+Legacy23 and tracing12 controls pass, no skips. The clean committed lock loads
+41/41 sources and actual admitted_proof returns every reviewed literal field.
+
+The successful native build is
+`/private/tmp/glue-owned-trace-native-kit-20261018-02`:143 files, manifest
+`825d99567feb42bce9915e46e590436291ebffaa2dd1b28ed5c2bb9db124ffde`.
+Its33-file actual builder-command record is
+`/private/tmp/glue-owned-trace-host-build-receipt-20261018-03`, manifest
+`34640346684b2e7332f6ee7dbde715b8b366c88940d3f35b698fa0d5e0eba73d`.
+All21 SDK/compiler/sign/verify commands return0, with no timeout or unresolved
+cleanup flag. All three signed programs match across first/second/kit copies:
+probe52912 SHA`5aed421f11750b0d49c83300f2b8e818309b1fc886e8c535ab9e31f3b40b38e5`,
+runner164528 SHA`ddd14bbe29b38e0f02427dad92fa16c74c63fc2bc04eda1980681475a6b9c1bc`,
+request72240 SHA`236e78b2f38a79b5711e5d152526b9cfaf3d8735b8ecb0a8287bce81dd376818`.
+BuildID is `69de4c44aa5d083c2cba64b1ee83b1978577ee61f46221ca64f620d3413d155f`,
+catalog `65f3b9ed3d72f7ce79fdf314be0a40ba249bcb4d4d1c1263d281c328c3e47904`,
+recipe `3a55ff7ff82f5673d68b92ef9fc4230eaf656f8a31208daed8e687c15d839689`
+and source-lock `f2943d170c27c3ee5eb3c8b151efc2986d840c92c867505f7aa6b669f167d5af`.
+Only the runner links libdtrace after libSystem; probe/request remain libSystem-only.
+ARM64/min26 and exact fresh root/Data tuples pass root checks. No generated
+program runs or installation occurs. The36-file independent kit review is
+`/private/tmp/glue-owned-trace-kit-peer-ncx_2oeb`, manifest
+`0162fb433e3490b53a4cf13fd26591abb5107118732f29261aa3d0d759428273`;
+the34-file distinct catalog review is
+`/private/tmp/glue-trace-kit-catalog-peer-74x0yl88`, manifest
+`8a120aa2be0dcc52b72a36261aa5b25c5deca0d86d8411561b84cfce0c3b196a`.
+Both pass; root independently verifies exact membership/hashes. Reviews bind all
+source/tool/artifact/proof/catalog fields and independently parse native Mach-O,
+CodeDirectory/page hashes and generated catalog/accessor data. Logical request
+vectors use explicitly synthetic inodes and run no utility. An initial reviewer
+assumption that unused signature allocation bytes must be zero is retained as a
+superseded reviewer-only control failure; exact signed artifact bytes, embedded
+signature/page hashes and actual strict signature receipts pass the fixed policy.
+All successful input bytes/metadata remain unchanged; failed native01 is untouched.
+
+Wrapper01 initially treated a zero-status Git environment warning as failure and
+stopped before builder invocation. Wrapper02 reached the first compile but the
+sandbox denied compiler temporary files. Both remain separate. Failed native
+output01 stays PARTIAL/unresolved, with no final inventory, repair or reuse;
+only bounded partial diagnostic metadata/stderr was read. Wrapper02's outer
+possible_live_descendants=false described only its own timeout/error check and
+does not override the builder's partial/unresolved marker; its interpretation
+record explains this limitation. Wrapper03 records bounded Git warnings and
+conservatively marks nonzero builder completion unresolved. It succeeds with
+host compiler temporary-file access and a fresh native output02.
+
+The fixed two-case source is `d733783` after decision `bdd4e41`, integrated through
+merge `ded13fb`. Its64-file producer record is
+`/private/tmp/glue-trace-calibration-validation-alncxz9s`, manifest
+`e5dc1b4f462bae54969da2122d44a80cc55b3146d24363eabc23ad855bbe0bb9`;
+the56-file independent peer is `/private/tmp/glue-trace-calibration-peer-4l1hv7pq`,
+manifest `5b851a165869ce24c10dad9636cb5c6f7e426d2669fa4f3f412f67e05d8b4bd6`.
+New16/original16 controls pass with complete independent synthetic pairs,
+metadata-before-raw, exact receipts/context/rosters, exhausted128MiB streaming,
+FIFO refusal, bounded enumeration and physical read/close failure controls.
+The tiny shared kit-loader extraction preserves the original guarded behavior;
+old four-case templates/gates/raw/case/native/build inputs stay unchanged.
+Both new CLIs remain hard-disabled pending actual kit/packet admission and
+reviewed activation; caller-trusted check_export consistency is not packet
+provenance or native calibration. SIM remains refused.
+
+Completed-kit preservation source `6d3884f`, after decision `66ff4ea`, integrates
+through merge `44e78a6`. Its22-file source/control record is
+`/private/tmp/glue-kit03-retention-controls-yed710e_`, manifest
+`9138a13d8a96240dcb72cdf38b94ec87310f889a2ef54543fc73b86908fbe2ec`.
+Nine Mac controls pass; both generated Perl programs compile without executing
+root mains. The actual read-only inspection packet has four files, manifest
+`48b56da4c14377d07cf133cf21e97a106eff798d082604910d493c364eaa3a13`.
+Root verifies its sources, controls and exact staged bytes under the actual
+shared toolkit; the3-file root review is
+`/private/tmp/glue-kit03-inspection-root-review-20261018-01`, manifest
+`952bc5bb72a700736c56f88173b28a2bc7ca43c69ee780cebc9f9f4e4ce973d4`.
+It inspects only the fixed kit/32 historical roots/seven parents with bounded
+core Perl reads, exact types/owners/modes/links/ACLs/hash/identity/signature checks.
+Source metadata has seconds-resolution limits; coordinated stable namespace
+is required, with no assertion that a lock excludes another root process.
+Retention remains null/false until an actual physical inventory and independent
+review bind every observed tree. The fixed attempt record prevents a new packet
+from retrying an uncertain future move. No rename has occurred.
+
+The actual read-only inventory completed after private human authentication.
+Its 23-file export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-kit03-inspect-2d0913f96f54a01b`,
+manifest `563731431c81c3ee0790f5451cfad108bacd3b09f1a0c54667615659f0d03724`.
+Root verifies every 22 payload hash and exact roster, zero root-phase status,
+the expected receipt path and restored empty shell prompt. Both Library
+installations remain present with exact kit03 hashes and strict signature checks;
+all 30 inspected historical temporary roots report absent. No cause is inferred,
+and missing guest checkpoints will not be recreated. The independent seven-file
+review is `/private/tmp/glue-kit03-inventory-peer-hwuddezi`, manifest
+`bd56990e6ddc6a067b52d780c2706d96d1e275425f129737108ac499ff2869d1`.
+It verifies all command receipts, exact source/packet/context bindings and all 71
+historical completed-file pins against unchanged durable host exports. Existing
+retention validation requires completed temporary trees, so a
+separate reviewed decision/admission is needed before a move. The workflow
+coordination receipt is
+`/private/tmp/glue-kit03-exclusive-coordination-20261018-01/coordination.json`,
+SHA256 `39b44c8b675d9b3429c0ed899a33de2af618d7831bde10c4f3e1b03fd2e09012`.
+It records the root-controlled owned fixture slot and delegated exclusions,
+without claiming an OS-wide process census or exclusion of arbitrary root writers.
+
+CI `7fdf01f` adds only two baseline invocations for37 configured suites. The
+first five-suite native offline Linux run collects76 controls:68 pass,6 skip,
+2 fail. All three earlier suites pass; new calibration's Python-version-specific
+AST dump hash differs between3.12/3.15, and the cached image's Perl is present
+without Digest::SHA. The294-file
+failure record is `/private/tmp/glue-trace-calibration-retention-linux-zp2q4aa3`,
+manifest `5c88f2a1711bdd5432fffb3bf1c6aa73bd51118523dde73fa350900309d1a326`.
+All251 tracked tracing/script/workflow pins match copied/committed/before/after
+bytes and metadata. Actual raw receipts stay unchanged. The provisional driver
+only parsed skip totals for an OK terminal line, undercounting failed-suite
+skips; the record retains it plus a separate corrected76/68/6/2 interpretation.
+
+Test-only repairs `e35987a` and `9cea001` change only the two new test modules and
+their READMEs. Production source and the other 247 captured source paths remain
+unchanged. Calibration removes the Python-version-dependent AST dump digest,
+preserving functional guard/shared-loader controls. Retention probes fixed system
+Perl modules, skips only recognized missing-module outcomes, fails unexpected
+probe errors, and checks shell syntax independently. Their Mac 16/10-control
+receipts are `/private/tmp/glue-trace-calibration-portable-controls-ahic2sg9`
+(25 files, manifest `92c8f98aced71f35bc9265056ec3bcdd19bc9028c6d15d1570860835db4fea30`)
+and `/private/tmp/glue-kit03-portable-controls-macos-u2ia577r`
+(12 files, manifest `b1c139a95879a4d485109961d2df9569ee91b58383a194480b4e752333207fd5`).
+
+At integrated source `283a94e`, the actual two-suite offline native Linux retry
+collects 26 controls:21 pass and five skip. Four skips require native macOS; one
+requires the missing declared Perl modules. Shell syntax passes separately.
+Both suite commands and outer container return 0. The 279-file retry record is
+`/private/tmp/glue-trace-calibration-retention-linux-repair-azsot_am`, manifest
+`3e70af83af21a501c02da89dbcd957b64d35103ce8334233114cfe547ecb58f0`.
+All 251 source pins match copied/committed/before/after identities. The corrected
+driver parses skips in both OK and FAILED terminal summaries; earlier raw
+receipts remain unchanged.
+
+An independent passive audit verifies both full Linux records, both Mac repair
+records, exact CI/container argv and completion facts, 502 Git source comparisons
+and unchanged dependencies of the prior passing suites. Its 15-file record is
+`/private/tmp/glue-affected-ci-composition-peer-osz49tv9`, manifest
+`bc7011973b1eeceb60f6eccfc684700565fb41ccbf40cf63a32c1880686b65e7`.
+The affected five suites compose to 77 Mac passes/zero skips and Linux 70 passes/
+seven skips across separate runs. The Mac retention producer asserts its source
+metadata interval without retaining a separate full before/after metadata pair;
+current committed byte pins and actual receipts support the composition.
+This does not establish a single combined current-HEAD run or a full 37-suite run.
+No newer hosted run is claimed. All source branches and merged commits remain
+local beyond the explicitly approved public `e2c728b` checkpoint. Native tracing,
+full Darwin oracle/corpus/budgets, R02/M2, security restoration and durable
+publication remain open.
+
+### Concrete two-case admission and preservation packets
+
+Decision `ecb37f0` precedes the fixed-kit admission at `0ea577a`. Production binds
+the successful tracing kit02, all three artifacts, six metadata byte identities
+and the prior kit/catalog/builder/proof reviews. Its checker admits an exact
+bounded fourteen-payload packet before evidence checks; regenerated manifests
+cannot grant trust to changed payloads or scripts. Synthetic configured policies
+exist only at explicit private test boundaries. All old four-case, shared loader,
+metadata gates, raw/case/codec, native, builder, registry and template bytes stay
+unchanged. The 59-file Mac control record is
+`/private/tmp/glue-trace-calibration-admission-controls-e29p63ge`, manifest
+`8910445f85543acfb6cde93df28ebbddf5f96e66a4fffdcb60c1952fa598f491`.
+Actual 16/15-test commands both return zero with no skips; 27 source pins and nine
+actual kit input identities remain unchanged through that capture.
+
+Decision `1e74198` precedes the separately named observed-state retention
+contract. It preserves the old completed-tree predicate and unchanged inspection
+rendering. The actual profile binds the exact two Library trees, all 30 observed
+temporary-root absences and historical host references. No missing guest file is
+recreated or represented as freshly observed. Retain-only command-output checks
+also require successful command status. The attempt marker moves to a protected
+Library sibling, outside the source/archive trees, before the sole `mv -n`.
+Normal temporary-directory loss cannot clear that marker; power-loss/fsync and
+hostile-writer exclusion are not claimed. A preexisting marker or changed fresh
+snapshot refuses.
+
+The original 33-file control record at `d04d91a` is
+`/private/tmp/glue-kit03-retention-admission-controls-x8e2s6v5`, manifest
+`08974985679688f4b68a21614b3af417ba0e4bc9e2b16d23f21910ad1c9e15ed`.
+Its 17 controls pass; the original capture's later full-stat assertion fails only
+on a manifest access-time update. The exact before/after facts and assertion are
+preserved. Peer review then caught different LF conventions for a same-named
+snapshot digest. Final `f75aae6` aligns both snapshot fields to canonical JSON
+plus LF; the attempt file itself remains canonical JSON without LF. The successor
+20-file record is `/private/tmp/glue-kit03-retention-hash-controls-apeskzai`,
+manifest `22cc8bcfba7af52d046f79a676bbf9f565f1041c7e7a20d5f620a080e6853fff`.
+All 17 focused controls pass, including the extracted independent Perl/Python
+hash comparison. Eleven tested source pins equal the clean committed source;
+input bytes and non-atime metadata are unchanged. Root and passive source peers
+find no remaining blocker. Actual rename remains separate.
+
+At integrated source `d821900`, the actual host preparer and read-only packet
+admission both return zero. The tracing packet is
+`/private/tmp/glue-trace-calibration-packet-20261018-01`, 15 files with manifest
+`bbfbccd152ed5bf76d3350826c2775e940dc5db2b650c3a5b99533a8f7d4a61c`.
+Its 43-file actual command receipt is
+`/private/tmp/glue-trace-calibration-host-prepare-20261018-01`, manifest
+`1feff1c8d30f17cf93332111037d6bcc88061c62d4f7f68adf5c75c96ae9dcd2`.
+All 252 source and 143 kit input identities match before/after, excluding atime.
+The independent 55-file actual packet review is
+`/private/tmp/glue-trace-actual-packet-peer-9ja4_1qa`, manifest
+`72837314733d00766f25a8e5d5cd34a5a2287b2b6e0171162a83b720b218e3f8`.
+It checks every member/mode, all nine copied kit identities and separately
+regenerated canonical plan/subset/scripts. Later CI and retention source changes
+are explicitly qualified; preparation/render/admission dependencies stay fixed.
+Root stages exact bytes/modes as
+`/private/tmp/glue-mvp-macos-vm-toolkit/bootstrap-trace-calibration-269bf09070bc81f8`;
+the staging receipt is `/private/tmp/glue-trace-calibration-stage-20261018-01`.
+At this preparation/staging checkpoint, no packet script or native payload had
+run in the guest; the actual later attempt is recorded below.
+
+At integrated `9b638cd`, actual retention preparation and deterministic
+packet/render/manifest comparison also return zero. The four-file packet is
+`/private/tmp/glue-kit03-retention-packet-20261018-01`, manifest
+`acb3e552ac38453398c9ee13032db065cc3b21fef463c78044b9a8855c614d25`.
+Its 43-file receipt is `/private/tmp/glue-kit03-retention-host-prepare-20261018-01`,
+manifest `b41e59dd518b98bc9b9ae7c9c4e30ca394283125ad41e6b5c603b79255b4e32f`.
+All 255 source and 136 historical kit input identities remain equal across
+preparation, excluding atime. Its fixed nonce is `0d1560914528a4f1`.
+The independent 73-file actual packet peer is
+`/private/tmp/glue-kit03-actual-retention-packet-peer-kck5j3wd`, manifest
+`8d4de46b76405b9353e431725999303752aa8d15c88046762c55084f099aefb8`.
+Physical membership, actual command receipts, source bindings, canonical payloads/
+plan/root argv, marker/hash conventions and source-enforced move checks pass.
+Root verifies every peer inventory member and stages all four exact files/modes as
+`/private/tmp/glue-mvp-macos-vm-toolkit/kit03-retain-0d1560914528a4f1`;
+the staging receipt is `/private/tmp/glue-kit03-retention-stage-20261018-01`.
+After human wake/focus, root visually verifies the complete launcher command
+before Return. Fresh UI observation then shows the guest at its private sudo
+password prompt after preflight. This preparation review does not itself
+establish the later rename outcome.
+
+After human authentication, the actual preservation export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-kit03-retain-0d1560914528a4f1`: 23 files,
+manifest `22f67bec1c0e1d364d204f845ac6c995e1f140c703c326e63db9a7e7e45cc550`.
+All five captured commands return zero. The complete canonical root result
+reports retained true and raw move status0 for the one `/bin/mv -n` from
+`/System/Volumes/Data/Library/GlueMVPFixtures` to
+`/System/Volumes/Data/Library/GlueMVPFixtures-retained-1b85f0ac-da1aaf9a`.
+The approved snapshot and all six before/after strict signature records match.
+Source-enforced checks require source absence, inode/byte/roster preservation,
+the unchanged earlier Library archive and all 30 named temporary-root absences.
+The exact no-LF durable attempt bytes independently regenerate to
+`c7eee3e5262447186045f1de4b22aad12ce42163afe2a334355c10d9167935eb`, matching
+the report; the guest attempt file is not independently opened. Root checks all
+22 export payload hashes and the full report. Independent result review
+`/private/tmp/glue-kit03-actual-retention-result-peer-q0n21oyu` has 41 files,
+manifest `5d2b2eef6279ca42be12a7994e992784fb3ae8cdbf9e7baaffd09ac5e9f191d1`;
+root verifies all 40 payload hashes and exact recursive membership. Runtime
+source matches prepared `9b638cd`; documentation checkpoint `161de67` differs
+only in status docs.
+
+Root next visually verifies and submits the exact staged tracing launcher once.
+The immediate screenshot fails with ScreenCaptureKit -3811; a later fresh
+screenshot shows the submitted command and restored empty prompt. No relaunch
+is performed. Neither expected completed host export exists. Bounded read-only
+UI heads of the fixed private receipt show outer status1 and no visible outer
+stderr; the batch checkpoint reports preflight0, install0 and positive2, with
+empty visible first-case wrapper streams. These are UI transcriptions of private
+receipts, not an independently retained command export. Positive2 is a wrapper
+refusal and does not establish native status2. The denied case is not reached.
+At that point native status and the exact generated gate are unknown. After
+human private authentication, bounded read-only UI inspection of the exact
+saved native status and metadata reports native1. The files are private regular
+root-owned single-link0600 files, with status2 bytes, result2,128 bytes and trace
+2,780 bytes; `result.pending` is absent. No raw output is opened or enumerated.
+The result reports READY matched, GO attempted/possibly released false and
+bytes0, gate closed, child3142 reaped with raw wait status9 by controller3141,
+and trace finalization safe with success eligibility false. Parent error is
+17/9/0/detail6 and cleanup error12/9/0/detail6. The trace reports started0,
+provider-ready0, zero event/pump/BEGIN/terminal/END counts, and resources closed
+with all four writer closes attempted and none failed. Its first backend error
+is stage2/reason7/callback100, with the literal message
+`enabled match count differs from exact selected inventory`: inventory and
+expected matches1,051, enabled matches1,257, inventory bytes35,552 and raw
+bytes0. These are bounded UI transcriptions, not a retained native result or
+independent cleanup attestation. The positive wrapper rejects native1 before
+its generated raw roster/export. No manual raw hash, inventory or export is
+performed, and the failed attempt is not rerun or promoted.
+
+Decision `476c350` on `codex/mvp-r02-trace-match-accounting` requires compilation
+before bounded public-SDK statement/selector inventory, exact fixed selector
+coverage and unique physical probe identities, followed by exact enabled-count
+equality before `dtrace_go`. The earlier inventory assumes equivalence between
+precompile physical probes and compiled ECB match counts. Compilation/probe
+lookup may provision probes, but the particular guest count difference has no
+established mechanism. Existing kits, source registrations and packets remain
+immutable; repaired source needs separate admission and a fresh kit/packet.
+No successful calibration or full Darwin acceptance follows from this attempt.
+
+Implementation `490a8c3` changes only the backend C, its source-isolated C
+controls and README. Public SDK statement iteration retains at most 512 action
+statements and 17 distinct ECB pointers; exact selectors include bare BEGIN/END's
+empty provider fields while their physical matches must belong to `dtrace`.
+Each selector must have nonempty valid physical matches, with globally unique
+IDs/name tuples, at most 8,192 probes and the original byte/deadline bounds.
+The expected selector sum must equal the unique inventory count and then the
+actual enabled count before GO. The fixed generated program, header/API,
+metadata schemas, provider/event/readiness/cleanup contracts and old source
+registrations/kits/packets remain unchanged. No count relaxation or retry is added.
+
+The focused controls record is
+`/private/tmp/glue-compiled-match-controls-20261018-01`: 59 files, manifest
+`51b8aff92819169856b68ab0e158863907bb6d1457e4c9a47ab30a3ceae816c0`.
+Final normal and ASan/UBSan attempt02 each return0 with two Darwin groups passing
+and one portable-only skip. The isolated model defines all DTrace functions;
+real SDK adapter binaries compile/link but are never executed. Exact outer NUL
+argv/cwd/status/streams/completion and eight before/after source pins are retained;
+inner compiler commands are defined in copied source, not separate raw receipts.
+No timeout/output bound is hit, and normal exit is not independent descendant
+cleanup proof. Initial passing attempt01 remains separate; attempt02 follows
+the final static table-size assertion. Root verifies all 58 payload hashes,
+exact recursive membership, final raw receipts and current source copies.
+
+Independent final source/diff/receipt review finds no actionable issue. Its
+record `/private/tmp/glue-compiled-selector-final-review-zrb37kyt` has 84 files,
+manifest `d10a651f699aa5b577b64870d18bc04c888f60b87891862bee0c25803b8d6dfc`;
+root reads the complete report and verifies all 83 payload hashes and membership.
+The preceding public-SDK/Apple-source design review is separately retained at
+`/private/tmp/glue-compiled-selector-design-review-a9449thm`: 15 files, manifest
+`6b498a51607e1ab73067f1f27826d406e18b17f29812b51f7ed5b121c24a3a5f`.
+Root verifies every member and the report. Cached Apple source is not established
+as identical to the guest binary. These records establish model/SDK and source
+verification, not repaired native calibration or the particular mismatch cause.
+
+A new source registration must bind the committed repair while preserving the
+historical registry/proof inputs. A subsequent restored/re-disabled boot needs
+fresh literal deployment observations and independent review before deriving
+the next catalog and kit. Mechanical acceptance of an old registered proof is
+not current-boot readiness. Fresh build/signing/kit identities cannot reuse the
+old artifact hashes. Before installing another kit, the current tracing
+installation `69de4c44...155f` needs its own bounded inspection/preservation;
+kit03's nontracing retention approval does not cover it or failed trace outputs.
+
+The guest cleanly shuts down for security restoration; fresh UTM state shows
+Start enabled and Stop disabled. Subsequent UTM control/observation calls time
+out, so the human is asked to open this VM's Recovery Terminal. A later recovered
+observation shows the running VM's normal login screen, without reading a new
+SIP status. Closing its console returns noWindowsAvailable, and reconnect times
+out; no credentials are entered. The temporary
+SIP window remains open pending restoration and normal-boot verification;
+physical host security settings are unchanged.
+
+CI `d73fceb` adds exactly one invocation, for 38 configured suites. A focused
+native offline Linux arm64 run of the three affected exact CI commands at clean
+`9b638cd` returns zero: 48 collected, 43 pass and five explicit skips (four native
+macOS groups and one missing declared Perl dependency group). All 255 copied/
+committed/current source pins and before/after non-atime identities agree. The
+310-file record is `/private/tmp/glue-trace-admission-linux-9d86vdpd`, manifest
+`7b9aeb54a253afe41211582d6cdf69cb406ceb290dd380c45dbb087996b62f4e`.
+Its complete inner inventory, actual per-suite and outer receipts are bound by
+that manifest; root verifies every member hash and exact named membership.
+Normal exits do not establish independent descendant-cleanup proof. The
+initial sandbox denial reaches no container/test; a separate authorized local
+service invocation uses only the cached image with pull-never/network-none,
+UID 65534, read-only source/root/control and the prior resource/capability limits.
+No complete 38-suite or newer hosted run is claimed. The temporary guest-only SIP
+window remains open, and full Darwin oracle/corpus/budgets, R02/M2 and durable
+publication remain open.
 
 ## 17 October: deployment, configured kit and hosted follow-up
 
@@ -422,7 +844,7 @@ An earlier optional socket-fixture attempt was sandbox-denied and remains a
 separate incomplete review harness; no socket control result is claimed.
 
 Fresh packet03, nonce `1ee4bbe2b443c268`, was prepared from the unchanged literal
-kit02 at `dec2488`. Its15-file packet manifest is
+kit02 at `dec2488`. Its 15-file packet manifest is
 `e00fb4a1d634c52dcdd59a7872e460b59babb0fc6f6f082dfd3916a61202c390`.
 The host preparation receipt is
 `/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-03`, manifest
@@ -784,6 +1206,264 @@ positive success eligibility. Absolute monotonic/DTrace timestamp domains have
 not been equated. The VM and physical host remain SIP enabled. Full native
 process-tree effects, extraction verdicts, Mac corpus/budgets and R02/M2 remain
 open; no raw exports or newer source have been published.
+
+### Independent owned raw reader
+
+The [raw-reader decision](../decisions/mvp-r02-owned-trace-check.md) introduces
+only pure byte/stream validation. Final source `fb1d76a`, integrated as
+`ac7e27a`, independently reconstructs the exact target-bound fixed program,
+requires all 17 inventory categories, checks stable probe/EPID bindings and
+reconstructs each arm64 little-endian scalar from its exact native descriptor.
+One BEGIN, actual target nonshadow terminal and END are required; shadow exits
+and allowed post-terminal thread cleanup remain distinct. Error bytes refuse
+before event iteration. Facts are returned only after complete exhaustion.
+Observed EPIDs do not prove enabled inventory counts. Caller-supplied PIDs/read
+bounds remain trusted; GO, stop/drain/DONE, reap, parent/resource closure,
+deadline derivation and timestamp-domain equivalence remain separate checks.
+
+Root review found that several initial mutation fixtures were standalone records
+that would also fail without mutation because their lifecycle was incomplete.
+The repair changes tests/docs only: complete valid baselines now precede each
+mutation, intended rejection reasons are checked, and terminal mutation contexts
+avoid duplicate-terminal masking. Final 16 controls pass, including 8,192-probe
+capacity and exact 134,217,728-byte generated streaming input with a measured
+Python allocation peak below 8 MiB for that fixture. This is not a general RSS
+budget. The original 15-control record remains unchanged and superseded.
+Final validation is `/private/tmp/glue-owned-trace-check-validation-u2zig128`,
+manifest `9fe84987bac90f5714f5b5b7d1d2d09ec7220fa35e41878c1ea2b68b1ead585f`.
+The 49-file independent review is
+`/private/tmp/glue-owned-trace-check-peer-review-9cjaz4mc`, manifest
+`48ec52fcba0fd29ee29f6f54a670e59228e17eee4495c69a6199648873724f57`.
+It verifies both records, source/SDK contracts, repaired controls and unchanged
+input bytes/metadata without executing the parser, tests or any native program.
+
+CI `a1f0e88` adds exactly one invocation; removing that line restores the prior
+30-suite script byte-for-byte. A focused run executes this new suite on Mac and
+native offline Linux arm64, each collecting/passing 16 with no skips. The
+251-file record is `/private/tmp/glue-owned-trace-check-portable-controls-20261017-01`,
+manifest `f49318094e02b2cf0d338d4591282ee32675c56b6710ca2db470f0bcd31a0b9c`.
+All 217 selected tracing/script sources equal before/after/committed `a1f0e88`
+bytes. Relative to the preceding aggregate, only three component READMEs and
+the new CI line change existing selected files; three new reader files are added.
+The previous 30 suites are referenced, not rerun: composed coverage accounts for
+470 controls per host (Mac 464 pass/six skip, Linux 429 pass/41 skip). No single
+31-suite run, hosted result, new Rust suite or native provider execution is
+claimed. The fixed `e2c728b` public checkpoint excludes this reader; its pending
+push request replaces the earlier `ae48aee` request.
+
+The 271-file focused-control peer audit is
+`/private/tmp/glue-owned-trace-check-portable-peer-5m08d0xj`, manifest
+`a082258cddb746e3ac2188f93fe021d366ef6d857c6967a625298c308f0a5b1a`.
+It independently verifies all focused and basis inventories, 217 source pins,
+exact CI/driver deltas, both native command receipts and the 30-plus-one coverage
+composition without executing tests or reviewed tools. Both original input
+trees retain identical bytes and physical metadata before/after the audit.
+
+### Disabled tracing packet and complete case checks
+
+The [complete-case decision](../decisions/mvp-r02-owned-trace-cases.md) and source
+`983b9e4`, integrated as `e1db60e`, add a separate pure positive/denied consistency
+layer. It links catalog/request/BW/NP bytes to every traced result/sidecar field,
+including PID/context/digests, exact GO/status/reap/resource closure, native versus
+callback errors, inventory/observed EPID counts and the exact raw-to-session event
+projection. Twenty vendored pure codec definitions are AST-identical to the
+pinned legacy reader, with an exact dependency closure; the legacy full checker,
+packet loader and producer are never imported or relabeled. Caller identities,
+roster and RawFacts provenance remain trusted. Declared clocks are checked only
+where recorded; original budget derivation and timestamp-domain equivalence are
+not inferred. SIM/unknown selectors refuse before inspecting payloads.
+
+Eleven complete synthetic control groups pass, with valid positive/denied
+baselines before single-field corruption and explicit baselines for all three
+denied wait/kill race pairs. The 14-file component record is
+`/private/tmp/glue-owned-trace-cases-validation-2rckv9n5`, manifest
+`ab910974d01f3ff7cf003ce66f7f6dd9147c7ab4dc4f4d977a5ea8bac3236e52`.
+Root's independent passive 27-file audit is
+`/var/folders/_1/4wfvp9l93ln8l9rfqbv8qm_w0000gp/T/glue-owned-trace-cases-root-peer-bjm4lf69`,
+manifest `f87f709accdf6139d1991b00118810bc41a479cc5d350d481b0cae2bfb94e622`.
+All five snapshots equal committed/current source; the original input tree's
+bytes and physical metadata remain unchanged. No tests or native tool ran during
+that passive audit.
+
+The [separate packet decision](../decisions/mvp-r02-bootstrap-trace-vm.md), source
+`be85b24` integrated as `5f96d29`, adds eight new host/template files. Public CLI
+approval/execution/SIM constants remain null/false and refuse before helper or
+supplied input/output access. Synthetic rendering emits literal disabled guards
+and an unapproved marker; changing constants alone cannot activate it. Legacy
+preparer/checker/templates, kit03 approval, registries and limits are unchanged.
+The fixed new profile has three artifacts, fresh paths, exact current deployment
+checks, physical/full-mode/signature guards and distinct bounded export limits.
+Promoted small metadata must resolve child, signals, gate, session, backend,
+writers, snapshot and destroy before raw roster/read/export or denied-mode
+restoration. Full raw/case validation remains a later layer. SIM always refuses,
+so this revision cannot complete the four-case batch, even after a successful
+individual positive case.
+
+Review corrected shell status loss, ambiguous negative array-index lookup and
+two source/fixture contradictions. Expected stdout from a failed read never
+passes; array counts require successful typed reads. Successful endpoints retain
+role 5/fd -1; a clean positive has bootstrap and waiting pumps, no cleanup pumps,
+and a coherent total. The denied matrix remains exactly `(30720,false)`,
+`(30720,true)` or `(9,true)`, with no widening of SIM. Final component controls
+comprise 16 preparation and 16 gate groups plus separate syntax-only and
+activation-refusal captures. Generated privileged phases were never executed.
+The earlier passing models are preserved as superseded, not native compatibility
+evidence. Final 120-file record:
+`/private/tmp/glue-bootstrap-trace-vm-final-controls-8x8fhex3`, manifest
+`9b9be055d96c055406f6b36d7d78ecf866575e8557fb65a4048f57fb4b22ebb0`.
+All 30 retained source pins equal integrated committed/current bytes.
+
+The independent six-file preparer/template review is
+`/private/tmp/glue-bootstrap-trace-prepare-peer-s7llvbk3`, manifest
+`a0b06bee5de33e9fec2fbd2d28caca135b7c0432242b2ff8070001309e3ed063`.
+Its author explicitly excludes the two gates they implemented. Their final
+18-file gate control record is
+`/private/tmp/glue-bootstrap-trace-gates-final-rsy8285s`, manifest
+`7fce4d218b538e787ab7c7569244425dcf6d1ceb3047126d1fe26830751332a5`.
+The separate independent C-versus-original-gate audit is
+`/private/tmp/glue-trace-gate-c-audit-lq3ens7_`, manifest
+`373913ca1fab6d54663b368045ea0984068e8253879cee9585f01421db12c59e`.
+Root separately verifies final source adoption and all named inventories/hashes.
+
+CI `e40d33e` adds exactly three invocations; deleting them restores `a1f0e88`'s
+31-suite script byte-for-byte. The focused 283-file record is
+`/private/tmp/glue-owned-trace-packet-case-portable-controls-20261017-01`, manifest
+`85547276ed099da8480fc3839aca45734ba4c15b89e873f117248834c51cbc7a`.
+Both actual outer receipts complete zero, with exact NUL argv/status/streams;
+each Mac/native offline Linux arm64 child collects and passes 43 controls with
+no skips. All 229 selected tracing/script sources match before/after snapshots,
+copied bytes and committed `e40d33e`. Relative to `a1f0e88`, only CI changes
+existing selected bytes; twelve packet/case files are added. Composing the prior
+30-suite 454-control aggregate, focused raw-reader 16 and these three suites
+accounts for 513 controls per host: Mac 507 pass/six skip; Linux 472 pass/41 skip.
+There is no single 34-suite run, newer hosted/Rust result or native provider run.
+
+The independent 312-file focused-control peer audit is
+`/private/tmp/glue-trace-packet-case-portable-peer-7mm2o57f`, manifest
+`fe0ce78de3f1be9303bb8c4b11cf1bf97f09ef38378ddd50e709cf11dab64fd0`.
+It verifies all current/basis inventories, 229 source identities, the exact CI
+and driver changes, six suite and two outer completion receipts, repository
+import/source-read closure and the stated composition without rerunning tools.
+All three original input trees retain identical bytes and physical metadata.
+
+SIP remains enabled in the VM. Fresh exact post-reboot proof, tracing source/proof
+admission, a reproducible signed kit, separate current-kit retention, reviewed
+packet activation and narrow SIM calibration remain prerequisites for native
+work. No actual kit/proof/export, guest, staging, sudo/SIP, publication or network
+operation belongs to these source changes. Kernel exec, full extraction/effect
+oracle, Darwin corpus/budgets, R02, M2 and durable evidence publication remain open.
+
+### Pure SIM diagnostic metadata
+
+The [SIM metadata decision](../decisions/mvp-r02-trace-sim-metadata.md) precedes
+source `8609046`, integrated as `036d76f`. This is a pure bounded bytes/status
+predicate, with no collector, CLI, renderer, file/raw/VM operation or activation.
+Exact schemas, types, array shapes, error namespaces and source-defined resource
+shapes must describe known reap/gate/signals/parent/backend closure. Failed
+create, allocated-but-unstarted and started/failed-start remain distinct; a
+configured-but-uninitialized session and backend-started/session-not-started
+clock failure are represented without inventing successful resource closure.
+Writer masks are fixed creation prefixes; any failed close refuses eligibility.
+Original bytes and all parsed fields are retained in frozen slotted structures.
+Actual wait/kill and unknown tracing/end/drain errors remain literal observations.
+Every returned SIM pass/calibration/exec/full-acceptance flag is false. Promotion,
+pending absence, invocation/outer status and physical copying remain future
+caller duties; producer declarations are not authenticated kernel evidence.
+
+The final 89-file component record is
+`/private/tmp/glue-trace-sim-metadata-controls-heuedd1h`, manifest
+`8198f197a4af0ed32b09007d3ad256d91596197bd439fa96f2315a5c759f2411`.
+All 34 source pins match integrated committed/current bytes. It retains the
+direct 20-group passing source-bound capture, with independently literal
+complete baselines before focused corruption. Earlier unbound draft streams
+remain explicitly superseded. Fixture review corrected empty-capture hashes,
+cleanup error propagation, init/start state, observer counts and native error
+messages; those passing drafts are not native compatibility evidence. The direct
+10-file test handoff is `/private/tmp/glue-trace-sim-tests-final-sgwga86y`, manifest
+`e8ca80091ecf4d3ebef6264965bbd1cb98f436eab93a870f39e0741db40f18f0`.
+All existing packet/checker/kit/legacy sources remain unchanged.
+
+The independent 45-file functional source/control peer review is
+`/private/tmp/glue-trace-sim-peer-review-mxjo1zzb`, manifest
+`494fd5fcc17748dac5c9e702463ffcdd338955888e3d6ac9799ca405560a4cc0`.
+It verifies every producer/direct-test payload, all 34 source identities and 17
+unchanged native contracts, exact resource shapes, source-grounded complete
+fixtures, 20 controls and the all-false/deep-freeze boundary. No test or reviewed
+module is imported/rerun. Original producer and source bytes/metadata remain
+unchanged. Root separately verifies the component, direct and peer inventories.
+
+CI `783ff41` adds one invocation; removing it restores `e40d33e` byte-for-byte.
+The focused 267-file record is
+`/private/tmp/glue-owned-trace-sim-portable-controls-20261017-01`, manifest
+`244dd431a0efb9dd6679bcea21eb7bd632f2b2121e27ed73ab8f8ca5083dc2a2`.
+Both actual outer commands and the two suite commands complete zero. Each Mac
+and native offline Linux arm64 host collects/passes 20 with no skips; all 233
+selected source pins match before/after snapshots, retained copies and committed
+`783ff41`. Only CI changes existing selected bytes relative to `e40d33e`, and four
+SIM files are added. Coverage composes the prior 454-control aggregate, raw16,
+packet/case43 and SIM20: 533 controls per host, Mac 527 pass/six skip and Linux
+492 pass/41 skip. No single 35-suite run, hosted/Rust result, provider/guest run,
+actual collection, proof/kit admission or R02/M2 closure follows.
+
+The compact 53-file independent CI/receipt/source-composition audit is
+`/private/tmp/glue-trace-sim-ci-peer-final-krtom3gd`, manifest
+`68663cc9e8363a68a081ee4dab304e55b8c72cb55081ce4d9af070a554c7b48a`.
+It verifies all 266 current payloads, both nested runs, 233 source identities,
+driver/CI deltas, exact method/command/completion receipts and all three basis
+references without rerunning tests. Its author excludes an independent
+functional verdict on the tests they wrote. Original input bytes and physical
+metadata remain unchanged. Partial source/basis manifests in this compact audit
+are clearly named references rather than incomplete nested evidence trees.
+
+### Approved public source checkpoint and current VM preflight
+
+The owner approved and root pushed exactly `e2c728bcdb25ceb151f8f434859c668faf0abcd0`
+to `codex/mvp-r04-owned-trace-source-status`. Public
+[run 39074320935](https://github.com/JBlaschke/glue_rs/actions/runs/39074320935)
+completed all nine declared jobs successfully, on push attempt 1, at
+2026-10-17T22:18:53Z. The 104-file local retention record is
+`/private/tmp/glue-public-e2c-ci-monitor-20lgn127`, manifest
+`d6c9c6d65938597d7be955bdca05256b9cf6101ff0abd8634d2e0e4fc17f9d07`.
+It retains actual metadata/log GET argv, statuses and streams, all nine completed
+job logs (835,267 bytes), exact checkout SHA, matrix/runner identities and final
+completion metadata. Initial network and ANSI-log read failures are preserved;
+the read-only log retrieval adjustment did not rerun the workflow. This public
+checkpoint configures 30 Python suites. The later local 35-suite stack and its
+composed controls are not attributed to this hosted run.
+
+Every earlier published `origin/codex/mvp-*` tip is an ancestor of `e2c728b`.
+The preferred next merge is that one branch into `main`, preserving ancestry
+with a merge commit. The original 26-card stack is already merged through
+PR #34. The newer local stack ending at `adc5fbc` contains the reader, packet,
+case and SIM follow-ups and belongs in a later separately validated public
+checkpoint. Alternate local development branches are not extra merge inputs.
+No merge, branch deletion or new PR was performed during this check.
+
+The unchanged read-only inspector ran again in the current guest before
+Recovery. All six commands returned zero; the 28-file proof is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-UpQXf3Yc`,
+manifest `069b98a8ce2a1917ff8d9ad440f20f1e140595ebcc78e77f5cd68ef8e9ddf2aa`.
+It reports SIP enabled at 2026-10-17T22:23:13.747047000Z, VirtualMac2,1,
+Darwin 25.6.0 arm64/macOS 26.6.2 (25G83), IDs 501/501/20/20, root device
+16777231/FSID `[16777236,27]` and Data device 16777231/FSID `[16777231,27]`.
+These remain pre-Recovery observations, not disabled-SIP admission. The distinct
+77-file proof/toolkit/CI peer review is
+`/private/tmp/glue-fresh-proof-ci-peer-t979xc3g`, manifest
+`a300f005529f6a68e6075b3772c2698c43316deabc4e6b1117d5811f239b7641`.
+It verifies complete inventories, original inspector provenance, literal command
+receipts and all nine CI logs, with unchanged input bytes and physical metadata.
+
+The external source-only registry candidate is
+`/private/tmp/glue-trace-registry-candidate-8x9wjgbm`, 83 files, manifest
+`e909d5af8f142f95800d26119cb582517428c93474ab6de35c5da55a03e883bf`.
+Its 41 native/core/wrapper pins match current, committed and public `e2c728b`
+bytes, including the recursive 39-file C/header closure and ordered 2/19/6 TU
+lists. Source parsing and locking pass; the external candidate has no proofs.
+The production registry remains null/empty. A fresh exact post-reboot disabled
+proof, independent review, committed admission, signed reproducible kit,
+current-kit retention and reviewed packet activation still precede tracing.
+No native provider run, SIM calibration, full Darwin oracle, R02/M2 closure or
+durable evidence publication follows from these source and preflight records.
 
 
 The credential primitive independently passes 14 native unprivileged controls

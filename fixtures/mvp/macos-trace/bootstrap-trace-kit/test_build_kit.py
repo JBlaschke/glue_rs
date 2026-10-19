@@ -1,6 +1,6 @@
 """Synthetic tracing-profile controls. No admitted kit or provider executes."""
 import copy
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 import importlib.util
 import json
 import os
@@ -13,10 +13,12 @@ import unittest
 from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
+UNCONFIGURED = HERE / 'unconfigured-inputs.fixture.json'
 spec = importlib.util.spec_from_file_location('owned_trace_kit', HERE / 'build_kit.py')
 trace = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(trace)
 core = trace.core
+UNCONFIGURED_POLICY = replace(trace.POLICY, registry_relative=trace.BASE + 'bootstrap-trace-kit/unconfigured-inputs.fixture.json')
 spec = importlib.util.spec_from_file_location('legacy_kit_fixtures', HERE.parent / 'bootstrap-kit' / 'test_build_kit.py')
 fixtures = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fixtures)
@@ -24,7 +26,7 @@ spec.loader.exec_module(fixtures)
 
 def configured_parser_rules():
     """Deliberately synthetic strings, never a production source registration."""
-    rules = trace.registry(trace.REGISTRY.read_bytes())
+    rules = trace.registry(UNCONFIGURED.read_bytes())
     rules['source_revision'] = 'a' * 40
     for artifact in trace.POLICY.artifacts:
         rules[artifact.source_key] = list(artifact.expected_sources)
@@ -63,31 +65,50 @@ def command_offset(data, wanted):
 
 
 class TraceKitControls(unittest.TestCase):
-    def test_registry_is_explicitly_empty_and_refuses_before_work(self):
-        rules = trace.registry(trace.REGISTRY.read_bytes())
+    def test_unconfigured_fixture_refuses_and_production_registry_is_frozen(self):
+        rules = trace.registry(UNCONFIGURED.read_bytes())
         self.assertIsNone(rules['source_revision'])
         self.assertEqual(rules['sources'], {})
         self.assertEqual(rules['proofs'], [])
         self.assertTrue(all(rules[k] == [] for k in ('probe_sources', 'runner_sources', 'request_sources')))
+        self.assertEqual(replace(UNCONFIGURED_POLICY, registry_relative=trace.POLICY.registry_relative), trace.POLICY)
+        production = trace.registry(trace.REGISTRY.read_bytes())
+        self.assertEqual(production['source_revision'], 'e2c728bcdb25ceb151f8f434859c668faf0abcd0')
+        self.assertEqual(len(production['sources']), 41)
+        self.assertEqual(core.digest(core.canonical(production['sources'])),
+                         '75fce31776344598d92f8705e5a831a2451687e99b423fc200e89c35e053f997')
+        self.assertEqual(len(production['proofs']), 1)
+        self.assertEqual(production['proofs'][0]['manifest_sha256'],
+                         'cd57a36af2a9db11f7d24105485137f7afb2ad9743161db190d7ed6c7ca361fd')
+        self.assertEqual(production['proofs'][0]['review_manifest_sha256'],
+                         '2b3c60fc811ed292cd3e33a33851ba751a1de8c3667c5c2df8f4062000d80dfb')
         with tempfile.TemporaryDirectory(prefix='glue-trace-kit-deny-') as temp:
             out = Path(temp) / 'new'
             with patch.object(core, 'locked_sources', side_effect=AssertionError('source work forbidden')), \
                  patch.object(core, 'admitted_proof', side_effect=AssertionError('proof work forbidden')), \
                  patch.object(core, 'Build', side_effect=AssertionError('output/build work forbidden')):
                 with self.assertRaisesRegex(core.Refusal, 'no independently reviewed actual guest proof'):
-                    trace.construct(Path(temp) / 'missing-proof', Path(temp) / 'missing-inspector', out)
+                    core.construct(Path(temp) / 'missing-proof', Path(temp) / 'missing-inspector', out,
+                                   policy=UNCONFIGURED_POLICY)
             self.assertFalse(out.exists())
 
-    def test_closed_cli_and_no_output_for_unconfigured_inputs(self):
+    def test_closed_production_cli_and_no_output_for_explicit_empty_fixture(self):
         with tempfile.TemporaryDirectory(prefix='glue-trace-kit-cli-') as temp:
             out = Path(temp) / 'new'
-            argv = [os.sys.executable, '-B', str(HERE / 'build_kit.py'), '--guest-proof', temp + '/missing',
-                    '--inspector-kit', temp + '/missing-inspector', '--output', str(out)]
-            result = subprocess.run(argv, capture_output=True, timeout=5)
+            arguments = ['--guest-proof', temp + '/missing', '--inspector-kit', temp + '/missing-inspector',
+                         '--output', str(out)]
+            # Explicit test-only empty-profile CLI: no production profile/global override.
+            fixture_main = ('import importlib.util,sys; p=sys.argv.pop(1); '
+                            's=importlib.util.spec_from_file_location("empty_trace_fixture_cli",p); '
+                            'm=importlib.util.module_from_spec(s); s.loader.exec_module(m); '
+                            'sys.exit(m.core.main(policy=m.UNCONFIGURED_POLICY))')
+            fixture_argv = [os.sys.executable, '-B', '-c', fixture_main, str(HERE / 'test_build_kit.py'), *arguments]
+            result = subprocess.run(fixture_argv, capture_output=True, timeout=5)
             self.assertEqual(result.returncode, 1)
             self.assertEqual(result.stdout, b'')
             self.assertIn(b'no independently reviewed actual guest proof', result.stderr)
             self.assertFalse(out.exists())
+            argv = [os.sys.executable, '-B', str(HERE / 'build_kit.py'), *arguments]
             for option in ('--trust', '--hash', '--sip', '--profile', '--libraries', '--target', '--registry', '--source-revision'):
                 with self.subTest(option=option):
                     result = subprocess.run(argv + [option, 'override'], capture_output=True, timeout=5)
@@ -128,7 +149,7 @@ class TraceKitControls(unittest.TestCase):
                 trace.registry(core.canonical(trial))
 
     def test_source_lock_and_unreviewed_proof_refuse_before_followups(self):
-        empty = trace.registry(trace.REGISTRY.read_bytes())
+        empty = trace.registry(UNCONFIGURED.read_bytes())
         with patch.object(core, 'git', side_effect=AssertionError('source inspection forbidden')), \
              patch.object(core, 'open_directory', side_effect=AssertionError('tree open forbidden')):
             with self.assertRaisesRegex(core.Refusal, 'not configured/frozen'):

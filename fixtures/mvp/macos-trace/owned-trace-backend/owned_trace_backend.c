@@ -20,6 +20,8 @@
 #define MAX_LINE 8192u
 #define MAX_DIAGNOSTICS 16u
 #define MAX_DRAIN_WORK 4096u
+#define MAX_COMPILED_STATEMENTS 512u
+#define FIXED_SELECTORS 17u
 #define SHADOW_BIT UINT32_C(0x20)
 enum raw_kind { RK_BEGIN=1,RK_SYSCALL_ENTRY,RK_SYSCALL_RETURN,RK_CREATE,RK_START,
  RK_EXIT,RK_EXEC_SUCCESS,RK_EXEC_FAILURE,RK_LWP_CREATE,RK_LWP_START,RK_LWP_EXIT,
@@ -172,27 +174,95 @@ static unsigned kind_for(const dtrace_probedesc_t *p) {
  }
  return 0;
 }
-static int probe_equal(const dtrace_probedesc_t *a,const dtrace_probedesc_t *b) {
- return a->dtpd_id==b->dtpd_id && !strcmp(a->dtpd_provider,b->dtpd_provider) && !strcmp(a->dtpd_mod,b->dtpd_mod) &&
+static int probe_names_equal(const dtrace_probedesc_t *a,const dtrace_probedesc_t *b) {
+ return !strcmp(a->dtpd_provider,b->dtpd_provider) && !strcmp(a->dtpd_mod,b->dtpd_mod) &&
   !strcmp(a->dtpd_func,b->dtpd_func) && !strcmp(a->dtpd_name,b->dtpd_name);
 }
-static int inventory(dtrace_hdl_t *handle,const dtrace_probedesc_t *p,void *context) {
- (void)handle;struct otb_backend *b=context;
- if(!p || !kind_for(p))return 0;
+static int probe_equal(const dtrace_probedesc_t *a,const dtrace_probedesc_t *b) {
+ return a->dtpd_id==b->dtpd_id && probe_names_equal(a,b);
+}
+struct compiled_inventory {
+ struct otb_backend *backend; dtrace_prog_t *program;
+ const dtrace_ecbdesc_t *selectors[FIXED_SELECTORS];
+ unsigned kinds[FIXED_SELECTORS],count,statements,seen,kind,matches;
+};
+static unsigned selector_kind(const dtrace_probedesc_t *p) {
+ static const struct {const char *provider,*name;unsigned kind;} fixed[]={
+  {"","BEGIN",RK_BEGIN},{"","END",RK_END},
+  {"syscall","entry",RK_SYSCALL_ENTRY},{"syscall","return",RK_SYSCALL_RETURN},
+  {"mach_trap","entry",RK_MACH_ENTRY},{"mach_trap","return",RK_MACH_RETURN},
+  {"proc","create",RK_CREATE},{"proc","start",RK_START},{"proc","exit",RK_EXIT},
+  {"proc","exec-success",RK_EXEC_SUCCESS},{"proc","exec-failure",RK_EXEC_FAILURE},
+  {"proc","lwp-create",RK_LWP_CREATE},{"proc","lwp-start",RK_LWP_START},
+  {"proc","lwp-exit",RK_LWP_EXIT},{"proc","spawn-success",RK_SPAWN_SUCCESS},
+  {"proc","spawn-failure",RK_SPAWN_FAILURE},{"proc","exited",RK_EXITED}};
+ _Static_assert(sizeof(fixed)/sizeof(fixed[0])==FIXED_SELECTORS,"fixed selector count");
+ if(!p || p->dtpd_id!=DTRACE_IDNONE || !valid_name(p->dtpd_provider,sizeof(p->dtpd_provider)) ||
+    !valid_name(p->dtpd_mod,sizeof(p->dtpd_mod)) || !valid_name(p->dtpd_func,sizeof(p->dtpd_func)) ||
+    !valid_name(p->dtpd_name,sizeof(p->dtpd_name)) || p->dtpd_mod[0] || p->dtpd_func[0])return 0;
+ for(unsigned i=0;i<FIXED_SELECTORS;i++)
+  if(!strcmp(p->dtpd_provider,fixed[i].provider) && !strcmp(p->dtpd_name,fixed[i].name))return fixed[i].kind;
+ return 0;
+}
+static int compiled_statement(dtrace_hdl_t *handle,dtrace_prog_t *program,dtrace_stmtdesc_t *statement,void *context) {
+ struct compiled_inventory *c=context;struct otb_backend *b=c->backend;
+ if(deadline(b,OTB_START,b->view.original_attempt_deadline_ns,0,1))return -1;
+ if(++c->statements>MAX_COMPILED_STATEMENTS)
+  return failure(b,OTB_START,OTB_LIMIT,0,0,EFBIG,"compiled statement bound exceeded");
+ if(handle!=b->handle || program!=c->program || !statement || !statement->dtsd_ecbdesc)
+  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"missing compiled selector identity");
+ const dtrace_ecbdesc_t *selector=statement->dtsd_ecbdesc;
+ for(unsigned i=0;i<c->count;i++)if(c->selectors[i]==selector)return 0;
+ if(c->count>=FIXED_SELECTORS)
+  return failure(b,OTB_START,OTB_LIMIT,0,0,EFBIG,"compiled selector bound exceeded");
+ unsigned kind=selector_kind(&selector->dted_probe);
+ if(!kind || (c->seen&(UINT32_C(1)<<kind)))
+  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"compiled selector differs from fixed program");
+ c->selectors[c->count]=selector;c->kinds[c->count++]=kind;c->seen|=UINT32_C(1)<<kind;return 0;
+}
+static int inventory_match(dtrace_hdl_t *handle,const dtrace_probedesc_t *p,void *context) {
+ struct compiled_inventory *c=context;struct otb_backend *b=c->backend;
+ if(deadline(b,OTB_START,b->view.original_attempt_deadline_ns,0,1))return -1;
+ if(handle!=b->handle || !p || kind_for(p)!=c->kind)
+  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"compiled match differs from fixed selector");
  if(!p->dtpd_id || b->view.inventory_probes>=OTB_MAX_PROBES)
   return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"probe inventory bound/identity");
- for(unsigned i=0;i<b->view.inventory_probes;i++)if(b->inventory[i].dtpd_id==p->dtpd_id)
-  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"duplicate inventory probe ID");
+ for(unsigned i=0;i<b->view.inventory_probes;i++)
+  if(b->inventory[i].dtpd_id==p->dtpd_id || probe_names_equal(&b->inventory[i],p))
+   return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"overlapping or duplicate inventory identity");
  struct line l={0};add(&l,"%u\t%s\t%s\t%s\t%s\n",p->dtpd_id,p->dtpd_provider,p->dtpd_mod,p->dtpd_func,p->dtpd_name);
  if(l.failed || write_bytes(b,OTB_START,b->view.original_attempt_deadline_ns,b->files[INVENTORY_FILE],l.bytes,l.used,&b->view.inventory_bytes,OTB_MAX_DIAGNOSTIC_BYTES*16))
   return b->failed?-1:failure(b,OTB_START,OTB_OUTPUT,l.failed?0:errno,0,EIO,"inventory output failed");
- b->inventory[b->view.inventory_probes++]=*p;return 0;
+ b->inventory[b->view.inventory_probes++]=*p;c->matches++;return 0;
 }
 static int required_inventory(struct otb_backend *b) {
  uint32_t seen=0;
  for(unsigned i=0;i<b->view.inventory_probes;i++)seen|=UINT32_C(1)<<kind_for(&b->inventory[i]);
  const uint32_t wanted=((UINT32_C(1)<<19)-2)&~(UINT32_C(1)<<RK_UNUSED_OPEN);
  return (seen&wanted)==wanted?0:failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"required BSD/Mach/proc/BEGIN/END probes missing");
+}
+static int compiled_inventory(struct otb_backend *b,dtrace_prog_t *program) {
+ struct compiled_inventory c={.backend=b,.program=program};
+ if(dtrace_stmt_iter(b->handle,program,compiled_statement,&c) || b->failed) {
+  if(!b->failed)native_failure(b,OTB_START,"compiled statements",dtrace_errno(b->handle));return -1;
+ }
+ if(deadline(b,OTB_START,b->view.original_attempt_deadline_ns,0,1))return -1;
+ if(c.count!=FIXED_SELECTORS)
+  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"fixed compiled selector missing");
+ for(unsigned i=0;i<c.count;i++) {
+  if(deadline(b,OTB_START,b->view.original_attempt_deadline_ns,0,1))return -1;
+  c.kind=c.kinds[i];c.matches=0;
+  if(dtrace_probe_iter(b->handle,&c.selectors[i]->dted_probe,inventory_match,&c) || b->failed) {
+   if(!b->failed)native_failure(b,OTB_START,"compiled matches",dtrace_errno(b->handle));return -1;
+  }
+  if(deadline(b,OTB_START,b->view.original_attempt_deadline_ns,0,1))return -1;
+  if(!c.matches || c.matches>OTB_MAX_PROBES-b->view.expected_matches)
+   return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"compiled selector match bound/absence");
+  b->view.expected_matches+=c.matches;
+ }
+ if(b->view.expected_matches!=b->view.inventory_probes)
+  return failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"compiled match coverage differs");
+ return required_inventory(b);
 }
 static int bind_enabling(struct otb_backend *b,const dtrace_probedata_t *data,unsigned kind) {
  const dtrace_eprobedesc_t *d=data->dtpda_edesc;const dtrace_probedesc_t *p=data->dtpda_pdesc;int found=0;
@@ -370,19 +440,16 @@ static int start(void *context,const struct ts_binding *binding,uint64_t d,int *
   native_failure(b,OTB_START,"options/callbacks",dtrace_errno(b->handle));return status_error(b,error);
  }
  if(time_before(b,OTB_START,d,1))return status_error(b,error);
- if(dtrace_probe_iter(b->handle,NULL,inventory,b) || b->failed || required_inventory(b)) {
-  if(!b->failed)native_failure(b,OTB_START,"inventory",dtrace_errno(b->handle));return status_error(b,error);
- }
- b->view.expected_matches=b->view.inventory_probes;
- if(time_before(b,OTB_START,d,1))return status_error(b,error);
  dtrace_prog_t *compiled=dtrace_program_strcompile(b->handle,b->program,DTRACE_PROBESPEC_NAME,0,0,NULL);
  dtrace_proginfo_t info={0};
  if(!compiled){native_failure(b,OTB_START,"compile",dtrace_errno(b->handle));return status_error(b,error);}
  if(time_before(b,OTB_START,d,1))return status_error(b,error);
+ if(compiled_inventory(b,compiled))return status_error(b,error);
+ if(time_before(b,OTB_START,d,1))return status_error(b,error);
  if(dtrace_program_exec(b->handle,compiled,&info)){native_failure(b,OTB_START,"enable",dtrace_errno(b->handle));return status_error(b,error);}
  b->view.enabled_matches=info.dpi_matches;
- /* The fixed program has exactly one clause for every selected inventory
-  * (kind, probe ID), including BEGIN/END. No wildcard partial enable is ready. */
+ /* Postcompile selector matches proved exactly-once inventory coverage before
+  * enabling. No wildcard partial enable or count-only readiness is accepted. */
  if(b->view.enabled_matches!=b->view.expected_matches){failure(b,OTB_START,OTB_INVENTORY,0,0,EPROTO,"enabled match count differs from exact selected inventory");return status_error(b,error);}
  if(time_before(b,OTB_START,d,1))return status_error(b,error);
  if(dtrace_go(b->handle)){native_failure(b,OTB_START,"go",dtrace_errno(b->handle));return status_error(b,error);}

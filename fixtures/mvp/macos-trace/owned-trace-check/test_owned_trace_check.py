@@ -1,0 +1,410 @@
+"""Independent serialized fixtures; no producer/native program or provider runs."""
+import copy
+from dataclasses import FrozenInstanceError
+import hashlib
+import json
+import struct
+import tracemalloc
+import unittest
+from unittest.mock import patch
+
+import owned_trace_check as check
+
+OWNER, TARGET = 3131, 4242
+# Literal fixture, independently transcribed from the fixed source contract.
+# No producer is imported and the validator's generator never builds fixtures.
+PROGRAM = b'''#pragma D option quiet
+BEGIN { watched[4242]=1;trace((uint64_t)1);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(0));}
+END {trace((uint64_t)17);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(0));}
+syscall:::entry /watched[pid]/ {trace((uint64_t)2);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));trace((uint64_t)arg0);trace((uint64_t)arg1);trace((uint64_t)arg2);trace((uint64_t)arg3);trace((uint64_t)arg4);trace((uint64_t)arg5);trace((uint64_t)arg6);trace((uint64_t)arg7);}
+syscall:::return /watched[pid]/ {trace((uint64_t)3);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));trace((uint64_t)arg0);trace((uint64_t)arg1);trace((uint64_t)arg2);trace((uint64_t)arg3);trace((uint64_t)errno);}
+mach_trap:::entry /watched[pid]/ {trace((uint64_t)15);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));trace((uint64_t)arg0);trace((uint64_t)arg1);trace((uint64_t)arg2);trace((uint64_t)arg3);trace((uint64_t)arg4);trace((uint64_t)arg5);trace((uint64_t)arg6);trace((uint64_t)arg7);}
+mach_trap:::return /watched[pid]/ {trace((uint64_t)16);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));trace((uint64_t)arg0);}
+proc:::create /watched[pid]/ {watched[pid]=1;trace((uint64_t)4);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(args[0]->pr_pid));}
+proc:::start /watched[pid]/ {watched[pid]=1;trace((uint64_t)5);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));}
+proc:::exec-success /watched[pid]/ {watched[pid]=1;trace((uint64_t)7);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(ppid));}
+proc:::exit /watched[pid]/ {trace((uint64_t)6);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(arg0));}
+proc:::exec-failure /watched[pid]/ {trace((uint64_t)8);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(arg0));}
+proc:::lwp-create /watched[pid]/ {trace((uint64_t)9);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(args[0]->pr_lwpid));}
+proc:::lwp-start /watched[pid]/ {trace((uint64_t)10);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(0));}
+proc:::lwp-exit /watched[pid]/ {trace((uint64_t)11);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(0));}
+proc:::spawn-success /watched[pid]/ {trace((uint64_t)12);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(0));}
+proc:::spawn-failure /watched[pid]/ {trace((uint64_t)13);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(arg0));}
+proc:::exited /watched[args[0]->pr_pid]/ {trace((uint64_t)18);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(args[0]->pr_pid));trace((uint64_t)arg1);trace((uint64_t)args[0]->pr_addr);trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount);}
+'''
+# (provider,module,function,name), selected categories all17; no kind14.
+NAMES = {
+    1: ('dtrace', '', '', 'BEGIN'), 17: ('dtrace', '', '', 'END'),
+    2: ('syscall', '', 'read', 'entry'), 3: ('syscall', '', 'read', 'return'),
+    15: ('mach_trap', '', 'mach_msg2_trap', 'entry'),
+    16: ('mach_trap', '', 'mach_msg2_trap', 'return'),
+    4: ('proc', 'mach_kernel', '', 'create'), 5: ('proc', '', '', 'start'),
+    6: ('proc', '', '', 'exit'), 7: ('proc', '', '', 'exec-success'),
+    8: ('proc', '', '', 'exec-failure'), 9: ('proc', '', '', 'lwp-create'),
+    10: ('proc', '', '', 'lwp-start'), 11: ('proc', '', '', 'lwp-exit'),
+    12: ('proc', '', '', 'spawn-success'), 13: ('proc', '', '', 'spawn-failure'),
+    18: ('proc', '', '', 'exited'),
+}
+# Explicit native sizes + zero-descriptor presence, independent fixture table.
+SHAPES = {1: (56, True), 2: (120, False), 3: (96, False), 4: (56, True),
+          5: (56, True), 6: (56, False), 7: (56, True), 8: (56, False),
+          9: (56, False), 10: (56, False), 11: (56, False),
+          12: (56, False), 13: (56, False), 15: (120, False),
+          16: (64, False), 17: (56, False), 18: (80, False)}
+PROBES = ''.join(str(100 + k) + '\t' + '\t'.join(NAMES[k]) + '\n'
+                 for k in sorted(NAMES)).encode('ascii')
+
+
+def event(kind, *, actor=None, detail=None, refcount=0x1c2):
+    total, assignment = SHAPES[kind]
+    actor = (OWNER if kind in (1, 17) else TARGET) if actor is None else actor
+    if detail is None:
+        detail = OWNER if kind in (2, 3, 5, 7, 15, 16) else TARGET if kind == 18 else 0
+    values = [kind, 0x102030405060708, actor, 0xffeeddccbbaa, detail]
+    if kind == 18:
+        values += [0xffffffffffffffff, 0xabcdef123456, refcount]
+    else:
+        values += list(range(0x11110000, 0x11110000 + (total - 56) // 8))
+    records = [{'action': 1, 'size': 0, 'offset': 12, 'hex': ''}] if assignment else []
+    for i, value in enumerate(values):
+        records.append({'action': 1, 'size': 8, 'offset': 16 + i * 8,
+                        'hex': struct.pack('<Q', value).hex()})
+    return dict(event=0, cpu=7, epid=1000 + kind, probe_id=100 + kind,
+                record_bytes=total, header_record_indexes=list(range(int(assignment), int(assignment) + 5)),
+                kind=kind, timestamp=values[1], pid=actor, tid=values[3], detail=detail,
+                **dict(zip(('provider', 'module', 'function', 'name'), NAMES[kind])), records=records)
+
+
+def line(record, ordinal, size=None):
+    record = dict(record, event=ordinal)
+    data = json.dumps(record, separators=(',', ':'), ensure_ascii=True).encode('ascii') + b'\n'
+    if size is not None:
+        assert size >= len(data)
+        data = data[:-1] + b' ' * (size - len(data)) + b'\n'
+    return data
+
+
+def lines(records):
+    return [line(record, i) for i, record in enumerate(records, 1)]
+
+
+def validate(records=None, **kwargs):
+    return check.validate_raw(kwargs.pop('program', PROGRAM), kwargs.pop('probes', PROBES),
+                              kwargs.pop('errors', b''),
+                              kwargs.pop('event_lines', lines(records if records is not None else
+                                      [event(1), event(18), event(17)])),
+                              owner_pid=kwargs.pop('owner_pid', OWNER),
+                              target_pid=kwargs.pop('target_pid', TARGET), **kwargs)
+
+
+def change_scalar(record, index, value):
+    # Adjust raw+header together when testing semantics rather than disagreement.
+    leading = int(SHAPES[record['kind']][1])
+    record['records'][index + leading]['hex'] = struct.pack('<Q', value).hex()
+    if index < 5:
+        record[('kind', 'timestamp', 'pid', 'tid', 'detail')[index]] = value
+
+
+class RawControls(unittest.TestCase):
+    def refuse(self, records=None, match=None, **kwargs):
+        with self.assertRaisesRegex(check.RawValidationError, match or '.'):
+            validate(records, **kwargs)
+
+    def test_literal_program_and_immutable_minimal_facts(self):
+        result = validate()
+        self.assertEqual((result.events, result.inventory_probes, result.observed_enablings), (3, 17, 3))
+        self.assertEqual((result.begin_event, result.terminal_event, result.end_event), (1, 2, 3))
+        self.assertEqual(result.program_sha256, hashlib.sha256(PROGRAM).hexdigest())
+        self.assertEqual(result.inventory_sha256, hashlib.sha256(PROBES).hexdigest())
+        self.assertEqual(result.raw_sha256, hashlib.sha256(b''.join(lines([event(1), event(18), event(17)]))).hexdigest())
+        self.assertEqual(result.terminal_raw_exit, (1 << 64) - 1)
+        with self.assertRaises(FrozenInstanceError):
+            result.events = 0
+        self.assertEqual(result.error_bytes, 0)
+        self.assertEqual(result.inventory_kind_counts[14], 0)
+
+    def test_all_permitted_shapes_and_cleanup(self):
+        records = [event(1)] + [event(k) for k in (2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16)]
+        records += [event(18, refcount=0x1e2), event(2), event(18, actor=9876),
+                    event(18, actor=9876, refcount=0x1e2), event(11), event(17)]
+        result = validate(records)
+        self.assertEqual(result.shadow_exits, 2)
+        self.assertEqual(result.post_terminal_lwp_exits, 1)
+        self.assertEqual(result.terminal_actor_pid, 9876)  # actor need not be target
+        self.assertEqual(result.observed_enablings, 14)
+        self.assertLess(result.observed_enablings, result.inventory_probes)  # unused probes are valid
+
+    def test_program_single_byte_clause_and_target_mutations(self):
+        for bad in (PROGRAM + b'\n', PROGRAM[:-1], PROGRAM.replace(b'4242', b'4243'),
+                    PROGRAM.replace(b'mach_trap', b'syscall'), PROGRAM.replace(b'p_refcount', b'p_refcnt'),
+                    PROGRAM.replace(b'uint64_t', b'uint32_t', 1), PROGRAM.replace(b'\n', b'\r\n')):
+            with self.subTest(bad=bad[:30]):
+                self.refuse(program=bad, match='fixed program')
+        new_target = 2147483647
+        self.assertEqual(validate(program=PROGRAM.replace(b'4242', str(new_target).encode()),
+                         target_pid=new_target, records=[event(1), event(18, detail=new_target), event(17)]).target_pid,
+                         new_target)
+
+    def test_inventory_categories_names_fields_and_unique_ids(self):
+        rows = PROBES.splitlines(keepends=True)
+        for row in rows:
+            self.refuse(probes=PROBES.replace(row, b''), match='required inventory')
+        for bad in (PROBES[:-1], PROBES + b'\n', PROBES + rows[0],
+                    PROBES + rows[0].replace(b'101\t', b'999\t'),
+                    PROBES.replace(b'101\t', b'000101\t'), PROBES.replace(b'101\t', b'0\t'),
+                    PROBES.replace(b'101\t', b'4294967296\t'),
+                    PROBES.replace(b'101\t', b'1' * 2000 + b'\t'),
+                    PROBES.replace(b'mach_trap', b'unknown'),
+                    PROBES.replace(b'read', b''), PROBES.replace(b'read', b'r/ead'),
+                    PROBES.replace(b'read', b'R' * 128),
+                    PROBES.replace(b'exited', b'unknown'),
+                    PROBES.replace(b'dtrace\t\t\tBEGIN', b'dtrace\tx\t\tBEGIN'),
+                    PROBES.replace(b'proc', b'pr\xffc'), PROBES.replace(b'\n', b'\r\n')):
+            with self.subTest(bad=bad[:30]):
+                self.refuse(probes=bad)
+        # Other exact native names/modules allowed; only emitted IDs need appear in events.
+        extra = b'999\tsyscall\tcom.apple.kernel\twrite\tentry\n'
+        self.assertEqual(validate(probes=PROBES + extra).inventory_probes, 18)
+
+    def test_pre_stream_bounds_identity_and_error_opacity(self):
+        class Untouched:
+            def __iter__(self):
+                raise AssertionError('event source touched before static refusal')
+        for kwargs in ({'program': b'x' * 16385}, {'probes': b'x' * 1048577},
+                       {'errors': b'x' * 65537}, {'errors': b'{}\n'}, {'errors': b'partial\xff'},
+                       {'program': bytearray(PROGRAM)}, {'owner_pid': True}, {'target_pid': 0},
+                       {'target_pid': OWNER}, {'owner_pid': 1 << 31}, {'target_pid': -1},
+                       {'owner_pid': 1.0}, {'target_pid': '4242'}, {'program': PROGRAM + b'\0'}):
+            self.refuse(event_lines=Untouched(), **kwargs)
+        too_many = b''.join(str(i + 1).encode() + b'\tsyscall\t\tf' + str(i).encode() + b'\tentry\n'
+                            for i in range(8193))
+        self.refuse(probes=too_many, event_lines=Untouched(), match='probe bound')
+
+    def test_line_bounds_truncation_and_early_refusal(self):
+        bad_lines = [b'x' * 8192, b'{}', b'', b'{}\n{}\n', b'{}\r\n', bytearray(b'{}\n'),
+                     '{}\n', b'\xff\n', b'\xef\xbb\xbf{}\n']
+        for bad in bad_lines:
+            with self.subTest(bad=repr(bad)[:50]):
+                self.refuse(event_lines=iter([bad]))
+        def hostile():
+            yield b'x' * 8192
+            raise AssertionError('read beyond first refusal')
+        with patch.object(check, '_object', side_effect=AssertionError('decoded overlong line')):
+            self.refuse(event_lines=hostile(), match='line byte bound')
+        self.refuse(event_lines=[lines([event(1)])[0][:-1]], match='complete LF')
+        self.refuse(event_lines=iter(()), match='incomplete')
+
+    def test_json_key_and_number_grammar_hostility(self):
+        baseline = lines([event(1), event(18), event(17)])
+        self.assertEqual(validate(event_lines=baseline).events, 3)
+        good = baseline[0]
+        bad = [(good.replace(b'"event":1', b'"event":1,"event":1'), 'duplicate JSON key'),
+               (good.replace(b'"action":1', b'"action":1,"action":1', 1), 'duplicate JSON key'),
+               (good.replace(b'"event":1', b'"event":1.0'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":1e0'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":NaN'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":Infinity'), 'non-integer JSON number'),
+               (good.replace(b'"event":1', b'"event":' + b'1' * 100), 'JSON integer token bound'),
+               (good.replace(b'"cpu":7,', b''), 'event object keys'),
+               (good.replace(b'"cpu":7', b'"extra":0,"cpu":7'), 'event object keys'),
+               (b'[]\n', 'event object keys'), (b'null\n', 'event object keys'),
+               (b'"text"\n', 'event object keys'),
+               (b'[' * 1500 + b']' * 1499 + b'\n', 'malformed JSON event'),
+               (good.replace(b'"records":[', b'"records":{'), 'malformed JSON event'),
+               (good[:-3] + b'\n', 'malformed JSON event')]
+        for item, reason in bad:
+            with self.subTest(item=item[:40]):
+                self.refuse(event_lines=[item] + baseline[1:], match=reason)
+        # Source failures propagate, never produce partial facts.
+        def broken_source():
+            yield good
+            raise OSError('source failed')
+        with self.assertRaisesRegex(OSError, 'source failed'):
+            validate(event_lines=broken_source())
+
+    def test_strict_integer_types_and_ranges(self):
+        original = event(1)
+        baseline = lines([original, event(18), event(17)])
+        self.assertEqual(validate(event_lines=baseline).events, 3)
+        for key in ('event', 'cpu', 'epid', 'probe_id', 'record_bytes', 'kind', 'timestamp', 'pid', 'tid', 'detail'):
+            for value in (True, False, None, '1', 1.0, -1, 1 << 64):
+                item = event(1)
+                item[key] = value
+                first = line(item, 1) if key != 'event' else json.dumps(item).encode() + b'\n'
+                self.refuse(event_lines=[first] + baseline[1:],
+                            match='JSON number|ordinal|range|size|inventory|integer')
+        for key, value, reason in (('cpu', 1 << 31, 'CPU range'), ('epid', 0, 'EPID range'),
+                                  ('epid', 1 << 32, 'EPID range'), ('probe_id', 0, 'probe ID range'),
+                                  ('probe_id', 1 << 32, 'probe ID range')):
+            item = event(1); item[key] = value
+            self.refuse(event_lines=[line(item, 1)] + baseline[1:], match=reason)
+        for key, reason in (('action', 'record action'), ('size', 'record width'), ('offset', 'record offset')):
+            item = event(1); item['records'][0][key] = True
+            self.refuse(event_lines=[line(item, 1)] + baseline[1:], match=reason)
+        item = event(1); item['header_record_indexes'][0] = True
+        self.refuse(event_lines=[line(item, 1)] + baseline[1:], match='header record indexes')
+
+    def test_every_descriptor_and_header_single_mutation(self):
+        def context(item, original_kind):
+            # Every unmodified record sits in a complete accepted lifecycle.
+            if original_kind == 1:
+                return [item, event(18), event(17)]
+            if original_kind == 17:
+                return [event(1), event(18), item]
+            if original_kind == 18:
+                return [event(1), item, event(17)]
+            return [event(1), item, event(18), event(17)]
+
+        for kind in (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18):
+            original = event(kind)
+            baseline = context(original, kind)
+            self.assertEqual(validate(baseline).events, len(baseline))
+            for index in range(len(original['records'])):
+                for key, value, reason in (('action', 2, 'record action'),
+                                           ('size', 4, 'record width'),
+                                           ('offset', 13, 'record offset'),
+                                           ('hex', '', 'scalar hex')):
+                    item = copy.deepcopy(original)
+                    if item['records'][index][key] == value:
+                        value = '00'  # zero assignment requires empty bytes
+                    item['records'][index][key] = value
+                    with self.subTest(kind=kind, index=index, key=key):
+                        self.refuse(context(item, kind), match=reason)
+            for key, value, reason in (('record_bytes', original['record_bytes'] + 8, 'record byte size'),
+                                      ('header_record_indexes', [0, 1, 2, 3, 99], 'header record indexes'),
+                                      ('records', original['records'][:-1], 'record count'),
+                                      ('records', original['records'] + original['records'][:1], 'record count')):
+                item = copy.deepcopy(original); item[key] = value
+                self.refuse(context(item, kind), match=reason)
+            for index in range(len(original['records'])):
+                for key in ('action', 'size', 'offset', 'hex'):
+                    item = copy.deepcopy(original); del item['records'][index][key]
+                    self.refuse(context(item, kind), match='record object keys')
+                item = copy.deepcopy(original); item['records'][index]['extra'] = 0
+                self.refuse(context(item, kind), match='record object keys')
+            for field in ('kind', 'timestamp', 'pid', 'tid', 'detail'):
+                item = copy.deepcopy(original); item[field] += 1
+                reason = 'event kind differs from inventory' if field == 'kind' else 'raw/header disagreement'
+                self.refuse(context(item, kind), match=reason)
+            first_scalar = int(SHAPES[kind][1])
+            for value in ('gg' * 8, 'AA' * 8, '00 ' * 8, '0' * 15, '0' * 17, 0):
+                item = copy.deepcopy(original); item['records'][first_scalar]['hex'] = value
+                self.refuse(context(item, kind), match='scalar hex')
+            item = copy.deepcopy(original)
+            item['records'][first_scalar + 1]['hex'] = struct.pack('>Q', item['timestamp']).hex()
+            self.refuse(context(item, kind), match='raw/header disagreement')
+
+    def test_old_standalone_mutation_context_was_not_a_valid_baseline(self):
+        # Regression explanation: the old lone-record context rejected unchanged
+        # non-BEGIN events, so a loose layout check could still look green there.
+        for kind in (2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18):
+            self.refuse(event_lines=[line(event(kind), 1)], match='event before BEGIN')
+        self.refuse(event_lines=[line(event(1), 1)], match='incomplete')
+
+    def test_inventory_event_binding_and_epid_bijection(self):
+        for key, value in (('provider', 'mach_trap'), ('module', 'changed'),
+                           ('function', 'changed'), ('name', 'changed'), ('probe_id', 999), ('kind', 14)):
+            item = event(2); item[key] = value
+            self.refuse([event(1), item, event(18), event(17)])
+        item = event(2); item['epid'] = 1001
+        self.refuse([event(1), item, event(18), event(17)], match='EPID rebound')
+        first, second = event(2), event(2); second['epid'] += 300
+        self.refuse([event(1), first, second, event(18), event(17)], match='multiple EPIDs')
+        self.assertEqual(validate([event(1), first, first, event(18), event(17)]).observed_enablings, 4)
+
+    def test_identity_scalar_semantics(self):
+        for kind, index, value in ((1, 2, TARGET), (17, 2, TARGET), (1, 4, 1), (17, 4, 1),
+                                  (2, 2, OWNER), (3, 4, TARGET), (5, 4, TARGET), (7, 4, TARGET),
+                                  (15, 4, TARGET), (16, 4, TARGET), (10, 4, 1), (11, 4, 1),
+                                  (18, 4, OWNER), (18, 6, 0), (18, 7, 1 << 32),
+                                  (2, 1, 0), (2, 2, 1 << 31), (2, 3, 0), (18, 2, 0)):
+            item = event(kind); change_scalar(item, index, value)
+            records = [item, event(18), event(17)] if kind == 1 else \
+                      [event(1), event(18), item] if kind == 17 else \
+                      [event(1), item, event(17)] if kind == 18 else \
+                      [event(1), item, event(18), event(17)]
+            baseline = [event(1), event(18), event(17)] if kind in (1, 17, 18) else \
+                       [event(1), event(kind), event(18), event(17)]
+            self.assertEqual(validate(baseline).events, len(baseline))
+            self.refuse(records, match='identity|parent|detail|exited|timestamp range|actor PID range|thread ID range')
+        # No cross-domain or even raw timestamp-order assertion: both remain opaque.
+        items = [event(1), event(2), event(18), event(17)]
+        change_scalar(items[1], 1, 1)
+        self.assertEqual(validate(items).events, 4)
+
+    def test_lifecycle_no_descendant_no_terminal_substitutes(self):
+        for records in ([event(18), event(17)], [event(2), event(1), event(18), event(17)],
+                        [event(1), event(1), event(18), event(17)],
+                        [event(1), event(17), event(18)], [event(1), event(18)],
+                        [event(1), event(6), event(17)],
+                        [event(1), event(18, refcount=0x1e2), event(17)],
+                        [event(1), event(18), event(18), event(17)],
+                        [event(1), event(18), event(2), event(17)],
+                        [event(1), event(18), event(17), event(11)],
+                        [event(1), event(18), event(17), event(17)]):
+            self.refuse(records)
+        for kind in (4, 12, 13):
+            self.refuse([event(1), event(kind, detail=4444 if kind == 4 else 0), event(18), event(17)],
+                        match='descendant/spawn')
+        bad = lines([event(1), event(18), event(17)])
+        bad[1] = bad[1].replace(b'"event":2', b'"event":3')
+        self.refuse(event_lines=bad, match='ordinal')
+        self.refuse(event_lines=lines([event(1), event(18), event(17)]) + [b'partial'], match='complete LF')
+
+    def test_inventory_capacity_exact_and_over(self):
+        rows = [PROBES]
+        for i in range(8192 - len(NAMES)):
+            rows.append(f'{10000 + i}\tsyscall\t\tf{i}\tentry\n'.encode())
+        cap = b''.join(rows)
+        result = validate(probes=cap)
+        self.assertEqual(result.inventory_probes, 8192)
+        self.refuse(probes=cap + b'999999\tsyscall\t\tx\tentry\n', match='probe bound')
+
+    def test_fixed_stream_budget_boundaries(self):
+        # The byte cap prevents1M valid current-shape events, but the independent
+        # event-count guard still has a fixed boundary and must fail before parse.
+        check._stream_budget(999999, 134217727, 1)
+        with self.assertRaisesRegex(check.RawValidationError, 'event count bound'):
+            check._stream_budget(1000000, 0, 1)
+        with self.assertRaisesRegex(check.RawValidationError, 'raw byte bound'):
+            check._stream_budget(0, 134217728, 1)
+        check._stream_budget(0, 134217728, 0)
+
+    def test_stream_exact_128mib_and_early_overflow(self):
+        # Padding is valid JSON whitespace, keeping <=8191 per physical line.
+        # A generator produces128MiB without retaining any full capture/list.
+        activity_count = 134217728 // 8191
+        first = line(event(1), 1)
+        terminal = line(event(18), activity_count + 2)
+        end = line(event(17), activity_count + 3)
+        payload_bytes = 134217728 - len(first) - len(terminal) - len(end)
+        size, large_count = divmod(payload_bytes, activity_count)
+        seen, expected_hash = [0], hashlib.sha256()
+        def stream():
+            for item in [first]:
+                expected_hash.update(item); seen[0] += 1; yield item
+            for i in range(activity_count):
+                item = line(event(2), i + 2, size + (i < large_count))
+                expected_hash.update(item); seen[0] += 1; yield item
+            for item in (terminal, end):
+                expected_hash.update(item); seen[0] += 1; yield item
+        tracemalloc.start()
+        try:
+            result = validate(event_lines=stream())
+            _, peak = tracemalloc.get_traced_memory()
+        finally:
+            tracemalloc.stop()
+        self.assertEqual(result.raw_bytes, 134217728)
+        self.assertEqual(result.events, activity_count + 3)
+        self.assertEqual(result.raw_sha256, expected_hash.hexdigest())
+        self.assertLess(peak, 8 * 1024 * 1024)
+        self.assertEqual(seen[0], activity_count + 3)
+        def overflow():
+            yield from stream()
+            yield b'{}\n'
+            raise AssertionError('read beyond raw byte bound')
+        self.refuse(event_lines=overflow(), match='raw byte bound')
+
+
+if __name__ == '__main__':
+    unittest.main()
