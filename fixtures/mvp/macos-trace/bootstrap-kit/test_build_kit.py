@@ -117,8 +117,11 @@ class KitControls(unittest.TestCase):
     def test_production_cli_rejects_unreviewed_inputs_without_output(self):
         with tempfile.TemporaryDirectory(prefix='glue-kit-cli-deny-') as temp:
             out=Path(temp)/'new-kit'
+            # The configured CLI audits registered sources through Git before
+            # rejecting this missing proof. Allow for that work on hosted runners;
+            # individual source-check commands already have a 30-second limit.
             done=subprocess.run([os.sys.executable,'-B',str(HERE/'build_kit.py'),'--guest-proof',temp,
-                '--inspector-kit',temp,'--output',str(out)],capture_output=True,timeout=5)
+                '--inspector-kit',temp,'--output',str(out)],capture_output=True,timeout=60)
             self.assertEqual(done.returncode,1);self.assertFalse(out.exists())
             self.assertEqual(done.stdout,b'')
 
