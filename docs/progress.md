@@ -1,5 +1,33 @@
 # Implementation progress
 
+## Tree-open intent bridge — 19 October 2026
+
+PR #37 is merged into `main` at `9f787e9`. Both repair runs
+[`39313081797`](https://github.com/JBlaschke/glue_rs/actions/runs/39313081797)
+and [`39313157211`](https://github.com/JBlaschke/glue_rs/actions/runs/39313157211)
+passed all nine jobs at `e804866`; this supersedes the pending status below.
+
+Decision `8e01b37` and implementation `b9ef538` on
+`codex/mvp-r02-tree-open-intent` connect strict historical raw-v4 tree-open
+observations to the existing Darwin flag classifier. Complete upstream source
+records and observed actors remain attached. Failed writes and read-only
+creation retain write intent; unknown flags remain unsupported. The bridge
+cannot issue a full extraction verdict. No native registry or capture is changed.
+
+The helper's 12 controls, bridge's 13 controls and unchanged upstream observer's
+13 controls pass. A separate baseline/current comparison passes all 32,841
+normalized inputs with identical results/errors and no input mutation.
+Independent source/receipt review finds no actionable issue. CI now configures
+39 Python suites; hosted results for this feature are pending. Exact receipts
+and limits are in the [bridge checkpoint](plans/mvp-implementation.md#19-october-tree-open-intent-bridge).
+
+After the owner's approval, the suspended VM was force-stopped and reduced from
+8 GB to 4 GB RAM. Recovery's `csrutil enable` reports SIP on after confirming
+full boot security and private owner authentication. The VM has rebooted to its
+normal login screen; normal-boot status verification remains pending. The
+physical Mac's security settings are unchanged. Full Darwin R02, macOS R03 and
+final R04/M2 acceptance remain open; the development preview remains available.
+
 ## Development preview and baseline CI repair — 19 October 2026
 
 The owner merged PRs #35 and #36 into `main` at `08da274`. All 26 original task

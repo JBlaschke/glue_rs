@@ -10,6 +10,9 @@ own implementation commits. Follow-up work continues on feature branches;
 no release asset has been published.
 The owner subsequently merged the follow-up checkpoints through PRs #35/#36,
 putting the reviewed match-accounting repair on `main` at `08da274`.
+PR #37 subsequently merged the baseline timeout repair at `9f787e9`; both
+repair runs passed all nine jobs. The tree-open intent follow-up below starts
+from that merged baseline.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -169,6 +172,7 @@ Follow-up branches preserve the original task commits:
 | R04 | `codex/mvp-r04-trace-packet-status` | `161de67`, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private |
 | R02 | `codex/mvp-r02-trace-match-accounting` | decision `476c350`, implementation `490a8c3` | Derive bounded inventory from compiled selectors; independent review and normal/sanitized SDK/model controls pass; fresh native calibration and SIP restoration pending |
 | V01 | `codex/mvp-v01-macos-cli-refusal-timeout` | `e939d7c` | Increase one configured CLI test's outer deadline; clean local23-test suite and source review pass, hosted repair pending |
+| R02 | `codex/mvp-r02-tree-open-intent` | decision `8e01b37`, implementation `b9ef538` | Strict historical tree-open provenance plus pure flag classification; 38 focused controls and 32,841 compatibility inputs pass; full extraction acceptance always refuses |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -212,6 +216,73 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 19 October: tree-open intent bridge
+
+This bounded follow-up starts at merged `main` `9f787e9`, after PR #37.
+Both [push run 39313081797](https://github.com/JBlaschke/glue_rs/actions/runs/39313081797)
+and [PR run 39313157211](https://github.com/JBlaschke/glue_rs/actions/runs/39313157211)
+pass all nine jobs at exact source `e8048665b795c3b74eecb084914634356e6f0fe0`.
+The preserved 21-file hosted record is
+`/private/tmp/glue-cli-refusal-hosted-ci-20261019-axr6dnzc`, manifest SHA256
+`95418c5084f1ab3c8b5a421c13257e5f06edb574cf1e64dd329c47f44b8ec79f`.
+These results supersede the earlier pending repair checkpoint below.
+
+Decision `8e01b37` precedes implementation `b9ef538` on
+`codex/mvp-r02-tree-open-intent`. The existing normalized decoder delegates only
+flag semantics to a pure unsigned32 helper. Its result schema, validation order,
+reason order and errors stay compatible. The new path-only bridge invokes the
+strict historical raw-v4 tree-open observer itself, retains its complete report,
+non-open calls and raw frames, and links classifications to observation/pair/
+consumer indexes and observed PID/TID/exec epochs. It neither forges normalized
+origins nor infers resolved filesystem objects, successful effects or exemptions.
+Failed requests retain write intent. Unknown/unmodeled bits remain unsupported.
+CLI success means classification completed, including writes; it is not an
+extraction verdict. Full-acceptance requests always refuse before input access.
+
+Focused controls pass with no skips: 12 pure helper, 13 bridge and 13 unchanged
+upstream observer tests. Complete rehashed synthetic captures exercise source
+validation, non-open poisoning, failed writes, actors/interleaving, bounds,
+unsupported flags and unconditional acceptance refusal. The inherited-open-bound
+control lowers the limit to zero; it does not build a new 4,096-open corpus.
+A separate source-only differential compares baseline `9f787e9` and current
+normalized decoder behavior over 32,768 flag combinations, 13 other valid records
+and 60 malformed inputs. All 32,841 exact serialized outputs or exception names/
+messages agree, with no input mutation. All 15 compatibility input identities
+remain unchanged. Native open-intent classes were not executed in these checks.
+
+Receipts remain outside Git:
+
+- `/private/tmp/glue-open-intent-pure-controls-l_qamvt2`: nine payloads plus
+  manifest `b08dbea6b022762d36b0b0dbc237d5750be4958246f0f070541f3c7333d8e845`.
+- `/private/tmp/glue-tree-open-intent-controls-o26o9o2z`: 25 payloads plus
+  manifest `8bcf255ebaf7287c002c6e82f8453f6838319e2fbd4249eabb4ec0d7c6bc5ab5`.
+- `/private/tmp/glue-tree-open-compatibility-fyk7l3ak`: 73 payloads plus
+  manifest `15d3ed9b3332b60e2b78b26dfb700287f6916738ca22cdb3b9076394aa6e9cc0`.
+- `/private/tmp/glue-tree-open-intent-final-review-goqwn8rn`: 91 payloads plus
+  manifest `45156fbafa69ea487977ebb3576cba62c4ebdf7f81c83386e39cb1a90c567f65`.
+  Independent review finds no actionable issue and verifies both focused receipts
+  against current source without rerunning them. Root verifies every payload's
+  hash/membership, reads the reports and checks reviewed source identity.
+
+The records retain exact outer commands, statuses and streams with source pins;
+the bridge/compatibility/review records also retain source copies. The helper's
+small receipt has pins but no copies, supplied separately by review. Normal
+command completion is not independent descendant cleanup evidence. CI adds one
+new invocation, for 39 configured Python suites; existing observer/unit calls stay
+enabled. Shell syntax and diff checks pass. Hosted feature results remain pending.
+No actual capture, native provider, SDK build, kit/proof/source registry or
+full-acceptance backend is involved in this implementation. The current owned
+backend still lacks copied paths and authoritative object observations. Native
+calibration, FD/cwd/object causality, other mutation routes, the complete Darwin
+oracle/corpus, macOS budgets and R02/M2 remain open.
+
+The separate security restoration proceeds with the owner's approved force-stop
+and reduction from 8 GB to 4 GB RAM. Recovery runs `csrutil enable`, confirms full
+boot security and reports SIP on after private owner authentication. A normal
+reboot reaches the login screen. Normal-boot verification is still pending, so
+the guest SIP window remains open in its chronology. This does not rerun the
+failed native attempt, inspect its raw capture or change physical-host security.
 
 ## 19 October: merged preview and baseline timeout
 
