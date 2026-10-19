@@ -1,5 +1,28 @@
 # Implementation progress
 
+## Development preview and baseline CI repair — 19 October 2026
+
+The owner merged PRs #35 and #36 into `main` at `08da274`. All 26 original task
+cards have implementation commits, and the compact Lua/Python/Node build/run,
+installer and diagnostic workflows are available for a development trial via
+the [CLI guide](compact-cli.md). No additional product feature task is required
+for that first trial. Full acceptance still needs work in three original areas:
+R02's complete macOS extraction oracle/corpus, R03's macOS cost validation and
+R04's durable evidence and final M2 record. R02 remains substantial; green
+portable CI cannot close it. The last guest SIP-restoration request is unresolved.
+
+Merged-main run `39311833729` finishes with eight jobs passing and one failed
+macOS baseline job. The sole reported failure is the five-second outer deadline
+in the configured kit CLI refusal test. The CLI validates registered sources
+through bounded Git commands before examining the missing proof. Repair
+`e939d7c` on `codex/mvp-v01-macos-cli-refusal-timeout` raises only that test's
+outer deadline to60 seconds; production admission and refusal assertions remain
+unchanged. Independent source review finds no actionable issue. All23 focused
+kit tests pass in a clean local checkout, with no skips, and a separate CLI
+invocation reaches the missing-manifest refusal without output creation.
+The hosted repair result remains pending. Exact receipts and limitations are
+in the [19 October checkpoint](plans/mvp-implementation.md#19-october-merged-preview-and-baseline-timeout).
+
 ## Tracing match-accounting repair — 18 October 2026
 
 The fresh normal-boot guest proof reports exactly disabled SIP and passes an

@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-18 October 2026. Product authority remains [the plan](../../PLAN.md),
+19 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -8,6 +8,8 @@ cherry-picked for integration. The owner merged the combined
 [PR #34](https://github.com/JBlaschke/glue_rs/pull/34). Task branches retain their
 own implementation commits. Follow-up work continues on feature branches;
 no release asset has been published.
+The owner subsequently merged the follow-up checkpoints through PRs #35/#36,
+putting the reviewed match-accounting repair on `main` at `08da274`.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -166,6 +168,7 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-trace-admission-ci` | `d73fceb` | Add one packet-admission invocation; 38 configured suites; focused three-suite Linux run passes with five explicit skips |
 | R04 | `codex/mvp-r04-trace-packet-status` | `161de67`, based on `9b638cd` | Record reviewed packets/target checks and actual kit03 preservation; tracing first-case wrapper refusal stays private |
 | R02 | `codex/mvp-r02-trace-match-accounting` | decision `476c350`, implementation `490a8c3` | Derive bounded inventory from compiled selectors; independent review and normal/sanitized SDK/model controls pass; fresh native calibration and SIP restoration pending |
+| V01 | `codex/mvp-v01-macos-cli-refusal-timeout` | `e939d7c` | Increase one configured CLI test's outer deadline; clean local23-test suite and source review pass, hosted repair pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -209,6 +212,62 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 19 October: merged preview and baseline timeout
+
+The three compact language workflows, installer and diagnostics are available
+for a development trial with the documented installed dependencies/runtimes.
+All26 original cards have implementation commits; this is not a count of26
+completed acceptance gates. No additional product feature task is needed before
+a first trial. Remaining original task areas are R02 (complete macOS extraction
+oracle and corpus/negative controls), R03 (macOS measured costs/budgets), and R04
+(durable evidence plus final M2 acceptance/documentation). R02 is substantial and
+may expose further fixes. Developer ID/notarization is a public macOS binary
+release prerequisite under the chosen policy. Guest SIP restoration is still
+unresolved from the last tracing session; this status inspection operates no VM.
+
+Merged-main `08da274` run
+[39311833729](https://github.com/JBlaschke/glue_rs/actions/runs/39311833729)
+finishes with eight successful jobs and one failed
+[macOS baseline job](https://github.com/JBlaschke/glue_rs/actions/runs/39311833729/job/118263122431).
+Its only reported error is `subprocess.TimeoutExpired` in
+`test_production_cli_rejects_unreviewed_inputs_without_output`: the outer
+five-second deadline expires during the configured CLI's source audit. A full
+clean source audit can use38 sequential Git calls for34 registered sources,
+each already bounded at30 seconds. Shallow/inadmissible checkouts can stop
+earlier; the particular slow hosted command is unknown. No application failure
+or specific Git deadlock is established by this timeout.
+
+Repair `e939d7c` raises only this test's outer deadline to60 seconds and explains
+the ordering. Return1, empty stdout and absent output assertions remain intact;
+the neighboring argparse-only deadline remains5 seconds. Production builder,
+registries, source pins, historical proofs and kits are unchanged. No shared API
+or extraction interpretation changes. The raw public failure capture is
+`/private/tmp/glue-ci-macos-baseline-20261019-ex885a7n`:14 files, manifest
+`b5baa062bf979e8f963f8c2e16409a7aa4feaaf5941b8b29e44094834fe9b524`.
+
+Clean-checkout local verification at `e939d7c` passes all23 kit tests without
+skips, including compile-only minimum26 SDK validation. A separate physical-path
+CLI invocation reaches missing `SHA256SUMS`, returns1 with empty stdout and
+creates no output. The original extra CLI invocation used macOS's `/var` alias
+and correctly refused that path earlier; an over-specific collector assertion
+stopped collection, and the separate resolved-path retry is retained alongside
+the original results. No suite is repeated or original receipt overwritten.
+The completed record `/private/tmp/glue-cli-refusal-controls-20261019-knaa62bt`
+has83 files, manifest
+`4ce373dfa61ff0e534c0b6d4f594b3b6c77e38a72b7dda42e616b011c6c8bd15`.
+It retains exact outer argv/cwd/status/streams/completion, clean Git status
+before/after and41 unchanged source/context copies. Inner compiler commands are
+defined in copied test source, not separate raw receipts. Normal exits do not
+prove independent descendant cleanup, and local timing does not reproduce the
+hosted latency. Root verifies every record member and complete reports.
+
+Independent source-only review finds no actionable issue. Its seven-file record
+is `/private/tmp/glue-cli-refusal-repair-peer-u5gwfifo`, manifest
+`df1de422a779bdf0e58d1acb85665ed64c313a9d8d77db6eae48ee360952267d`;
+root verifies all six payloads and reads the complete report. Hosted verification
+of this repair remains pending; the failed run is preserved. Product acceptance,
+native tracing and guest security restoration are separate from this CI repair.
 
 ## 18 October: fresh guest-only tracing window
 
