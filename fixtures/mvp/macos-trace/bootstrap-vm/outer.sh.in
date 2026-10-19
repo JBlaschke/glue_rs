@@ -1,0 +1,135 @@
+#!/bin/sh
+# Ordinary-user closed orchestration; this does not read or store a password.
+set -eu
+umask 077
+set -C
+LC_ALL=C
+export LC_ALL
+[ "$#" -eq 0 ] || exit 2
+[ @@ENABLED@@ = 1 ] || { echo 'execution disabled pending independent review' >&2; exit 2; }
+PACKET=@@GUEST_PACKET@@
+WORK=@@GUEST_WORK@@
+BUILD=@@BUILD_DIR@@
+EXPORT=@@GUEST_EXPORT@@
+[ "$(/usr/bin/id -ru)" = @@UID@@ ] && [ "$(/usr/bin/id -u)" = @@UID@@ ] || exit 2
+[ "$(/usr/sbin/sysctl -n hw.model)" = VirtualMac2,1 ] || exit 2
+[ "$(/usr/bin/sw_vers -productVersion)" = 26.6.2 ] && [ "$(/usr/bin/sw_vers -buildVersion)" = 25G83 ] || exit 2
+[ "$(/usr/bin/uname -mrs)" = 'Darwin 25.6.0 arm64' ] || exit 2
+[ "$(/usr/bin/csrutil status)" = 'System Integrity Protection status: enabled.' ] || exit 2
+[ ! -e "$WORK" ] && [ ! -L "$WORK" ] || exit 2
+/bin/mkdir -m 0700 "$WORK"
+/bin/mkdir -m 0700 "$WORK/evidence" "$WORK/evidence/requests" "$WORK/evidence/cases"
+for c in positive simulated denied trailing; do /bin/mkdir -m 0700 "$WORK/evidence/cases/$c"; done
+E="$WORK/evidence"
+# GLUE_CURRENT_PREFLIGHT_BEGIN
+typed_json_matches() {
+    value=$(/usr/bin/plutil -extract "$2" raw -expect "$3" -o - "$1") || return 2
+    [ "$value" = "$4" ] || return 2
+}
+typed_json_dictionary() {
+    /usr/bin/plutil -extract "$2" json -expect dictionary -o /dev/null "$1" || return 2
+}
+plutil_capabilities() {
+    printf '{"b":true,"n":7,"s":"ok","a":[1,2],"d":{"0":1,"1":2}}\n' > "$WORK/plutil-fixture.json" || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" b bool true || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" n integer 7 || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" s string ok || return 2
+    typed_json_matches "$WORK/plutil-fixture.json" a array 2 || return 2
+    typed_json_dictionary "$WORK/plutil-fixture.json" d || return 2
+    if /usr/bin/plutil -extract b raw -expect integer -o - "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+    if /usr/bin/plutil -extract a json -expect dictionary -o /dev/null "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+    if /usr/bin/plutil -extract d raw -expect array -o - "$WORK/plutil-fixture.json" >/dev/null 2>&1; then return 2; fi
+}
+current_json_matches() {
+    typed_json_matches "$WORK/current-observation.json" "$1" "$2" "$3" || return 2
+}
+current_json_dictionary() {
+    typed_json_dictionary "$WORK/current-observation.json" "$1" || return 2
+}
+current_deployment_matches() {
+    INSPECTOR=@@INSPECTOR_PATH@@
+    [ -f "$INSPECTOR" ] && [ ! -L "$INSPECTOR" ] || return 2
+    inspector_hash=$(/usr/bin/shasum -a 256 "$INSPECTOR") || return 2
+    [ "$inspector_hash" = "@@INSPECTOR_SHA@@  $INSPECTOR" ] || return 2
+    /usr/bin/codesign --verify --strict --verbose=2 "$INSPECTOR" > "$WORK/current-signature.stdout" 2> "$WORK/current-signature.stderr" || return 2
+    inspector_status=0
+    /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$INSPECTOR" > "$WORK/current-observation.json" 2> "$WORK/current-inspector.stderr" || inspector_status=$?
+    printf '%s\n' "$inspector_status" > "$WORK/current-inspector.status" || return 2
+    [ "$inspector_status" = 0 ] || return 2
+    for name in current-observation.json current-inspector.stderr; do
+        [ -f "$WORK/$name" ] && [ ! -L "$WORK/$name" ] || return 2
+        current_mode=$(/usr/bin/stat -f %u:%p:%l "$WORK/$name") || return 2
+        [ "$current_mode" = @@UID@@:100600:1 ] || return 2
+    done
+    [ ! -s "$WORK/current-inspector.stderr" ] || return 2
+    current_size=$(/usr/bin/stat -f %z "$WORK/current-observation.json") || return 2
+    case "$current_size" in ''|*[!0-9]*) return 2 ;; esac
+    [ "$current_size" -gt 0 ] && [ "$current_size" -le 262144 ] || return 2
+    @@CURRENT_DEPLOYMENT_CHECKS@@
+}
+# GLUE_CURRENT_PREFLIGHT_END
+# Actual guest typed capability and native deployment checks BEFORE authentication.
+plutil_capabilities || exit 2
+(
+    cd "$PACKET"
+    /usr/bin/shasum -a 256 -c SHA256SUMS
+) > "$WORK/packet-verification.log"
+current_deployment_matches || exit 2
+/bin/cat "$PACKET/plan.json" > "$E/plan.json"
+printf 'schema\tglue-bootstrap-vm-batch-v1\npreflight\t0\n' > "$E/batch.tsv"
+# The only interactive authentication. Every later call must use the cache.
+/usr/bin/sudo -v
+install_status=0
+/usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+    /bin/sh -c @@ROOT_BOOTSTRAP@@ > "$E/install.stdout" 2> "$E/install.stderr" || install_status=$?
+printf '%s\n' "$install_status" > "$E/install.status"
+printf 'install\t%s\n' "$install_status" >> "$E/batch.tsv"
+[ "$install_status" = 0 ] || exit 1
+root_phase() {
+    /usr/bin/sudo -n /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC \
+        /bin/sh -c @@ROOT_CHECK@@ glue-bootstrap "$1"
+}
+# All three requests are generated while the build directory is accessible.
+for c in positive simulated denied; do
+    rc=0
+    if [ "$c" = simulated ]; then
+        /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" --simulate-provider-failure > "$E/requests/$c.bin" 2> "$E/requests/$c.stderr" || rc=$?
+    else
+        /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/make-request" > "$E/requests/$c.bin" 2> "$E/requests/$c.stderr" || rc=$?
+    fi
+    printf '%s\n' "$rc" > "$E/requests/$c.status"
+    [ "$rc" = 0 ] || exit 1
+    n=$(/usr/bin/stat -f '%z' "$E/requests/$c.bin")
+    [ "$n" -ge 208 ] && [ "$n" -le 16384 ] || exit 1
+done
+/bin/cat "$E/requests/positive.bin" > "$E/requests/trailing.bin"
+printf '\000' >> "$E/requests/trailing.bin"
+for c in positive simulated denied trailing; do
+    rc=0
+    root_phase "case-$c" > "$E/case-$c.stdout" 2> "$E/case-$c.stderr" || rc=$?
+    printf '%s\n' "$rc" > "$E/case-$c.status"
+    printf '%s\t%s\n' "$c" "$rc" >> "$E/batch.tsv"
+    # CLI2/uncertain phase means no probe/output read, no chmod restoration guess.
+    case "$rc" in 0|1) ;; *) echo "stopped; root stage/output pointers are in the literal plan" >&2; exit 1 ;; esac
+    if [ "$c" = trailing ]; then roles='input.sha256 native.status output.absent'; else
+        roles='input.sha256 native.status request.bin status.bin probe.stdout probe.stderr result.json'
+    fi
+    for role in $roles; do
+        root_phase "export-$c:$role" > "$E/cases/$c/$role" || exit 1
+    done
+    [ "$rc" = 0 ] || exit 1
+done
+printf 'complete\t0\n' >> "$E/batch.tsv"
+cat > "$WORK/evidence-files.txt" <<'GLUE_FIXED_EVIDENCE'
+@@EVIDENCE_LIST@@
+GLUE_FIXED_EVIDENCE
+[ -d '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] && [ ! -L '/Volumes/My Shared Files/glue-mvp-macos-vm-results' ] || exit 1
+[ ! -e "$EXPORT" ] && [ ! -L "$EXPORT" ] || exit 1
+/bin/mkdir -m 0700 "$EXPORT" "$EXPORT/requests" "$EXPORT/cases"
+for c in positive simulated denied trailing; do /bin/mkdir -m 0700 "$EXPORT/cases/$c"; done
+while IFS= read -r name; do /bin/cat "$E/$name" > "$EXPORT/$name"; done < "$WORK/evidence-files.txt"
+(
+    cd "$EXPORT"
+    while IFS= read -r name; do /usr/bin/shasum -a 256 "$name"; done < "$WORK/evidence-files.txt"
+) > "$EXPORT/SHA256SUMS"
+printf 'evidence=%s\n' "$EXPORT"

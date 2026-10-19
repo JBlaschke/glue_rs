@@ -28,23 +28,32 @@
 #define MAX_RAW_BYTES (128UL * 1024 * 1024)
 #define MAX_IDENTITY_BYTES MAX_RAW_BYTES
 #define MAX_RECORD_BYTES 8192
+/* Source-pinned kernel discriminator; actual CTF access needs guest calibration.
+ * See docs/decisions/mvp-r02-darwin-shadow-exit.md. */
+#define PINNED_P_REF_SHADOW UINT32_C(0x20)
 
 enum { BEGIN_EVENT=1, SYSCALL_ENTRY, SYSCALL_RETURN, CREATE_EVENT, START_EVENT,
        EXIT_EVENT, EXEC_SUCCESS, EXEC_FAILURE, LWP_CREATE, LWP_START, LWP_EXIT,
-       SPAWN_SUCCESS, SPAWN_FAILURE, OPEN_PATH, MACH_ENTRY, MACH_RETURN, END_EVENT };
+       SPAWN_SUCCESS, SPAWN_FAILURE, OPEN_PATH, MACH_ENTRY, MACH_RETURN, END_EVENT, EXITED_TARGET };
 struct process { pid_t pid; bool created, terminal; };
 struct capture {
     FILE *events, *errors, *inventory;
     struct process processes[MAX_PROCESSES];
     size_t processes_used;
     uint64_t events_seen, drops, faults, open_entries, open_returns;
-    bool failed, root_terminal, tree, started;
+    unsigned diagnostics;
+    bool failed, root_terminal, tree, mach, started;
     bool identity_failed;
     pid_t root;
     const char *reason;
 };
 static volatile sig_atomic_t interrupted;
 static void on_signal(int number) { interrupted=number; }
+
+static void fail_capture(struct capture *state, const char *reason) {
+    if (!state->failed) state->reason=reason;
+    state->failed=true;
+}
 
 static void json_string(FILE *output, const char *string) {
     fputc('"',output);
@@ -60,11 +69,69 @@ static double monotonic(void) {
     if (clock_gettime(CLOCK_MONOTONIC,&value)) return 0;
     return (double)value.tv_sec+(double)value.tv_nsec/1e9;
 }
+/* Diagnostic metadata does not make a rejected layout into an accepted event.
+ * Read a value only from an eight-byte record inside the bounded probe bytes. */
+static bool diagnostic_value(const dtrace_probedata_t *data, const dtrace_recdesc_t *record, uint64_t *value) {
+    const dtrace_eprobedesc_t *description=data->dtpda_edesc;
+    if (!data->dtpda_data || description->dtepd_size>MAX_RECORD_BYTES || record->dtrd_size!=sizeof(*value) ||
+        record->dtrd_offset>description->dtepd_size || record->dtrd_size>description->dtepd_size-record->dtrd_offset) return false;
+    memcpy(value,data->dtpda_data+record->dtrd_offset,sizeof(*value));
+    return true;
+}
+static void layout_error(struct capture *state, const dtrace_probedata_t *data, const char *reason) {
+    fail_capture(state,reason);
+    if (state->diagnostics++>=16) return;
+    const dtrace_eprobedesc_t *description=data->dtpda_edesc;
+    fprintf(state->errors,"{\"kind\":\"layout-error\",\"reason\":"); json_string(state->errors,reason);
+    fprintf(state->errors,",\"cpu\":%d,\"epid\":%u,\"probe_id\":",data->dtpda_cpu,description->dtepd_epid);
+    const dtrace_probedesc_t *probe=data->dtpda_pdesc;
+    if (probe) fprintf(state->errors,"%u",probe->dtpd_id); else fputs("null",state->errors);
+    const char *names[]={"provider","module","function","name"};
+    const char *values[]={probe ? probe->dtpd_provider : NULL,probe ? probe->dtpd_mod : NULL,
+                          probe ? probe->dtpd_func : NULL,probe ? probe->dtpd_name : NULL};
+    const size_t capacities[]={sizeof(probe->dtpd_provider),sizeof(probe->dtpd_mod),sizeof(probe->dtpd_func),sizeof(probe->dtpd_name)};
+    for (unsigned i=0;i<4;++i) {
+        fputc(',',state->errors); json_string(state->errors,names[i]); fputc(':',state->errors);
+        if (values[i]) {
+            char bounded[257]; size_t count=strnlen(values[i],capacities[i]);
+            if (count>=sizeof(bounded)) count=sizeof(bounded)-1;
+            memcpy(bounded,values[i],count); bounded[count]=0; json_string(state->errors,bounded);
+        } else fputs("null",state->errors);
+    }
+    fprintf(state->errors,",\"event\":%"PRIu64",\"nrecs\":%d,\"record_bytes\":%u,\"header\":[",state->events_seen,description->dtepd_nrecs,description->dtepd_size);
+    for (int i=0;i<5;++i) {
+        uint64_t value;
+        if (i) fputc(',',state->errors);
+        if (i<description->dtepd_nrecs && diagnostic_value(data,&description->dtepd_rec[i],&value)) fprintf(state->errors,"%"PRIu64,value);
+        else fputs("null",state->errors);
+    }
+    fputs("],\"records\":[",state->errors);
+    int count=description->dtepd_nrecs<20 ? description->dtepd_nrecs : 20;
+    for (int i=0;i<count;++i) {
+        const dtrace_recdesc_t *record=&description->dtepd_rec[i];
+        uint64_t value;
+        fprintf(state->errors,"%s{\"action\":%u,\"size\":%u,\"offset\":%u,\"u64\":",i ? "," : "",record->dtrd_action,record->dtrd_size,record->dtrd_offset);
+        if (diagnostic_value(data,record,&value)) fprintf(state->errors,"%"PRIu64,value);
+        else fputs("null",state->errors);
+        fputc('}',state->errors);
+    }
+    fputs("]}\n",state->errors);
+}
+static void libdtrace_error(struct capture *state, dtrace_hdl_t *handle, const char *operation, const char *reason) {
+    int error=dtrace_errno(handle);
+    fail_capture(state,reason);
+    if (state->diagnostics++>=16) return;
+    fputs("{\"kind\":\"libdtrace-error\",\"operation\":",state->errors); json_string(state->errors,operation);
+    fprintf(state->errors,",\"error\":%d,\"message\":",error);
+    const char *message=dtrace_errmsg(handle,error);
+    char bounded[513]; snprintf(bounded,sizeof(bounded),"%s",message ? message : "");
+    json_string(state->errors,bounded); fputs("}\n",state->errors);
+}
 static struct process *process_for(struct capture *state, pid_t pid) {
     for (size_t i=0;i<state->processes_used;++i)
         if (state->processes[i].pid==pid) return &state->processes[i];
     if (pid<=0 || state->processes_used==MAX_PROCESSES) {
-        state->failed=true; state->reason="process identity bound exceeded"; return NULL;
+        fail_capture(state,"process identity bound exceeded"); return NULL;
     }
     struct process *process=&state->processes[state->processes_used++];
     *process=(struct process){.pid=pid};
@@ -75,9 +142,14 @@ static bool all_terminal(struct capture *state) {
         if (!state->processes[i].created || !state->processes[i].terminal) return false;
     return state->root_terminal;
 }
+static bool terminal_pid(const struct capture *state, uint64_t pid) {
+    for (size_t i=0;i<state->processes_used;++i)
+        if ((uint64_t)state->processes[i].pid==pid) return state->processes[i].terminal;
+    return false;
+}
 static int error_event(const dtrace_errdata_t *error, void *argument) {
     struct capture *state=argument;
-    ++state->faults; state->failed=true; state->reason="DTrace error callback";
+    ++state->faults; fail_capture(state,"DTrace error callback");
     fprintf(state->errors,"{\"kind\":\"error\",\"cpu\":%d,\"fault\":%d,\"action\":%d,\"message\":",error->dteda_cpu,error->dteda_fault,error->dteda_action);
     json_string(state->errors,error->dteda_msg ? error->dteda_msg : "");
     fputs("}\n",state->errors);
@@ -85,27 +157,105 @@ static int error_event(const dtrace_errdata_t *error, void *argument) {
 }
 static int drop_event(const dtrace_dropdata_t *drop, void *argument) {
     struct capture *state=argument;
-    state->drops+=drop->dtdda_drops; state->failed=true; state->reason="DTrace drop callback";
+    state->drops+=drop->dtdda_drops; fail_capture(state,"DTrace drop callback");
     fprintf(state->errors,"{\"kind\":\"drop\",\"cpu\":%d,\"drop_kind\":%d,\"drops\":%"PRIu64",\"total\":%"PRIu64",\"message\":",drop->dtdda_cpu,drop->dtdda_kind,drop->dtdda_drops,drop->dtdda_total);
     json_string(state->errors,drop->dtdda_msg ? drop->dtdda_msg : "");
     fputs("}\n",state->errors);
     return DTRACE_HANDLE_ABORT;
 }
+struct layout { int kind, count, zero, first; uint32_t bytes; };
+static bool select_layout(const struct capture *state, const dtrace_probedata_t *data, struct layout *layout) {
+    const dtrace_probedesc_t *probe=data->dtpda_pdesc;
+    if (!probe) return false;
+    int kind=0;
+    if (!strcmp(probe->dtpd_provider,"dtrace") && !probe->dtpd_mod[0] && !probe->dtpd_func[0]) {
+        if (!strcmp(probe->dtpd_name,"BEGIN")) kind=BEGIN_EVENT;
+        else if (!strcmp(probe->dtpd_name,"END")) kind=END_EVENT;
+    } else if (!strcmp(probe->dtpd_provider,"syscall") && probe->dtpd_func[0] &&
+               (state->tree || !strcmp(probe->dtpd_func,"open"))) {
+        if (!strcmp(probe->dtpd_name,"entry"))
+            kind=!strcmp(probe->dtpd_func,"open") && data->dtpda_edesc->dtepd_nrecs==6 ? OPEN_PATH : SYSCALL_ENTRY;
+        else if (!strcmp(probe->dtpd_name,"return")) kind=SYSCALL_RETURN;
+    } else if (state->tree && !strcmp(probe->dtpd_provider,"proc")) {
+        const struct { const char *name; int kind; } names[]={
+            {"create",CREATE_EVENT},{"start",START_EVENT},{"exit",EXIT_EVENT},{"exited",EXITED_TARGET},
+            {"exec-success",EXEC_SUCCESS},{"exec-failure",EXEC_FAILURE},{"lwp-create",LWP_CREATE},
+            {"lwp-start",LWP_START},{"lwp-exit",LWP_EXIT},{"spawn-success",SPAWN_SUCCESS},{"spawn-failure",SPAWN_FAILURE},
+        };
+        for (unsigned i=0;i<sizeof(names)/sizeof(names[0]);++i)
+            if (!strcmp(probe->dtpd_name,names[i].name)) kind=names[i].kind;
+    } else if (state->mach && !strcmp(probe->dtpd_provider,"mach_trap") && probe->dtpd_func[0]) {
+        if (!strcmp(probe->dtpd_name,"entry")) kind=MACH_ENTRY;
+        else if (!strcmp(probe->dtpd_name,"return")) kind=MACH_RETURN;
+    }
+    if (!kind) return false;
+    bool leading=kind==BEGIN_EVENT || kind==CREATE_EVENT || kind==START_EVENT || kind==EXEC_SUCCESS;
+    int zero=leading ? 0 : -1;
+    int payloads=kind==SYSCALL_ENTRY || kind==MACH_ENTRY ? 13 : kind==SYSCALL_RETURN ? 10 : kind==EXITED_TARGET ? 8 : kind==MACH_RETURN || kind==OPEN_PATH ? 6 : 5;
+    *layout=(struct layout){.kind=kind,.count=payloads+(zero>=0),.zero=zero,.first=leading ? 1 : 0,
+                            .bytes=kind==OPEN_PATH ? 1080 : 16+(uint32_t)payloads*8};
+    return true;
+}
 static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     struct capture *state=argument;
     const dtrace_eprobedesc_t *description=data->dtpda_edesc;
-    uint64_t header[5]={0};
-    if (++state->events_seen>MAX_EVENTS || description->dtepd_nrecs<5 || description->dtepd_nrecs>20 || description->dtepd_size>MAX_RECORD_BYTES) goto invalid;
+    uint64_t header[5]={0}, target_address=0, target_refcount=0;
+    struct layout layout;
+    const char *rejection="event-count";
+    if (++state->events_seen>MAX_EVENTS) goto invalid;
+    rejection="record-count";
+    if (description->dtepd_nrecs<5 || description->dtepd_nrecs>20) goto invalid;
+    rejection="record-bytes";
+    if (description->dtepd_size>MAX_RECORD_BYTES) goto invalid;
+    rejection="probe-layout";
+    if (!select_layout(state,data,&layout)) goto invalid;
+    rejection="probe-id";
+    if (!description->dtepd_epid || !data->dtpda_pdesc->dtpd_id || description->dtepd_probeid!=data->dtpda_pdesc->dtpd_id) goto invalid;
+    rejection="record-count";
+    if (description->dtepd_nrecs!=layout.count) goto invalid;
     for (int i=0;i<description->dtepd_nrecs;++i) {
         const dtrace_recdesc_t *record=&description->dtepd_rec[i];
+        rejection="record-range";
         if (record->dtrd_offset>description->dtepd_size || record->dtrd_size>description->dtepd_size-record->dtrd_offset) goto invalid;
-        if (i<5) {
-            if (record->dtrd_size!=sizeof(uint64_t)) goto invalid;
-            memcpy(&header[i],data->dtpda_data+record->dtrd_offset,sizeof(uint64_t));
-        }
+        rejection="record-action";
+        if (record->dtrd_action!=DTRACEACT_DIFEXPR) goto invalid;
+        int payload=i-(layout.zero>=0 && i>layout.zero);
+        uint32_t expected_size=i==layout.zero ? 0 : layout.kind==OPEN_PATH && i==5 ? 1024 : 8;
+        uint32_t expected_offset=i==layout.zero ? (i==0 ? 12 : 64) : 16+(uint32_t)payload*8;
+        rejection="record-layout";
+        if (record->dtrd_size!=expected_size || record->dtrd_offset!=expected_offset) goto invalid;
     }
-    if (header[0]<BEGIN_EVENT || header[0]>END_EVENT || header[2]>INT_MAX) goto invalid;
-    fprintf(state->events,"{\"event\":%"PRIu64",\"cpu\":%d,\"epid\":%u,\"probe_id\":%u,\"kind\":%"PRIu64",\"timestamp\":%"PRIu64",\"pid\":%"PRIu64",\"tid\":%"PRIu64",\"detail\":%"PRIu64",\"provider\":",state->events_seen,data->dtpda_cpu,description->dtepd_epid,data->dtpda_pdesc->dtpd_id,header[0],header[1],header[2],header[3],header[4]);
+    rejection="record-bytes";
+    if (description->dtepd_size!=layout.bytes || !data->dtpda_data) goto invalid;
+    for (int i=0;i<5;++i) memcpy(&header[i],data->dtpda_data+description->dtepd_rec[layout.first+i].dtrd_offset,sizeof(uint64_t));
+    rejection="header-kind";
+    if (header[0]!=(uint64_t)layout.kind) goto invalid;
+    rejection="header-pid";
+    if (header[2]>INT_MAX) goto invalid;
+    rejection="header-target";
+    if ((layout.kind==CREATE_EVENT || layout.kind==EXITED_TARGET) && (header[4]==0 || header[4]>INT_MAX)) goto invalid;
+    if (layout.kind==EXITED_TARGET) {
+        memcpy(&target_address,data->dtpda_data+description->dtepd_rec[6].dtrd_offset,8);
+        memcpy(&target_refcount,data->dtpda_data+description->dtepd_rec[7].dtrd_offset,8);
+        rejection="target-identity";
+        if (!target_address || target_refcount>UINT32_MAX) goto invalid;
+    }
+    rejection="header-detail";
+    if ((layout.kind==BEGIN_EVENT || layout.kind==END_EVENT || layout.kind==LWP_START || layout.kind==LWP_EXIT ||
+         layout.kind==SPAWN_SUCCESS || layout.kind==OPEN_PATH) && header[4]!=0) goto invalid;
+    rejection="lifecycle-state";
+    /* A shadow exit is raw context even if that PID's live object has already
+     * terminated. Never attribute its current context to application activity. */
+    /* Only tree profiles have event-ordered terminal evidence. In open-only
+     * mode waitpid can mark the root reaped before queued records are drained. */
+    if (state->tree && layout.kind!=BEGIN_EVENT && layout.kind!=END_EVENT && layout.kind!=EXITED_TARGET &&
+        layout.kind!=LWP_EXIT && terminal_pid(state,header[2])) goto invalid;
+    if (layout.kind==CREATE_EVENT) {
+        for (size_t i=0;i<state->processes_used;++i)
+            if ((uint64_t)state->processes[i].pid==header[4] && (state->processes[i].created || state->processes[i].terminal)) goto invalid;
+    }
+    if (layout.kind==EXITED_TARGET && !(target_refcount&PINNED_P_REF_SHADOW) && terminal_pid(state,header[4])) goto invalid;
+    fprintf(state->events,"{\"event\":%"PRIu64",\"cpu\":%d,\"epid\":%u,\"probe_id\":%u,\"record_bytes\":%u,\"header_record_indexes\":[%d,%d,%d,%d,%d],\"kind\":%"PRIu64",\"timestamp\":%"PRIu64",\"pid\":%"PRIu64",\"tid\":%"PRIu64",\"detail\":%"PRIu64",\"provider\":",state->events_seen,data->dtpda_cpu,description->dtepd_epid,data->dtpda_pdesc->dtpd_id,description->dtepd_size,layout.first,layout.first+1,layout.first+2,layout.first+3,layout.first+4,header[0],header[1],header[2],header[3],header[4]);
     json_string(state->events,data->dtpda_pdesc->dtpd_provider);
     fputs(",\"module\":",state->events); json_string(state->events,data->dtpda_pdesc->dtpd_mod);
     fputs(",\"function\":",state->events); json_string(state->events,data->dtpda_pdesc->dtpd_func);
@@ -119,6 +269,7 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
         fputs("\"}",state->events);
     }
     fputs("]}\n",state->events);
+    rejection="event-output";
     if (ferror(state->events) || ftello(state->events)<0 || (uint64_t)ftello(state->events)>MAX_RAW_BYTES) goto invalid;
     if (header[0]==CREATE_EVENT) {
         struct process *child=process_for(state,(pid_t)header[4]);
@@ -126,10 +277,10 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     } else if (header[0]==START_EVENT || header[0]==EXEC_SUCCESS) {
         struct process *process=process_for(state,(pid_t)header[2]);
         if (process) process->created=true;
-    } else if (header[0]==EXIT_EVENT) {
-        struct process *process=process_for(state,(pid_t)header[2]);
+    } else if (header[0]==EXITED_TARGET && !(target_refcount&PINNED_P_REF_SHADOW)) {
+        struct process *process=process_for(state,(pid_t)header[4]);
         if (process) process->terminal=true;
-        if ((pid_t)header[2]==state->root) state->root_terminal=true;
+        if ((pid_t)header[4]==state->root) state->root_terminal=true;
     }
     if (!strcmp(data->dtpda_pdesc->dtpd_func,"open")) {
         if (header[0]==SYSCALL_ENTRY) ++state->open_entries;
@@ -137,7 +288,7 @@ static int consume_probe(const dtrace_probedata_t *data, void *argument) {
     }
     return state->failed ? DTRACE_CONSUME_ABORT : DTRACE_CONSUME_NEXT;
 invalid:
-    state->failed=true; state->reason="malformed record or capture bound exceeded";
+    layout_error(state,data,rejection);
     return DTRACE_CONSUME_ABORT;
 }
 static int probe_inventory(dtrace_hdl_t *handle, const dtrace_probedesc_t *probe, void *argument) {
@@ -180,9 +331,11 @@ static int write_program(FILE *output, pid_t root, const char *profile) {
         for (size_t i=0;i<sizeof(events)/sizeof(events[0]);++i) {
             fprintf(output,"proc:::%s /watched[pid]/ { ",events[i].probe);
             event_header(output,events[i].kind,events[i].detail);
-            if (events[i].kind==EXIT_EVENT) fputs("watched[pid]=0; ",output);
             fputs("}\n",output);
         }
+        fputs("proc:::exited /watched[args[0]->pr_pid]/ { ",output);
+        event_header(output,EXITED_TARGET,"args[0]->pr_pid");
+        fputs("trace((uint64_t)arg1); trace((uint64_t)args[0]->pr_addr); trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount); }\n",output);
     }
     if (mach) for (int which=0;which<2;++which) {
         fprintf(output,"mach_trap:::%s /watched[pid]/ { ",which ? "return" : "entry");
@@ -245,8 +398,8 @@ static bool read_identity(const char *path, struct identity *identity) {
 }
 static void capture_identity(struct capture *state, const char *path, struct identity *identity) {
     if (!read_identity(path,identity)) {
-        state->failed=true; state->identity_failed=true;
-        state->reason="required fixture, collector or evidence identity unavailable";
+        state->identity_failed=true;
+        fail_capture(state,"required fixture, collector or evidence identity unavailable");
     }
 }
 static const char *capture_status(const struct capture *state) {
@@ -305,7 +458,7 @@ int main(int argc, char **argv) {
     struct stat fixture;
     if (stat(argv[command],&fixture) || !S_ISREG(fixture.st_mode) || access(argv[command],X_OK)) { perror("owned fixture"); return 2; }
     if (mkdir(directory,0755)) { perror("new capture directory"); return 2; }
-    struct capture state={.tree=strcmp(profile,"open")!=0,.reason="not started"};
+    struct capture state={.tree=strcmp(profile,"open")!=0,.mach=!strcmp(profile,"tree-mach"),.reason="not started"};
     state.events=new_file(directory,"events.jsonl"); state.errors=new_file(directory,"errors.jsonl");
     state.inventory=new_file(directory,"probes.tsv");
     FILE *program=new_file(directory,"program.d"), *target_out=new_file(directory,"target.stdout"), *target_err=new_file(directory,"target.stderr");
@@ -337,49 +490,49 @@ int main(int argc, char **argv) {
     int error=0; dtrace_hdl_t *handle=dtrace_open(DTRACE_VERSION,DTRACE_O_LP64,&error);
     bool go=false,root_reaped=false,timed_out=false,drained=false;
     int target_status=0;
-    if (!handle) { state.failed=true; state.reason="dtrace_open unavailable"; fprintf(state.errors,"dtrace_open: %s\n",dtrace_errmsg(NULL,error)); }
-    if (program_error) { state.failed=true; state.reason="probe program output failed"; }
+    if (!handle) { fail_capture(&state,"dtrace_open unavailable"); fprintf(state.errors,"dtrace_open: %s\n",dtrace_errmsg(NULL,error)); }
+    if (program_error) fail_capture(&state,"probe program output failed");
     if (handle) {
         if (dtrace_handle_drop(handle,drop_event,&state) || dtrace_handle_err(handle,error_event,&state) ||
             dtrace_setopt(handle,"bufsize","16m") || dtrace_setopt(handle,"bufpolicy","switch") ||
             dtrace_setopt(handle,"switchrate","20ms") || dtrace_setopt(handle,"statusrate","20ms") ||
             dtrace_setopt(handle,"dynvarsize","8m") || dtrace_setopt(handle,"temporal","yes")) {
-            state.failed=true; state.reason="DTrace options/callback setup failed";
+            fail_capture(&state,"DTrace options/callback setup failed");
         }
-        if (!state.failed && dtrace_probe_iter(handle,NULL,probe_inventory,state.inventory)) { state.failed=true; state.reason="probe inventory unavailable"; }
+        if (!state.failed && dtrace_probe_iter(handle,NULL,probe_inventory,state.inventory)) fail_capture(&state,"probe inventory unavailable");
         FILE *source=fopen(program_path,"r");
         dtrace_prog_t *compiled=source && !state.failed ? dtrace_program_fcompile(handle,source,0,0,NULL) : NULL;
         if (source) fclose(source);
         dtrace_proginfo_t info={0};
         if (!state.failed && (!compiled || dtrace_program_exec(handle,compiled,&info) || !info.dpi_matches || dtrace_go(handle))) {
-            state.failed=true; state.reason="required DTrace program/provider unavailable";
+            fail_capture(&state,"required DTrace program/provider unavailable");
         } else if (!state.failed) { go=true; state.started=true; }
         if (state.failed) fprintf(state.errors,"DTrace setup: %s\n",dtrace_errmsg(handle,dtrace_errno(handle)));
     }
-    if (go && write(gate[1],"G",1)!=1) { state.failed=true; state.reason="launch gate release failed"; }
+    if (go && write(gate[1],"G",1)!=1) fail_capture(&state,"launch gate release failed");
     close(gate[1]); fclose(target_out); fclose(target_err);
     const double deadline=monotonic()+timeout;
     while (go && !state.failed) {
-        if (interrupted || monotonic()>=deadline) { timed_out=!interrupted; state.failed=true; state.reason=interrupted ? "collector interrupted" : "capture deadline exceeded"; break; }
-        if (dtrace_work(handle,NULL,consume_probe,NULL,&state)==DTRACE_WORKSTATUS_ERROR) { state.failed=true; state.reason="DTrace consume failed"; break; }
+        if (interrupted || monotonic()>=deadline) { timed_out=!interrupted; fail_capture(&state,interrupted ? "collector interrupted" : "capture deadline exceeded"); break; }
+        if (dtrace_work(handle,NULL,consume_probe,NULL,&state)==DTRACE_WORKSTATUS_ERROR) { libdtrace_error(&state,handle,"work","DTrace consume failed"); break; }
         if (!root_reaped) {
             pid_t waited=waitpid(state.root,&target_status,WNOHANG);
             if (waited==state.root) {
                 root_reaped=true;
                 if (!state.tree) { state.root_terminal=true; if (root) root->terminal=true; }
-            } else if (waited<0 && errno!=EINTR) { state.failed=true; state.reason="root wait failed"; }
+            } else if (waited<0 && errno!=EINTR) fail_capture(&state,"root wait failed");
         }
         if (root_reaped && all_terminal(&state)) break;
         struct timespec pause={.tv_nsec=10000000}; nanosleep(&pause,NULL);
     }
     if (go) {
-        if (dtrace_stop(handle)) { state.failed=true; state.reason="DTrace stop failed"; }
+        if (dtrace_stop(handle)) libdtrace_error(&state,handle,"stop","DTrace stop failed");
         for (unsigned i=0;i<100 && monotonic()<deadline;++i) {
             dtrace_workstatus_t status=dtrace_work(handle,NULL,consume_probe,NULL,&state);
             if (status==DTRACE_WORKSTATUS_DONE) { drained=true; break; }
-            if (status==DTRACE_WORKSTATUS_ERROR) break;
+            if (status==DTRACE_WORKSTATUS_ERROR) { libdtrace_error(&state,handle,"drain","DTrace final drain failed"); break; }
         }
-        if (!drained || !all_terminal(&state)) { state.failed=true; state.reason="final drain or observed tree incomplete"; }
+        if (!drained || !all_terminal(&state)) fail_capture(&state,"final drain or observed tree incomplete");
     }
     if (handle) dtrace_close(handle);
     if (!root_reaped) {
@@ -390,12 +543,12 @@ int main(int argc, char **argv) {
         root_reaped=true;
     }
     if (go && !state.failed && (!WIFEXITED(target_status) || WEXITSTATUS(target_status)!=0 || !state.open_entries || !state.open_returns)) {
-        state.failed=true; state.reason="owned fixture exit or required open events missing";
+        fail_capture(&state,"owned fixture exit or required open events missing");
     }
     int close_error=fclose(state.events);
     if (fclose(state.errors)) close_error=-1;
     if (fclose(state.inventory)) close_error=-1;
-    if (close_error) { state.failed=true; state.reason="evidence output close failed"; }
+    if (close_error) fail_capture(&state,"evidence output close failed");
     /* Resolve every required identity before selecting the final status. A hash
      * failure must never leave a captured receipt containing a null identity. */
     const char *files[]={"program.d","events.jsonl","errors.jsonl","probes.tsv","target.stdout","target.stderr","watchdog.json"};
@@ -403,7 +556,7 @@ int main(int argc, char **argv) {
     capture_identity(&state,argv[command],&fixture_identity);
     char executable[PATH_MAX]; uint32_t executable_size=sizeof(executable);
     if (_NSGetExecutablePath(executable,&executable_size)==0) capture_identity(&state,executable,&collector_identity);
-    else { state.failed=true; state.identity_failed=true; state.reason="collector executable path unavailable for identity"; }
+    else { state.identity_failed=true; fail_capture(&state,"collector executable path unavailable for identity"); }
     for (size_t i=0;i<sizeof(files)/sizeof(files[0]);++i) {
         char path[PATH_MAX]; snprintf(path,sizeof(path),"%s/%s",directory,files[i]);
         capture_identity(&state,path,&evidence_identities[i]);
@@ -418,7 +571,7 @@ int main(int argc, char **argv) {
     size_t product_size=sizeof(product),build_size=sizeof(build);
     if (sysctlbyname("kern.osproductversion",product,&product_size,NULL,0)) strcpy(product,"unavailable");
     if (sysctlbyname("kern.osversion",build,&build_size,NULL,0)) strcpy(build,"unavailable");
-    fprintf(report,"{\"revision\":1,\"protocol\":\"darwin-capability-raw-v1\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
+    fprintf(report,"{\"revision\":4,\"protocol\":\"darwin-capability-raw-v4\",\"scope\":\"owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance\",\"status\":\"%s\",\"reason\":",capture_status(&state));
     json_string(report,state.failed ? state.reason : "owned fixture exited, required open events observed, observed tree drained");
     fputs(",\"profile\":",report); json_string(report,profile);
     fputs(",\"host\":{\"system\":",report); json_string(report,host.sysname);

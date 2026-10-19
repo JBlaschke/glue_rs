@@ -29,11 +29,28 @@ def event(index, kind, pid=600, detail=0, extra=(), raw_path=None):
         provider, function, name = "mach_trap", "mach_test", "entry" if kind == 15 else "return"
     words = [kind, index * 100, pid, pid + 1, detail, *extra]
     records = [{"action": 1, "size": 8, "offset": 16 + 8 * i, "hex": value.to_bytes(8, "little").hex()} for i, value in enumerate(words)]
+    leading = kind in {1, 4, 5, 7}
+    if leading:
+        records.insert(0, {"action": 1, "size": 0, "offset": 12, "hex": ""})
     if raw_path is not None:
-        records.append({"action": 1, "size": len(raw_path), "offset": 16 + 8 * len(words), "hex": raw_path.hex()})
-    return {"event": index, "cpu": 0, "epid": index, "probe_id": probe, "kind": kind,
+        raw_path = raw_path.ljust(1024, b"\0")
+        records.append({"action": 1, "size": 1024, "offset": 56, "hex": raw_path.hex()})
+    return {"event": index, "cpu": 0, "epid": kind, "probe_id": probe, "kind": kind,
             "timestamp": words[1], "pid": pid, "tid": words[3], "detail": detail,
-            "provider": provider, "module": "", "function": function, "name": name, "records": records}
+            "provider": provider, "module": "", "function": function, "name": name,
+            "record_bytes": 1080 if kind == 14 else 16 + 8 * len(words),
+            "header_record_indexes": list(range(1 if leading else 0, 6 if leading else 5)), "records": records}
+
+
+def layout_error():
+    """Conspicuously synthetic rejected metadata; not an accepted event."""
+    records = [{"action": 1, "size": 0, "offset": 0, "u64": None}]
+    records.extend({"action": 1, "size": 8, "offset": i * 8, "u64": value}
+                   for i, value in enumerate((1, 1000, 600, 601, 0)))
+    return {"kind": "layout-error", "reason": "record-layout", "cpu": -1, "epid": 7,
+            "probe_id": 1, "provider": "dtrace", "module": "", "function": "", "name": "BEGIN",
+            "event": 1, "nrecs": 6, "record_bytes": 40,
+            "header": [record["u64"] for record in records[:5]], "records": records}
 
 
 class CapabilityReaderTests(unittest.TestCase):
@@ -55,7 +72,7 @@ class CapabilityReaderTests(unittest.TestCase):
         self.events = [event(1, 1, 500), event(2, 2, detail=500, extra=range(8)),
                        event(3, 14, raw_path=b"/synthetic/input\0"),
                        event(4, 3, detail=500, extra=(3, 0, 0, 0, 0)), event(5, 17, 500)]
-        self.report = {"revision": 1, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
+        self.report = {"revision": 4, "protocol": reader.PROTOCOL, "scope": reader.SCOPE,
                        "status": "captured", "reason": "SYNTHETIC FORMAT TEST ONLY", "profile": "open",
                        "host": {"system": "Darwin", "release": "synthetic", "machine": "arm64", "product_version": "synthetic", "build": "synthetic"},
                        "elapsed_seconds": 0.1, "root_pid": 600, "root_wait_status": 0, "deadline_seconds": 15,
@@ -99,12 +116,35 @@ class CapabilityReaderTests(unittest.TestCase):
         with self.assertRaisesRegex(reader.InvalidCapability, pattern):
             self.inspect()
 
+    def write_diagnostics(self, diagnostics):
+        self.report.update(status="failed", drained=False)
+        (self.capture / "errors.jsonl").write_bytes(b"".join(encoded(value) for value in diagnostics))
+        self.save()
+
+    def two_open_calls(self):
+        self.events = [event(1, 1, 500), event(2, 2, extra=range(8)),
+                       event(3, 14, raw_path=b"/synthetic/first\0"),
+                       event(4, 3, extra=(3, 3, 0, 0, 0)), event(5, 2, extra=range(10, 18)),
+                       event(6, 14, raw_path=b"/synthetic/second\0"),
+                       event(7, 3, extra=((1 << 64) - 1,) * 3 + (2, 2)), event(8, 17, 500)]
+        self.report.update(events=8, open_entries=2, open_returns=2)
+        self.write_events()
+        self.save()
+
+    def tree_session(self, events, processes=None):
+        self.events = events
+        self.report.update(profile="tree", events=len(events),
+                           processes=processes or [{"pid": 600, "created": True, "terminal": True}])
+        (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree"))
+        self.write_events()
+        self.save()
+
     def test_consistent_synthetic_transport_exports_exact_raw_records_only(self):
         summary, timeline = self.inspect()
         self.assertEqual(summary["capture_status"], "captured")
         self.assertIs(summary["full_trace_acceptance"], False)
         self.assertEqual([item["raw"] for item in timeline], self.events)
-        self.assertEqual(timeline[2]["raw"]["records"][-1]["hex"], b"/synthetic/input\0".hex())
+        self.assertEqual(timeline[2]["raw"]["records"][-1]["hex"], b"/synthetic/input\0".ljust(1024, b"\0").hex())
         self.assertEqual(timeline[3]["raw_uint64_after_header"], [3, 0, 0, 0, 0])
         self.assertNotIn("path", timeline[2])
         self.assertNotIn("success", timeline[3])
@@ -150,7 +190,7 @@ class CapabilityReaderTests(unittest.TestCase):
 
     def test_receipt_missing_footer_duplicate_extra_and_wrong_types(self):
         original = encoded(self.report)
-        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":1', b'"revision":1,"revision":1'), original.replace(b'"revision":1', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
+        for malformed in (original[:-1], original[:-3], original.replace(b'"revision":4', b'"revision":4,"revision":4'), original.replace(b'"revision":4', b'"revision":true'), original.replace(b'"status":"captured"', b'"status":[]'), original.replace(b'"elapsed_seconds":0.1', b'"elapsed_seconds":NaN')):
             with self.subTest(malformed=malformed[:70]):
                 (self.capture / "capability.json").write_bytes(malformed)
                 self.rejected("footer|JSON|header|status|elapsed")
@@ -244,7 +284,7 @@ class CapabilityReaderTests(unittest.TestCase):
                      lambda e: e[1]["records"][1].update(offset=16),
                      lambda e: e[1]["records"][0].update(action=2),
                      lambda e: e[1]["records"].pop(),
-                     lambda e: e[1].update(kind=18), lambda e: e[1].update(extra=1)]
+                     lambda e: e[1].update(kind=max(reader.KINDS) + 1), lambda e: e[1].update(extra=1)]
         for mutation in mutations:
             with self.subTest(mutation=mutation):
                 self.events = copy.deepcopy(original)
@@ -261,6 +301,125 @@ class CapabilityReaderTests(unittest.TestCase):
         self.report["profile"] = "tree"
         self.save()
         self.rejected("program bytes/root/profile")
+
+    def test_session_epid_bindings_allow_changing_call_data(self):
+        self.two_open_calls()
+        # An enabling can observe a different process/thread/CPU in this unit
+        # model; these values and path/argument/result bytes are per-call data.
+        for index in (4, 5, 6):
+            value = self.events[index]
+            value.update(pid=601, tid=700, cpu=1)
+            for name, position in (("pid", 2), ("tid", 3)):
+                value["records"][position]["hex"] = value[name].to_bytes(8, "little").hex()
+        self.write_events()
+        self.save()
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual([value["raw"] for value in timeline], self.events)
+
+    def test_session_epid_phase_swaps_reject_after_rebuilt_hashes(self):
+        self.two_open_calls()
+        self.events[4]["epid"], self.events[6]["epid"] = self.events[6]["epid"], self.events[4]["epid"]
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_same_clause_cannot_switch_to_fresh_epid(self):
+        self.two_open_calls()
+        self.events[4]["epid"] = 1000
+        self.write_events()
+        self.save()
+        self.rejected("multiple EPIDs")
+
+    def test_session_epid_cannot_rebind_to_fresh_valid_probe_identity(self):
+        self.two_open_calls()
+        self.events[4]["probe_id"] = 1000
+        self.write_events()  # New probe also enters the rebuilt inventory.
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_epid_cannot_change_descriptor_tuple_after_inventory_rebuild(self):
+        self.two_open_calls()
+        # Give the first call a different, still structurally valid module. The
+        # inventory dictionary's last value is the original second-call tuple,
+        # so retain both as distinct valid probe IDs to reach session checks.
+        self.events[1].update(probe_id=1000, module="first-module")
+        self.events[4]["probe_id"] = 1001
+        self.events[4]["module"] = "second-module"
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_epid_cannot_alias_builtin_and_syscall_clause(self):
+        self.two_open_calls()
+        self.events[1]["epid"] = self.events[0]["epid"]
+        self.write_events()
+        self.save()
+        self.rejected("EPID binding changed")
+
+    def test_session_enabling_limit_rejects_without_large_allocations(self):
+        self.two_open_calls()
+        with mock.patch.object(reader, "MAX_ENABLINGS", 4):
+            self.rejected("enabling count exceeds diagnostic limit")
+        # Exactly five stable enabling identities occur, across eight events.
+        with mock.patch.object(reader, "MAX_ENABLINGS", 5):
+            self.assertEqual(self.inspect()[0]["totals"]["events"], 8)
+
+    def test_prior_raw_receipts_are_explicitly_unsupported(self):
+        for revision in (1, 2, 3):
+            self.report.update(revision=revision, protocol="darwin-capability-raw-v" + str(revision))
+            self.save()
+            self.rejected("unsupported capability header")
+
+    def test_v2_exact_clause_layouts_preserve_zero_descriptors(self):
+        for kind in reader.KINDS:
+            with self.subTest(kind=kind):
+                extra = range({2: 8, 3: 5, 15: 8, 16: 1, 18: 3}.get(kind, 0))
+                value = event(1, kind, detail=600 if kind in {4, 18} else 0, extra=extra, raw_path=b"synthetic\0" if kind == 14 else None)
+                inventory = {} if kind in {1, 17} else {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                exported = reader.typed_event(value, 1, "tree-mach", inventory)
+                self.assertEqual(exported["raw"], value)
+                self.assertEqual(exported["raw_uint64_after_header"], list(extra))
+                zero_indexes = [index for index, record in enumerate(value["records"]) if record["size"] == 0]
+                self.assertEqual(zero_indexes, [0] if kind in {1, 4, 5, 7} else [])
+                for index in zero_indexes:
+                    self.assertEqual(exported["raw"]["records"][index]["hex"], "")
+
+    def test_v2_rejects_unrecognized_zero_width_record_layouts(self):
+        original = copy.deepcopy(self.events)
+        mutations = [lambda e: e[0]["records"][0].update(offset=16),
+                     lambda e: e[0]["records"][0].update(action=0),
+                     lambda e: e[0]["records"][0].update(hex="00"),
+                     lambda e: e[0]["records"].pop(0),
+                     lambda e: e[1]["records"].insert(0, {"action": 1, "size": 0, "offset": 12, "hex": ""}),
+                     lambda e: e[0].update(header_record_indexes=[0, 1, 2, 3, 4]),
+                     lambda e: e[1].update(header_record_indexes=[False, 1, 2, 3, 4]),
+                     lambda e: e[0].update(record_bytes=64),
+                     lambda e: e[0]["records"][1].update(offset=24),
+                     lambda e: e[2]["records"][-1].update(size=16, hex="00" * 16),
+                     lambda e: e[0].update(module="unexpected")]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                self.events = copy.deepcopy(original)
+                mutation(self.events)
+                self.write_events()
+                self.save()
+                self.rejected("layout|action|record|hex|BEGIN")
+        value = event(1, 18, detail=600, extra=(0, 0x12340000, 1))
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        value["records"][-1]["offset"] = 48
+        with self.assertRaisesRegex(reader.InvalidCapability, "exact clause layout"):
+            reader.typed_event(value, 1, "tree", inventory)
+
+    def test_v2_header_bytes_kind_probe_and_profile_must_all_agree(self):
+        value = event(1, 4, detail=600)
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        with self.assertRaisesRegex(reader.InvalidCapability, "profile"):
+            reader.typed_event(value, 1, "open", inventory)
+        value["records"][1]["hex"] = (5).to_bytes(8, "little").hex()
+        with self.assertRaisesRegex(reader.InvalidCapability, "decoded header"):
+            reader.typed_event(value, 1, "tree", inventory)
 
     def test_truncated_lines_and_bounded_input(self):
         for raw in (encoded(self.events[0])[:-1], b" " * (reader.MAX_LINE + 1) + b"\n"):
@@ -335,12 +494,133 @@ class CapabilityReaderTests(unittest.TestCase):
         self.save()
         self.rejected("callback totals")
 
+    def test_diagnostics_remain_failed_separate_from_fault_drop_totals(self):
+        values = [layout_error(), {"kind": "libdtrace-error", "operation": "drain", "error": -1, "message": "synthetic failure \u00ff"}]
+        self.write_diagnostics(values)
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["producer_diagnostics"], values)
+        self.assertEqual(summary["capture_status"], "failed")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual(len(timeline), 5)
+        self.report["errors"] = 2
+        self.save()
+        self.rejected("callback totals")
+
+    def test_diagnostics_cannot_excuse_event_gaps_or_receipt_totals(self):
+        self.write_diagnostics([layout_error()])
+        self.events[0]["event"] = 2
+        self.write_events()
+        self.save()
+        self.rejected("event index gap")
+        self.events[0]["event"] = 1
+        self.report["events"] = 6
+        self.write_events()
+        self.save()
+        self.rejected("receipt total")
+
+    def test_diagnostics_require_failed_started_status_and_combined_count_bound(self):
+        value = {"kind": "libdtrace-error", "operation": "work", "error": 5, "message": "synthetic"}
+        self.write_diagnostics([value] * 16)
+        self.assertEqual(len(self.inspect()[0]["producer_diagnostics"]), 16)
+        self.write_diagnostics([value] * 17)
+        self.rejected("exceeds sixteen")
+        for status, started in (("captured", True), ("unavailable", False), ("failed", False)):
+            with self.subTest(status=status, started=started):
+                self.write_diagnostics([value])
+                self.report.update(status=status, started=started)
+                self.save()
+                self.rejected("started failed capture")
+
+    def test_layout_diagnostic_exact_keys_types_counts_and_event_bounds(self):
+        original = layout_error()
+        mutations = [lambda d: d.update(extra=0), lambda d: d.update(reason="new-reason"),
+                     lambda d: d.update(cpu=True), lambda d: d.update(epid=1 << 32),
+                     lambda d: d.update(nrecs=1 << 31), lambda d: d.update(nrecs=True),
+                     lambda d: d.update(record_bytes=-1), lambda d: d.update(header=[]),
+                     lambda d: d["records"].pop(), lambda d: d["records"][0].update(extra=0),
+                     lambda d: d["records"][0].update(action=-1),
+                     lambda d: d["records"][0].update(action=1 << 16),
+                     lambda d: d.update(event=0), lambda d: d.update(event=6),
+                     lambda d: d.update(provider="x" * 65), lambda d: d.update(probe_id=True),
+                     lambda d: d.update(probe_id=None), lambda d: d.update(provider="\u0100")]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+        self.write_diagnostics([original, original])
+        self.rejected("increasing receipt count")
+
+    def test_layout_diagnostic_null_and_uint64_read_safety(self):
+        original = layout_error()
+        mutations = [lambda d: d["records"][0].update(u64=1),
+                     lambda d: d["records"][1].update(offset=40),
+                     lambda d: d["records"][1].update(size=9),
+                     lambda d: d.update(record_bytes=8193),
+                     lambda d: d["records"][1].update(u64=True),
+                     lambda d: d["records"][1].update(u64=1 << 64),
+                     lambda d: d["header"].__setitem__(1, True),
+                     lambda d: d["header"].__setitem__(1, 2)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+        for count in (-1, -(1 << 31), 0, 21, (1 << 31) - 1):
+            with self.subTest(count=count):
+                value = copy.deepcopy(original)
+                value.update(nrecs=count, record_bytes=(1 << 32) - 1,
+                             records=[{"action": 0, "size": 0, "offset": (1 << 32) - 1, "u64": None} for _ in range(max(0, min(count, 20)))],
+                             header=[None] * 5, probe_id=None,
+                             provider=None, module=None, function=None, name=None)
+                self.write_diagnostics([value])
+                self.assertEqual(self.inspect()[0]["producer_diagnostics"], [value])
+        # A null data pointer means even an in-range record remains unread.
+        value = copy.deepcopy(original)
+        value["header"] = [None] * 5
+        for record in value["records"]:
+            record["u64"] = None
+        self.write_diagnostics([value])
+        self.assertEqual(self.inspect()[0]["producer_diagnostics"], [value])
+
+    def test_libdtrace_diagnostic_exact_schema_message_and_native_integer_bounds(self):
+        original = {"kind": "libdtrace-error", "operation": "work", "error": 5, "message": "x" * 512}
+        self.write_diagnostics([original])
+        self.assertEqual(self.inspect()[0]["producer_diagnostics"], [original])
+        mutations = [lambda d: d.update(operation="setup"), lambda d: d.update(error=True),
+                     lambda d: d.update(error=1 << 31), lambda d: d.update(message="x" * 513),
+                     lambda d: d.update(message="\u0100"), lambda d: d.update(message="nul\0byte"),
+                     lambda d: d.update(message=None), lambda d: d.update(extra=0)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                value = copy.deepcopy(original)
+                mutation(value)
+                self.write_diagnostics([value])
+                with self.assertRaises(reader.InvalidCapability):
+                    self.inspect()
+
+    def test_malformed_truncated_and_changed_diagnostic_stream_rejected(self):
+        self.write_diagnostics([layout_error()])
+        raw = (self.capture / "errors.jsonl").read_bytes()
+        for malformed in (raw[:-1], raw.replace(b'"cpu":-1', b'"cpu":-1,"cpu":-1'), b"{" + b" " * reader.MAX_LINE + b"\n"):
+            with self.subTest(malformed=malformed[:50]):
+                (self.capture / "errors.jsonl").write_bytes(malformed)
+                self.save()
+                self.rejected("truncated|duplicate JSON key|line bound")
+        self.write_diagnostics([layout_error()])
+        (self.capture / "errors.jsonl").write_bytes(raw.replace(b"record-layout", b"record-range"))
+        self.rejected("hash mismatch")
+
     def test_tree_ledger_replay_does_not_end_at_root_exit(self):
         self.report["profile"] = "tree-mach"
-        self.events = [event(1, 1, 500), event(2, 4, detail=601), event(3, 6),
+        self.events = [event(1, 1, 500), event(2, 4, detail=601), event(3, 18, detail=600, extra=(0, 0x12340000, 1)),
                        event(4, 2, pid=601, extra=range(8)), event(5, 3, pid=601, extra=range(5)),
                        event(6, 15, pid=601, extra=range(8)), event(7, 16, pid=601, extra=(UINT := (1 << 64) - 1,)),
-                       event(8, 6, pid=601), event(9, 17, 500)]
+                       event(8, 18, detail=601, extra=(0, 0x12350000, 1)), event(9, 17, 500)]
         self.report.update(events=9, processes=[{"pid": 600, "created": True, "terminal": True}, {"pid": 601, "created": True, "terminal": True}])
         (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree-mach"))
         self.write_events()
@@ -352,6 +632,148 @@ class CapabilityReaderTests(unittest.TestCase):
         self.save()
         self.rejected("ledger/footer")
 
+    def test_exit_current_context_does_not_retire_root_or_attribute_target(self):
+        self.report["profile"] = "tree"
+        self.events = [event(1, 1, 500), event(2, 4, detail=601),
+                       event(3, 6, detail=1),  # raw current-context CLD_* only
+                       event(4, 2, extra=range(8)), event(5, 14, raw_path=b"/synthetic/input\0"),
+                       event(6, 3, extra=(3, 3, 0, 0, 0)),
+                       event(7, 18, pid=600, detail=601, extra=((1 << 64) - 1, 0x12350000, 1)),
+                       event(8, 18, pid=500, detail=600, extra=(0, 0x12340000, 1)), event(9, 17, 500)]
+        self.report.update(events=9, processes=[{"pid": 600, "created": True, "terminal": True},
+                                               {"pid": 601, "created": True, "terminal": True}])
+        (self.capture / "program.d").write_bytes(reader.producer_program(600, "tree"))
+        self.write_events()
+        self.save()
+        summary, timeline = self.inspect()
+        self.assertEqual(timeline[2]["kind_label"], "proc-exit-context")
+        self.assertEqual(timeline[6]["kind_label"], "proc-exited-target")
+        self.assertEqual(timeline[6]["raw_uint64_after_header"], [(1 << 64) - 1, 0x12350000, 1])
+        self.assertEqual(summary["observed_processes"], self.report["processes"])
+        # A current-context exit is insufficient for the actual target footer.
+        self.events[6] = event(7, 6, pid=601, detail=1)
+        self.write_events()
+        self.save()
+        self.rejected("ledger/footer")
+
+    def test_process_target_details_reject_before_signed_pid_conversion(self):
+        for kind in (4, 18):
+            for target in (0, True, 1 << 31, (1 << 64) - 1):
+                with self.subTest(kind=kind, target=target):
+                    value = event(1, kind, detail=int(target), extra=(0, 0x12340000, 1) if kind == 18 else ())
+                    value["detail"] = target
+                    inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                    with self.assertRaises(reader.InvalidCapability):
+                        reader.typed_event(value, 1, "tree", inventory)
+
+    def test_v3_rejects_old_context_exit_assignment_and_wrong_target_exit_layout(self):
+        values = [event(1, 6, detail=1), event(1, 18, detail=600, extra=(0, 0x12340000, 1))]
+        values[0]["records"].append({"action": 1, "size": 0, "offset": 56, "hex": ""})
+        values[1]["records"][-1]["offset"] = 56
+        for value in values:
+            inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+            with self.assertRaisesRegex(reader.InvalidCapability, "record|layout"):
+                reader.typed_event(value, 1, "tree", inventory)
+
+    def test_v4_shadow_exit_retains_bytes_and_root_continues_until_nonshadow_exit(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=600, extra=(0, 0x11110000, 0x21)),
+                           event(3, 2, extra=range(8)), event(4, 14, raw_path=b"/synthetic/input\0"),
+                           event(5, 3, extra=(3, 3, 0, 0, 0)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertFalse(summary["full_trace_acceptance"])
+        self.assertEqual(timeline[1]["raw_uint64_after_header"], [0, 0x11110000, 0x21])
+        self.assertEqual(timeline[5]["raw_uint64_after_header"], [0, 0x22220000, 1])
+        self.assertEqual(timeline[1]["raw"]["records"], self.events[1]["records"])
+
+    def test_v4_shadow_exit_after_terminal_stays_raw_without_duplicate_retirement(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=((1 << 64) - 1, 0x11110000, 0x20)),
+                           event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertEqual(timeline[5]["raw_uint64_after_header"], [(1 << 64) - 1, 0x11110000, 0x20])
+
+    def test_v4_shadow_exit_cannot_establish_terminal_completion(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x11110000, 0x21)), event(6, 17, 500)])
+        self.rejected("ledger/footer")
+
+    def test_v4_nonshadow_duplicate_terminal_rejects_even_with_new_object_bytes(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x33330000, 2)), event(7, 17, 500)])
+        self.rejected("duplicate nonshadow terminal")
+
+    def test_v4_current_activity_start_and_exec_after_terminal_reject(self):
+        for kind in (2, 5, 6, 7, 9, 10):
+            with self.subTest(kind=kind):
+                self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                                   event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                                   event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                                   event(6, kind, extra=range(8) if kind == 2 else ()), event(7, 17, 500)])
+                self.rejected("lifecycle activity")
+
+    def test_v4_lwp_exit_cleanup_after_terminal_stays_context_only(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)),
+                           event(6, 11), event(7, 17, 500)])
+        summary, timeline = self.inspect()
+        self.assertEqual(summary["capture_status"], "captured")
+        self.assertEqual(timeline[5]["kind_label"], "lwp-exit")
+
+    def test_v4_create_cannot_reuse_an_observed_pid(self):
+        self.tree_session([event(1, 1, 500), event(2, 4, detail=601), event(3, 4, detail=601),
+                           event(4, 2, extra=range(8)), event(5, 14, raw_path=b"/synthetic/input\0"),
+                           event(6, 3, extra=(3, 3, 0, 0, 0)), event(7, 17, 500)])
+        self.rejected("create reuses")
+
+    def test_v4_unknown_shadow_target_does_not_add_a_ledger_process(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=601, extra=(0, 0x11110000, 0x21)),
+                           event(3, 2, extra=range(8)), event(4, 14, raw_path=b"/synthetic/input\0"),
+                           event(5, 3, extra=(3, 3, 0, 0, 0)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)])
+        self.assertEqual(self.inspect()[0]["observed_processes"], [{"pid": 600, "created": True, "terminal": True}])
+
+    def test_v4_unknown_nonshadow_target_cannot_complete_the_observed_tree(self):
+        self.tree_session([event(1, 1, 500), event(2, 2, extra=range(8)),
+                           event(3, 14, raw_path=b"/synthetic/input\0"), event(4, 3, extra=(3, 3, 0, 0, 0)),
+                           event(5, 18, pid=0, detail=601, extra=(0, 0x11110000, 1)),
+                           event(6, 18, pid=0, detail=600, extra=(0, 0x22220000, 1)), event(7, 17, 500)],
+                          [{"pid": 600, "created": True, "terminal": True}, {"pid": 601, "created": False, "terminal": True}])
+        self.rejected("ledger/footer")
+
+    def test_v4_create_cannot_retroactively_complete_an_unknown_terminal_target(self):
+        self.tree_session([event(1, 1, 500), event(2, 18, pid=0, detail=601, extra=(0, 0x11110000, 1)),
+                           event(3, 4, detail=601), event(4, 2, extra=range(8)),
+                           event(5, 14, raw_path=b"/synthetic/input\0"), event(6, 3, extra=(3, 3, 0, 0, 0)), event(7, 17, 500)])
+        self.rejected("create reuses")
+
+    def test_v4_exited_identity_fields_have_exact_bounds_and_remain_raw(self):
+        for address, flags in ((0, 1), (1, 1 << 32)):
+            with self.subTest(address=address, flags=flags):
+                value = event(1, 18, detail=600, extra=(0, address, flags))
+                inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                with self.assertRaisesRegex(reader.InvalidCapability, "address|refcount"):
+                    reader.typed_event(value, 1, "tree", inventory)
+        value = event(1, 18, detail=600, extra=((1 << 64) - 1, 1, (1 << 32) - 1))
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        self.assertEqual(reader.typed_event(value, 1, "tree", inventory)["raw_uint64_after_header"],
+                         [(1 << 64) - 1, 1, (1 << 32) - 1])
+
+    def test_v4_rejects_prior_target_exit_shape_instead_of_upgrading_it(self):
+        value = event(1, 18, detail=600, extra=(0,))
+        value["records"].append({"action": 1, "size": 0, "offset": 64, "hex": ""})
+        inventory = {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+        with self.assertRaisesRegex(reader.InvalidCapability, "record byte layout|record count"):
+            reader.typed_event(value, 1, "tree", inventory)
+
     @unittest.skipUnless(platform.system() == "Darwin", "producer C generator requires Darwin headers")
     def test_program_template_matches_actual_reviewed_c_generator(self):
         source = self.root / "generator.c"
@@ -362,6 +784,28 @@ class CapabilityReaderTests(unittest.TestCase):
             with self.subTest(profile=profile):
                 result = subprocess.run([str(executable), profile], check=True, capture_output=True)
                 self.assertEqual(result.stdout, reader.producer_program(600, profile))
+
+    @unittest.skipUnless(platform.system() == "Darwin", "producer C diagnostics require Darwin headers")
+    def test_actual_reviewed_c_diagnostics_match_strict_reader(self):
+        executable = self.root / "synthetic-c-diagnostics"
+        subprocess.run(["/usr/bin/cc", "-Wno-deprecated-declarations", str(reader.SOURCE / "test-native.c"), "-ldtrace", "-o", str(executable)], check=True, capture_output=True)
+        for mode in ("layout", "layout-range", "layout-wide", "layout-limit", "libdtrace-error"):
+            with self.subTest(mode=mode):
+                result = subprocess.run([str(executable), mode], check=True, capture_output=True)
+                values = [json.loads(line) for line in result.stdout.splitlines()]
+                self.write_diagnostics(values)
+                self.report["events"] = 16 if mode == "layout-limit" else 5
+                self.save()
+                with contextlib.closing(reader.Directory(self.capture)) as directory:
+                    self.assertEqual(reader.error_totals(directory, self.report), values)
+        result = subprocess.run([str(executable), "valid-layouts"], check=True, capture_output=True)
+        values = [json.loads(line) for line in result.stdout.splitlines()]
+        self.assertEqual([value["kind"] for value in values], list(range(1, 19)))
+        for value in values:
+            with self.subTest(c_producer_kind=value["kind"]):
+                inventory = {} if value["provider"] == "dtrace" else {value["probe_id"]: tuple(value[name] for name in ("provider", "module", "function", "name"))}
+                exported = reader.typed_event(value, 1, "tree-mach", inventory)
+                self.assertEqual(exported["raw"], value)
 
 
 if __name__ == "__main__":

@@ -6,8 +6,8 @@ archive for source/resources and a selected runtime plus existing native images.
 The complete output directory is the deployment unit. Execution does not extract
 payloads, install dependencies or compile application modules.
 
-The implementation is on the separate `codex/mvp-*` feature branches. `main`
-remains the reviewed planning baseline. See [the 26-task ledger and actual
+The 26 tasks have separate `codex/mvp-*` feature branches; the owner merged the
+combined implementation into `main` at `96e6958`. See [the task ledger and actual
 acceptance status](docs/plans/mvp-implementation.md). Native Linux x86_64 passes
 all 24 acceptance cases and five reviewed performance budgets under the recorded
 CI tracing policy. M2 remains open pending complete macOS tracing and durable

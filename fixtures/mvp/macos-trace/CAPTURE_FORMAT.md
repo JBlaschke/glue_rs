@@ -53,7 +53,7 @@ parent directory and requires ENOENT, so it creates no file. Its raw spawn data
 does not decode the opaque action list or itself establish mutation coverage.
 
 The profile `open` requires named open entry/return and records the entry path.
-`tree` adds wildcard BSD entry/return and required proc create/start/exit,
+`tree` adds wildcard BSD entry/return and required proc create/start/exit/exited,
 exec-success/failure, spawn-success/failure and lwp-create/start/exit probes.
 `tree-mach` additionally requires Mach trap entry/return probes. Probe clause
 availability and kernel type translation are checked by libdtrace at runtime;
@@ -87,8 +87,10 @@ sentinel bounds detection of growth after the initial file-size check.
 - `program.d`: exact generated program with the gated root PID.
 - `probes.tsv`: actual syscall/proc/mach_trap inventory, including IDs.
 - `events.jsonl`: bounded typed records; no Linux strace grammar is used.
-- `errors.jsonl`: drop/fault callback records and literal setup diagnostics
-  (the file can contain plain text during setup failure).
+- `errors.jsonl`: drop/fault callback records, bounded rejected-layout/libdtrace
+  diagnostics and literal setup diagnostics (the file can contain plain text
+  during setup failure). The first failure cause is preserved in the receipt;
+  a later drain or cleanup failure cannot replace it.
 - `target.stdout` / `target.stderr`: actual owned fixture streams.
 - `watchdog.json`: empty normally; explicit hard-timeout diagnostic if fired.
 - `capability.json`: native kernel/architecture, profile, exact argv, root wait
@@ -97,10 +99,52 @@ sentinel bounds detection of growth after the initial file-size check.
 
 Each event records consumer event index, CPU, enabled probe ID, provider/module/
 function/name and all trace records with action/size/offset and exact native byte
-hex. It exposes the first five uint64 fields as `kind`, `timestamp`, `pid`, `tid`,
-`detail`. Their raw bytes remain authoritative. `event` is a consumer sequence,
+hex. `record_bytes` retains the actual total probe size; exactly five
+`header_record_indexes` identify the validated uint64 payload fields exposed as
+`kind`, `timestamp`, `pid`, `tid`, `detail`. Their raw bytes remain authoritative.
+`event` is a consumer sequence,
 not a kernel sequence or an independent detector of lost events. The protocol is
-`darwin-capability-raw-v1`; the prepared binaries are native little-endian arm64.
+`darwin-capability-raw-v4`, receipt revision 4; the prepared binaries are native
+little-endian arm64. V1/V2/V3 captures and toolkits remain unchanged.
+
+The consumer selects an exact generated layout from the profile, provider, probe
+name and descriptor count before reading a kind. All actions must be DIFEXPR
+(1). BEGIN/create/start/exec-success require a leading size-zero assignment
+descriptor at index 0, offset 12; their five uint64 fields are at indexes 1–5.
+Exited-target (kind 18) has eight scalar fields and no assignment. Context-only
+exit (kind 6) has five scalar fields and no assignment. Both and every other
+header use indexes 0–4.
+No other zero-width record is permitted.
+Every original descriptor is retained; zero-size records have empty `hex`.
+Scalar payloads are exactly eight bytes at offsets 16, 24, 32 and so on. The
+named-open string is exactly 1024 bytes at offset 56, retained as raw bytes.
+Total probe bytes are exactly 56 for five-scalar layouts, 120 for BSD/Mach entry,
+96 for BSD return, 64 for Mach return, 80 for exited-target, and 1080 for named-open path. Wrong action,
+count, width, offset, profile, provider or decoded kind rejects the callback.
+Actual v4 guest evidence confirmed BEGIN framing, and the v5 corpus exercised
+the v2 lifecycle layouts. V5 also exposed a current-context exit attribution
+error during failed spawn. V3 removed that inference, but actual v6 guest records
+showed exec shadow objects sharing the live target PID. V4 retains their source-
+grounded discriminator. Actual v7/v8 guest records validate the CTF field read
+and distinguish shadow `0x1e2` from nonshadow `0x1c2` in this owned corpus.
+V8 completes all nine diagnostic cases with consistent identities; full Darwin
+extraction acceptance remains false. See the
+[layout decision](../../../docs/decisions/mvp-r02-darwin-capability-layout-v2.md)
+and [target-exit decision](../../../docs/decisions/mvp-r02-darwin-target-exit.md),
+superseded by the [shadow-exit decision](../../../docs/decisions/mvp-r02-darwin-shadow-exit.md).
+
+A rejected callback emits a `layout-error` diagnostic with its reason, consumer
+event count, descriptor count, total probe byte size, first five record values
+(`header`) and up to twenty descriptor metadata entries. Each entry retains
+`action`, `size`, `offset` and `u64`; a value is null unless its record is exactly
+eight bytes and lies within a probe bounded to 8 KiB. Unexpected zero-width or
+invalid descriptors remain rejected. These metadata do not become accepted events and
+do not establish the actual kernel ABI. Work/stop/drain failures additionally
+retain `libdtrace-error` with the operation, actual libdtrace error number and a
+message bounded to 512 bytes. At most sixteen combined layout/libdtrace
+diagnostics are emitted; callback drop/fault counters keep their existing
+meaning. An event count that exceeds serialized events is incomplete evidence,
+even when a rejected-record diagnostic explains the gap.
 
 | Kind | Meaning | Detail / subsequent records |
 | --- | --- | --- |
@@ -109,13 +153,39 @@ not a kernel sequence or an independent detector of lost events. The protocol is
 | 3 | BSD syscall return | ppid; arg0, arg1, arg2, arg3, DTrace errno |
 | 4 | proc create | translated child PID |
 | 5 | proc start | observed ppid |
-| 6 | proc exit | raw arg0 exit status |
+| 6 | proc exit context | raw arg0 lifecycle code (`CLD_*`); current PID is not a terminal target |
 | 7 / 8 | exec success / failure | ppid / raw arg0 error |
 | 9 | lwp create | translated thread ID; retain raw width for ABI inspection |
 | 10 / 11 | lwp start / exit | zero |
 | 12 / 13 | spawn success / failure | zero / raw arg0 error |
 | 14 | named open path | zero; bounded copyinstr record |
 | 15 / 16 | Mach trap entry / return | ppid; raw arg0..arg7 / raw arg0 |
+| 18 | proc exited target | translated target PID; then raw arg1 exit value, target pr_addr, target p_refcount |
+
+For kind 6, the collector records `proc:::exit`'s `arg0` unchanged. The inspected
+Apple [exit implementation](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_exit.c)
+emits `CLD_EXITED` there; current probe PID can be a surviving parent performing
+failed-spawn cleanup for its child. Kind 6 therefore changes neither watches nor
+the terminal ledger. The required `proc:::exited` clause selects the translated
+target PID in `args[0]`, retains that target in detail and raw `arg1` in its sixth
+scalar record. The next two scalar records retain the target object address and
+raw 32-bit `p_refcount`, obtained via the kernel CTF `struct proc`. Require a
+nonzero address and refcount in 0..UINT32_MAX. The source-pinned `P_REF_SHADOW`
+bit 0x20 prevents an old exec object's exit from retiring the live PID. Only a
+nonshadow kind 18 marks its target terminal. No exited record clears a D-side
+watch. Ordinary activity after terminal, duplicate nonshadow termination and
+observed PID reuse reject. Context-only `lwp-exit` may follow terminal without
+changing the ledger.
+The current-activity terminal guard applies only to tree profiles. In open-only
+mode, actual root wait may precede consumption of queued final-drain events;
+those records still require exact validation and complete drain. Target detail
+for exited and create must be in 1..INT_MAX before a PID conversion. Parent errno, thread exit or missing records cannot
+substitute for this target evidence. The raw exit value remains unclassified;
+the receipt's `root_wait_status` is separately supplied by actual `waitpid`.
+Published source guides this distinction but does not substitute for new guest
+calibration of the target object discriminator. Published source is a candidate
+explanation, not an assertion that its commit exactly matches the guest kernel
+(`xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE`).
 
 ## Remaining hard acceptance blockers
 

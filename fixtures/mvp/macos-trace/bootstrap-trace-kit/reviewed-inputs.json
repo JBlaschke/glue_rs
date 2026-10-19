@@ -1,0 +1,9 @@
+{
+  "schema": "glue-owned-trace-kit-inputs-v1",
+  "source_revision": null,
+  "sources": {},
+  "probe_sources": [],
+  "runner_sources": [],
+  "request_sources": [],
+  "proofs": []
+}

@@ -1,12 +1,13 @@
 # MVP implementation and acceptance ledger
 
-15 October 2026. Product authority remains [the plan](../../PLAN.md),
+17 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
-cherry-picked for integration. No branch was merged to main and no release asset
-was published. `main` remains at `6b49cc5`.
-`codex/mvp-r04-docs` is the combined review branch; task branches
-retain their own implementation commits.
+cherry-picked for integration. The owner merged the combined
+`codex/mvp-r04-docs` stack into `main` at `96e6958` through
+[PR #34](https://github.com/JBlaschke/glue_rs/pull/34). Task branches retain their
+own implementation commits. Follow-up work continues on feature branches;
+no release asset has been published.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -56,18 +57,757 @@ check, not a claim established by the development signatures.
 | R01 | `codex/mvp-r01-workflows` | `448df87` | Three CLI adapters, inspect/doctor/size/rebuild, installer and end-to-end cases; accurate enforced-budget CI summary |
 | R02 | `codex/mvp-r02-extraction-signing` | `d03b56f` | Complete Linux process-tree oracle and signing checks; bounded Darwin capability transport/diagnostic reader and normalized open-intent controls; full Darwin decoder/oracle unimplemented |
 | R03 | `codex/mvp-r03-hpc-costs` | `05bd056` | Bounded buffered reader, measured 10,000-entry/32-rank harness and five reviewed budgets on each Linux architecture |
-| R04 | `codex/mvp-r04-docs` | `this branch` | Current user docs and compatibility/evidence ledger; M2 and durable evidence publication remain open |
+| R04 | `codex/mvp-r04-docs` | `d44ccb5` | User docs and compatibility/evidence ledger, merged through PR #34; M2 and durable evidence publication remain open |
 
 Use `git log BRANCH` for each original task commit and
 `git log codex/mvp-r04-docs` for the integrated stack. Follow-up fixes stay on their
 owning card branch before integration. The table records implementation, not 26
-completed acceptance gates.
+completed acceptance gates. All nine portable jobs passed on merged `main`
+`96e6958` in [run 38810513172](https://github.com/JBlaschke/glue_rs/actions/runs/38810513172).
+
+Follow-up branches preserve the original task commits:
+
+| Task | Follow-up branch | Commit | Verified scope |
+| --- | --- | --- | --- |
+| R02 | `codex/mvp-r02-darwin-capture-docs` | `695dd32` | Correct `proc:::exit` lifecycle-code documentation; integrated as `409f51c` |
+| R02 | `codex/mvp-r02-darwin-state` | `6ce6ae2` | Synthetic process/thread generations, call pairing, FD/cwd inheritance and conservative race rejection; 26 controls, no native acceptance |
+| R04 | `codex/mvp-r04-evidence-retention` | `1dd9b90` | Indexed external-root prepare/restore/fetch, 18 controls and unchanged full-bundle round trip; remote publication pending |
+| V01 | `codex/mvp-v01-evidence-ci` | `45e375f` | Baseline runs evidence/reader/open-intent/state controls; Linux GNU tar fixture includes gzip |
+| R02 | `codex/mvp-r02-native-diagnostics` | `3b44dce` | Bounded rejected-layout/libdtrace diagnostics preserve the first failure; integrated as `7ad6fce` |
+| R02 | `codex/mvp-r02-native-layout-v2` | `281f1dd` | Exact assignment/scalar/path layouts, calibrated by v5; integrated as `cd9112c` |
+| R02 | `codex/mvp-r02-target-exit` | `971fd7b` | Raw-v3 explicit target exit candidate; v6 rejects its incomplete exec-shadow handling; integrated as `17a6436` |
+| R02 | `codex/mvp-r02-darwin-diagnostic-reader` | `e3274dd` | Strict source-matched diagnostics and raw-v2/v3 readers; v3 integrated as `2b7dc42` |
+| R02 | `codex/mvp-r02-darwin-enabling-bindings` | `7135bca` | Session-stable EPID/probe/clause descriptors; 43 controls and all 2,592 retained v5 events replay; integrated as `b52b2f8` |
+| R02 | `codex/mvp-r02-owned-open-observer` | `1408f3a` | Calibrated single-thread named-open observations, 13 controls and 15 whole-stream calls from two actual v5 captures; no kernel path/object or extraction claim |
+| R02 | `codex/mvp-r02-darwin-syscall-coverage` | `9be06a1` | 161 pinned syscall declarations, argument/return facts and 18 controls; unresolved routes stay incomplete; integrated as `252b8a1` |
+| V01 | `codex/mvp-v01-darwin-observation-ci` | `4177ab9` | Portable baseline adds owned-open and source-contract suites; 126 collected controls |
+| R02 | `codex/mvp-r02-shadow-exit` | `a401d49` | Explicit target object/refcount distinguishes exec-shadow cleanup; integrated as `aa570d8` |
+| R02 | `codex/mvp-r02-darwin-shadow-reader` | `729bfea` | Exact raw-v4 layout, shadow and terminal checks; 55 controls; integrated as `ad6ff3f` |
+| R02 | `codex/mvp-r02-open-drain-order` | `d4e9e93` | Preserve queued open-only records after root wait; 14 native controls; integrated as `748a309` |
+| R02 | `codex/mvp-r02-raw-call-pairing` | `7a98e78` | Strict-reader-backed opaque call pairing, 17 controls and seven actual tree replays; integrated as `12159ec` |
+| V01 | `codex/mvp-v01-darwin-pairing-ci` | `1959c23` | Add pairing controls to the portable baseline; 155 collected controls |
+| R02 | `codex/mvp-r02-tree-open` | `ace2f55` | Preserve calibrated named-open observations across process/thread lifetimes; 13 controls; integrated as `6b5b0ad` |
+| R02 | `codex/mvp-r02-mach-msg2-scalars` | `dcb1c5c` | Observe packed scalar fields while keeping message effects unresolved; 16 controls; integrated as `8fc437a` |
+| R02 | `codex/mvp-r02-target-credentials` | `ecc35f2` | Owned-child credential primitive and 14 controls; independently reviewed; integrated as `6eae79b`; collector integration/native privileged Darwin transition remain open |
+| R02 | `codex/mvp-r02-target-descriptors` | `7ca6005` | Numeric owned-child FD closure with strict bounded self-inventory/rescan; 15 controls and two independent reviews; integrated as `27baa08`; no endpoint-object or collector integration claim |
+| R02 | `codex/mvp-r02-bootstrap-wire` | `f7ecb27`, `5a48e25` | Fixed pure codecs and poisonable sequence validator; 11 controls and independent review; integrated as `2d93b0d`, `e6d9587` |
+| R02 | `codex/mvp-r02-target-endpoints` | `d25ccf4` | Validate/copy five owned sources before child stdio mapping; 17 native controls on Mac and unprivileged Linux; independently reviewed; integrated as `04fea27` |
+| R02 | `codex/mvp-r02-bootstrap-io` | `135acc5`, `07b6a29`, `2279299` | Nonblocking fixed-record/EOF transport, original poll-error precedence and documentation clarification; 18 controls plus independent sanitizer review; integrated as `4362220`, `cfe0c81`, `4e59295` |
+| R02 | `codex/mvp-r02-bootstrap-signals` | `89997da`, `83148d9`, `12fff2f` | Single-attempt parent signal snapshot/restoration and owned-child reset/release; 15 controls and five extra independent sanitizer scenarios; privileged transition unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-request` | `9f30258`, `49b44cf` | Pure canonical request and complete READY comparison; 11 controls and two extra independent sanitizer groups; integrated as `50f52d5`, `d702927` |
+| R02 | `codex/mvp-r02-bootstrap-probe` | `aed1a3a`, `df062f1`, `53e9a1a`, `ac36669` | Fixed ordinary-user context self-report; 12 pure/13 native controls, actual failed root-regain check and independent raw report review; integrated through `885660b` |
+| R02 | `codex/mvp-r02-bootstrap-admission` | `41b75ec`, `3f6d388` | Parent-only protected physical path/ACL/root–Data profile, 15 controls and independent injected review; integrated as `e5e4b93`, `ead94f0`; native root positive unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-inspector` | `a16feac`, `d2bd45d` | Ordinary-user read-only root/Data and kernel-identity observation; actual guest run and independent source/proof review passed on 17 October; SIP enabled |
+| R02 | `codex/mvp-r02-bootstrap-runner` | `093629b` through `7c50621` | Fixed compiled-catalog nontracing owned-probe controller; seven Mac/Linux controls, five sanitizer controls plus two exclusions; integrated through `6cc8a7d`; protected guest/root transition unexecuted |
+| R02 | `codex/mvp-r02-bootstrap-kit` | `d62964c` through `bbd82ca` | Guarded host-only kit builder and ordinary-user canonical request writer; original controls and independent reviews; integrated through `02495ac`; configured build now completed in the reviewed-input follow-up below |
+| V01 | `codex/mvp-v01-darwin-scalar-ci` | `ceaf3fc` | Add both observation suites to portable CI; 184 collected controls |
+| V01 | `codex/mvp-v01-darwin-credential-ci` | `64a4dd2` | Add credential controls to portable CI; 198 collected controls; approved public push and all nine jobs pass in run `38903379520` |
+| V01 | `codex/mvp-v01-darwin-descriptor-ci` | `a3edd97` | Add descriptor controls to portable CI; 213 collected controls; local follow-up, no hosted run yet |
+| V01 | `codex/mvp-v01-bootstrap-primitives-ci` | `2f087d5` | Add wire, endpoint and pipe-I/O controls to portable CI; 259 collected controls; unpublished earlier checkpoint, see latest controller CI follow-up |
+| V01 | `codex/mvp-v01-bootstrap-context-ci` | `7156e80` | Add signal/request/probe/admission/inspector controls; 328 collected controls; local follow-up, no hosted run |
+| V01 | `codex/mvp-v01-bootstrap-controller-ci` | `3d500d4` | Approved public push; run `39019048941` passed seven of nine jobs; both Linux baselines failed on the same test-only compiler warning |
+| V01 | `codex/mvp-v01-bootstrap-hosted-fix` | `4eb0354`, integrated `7cfbac1` | Brace the signal test loop for modern GCC; native Linux arm64 GCC 14 runs all 22 suites: 331 passes/25 skips; patched hosted run pending |
+| R02 | `codex/mvp-r02-bootstrap-reviewed-inputs` | `37856ca`, `5200be9` | Register independently reviewed actual guest proof and 34 production/build sources; separate explicit empty-registry controls; kit suite passes 22 Mac/21 Linux plus one skip |
+| R04 | `codex/mvp-r04-bootstrap-deployment-status` | `78f4072` | Record actual deployment inspection, configured reproducible kit and exact hosted failure; no protected guest execution or full Darwin acceptance |
+| V01 | `codex/mvp-v01-bootstrap-probe-gcc13` | `a805834`, integrated `863e327` | Consume best-effort diagnostic write result without retry; expose compiler failures; native Ubuntu GCC13 reproduction and focused Mac checks pass |
+| R02 | `codex/mvp-r02-bootstrap-ubuntu-inputs` | `df5fb63`, `d2d0d0a` | Deliberately advance one of 34 source hashes to `863e327`; actual proof and earlier kit unchanged; kit suite22 Mac passes and committed source/proof admission passes |
+| R04 | `codex/mvp-r04-bootstrap-ubuntu-ci-status` | `162f91a` | Approved repair push to the deployment-status branch; run12 passes all nine portable jobs |
+| R02 | `codex/mvp-r02-bootstrap-vm` | `b956dd4`, `c460fd4`, `02a4247`, `fba154e` | Closed host packet/guest scripts; explicit inline guards and checked request digests; ten host controls and independent source review |
+| R02 | `codex/mvp-r02-bootstrap-vm-checker` | `97d2be4`, `8012e98` | Strict offline canonical request/status/probe/result/terminal checks;18 controls on both native hosts and two independent reviews; no kernel exec/full acceptance |
+| R02 | `codex/mvp-r02-bootstrap-vm-integration` | `ad9ea78` through `75c565e` | Integrate the separate decisions/implementation/guard/checker commits locally;10 preparer and18 checker controls pass |
+| R02 | `codex/mvp-r02-bootstrap-vm-reviewed-run` | `a17f82b`, `0affe28` | Enable only the reviewed source policy, retain closed kit binding and no runtime override; freshly rendered packet still requires inspection/private guest authentication |
+| R04 | `codex/mvp-r04-bootstrap-vm-handoff` | `448a86a` | Record green hosted CI and the reviewed local guest handoff; guest execution and complete Darwin acceptance remain open |
+| V01 | `codex/mvp-v01-bootstrap-vm-ci` | `926ca82`, integrated `9f95855` | Two new baseline invocations;28/28 affected controls pass on Mac and native offline unprivileged Linux arm64; newer local source has no hosted run |
+| R04 | `codex/mvp-r04-bootstrap-restart-status` | `c36b711`, based on `ad59dfa` | Independently verified all24 Mac Python suites; interrupted launch/reboot, second failed install and actual guest mode observations preserved |
+| R02 | `codex/mvp-r02-bootstrap-mode-guards` | `46d61f3` | Exact full BSD mode/type guards,14 preparer/18 checker controls; integrated as `dec2488` after decision `fabae45` |
+| R02 | `codex/mvp-r02-bootstrap-mode-integration` | `409dc4b`, based on `c36b711` | Reviewed mode repair and fresh packet03 preparation/review/staging; launch reached private guest authentication |
+| R04 | `codex/mvp-r04-bootstrap-request-stop-status` | `bd0e49d`, based on `409dc4b` | Packet03 installation/signatures pass; ordinary positive request refuses before output/cases; bounded metadata and fresh deployment observation retained |
+| R02 | `codex/mvp-r02-bootstrap-retain-install` | `2de4103` decision | Fixed reversible same-parent retention of the completed kit02 installation; actual packet03 and owned controls reviewed, guest move pending |
+| R02 | `codex/mvp-r02-reboot-proof-registration` | `28fe9b5`, `41c3f5c`; integrated `8b329f4`, `c24ddb4` | Append-only actual reboot-proof registration,34 source pins unchanged,23 kit controls and independent review pass |
+| R02 | `codex/mvp-r02-bootstrap-current-preflight` | `65fc322`, `5f90c48`; integrated `a61225d`, `c9e845b` | Actual native observation and typed identity/mount checks before sudo;19 preparer/18 checker controls pass independently |
+| R04 | `codex/mvp-r04-bootstrap-current-status` | `14c1839`, based on `c9e845b` | Fresh proof, rebuilt kit03, preflight and retention-packet checkpoint; no fresh guest run or full Darwin acceptance |
+| R02 | `codex/mvp-r02-bootstrap-kit03-binding` | `58fbff0`, `8b068b1`; integrated `f1b4106`, `d295691` | Single literal actual kit03/new-proof binding, combined artifact/catalog audit;19/18 focused controls pass, kit02 refuses unchanged |
+| R04 | `codex/mvp-r04-bootstrap-kit03-handoff` | branch tip, based on `d295691` | Reviewed actual packet04 and retention03 staged unchanged; preservation launcher at private guest authentication, no new native outcome |
+| R02 | `codex/mvp-r02-bootstrap-checker-proof-binding` | `45627d1`, `476b081` | Share the existing admitted-proof constant; reject old/unknown packet proof before evidence reads;19 preparer/19 checker controls and independent review pass |
+| R02 | `codex/mvp-r02-trace-session-integration` | `4520e73` through `68d22d1` | Integrate reviewed owned-child tracing lifecycle models, once-only GO/closure and fixed deadlines; no native backend/runner adoption |
+| R02 | `codex/mvp-r02-bootstrap-observed-io` | `ab1f3a2`, `fbcc2cf` | Cooperative observer variants retain legacy ABI, original deadline, bounded waits, confirmed prefixes and error precedence;27 strict/27 sanitizer controls pass |
+| R02 | `codex/mvp-r02-bootstrap-observer-inputs` | `b25d51a`, `cb19a8c` | Advance only BIO C/H pins among 34 sources to reviewed `fbcc2cf`; both actual proofs and historical kit03 unchanged |
+| V01 | `codex/mvp-v01-trace-session-ci` | `cb26b09` | Add two model suites; all 26 Python suites pass locally on Mac and native offline Linux arm64 with explicit platform skips; no newer hosted run |
+| R04 | `codex/mvp-r04-bootstrap-nontracing-status` | `ae48aee`, based on `cb26b09` | Record successful actual retention03/packet04 and independent nontracing replay; exact public push remains pending approval |
+| R02 | `codex/mvp-r02-observed-status-protocol` | `c27f06c`, `b778bc3`; integrated `a002720`, `cfe24fb` | Explicit observed status/EOF entry, opaque failed prefixes and unchanged legacy path;11 strict/11 sanitizer groups |
+| R02 | `codex/mvp-r02-trace-parent-completion` | `fd53af1`, `6ee2f85`; integrated `f97e9a0`, `463bb9d` | Clarify lifecycle versus final metadata resource closure; no token/layout/predicate change |
+| R02 | `codex/mvp-r02-owned-trace-backend` | `6a23ac2` through `a2d8119`; integrated through `6c75976` | Fixed BSD/Mach/proc adapter, exact inventory/EPID/raw layouts and separate native/close errors; source-isolated controls and SDK link only |
+| R02 | `codex/mvp-r02-owned-trace-parent` | `79d5fd4`, `21ab4c0`; integrated `e96d0bb`, `d08dd5f` | Separate tracing parent, once-only GO/cleanup/closure/promotion; transient cleanup-clock bug fixed;10 strict/10 sanitizer groups |
+| R02 | `codex/mvp-r02-owned-trace-runner` | `5240b05` through `d08dd5f` | Integrate reviewed protocol/coordinator/backend/parent; default build remains nontracing; no native calibration |
+| V01 | `codex/mvp-v01-owned-trace-ci` | `abecae2` | Add exactly three protocol/backend/parent control suites; Darwin-only skips remain explicit |
+| R02 | `codex/mvp-r02-owned-trace-kit` | `5a1d2b9`, `24ba156`; integrated `f3f0ad1`, `a395ead` | Frozen tracing policy with empty registry, exact disabled SIP and runner-only libdtrace;23 legacy/12 new controls |
+| R02 | `codex/mvp-r02-owned-trace-inputs` | `b356590`, `7f15c40` | Update six of 34 default source pins plus host-parser literal; both proofs/kit03 approval preserved; actual historical checker replay0 |
+| V01 | `codex/mvp-v01-owned-trace-kit-ci` | `9f281f1` | Add one kit suite; all 30 Python suites pass locally on Mac/native offline Linux arm64; no new hosted or Rust run |
+| R04 | `codex/mvp-r04-owned-trace-source-status` | branch tip, based on `9f281f1` | Record reviewed tracing source, empty deployment admission and local aggregate; Darwin oracle/M2 remain open |
+| R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
+| R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
+| R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
+| R04 | `codex/mvp-r04-macos-calibration-evidence` | `d44dd33` | Preliminary 1,372-file checkpoint restores and replays; SIP proof/publication pending; integrated as `aded39b` |
+| R04 | `codex/mvp-r04-darwin-followup-status` | `8567d38` | Approved public push; all nine native portable CI jobs passed in run `38895660723` |
+| R04 | `codex/mvp-r04-darwin-hosted-ci` | `b824afb` | Record exact hosted CI metadata; running-guest SIP proof was pending at this checkpoint |
+| R04 | `codex/mvp-r04-darwin-restoration-evidence` | `439bb46` | Separate 57-file SIP-enabled proof and exact approved CI checkpoint; 59-member restore verifies |
+| R04 | `codex/mvp-r04-sip-restoration-status` | `b1c462c` | Record independently verified running-guest SIP restoration and checkpoint restore; no full Darwin acceptance |
+| R04 | `codex/mvp-r04-credential-hosted-ci` | `5567bcd` | Record exact approved credential CI run and independent metadata/source review; no new product acceptance |
+
+At the `3d500d4` checkpoint, portable CI invokes 22 Python suites collecting
+356 controls. Its earlier local coverage
+joins the frozen 20-suite run with separately executed final runner (7) and kit
+(21) suites, verifying 104 source/data/decision pins and exact current CI argv.
+This is composed coverage, not a single 22-suite driver run or a complete portable
+baseline job. Together the recorded Mac/Python 3.15.0 results account for 351
+passes and five explicit skips: four Linux-only refusal checks and the
+inapplicable noncanonical-group negative (the actual vector is canonical).
+Linux arm64/Python 3.11.17/glibc 2.28 accounts for 331 passes and 25 skips:
+two Darwin compiler, five descriptor, four signal, eleven probe, one admission,
+one inspector and one exact-min26 SDK control. Linux uses UID/GID 65534; applicable
+nonprivileged credential and endpoint controls execute. Older root runs and skips
+remain frozen. These unit/format/model checks do not prove full Darwin acceptance.
+The six logs, CI snapshot, exact source pins and coverage method are retained at
+`/private/tmp/glue-bootstrap-controller-ci-coverage-20261016`, manifest SHA256
+`c9ca1da93293f11b1dd2616ff71b6e85e4f44a7fd1423f2858ec96b452d398e5`.
+Independent pin/argv/log/count review is retained at
+`/private/tmp/glue-bootstrap-controller-ci-independent-review-20261016`, manifest
+`01a5fdb968606b43330be837fffc7c6f0c673fbcc966a05941c6b57db70d0289`.
+The descriptor helper additionally passes six injected-only ASan/UBSan control
+groups. Its native Mac controls close FD 4096 even after only the child's soft
+and hard limits become 64; parent limits and sentinel FDs remain unchanged.
+This proves bounded numeric closure on that host, not endpoint provenance,
+privileged guest bootstrap, cwd/Mach/fileport closure or tracing acceptance.
+The wire and pipe-I/O helpers additionally pass Mac ASan/UBSan suites and
+independent boundary controls; the endpoint helper passes all 17 controls on
+both native hosts. Root review is retained at
+`/private/tmp/glue-bootstrap-primitives-root-review-20261016`. Deadline and
+confirmed-prefix checks never turn pipe EOF into exec-success proof, and a
+failed GO write must be treated as possibly delivered. Protected native controller
+execution and collector integration remain open.
+The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
+`3d500d4` run and its two Linux failures are recorded separately below.
+
+## 17 October: deployment, configured kit and hosted follow-up
+
+The owner-approved `3d500d4a607ef5c5ed5cc907f2a12cacd2c658e8` was pushed unchanged to
+`codex/mvp-v01-bootstrap-controller-ci`. The superseded `2f087d5` request did not
+produce a duplicate push/run. [Run 39019048941](https://github.com/JBlaschke/glue_rs/actions/runs/39019048941)
+passed macOS baseline and all six Lua55/packaging jobs. Both Linux baselines
+failed at the same signal test loop because GCC treats its indentation as an
+error. The retained run remains failed; the formatting-only fix changes no
+production source. Native arm64 GCC 14.2.1 reproduces the warning before the fix
+and then passes all 22 suites (331 passes, 25 skips). This is local fix evidence,
+not a successful patched hosted run. Exact failed CI metadata/logs are retained at
+`/private/tmp/glue-portable-bootstrap-controller-39019048941-20261017`, manifest
+`69083e6ea605e3f5b45c5167563c2c68484ee8223e907af8357748cc7f42e0ac`.
+Fix evidence is `/private/tmp/glue-bootstrap-hosted-fix-native-20261017`, manifest
+`ba7e4474d2fd0d4400c08099175a0b2679c688d28f59721a5a2d565414009d48`.
+
+The read-only ordinary-user inspector completed all six commands in the owned
+VM: binary hash, strict signature, SIP, OS, kernel and actual observation.
+SIP remains enabled. Its 27 indexed payloads are retained at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-A8mkN4hy`,
+manifest `ec28e38b3066112d874a54b0dfb4bb9c20fae3f39dc90697bf7d4ea684a84c8a`.
+Independent review verifies the original bytes, six-source provenance and full
+typed mount/ACL/identity observations; review manifest
+`d5a899e5659dde3f5ac02b6d7dad754204a85fafcfa906fd339e4935fb58e279`.
+The actual root/Data `st_dev` values match while their FSIDs differ. The policy
+compares the complete tuple; no observation was normalized to fit an assumption.
+The first registration at `5200be9` locks 34 production/build sources at
+`3d500d4` and this exact proof.
+Its independent registration-review manifest is
+`92d13cf6714249e5e42b62c7f3531f59ae6fc4505fb49e809294121b42f1d47e`.
+The updated kit suite passes 22 tests on Mac and 21 with one Darwin SDK skip on
+native Linux arm64. No aggregate full-driver count is claimed for that update.
+
+The first configured build stopped when the sandbox denied Clang temporary-file
+access. Its directory remains an explicitly incomplete failure without a final
+inventory. A fresh build with local tool access completed with CLI exit zero:
+`/private/tmp/glue-bootstrap-native-kit-20261017-02`, manifest
+`098b758fe740d61efccd2ef34d3fe8cf00caba82e281dbc752e419e7a973995c`.
+All 21 recorded tool commands succeeded. Two separate builds of each of the three
+ad-hoc-signed programs have identical bytes. Build ID is
+`a75d54bba97103ec8b15dd7be7beb5b8eb23de5bfdda624ad2fcd9f224ab84d5`.
+The catalog binds the actual observed root/Data tuples and signed probe identity.
+Independent kit/tooling/signature review passes, manifest
+`af1034b7bf2d4d70f3db9c361f1fd44ef2262e8e156f30910a66e7c6bec0d591`.
+Separate catalog/source/modern-GCC evidence review passes, manifest
+`44da57195e8d6b0687f9921d71695cc507a909a1a1ec300db00d7b604a540b90`.
+The root-observed normal builder exit and final registration test logs are retained
+at `/private/tmp/glue-bootstrap-configured-root-checkpoint-20261017`, manifest
+`42ea3e6d47faf97def1cda88cd3e413bf76935d8b22688fb8db6a94962678497`.
+The programs have not been executed or installed by the builder or reviewers.
+This checkpoint does not establish a privileged Darwin transition, kernel exec, extraction
+oracle, product corpus, performance budgets or M2. These newer source changes
+remain local pending separate publication approval.
+
+### Ubuntu GCC 13 follow-up
+
+The owner-approved deployment checkpoint `78f4072` was pushed unchanged and
+started [run 39020970722 (#11)](https://github.com/JBlaschke/glue_rs/actions/runs/39020970722).
+All seven macOS-baseline/Lua55/packaging jobs passed again. The two Linux
+baselines pass the earlier signal-test loop and then fail in context-probe
+compilation. The old test hid compiler stderr; the retained hosted record does
+not invent a diagnostic that was absent from its logs. Exact run metadata and
+all nine logs are `/private/tmp/glue-portable-bootstrap-deployment-39020970722-20261017`,
+manifest `f2f30d5facb0714731a59f8a24e692f1831c699c4fe5263a6e1f55cee2d7675a`.
+
+A separate native arm64 reproduction with cached Ubuntu GCC13.3.0 identifies
+`-Werror=unused-result` on the probe's best-effort error `write()`. The minimal
+fix consumes that return in a local `ssize_t`, preserving exactly one write and
+no retry or signal change. Compilation errors now include their captured
+stdout/stderr, with two focused diagnostic controls. Mac probe controls collect
+15:13 passes and two explicit skips. The current kit suite passes22 on Mac.
+The fixed-source native Ubuntu GCC13 run completes all22 portable Python suites:
+359 collected,334 passes and25 explicit skips. Exact logs/toolchain/commands,
+source-before/after and the patch are retained at
+`/private/tmp/glue-context-probe-hosted-repro-20261017`, manifest
+`dd98b1b37709d9626f7a5939744621004cdd57a6d6272eda29d1776c3f6c1dd6`.
+This covers the original fix commit `a805834`, byte-identical in the integrated
+`863e327`; the later one-source registry update has separate focused checks.
+The source registry advances exactly one hash, retaining the other33 and actual
+deployment proof; clean committed `locked_sources` and actual proof admission
+both pass. The independent one-source lock review has manifest
+`7497befbbe6651c465dbd1fe6903c8aac0f245aa4e098562938ad4e23ad094e4`.
+The earlier kit02 remains its original `3d500d4` artifact. Neither
+failed hosted run is relabeled successful. The corrected run passes all nine jobs as recorded below.
+
+### Corrected hosted CI and local VM preparation
+
+After explicit approval of `162f91ad63394a149feb584861397d7089d4fa2f`, the repair
+was pushed to the same `codex/mvp-r04-bootstrap-deployment-status` branch.
+[Run 39021989631 (#12)](https://github.com/JBlaschke/glue_rs/actions/runs/39021989631)
+passes all nine native baseline/Lua55/packaging jobs. Exact checkout SHA, native
+labels, six required steps, Rust/Clippy1.88 and final markers were checked in
+all nine logs. The43-file frozen run is
+`/private/tmp/glue-portable-bootstrap-ubuntu-39021989631-20261017`, manifest
+`e6dadfb21a25ba2dcad2c6a2f14d33c6e42ff3ddc670da19b7976f790509ebba`.
+Its offline verifier reproduces the exact successful summary. An initial attempt
+to push this newer source was rejected by automatic approval review because the
+prior approval covered only `78f4072`; no rejected action executed. The subsequent
+exact162 approval and successful push/read-back are retained separately.
+This is portable CI evidence, not privileged guest or complete Darwin acceptance.
+
+The new local-only `bootstrap-vm` component prepares a fixed derived subset of
+kit02, three source-rendered scripts and a bounded plan. The separate checker
+validates terminal gates before reading case payloads, then decodes canonical
+request/status/probe bytes and strict result JSON with all cross-case bindings.
+Independent preparer review has manifest
+`7c6166f6bcf3bf5ba6b3237b8cc851953774da398094f8e58a4013ad04a162a4`.
+Independent checker reviews have manifests
+`15f531d3b848c5fb252c6ced490d15efab5d41bd05c6fffdb7cee5dc030201ac`
+and `c6cf77d3983631b6d01c4390354662ad627ae7b39e1f4a4c1815880c05fdcca8`.
+The source enablement retains every closed guard and changes no production kit
+input. The enabled-source host controls pass10 preparer/18 checker tests on Mac;
+the earlier checker also passes18 on offline unprivileged Linux arm64. These are
+format/model/syntax checks and execute no generated script, root phase or kit
+binary. The old disabled packet remains immutable. A fresh enabled packet has been independently reviewed and copied unchanged to
+the existing read-only VM toolkit share, manifest
+`e6e0f15937e6c9cead7fbc6dcfd589a7dee91d526ca7d434ec3a65d5ce377aed`.
+Its independent packet review has manifest
+`2049dc2bf5c133a98a40892a670e287e94660b368b41f9800815bf905bf6e79a`.
+The staged folder is `bootstrap-vm-c10ed2e4ce0404bd`; source remains local-only.
+At that staging checkpoint the VM was at its lock screen and no guest script or
+payload had started. The script checks SIP enabled and changes no security
+settings; the subsequent interrupted launch is recorded below.
+
+The staging/root-exit/test-log checkpoint is
+`/private/tmp/glue-bootstrap-vm-stage-root-checkpoint-20261017`, manifest
+`37a518f2ba31a73ac0a2078b3fa7174a38c545233f2c39e58b035f115fa2ca60`.
+The V01 follow-up adds only the preparer/checker invocations immediately after
+kit controls. Both affected suites pass28/28 with no skips on Mac and native
+unprivileged offline Linux arm64. Exact command/toolchain/logs/source pins are
+`/private/tmp/glue-bootstrap-vm-ci-native-20261017`, manifest
+`6c62e983d8ac6f728985c4557e7bb91e46031d5a8cf1a41920a5b7c86e2f00ef`.
+The local baseline now invokes24 Python suites collecting387 controls. Green hosted run12 covers the
+separate earlier `162f91a` source, before the new local VM component/CI additions.
+
+All24 direct Python suite invocations at `ad59dfa` subsequently completed on the
+local Mac:387 collected,382 passes, five expected skips and zero failures. Four
+skips are Linux-only unsupported-adapter checks; one negative group-order branch
+skips because the actual groups are canonical, while its positive native control
+passes. No Rust/Lua CI driver or new hosted run is inferred. The77-file closed
+record at `/private/tmp/glue-portable-python24-mac-v2-20261017` has manifest
+`40163357625e96bcf09212eab91d4ccc9ab8137bee108d8d808a31653c6a0c67`.
+Independent review reconciled all24 argv vectors, raw test lines, counts, exits,
+stream hashes and105 unchanged Git/source pins without rerunning the tests:
+`/private/tmp/glue-python24-mac-independent-review-20261017`, manifest
+`3fbe63809e29f041f323b0365246f03be78df82e8b6957148dd8fffc752fa1a2`.
+
+The first enabled packet `c10ed2e4ce0404bd` was launched and visibly reached its
+private sudo password prompt. Before authentication completion was observed,
+the owner reported that host memory exhaustion crashed the VM. UTM was observed
+stopped, then running again at its restored guest desktop after host unlock.
+At the first restart checkpoint, automated keyboard input was not reaching guest
+Terminal and the fixed read-only interruption inspection had not executed. No completed-run receipt,
+closure, protected installation or case success is inferred. The old packet and
+private partial directories are not edited, retried, inventoried or repaired.
+
+One fresh host-only packet was prepared normally from the unchanged reviewed
+kit02 at `ad59dfa`: `/private/tmp/glue-bootstrap-vm-packet-reviewed-20261017-02`,
+nonce `6ae386cc044ff2a1`, manifest
+`50a5801a75101d585e8f4d800a3371c82b0b5751f991404ba180d4fce30f2181`.
+Its15 files retain the same nine kit members and three source-rendered scripts;
+syntax checks exit zero. The separate host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-02`, manifest
+`4b180f3466662254247cb4aecc809519d55c1bcd0408c3aad3f8acdbe0d81dbf`.
+Independent packet/receipt review passed without execution:
+`/private/tmp/glue-bootstrap-vm-packet02-independent-review-20261017`, manifest
+`7666ef69283914849dc22cb17de488c6d92c66845abd9808c12788d5871568fa`.
+Root rechecked exact source rendering, canonical plan and both complete trees,
+then copied all15 files unchanged into read-only toolkit share folder
+`bootstrap-vm-6ae386cc044ff2a1`. The separate restaging checkpoint is
+`/private/tmp/glue-bootstrap-vm-restage-root-checkpoint-20261017`, manifest
+`7a56018bb4bdfca5a4eff0404d51c4a5a63cbe7210a5b2ec6b0332ed913778b5`.
+At that restaging checkpoint no fresh guest script or payload had executed.
+Guest interruption inspection and private authentication remained prerequisites;
+full Darwin R02/M2 remains open.
+
+The subsequent read-only interruption inspection completed to its final marker
+and returned to the guest shell. Its exact six-file record is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-interruption-c10ed2e4-20261017-01`,
+manifest `cee18554af18d4801de250b8cc8a283ca0b4aeb18504c8cd35df83f30434acb0`.
+It records boot sec1792247668, SIP enabled, the same501/20 identity and16 ordered
+groups, all eight old fixed paths absent (including the protected fixture prefix)
+and all seven old metadata files absent. The OS reboot removed the temporary
+workspace; the agent did not delete or repair it. Independent review is
+`/private/tmp/glue-interruption-independent-review-4y3kqnqx`, manifest
+`793bab3c0d87b7b0727057f51b8e2583cecc214e7752c30a226a317bea1cd2bb`.
+A later UI status-print command lost shifted characters and did not capture an
+actual shell status; final-marker/inventory observations are recorded separately.
+
+Fresh packet `6ae386cc044ff2a1` then passed preflight/private authentication and
+returned without exporting a normal-zero run receipt. Only fixed ordinary-user
+wrapper metadata was inspected, with no native case payload read. The13-file
+inspection at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-launch-stop-6ae386cc-20261017-01`
+has manifest `11ba2d99a9c5b34a2852a77d452c63ade4c2377a67cfb08aa27657f448006ca7`:
+outer status1, preflight0/install2, empty wrapper streams, no case statuses and
+no root stage, fixture prefix or native output directories. Its `paths.tsv`
+retains literal `\\t` separators on present rows; absent rows/metadata use tabs.
+It is not silently normalized or relabeled as a successful batch.
+
+An ordinary-user guest mode observation completed separately:
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-mode-observation-6ae386cc-20261017-01`,
+manifest `a3082f87cb8bfab5513750b94336acbee44708c2a5fc89df930b0c6a1db2a7ad`.
+All five existing root/Library ancestors have full mode40755. Private/tmp has
+full mode41777, while BSD `stat %Lp` prints only777; the bootstrap's expected
+`0:1777` comparison therefore refuses before creating the stager. A bounded
+mode/type guard repair was implemented on
+`codex/mvp-r02-bootstrap-mode-guards`; no failed packet is edited or rerun, and
+no protected directory/security setting is repaired to fit the check.
+Joint independent source/metadata review is
+`/private/tmp/glue-launch-stop-independent-review-o0p34cb4`, manifest
+`dd7649b1cd9ca3b81e35a5249de8296c3d9bb4a2e78afb037ad20a5850eca8b1`.
+The exact failing branch remains an inference from the closed metadata and
+source; no branch trace or native closure is claimed. The separate root
+checkpoint binds both independent reviews, all three inspection inventories
+and their unchanged source scripts:
+`/private/tmp/glue-bootstrap-vm-early-stop-root-checkpoint-20261017`, manifest
+`8ae8259cac2dc997d90dec78b5f463e50fc6f8e84c2a0535826871d5786a8a5f`.
+
+Decision `d3956a9` and implementation `46d61f3` are integrated as `fabae45`
+and `dec2488` on `codex/mvp-r02-bootstrap-mode-integration`. Every numeric shell
+guard now uses full BSD `stat %p`, retaining file type and all special bits:
+directories40700/40755, private/tmp41777 and regular files100500/100555/100600,
+with the existing owner/link/content/signature/physical/freshness checks.
+Fourteen preparer and18 checker controls pass without skips. The old-source
+sticky-mode regression fails as intended. Independent review additionally passes
+48 combined-special-bit controls and12 native owned-temp controls; no generated
+phase, native kit or privileged operation runs in these tests. Its closed record
+is `/private/tmp/glue-bootstrap-mode-guards-independent-review-20261017-02`,
+manifest `f33417b46f64a0305e05de30b6332fc637c769a9dc1a1b2c83570d62d3c225b4`.
+An earlier optional socket-fixture attempt was sandbox-denied and remains a
+separate incomplete review harness; no socket control result is claimed.
+
+Fresh packet03, nonce `1ee4bbe2b443c268`, was prepared from the unchanged literal
+kit02 at `dec2488`. Its15-file packet manifest is
+`e00fb4a1d634c52dcdd59a7872e460b59babb0fc6f6f082dfd3916a61202c390`.
+The host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-03`, manifest
+`f3d23282cffc78af0c396d83b2ec70196f12aaed90a2616987104bd5285c0e05`.
+Preparation returned0, preserved all nine selected kit members and passed
+syntax-only checks for all three rendered scripts. Independent actual-packet
+review passes exact trees/modes, selected kit bytes, canonical plan, passive
+template reconstruction and the script SHA/size dependency chain. Its27-file
+closed record is `/private/tmp/glue-packet03-independent-review-q617wqtk`,
+manifest `1154d4ec1db84f29d45139867eba8ad2eda800feddc28e6e291cd125823f437c`.
+The new packet is staged byte/mode-identically at its literal shared path.
+The separate root checkpoint is
+`/private/tmp/glue-bootstrap-vm-mode-stage-root-checkpoint-20261017`, manifest
+`ad2db2714e0f68ec20151626350d12d9016b6572df96ab55151de55d93c35057`.
+An initial host staging check refused the fractional elapsed-time field when
+using the strict native-plan JSON parser; that read-only failure preceded all
+copying. Host receipt parsing was corrected separately; packet/native parsing
+and all source remain unchanged. The reviewed no-argument launch reached its
+private guest authentication prompt in the SIP-enabled VM. Authentication and
+the four-case results remain pending. No new native success, tracing, extraction
+verdict, hosted run or public source publication is claimed.
+
+After the owner completed private authentication, packet03 returned to the guest
+shell without a normal-zero receipt or complete batch export. A separate
+ordinary-user metadata inspection completed to its final marker and preserved
+13 files at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-launch-stop-1ee4bbe2-20261017-01`,
+manifest `95b5168bf41425ea2d97db3f2dad94d25ccd731588c83a5c0fb32efd5c40bd88`.
+The batch records preflight0/install0, installation status0 and outer status1.
+Strict signature verification succeeds for all three payloads. The root0700
+stager and root0755 fixture prefix exist; all four native output directories
+and all case wrapper statuses/stderr are absent. SIP remains enabled with the
+same boot and ordinary ID/group observations. This proves progress past the
+repaired shell guards, without proving a native case or protected child closure.
+
+A second bounded ordinary-user inspection records only request-helper status,
+stderr and output metadata. Its8 files are at
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-request-stop-1ee4bbe2-20261017-01`,
+manifest `e2067625d92dda64f37cb2f25b2b6034259a0e12001378e929e4a480c1517c16`.
+The positive helper returns1 with exact stderr
+`make-request: protected cwd observation or close failed`; its single-link
+ordinary0600 output is empty. Later request files/statuses/stderr are absent.
+The existing source therefore stops at the positive request's status guard,
+before size validation or any case. That diagnostic combines open, callback,
+metadata-policy and close failures; the exact underlying cause is not yet known.
+No request is regenerated, packet retried or native case payload read.
+The wrapper record's independent review is
+`/private/tmp/glue-packet03-stop-evidence-independent-review-v6qwuozt`, manifest
+`b3fa18f71422714f8f36f7e909e9df03a7f7a5632cb7fd017e0b66a15a042865`.
+The request record's independent review is
+`/private/tmp/glue-packet03-request-evidence-independent-review-ad7j6z_s`,
+manifest `665064e86767239936bd3b6059e4bf628fb7408c64bb59661642aa65af287c3a`.
+Their exact source and raw captures remain unchanged; all retained review hashes
+also verify independently at the integration root.
+The unchanged read-only deployment inspector then completed all six commands
+with status0 and returned `inspection_failed=0` to the guest shell. Its new
+28-file observation is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-Pf78Qtnu`,
+manifest `ca2e111c6f6abcdb94ca8b6851b464a95f7cea0792990aec7d60b995ab1be09f`.
+The complete semantic metadata/IDs/groups remain valid, but current root/Data
+device is16777231, root FSID `[16777236,27]` and Data FSID `[16777231,27]`.
+The old catalog binds device16777230, root `[16777236,26]` and Data
+`[16777230,26]`. These current tuples necessarily reject that compiled catalog;
+the precise branch taken in the earlier helper remains a source-grounded
+inference rather than an instruction trace. The closed independent current-proof
+review is `/private/tmp/glue-deployment-fresh-independent-review-vt3qcmj0`,
+manifest `ac654ed36717a52fdbeadd3fcd09853265b0bcdc117befc2efe4836156bb1cc8`.
+Append-only registration preserves the earlier proof and all34 production source
+pins. Its23 controls pass; the separate source review is
+`/private/tmp/glue-bootstrap-reboot-registration-independent-review-20261017-01`,
+manifest `8dcd6dd7c21844c8d0b8bef0a29d54d3a7ffeff4d1e1083d6ba8cdfb040c97fb`.
+No observation is normalized, old kit relabeled or runtime override introduced.
+
+Actual fresh kit03 is `/private/tmp/glue-bootstrap-native-kit-20261017-03`,
+136 files, manifest
+`ea67cfba1dab8dc51c44e514ca6ff8a00f703e665cbc89c17f996b3e02f4efae`.
+Build ID `1b85f0ac3d3ec2de7df50004ee2732d8d5c049adb44193383245050f800fa11d`
+binds the current registered source map and fresh proof. Catalog SHA256 is
+`c566af88348f4823aa93c67fa11ce851f210742c1b0b79ab792b3cb192e39e69`.
+The actual builder returns0 and all21 recorded tool commands pass; both signed
+trials have identical bytes. Its closed receipt is
+`/private/tmp/glue-bootstrap-kit03-builder-receipt-20261017`, manifest
+`5f9556fe22aa4e9764bf2184163ec704c4324e580624550a9eab1dbca04cb030`.
+The combined artifact/catalog independent review is
+`/private/tmp/glue-bootstrap-kit03-independent-review-20261017-04`, manifest
+`1910f6a1a1274fb41b32030e1a62dff2bf6a218b6d2db1788c3ebb50d6db0e22`.
+It passively verifies source/TU closure, exact command records, full hashes,
+Mach-O/CodeDirectory structure and both compiled catalogs/current mount tuples.
+Recorded strict codesign success remains distinct from passive signature checks;
+unused signature-allocation tails are retained and fully hashed, with no invented
+zero-tail requirement. No new kit binary executes during build or review.
+
+The reviewed preflight uses the unchanged literal native inspector and exact
+binary hash. Before sudo it requires a normal successful, bounded ordinary-user
+observation, typed JSON extraction, exact IDs/ordered groups, scope, OS and all
+five current component device/FSID bindings. Tool failure cannot pass by emitting
+expected text. It does not alter the packet/evidence schemas or native admission.
+Independent focused19 preparer/18 checker tests pass without skips at source
+`5f90c48`: `/private/tmp/glue-bootstrap-current-preflight-root-review-20261017-01`,
+manifest `8f845c59bb4ac4decdc7ff09bc1b6ccbb463f96fcab96b40c217e7edadb2de89`.
+These focused runs do not claim a new aggregate run of all24 portable suites.
+
+The completed kit02 installation must be preserved before fresh installation.
+[The retention decision](../decisions/mvp-r02-bootstrap-retain-install.md) requires
+the exact old stage/closed tree/signatures, absent old outputs and a fresh fixed
+same-parent archive. It verifies full five-entry identities before/after one
+`mv -n`, with no deletion, repair, retry or automatic restoration. This assumes
+a stable protected parent and no concurrent privileged mutator; it is not an
+atomic hostile-mutator exclusion primitive. Actual host packet03 is
+`/private/tmp/glue-bootstrap-retain-packet-reviewed-20261017-03`, manifest
+`6d92594dee41b9dc908f6be4f3cadc2c1e9b1d56ad83a4903bcfe8a118c53557`.
+Its independent26-file source/control review is
+`/private/tmp/glue-retain03-independent-review-pkz4o9y1`, manifest
+`f2a4a881b941db657cfc87e94b9cf0b20fcc8d9033020500082639e0a18a8185`.
+An earlier draft's omitted regular-device checks are preserved as a finding;
+the fresh packet rejects wrong devices before mutation. Three owned native move
+boundaries,21 existing read-only guards and10 focused field/inode controls pass.
+The reviewed literal kit03 binding preserves all policy/templates/schemas and
+changes only its six approval hashes/IDs plus admitted-proof identity. The same
+combined audit supplies both artifact and catalog review fields explicitly.
+Actual kit03 passes pure loading and kit02 refuses as an unregistered manifest;
+both kits, the combined audit and builder receipt retain identical before/after
+physical inventories. Focused19 preparer/18 checker controls pass without skips:
+`/private/tmp/glue-bootstrap-kit03-binding-controls-20261017-01`, manifest
+`0c83951ed599d05447a151266e9b489000300ac0429ba17f262e9a660d455f27`.
+
+Fresh actual packet04, nonce `da1aaf9a396020b3`, is prepared from committed
+`d295691` at `/private/tmp/glue-bootstrap-vm-packet-reviewed-20261017-04`,
+15 files, manifest
+`3464a9b713df68fe0b58a6f1a47a950af6158baae961ca067f2f626b252d661a`.
+Its actual normal-zero host preparation receipt is
+`/private/tmp/glue-bootstrap-vm-packet-host-receipt-20261017-04`, manifest
+`d86b12b020c33ef9a568dd372172322a6ed7999ebae1c2d08def7bf9294070b2`.
+All nine selected members equal kit03; scripts render from exact saved committed
+source and pass syntax checks. The independent42-file actual-packet review is
+`/private/tmp/glue-packet04-independent-review-awwpfdgd`, manifest
+`7bb4d6fce8f1b491b8b33b943848d390d14d4b47a23e142235b9b84d2f1f84eb`.
+It independently verifies plan/proof/current tuples, the root/outer/launch hash
+DAG, guards, preflight before authentication, closure and export gates.
+
+The separate copy driver's source-only review is
+`/private/tmp/glue-packet04-stage-driver-source-review-7p7em49t`, manifest
+`9827ba31974232b44c82c2bc5c79068916fe75efa8ab4655d9b2dc862c9be631`.
+The driver returns0 and stages retention03's5 files and packet04's15 files into
+exclusive fresh toolkit directories, with source inventories unchanged and
+destination bytes/modes equal. The closed staging checkpoint is
+`/private/tmp/glue-bootstrap-kit03-stage-root-checkpoint-20261017`, manifest
+`cb46016403c09ae7f7fa06e8db48937534dcc950df821fcf5b87090a43901854`.
+Guest paths end in `bootstrap-retain-kit02-packet03-20261017-03` and
+`bootstrap-vm-da1aaf9a396020b3`. The preservation launcher's exact no-argument
+command was visually checked before Return. Private guest authentication then
+completed; the actual retention and fresh nontracing outcomes follow. None of
+the failed packets is edited or rerun. SIP stays enabled.
+
+### Completed kit03 nontracing diagnostic and tracing prerequisites
+
+Retention03 returns0. Its five-file actual export is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-retained-install-1ee4bbe2b443c268-03`,
+manifest `5227e705f2b760c308f335da232eade4b14b6a1046b03919f068a0fdf0699490`.
+The old protected installation is preserved at
+`/System/Volumes/Data/Library/GlueMVPFixtures-retained-a75d54bb-1ee4bbe2`.
+Exact argv, 12 strict signature lines and the five-entry final identity vector
+verify. The reviewed source enforces equality before/after the single move;
+separate raw before-vectors were not emitted. The stable-parent/no-concurrent-
+privileged-mutator assumption remains explicit.
+
+Packet04 then returns0 through its normal outer receipt. The actual 52-file batch
+is `/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-batch-da1aaf9a396020b3`,
+manifest `b2654ce96a03860c41a17b26effd411f0da1b6955dd99c43237b8b8eef739cfb`.
+Its five-file outer receipt is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-run-receipt-da1aaf9a396020b3`,
+manifest `c688fdcb146e49bcb6450460b6edd9dc0ee3bc89879f30a50bc401c551cf8029`.
+Preflight/install/all four case wrappers/complete return0; native statuses are
+0/1/1/2 as declared. Positive has READY+ATTEMPT, a 256-byte context report,
+strict EOF class 3 and wait 0. SIM has READY+ERROR, no GO, empty captures,
+EOF class 2 and raw wait 30720 (normal exit 120); `kill_attempted=true` remains
+recorded and is not reinterpreted as signal-caused termination. Denied has one
+ERROR before READY/GO, errno 13, empty captures, EOF class 2 and normal exit 120.
+Positive/denied request bytes match; SIM changes only release action. The 441-byte
+trailing request is the canonical 440 bytes plus one NUL and refuses before output.
+
+The original host checker stops before evidence/case reads because it repeats
+the old proof literal. Its failed checkpoint remains unchanged at
+`/private/tmp/glue-bootstrap-kit03-run-root-checkpoint-20261017`, manifest
+`5fefe9d5315118c8b56486eb65ea81e59b47d83c152ee1fff93f0efa2f34ca9e`.
+Decision `45627d1` and repair `476b081` share the preparer's existing admitted
+proof constant, retaining policy/templates/schemas. Rebuilt-inventory old and
+unknown proof controls refuse before renamed evidence is read. Focused 19/19
+controls pass, with independent source review at
+`/private/tmp/glue-checker-proof-source-review-Wn0xDe`, manifest
+`e70dd5d8867e98325c7bf4afaf9a3699b42f40191ee2d0491b99fc15bdf76c9e`.
+
+The repaired actual checker returns0 without rerunning native cases or changing
+exports. Its21-file root checkpoint is
+`/private/tmp/glue-bootstrap-kit03-run-root-checkpoint-20261017-02`, manifest
+`6c1913ca6fef3b2ecbbfb82382d8dd8f684086750b8fc27ac6de541eaf6c2025`.
+The independent140-file review is
+`/private/tmp/glue-kit03-actual-result-review-wDKNY4`, manifest
+`c0fb82f1237f50e235a9991784f641b71c3dc1df35578a46d9d62f08e1ea4962`.
+It checks 14 terminal gates before case payloads, independently decodes BR/BW/NP
+and catalog relationships, replays the actual checker byte-for-byte and verifies
+all input inventories unchanged. These are strict owned nontracing diagnostics:
+producer reports do not establish kernel exec or extraction proof.
+
+The [trace-session decision](../decisions/mvp-r02-trace-session-coordinator.md)
+defines the fixed owned-child coordinator. Original feature commits `0cddfdc`
+through `cacb5a8` integrate as `4520e73` through `68d22d1`. Readiness and actual
+BEGIN precede once-only GO; pumping, reap/ECHILD ownership, cleanup, queued terminal
+drain and all closure reports preserve original deadlines and first errors.
+Eleven strict/eleven sanitizer model groups pass; independent review adds 14
+strict/14 sanitizer groups. Its44-file review is
+`/private/tmp/glue-trace-session-independent-review-mpnnvzwy`, manifest
+`2be89890d5ad9f22adccd369a0f847ba55d20112b7ab8795c3a43a5311081d21`.
+The models supply no native provider or kernel event validation.
+
+The [observed-I/O decision](../decisions/mvp-r02-bootstrap-observed-io.md)
+and `fbcc2cf` add explicit cooperative variants without changing legacy APIs or
+their operation table. Polls cap at min(remaining ceiling timeout,20ms), keep the
+original deadline/retry bound and retain confirmed prefixes on failure, even a
+fully written failedGO. Fatal poll/I/O and confirmed trailing-byte errors retain
+their original precedence. Nine new and 18 legacy groups pass strict and ASan/UBSan
+(27+27, no skips). The initial trailing-error ordering bug is preserved as a
+failing reconstructed regression and fixed in committed source. The51-file peer
+source review is `/private/tmp/glue-bio-observer-source-review-dGeMdp`, manifest
+`4718ca0ad470988ffea370ab3a53067886d40f1f2a46cc8b79cebc16aadb76e2`.
+Callbacks remain trusted/cooperative and cannot interrupt kernel stalls.
+
+Registration `cb19a8c` advances exactly BIO C/H among the 34 source pins and
+`source_revision` to committed `fbcc2cf`; all 32 other pins, both proofs, compile
+unit lists and parser stay unchanged. Clean committed source loading passes 34/34.
+Its eight-file independent review is
+`/private/tmp/glue-bio-source-registration-review-pCuCrN`, manifest
+`464a2613891e719d952ce74a7e6dec397836e46ba043ffb89454d7cb8e8b8eb6`.
+No new kit is built; historical kit03/export identities remain unchanged.
+
+CI `cb26b09` adds exactly two baseline Python test invocations. Its seven-file
+source review is `/private/tmp/glue-trace-session-ci-source-review-m4wbWV`,
+manifest `9621d455db0922e167ca557940a77d3f9df20526373357aac29137d0c0cc71c3`.
+All 26 suites collect 418 controls locally: Mac 413 pass/five skip; native offline
+Linux arm64 GCC 14 passes 390 with28 explicit skips. The cached image is
+`83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
+with network none, read-only checkout/root, UID 65534, 256 MB memory and 64-PID bound.
+The421-file checkpoint is `/private/tmp/glue-trace-portable-controls-20261017-01`,
+manifest `a9628a65d2dd6b602094f71c45b1f42090f2b08bf18e370dfcbc06a13d30d47a`.
+All 198 source pins equal before/after/committed bytes. An initial local driver's
+assertion counted the informational version probe as a suite and stopped before
+any test; its source and empty output directory remain preserved. The corrected
+driver runs the 26 exact suite argv. These are local Python/C controls, with no
+new Rust, hosted CI, provider or guest execution. The separate 23-file independent
+aggregate review is `/private/tmp/glue-trace-portable-controls-review-5qie5L`,
+manifest `0e338a1d9a03c7bb65aea1ca5ab8e72488d1dad724e4a876405e9d8d6e15b17f`.
+All 420 payloads, both nested manifests, 52 command statuses and verbose case
+counts pass; input metadata/bytes stay unchanged. The aggregate has writable
+permissions: a complete named inventory is not an immutable-permission claim.
+Container policy/outer status are root-witnessed transcription; child logs and
+native platform/UID are direct captures, with no embedded outer-container receipt.
+At that26-suite checkpoint native backend/runner adoption remained open. The
+subsequent source integration follows below; native calibration and the complete
+Darwin oracle/corpus/budgets and M2 remain open.
+
+### Owned tracing source integration and 30-suite checkpoint
+
+The [separate-parent decision](../decisions/mvp-r02-owned-trace-runner.md)
+preserves the ordinary build/CLI/receipt and selects tracing only through the
+fixed compile recipe. Observed protocol `cfe24fb` preserves failed status/GO
+prefixes without decoding or replay; eleven strict/eleven sanitizer groups pass.
+Its 49-file peer record is `/private/tmp/glue-observed-status-peer-review-NkHFbx`,
+manifest `8496e647d9b5c6919eeac3b9a641c778869728b1de335303cadc01cc352a999a`.
+
+The backend integrated through `6c75976` requires the complete fixed
+BSD/Mach/proc inventory and exact enabled count. It validates native layouts,
+probe/EPID identities and raw writes before coordinator delivery; actual consumed
+BEGIN supplies readiness. Target nonshadow exit and queued END are distinct from
+current-context/shadow cleanup. Actual POSIX/libdtrace errors, callback statuses
+and every writer-close outcome remain separate. Its final validation is
+`/private/tmp/glue-owned-trace-backend-closed-9okh8wbf`, manifest
+`5af4d0b5258a6132a64957b530941cbc8414377f482d54795d60724a689ad68e`;
+the 62-file peer record is `/private/tmp/glue-owned-trace-backend-peer-review-a7fnqrg3`,
+manifest `0afbb1bd2643a15220035e96680d74a8a880995719e39917bf7cb21baac80923`.
+
+Parent `d08dd5f` enters only after actual fork/full READY comparison, consumes
+readiness/BEGIN before once-only GO, pumps observed status/wait/cleanup, and
+retires kill ownership on reap/ECHILD before later fallible observations. The
+initial parent allowed cleanup work against the longer attempt deadline after
+a transient cleanup-clock failure. The repaired source requires valid shared
+cleanup binding; the new control fails against original source and passes the
+repair. Ten strict/ten sanitizer groups pass. Backend context remains alive
+through parent reporting, and all sidecar/pending/held-directory closure gates
+precede the final exclusive rename. The 50-file validation record are at
+`/private/tmp/glue-owned-trace-parent-repair-validation-nxj4d4bs`, manifest
+`a074cc5fd2d5e78bf2a03150345367021cb96907f08c3005830ded1494d20a5b`;
+the 90-file peer record is `/private/tmp/glue-owned-trace-parent-peer-review-s3zqo5jp`,
+manifest `a963ae1f07f2661c8f16270f86593a3fa0c71b6337af4cf7436eaef540bfadd2`.
+Legacy controls remain separately retained. Linked SDK tracing binaries were
+never executed; injected models supply no native provider/exec evidence.
+
+The [tracing kit policy](../decisions/mvp-r02-owned-trace-kit.md), integrated as
+`a395ead`, uses frozen internal policies without changing default schemas/CLI,
+enabled-SIP admission or legacy recipe bytes. Only `owned-trace-runner` defines
+tracing and links exactly libSystem plus libdtrace. Its registry remains null
+revision with empty source/compile/proof lists; construction refuses before
+source/proof/output/tool access. All 23 legacy and 12 new controls pass. Validation
+is `/private/tmp/glue-owned-trace-kit-validation-7va390eo`, manifest
+`130b5097b2909824f436908ebebd4ed9d2bcf814563f6189872129c7006b0795`;
+the 37-file peer record is `/private/tmp/glue-owned-trace-kit-peer-review-wdlie6bs`,
+manifest `0b35edb1eeb6a306954274d738ce8b3f0d535b85114d6570d1fb49c5c89de7bc`.
+
+Separate [registration](../decisions/mvp-r02-owned-trace-inputs.md) `7f15c40`
+updates exactly six of 34 default hashes, preserves 28 others, both actual proofs
+and all compile lists, and pins source revision `a395ead`. Only the existing
+legacy preparer's parser hash changes. Clean committed source loading passes
+34/34. The actual historical checker replay returns0 with identical native
+results; only parser/preparer source identities differ. All four input trees'
+bytes and file/directory metadata remain unchanged. Its record is
+`/private/tmp/glue-owned-trace-input-registration-20261017-01`, manifest
+`4ccf8f8e10bd3b4a85d95e3b975e9f50892b3b37b0e501a34dcdf0cc5fed6cfa`.
+The 73-file independent review is
+`/private/tmp/glue-owned-trace-registration-peer-review-you9emkw`, manifest
+`f1e34366a980d389c07ffd1074dccbd562d1185964c8140aee79d6fb369c4cf3`.
+It verifies all source pins, both report identities and all four actual input
+trees twice, without rerunning the checker or loader. The root record remains
+writable; the separate peer record has read-only permissions.
+No new kit or guest run follows from this registration; tracing admission stays
+empty and kit03 retains its historical lock.
+
+CI `abecae2` adds three invocations and `9f281f1` adds one. The complete local
+run of all 30 Python suites collects 454 controls per host: Mac 448 pass/six skip;
+native Linux arm64 GCC 14 passes 413 with 41 explicit skips. Parent promotion models
+are Darwin-only (all 10 skip elsewhere); Linux runs the backend refusal and skips
+its two SDK models, while the kit adds one Linux SDK skip. The first 481-file
+record at `/private/tmp/glue-owned-trace-portable-controls-20261017-01`, manifest
+`f34e22e8fdc31b70e53580d3ef2dd36d949b36012f6a8f45752d77fb45c2b40f`,
+passes all controls but omits executed `scripts/fetch-evidence.sh` from its 157
+selected source pins. It remains unchanged with that source-closure limitation.
+The repaired driver inventories every tracked macos-trace file and script and
+repeats all 30 exact suites. Its 538-file record is
+`/private/tmp/glue-owned-trace-portable-controls-20261017-02`, manifest
+`302bb2f8e1316a35fec00dd3856d5d6956f5abee90836674e0cf63000797d8f7`.
+Both hosts again pass the same 454 controls. All 214 source pins equal
+before/after/committed `35c0abd` bytes; that commit changes only progress/ledger
+documentation from `9f281f1`, outside the selected runtime/script sources.
+Actual outer Mac/container argv, completion status and streams are captured,
+alongside 60 suite receipts. The cached native image and offline/read-only/
+UID 65534/capability-drop/256MiB/64-PID policy remain fixed. Record permissions
+remain writable, with no hostile-actor immutability or rootless-engine claim.
+No Rust, hosted CI, provider or new guest execution is included.
+The separate 1,046-file independent CI/aggregate review is
+`/private/tmp/glue-owned-trace-aggregate-peer-review-5klfrdes`, manifest
+`448943bbf2a41f198913ab9200e8f248654c8f5b29489c14ddbcaf2a92776b0a`.
+It verifies both complete records and nested inventories, all source identities,
+all command/count/skip receipts and the source-selection repair. Both inputs'
+bytes and physical metadata stay unchanged. No suites are rerun by the reviewer.
+
+An independent streaming raw reader, separate tracing packet/checker, fresh
+post-SIP-reboot proof, reviewed trace source admission, actual kit construction
+and protected-install retention still precede guest calibration. SIM has no GO
+and must retain its actual failed-trace/normal-exit-or-kill facts; it cannot borrow
+positive success eligibility. Absolute monotonic/DTrace timestamp domains have
+not been equated. The VM and physical host remain SIP enabled. Full native
+process-tree effects, extraction verdicts, Mac corpus/budgets and R02/M2 remain
+open; no raw exports or newer source have been published.
+
+
+The credential primitive independently passes 14 native unprivileged controls
+and five additional injected-only ASan/UBSan controls. Its isolated Linux
+forked-child transition to UID/GID 65534 and groups `[65534]` preserves parent
+credentials; it does not calibrate a privileged Darwin transition or integrate
+the helper into the collector. That collector still runs root-target diagnostics.
+The pairing adapter separately replays all seven v8 process-tree captures as
+1,193 returned pairs and 13 explicit entries terminated without return. It
+retains raw frames and observed thread/exec lifetimes; it supplies no resolved
+file objects, path authorization, Mach effects or full extraction verdict.
+The observation bridges replay 68 whole-tree named opens and 18 scalar
+`mach_msg2_trap` pairs. The six profiles without Mach tracing explicitly report
+that the provider was not enabled; they make no absence claim. Numeric results,
+copied paths, message IDs, ports and options grant no filesystem authorization.
+The Linux image was `83284f80eba5a876e1441d216f0e1d0143659b05642a75b34cc213270d83c9b9`,
+with network disabled and this checkout mounted read-only. Native SDK/signature
+open controls retain their separate target receipts.
 
 ## Executed development cells
 
 | Cell | Lua | Python | Node | Release observations |
 | --- | --- | --- | --- | --- |
-| macOS arm64 | 5.4.9/5.5.1 source/native/secondary/TLS/errors | PBS/uv 3.13.16, 3.14.5, 3.15.0b1; non-PBS 3.12.14 and framework 3.14.8 (3.12.12 also focused provider test) | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Offline sandbox and relocated read-only execution; strict ad-hoc verification; full tracer unavailable |
+| macOS arm64 | 5.4.9/5.5.1 source/native/secondary/TLS/errors | PBS/uv 3.13.16, 3.14.5, 3.15.0b1; non-PBS 3.12.14 and framework 3.14.8 (3.12.12 also focused provider test) | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Offline sandbox and relocated read-only execution; strict ad-hoc verification; complete Darwin oracle remains unimplemented |
 | GNU Linux arm64 | Both families source/native and extraction traces | PBS 3.13.16 file/module/console/native/abi3; non-PBS 3.14.8 source; local PBS archive routes | Official 24.22.0/26.10.0 CJS/ESM/resources/Node-API | Native Podman VM, network none, controlled uid/read-only tree, complete strace where receipted |
 | GNU Linux x86_64 | Both families source/native passed full acceptance | PBS 3.12.15/3.13.16 and independent conda-forge 3.14.8 source/module/console/native all passed | 24.22.0/26.10.0 all eight cases passed full acceptance | All 24 acceptance cases and all five reviewed R03 budgets passed under the explicit trace environment; independently replayed |
 | macOS x86_64 | Unperformed | Unperformed | Unperformed | Later separate cell |
@@ -141,9 +881,9 @@ cp311-abi3 cryptography runs pass complete V02/R02 traces; non-PBS 3.14.8 source
 and local PBS archive variants are separately receipted. The raw locations are
 `/private/tmp/glue-python-v02-*` and
 `/private/tmp/glue-python-v02-linux-evidence/`. Failed preparatory runs remain
-retained and do not count as acceptance. The final integration evidence
-inventory selects only checked passing receipts and labels signing/tracing
-checks separately.
+retained and do not count as acceptance. Acceptance summaries select checked
+passing receipts and label signing/tracing checks separately; the evidence
+inventory also preserves failed runs and preparatory diagnostics.
 
 Native hosted x86_64 acceptance and performance enforcement are configured in
 `.github/workflows/mvp-native.yml` using `scripts/ci-mvp-linux.sh`. It requires
@@ -190,6 +930,15 @@ locations are recorded in the [integration evidence README](../evidence/compact-
 [decision 0030](../decisions/0030-evidence-retention.md). Evidence release assets
 have not been published; there is no fabricated `bundle.json` or remote durable
 retention claim. Local files alone will not survive transfer of this repository.
+The indexed checkpoint now prepares and restores 18,588 captured files without
+rewriting them; replay from a new root passes 94 receipts, ten budget profiles
+and 1,980 rank results. The archive is 619,802,268 bytes with SHA-256
+`aa8b2291a670791f8a50626c1098eb2281b8b616cff260163c9aa895ddc8879f`.
+Independent review of its final native x86 subtree also passes 24 acceptance
+receipts, 15 benchmark variants, 156 controls and 990 rank results, with the
+4,804-file subtree unchanged. Review artifacts created after preparation are
+separate from that frozen checkpoint; exact identities and commands are in the
+evidence README.
 
 Remaining M2 work includes a complete, validated Darwin extraction backend and
 the required macOS corpus, negative controls and budgets. Native
@@ -199,12 +948,37 @@ override that provider restriction; no OS security setting was changed. See the
 [capability diagnostic](../../fixtures/mvp/macos-trace/README.md). The owner
 approved a local UTM VM after freeing internal storage, and completed the guest
 Setup Assistant. The exact owned-fixture syscall probe also failed under SIP
-in the arm64 VirtualMac2,1 guest. The owner explicitly declined
-disabling SIP and requires it to remain enabled. Host and guest security
-policies were preserved; no approved trace-capable hosted macOS runner is
-available. The capability transport and diagnostic reader do not supply the
+in the arm64 VirtualMac2,1 guest. The owner initially chose to keep guest SIP
+enabled, then explicitly corrected that choice and authorized temporarily
+disabling it only in this owned test VM, with restoration after tracing.
+Recovery owner authentication succeeded and post-reboot guest metadata confirms
+SIP disabled. Native v3/v4 captures reject the first callback's layout. The exact
+v2 layout candidate in guest run v5 completes eight of nine owned cases; failed
+spawn exposes a genuine current-context/target exit mismatch and lost parent
+syscalls. V6 adds explicit target exit records, completes the two open-only
+cases and fails all seven tree cases: old-image cleanup after exec shares the
+live PID and prematurely clears its watch. Four failed captures also reject
+their stdout identities because unobserved descendants append after the
+premature footer. Preserve all original bytes and failed gates. A target PID
+alone cannot prove termination of the active process image. V7/v8 retain the
+target object and raw shadow flag; all seven tree cases then complete, including
+failed-spawn parent continuation and explicit child termination. V7's two
+open-only failures expose queued events arriving after root wait. The focused
+drain fix produces v8 with all nine cases captured, 2,647 events, no drops/errors
+and consistent file identities under independent replay. Original failed
+streams remain unchanged. Guest-only restoration in Recovery and normal reboot
+are complete. The running guest's read-only status proof reports SIP enabled at
+2026-10-16T12:14:43Z; all ten commands exit zero, and all 35 indexed payload
+files plus their manifest verify unchanged. The separate
+[restoration checkpoint](../evidence/compact-mvp-darwin-restoration-2026-10-16/README.md)
+retains this observation and the exact approved nine-job portable CI result;
+older captures and checkpoints remain unchanged. These are owned
+diagnostics, with guest networking enabled,
+and do not satisfy the offline product corpus.
+The physical host policy remains unchanged. No approved trace-capable hosted
+macOS runner is available. The capability transport and diagnostic reader do not supply the
 missing Darwin decoder/oracle. Full Mac R02 implementation and its corpus,
-negative controls and budgets remain open under the retained policy.
+negative controls and budgets remain open until actual capture and replay pass.
 Public release additionally needs Developer ID/notarization under
 the chosen policy, and publication/verification of retained evidence assets.
 Memory mode and later platform/language expansion remain in

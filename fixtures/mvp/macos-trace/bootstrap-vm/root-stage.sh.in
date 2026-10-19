@@ -1,0 +1,206 @@
+#!/bin/sh
+# Fixed owned-VM provisioning/control script. No generic command/path interface.
+set -eu
+umask 077
+set -C
+[ @@ENABLED@@ = 1 ] || { echo 'execution disabled pending independent review' >&2; exit 2; }
+[ "$#" -eq 1 ] || exit 2
+PACKET=@@GUEST_PACKET@@
+WORK=@@GUEST_WORK@@
+STAGE=@@ROOT_STAGE@@
+BUILD=@@BUILD_DIR@@
+PREFIX=/System/Volumes/Data/Library/GlueMVPFixtures
+[ "$(/usr/bin/id -ru)" = 0 ] && [ "$(/usr/bin/id -u)" = 0 ] || exit 2
+[ "$(/usr/sbin/sysctl -n hw.model)" = VirtualMac2,1 ] || exit 2
+[ "$(/usr/bin/csrutil status)" = 'System Integrity Protection status: enabled.' ] || exit 2
+
+directory() {
+    [ -d "$1" ] && [ ! -L "$1" ] || return 1
+    # Complete octal mode includes type and special bits; %Lp omits both.
+    [ "$(/usr/bin/stat -f '%u:%p' "$1")" = "$2" ]
+}
+regular() {
+    [ -f "$1" ] && [ ! -L "$1" ] || return 1
+    [ "$(/usr/bin/stat -f '%u:%p:%l' "$1")" = "$2" ]
+}
+digest() {
+    line=$(/usr/bin/shasum -a 256 "$1") || return 1
+    hash=${line%% *}
+    [ "${#hash}" -eq 64 ] || return 1
+    case "$hash" in *[!0-9a-f]*) return 1 ;; esac
+    printf '%s\n' "$hash"
+}
+request_digests_match() {
+    staged_hash=$(digest "$1") || return 2
+    source_hash=$(digest "$2") || return 2
+    [ "${#staged_hash}" -eq 64 ] && [ "${#source_hash}" -eq 64 ] || return 2
+    case "$staged_hash$source_hash" in *[!0-9a-f]*) return 2 ;; esac
+    [ "$staged_hash" = "$source_hash" ] || return 2
+}
+directory "$STAGE" 0:40700 || exit 2
+
+install_file() {
+    name=$1 size=$2 expected=$3
+    source="$PACKET/payload/$name"
+    [ -f "$source" ] && [ ! -L "$source" ] || return 1
+    /usr/bin/head -c "$((size+1))" "$source" > "$BUILD/$name"
+    regular "$BUILD/$name" 0:100600:1 || return 1
+    [ "$(/usr/bin/stat -f '%z' "$BUILD/$name")" = "$size" ] || return 1
+    [ "$(digest "$BUILD/$name")" = "$expected" ] || return 1
+    /bin/chmod -N "$BUILD/$name"
+    /bin/chmod 0555 "$BUILD/$name"
+    regular "$BUILD/$name" 0:100555:1 || return 1
+    /usr/bin/codesign --verify --strict --verbose=2 "$BUILD/$name"
+}
+install() {
+    # These protected existing ancestors are never chmod/chown/ACL-repaired.
+    for parent in / /System /System/Volumes /System/Volumes/Data /System/Volumes/Data/Library; do
+        directory "$parent" 0:40755 || return 1
+    done
+    [ ! -e "$PREFIX" ] && [ ! -L "$PREFIX" ] || return 1
+    /bin/mkdir -m 0700 "$PREFIX"
+    /bin/chmod -N "$PREFIX"
+    /bin/mkdir -m 0700 "$BUILD"
+    /bin/chmod -N "$BUILD"
+@@INSTALL_FILES@@
+    # All payload writers are closed; known bytes/signatures already checked.
+    /bin/chmod 0755 "$BUILD"
+    /bin/chmod 0755 "$PREFIX"
+    directory "$BUILD" 0:40755 && directory "$PREFIX" 0:40755 || return 1
+    printf '%s\n' @@KIT_SHA@@ > "$STAGE/installed"
+}
+select_case() {
+    C=$1
+    case "$C" in
+        positive) OUTPUT=@@OUT_POSITIVE@@ ;;
+        simulated) OUTPUT=@@OUT_SIMULATED@@ ;;
+        denied) OUTPUT=@@OUT_DENIED@@ ;;
+        trailing) OUTPUT=@@OUT_TRAILING@@ ;;
+        *) return 1 ;;
+    esac
+}
+expect() {
+    key=$1 type=$2 expected=$3
+    actual=$(/usr/bin/plutil -extract "$key" raw -expect "$type" -o - "$OUTPUT/result.json") || return 1
+    [ "$actual" = "$expected" ]
+}
+value() { /usr/bin/plutil -extract "$1" raw -expect "$2" -o - "$OUTPUT/result.json"; }
+closed() {
+    regular "$OUTPUT/result.json" 0:100600:1 || return 1
+    [ "$(/usr/bin/stat -f '%z' "$OUTPUT/result.json")" -le 8192 ] || return 1
+    expect schema string glue-owned-bootstrap-diagnostic-v1 || return 1
+    for key in tracing exec_proved full_acceptance wait.lost; do expect "$key" bool false || return 1; done
+    for key in wait.forked wait.reaped signals.restore_called signals.pipe_restored signals.mask_restored stdout_capture_valid stderr_capture_valid; do
+        expect "$key" bool true || return 1
+    done
+    for key in cleanup_error.stage cleanup_error.reason cleanup_error.errno cleanup_error.detail signals.restore_stage signals.restore_reason signals.restore_errno; do
+        expect "$key" integer 0 || return 1
+    done
+    # Promotion in the exact pinned producer additionally excludes ambiguous FD
+    # close/ownership. This is not inferred from mere JSON presence or CLI2.
+}
+expected_case() {
+    for key in protocol.wire_fault protocol.io_stage protocol.io_reason protocol.io_errno; do expect "$key" integer 0 || return 1; done
+    expect go.closed bool true || return 1
+    if [ "$C" = positive ]; then
+        [ "$native" = 0 ] || return 1
+        for key in consistent_owned_probe ready_matched probe_matched go.attempted go.possibly_released; do expect "$key" bool true || return 1; done
+        expect child_error.present bool false && expect wait.raw_status integer 0 && expect go.bytes integer 64 &&
+        expect protocol.records integer 2 && expect protocol.eof_class integer 3 && expect stdout_bytes integer 256 && expect stderr_bytes integer 0
+    else
+        [ "$native" = 1 ] || return 1
+        for key in consistent_owned_probe probe_matched go.attempted go.possibly_released; do expect "$key" bool false || return 1; done
+        expect go.bytes integer 0 && expect child_error.present bool true && expect protocol.eof_class integer 2 &&
+        expect child_error.detail integer -1 && expect stdout_bytes integer 0 && expect stderr_bytes integer 0 || return 1
+        if [ "$C" = simulated ]; then
+            expect ready_matched bool true && expect protocol.records integer 2 && expect child_error.stage integer 9 &&
+            expect child_error.reason integer 10 && expect child_error.errno integer 0 && expect child_error.flags integer 3
+        else
+            expect ready_matched bool false && expect protocol.records integer 1 && expect child_error.stage integer 6 &&
+            expect child_error.reason integer 3 && expect child_error.errno integer 13 && expect child_error.flags integer 1
+        fi
+    fi
+}
+run_case() {
+    select_case "$1" || return 2
+    [ "$(/bin/cat "$STAGE/installed")" = @@KIT_SHA@@ ] || return 2
+    [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
+    printf 'started\n' > "$STAGE/$C.started"  # Once only; never retry a case.
+    source="$WORK/evidence/requests/$C.bin"
+    regular "$source" @@UID@@:100600:1 || return 2
+    size=$(/usr/bin/stat -f '%z' "$source")
+    [ "$size" -ge 208 ] && [ "$size" -le 16385 ] || return 2
+    /usr/bin/head -c 16386 "$source" > "$STAGE/$C.request.bin"
+    [ "$(/usr/bin/stat -f '%z' "$STAGE/$C.request.bin")" = "$size" ] || return 2
+    request_digests_match "$STAGE/$C.request.bin" "$source" || return 2
+    printf '%s\n' "$staged_hash" > "$STAGE/$C.input.sha256"
+    if [ "$C" = denied ]; then /bin/chmod 0700 "$BUILD"; directory "$BUILD" 0:40700 || return 2; fi
+    native=0
+    /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C TZ=UTC "$BUILD/bootstrap-runner" \
+        --request "$STAGE/$C.request.bin" --output "$OUTPUT" </dev/null \
+        > "$STAGE/$C.native.stdout" 2> "$STAGE/$C.native.stderr" || native=$?
+    printf '%s\n' "$native" > "$STAGE/$C.native.status"
+    if [ "$C" = trailing ]; then
+        [ "$native" = 2 ] && [ ! -e "$OUTPUT" ] && [ ! -L "$OUTPUT" ] || return 2
+        printf 'true\n' > "$STAGE/$C.output.absent"
+        printf 'no-output\n' > "$STAGE/$C.closed"
+        return 0
+    fi
+    case "$native" in 0|1) ;; *) return 2 ;; esac
+    closed || return 2
+    printf 'closed\n' > "$STAGE/$C.closed"
+    if [ "$C" = denied ]; then
+        # No EXIT trap can bypass the proven-closure gate.
+        /bin/chmod 0755 "$BUILD"
+        directory "$BUILD" 0:40755 || return 2
+    fi
+    expected_case || return 1
+}
+export_file() {
+    select_case "$1" || return 2
+    [ -f "$STAGE/$C.closed" ] && [ ! -L "$STAGE/$C.closed" ] || return 2
+    role=$2
+    case "$role" in
+        input.sha256) source="$STAGE/$C.input.sha256"; cap=65 ;;
+        native.status) source="$STAGE/$C.native.status"; cap=4 ;;
+        output.absent) [ "$C" = trailing ] || return 2; source="$STAGE/$C.output.absent"; cap=5 ;;
+        request.bin|status.bin|probe.stdout|probe.stderr|result.json)
+            [ "$C" != trailing ] && [ "$(/bin/cat "$STAGE/$C.closed")" = closed ] || return 2
+            source="$OUTPUT/$role"
+            case "$role" in request.bin) cap=16384 ;; status.bin) cap=769 ;; probe.stdout) cap=256 ;; probe.stderr) cap=4096 ;; result.json) cap=8192 ;; esac ;;
+        *) return 2 ;;
+    esac
+    regular "$source" 0:100600:1 || return 2
+    file_size=$(/usr/bin/stat -f '%z' "$source")
+    [ "$file_size" -le "$cap" ] || return 2
+    # Compare closed-file observations before export as well as in the later
+    # independent host checker. Invalid captures are never interpreted as empty.
+    expected_hash= expected_size=
+    case "$role" in
+        request.bin) expected_hash=$(value identities.request_sha256 string) || return 2
+            expected_size=$(/usr/bin/stat -f '%z' "$STAGE/$C.request.bin") ;;
+        status.bin) expected_hash=$(value identities.status_sha256 string) || return 2
+            expected_size=$(value protocol.bytes integer) || return 2 ;;
+        probe.stdout) expect stdout_capture_valid bool true || return 2
+            expected_hash=$(value identities.stdout_sha256 string) || return 2
+            expected_size=$(value stdout_bytes integer) || return 2 ;;
+        probe.stderr) expect stderr_capture_valid bool true || return 2
+            expected_hash=$(value identities.stderr_sha256 string) || return 2
+            expected_size=$(value stderr_bytes integer) || return 2 ;;
+    esac
+    if [ -n "$expected_hash" ]; then
+        [ "${#expected_hash}" -eq 64 ] || return 2
+        case "$expected_hash" in *[!0-9a-f]*) return 2 ;; esac
+        [ "$file_size" = "$expected_size" ] && [ "$(digest "$source")" = "$expected_hash" ] || return 2
+    fi
+    /usr/bin/head -c "$cap" "$source"
+}
+case "$1" in
+    install) install ;;
+    case-positive|case-simulated|case-denied|case-trailing) run_case "${1#case-}" ;;
+    export-*)
+        phase=${1#export-}; c=${phase%%:*}; role=${phase#*:}
+        [ "$phase" != "$role" ] || exit 2
+        export_file "$c" "$role" ;;
+    *) exit 2 ;;
+esac

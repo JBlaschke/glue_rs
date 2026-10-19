@@ -15,6 +15,38 @@ fi
 cargo fmt --all -- --check
 case "${1:-baseline}" in
     baseline)
+        python3 --version
+        python3 scripts/test-evidence-bundle.py -v
+        python3 fixtures/mvp/macos-trace/test_read_capability.py -v
+        python3 fixtures/mvp/macos-trace/test_observe_open.py -v
+        python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v
+        python3 fixtures/mvp/macos-trace/call-pairing/test_pair_calls.py -v
+        python3 fixtures/mvp/macos-trace/tree-open/test_observe_tree_open.py -v
+        python3 fixtures/mvp/macos-trace/mach-msg2/test_observe_msg2.py -v
+        python3 fixtures/mvp/macos-trace/target-credentials/test_target_credentials.py -v
+        python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
+        python3 fixtures/mvp/macos-trace/target-endpoints/test_target_endpoints.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-wire/test_bootstrap_wire.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-io/test_observed_io.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-signals/test_bootstrap_signals.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-request/test_bootstrap_request.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-probe/test_probe_report.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-probe/test_context_probe.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-admission/test_bootstrap_admission.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-inspector/test_inspect_deployment.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runner/test_bootstrap_runner.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-trace-kit/test_build_kit.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-vm/test_prepare.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-vm/test_checker.py -v
+        python3 fixtures/mvp/macos-trace/trace-session/test_trace_session.py -v
+        python3 fixtures/mvp/macos-trace/owned-trace-backend/test_owned_trace_backend.py -v
+        # Native SDK/signature controls keep their separate target receipts.
+        python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
+        python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         cargo test --workspace --locked
         cargo clippy --workspace --all-targets --locked -- -D warnings
         ;;

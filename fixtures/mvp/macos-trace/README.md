@@ -6,7 +6,62 @@ the host and copied to an approved guest without guest Python or compiler tools.
 Its raw syscall/process fixtures remain capability-only until a full decoder and
 oracle are implemented and validated.
 
-A root-authenticated wildcard preflight on the current host reported:
+The owned UTM guest completed all nine v8 diagnostics on 16 October 2026:
+2,647 original events, no reported drops/errors and consistent receipt identities
+under the [independent reader](READER.md). The captures calibrate exec-shadow
+cleanup, failed-spawn parent continuation, process-tree coverage and open-only
+queue draining in this corpus. The [open observer](OPEN_OBSERVATIONS.md) also
+replays the two v8 open-only streams, retaining 15 whole-stream calls. These
+root-run captures have networking enabled and do not satisfy the offline
+application corpus or full R02/M2. After guest-only restoration in Recovery and
+normal reboot, the running guest reports SIP enabled. All ten read-only metadata
+commands and the independent proof/hash review pass; the
+[separate restoration checkpoint](../../../docs/evidence/compact-mvp-darwin-restoration-2026-10-16/README.md)
+retains that observation. The physical host's policy remains unchanged.
+
+The [raw-call pairing adapter](call-pairing/README.md) independently validates
+capture/toolkit inputs and pairs 1,193 returned calls across the seven v8 tree
+captures. Thirteen additional entries retain explicit termination boundaries
+with no fabricated return. Pairing preserves raw provenance and supplies no
+filesystem or Mach effects decision.
+
+The [tree-open bridge](tree-open/README.md) retains 68 named-open observations
+across those process/thread lifetimes. The
+[Mach scalar observer](mach-msg2/README.md) retains 18 packed message-call
+observations in the Mach-enabled capture and reports the other six profiles as
+not enabled. Copied paths, numeric descriptors and message fields do not prove
+file objects, port identities or effects; both acceptance APIs remain closed.
+
+The separate [credential primitive](target-credentials/README.md) validates and
+applies an explicit numeric identity only in an owned child, with precise
+failure stages and exact real/effective ID and group readback. Its controls and
+independent review pass; it is not integrated into the collector. Privileged
+Darwin transition calibration, inherited-FD/cwd/signal setup and the launch gate
+remain open. Existing root-target capture bytes and receipts are unchanged.
+
+The [descriptor helper](target-descriptors/README.md) separately closes unlisted
+ordinary descriptors only in an owned child and verifies an exact five-number
+rescan. Native unprivileged Mac controls and independent reviews pass, including
+a sentinel above lowered child FD limits; Linux runs injected controls and
+explicitly rejects the native adapter. This numeric property does not verify
+endpoint objects, inherited cwd/Mach/fileport rights or a complete bootstrap.
+
+The [endpoint helper](target-endpoints/README.md) validates all five source
+roles before allocating fresh CLOEXEC copies, then maps blocking stdio only
+inside the owned child. Its private FIFO control ends must already be
+nonblocking; original caller descriptors and shared status flags stay unchanged.
+Partial allocation or mapping failures cannot authorize launch.
+
+The [bootstrap wire codec](bootstrap-wire/README.md) supplies fixed, bound
+READY/GO/EXEC_ATTEMPT/ERROR records and strict sequence validation. The separate
+[pipe transport](bootstrap-io/README.md) retains confirmed byte prefixes under
+absolute monotonic deadlines, including on failure. A failed GO write can
+already have released its peer and must never be replayed. Neither helper treats
+pipe EOF as proof of exec success. These dependencies have focused native and
+injected controls; the complete nonroot controller and collector integration
+remain separate work.
+
+A root-authenticated wildcard preflight on the physical host reported:
 
 ```
 dtrace: failed to match syscall:::entry: System Integrity Protection is on
@@ -75,8 +130,8 @@ Before a complete Darwin backend can be accepted, actual captures must establish
 
 The Linux strace protocol and its oracle remain separate. A userspace libc
 interposer, `fs_usage` summary, parser-only test or file snapshot does not replace
-complete Darwin capture evidence. The current capture is intentionally kept
-small until the OS exposes the required syscall provider on an approved host.
+complete Darwin capture evidence. The native guest diagnostics supply the
+bounded calibration above; the physical-host failures below remain unchanged.
 
 ## Retained local result identities
 

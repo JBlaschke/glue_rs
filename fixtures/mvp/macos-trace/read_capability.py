@@ -17,21 +17,25 @@ import sys
 import tempfile
 
 
-PROTOCOL = "darwin-capability-raw-v1"
+PROTOCOL = "darwin-capability-raw-v4"
 SCOPE = "owned diagnostic transport only; no complete process-tree or extraction-oracle acceptance"
 EVIDENCE = {"program.d", "events.jsonl", "errors.jsonl", "probes.tsv", "target.stdout", "target.stderr", "watchdog.json"}
 TOOLKIT = {"capture-native", "lifecycle-probe", "owned-probe", "input.txt", "prepare-native.sh", "CAPTURE_FORMAT.md"} | {
     stem + suffix for stem in ("capture-native", "lifecycle-probe", "owned-probe") for suffix in (".c", "-build.argv")}
 HEADER = {"revision", "protocol", "scope", "status", "reason", "profile", "host", "elapsed_seconds", "root_pid", "root_wait_status", "deadline_seconds", "timed_out", "interrupted_signal", "started", "drained", "events", "drops", "errors", "open_entries", "open_returns", "argv", "processes", "fixture", "collector", "evidence", "identity_checks_passed", "full_trace_acceptance", "settings_changed"}
-EVENT = {"event", "cpu", "epid", "probe_id", "kind", "timestamp", "pid", "tid", "detail", "provider", "module", "function", "name", "records"}
-KINDS = {1: "begin", 2: "syscall-entry", 3: "syscall-return", 4: "proc-create", 5: "proc-start", 6: "proc-exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 14: "open-path", 15: "mach-entry", 16: "mach-return", 17: "end"}
-PROC_NAMES = {4: "create", 5: "start", 6: "exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure"}
+EVENT = {"event", "cpu", "epid", "probe_id", "kind", "timestamp", "pid", "tid", "detail", "provider", "module", "function", "name", "record_bytes", "header_record_indexes", "records"}
+KINDS = {1: "begin", 2: "syscall-entry", 3: "syscall-return", 4: "proc-create", 5: "proc-start", 6: "proc-exit-context", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 14: "open-path", 15: "mach-entry", 16: "mach-return", 17: "end", 18: "proc-exited-target"}
+PROC_NAMES = {4: "create", 5: "start", 6: "exit", 7: "exec-success", 8: "exec-failure", 9: "lwp-create", 10: "lwp-start", 11: "lwp-exit", 12: "spawn-success", 13: "spawn-failure", 18: "exited"}
 MAX_EVENTS = 1_000_000
 MAX_RAW = 128 * 1024 * 1024
 MAX_FILE = 64 * 1024 * 1024
 MAX_LINE = 64 * 1024
+MAX_ENABLINGS = 8192
+P_REF_SHADOW = 0x20
 UINT64 = (1 << 64) - 1
+UINT32 = (1 << 32) - 1
 INT_MAX = (1 << 31) - 1
+LAYOUT_REASONS = {"event-count", "record-count", "record-bytes", "record-range", "header-kind", "header-pid", "event-output", "probe-layout", "probe-id", "record-action", "record-layout", "header-detail", "header-target", "target-identity", "lifecycle-state"}
 SOURCE = Path(__file__).resolve().parent
 
 
@@ -188,7 +192,7 @@ def toolkit_provenance(directory):
 
 def receipt_header(report):
     keys(report, HEADER, "capability")
-    require(report["revision"] == 1 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
+    require(report["revision"] == 4 and type(report["revision"]) is int and report["protocol"] == PROTOCOL and report["scope"] == SCOPE, "unsupported capability header")
     require(report["full_trace_acceptance"] is False and report["settings_changed"] is False, "capability cannot assert acceptance or changed settings")
     boolean(report["identity_checks_passed"], "identity_checks_passed")
     require(report["identity_checks_passed"], "producer identity checks failed; transport integrity cannot be established")
@@ -270,7 +274,9 @@ def producer_program(root, profile):
         result += "proc:::exec-success /watched[pid] || watched[ppid]/ { watched[pid]=1; " + header(7, "ppid") + "}\n"
         for name, kind, detail in (("exit", 6, "arg0"), ("exec-failure", 8, "arg0"), ("spawn-success", 12, "0"), ("spawn-failure", 13, "arg0"), ("lwp-create", 9, "args[0]->pr_lwpid"), ("lwp-start", 10, "0"), ("lwp-exit", 11, "0")):
             result += "proc:::%s /watched[pid]/ { " % name + header(kind, detail)
-            result += ("watched[pid]=0; " if kind == 6 else "") + "}\n"
+            result += "}\n"
+        result += "proc:::exited /watched[args[0]->pr_pid]/ { " + header(18, "args[0]->pr_pid")
+        result += "trace((uint64_t)arg1); trace((uint64_t)args[0]->pr_addr); trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount); }\n"
     if mach:
         for returning in (False, True):
             result += "mach_trap:::%s /watched[pid]/ { " % ("return" if returning else "entry")
@@ -279,9 +285,59 @@ def producer_program(root, profile):
     return result.encode("ascii")
 
 
+def diagnostic_string(value, limit, label):
+    # json_string maps each native byte to a JSON character, not UTF-8 text.
+    string(value, limit, label)
+    require(all(ord(character) <= 255 for character in value), label + ": outside producer byte alphabet")
+
+
+def layout_diagnostic(entry):
+    """Validate rejected-layout metadata without treating it as event data."""
+    keys(entry, {"kind", "reason", "cpu", "epid", "probe_id", "provider", "module", "function", "name", "event", "nrecs", "record_bytes", "header", "records"}, "layout diagnostic")
+    require(type(entry["reason"]) is str and entry["reason"] in LAYOUT_REASONS, "unknown layout diagnostic reason")
+    integer(entry["cpu"], -(1 << 31), INT_MAX, "diagnostic CPU")
+    integer(entry["epid"], 0, UINT32, "diagnostic EPID")
+    names = ("provider", "module", "function", "name")
+    if entry["probe_id"] is None:
+        require(all(entry[name] is None for name in names), "absent diagnostic probe has nonnull names")
+    else:
+        integer(entry["probe_id"], 0, UINT32, "diagnostic probe ID")
+        for name, limit in zip(names, (64, 64, 128, 64)):
+            diagnostic_string(entry[name], limit, "diagnostic " + name)
+    integer(entry["event"], 1, UINT64, "diagnostic event")
+    count = integer(entry["nrecs"], -(1 << 31), INT_MAX, "diagnostic nrecs")
+    size = integer(entry["record_bytes"], 0, UINT32, "diagnostic record bytes")
+    require(type(entry["header"]) is list and len(entry["header"]) == 5, "diagnostic header must have five values")
+    records = entry["records"]
+    require(type(records) is list and len(records) == max(0, min(count, 20)), "diagnostic descriptor count differs")
+    for record in records:
+        keys(record, {"action", "size", "offset", "u64"}, "diagnostic descriptor")
+        integer(record["action"], 0, (1 << 16) - 1, "diagnostic descriptor action")
+        for name in ("size", "offset"):
+            integer(record[name], 0, UINT32, "diagnostic descriptor " + name)
+        value = record["u64"]
+        if value is not None:
+            integer(value, 0, UINT64, "diagnostic descriptor u64")
+            require(size <= 8192 and record["size"] == 8 and record["offset"] <= size and
+                    record["size"] <= size - record["offset"], "diagnostic value outside bounded eight-byte record")
+        # A null data pointer also yields null for an otherwise in-range record.
+        # Metadata cannot establish that pointer's availability independently.
+    for index, value in enumerate(entry["header"]):
+        expected = records[index]["u64"] if index < len(records) else None
+        require(type(value) is type(expected) and value == expected, "diagnostic header differs from descriptor values")
+
+
+def libdtrace_diagnostic(entry):
+    keys(entry, {"kind", "operation", "error", "message"}, "libdtrace diagnostic")
+    require(type(entry["operation"]) is str and entry["operation"] in {"work", "stop", "drain"}, "unknown libdtrace operation")
+    integer(entry["error"], -(1 << 31), INT_MAX, "libdtrace error")
+    diagnostic_string(entry["message"], 512, "libdtrace message")
+
+
 def error_totals(directory, report):
     """Check callback transport counts; setup text has no callback meaning."""
     total_drops, total_errors, size = 0, 0, 0
+    diagnostics, last_layout_event = [], 0
     hasher = hashlib.sha256()
     with directory.open("errors.jsonl", MAX_FILE) as stream:
         while line := stream.readline(MAX_LINE + 1):
@@ -308,12 +364,24 @@ def error_totals(directory, report):
                 integer(entry["fault"], -(1 << 31), INT_MAX, "fault")
                 integer(entry["action"], -(1 << 31), INT_MAX, "error action")
                 total_errors += 1
+            elif entry["kind"] in {"layout-error", "libdtrace-error"}:
+                require(report["status"] == "failed" and report["started"], "producer diagnostics require a started failed capture")
+                require(len(diagnostics) < 16, "producer diagnostic count exceeds sixteen")
+                if entry["kind"] == "layout-error":
+                    layout_diagnostic(entry)
+                    require(last_layout_event < entry["event"] <= report["events"], "diagnostic event outside increasing receipt count")
+                    last_layout_event = entry["event"]
+                else:
+                    libdtrace_diagnostic(entry)
+                diagnostics.append(entry)
+                continue
             else:
                 raise InvalidCapability("unknown callback error kind")
             integer(entry["cpu"], -(1 << 31), INT_MAX, "error CPU")
             string(entry["message"], MAX_LINE, "error message")
     require({"size": size, "sha256": hasher.hexdigest()} == report["evidence"]["errors.jsonl"], "error stream hash mismatch")
     require(total_drops == report["drops"] and total_errors == report["errors"], "callback totals differ from retained error records")
+    return diagnostics
 
 
 def typed_event(event, expected_index, profile, inventory):
@@ -329,27 +397,8 @@ def typed_event(event, expected_index, profile, inventory):
     require(kind in KINDS, "unknown typed event kind")
     for name, bound in (("provider", 63), ("module", 63), ("function", 127), ("name", 63)):
         string(event[name], bound, "event." + name)
-    records = event["records"]
-    count = {2: 13, 3: 10, 14: 6, 15: 13, 16: 6}.get(kind, 5)
-    require(type(records) is list and len(records) == count, "typed record count differs from producer program")
-    previous_end = 0
-    words = []
-    for index, record in enumerate(records):
-        keys(record, {"action", "size", "offset", "hex"}, "record")
-        require(type(record["action"]) is int and record["action"] == 1, "unsupported action (producer uses DTRACEACT_DIFEXPR)")
-        integer(record["offset"], 0, 8192, "record offset")
-        integer(record["size"], 1, 1024 if kind == 14 and index == 5 else 8, "record size")
-        if not (kind == 14 and index == 5):
-            require(record["size"] == 8, "uint64 record must contain eight bytes")
-        require(record["offset"] >= previous_end and record["offset"] + record["size"] <= 8192, "overlapping or out-of-bound typed records")
-        previous_end = record["offset"] + record["size"]
-        raw = record["hex"]
-        require(type(raw) is str and len(raw) == 2 * record["size"] and re.fullmatch("[0-9a-f]+", raw), "invalid typed record hex/size")
-        if not (kind == 14 and index == 5):
-            words.append(int.from_bytes(bytes.fromhex(raw), "little"))
-    require(words[:5] == [event[name] for name in ("kind", "timestamp", "pid", "tid", "detail")], "decoded header differs from authoritative raw uint64 records")
     if kind in {1, 17}:
-        require(event["provider"] == "dtrace" and event["name"] == ("BEGIN" if kind == 1 else "END") and event["detail"] == 0, "invalid BEGIN/END descriptor")
+        require(event["provider"] == "dtrace" and event["module"] == "" and event["function"] == "" and event["name"] == ("BEGIN" if kind == 1 else "END") and event["detail"] == 0, "invalid BEGIN/END descriptor")
     else:
         require(inventory.get(event["probe_id"]) == tuple(event[name] for name in ("provider", "module", "function", "name")), "event descriptor not present in retained probe inventory")
         if kind in {2, 3, 14}:
@@ -359,11 +408,68 @@ def typed_event(event, expected_index, profile, inventory):
         elif kind in PROC_NAMES:
             require(profile != "open" and event["provider"] == "proc" and event["name"] == PROC_NAMES[kind], "invalid proc profile/descriptor")
         else:
-            require(profile == "tree-mach" and event["provider"] == "mach_trap" and event["name"] == ("entry" if kind == 15 else "return"), "invalid Mach profile/descriptor")
+            require(profile == "tree-mach" and event["provider"] == "mach_trap" and event["function"] != "" and event["name"] == ("entry" if kind == 15 else "return"), "invalid Mach profile/descriptor")
     if kind in {10, 11, 12, 14}:
         require(event["detail"] == 0, "producer constant detail differs")
+    if kind in {4, 18}:
+        integer(event["detail"], 1, INT_MAX, "process target detail")
+    # Source-matched layout, not a generic skip-zero-record policy. The actual
+    # v4 guest observed the BEGIN assignment; other clauses remain candidates
+    # that must match this exact transport before they can be inspected.
+    leading = kind in {1, 4, 5, 7}
+    word_count = {2: 13, 3: 10, 15: 13, 16: 6, 18: 8}.get(kind, 5)
+    layout = ([(0, 12)] if leading else []) + [(8, 16 + i * 8) for i in range(word_count)]
+    if kind == 14:
+        layout.append((1024, 56))
+    record_bytes = 1080 if kind == 14 else 16 + word_count * 8
+    require(type(event["record_bytes"]) is int and event["record_bytes"] == record_bytes, "probe record byte layout differs")
+    header_indexes = list(range(1 if leading else 0, 6 if leading else 5))
+    indexes = event["header_record_indexes"]
+    require(type(indexes) is list and all(type(index) is int for index in indexes) and indexes == header_indexes, "header record indexes differ from exact clause layout")
+    records = event["records"]
+    require(type(records) is list and len(records) == len(layout), "typed record count differs from producer program")
+    words = []
+    for record, (size, offset) in zip(records, layout):
+        keys(record, {"action", "size", "offset", "hex"}, "record")
+        require(type(record["action"]) is int and record["action"] == 1, "unsupported action (producer uses DTRACEACT_DIFEXPR)")
+        require(type(record["size"]) is int and type(record["offset"]) is int and record["size"] == size and record["offset"] == offset, "record size/offset differs from exact clause layout")
+        raw = record["hex"]
+        require(type(raw) is str and len(raw) == 2 * size and re.fullmatch("[0-9a-f]*", raw), "invalid typed record hex/size")
+        if size == 8:
+            words.append(int.from_bytes(bytes.fromhex(raw), "little"))
+    require(words[:5] == [event[name] for name in ("kind", "timestamp", "pid", "tid", "detail")], "decoded header differs from authoritative raw uint64 records")
+    if kind == 18:
+        require(words[6] != 0, "exited target proc address is zero")
+        integer(words[7], 0, UINT32, "exited target refcount")
     return {"consumer_index": expected_index, "kind_label": KINDS[kind], "raw": event,
             "raw_uint64_after_header": words[5:]}
+
+
+class _EnablingBindings:
+    """Session identity checks after typed_event validates each record.
+
+    This fixed generated program is enabled once. An EPID identifies its probe
+    and clause layout throughout that handle; each (kind, probe ID) has exactly
+    one generated clause. Call-specific values are deliberately not bindings.
+    """
+    def __init__(self):
+        self.by_epid = {}
+        self.by_clause = {}
+
+    def observe(self, event):
+        epid = event["epid"]
+        clause = event["kind"], event["probe_id"]
+        signature = (event["probe_id"], *(event[name] for name in ("provider", "module", "function", "name")),
+                     event["kind"], event["record_bytes"], tuple(event["header_record_indexes"]),
+                     tuple((record["action"], record["size"], record["offset"]) for record in event["records"]))
+        if epid in self.by_epid:
+            require(self.by_epid[epid] == signature, "EPID binding changed within capture session")
+        require(clause not in self.by_clause or self.by_clause[clause] == epid,
+                "generated clause has multiple EPIDs within capture session")
+        if epid not in self.by_epid:
+            require(len(self.by_epid) < MAX_ENABLINGS, "capture enabling count exceeds diagnostic limit")
+            self.by_epid[epid] = signature
+            self.by_clause[clause] = epid
 
 
 def inspect_capability(capture, toolkit, timeline):
@@ -386,13 +492,14 @@ def inspect_capability(capture, toolkit, timeline):
         for name in EVIDENCE - {"events.jsonl"}:
             require(evidence.hash(name, MAX_FILE) == report["evidence"][name], "evidence hash mismatch: " + name)
         require(report["evidence"]["watchdog.json"]["size"] == 0, "watchdog fired: final receipt is invalid")
-        error_totals(evidence, report)
+        diagnostics = error_totals(evidence, report)
         inventory_bytes = evidence.read("probes.tsv", 8 * 1024 * 1024)
         require(digest(inventory_bytes) == report["evidence"]["probes.tsv"], "probe inventory changed after identity read")
         inventory = probe_inventory(inventory_bytes)
         program = evidence.read("program.d", MAX_LINE)
         require(digest(program) == report["evidence"]["program.d"] and program == producer_program(report["root_pid"], report["profile"]), "program bytes/root/profile differ from reviewed producer")
         totals = {"events": 0, "open_entries": 0, "open_returns": 0, "begin": 0, "end": 0}
+        bindings = _EnablingBindings()
         ledger = {report["root_pid"]: {"pid": report["root_pid"], "created": True, "terminal": False}}
         hasher, size = hashlib.sha256(), 0
         def process(pid):
@@ -409,17 +516,30 @@ def inspect_capability(capture, toolkit, timeline):
                 totals["events"] += 1
                 event = strict_json(line, "events.jsonl")
                 exported = typed_event(event, totals["events"], report["profile"], inventory)
+                bindings.observe(event)
                 kind = event["kind"]
+                # These are source-matched bounded lifecycle checks, not a
+                # general process-generation model. Shadow exited records are
+                # raw context only, including after an observed terminal PID.
+                if kind not in {1, 11, 17, 18}:
+                    require(event["pid"] not in ledger or not ledger[event["pid"]]["terminal"],
+                            "lifecycle activity after observed terminal PID")
                 if kind == 1:
                     totals["begin"] += 1
                 if kind == 17:
                     totals["end"] += 1
                 if kind == 4:
+                    target = ledger.get(event["detail"])
+                    require(target is None or not (target["created"] or target["terminal"]),
+                            "lifecycle create reuses an observed PID")
                     process(event["detail"])["created"] = True
                 elif kind in {5, 7}:
                     process(event["pid"])["created"] = True
-                elif kind == 6:
-                    process(event["pid"])["terminal"] = True
+                elif kind == 18:
+                    if (exported["raw_uint64_after_header"][2] & P_REF_SHADOW) == 0:
+                        require(event["detail"] not in ledger or not ledger[event["detail"]]["terminal"],
+                                "lifecycle duplicate nonshadow terminal PID")
+                        process(event["detail"])["terminal"] = True
                 if event["function"] == "open" and kind in {2, 3}:
                     totals["open_entries" if kind == 2 else "open_returns"] += 1
                 timeline.write((json.dumps(exported, separators=(",", ":"), ensure_ascii=True) + "\n").encode())
@@ -438,9 +558,10 @@ def inspect_capability(capture, toolkit, timeline):
             require(not report["started"] and not report["drained"] and totals["events"] == 0, "unavailable receipt claims started event capture")
         else:
             require(report["started"], "failed receipt must have started (otherwise unavailable)")
-        return {"revision": 1, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
+        return {"revision": 4, "protocol": PROTOCOL, "diagnostic": "source-matched raw capability transport integrity",
                 "transport_integrity": "consistent", "capture_status": report["status"], "capture_reason": report["reason"],
                 "producer_identity_checks_passed": report["identity_checks_passed"],
+                "producer_diagnostics": diagnostics,
                 "full_trace_acceptance": False, "acceptance_rejection": "This capability format cannot satisfy the R02 full-trace oracle.",
                 "scope": "No syscall result, pathname, FD, process generation, mutation or kernel coverage interpretation.",
                 "host": report["host"], "profile": report["profile"], "argv": report["argv"], "fixture": matching[0],
@@ -449,7 +570,7 @@ def inspect_capability(capture, toolkit, timeline):
 
 
 def require_full_trace_acceptance(_summary=None):
-    raise InvalidCapability("darwin-capability-raw-v1 is capability-only; R02 full-trace acceptance is unconditionally rejected")
+    raise InvalidCapability("darwin-capability-raw-v4 is capability-only; R02 full-trace acceptance is unconditionally rejected")
 
 
 def export_files(path, timeline, encoded):
