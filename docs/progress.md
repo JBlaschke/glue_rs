@@ -1,5 +1,26 @@
 # Implementation progress
 
+## Mapping write-intent state — 20 October 2026
+
+Decision `866a222` and implementation `e831200` on
+`codex/mvp-r02-darwin-mapping-state` add a separate bounded mapping-state engine.
+It tracks interval splits, backing generations and shared-file write requests,
+including failures and protection upgrades. Ambiguous failed range changes
+poison replay. Its input is explicitly synthetic; native argument/result,
+identity, ordering and corpus validation remain required for full Darwin R02.
+
+All 38 focused controls pass without skips, including independent page-grid
+comparisons and strict parsing/budget/metadata boundaries. Independent source
+and complete-receipt review finds no actionable issue. CI adds one invocation
+for 41 configured Python suites; this local branch has no hosted result.
+Exact receipts and preserved earlier attempts are in the
+[mapping checkpoint](plans/mvp-implementation.md#20-october-mapping-write-intent-state).
+
+The fresh guest inspection confirms enabled SIP. Recovery Terminal is ready;
+confirmation for a new guest-only SIP change is pending. No new disabling step
+has been performed. The development preview is available; full Darwin R02,
+macOS R03 and final R04/M2 acceptance remain open.
+
 ## Repaired tracing source admission preparation — 20 October 2026
 
 Decision `c787755` on `codex/mvp-r02-trace-match-admission` fixes the reviewed

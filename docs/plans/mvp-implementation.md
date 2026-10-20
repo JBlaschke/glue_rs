@@ -175,6 +175,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-tree-open-intent` | decision `8e01b37`, implementation `b9ef538` | Strict historical tree-open provenance plus pure flag classification; 38 focused controls and 32,841 compatibility inputs pass; full extraction acceptance always refuses |
 | R02 | `codex/mvp-r02-trace-match-kit` | decision `9f9fc3a`, implementation `7daa902` | Thin unconfigured match-repair profile; 13 source/synthetic controls and independent review pass; old registrations preserved; actual admission/build/calibration pending |
 | R02 | `codex/mvp-r02-trace-match-admission` | decision `c787755`, fixture split `4255819` | Reviewed 42-source candidate frozen at `7daa902`; separate empty fixture and 14 controls pass; production remains empty pending fresh disabled proof |
+| R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -218,6 +219,45 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 20 October: mapping write-intent state
+
+Decision `866a222` precedes implementation `e831200` on the separate
+`codex/mvp-r02-darwin-mapping-state` branch. The engine preserves declared mapping
+and backing generations across partial protect/unmap, address reuse and process
+epochs. Shared-file write-capability requests survive failed calls; failed
+protect/unmap poisons replay while retaining incomplete diagnostics. Strict
+JSONL, cumulative fragment/history/output budgets and exact input-metadata
+boundaries are enforced. Full acceptance always refuses before input access.
+Existing state/readers, registries and kits remain unchanged.
+
+The final focused command is `python3 -B
+fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v`, using recorded
+Python 3.15.0 on the development Mac. All 38 controls pass without skips in
+0.139 seconds; the outer process returns zero in 0.316760125 seconds. Independent
+page-grid and disjoint-range controls check interval effects. The 21-payload
+receipt at `/private/tmp/glue-mapping-unit-controls-jh28sx1u` has manifest
+`d7df39f863e9cc76ea9ed8c2ad3d2f267610eb2700c52ae88f2a4940b094c3f0`.
+Its two immutable prior links preserve the first 37-test run's two failures and
+one error from cleanup-interfering metadata mocks, then a passing 37-test run
+before the final metadata-boundary group. No earlier result is overwritten.
+
+Independent source/receipt review at `/private/tmp/glue-mapping-unit-peer-fanqehtt`
+has 37 payloads plus manifest
+`52ff6ff4779560af24213d5d12e0a37f6c5fc825fd85465be74e846de9cdf3c1`.
+Root verifies both complete final inventories and reads the report. All nine
+test source/context identities and copies match; the single CI addition brings
+configured Python invocations to 41. Shell syntax and diff checks pass. No
+hosted result or publication approval covers this newer branch.
+
+These controls establish declared synthetic consistency. The SDK 27.0 source
+pins do not establish equivalence to the macOS 26.6.2 guest; raw ABI, seeded
+identity, effect ordering, inheritance/Mach aliases and complete extraction
+corpus validation remain open. Ordinary test completion does not attest native
+or descendant cleanup. No native kit/provider/capture or security change occurs
+in this source step. The guest is in Recovery Terminal with fresh enabled
+preflight verified; a new guest-only SIP confirmation remains pending.
+Full Darwin R02, macOS R03, R04/M2 and durable evidence publication remain open.
 
 ## 20 October: match source candidate and refusal fixture
 
