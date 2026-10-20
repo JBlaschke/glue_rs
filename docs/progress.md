@@ -1,5 +1,35 @@
 # Implementation progress
 
+## Repaired tracing source admission preparation — 20 October 2026
+
+Decision `c787755` on `codex/mvp-r02-trace-match-admission` fixes the reviewed
+42-source candidate at `7daa902`. It preserves the historical 39 C/header files
+and adds the third builder helper; only the backend C bytes change among the
+old source keys. Independent source review passes. The production match registry
+remains empty: fresh disabled-SIP proof, actual admission and a native kit are
+still missing.
+
+Fixture split `4255819` preserves the original empty registry in an explicitly
+test-only fixture with a frozen policy. Empty-refusal controls and explicit
+production registry/CLI checks are separate. All 14 focused controls pass with
+no skips, and independent review finds no actionable issue. Historical builders,
+registries, proofs, kits and packet bindings remain unchanged.
+
+The approved profile checkpoint `27d39c3` is published in
+[PR #39](https://github.com/JBlaschke/glue_rs/pull/39), stacked on
+[PR #38](https://github.com/JBlaschke/glue_rs/pull/38); merge #38 first. Both
+exact-head hosted runs pass all nine jobs, with 40 configured Python suites.
+This supersedes the earlier pending profile CI status below. Current `4255819`
+has no hosted result or publication approval. Exact source, test, review and CI
+identities are in the [20 October checkpoint](plans/mvp-implementation.md#20-october-match-source-candidate-and-refusal-fixture).
+A fresh ordinary-user guest inspection and independent review confirm enabled
+SIP with all six statuses zero. The guest shuts down cleanly for Recovery; no
+new SIP-disabling approval or post-disable proof is recorded. The physical
+host security settings remain unchanged.
+
+Full Darwin R02, macOS R03 and final R04/M2 acceptance remain open; the
+development preview remains available.
+
 ## Match-repair kit profile and SIP restoration — 19 October 2026
 
 The guest security window is closed. A fresh normal-boot inspection reports
