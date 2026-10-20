@@ -14,10 +14,13 @@ from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parent
+UNCONFIGURED = HERE / 'unconfigured-inputs.fixture.json'
 spec = importlib.util.spec_from_file_location('trace_match_kit', HERE / 'build_kit.py')
 match = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(match)
 core = match.core
+UNCONFIGURED_POLICY = replace(
+    match.POLICY, registry_relative=match.BASE + 'bootstrap-trace-match-kit/unconfigured-inputs.fixture.json')
 spec = importlib.util.spec_from_file_location(
     'trace_match_parser_fixtures', HERE.parent / 'bootstrap-trace-kit' / 'test_build_kit.py')
 parent_fixtures = importlib.util.module_from_spec(spec)
@@ -45,8 +48,10 @@ def configured_parser_rules():
 
 
 class MatchKitControls(unittest.TestCase):
-    def test_empty_production_registry_refuses_before_source_proof_or_output(self):
-        rules = match.registry(match.REGISTRY.read_bytes())
+    def test_unconfigured_fixture_refuses_before_source_proof_or_output(self):
+        self.assertEqual(hashlib.sha256(UNCONFIGURED.read_bytes()).hexdigest(),
+                         '218255f76dcb5da45760c0c84a1e7b17098063055452f752c8eef7850109685d')
+        rules = core.registry(UNCONFIGURED.read_bytes(), policy=UNCONFIGURED_POLICY)
         self.assertEqual(rules, {'schema': 'glue-owned-trace-kit-inputs-v1', 'source_revision': None,
                                  'sources': {}, 'probe_sources': [], 'runner_sources': [],
                                  'request_sources': [], 'proofs': []})
@@ -56,10 +61,35 @@ class MatchKitControls(unittest.TestCase):
                     patch.object(core, 'admitted_proof', side_effect=AssertionError('proof work forbidden')), \
                     patch.object(core, 'Build', side_effect=AssertionError('output or tool work forbidden')):
                 with self.assertRaisesRegex(core.Refusal, 'no independently reviewed actual guest proof'):
-                    match.construct(root / 'absent-proof', root / 'absent-inspector', output)
+                    core.construct(root / 'absent-proof', root / 'absent-inspector', output,
+                                   policy=UNCONFIGURED_POLICY)
             self.assertFalse(output.exists())
 
-    def test_closed_cli_refuses_without_output_and_rejects_overrides(self):
+    def test_explicit_unconfigured_fixture_cli_refuses_without_output(self):
+        with tempfile.TemporaryDirectory(prefix='glue-match-kit-fixture-cli-') as temporary:
+            root = Path(temporary).resolve(); output = root / 'new'
+            # This test-only CLI fixes the fixture policy without changing any
+            # production wrapper, module global or public command-line option.
+            fixture_main = ('import importlib.util,sys; p=sys.argv.pop(1); '
+                            's=importlib.util.spec_from_file_location("empty_match_fixture_cli",p); '
+                            'm=importlib.util.module_from_spec(s); s.loader.exec_module(m); '
+                            'sys.exit(m.core.main(policy=m.UNCONFIGURED_POLICY))')
+            argv = [sys.executable, '-B', '-c', fixture_main, str(HERE / 'test_build_kit.py'),
+                    '--guest-proof', str(root / 'absent'), '--inspector-kit', str(root / 'absent-inspector'),
+                    '--output', str(output)]
+            result = subprocess.run(argv, capture_output=True, timeout=5)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(result.stdout, b'')
+            self.assertIn(b'no independently reviewed actual guest proof', result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_production_registry_and_cli_are_explicitly_unconfigured(self):
+        # Update this explicit production expectation only in the later actual
+        # admission step. Empty-fixture refusal controls remain independent.
+        self.assertEqual(match.registry(match.REGISTRY.read_bytes()), {
+            'schema': 'glue-owned-trace-kit-inputs-v1', 'source_revision': None,
+            'sources': {}, 'probe_sources': [], 'runner_sources': [], 'request_sources': [], 'proofs': []})
+        self.assertEqual(match.REGISTRY.read_bytes(), UNCONFIGURED.read_bytes())
         with tempfile.TemporaryDirectory(prefix='glue-match-kit-cli-') as temporary:
             root = Path(temporary).resolve(); output = root / 'new'
             argv = [sys.executable, '-B', str(HERE / 'build_kit.py'), '--guest-proof', str(root / 'absent'),
@@ -94,6 +124,9 @@ class MatchKitControls(unittest.TestCase):
                          (HERE.parent / 'bootstrap-kit/reviewed-inputs.json', b'System Integrity Protection status: enabled.\n'))
         self.assertEqual(parent.registry_relative, match.BASE + 'bootstrap-trace-kit/reviewed-inputs.json')
         self.assertEqual(len(parent.required_helpers), 2)
+        self.assertEqual(replace(UNCONFIGURED_POLICY, registry_relative=match.POLICY.registry_relative), match.POLICY)
+        with self.assertRaises(FrozenInstanceError):
+            UNCONFIGURED_POLICY.registry_relative = match.POLICY.registry_relative
 
     def test_public_entries_close_over_constant_policy_and_do_not_mutate_defaults(self):
         before = core.REGISTRY, core.HERE, core.LEGACY_POLICY, match.trace.POLICY
@@ -130,11 +163,11 @@ class MatchKitControls(unittest.TestCase):
                     match.registry(core.canonical(trial))
 
     def test_unconfigured_and_dirty_source_locks_refuse_before_source_reads(self):
-        rules = match.registry(match.REGISTRY.read_bytes())
+        rules = core.registry(UNCONFIGURED.read_bytes(), policy=UNCONFIGURED_POLICY)
         with patch.object(core, 'git', side_effect=AssertionError('git forbidden')), \
                 patch.object(core, 'open_directory', side_effect=AssertionError('source read forbidden')):
             with self.assertRaisesRegex(core.Refusal, 'not configured/frozen'):
-                core.locked_sources(HERE.parents[3], rules, policy=match.POLICY)
+                core.locked_sources(HERE.parents[3], rules, policy=UNCONFIGURED_POLICY)
         with patch.object(core, 'git', return_value=b' M synthetic\n'), \
                 patch.object(core, 'open_directory', side_effect=AssertionError('dirty source read forbidden')):
             with self.assertRaisesRegex(core.Refusal, 'dirty/untracked'):
