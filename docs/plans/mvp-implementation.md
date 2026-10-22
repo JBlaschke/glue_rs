@@ -181,6 +181,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-match-admission` | decision `c787755`, fixture split `4255819` | Reviewed 42-source candidate frozen at `7daa902`; separate empty fixture and 14 controls pass; production remains empty pending fresh disabled proof |
 | R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
 | R02 | `codex/mvp-r02-owned-bsd-observations` | decision `49aac44`, implementation `a9f95e4` | Complete-transport-backed immutable BSD scalar observations, exact supplied contract bytes and 4,096-phase cap; 45 focused controls pass; native integration remains open |
+| R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -224,6 +225,32 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 22 October: closed owned call pairing
+
+The separate local `codex/mvp-r02-owned-call-pairing` branch stacks on `ded2a4d`.
+Decision `f2a4214` precedes implementation `0f2051e`. `pair_raw_owned` validates
+the entire original transport and pairs only closed, matching BSD/Mach intervals
+within established numeric TIDs. Orphans, overlaps, unresolved entries at exit,
+exec/shadow transitions, numeric reuse and ambiguous lifecycle timestamp ties
+refuse. Source words, unsupported return shapes and lifecycle context stay raw
+and immutable. Limits are 4,096 call phases, 2,048 pairs, 256 TIDs and 1,024
+noncall records; the valid closed subset can reach at most 770 noncall records.
+Existing public APIs/types and streaming behavior remain unchanged. The strict
+subset may deliberately refuse current bootstrap captures; native calibration,
+state-feed eligibility, path/FD/backing semantics and full R02 remain open.
+
+`python3 -B fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v`
+passes all 42 controls with no skips on the development Mac/Python 3.15.0,
+including the unchanged 128 MiB memory control and no runtime I/O across all three
+APIs. Final receipt `/private/tmp/glue-owned-pair-controls-llmzdoob` has 15 payloads
+and manifest `13cc6123461ee29b5d87da8b3c8a1aca4c895ec05279ed821076c2fe9210f4e5`;
+the earlier 41-test success remains separate. Independent review at
+`/private/tmp/glue-owned-pairing-peer-20261022-5ptrubbo`, manifest
+`fa6f4cac5d9a36d7f9c2252f3b5baad3c116b5704cc674c6340a22ed4b23a9a8`,
+finds no actionable issue and checks exact legacy API/private-refactor
+equivalence. Root verifies both inventories and reads the review. No CI
+invocation, C/wire/contract/registry/state-engine change or publication occurs.
 
 ## 22 October: owned BSD observations and restored inspection toolkit
 
@@ -277,9 +304,12 @@ no tracing proof or boot-security-policy attestation follows from it.
 The 20 October coordination window closes before any agent security weakening,
 with manifest `2d36f8401533dad6ba6c8040672e19868c3e87dbad6942926d7c6ebf3d61246c`.
 The guest shuts down cleanly and reaches Recovery Terminal. Capturing input in
-UTM restores menu interaction. Fresh action-time SIP confirmation is requested
-and remains pending. The new chronology is
-`/private/tmp/glue-owned-trace-sip-window-20261022-01`. No new native capture,
+UTM restores menu interaction. The owner then chooses to keep guest SIP enabled
+and keep `ded2a4d` local. No SIP change or publication occurs. Recovery shuts down
+cleanly with input capture released. The closed no-change chronology is
+`/private/tmp/glue-owned-trace-sip-window-20261022-01`, manifest
+`72f672abce406947220a3daa127e8d425b5ea252fc278708826f99af6618752c`.
+Native tracing remains on hold under that setting. No new native capture,
 source admission, full Darwin oracle, macOS budgets or M2 completion is claimed.
 
 ## 20 October: mapping write-intent state

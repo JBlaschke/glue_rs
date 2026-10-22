@@ -1374,8 +1374,16 @@ already invoke both suites. No hosted result covers this new branch yet.
 
 The missing read-only VM inspector was rebuilt twice and reproduces its original
 signed bytes exactly. The restored toolkit passes independent review and a fresh
-ordinary-user guest inspection confirms SIP enabled. Native tracing will resume
-after the required guest-only security confirmation. The source change does not
+ordinary-user guest inspection confirms SIP enabled. The owner chooses to keep
+SIP enabled and the branch local; the VM shuts down without a security change.
+Native tracing remains on hold under that setting. The source change does not
 establish call pairing, filesystem effects or full Darwin acceptance. R02's Mac
 oracle/corpus, R03's Mac budgets and R04's durable evidence/final M2 remain open;
 exact commands and retained inventories are in the implementation ledger.
+
+The next separate local branch, `codex/mvp-r02-owned-call-pairing`, adds decision
+`f2a4214` and implementation `0f2051e`. It links only fully observed, matching
+BSD/Mach entry/return intervals and rejects ambiguous lifecycle boundaries.
+All 42 focused controls pass, with independent review and unchanged legacy APIs.
+Raw pairs remain ineligible for the filesystem state feed until native lifetime,
+ABI and object associations are established. No native acceptance is inferred.
