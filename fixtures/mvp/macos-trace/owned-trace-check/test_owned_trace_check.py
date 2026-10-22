@@ -128,6 +128,42 @@ def bsd_probes(function):
     return PROBES.replace(b'\tread\t', b'\t' + function.encode('ascii') + b'\t')
 
 
+def ticked(records):
+    """Independent synthetic source timestamps, not a native ordering claim."""
+    records = copy.deepcopy(records)
+    for index, record in enumerate(records):
+        change_scalar(record, 1, 100 + index)
+    return records
+
+
+def threaded(kind, tid=1000, **kwargs):
+    record = event(kind, **kwargs)
+    change_scalar(record, 3, tid)
+    return record
+
+
+def paired_records():
+    return ticked([event(1), threaded(2), threaded(3), threaded(11), event(18), event(17)])
+
+
+def multi_thread_records(count, *, closing=False):
+    records = [event(1), threaded(2), threaded(3)]
+    for tid in range(1001, 1000 + count):
+        records.extend([threaded(9, detail=tid), threaded(10, tid=tid), threaded(2, tid=tid),
+                        threaded(3, tid=tid), threaded(11, tid=tid)])
+    if closing:
+        records.append(threaded(6))
+    return ticked(records + [threaded(11), event(18), event(17)])
+
+
+def pair_owned(records=None, **kwargs):
+    return check.pair_raw_owned(kwargs.pop('program', PROGRAM), kwargs.pop('probes', PROBES),
+        kwargs.pop('errors', b''), kwargs.pop('event_lines', lines(records if records is not None else
+            paired_records())), owner_pid=kwargs.pop('owner_pid', OWNER),
+        target_pid=kwargs.pop('target_pid', TARGET), contract_bytes=kwargs.pop('contract_bytes', CONTRACT),
+        **kwargs)
+
+
 class RawControls(unittest.TestCase):
     def refuse(self, records=None, match=None, **kwargs):
         with self.assertRaisesRegex(check.RawValidationError, match or '.'):
@@ -642,6 +678,296 @@ class BsdObservationControls(unittest.TestCase):
                     owner_pid=OWNER, target_pid=TARGET, contract_bytes=CONTRACT)
                 self.assertEqual(result, projected.raw)
                 self.assertEqual(dict(projected.observations[0].entry.fields), {'fd': 9})
+                closed = paired_records()
+                for record in closed:
+                    if record['kind'] in (2, 3):
+                        record['function'] = 'write'
+                paired = imported.pair_raw_owned(PROGRAM, bsd_probes('write'), b'', lines(closed),
+                    owner_pid=OWNER, target_pid=TARGET, contract_bytes=CONTRACT)
+                self.assertEqual(paired.raw.events, 6)
+                self.assertEqual(paired.counts.pairs, 1)
+
+
+class OwnedPairControls(unittest.TestCase):
+    def refuse(self, records, reason, **kwargs):
+        # Establish the complete transport is accepted before testing a narrower
+        # pairing refusal; deliberate transport mutations use another control.
+        self.assertEqual(validate(records, **kwargs).events, len(records))
+        self.assertEqual(observe(records, **kwargs).raw, validate(records, **kwargs))
+        with self.assertRaisesRegex(check.RawValidationError, reason) as error:
+            pair_owned(records, **kwargs)
+        self.assertFalse(hasattr(error.exception, 'report'))
+
+    def test_closed_pair_raw_provenance_counts_and_old_api_differential(self):
+        records = paired_records()
+        result = pair_owned(records)
+        self.assertEqual(result.raw, validate(records))
+        self.assertEqual(result.raw, observe(records).raw)
+        self.assertEqual(result.raw.raw_sha256, hashlib.sha256(b''.join(lines(records))).hexdigest())
+        self.assertEqual(result.raw.events, 6)
+        paired, = result.pairs
+        self.assertEqual(paired.correlation_id, (2, 3))
+        self.assertEqual((paired.entry.ordinal, paired.entry.cpu, paired.entry.epid, paired.entry.probe_id),
+                         (2, 7, 1002, 102))
+        self.assertEqual((paired.entry.provider, paired.entry.module, paired.entry.function, paired.entry.name),
+                         ('syscall', '', 'read', 'entry'))
+        self.assertEqual(paired.entry.raw_scalars, (2, 101, TARGET, 1000, OWNER, *range(0x11110000, 0x11110008)))
+        self.assertEqual(paired.returned.raw_scalars, (3, 102, TARGET, 1000, OWNER, *range(0x11110000, 0x11110005)))
+        self.assertEqual([p.ordinal for p in result.lifecycle], [1, 4, 5, 6])
+        self.assertEqual(result.counts, check.OwnedPairCounts(2, 1, 1, 0, 1, 0, 0, 1, 4))
+        self.assertEqual(result.bsd_coverage.unknown_names, (('read', 2),))
+        self.assertEqual(result.unpaired_phase_count, 0)
+        self.assertFalse(result.full_trace_acceptance)
+        self.assertFalse(result.state_feed_eligible)
+
+    def test_bsd_and_mach_interleave_on_declared_threads_and_sort_by_entry(self):
+        records = ticked([event(1), threaded(2), threaded(9, detail=2000), threaded(10, tid=2000),
+            threaded(15, tid=2000), threaded(16, tid=2000), threaded(11, tid=2000), threaded(3),
+            threaded(11), event(18, actor=9876), event(17)])
+        result = pair_owned(records)
+        self.assertEqual(result.raw, validate(records))
+        self.assertEqual([p.correlation_id for p in result.pairs], [(2, 8), (5, 6)])
+        mach = result.pairs[1]
+        self.assertIs(type(mach.entry), check.OwnedRawPhase)
+        self.assertIs(type(mach.returned), check.OwnedRawPhase)
+        self.assertEqual(mach.entry.raw_scalars[5:], tuple(range(0x11110000, 0x11110008)))
+        self.assertEqual(mach.returned.raw_scalars[5:], (0x11110000,))
+        self.assertFalse(hasattr(mach.returned, 'returned'))  # opaque Mach bits
+        self.assertEqual(result.counts, check.OwnedPairCounts(4, 2, 1, 1, 2, 1, 1, 2, 7))
+        self.assertEqual(result.raw.terminal_actor_pid, 9876)
+
+    def test_initial_mach_entry_can_seed_thread_with_opaque_return(self):
+        records = ticked([event(1), threaded(15), threaded(16), threaded(11), event(18), event(17)])
+        change_scalar(records[2], 5, check.U64)
+        result = pair_owned(records)
+        self.assertEqual(result.raw, validate(records))
+        self.assertEqual(result.raw, observe(records).raw)
+        self.assertEqual((result.counts.bsd_pairs, result.counts.mach_pairs), (0, 1))
+        self.assertEqual(result.bsd_coverage, check.BsdCoverage(0, 0, 0, 0, 0, 0, 0, ()))
+        self.assertEqual(result.pairs[0].returned.raw_scalars[5:], (check.U64,))
+        self.assertIs(type(result.pairs[0].entry), check.OwnedRawPhase)
+        self.assertFalse(result.state_feed_eligible)
+
+    def test_known_failed_write_and_unsupported_raw_return_stay_in_pair(self):
+        entered = bsd(2, 'write', [9, 0x12345678, 4096, 0, 0, 0, 0, 0])
+        returned = bsd(3, 'write', [check.U64, check.U64, 0, 13, 13])
+        for item in (entered, returned):
+            change_scalar(item, 3, 1000)
+        records = ticked([event(1), entered, returned, threaded(11), event(18), event(17)])
+        result = pair_owned(records, probes=bsd_probes('write'))
+        paired, = result.pairs
+        self.assertTrue(paired.entry.entry.entry_attempt_observed)
+        self.assertEqual(dict(paired.entry.entry.fields), {'fd': 9})
+        self.assertIn('rights-and-output-policy', paired.entry.entry.requirements)
+        self.assertEqual(paired.returned.returned.kernel_error_bits, 13)
+        self.assertEqual(result.bsd_coverage.supported_return_shapes, 1)
+        change_scalar(records[2], 6, 0)
+        unsupported = pair_owned(records, probes=bsd_probes('write')).pairs[0]
+        self.assertEqual(unsupported.entry, paired.entry)
+        self.assertIsNone(unsupported.returned.returned)
+        self.assertEqual(unsupported.returned.unsupported_reason, 'provider primary return duplication differs')
+        self.assertEqual(unsupported.returned.raw_scalars[5:], (check.U64, 0, 0, 13, 13))
+
+    def test_orphans_overlaps_and_pending_nonreturn_entries_refuse(self):
+        for kind in (3, 16):
+            self.refuse(ticked([event(1), threaded(kind), threaded(11), event(18), event(17)]),
+                        'first target observation is not call entry')
+        self.refuse(ticked([event(1), threaded(2), threaded(3), threaded(3), threaded(11), event(18), event(17)]),
+                    'orphan return')
+        for second in (2, 15):
+            self.refuse(ticked([event(1), threaded(2), threaded(second), threaded(3), threaded(11), event(18), event(17)]),
+                        'overlapping call entry')
+        for route, reason in ((11, 'pending call at thread exit'), (18, 'pending call at target terminal')):
+            records = ticked([event(1), threaded(2), threaded(route), event(18), event(17)] if route == 11 else
+                             [event(1), threaded(2), event(18), event(17)])
+            self.refuse(records, reason)
+        for function in ('exit', 'bsdthread_terminate'):
+            records = ticked([event(1), threaded(2), threaded(11), event(18), event(17)])
+            records[1]['function'] = function
+            self.refuse(records, 'pending call at thread exit', probes=bsd_probes(function))
+
+    def test_exact_provider_module_function_and_thread_matching(self):
+        self.refuse(ticked([event(1), threaded(2), threaded(16), threaded(11), event(18), event(17)]),
+                    'call family or actor mismatch')
+        for field, value in (('module', 'alternate'), ('function', 'alternate_call')):
+            records = paired_records()
+            records[2][field] = value
+            probe_fields = ['syscall', '', 'read', 'return']
+            probe_fields[1 if field == 'module' else 2] = value
+            probes = PROBES.replace(b'103\tsyscall\t\tread\treturn\n',
+                                    ('103\t' + '\t'.join(probe_fields) + '\n').encode())
+            self.refuse(records, 'call family or actor mismatch', probes=probes)
+        records = paired_records()
+        change_scalar(records[2], 3, 2000)
+        self.refuse(records, 'thread not active')
+
+    def test_first_entry_and_lifecycle_start_subset(self):
+        for kind in (5, 6, 9, 10, 11):
+            self.refuse(ticked([event(1), threaded(kind, detail=2000 if kind == 9 else None),
+                               threaded(2), threaded(3), threaded(11), event(18), event(17)]),
+                        'first target observation is not call entry')
+        self.refuse(ticked([event(1), threaded(2), threaded(3), threaded(5), threaded(11), event(18), event(17)]),
+                    'proc:start launch boundary unsupported')
+        self.refuse(ticked([event(1), event(18), event(17)]), 'first target observation is not call entry')
+
+    def test_thread_declaration_start_exit_and_no_reuse(self):
+        initial = [event(1), threaded(2), threaded(3)]
+        finish = [threaded(11), event(18), event(17)]
+        for middle, reason in (
+            ([threaded(10, tid=2000)], 'start without fresh declaration'),
+            ([threaded(9, detail=0)], 'declared TID range'),
+            ([threaded(9, detail=1000)], 'TID reused or duplicate'),
+            ([threaded(9, detail=2000), threaded(9, detail=2000)], 'TID reused or duplicate'),
+            ([threaded(9, tid=2000, detail=3000)], 'thread not active'),
+            ([threaded(9, detail=2000), threaded(2, tid=2000)], 'thread not active'),
+            ([threaded(9, detail=2000), threaded(11, tid=2000)], 'thread not active'),
+            ([threaded(9, detail=2000), threaded(10, tid=2000), threaded(10, tid=2000)], 'start without fresh declaration'),
+            ([threaded(9, detail=2000)], 'unretired thread at END'),
+            ([threaded(11, tid=2000)], 'thread not active'),
+            ([threaded(11), threaded(11)], 'thread not active'),
+            ([threaded(11), threaded(2)], 'thread not active'),
+            ([threaded(9, detail=2000), threaded(10, tid=2000), threaded(11, tid=2000),
+              threaded(9, detail=2000)], 'TID reused or duplicate'),
+        ):
+            with self.subTest(reason=reason, kinds=[r['kind'] for r in middle]):
+                self.refuse(ticked(initial + middle + finish), reason)
+
+    def test_exec_and_every_shadow_transition_refuse(self):
+        for kind in (7, 8):
+            for pending in (False, True):
+                middle = [threaded(2)] + ([] if pending else [threaded(3)])
+                self.refuse(ticked([event(1)] + middle + [threaded(kind), threaded(11), event(18), event(17)]),
+                            'exec transition unsupported')
+        for middle in ([threaded(2)], [threaded(2), threaded(3)],
+                       [threaded(2), threaded(3), threaded(11)]):
+            self.refuse(ticked([event(1)] + middle + [event(18, refcount=0x1e2), event(18), event(17)]),
+                        'shadow-exited transition unsupported')
+
+    def test_exit_context_requires_no_pending_and_starts_closing(self):
+        records = ticked([event(1), threaded(2), threaded(3), threaded(6, detail=999),
+                          threaded(11), event(18), event(17)])
+        result = pair_owned(records)
+        self.assertEqual(result.lifecycle[1].raw_scalars[4], 999)
+        self.assertEqual(result.counts.retired_tids, 1)
+        self.refuse(ticked([event(1), threaded(2), threaded(6), threaded(3), threaded(11), event(18), event(17)]),
+                    'pending call at exit context')
+        self.refuse(ticked([event(1), threaded(2), threaded(9, detail=2000), threaded(10, tid=2000),
+                            threaded(6, tid=2000), threaded(3), threaded(11, tid=2000), threaded(11),
+                            event(18), event(17)]), 'pending call at exit context')
+        records = ticked([event(1), threaded(2), threaded(3), threaded(6, tid=2000),
+                          threaded(11), event(18), event(17)])
+        self.refuse(records, 'thread not active')
+        for forbidden in (threaded(2), threaded(6), threaded(9, detail=2000), threaded(10)):
+            records = ticked([event(1), threaded(2), threaded(3), threaded(6), forbidden,
+                              threaded(11), event(18), event(17)])
+            self.refuse(records, 'activity after closing context')
+
+    def test_terminal_cleanup_and_all_threads_retired_at_end(self):
+        records = ticked([event(1), threaded(2), threaded(3), event(18, actor=9876), threaded(11), event(17)])
+        result = pair_owned(records)
+        self.assertEqual(result.raw.terminal_actor_pid, 9876)
+        self.assertEqual([p.raw_scalars[0] for p in result.lifecycle], [1, 18, 11, 17])
+        self.refuse(ticked([event(1), threaded(2), threaded(3), event(18), event(17)]),
+                    'unretired thread at END')
+        self.refuse(ticked([event(1), threaded(2), threaded(3), event(18), threaded(11, tid=2000), event(17)]),
+                    'thread not active')
+
+    def test_timestamp_guard_all_records_and_exact_tie_buckets(self):
+        records = paired_records()
+        change_scalar(records[2], 1, records[1]['timestamp'])
+        self.assertEqual(pair_owned(records).counts.pairs, 1)  # pure call-phase tie
+        for index, timestamp, reason in ((2, 99, 'timestamp moves backwards'),
+                                          (1, 100, 'ambiguous lifecycle timestamp tie'),
+                                          (3, 102, 'ambiguous lifecycle timestamp tie'),
+                                          (4, 103, 'ambiguous lifecycle timestamp tie'),
+                                          (5, 104, 'ambiguous lifecycle timestamp tie')):
+            records = paired_records()
+            change_scalar(records[index], 1, timestamp)
+            self.refuse(records, reason)
+
+    def test_phase_pair_and_thread_exact_bounds(self):
+        def many_pairs(count):
+            records = [event(1)]
+            for _ in range(count):
+                records.extend([threaded(2), threaded(3)])
+            return ticked(records + [threaded(11), event(18), event(17)])
+        result = pair_owned(many_pairs(2048))
+        self.assertEqual((result.counts.call_phases, result.counts.pairs), (4096, 2048))
+        # observe_raw_bsd has its own4096-phase limit, so establish only transport
+        # validity for the over-bound case, not a fictitious scalar-observer pass.
+        over = many_pairs(2049)
+        self.assertEqual(validate(over).events, len(over))
+        with self.assertRaisesRegex(check.RawValidationError, 'call phase bound'):
+            pair_owned(over)
+        result = pair_owned(multi_thread_records(256))
+        self.assertEqual((result.counts.observed_tids, result.counts.retired_tids), (256, 256))
+        self.assertEqual((result.counts.declared_tids, result.counts.started_declared_tids), (255, 255))
+        self.refuse(multi_thread_records(257), 'observed TID bound')
+
+    def test_maximum_closed_context_and_source_exception_no_prefix(self):
+        # 255 declared threads each create/start/exit, initial exit, one closing
+        # context, BEGIN/terminal/END:770. Independent1024context and2048pair
+        # guards cannot be exceeded without an earlier TID/phase refusal. Use a
+        # complete maximum-context fixture rather than fabricate1024 valid ones.
+        maximum = multi_thread_records(256, closing=True)
+        result = pair_owned(maximum)
+        self.assertEqual(result.raw, validate(maximum))
+        self.assertEqual(result.counts.lifecycle_records, 770)
+        self.assertEqual(result.counts.observed_tids, 256)
+        self.assertEqual(sum(p.raw_scalars[0] == 6 for p in result.lifecycle), 1)
+        records = paired_records()
+        for tail in (b'partial', b'{}\n'):
+            with self.assertRaises(check.RawValidationError) as error:
+                pair_owned(event_lines=lines(records) + [tail])
+            self.assertFalse(hasattr(error.exception, 'report'))
+        def failure():
+            yield from lines(records)
+            raise OSError('source failed after END')
+        with self.assertRaisesRegex(OSError, 'source failed after END') as error:
+            pair_owned(event_lines=failure())
+        self.assertFalse(hasattr(error.exception, 'report'))
+
+    def test_transport_corruption_is_still_shared_and_no_result_is_released(self):
+        records = paired_records()
+        bad = []
+        for index in range(len(records)):
+            mutated = copy.deepcopy(records)
+            mutated[index]['records'][-1]['action'] = 2
+            bad.append(lines(mutated))
+        actor_mismatch = copy.deepcopy(records)
+        change_scalar(actor_mismatch[1], 2, OWNER)
+        bad.append(lines(actor_mismatch))
+        bad += [lines(records[:-1]), lines(records[:4] + records[5:])]
+        for raw in bad:
+            reasons = []
+            for operation in (validate, observe, pair_owned):
+                with self.assertRaises(check.RawValidationError) as error:
+                    operation(event_lines=raw)
+                reasons.append(str(error.exception))
+                self.assertFalse(hasattr(error.exception, 'report'))
+            self.assertEqual(reasons[0], reasons[1])
+            self.assertEqual(reasons[1], reasons[2])
+
+    def test_frozen_result_detachment_and_static_contract_refusal(self):
+        records = paired_records()
+        result = pair_owned(records)
+        entered = result.pairs[0].entry
+        change_scalar(records[1], 5, 999)
+        self.assertEqual(entered.raw_scalars[5], 0x11110000)
+        for value, field in ((result, 'protocol'), (result.counts, 'pairs'),
+                             (result.pairs[0], 'entry'), (entered, 'ordinal'),
+                             (result.lifecycle[0], 'cpu'), (result.raw, 'events')):
+            with self.assertRaises(FrozenInstanceError):
+                setattr(value, field, None)
+        for value in (result.pairs, result.lifecycle, entered.raw_scalars,
+                      result.pairs[0].correlation_id, result.bsd_coverage.unknown_names):
+            self.assertIs(type(value), tuple)
+        class Untouched:
+            def __iter__(self):
+                raise AssertionError('source consumed before static refusal')
+        for raw in (None, bytearray(CONTRACT), CONTRACT[:-1], b'!' + CONTRACT[1:]):
+            with self.assertRaisesRegex(check.RawValidationError, 'pinned BSD contract'):
+                pair_owned(contract_bytes=raw, event_lines=Untouched())
 
 
 if __name__ == '__main__':

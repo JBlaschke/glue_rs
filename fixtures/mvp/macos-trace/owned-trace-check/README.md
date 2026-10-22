@@ -146,3 +146,74 @@ fresh admitted collector capture must establish actual native observations;
 complete process-tree effects, object causality, full oracle/corpus/budgets and
 R02/M2 remain open under the
 [decision](../../../../docs/decisions/mvp-r02-owned-bsd-observations.md).
+
+## Closed owned call intervals
+
+`pair_raw_owned(program, probes, errors, event_lines, owner_pid=..., target_pid=...,
+contract_bytes=...)` takes the same raw inputs and pinned contract bytes. It runs
+the same strict walk through exhaustion. It does not accept `RawFacts`, decoded
+observations or asserted validation. After normal module import all three APIs
+perform no filesystem or helper-code I/O. Existing `validate_raw` and
+`observe_raw_bsd` contracts and streaming paths remain unchanged.
+
+This third API supports a deliberately narrow closed subset. Its first target
+record must be a BSD/Mach entry, seeding a capture-observed numeric TID. It keeps
+one pending slot per TID across both providers. A return must match its entry's
+PID/TID, provider, module, function and BSD/Mach family. Every orphan return,
+including an initial midcall return, overlapping entry, and pending entry at
+thread exit, target terminal or END refuses. There are no nonreturn exceptions.
+Thus current bootstrap captures with gate-read returns, exec transitions, shadow
+cleanup or unreturned `exit` calls may deliberately refuse here while remaining
+valid transport/scalar observations. Source controls do not establish that any
+current native application can satisfy this subset.
+
+An additional TID requires `lwp-create` from a known active creator, then matching
+`lwp-start`. Unknown, repeated or reused numeric TIDs refuse. `lwp-exit` retires
+only an active known TID with no pending call. `proc:start`, every exec-success/
+failure and every shadow-exited record refuse. A `proc:exit` context requires a
+known active TID and no pending call anywhere, then allows only known `lwp-exit`
+cleanup, nonshadow target terminal and END. Its raw detail is never process wait
+status or successful effect. Target terminal requires no pending call and may
+precede known thread cleanup; END requires every observed TID retired and at
+least one pair. No generation, exec epoch, thread birth or effect order is
+inferred from these source-level associations.
+
+Raw timestamps must be globally nondecreasing. An equal timestamp is permitted
+only when the entire bucket consists of BSD/Mach phases; any tie involving
+lifecycle, BEGIN or END refuses. These checks neither compare clock domains nor
+establish kernel effect order.
+
+`OwnedCallPairs` is frozen and contains the unchanged `RawFacts`, contract hash,
+`pairs` ordered by entry ordinal, and `lifecycle` context in consumer order.
+Each `OwnedProviderPair` holds its two frozen phases once, linked by a tuple of
+consumer ordinals that is a capture-local correlation ID. Every phase retains
+exact ordinal, CPU, probe/EPID, descriptor names and all raw scalar words. BSD
+phases retain the same `BsdPhase` facts as the scalar observer, including unknown
+entry names and unsupported return shapes/reasons. Mach phases are opaque
+`OwnedRawPhase` values. Unknown routes remain unsupported; failed raw returns
+cannot erase entry requests. No pointer, signed result, errno, FD, object or
+filesystem effect is normalized.
+
+Frozen counts report phases, pairs by family, observed/declared/started/retired
+TIDs and lifecycle records; BSD coverage retains unknown names and unsupported
+return shapes. `unpaired_phase_count` is zero on every returned result.
+`full_trace_acceptance` and `state_feed_eligible` are always false. No synthetic
+origin, normalized state record, native acceptance or state-feed permission is
+created. The unconditional full-acceptance refusal remains available.
+
+Prospective limits are 4,096 total BSD/Mach phases, 2,048 pairs, 256 distinct
+TIDs including reservations/retirements, and 1,024 retained noncall records
+including BEGIN/terminal/END. No overrides or partial results are exposed. The
+closed thread rules currently limit valid noncall context below1,024; tests
+exercise the maximum770-context complete fixture and exact/over phase/thread
+bounds. The independent1,024-context and2,048-pair guards cannot be exceeded
+without an earlier thread/phase refusal. A late nonselected corruption,
+incomplete footer or source exception
+still yields no result. The existing focused test script covers these rules,
+raw provenance, deep immutability, no runtime I/O and unchanged old APIs/memory.
+
+The [pairing decision](../../../../docs/decisions/mvp-r02-owned-call-pairing.md)
+freezes this source-only contract. It changes no C producer, wire format,
+historical pairer, syscall contracts, state engine, registry, kit, packet or CI
+invocation. Native calibration and complete process-tree/path/FD/backing/Mach
+semantics remain separate work; this API is not an extraction oracle.
