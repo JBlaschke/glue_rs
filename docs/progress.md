@@ -1,5 +1,32 @@
 # Implementation progress
 
+## Match-repair kit profile and SIP restoration — 19 October 2026
+
+The guest security window is closed. A fresh normal-boot inspection reports
+exactly enabled SIP with all six command statuses zero. Independent review
+verifies its complete receipt and unchanged inspector provenance. Full boot
+security was confirmed through Recovery's UI; the inspector does not separately
+read back that boot policy. The physical host's security settings are unchanged.
+
+The new `codex/mvp-r02-trace-match-kit` branch follows decision `9f9fc3a`;
+implementation `7daa902` adds a thin unconfigured kit profile for the compiled
+selector repair. It reuses
+the historical builder and keeps its source/proof/kit/packet registrations
+unchanged. All 13 source/synthetic controls pass. The new production registry
+has no admitted sources or proof and refuses before construction. CI adds one
+suite, making 40 configured Python suites; this newer branch has no hosted run.
+Independent source/receipt review finds no actionable issue. Native kit
+construction and calibration remain
+later steps, requiring fresh proof for a separately authorized tracing window.
+
+The earlier [PR #38](https://github.com/JBlaschke/glue_rs/pull/38) publishes the
+tree-open intent bridge at `e4239b4`. Its push and PR runs each pass all nine jobs.
+This supersedes the earlier unpublished status below.
+Exact proof, review, chronology and test identities are in the
+[match-kit checkpoint](plans/mvp-implementation.md#19-october-match-repair-kit-and-restoration).
+The development preview is available; full Darwin R02, macOS R03 and final
+R04/M2 acceptance remain open.
+
 ## Tree-open intent bridge — 19 October 2026
 
 PR #37 is merged into `main` at `9f787e9`. Both repair runs

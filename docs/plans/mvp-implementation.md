@@ -173,6 +173,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-match-accounting` | decision `476c350`, implementation `490a8c3` | Derive bounded inventory from compiled selectors; independent review and normal/sanitized SDK/model controls pass; fresh native calibration and SIP restoration pending |
 | V01 | `codex/mvp-v01-macos-cli-refusal-timeout` | `e939d7c` | Increase one configured CLI test's outer deadline; clean local23-test suite and source review pass, hosted repair pending |
 | R02 | `codex/mvp-r02-tree-open-intent` | decision `8e01b37`, implementation `b9ef538` | Strict historical tree-open provenance plus pure flag classification; 38 focused controls and 32,841 compatibility inputs pass; full extraction acceptance always refuses |
+| R02 | `codex/mvp-r02-trace-match-kit` | decision `9f9fc3a`, implementation `7daa902` | Thin unconfigured match-repair profile; 13 source/synthetic controls and independent review pass; old registrations preserved; actual admission/build/calibration pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -216,6 +217,87 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 19 October: match-repair kit and restoration
+
+The separate `codex/mvp-r02-trace-match-kit` branch follows decision `9f9fc3a`
+with implementation `7daa902`.
+It adds only a thin wrapper, empty registry, focused controls and README under
+`bootstrap-trace-match-kit`, with one new CI invocation. The wrapper derives four
+frozen routing/closure fields from the existing tracing policy. All schemas,
+artifact names, exact ordered 2/19/6 compile units, runner-only tracing flags,
+strict signing/dependency rules and literal disabled-SIP policy are inherited.
+The original builders, registrations and packet bindings remain unchanged.
+The new production registry refuses before source locking, proof traversal,
+output creation or tools. Synthetic configured parser/proof records remain
+test-only; no actual proof is admitted by this step.
+
+All 13 focused controls pass with no skips. The 56 source/context identities
+remain unchanged before/after, including the historical 41-source closure and
+nine historical builder/registry/packet/test pins. The complete record is
+`/private/tmp/glue-trace-match-kit-controls-eaekkllv`, 66 payloads plus manifest
+`f94f453af33b777773c1a69419126e076bf4a5200e59e8c3b1f4779479a6d2ae`.
+It retains exact outer command/status/streams, source copies and non-atime
+identity observations. Inner CLI argv lives in the copied test source, and
+normal exit is not independent descendant cleanup evidence. Root verifies all
+payload hashes/membership and reads the report. Independent source/receipt review
+finds no actionable issue at `/private/tmp/glue-trace-match-kit-peer-h92vt2eu`:
+21 payloads plus manifest
+`2b985e9a232027461993c3c755c41b6fca6f131d47889a24d62f641bf5e3c1d5`.
+It verifies the full control receipt and current source without rerunning tests;
+root verifies every peer payload and reads the complete report.
+CI now configures 40 Python suites; no full local baseline or hosted
+result for this newer feature is claimed. No native/SDK build, actual proof or
+capture, guest operation, source admission or kit construction occurs in this
+source-only implementation.
+
+The separate guest restoration completes. After the owner's force-stop/4 GB
+approval, Recovery runs `csrutil enable`, confirms full boot security and reports
+SIP on after private authentication. The VM reboots normally and the owner
+unlocks it. The unchanged ordinary-user inspector then runs without sudo and
+exports `/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-YdIDmdfZ`.
+Its 27 payloads plus manifest have SHA256
+`9776e6e51941462528c502fe41d36316ea4f0aef4bb57dedbb8986e5ad11700e`.
+All six exact command statuses are zero; saved SIP stdout is precisely
+`System Integrity Protection status: enabled.` plus LF. The complete observation
+at Unix1792440808.238162000 reports VirtualMac2,1, macOS26.6.2/25G83,
+Darwin25.6.0 arm64, ordinary501/20 credentials and the current root/Data tuples.
+Device16777235 and Data FSID[16777235,26] are fresh observations, not permission
+to reuse or rewrite the old catalog. The outer typed wrapper path lost capitals
+through UTM and resolved through the guest's case-insensitive filesystem;
+captured internal command argv retains the canonical paths.
+
+Independent proof/source review at `/private/tmp/glue-sip-restoration-peer-9pekm_91`
+verifies all six command receipts, all proof/toolkit members, wrapper/binary pins
+and all six source files at `d2bd45d30c7c3888cb1ba5d3cad4448933c5f126` and current
+source. Its 40 payloads plus manifest have SHA256
+`09bcad8780f16255d8104bbbf23f4e3a481957ea2bb7b10eaad089eeb1a0dbe9`.
+Root verifies complete hashes/membership and reads the full report. The fixed
+inspector records enabled SIP; full boot security remains Recovery UI confirmation
+without a separate machine-read policy attestation. The closed chronology
+`/private/tmp/glue-owned-trace-sip-window-20261018-01` preserves every earlier
+OPEN event and ends with the proof/review references: three payloads plus
+manifest `93742bbc9b46478f9035db3b054221bf21f303670c9a4ca49a9eb350df081559`.
+No physical-host security changes or failed native capture access/rerun occurs.
+This closes the temporary guest security window, without granting tracing or
+R02/M2 acceptance. A later tracing window requires its own authorization and
+fresh disabled proof; this enabled proof cannot admit a tracing kit.
+
+The earlier classifier branch is now published as
+[PR #38](https://github.com/JBlaschke/glue_rs/pull/38) at exact source
+`e4239b4a644918bc0acfb7887126c0ac5d13fdc0`. Its
+[push run 39317343089](https://github.com/JBlaschke/glue_rs/actions/runs/39317343089)
+passes all nine portable jobs. The
+[PR run 39317456291](https://github.com/JBlaschke/glue_rs/actions/runs/39317456291)
+also passes all nine jobs. The 20-payload hosted record is
+`/private/tmp/glue-tree-open-intent-hosted-ci-20261019-jsuc1y3q`, plus manifest
+`a7f9ae7f17340f406178584faac76e07103f4cdfa2964784bc1f87e2a47705e0`.
+All four read-only commands complete0. Its outer collector ends1 on a local
+count assertion that excluded the evidence script; the failure/source remain
+preserved. Finalization verifies the retained responses and corrected39-script
+count without repeating queries or tests. This is not a CI failure. These are
+hosted portable results for the classifier checkpoint, not native tracing
+calibration or full Darwin extraction acceptance.
 
 ## 19 October: tree-open intent bridge
 
