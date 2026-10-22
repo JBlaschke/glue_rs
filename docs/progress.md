@@ -1,5 +1,39 @@
 # Implementation progress
 
+## Runnable application examples — 22 October 2026
+
+Commit `3976273` on `codex/basic-runtime-examples`, based on merged `dfc7747`, adds
+[three user-facing examples](../examples/README.md): Lua with upstream inspect.lua
+and a C module/secondary shared library, Python with a conventional venv containing
+NumPy and packaging, and an npm project importing a CommonJS dependency from ESM
+and reading archived JSON. Each includes preparation, `glue.toml`, build/run and
+relocation instructions, with a shared output-checking smoke script. Node/Deno
+provider boundaries are explicit. Dependencies and generated distributions are
+ignored rather than committed; inspect.lua is vendored with its MIT notice.
+
+The Python walkthrough exposed an unconditional `doctor` version mismatch:
+discovery records the first token of `sys.version`, while doctor compared its
+entire build banner. The same commit aligns that comparison, preserving exact
+prerelease tokens and numeric-version, implementation, debug and GIL checks.
+Three regression tests cover acceptance and rejection; independent review found
+no actionable issue.
+
+Validation on macOS arm64 used freshly installed tools from this worktree,
+Lua 5.4.9, PBS CPython 3.14.5 with NumPy 2.4.3/packaging 26.0, and standalone
+Node 24.19.0 with ms 2.1.3. All three shared smoke checks pass `doctor`, relocation
+to paths with spaces, calculations and quoted argv with an isolated home/minimal
+environment. Lua also passed explicit-config build/rebuild and source removal;
+Python passed file/module/config builds and execution with its venv hidden;
+Node passed clean `npm ci`, the npm build script and archived resource access.
+The new GNU Linux example recipes have not been executed.
+
+Rust 1.88.0 `cargo test --workspace --locked` passes 631 tests, with five explicit
+runtime/wheel-dependent tests ignored. Workspace formatting and Clippy with
+`--all-targets --locked -- -D warnings` pass, as do shell syntax and diff checks.
+These example smoke checks do not claim network isolation or a complete
+no-extraction trace. Existing Darwin R02, macOS R03 and final R04/M2 acceptance
+remain open; the concurrent tracing work proceeds separately.
+
 ## Mapping write-intent state — 20 October 2026
 
 Decision `866a222` and implementation `e831200` on
