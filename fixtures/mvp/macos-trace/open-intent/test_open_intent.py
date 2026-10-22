@@ -19,6 +19,66 @@ def request(flags=0, **changes):
 
 
 class OpenIntentUnits(unittest.TestCase):
+    def test_pure_flag_classification_fixed_abi_cases(self):
+        # Literal Darwin ABI words and expected outcomes are independent of the
+        # classifier's masks, flag lists and control flow.
+        keys=("intent","no_output_policy","write_reasons","unmodeled_bits","unknown_bits","unmodeled_sdk_flags")
+        cases=(
+            (0,"read-access-request","intent-only-no-acceptance",[],0,0,[]),
+            (0x01000104,"read-access-request","intent-only-no-acceptance",[],0,0,[]),
+            (0x8000,"event-access-request","intent-only-no-acceptance",[],0,0,[]),
+            (1,"write-request","reject-write-intent",["write-access"],0,0,[]),
+            (2,"write-request","reject-write-intent",["write-access"],0,0,[]),
+            (0x200,"write-request","reject-write-intent",["O_CREAT"],0,0,[]),
+            (0x8008,"write-request","reject-write-intent",["O_APPEND"],0,0,[]),
+            (0x60a,"write-request","reject-write-intent",["write-access","O_APPEND","O_CREAT","O_TRUNC"],0,0,[]),
+            (3,"unsupported","reject-unsupported",[],0,0,[]),
+            (0x8001,"unsupported","reject-unsupported",["write-access"],0,0,[]),
+            (0x80000308,"unsupported","reject-unsupported",["O_APPEND","O_CREAT"],0x80000000,0x80000000,[]),
+            (0x200010,"unsupported","reject-unsupported",[],0x200010,0,["O_SHLOCK","O_SYMLINK"]),
+            (0x40000080,"unsupported","reject-unsupported",[],0x40000080,0,["O_SYNC","O_EXEC"]),
+            (0xffffffff,"unsupported","reject-unsupported",["O_APPEND","O_CREAT","O_TRUNC"],
+             0xdeed70f0,0x9e8d4000,["O_SHLOCK","O_EXLOCK","O_ASYNC","O_SYNC","O_RESOLVE_BENEATH",
+                                  "O_UNIQUE","O_SYMLINK","O_DSYNC","O_EXEC"]),
+        )
+        for flags,*values in cases:
+            with self.subTest(flags=hex(flags)):
+                self.assertEqual(intent.classify_flags(flags),dict(zip(keys,values)))
+
+    def test_pure_flag_classifier_requires_canonical_unsigned32(self):
+        class IntegerSubclass(int): pass
+        for flags in (True,False,IntegerSubclass(0),-1,1<<32,1<<64,0.0,"0",None,[],{}):
+            with self.subTest(flags=repr(flags)),self.assertRaisesRegex(intent.UnsupportedUnit,"flags: canonical integer"):
+                intent.classify_flags(flags)
+
+    def test_pure_flag_results_are_independent_and_contain_no_observation_claim(self):
+        first=intent.classify_flags(0x60a)
+        first["write_reasons"].clear()
+        first["unmodeled_sdk_flags"].append("caller-added")
+        first["intent"]="caller-added"
+        self.assertEqual(intent.classify_flags(0x60a),{
+            "intent":"write-request","no_output_policy":"reject-write-intent",
+            "write_reasons":["write-access","O_APPEND","O_CREAT","O_TRUNC"],
+            "unmodeled_bits":0,"unknown_bits":0,"unmodeled_sdk_flags":[]})
+        with self.assertRaises(TypeError):
+            intent.classify_flags(0,origin="synthetic-unit")
+
+    def test_normalized_decoder_preserves_complete_legacy_result(self):
+        record={"revision":1,"protocol":"darwin-normalized-open-unit-v1",
+                "origin":"owned-control-self-report","operation":"openat","flags":0x60a,
+                "mode":384,"path_hex":"6f7574707574","dirfd":-2,"result":-1,"error":13}
+        self.assertEqual(intent.decode(record),{
+            "revision":1,"protocol":"darwin-open-intent-decision-v1",
+            "origin":"owned-control-self-report","operation":"openat",
+            "intent":"write-request","no_output_policy":"reject-write-intent",
+            "write_reasons":["write-access","O_APPEND","O_CREAT","O_TRUNC"],
+            "unmodeled_bits":0,"unknown_bits":0,"unmodeled_sdk_flags":[],
+            "raw_normalized_request":record,
+            "abi_sha256":"a76cfb519805f5b45a196defb10d6a5185a5e861f41e8c75f66a653cb11d7b20",
+            "full_trace_acceptance":False,
+            "scope":"Request intent only; no raw trace ABI, pathname/object, returned-FD, lifecycle or coverage proof."})
+        self.assertIs(intent.decode(record)["raw_normalized_request"],record)
+
     def test_write_intent_survives_failed_requests_and_readonly_create(self):
         for flags in (1,2,intent.FLAGS["O_CREAT"],intent.FLAGS["O_TRUNC"],intent.FLAGS["O_APPEND"]):
             for result,error in ((3,0),(-1,2),(-1,13)):

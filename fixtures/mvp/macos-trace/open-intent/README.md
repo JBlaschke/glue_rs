@@ -4,8 +4,8 @@ This is a first semantic unit for the future Darwin R02 decoder. It classifies
 already normalized `open` / `openat` requests and provides independent owned
 native controls. It does not decode DTrace arguments, establish trace
 completeness, resolve paths or descriptors, or grant full-trace acceptance.
-Every decision contains `full_trace_acceptance: false`; both acceptance and raw
-capability adapter APIs unconditionally reject.
+Every normalized decoder decision contains `full_trace_acceptance: false`;
+both acceptance and raw capability adapter APIs unconditionally reject.
 
 The source definitions are Apple's installed macOS 26.5 SDK:
 
@@ -47,6 +47,17 @@ descriptor; its combination with write access is unsupported. It never erases
 creation/truncation/append intent. A read/event request is only a statement about
 the supplied flags: it does not prove a regular file, harmless device open,
 safe returned FD or complete execution. No application-output exception exists.
+
+`classify_flags(flags_u32)` exposes the same classification as a pure function
+for diagnostic observers. It accepts exactly one canonical unsigned 32-bit
+integer, rejecting booleans, integer subclasses and out-of-range values with
+`UnsupportedUnit`. Its result has exactly six keys: `intent`, `no_output_policy`,
+`write_reasons`, `unmodeled_bits`, `unknown_bits` and `unmodeled_sdk_flags`.
+Unsupported combinations retain any write reasons and unmodeled/unknown bits;
+reason order remains write access, append, create, truncate. Each call returns
+fresh lists. It accepts no origin, pathname, result, descriptor or object claim
+and makes no effect or acceptance claim. The normalized decoder retains its
+schema and validations, delegating only this flag classification.
 
 Build a copy-ready, strictly ad-hoc-signed native control on macOS arm64:
 

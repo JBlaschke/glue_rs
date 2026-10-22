@@ -55,6 +55,28 @@ def load_json(raw):
         raise UnsupportedUnit("invalid normalized JSON: " + str(error)) from error
 
 
+def classify_flags(flags_u32):
+    """Classify only canonical Darwin request flags; establish no file effects."""
+    integer(flags_u32, 0, (1 << 32) - 1, "flags")
+    mode = flags_u32 & FLAGS["O_ACCMODE"]
+    reasons = (["write-access"] if mode in (FLAGS["O_WRONLY"], FLAGS["O_RDWR"]) else [])
+    reasons += [name for name in MUTATIONS if flags_u32 & FLAGS[name]]
+    unmodeled = flags_u32 & ~MODELED
+    unknown = flags_u32 & ~KNOWN
+    unsupported_names = [name for name, value in FLAGS.items() if name.startswith("O_") and value & unmodeled and value & (value - 1) == 0]
+    if mode == FLAGS["O_ACCMODE"] or unmodeled or (flags_u32 & FLAGS["O_EVTONLY"] and mode != FLAGS["O_RDONLY"]):
+        intent, policy = "unsupported", "reject-unsupported"
+    elif reasons:
+        intent, policy = "write-request", "reject-write-intent"
+    elif flags_u32 & FLAGS["O_EVTONLY"]:
+        intent, policy = "event-access-request", "intent-only-no-acceptance"
+    else:
+        intent, policy = "read-access-request", "intent-only-no-acceptance"
+    return {"intent": intent, "no_output_policy": policy, "write_reasons": reasons,
+            "unmodeled_bits": unmodeled, "unknown_bits": unknown,
+            "unmodeled_sdk_flags": unsupported_names}
+
+
 def decode(record):
     """Classify supplied C-normalized requests, without interpreting DTrace ABI.
 
@@ -78,25 +100,9 @@ def decode(record):
     path = record["path_hex"]
     require(type(path) is str and 0 < len(path) <= 2046 and len(path) % 2 == 0 and re.fullmatch("[0-9a-f]+", path), "bounded path bytes must be lowercase hex")
     require(b"\0" not in bytes.fromhex(path), "normalized path excludes its C terminator; raw copyinstr needs a verified adapter")
-    flags = record["flags"]
-    mode = flags & FLAGS["O_ACCMODE"]
-    reasons = (["write-access"] if mode in (FLAGS["O_WRONLY"], FLAGS["O_RDWR"]) else [])
-    reasons += [name for name in MUTATIONS if flags & FLAGS[name]]
-    unmodeled = flags & ~MODELED
-    unknown = flags & ~KNOWN
-    unsupported_names = [name for name, value in FLAGS.items() if name.startswith("O_") and value & unmodeled and value & (value - 1) == 0]
-    if mode == FLAGS["O_ACCMODE"] or unmodeled or (flags & FLAGS["O_EVTONLY"] and mode != FLAGS["O_RDONLY"]):
-        intent, policy = "unsupported", "reject-unsupported"
-    elif reasons:
-        intent, policy = "write-request", "reject-write-intent"
-    elif flags & FLAGS["O_EVTONLY"]:
-        intent, policy = "event-access-request", "intent-only-no-acceptance"
-    else:
-        intent, policy = "read-access-request", "intent-only-no-acceptance"
+    classification = classify_flags(record["flags"])
     return {"revision": 1, "protocol": "darwin-open-intent-decision-v1", "origin": record["origin"],
-            "operation": record["operation"], "intent": intent, "no_output_policy": policy,
-            "write_reasons": reasons, "unmodeled_bits": unmodeled, "unknown_bits": unknown,
-            "unmodeled_sdk_flags": unsupported_names, "raw_normalized_request": record,
+            "operation": record["operation"], **classification, "raw_normalized_request": record,
             "abi_sha256": hashlib.sha256(ABI_BYTES).hexdigest(), "full_trace_acceptance": False,
             "scope": "Request intent only; no raw trace ABI, pathname/object, returned-FD, lifecycle or coverage proof."}
 
