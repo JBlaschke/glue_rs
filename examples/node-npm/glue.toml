@@ -1,0 +1,8 @@
+# Paths are relative to this manifest. The runtime path is selected at build time.
+entry = "src/main.js"
+delivery = "compact"
+runtime-mode = "bundled"
+
+[node]
+# This is a version constraint; glue also probes required runtime capabilities.
+version = ">=24"

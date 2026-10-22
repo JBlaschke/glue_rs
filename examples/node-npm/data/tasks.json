@@ -1,0 +1,5 @@
+[
+  { "name": "Prepare", "duration": "20m" },
+  { "name": "Package", "duration": "10m" },
+  { "name": "Verify", "duration": "5m" }
+]

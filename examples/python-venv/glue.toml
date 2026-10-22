@@ -1,0 +1,8 @@
+entry = "main.py"
+delivery = "compact"
+runtime-mode = "bundled"
+
+[python]
+project = "app"
+environment = "../../target/examples/python-venv-env"
+version = "3.14"

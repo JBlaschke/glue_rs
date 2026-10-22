@@ -1,0 +1,4 @@
+tasks=3
+total=35 minutes
+milliseconds=2100000
+argument=hello from relocated app

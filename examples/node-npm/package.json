@@ -1,0 +1,15 @@
+{
+  "name": "glue-node-npm-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Package an ordinary npm application, its dependency and a JSON resource with glue.",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "build": "mkdir -p ../../target/examples && glue build node . --node \"${GLUE_NODE:-$(command -v node)}\" --output ../../target/examples/node-npm"
+  },
+  "dependencies": {
+    "ms": "2.1.3"
+  }
+}
