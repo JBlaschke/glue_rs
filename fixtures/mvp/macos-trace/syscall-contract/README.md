@@ -21,6 +21,12 @@ provide the source boundary. Signed source fields
 are widened through int64; pointers and unsigned fields through uint64. This
 module preserves those bits and does not guess widths or dereference pointers.
 
+`parse_table(raw_bytes)` performs the same bounded table parsing without file
+I/O. It requires immutable bytes up to256KiB and returns the same table/call-map/
+digest tuple as `load_table`. It does not pin arbitrary supplied bytes to this
+asset; callers needing that identity check it separately. Passing the parsed
+tuple explicitly to `entry_facts` avoids its default file-loader path.
+
 The default local SDK identifies as `macosx27.0`; the guest is 26.6.2. The exact
 SDK header hashes are recorded. Its vector-AIO declarations at syscall numbers
 246/247 are absent from the pinned kernel declarations and actual v4 guest probe

@@ -2,7 +2,9 @@
 import copy
 from dataclasses import FrozenInstanceError
 import hashlib
+import importlib.util
 import json
+from pathlib import Path
 import struct
 import tracemalloc
 import unittest
@@ -11,6 +13,7 @@ from unittest.mock import patch
 import owned_trace_check as check
 
 OWNER, TARGET = 3131, 4242
+CONTRACT = (Path(__file__).parent.parent / 'syscall-contract' / 'contracts.json').read_bytes()
 # Literal fixture, independently transcribed from the fixed source contract.
 # No producer is imported and the validator's generator never builds fixtures.
 PROGRAM = b'''#pragma D option quiet
@@ -103,6 +106,26 @@ def change_scalar(record, index, value):
     record['records'][index + leading]['hex'] = struct.pack('<Q', value).hex()
     if index < 5:
         record[('kind', 'timestamp', 'pid', 'tid', 'detail')[index]] = value
+
+
+def observe(records=None, **kwargs):
+    return check.observe_raw_bsd(kwargs.pop('program', PROGRAM), kwargs.pop('probes', PROBES),
+        kwargs.pop('errors', b''), kwargs.pop('event_lines', lines(records if records is not None else
+            [event(1), event(18), event(17)])), owner_pid=kwargs.pop('owner_pid', OWNER),
+        target_pid=kwargs.pop('target_pid', TARGET), contract_bytes=kwargs.pop('contract_bytes', CONTRACT),
+        **kwargs)
+
+
+def bsd(kind, function, words):
+    record = event(kind)
+    record['function'] = function
+    for index, word in enumerate(words, 5):
+        change_scalar(record, index, word)
+    return record
+
+
+def bsd_probes(function):
+    return PROBES.replace(b'\tread\t', b'\t' + function.encode('ascii') + b'\t')
 
 
 class RawControls(unittest.TestCase):
@@ -404,6 +427,221 @@ class RawControls(unittest.TestCase):
             yield b'{}\n'
             raise AssertionError('read beyond raw byte bound')
         self.refuse(event_lines=overflow(), match='raw byte bound')
+
+
+class BsdObservationControls(unittest.TestCase):
+    def test_minimal_and_complete_raw_facts_differential(self):
+        variants = [
+            [event(1), event(18), event(17)],
+            [event(1), event(2), event(3), event(18), event(17)],
+            [event(1), event(15), event(16), event(18), event(17)],
+            [event(1)] + [event(k) for k in (2, 3, 5, 6, 7, 8, 9, 10, 11, 15, 16)] +
+                [event(18, refcount=0x1e2), event(2), event(18, actor=9876),
+                 event(18, actor=9876, refcount=0x1e2), event(11), event(17)],
+        ]
+        for records in variants:
+            with self.subTest(kinds=[r['kind'] for r in records]):
+                result = observe(records)
+                self.assertEqual(result.raw, validate(records))
+                # Independent checks, rather than trusting only two APIs that
+                # deliberately share one validator.
+                self.assertEqual(result.raw.raw_sha256, hashlib.sha256(b''.join(lines(records))).hexdigest())
+                self.assertEqual(result.raw.events, len(records))
+                self.assertEqual(len(result.observations), sum(r['kind'] in (2, 3) for r in records))
+                self.assertFalse(result.full_trace_acceptance)
+                self.assertEqual(result.contract_sha256, hashlib.sha256(CONTRACT).hexdigest())
+        empty = observe(variants[2])
+        self.assertEqual(empty.observations, ())
+        self.assertEqual(empty.raw.event_kind_counts[15:17], (1, 1))
+        self.assertEqual(empty.coverage, check.BsdCoverage(0, 0, 0, 0, 0, 0, 0, ()))
+
+    def test_known_entry_exact_metadata_words_and_selectors(self):
+        words = [0, 1, (1 << 31) - 1, 1 << 31, (1 << 63) - 1, 1 << 63, (1 << 64) - 2, (1 << 64) - 1]
+        record = bsd(2, 'mmap', words)
+        record['cpu'] = 2147483647
+        change_scalar(record, 3, (1 << 64) - 1)
+        result = observe([event(1), record, event(18), event(17)], probes=bsd_probes('mmap'))
+        phase, = result.observations
+        self.assertEqual((phase.ordinal, phase.cpu, phase.probe_id, phase.epid), (2, 2147483647, 102, 1002))
+        self.assertEqual((phase.provider, phase.module, phase.function, phase.name), ('syscall', '', 'mmap', 'entry'))
+        self.assertEqual(phase.raw_scalars, (2, 0x102030405060708, TARGET, (1 << 64) - 1, OWNER, *words))
+        self.assertTrue(phase.source_contract_known)
+        self.assertIsNone(phase.returned)
+        self.assertIsNone(phase.unsupported_reason)
+        facts = phase.entry
+        self.assertEqual(facts.raw_words, tuple(words))
+        self.assertEqual(dict(facts.fields), {'address': words[0], 'length': words[1], 'protection': words[2],
+                                            'flags': words[3], 'fd': words[4], 'offset': words[5]})
+        self.assertEqual((facts.name, facts.number, facts.family, facts.source_argument_count),
+                         ('mmap', 197, 'mapping', 6))
+        self.assertTrue(facts.entry_attempt_observed)
+        self.assertIn('file-backed-object-and-offset', facts.requirements)
+        self.assertFalse(facts.full_trace_acceptance)
+        self.assertEqual(result.coverage, check.BsdCoverage(1, 0, 1, 0, 0, 0, 0, ()))
+
+    def test_failed_write_phases_stay_independent_and_entry_retained(self):
+        entry_words = [9, 0x12345678, 123, 0, 0, 0, 0, 0]
+        return_words = [(1 << 64) - 1, (1 << 64) - 1, 0, 13, 13]
+        entered = bsd(2, 'write', entry_words)
+        returned = bsd(3, 'write', return_words)
+        # Different TIDs and raw reversed timestamps are still only phases;
+        # transport validation supplies no call pairing or timestamp-order claim.
+        change_scalar(returned, 3, 99)
+        change_scalar(returned, 1, 1)
+        result = observe([event(1), returned, entered, event(18), event(17)], probes=bsd_probes('write'))
+        first, second = result.observations
+        self.assertIsNone(first.entry)
+        self.assertEqual(first.returned.kernel_error_bits, 13)
+        self.assertEqual(first.raw_scalars[5:], tuple(return_words))
+        self.assertIsNone(second.returned)
+        self.assertEqual(dict(second.entry.fields), {'fd': 9})
+        self.assertTrue(second.entry.entry_attempt_observed)
+        self.assertIn('rights-and-output-policy', second.entry.requirements)
+        self.assertEqual(result.coverage, check.BsdCoverage(1, 1, 1, 0, 1, 0, 0, ()))
+
+    def test_unknown_nonreturn_and_unpaired_phases_are_not_invented(self):
+        for function in ('unknown_bsd', 'exit', 'read'):
+            with self.subTest(function=function):
+                records = [event(1), bsd(2, function, [0] * 8), event(18), event(17)]
+                result = observe(records, probes=bsd_probes(function))
+                phase, = result.observations
+                self.assertFalse(phase.source_contract_known)
+                self.assertEqual(phase.unsupported_reason, 'no pinned BSD source contract')
+                self.assertIsNone(phase.entry)
+                self.assertIsNone(phase.returned)
+                self.assertEqual(result.coverage.unknown_names, ((function, 1),))
+        result = observe([event(1), bsd(3, 'unknown_bsd', [3, 3, 4, 0, 0]), event(18), event(17)],
+                         probes=bsd_probes('unknown_bsd'))
+        self.assertFalse(result.observations[0].source_contract_known)
+        self.assertEqual(result.observations[0].returned.primary_result_bits, 3)
+        self.assertEqual(result.coverage.unknown_names, (('unknown_bsd', 1),))
+
+    def test_unsupported_return_shapes_remain_transport_valid(self):
+        cases = [([3, 4, 0, 0, 0], 'provider primary return duplication differs'),
+                 ([3, 3, 0, 1, 2], 'provider kernel error and builtin errno differ')]
+        for words, reason in cases:
+            records = [event(1), bsd(3, 'write', words), event(18), event(17)]
+            result = observe(records, probes=bsd_probes('write'))
+            self.assertEqual(result.raw, validate(records, probes=bsd_probes('write')))
+            phase, = result.observations
+            self.assertIsNone(phase.returned)
+            self.assertEqual(phase.raw_scalars[5:], tuple(words))
+            self.assertEqual(phase.unsupported_reason, reason)
+            self.assertEqual(result.coverage.unsupported_return_shapes, 1)
+        words = [(1 << 64) - 1] * 5
+        result = observe([event(1), bsd(3, 'write', words), event(18), event(17)], probes=bsd_probes('write'))
+        self.assertTrue(result.observations[0].returned.control_flow_unmodeled)
+        self.assertEqual(result.coverage.control_flow_unmodeled_returns, 1)
+
+    def test_deep_immutability_and_input_detachment(self):
+        records = [event(1), bsd(2, 'openat', [1, 2, 3, 4, 5, 6, 7, 8]), event(18), event(17)]
+        result = observe(records, probes=bsd_probes('openat'))
+        phase, = result.observations
+        expected = phase.raw_scalars
+        change_scalar(records[1], 5, 777)
+        records[1]['function'] = 'changed'
+        self.assertEqual(phase.raw_scalars, expected)
+        for obj, field in ((result, 'protocol'), (result.raw, 'events'), (phase, 'ordinal'),
+                           (phase.entry, 'name'), (result.coverage, 'entries')):
+            with self.assertRaises(FrozenInstanceError):
+                setattr(obj, field, None)
+        for collection in (result.observations, phase.raw_scalars, phase.entry.fields,
+                           phase.entry.raw_words, phase.entry.requirements,
+                           result.coverage.unknown_names):
+            self.assertIs(type(collection), tuple)
+        with self.assertRaises(TypeError):
+            phase.entry.fields[0] = ('dirfd', 777)
+
+    def test_transport_mutations_refuse_identically_without_partial_result(self):
+        baseline = [event(1), event(2), event(15), event(18), event(17)]
+        self.assertEqual(observe(baseline).raw, validate(baseline))
+        bad = []
+        for position, key, value in ((0, 'cpu', True), (1, 'epid', 0), (2, 'provider', 'changed'),
+                                     (3, 'detail', 0), (4, 'record_bytes', 12)):
+            records = copy.deepcopy(baseline)
+            records[position][key] = value
+            bad.append({'event_lines': lines(records)})
+        for position in (0, 1, 2, 3, 4):
+            records = copy.deepcopy(baseline)
+            records[position]['records'][-1]['action'] = 2
+            bad.append({'event_lines': lines(records)})
+        bad += [{'event_lines': lines(baseline[:-1])},
+                {'event_lines': lines(baseline[:3] + baseline[4:])},
+                {'event_lines': lines(baseline) + [b'{}\n']},
+                {'event_lines': lines(baseline[:-1]) + [b'partial']},
+                {'program': PROGRAM + b'\n'}, {'probes': PROBES[:-1]}, {'errors': b'fault'}]
+        for kwargs in bad:
+            with self.subTest(kwargs=str(kwargs)[:80]):
+                messages = []
+                for operation in (validate, observe):
+                    with self.assertRaises(check.RawValidationError) as error:
+                        operation(**kwargs)
+                    messages.append(str(error.exception))
+                    self.assertFalse(hasattr(error.exception, 'report'))
+                self.assertEqual(*messages)
+        for operation in (validate, observe):
+            def source_failure():
+                yield from lines(baseline[:-1])
+                raise OSError('late source failure')
+            with self.assertRaisesRegex(OSError, 'late source failure') as error:
+                operation(event_lines=source_failure())
+            self.assertFalse(hasattr(error.exception, 'report'))
+
+    def test_projection_exact_bound_and_early_overflow_old_api_unchanged(self):
+        def stream(count):
+            yield line(event(1), 1)
+            for index in range(count):
+                yield line(event(2), index + 2)
+            yield line(event(18), count + 2)
+            yield line(event(17), count + 3)
+        result = observe(event_lines=stream(4096))
+        self.assertEqual(len(result.observations), 4096)
+        self.assertEqual(result.raw, validate(event_lines=stream(4096)))
+        self.assertEqual(result.coverage.unknown_names, (('read', 4096),))
+        self.assertEqual(validate(event_lines=stream(4097)).events, 4100)
+        def overflow():
+            yield line(event(1), 1)
+            for index in range(4097):
+                yield line(event(2), index + 2)
+            raise AssertionError('source consumed after projection overflow')
+        with self.assertRaisesRegex(check.RawValidationError, 'BSD phase projection bound') as error:
+            observe(event_lines=overflow())
+        self.assertFalse(hasattr(error.exception, 'report'))
+
+    def test_contract_asset_pin_and_acceptance_refusal_before_stream(self):
+        class Untouched:
+            def __iter__(self):
+                raise AssertionError('source consumed before static refusal')
+        self.assertEqual((len(CONTRACT), hashlib.sha256(CONTRACT).hexdigest()),
+                         (96972, '31f96f93c2ca1bd58ae322a6d3c223dd764e5a763088cfed2dbf78a8a21104e2'))
+        for raw in (None, CONTRACT.decode(), bytearray(CONTRACT), CONTRACT[:-1], CONTRACT + b' ',
+                    b'!' + CONTRACT[1:]):
+            with self.assertRaisesRegex(check.RawValidationError, 'pinned BSD contract'):
+                observe(contract_bytes=raw, event_lines=Untouched())
+        with self.assertRaisesRegex(check.RawValidationError, 'cannot establish full Darwin R02'):
+            check.require_full_trace_acceptance()
+
+    def test_no_implicit_asset_reads_on_import_or_apis(self):
+        def no_io(*args, **kwargs):
+            raise AssertionError('unexpected explicit filesystem I/O')
+        with patch('builtins.open', no_io), patch('io.open', no_io), patch('os.open', no_io):
+            spec = importlib.util.spec_from_file_location('_owned_bsd_import_control', Path(check.__file__))
+            imported = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(imported)
+            records = [event(1), bsd(2, 'write', [9, 2, 3, 4, 5, 6, 7, 8]), event(18), event(17)]
+            # Code imports are allowed during normal module import, while the
+            # fixed contract asset is not read. Once imported, neither API may
+            # load code or open an asset even when projecting a known entry.
+            with patch('importlib.machinery.SourceFileLoader.get_code', no_io), \
+                    patch('importlib.machinery.SourceFileLoader.get_data', no_io), \
+                    patch('_io.open_code', no_io), patch('io.open_code', no_io), \
+                    patch.object(imported, '_contract_helpers', no_io):
+                result = imported.validate_raw(PROGRAM, bsd_probes('write'), b'', lines(records),
+                                               owner_pid=OWNER, target_pid=TARGET)
+                projected = imported.observe_raw_bsd(PROGRAM, bsd_probes('write'), b'', lines(records),
+                    owner_pid=OWNER, target_pid=TARGET, contract_bytes=CONTRACT)
+                self.assertEqual(result, projected.raw)
+                self.assertEqual(dict(projected.observations[0].entry.fields), {'fd': 9})
 
 
 if __name__ == '__main__':

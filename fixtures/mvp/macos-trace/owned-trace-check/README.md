@@ -92,3 +92,57 @@ CLOCK_MONOTONIC domain equivalence, timestamp ordering or deadline derivation
 is asserted. This module is not an extraction/effect decoder, full process-tree
 oracle, evidence admission, R02 or M2 proof. Native calibration and later
 independent session/sidecar/packet checks remain separate.
+
+## BSD scalar observations
+
+`observe_raw_bsd(program, probes, errors, event_lines, owner_pid=..., target_pid=...,
+contract_bytes=...)` uses the same private strict transport walk. Supply the exact
+immutable bytes of the checked-in `syscall-contract/contracts.json`:96,972 bytes,
+SHA-256 `31f96f93c2ca1bd58ae322a6d3c223dd764e5a763088cfed2dbf78a8a21104e2`.
+The API checks that identity before parsing or consuming the stream; it never
+opens the asset. `syscall_contract.parse_table` is the reusable pure bounded-byte
+parser; the existing file loader and default entry-facts API retain their paths.
+The old `validate_raw` signature, transport rules, `RawFacts` and streaming memory
+are unchanged, with no projection allocation. Fixed Python helper code loads
+once during ordinary module import, separately from contract-asset access; no
+asset is read during import. After import neither validation API opens a file
+or loads helper code. No `sys.path` or `sys.modules` cache mutation is used.
+
+The frozen `OwnedBsdObservations` result contains `raw: RawFacts`, contract hash,
+`observations: tuple[BsdPhase, ...]`, frozen coverage counts, and
+`full_trace_acceptance: false`. A phase retains ordinal, CPU, probe ID, EPID,
+provider/module/function/name, the five raw header scalars and all eight entry
+or five return words. The complete raw hash and ordinal identify its source;
+original JSON lines are not accumulated or rewritten. Actor PID/TID values stay
+raw; they do not establish kernel generations or an exec epoch.
+
+Known entries retain frozen source-selected fields, declaration number/family,
+argument count and every unresolved requirement from the pinned contract.
+Unknown names remain explicit, with no declaration or allowlist inference.
+Returns retain only the existing raw duplication/errno projection when supported;
+otherwise their words and unsupported-shape reason remain visible. Unmodeled
+control-flow bits remain explicit. No pairing occurs: a return preceding an entry
+or using another thread is not attached to that entry. Failed-return observations
+cannot erase an entry request. Return words are not libc results or completed
+filesystem effects. Coverage counts unknown names by phase; `RawFacts` still
+counts all Mach/lifecycle records outside the selected BSD projection.
+
+The new API separately caps retained BSD phases at4,096 with a prospective guard
+and no override. Exceeding it returns no prefix; the old validator keeps its
+million-event/128MiB bounds. No observation is returned until input exhaustion
+and full BEGIN/terminal/END validation. A later malformed nonselected event or
+source exception invalidates the operation too. The API provides no callback,
+normalized-unit origin, copied pathname, resolved FD/backing object or synthetic
+state bridge. `require_full_trace_acceptance()` always refuses. There is no new
+CLI, capture execution, kit/packet adoption or registry change.
+
+The same existing test script exercises literal source selectors, all raw
+provenance, unknown/nonreturning and unpaired phases, failed write requests,
+unsupported return shapes, deep immutability, complete-facts differential checks,
+hostile/late transport failure, contract pin and projection bounds, and no
+implicit asset reads. The original128MiB streaming memory check remains enabled.
+These controls use serialized fixtures and do not calibrate a provider. A later
+fresh admitted collector capture must establish actual native observations;
+complete process-tree effects, object causality, full oracle/corpus/budgets and
+R02/M2 remain open under the
+[decision](../../../../docs/decisions/mvp-r02-owned-bsd-observations.md).

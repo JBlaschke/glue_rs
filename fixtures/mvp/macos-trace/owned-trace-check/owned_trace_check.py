@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 import re
-from typing import Iterable
+from typing import Iterable, Optional
 
 MAX_PROGRAM_BYTES = 16384
 MAX_INVENTORY_BYTES = 1048576
@@ -13,6 +13,9 @@ MAX_ERROR_BYTES = 65536
 MAX_RAW_BYTES = 134217728
 MAX_EVENT_BYTES = 8191  # Backend char[8192] includes its terminating NUL.
 MAX_EVENTS = 1000000
+MAX_BSD_PHASES = 4096
+CONTRACT_BYTES = 96972
+CONTRACT_SHA256 = '31f96f93c2ca1bd58ae322a6d3c223dd764e5a763088cfed2dbf78a8a21104e2'
 U32 = (1 << 32) - 1
 U64 = (1 << 64) - 1
 PID_MAX = (1 << 31) - 1
@@ -74,6 +77,138 @@ class RawFacts:
     terminal_raw_exit: int  # not POSIX wait status
     terminal_address: int
     terminal_refcount: int
+
+
+@dataclass(frozen=True)
+class BsdEntryFacts:
+    protocol: str
+    name: str
+    number: int
+    family: str
+    fields: tuple[tuple[str, int], ...]
+    raw_words: tuple[int, ...]
+    source_argument_count: int
+    entry_attempt_observed: bool
+    requirements: tuple[str, ...]
+    contract_sha256: str
+    full_trace_acceptance: bool
+    scope: str
+
+
+@dataclass(frozen=True)
+class BsdReturnFacts:
+    protocol: str
+    primary_result_bits: int
+    secondary_result_bits: int
+    kernel_error_bits: int
+    control_flow_unmodeled: bool
+    full_trace_acceptance: bool
+    scope: str
+
+
+@dataclass(frozen=True)
+class BsdPhase:
+    """One raw phase, not a paired call, kernel generation or successful effect."""
+    ordinal: int
+    cpu: int
+    probe_id: int
+    epid: int
+    provider: str
+    module: str
+    function: str
+    name: str
+    raw_scalars: tuple[int, ...]  # five header words, then all entry/return words
+    source_contract_known: bool
+    entry: Optional[BsdEntryFacts]
+    returned: Optional[BsdReturnFacts]
+    unsupported_reason: Optional[str]
+
+
+@dataclass(frozen=True)
+class BsdCoverage:
+    entries: int
+    returns: int
+    known_entries: int
+    unknown_entries: int
+    supported_return_shapes: int
+    unsupported_return_shapes: int
+    control_flow_unmodeled_returns: int
+    unknown_names: tuple[tuple[str, int], ...]  # counts phases, not calls
+
+
+@dataclass(frozen=True)
+class OwnedBsdObservations:
+    protocol: str
+    raw: RawFacts
+    contract_sha256: str
+    observations: tuple[BsdPhase, ...]
+    coverage: BsdCoverage
+    full_trace_acceptance: bool = False
+
+
+def _contract_helpers():
+    # Standard fixed helper-code import, separate from contract-asset access.
+    # Neither this import nor the pure parser opens contracts.json. No sys.path/
+    # sys.modules mutation, caller module selection or asset fallback is involved.
+    import importlib.util
+    from pathlib import Path
+    path = Path(__file__).parent.parent / 'syscall-contract' / 'syscall_contract.py'
+    spec = importlib.util.spec_from_file_location('_owned_bsd_source_contract', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_CONTRACT_HELPERS = _contract_helpers()
+
+
+class _BsdProjection:
+    def __init__(self, helpers, table):
+        self.helpers, self.table, self.phases = helpers, table, []
+
+    def take(self, ordinal, cpu, epid, probe, names, scalars):
+        if scalars[0] not in (2, 3):
+            return
+        _require(len(self.phases) < MAX_BSD_PHASES, 'BSD phase projection bound')
+        known = names[2] in self.table[1]
+        entry = returned = reason = None
+        words = scalars[5:]
+        if scalars[0] == 2:
+            if known:
+                facts = self.helpers.entry_facts(names[2], words, self.table)
+                entry = BsdEntryFacts(**(facts | {
+                    'fields': tuple(facts['fields'].items()),
+                    'raw_words': tuple(facts['raw_words']),
+                    'requirements': tuple(facts['requirements']),
+                }))
+            else:
+                reason = 'no pinned BSD source contract'
+        else:
+            try:
+                returned = BsdReturnFacts(**self.helpers.return_facts(words))
+            except self.helpers.UnsupportedContract as error:
+                # Old transport accepts these raw shapes. Keep the phase and
+                # explicitly unsupported projection, not a new transport rule.
+                reason = str(error)
+        self.phases.append(BsdPhase(ordinal, cpu, probe, epid, *names,
+                                    tuple(scalars), known, entry, returned, reason))
+
+    def finish(self, raw):
+        observations = tuple(self.phases)
+        entries = [p for p in observations if p.raw_scalars[0] == 2]
+        returns = [p for p in observations if p.raw_scalars[0] == 3]
+        unknown = {}
+        for phase in observations:
+            if not phase.source_contract_known:
+                unknown[phase.function] = unknown.get(phase.function, 0) + 1
+        known = sum(p.source_contract_known for p in entries)
+        supported = sum(p.returned is not None for p in returns)
+        coverage = BsdCoverage(len(entries), len(returns), known, len(entries) - known,
+                               supported, len(returns) - supported,
+                               sum(p.returned is not None and p.returned.control_flow_unmodeled
+                                   for p in returns), tuple(sorted(unknown.items())))
+        return OwnedBsdObservations('darwin-owned-bsd-observations-v1', raw,
+                                    CONTRACT_SHA256, observations, coverage)
 
 
 def _expected_program(target):
@@ -228,7 +363,7 @@ def _event(line, ordinal, inventory):
     _integer(scalars[1], 1, U64, "timestamp range")
     _integer(scalars[2], 1, PID_MAX, "actor PID range")
     _integer(scalars[3], 1, U64, "thread ID range")
-    return kind, epid, probe, scalars
+    return kind, epid, probe, scalars, event['cpu']
 
 
 def _stream_budget(events, raw_bytes, line_bytes):
@@ -247,6 +382,36 @@ def validate_raw(program: bytes, probes: bytes, errors: bytes,
     iterable must terminate and must not mutate inputs or concurrently reenter.
     Unexpected iterable/source exceptions propagate; they never return facts.
     """
+    return _validate_raw(program, probes, errors, event_lines,
+                         owner_pid=owner_pid, target_pid=target_pid)
+
+
+def observe_raw_bsd(program: bytes, probes: bytes, errors: bytes,
+                    event_lines: Iterable[bytes], *, owner_pid: int,
+                    target_pid: int, contract_bytes: bytes) -> OwnedBsdObservations:
+    """Validate the complete transport, then return bounded immutable BSD phases.
+
+    contract_bytes must be the exact pinned asset supplied by the caller, not a
+    path. No asset I/O, public prefix callback, call pairing, normalized result,
+    native identity attestation or extraction acceptance occurs here.
+    """
+    _require(type(contract_bytes) is bytes and len(contract_bytes) == CONTRACT_BYTES,
+             'pinned BSD contract byte type/size')
+    _require(hashlib.sha256(contract_bytes).hexdigest() == CONTRACT_SHA256,
+             'pinned BSD contract digest')
+    helpers = _CONTRACT_HELPERS
+    projection = _BsdProjection(helpers, helpers.parse_table(contract_bytes))
+    raw = _validate_raw(program, probes, errors, event_lines,
+                        owner_pid=owner_pid, target_pid=target_pid, projection=projection)
+    return projection.finish(raw)
+
+
+def require_full_trace_acceptance():
+    raise RawValidationError('owned BSD observations cannot establish full Darwin R02 acceptance')
+
+
+def _validate_raw(program, probes, errors, event_lines, *, owner_pid, target_pid,
+                  projection=None):
     _integer(owner_pid, 1, PID_MAX, "owner PID")
     _integer(target_pid, 1, PID_MAX, "target PID")
     _require(owner_pid != target_pid, "owner equals target")
@@ -266,7 +431,7 @@ def validate_raw(program: bytes, probes: bytes, errors: bytes,
                  "one complete LF-terminated event required")
         _stream_budget(events, raw_bytes, len(line))
         _require(not end, "event after END")
-        kind, epid, probe, scalars = _event(line, events + 1, inventory)
+        kind, epid, probe, scalars, cpu = _event(line, events + 1, inventory)
         clause = (probe, kind)
         _require(epid not in epids or epids[epid] == clause, "EPID rebound")
         _require(clause not in clauses or clauses[clause] == epid, "multiple EPIDs for clause")
@@ -310,6 +475,8 @@ def validate_raw(program: bytes, probes: bytes, errors: bytes,
         counts[kind] += 1
         raw_bytes += len(line)
         raw_hash.update(line)
+        if projection is not None:
+            projection.take(events, cpu, epid, probe, inventory[probe][0], scalars)
     _require(begin != 0 and terminal != 0 and end != 0, "incomplete BEGIN/terminal/END")
     return RawFacts(owner_pid, target_pid, len(program), hashlib.sha256(program).hexdigest(),
                     len(probes), hashlib.sha256(probes).hexdigest(), len(inventory),
