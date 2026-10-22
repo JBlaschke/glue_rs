@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-20 October 2026. Product authority remains [the plan](../../PLAN.md),
+22 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -13,6 +13,10 @@ putting the reviewed match-accounting repair on `main` at `08da274`.
 PR #37 subsequently merged the baseline timeout repair at `9f787e9`; both
 repair runs passed all nine jobs. The tree-open intent follow-up below starts
 from that merged baseline.
+The owner has now merged PRs #38, #39 and #40 through `dfc7747`.
+[Merged-main run 39780832572](https://github.com/JBlaschke/glue_rs/actions/runs/39780832572)
+completed successfully. The owned BSD observation work below starts from that
+merged baseline; its new commits have not been published or tested by hosted CI.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -176,6 +180,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-match-kit` | decision `9f9fc3a`, implementation `7daa902` | Thin unconfigured match-repair profile; 13 source/synthetic controls and independent review pass; old registrations preserved; actual admission/build/calibration pending |
 | R02 | `codex/mvp-r02-trace-match-admission` | decision `c787755`, fixture split `4255819` | Reviewed 42-source candidate frozen at `7daa902`; separate empty fixture and 14 controls pass; production remains empty pending fresh disabled proof |
 | R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
+| R02 | `codex/mvp-r02-owned-bsd-observations` | decision `49aac44`, implementation `a9f95e4` | Complete-transport-backed immutable BSD scalar observations, exact supplied contract bytes and 4,096-phase cap; 45 focused controls pass; native integration remains open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -219,6 +224,63 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 22 October: owned BSD observations and restored inspection toolkit
+
+Decision `49aac44` precedes implementation `a9f95e4` on
+`codex/mvp-r02-owned-bsd-observations`, based on merged `dfc7747`.
+`observe_raw_bsd` retains immutable entry/return scalars and exact record
+provenance after the same complete strict transport walk used by `validate_raw`.
+Known entries use the pinned source contract; unknown names and unsupported
+return shapes remain explicit. The caller supplies the exact 96,972-byte contract
+asset. Neither API opens code or assets after normal module import. A prospective
+4,096-phase projection cap leaves the old streaming API and bounds unchanged.
+There is no call pairing, normalized state conversion or extraction verdict.
+
+Both focused commands pass on the development Mac with Python 3.15.0:
+`python3 -B fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v`
+(26 tests, including the existing 128 MiB memory control) and
+`python3 -B fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v`
+(19 tests). No skips or failed test runs occurred. The final 21-payload receipt is
+`/private/tmp/glue-owned-bsd-controls-_g_rqhtj`, manifest
+`6ba4a2651c10d9f0c0bf0179d06a75bcc7d84b59b197a56fdc17809467eea882`.
+It preserves the separate successful pre-review receipt. Independent review at
+`/private/tmp/glue-owned-bsd-implementation-peer-20261022-b70vfn2c`, manifest
+`07183632c64ff51b69a87ab73817cabee8fbdc73faa3ae00910d53a357ba8a6f`,
+finds no actionable issue and independently compares the old validator body,
+signatures, bounds and parser semantics. Root verifies both complete inventories
+and reads the review. The existing CI suites already cover both scripts; the
+configured invocation count stays 41. Shell syntax and diff checks pass.
+
+The fixed VM inspection toolkit was missing all files. Two fresh builds from
+the six unchanged `d2bd45d` sources reproduce the original 53,600-byte signed
+executable exactly. Build record
+`/private/tmp/glue-inspector-rebuild-20261022-4cy1udig` has manifest
+`7fce9af57aaeeef987fd584df0911d84a38bb89c1cc3ae706c8d43e03d1bd2e0`;
+independent source/tool/Mach-O/signature review has manifest
+`d77f70a74ad5a25ad226a9549ec1db10b8f17a9ac33f6ac8479622d03da35016`.
+The empty old skeleton is preserved. All nine restored payloads match the
+original toolkit manifest `d5f5519e2f59eff40114297e6c4bdef952f40968352bfe2154e1e4efd96e6505`;
+no pin, registry or preflight constant changes. Historical producer provenance
+is retained as historical, rather than reconstructed.
+
+A fresh ordinary-user guest inspection completes all six commands with zero
+status and exact enabled-SIP output at 13:09:48 UTC on 22 October. Its 27-payload
+record is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-1xvViCac`,
+manifest `a28bcc1604215fec403cf073e0e7424bea288f0a74df83ca91abb3185d157b34`.
+Independent review has manifest
+`a509870c23d308380ada8f6e59936021e58580cbce55266a9a01242eb4081fc0`.
+Actual devices/FSIDs are retained without normalizing to older boots. Root
+verifies both inventories and reads the review. This is enabled preflight only;
+no tracing proof or boot-security-policy attestation follows from it.
+The 20 October coordination window closes before any agent security weakening,
+with manifest `2d36f8401533dad6ba6c8040672e19868c3e87dbad6942926d7c6ebf3d61246c`.
+The guest shuts down cleanly and reaches Recovery Terminal. Capturing input in
+UTM restores menu interaction. Fresh action-time SIP confirmation is requested
+and remains pending. The new chronology is
+`/private/tmp/glue-owned-trace-sip-window-20261022-01`. No new native capture,
+source admission, full Darwin oracle, macOS budgets or M2 completion is claimed.
 
 ## 20 October: mapping write-intent state
 

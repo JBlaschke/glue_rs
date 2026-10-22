@@ -1358,3 +1358,24 @@ remains open. The complete Darwin decoder/oracle is still unimplemented and
 unvalidated, so Mac R02 corpus/controls/budgets and M2 remain open. Developer ID
 and notarization are later public-release gates. Current task refs, commands and
 remaining work are recorded in the [implementation ledger](plans/mvp-implementation.md).
+
+## MVP implementation — R02 follow-up (22 October 2026)
+
+Merged `main` at `dfc7747` passes
+[CI run 39780832572](https://github.com/JBlaschke/glue_rs/actions/runs/39780832572).
+The separate `codex/mvp-r02-owned-bsd-observations` branch adds decision
+`49aac44` and implementation `a9f95e4`: the owned transport reader now retains
+bounded immutable BSD syscall phases with source-selected arguments, exact raw
+metadata and explicit unknown/unsupported cases. Complete stream validation
+precedes every result. The old validator and its streaming bounds remain intact.
+The 26 owned-reader and 19 source-contract controls pass on the development Mac;
+independent source/receipt review finds no actionable issue. Existing CI scripts
+already invoke both suites. No hosted result covers this new branch yet.
+
+The missing read-only VM inspector was rebuilt twice and reproduces its original
+signed bytes exactly. The restored toolkit passes independent review and a fresh
+ordinary-user guest inspection confirms SIP enabled. Native tracing will resume
+after the required guest-only security confirmation. The source change does not
+establish call pairing, filesystem effects or full Darwin acceptance. R02's Mac
+oracle/corpus, R03's Mac budgets and R04's durable evidence/final M2 remain open;
+exact commands and retained inventories are in the implementation ledger.
