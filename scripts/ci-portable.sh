@@ -17,6 +17,7 @@ case "${1:-baseline}" in
     baseline)
         python3 --version
         python3 scripts/test-evidence-bundle.py -v
+        python3 fixtures/mvp/test_trace_environment.py -v
         python3 fixtures/mvp/macos-trace/test_read_capability.py -v
         python3 fixtures/mvp/macos-trace/test_observe_open.py -v
         python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v
