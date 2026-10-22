@@ -1,5 +1,33 @@
 # Implementation progress
 
+## Linux proof replay portability and evidence recovery — 22 October 2026
+
+Decision `724089d` and implementation `95a2799` on the separate local branch
+`codex/mvp-v02-linux-proof-portability` make Linux proof validation independent
+of the replay host's errno constants. Both supported captured ABIs are checked
+explicitly; the native filter and stored proofs are unchanged. Seven new portable
+controls pass; seven native Linux controls explicitly skip on this Mac. Independent
+review also runs the public read-only checker successfully on the recovered
+original x86_64 proof. Portable baseline CI now invokes 42 Python test scripts.
+
+The first complete local baseline attempt stops at an outdated owned-reader
+dependency hash in the case-consistency controls. Its unchanged-source failure
+is retained; a separate R02 integration repair must bind the reader's new helper
+dependency before the baseline can pass. No hosted result covers these branches.
+
+The original temporary 18,588-file checkpoint is no longer available. The exact
+original x86_64 Actions ZIP has been recovered, and all 4,802 artifact payloads
+match the committed inventory. Fresh offline replay passes its acceptance,
+controls and applicable structural budgets; time/RSS checks remain scoped to
+the recorded host. Two old host-added reports and the remaining checkpoint,
+including the current arm64 evidence, remain missing. The recovered files are
+local under ignored `target`; durable retention remains open. Exact identities,
+replay limits and commands are in the [22 October checkpoint](plans/mvp-implementation.md#22-october-linux-proof-portability-and-evidence-recovery).
+
+The owner's latest choices remain in force: keep guest SIP enabled and keep the
+BSD observation branch local. No source or evidence is published in this step.
+Full Darwin R02, macOS R03 and final R04/M2 remain open.
+
 ## Mapping write-intent state — 20 October 2026
 
 Decision `866a222` and implementation `e831200` on

@@ -182,6 +182,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
 | R02 | `codex/mvp-r02-owned-bsd-observations` | decision `49aac44`, implementation `a9f95e4` | Complete-transport-backed immutable BSD scalar observations, exact supplied contract bytes and 4,096-phase cap; 45 focused controls pass; native integration remains open |
 | R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
+| V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; baseline dependency repair pending |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -225,6 +226,61 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 22 October: Linux proof portability and evidence recovery
+
+The separate local `codex/mvp-v02-linux-proof-portability` branch stacks on
+`c7e59e9`. Decision `724089d` precedes implementation `95a2799`. The checker now
+uses the captured Linux ABI's errno value rather than the importing host's value;
+unknown architecture selectors refuse. Native C/filter policy, recorded proof,
+helper identities and all other proof/manifest checks remain unchanged.
+
+`python3 -B fixtures/mvp/test_trace_environment.py -v` passes seven portable
+controls and explicitly skips seven native Linux controls on the development
+Mac/Python 3.15.0. Receipt `/private/tmp/glue-linux-proof-portable-controls-3ysgz_ag`
+has 12 payloads and manifest
+`5482fcd7ff5736846ca0ef048788f2d209fc82eed1ac99a58a5a948598c4d0c3`.
+Independent review at
+`/private/tmp/glue-linux-proof-portability-peer-20261022-_igvgk6e`, manifest
+`135e65724192d524e54c145cc5db15b879ace878187ebf2f8c7c6ba9522680c3`,
+finds no actionable issue and verifies the unchanged native suite/filter.
+It also runs `python3 -B fixtures/mvp/trace_environment.py
+target/mvp-retention/recovered-x86-38800548172/raw-artifact/provisioning/trace-environment
+--architecture x86_64` successfully, without `--record`, native execution or
+input changes. Root verifies both inventories and reads the review.
+
+CI adds that test script for 42 configured Python invocations. The first frozen
+`sh scripts/ci-portable.sh baseline` attempt returns 1 at the owned-case test's
+old raw-reader hash, before Rust tests/Clippy. Its before/after patches agree.
+The receipt is `target/mvp-validation/20261022-baseline`, manifest
+`5656a9a4117447e871427bb80b0a02fabd8e7fe6fdfd2c187e19c0bd629b18fa`.
+This is an integration failure requiring a separate reader/helper dependency
+closure repair, not a passing baseline. No hosted run or publication occurs.
+
+The old `/private/tmp` checkpoint, its 18,588 indexed files and all identified
+prepared/restored archive copies are absent. Committed inventories remain
+historical records; present retention cannot be inferred from their hashes.
+The exact original x86_64 artifact ZIP from run `38800548172`, artifact
+`12005186009`, is recovered under ignored
+`target/mvp-retention/recovered-x86-38800548172`. Its 160,039,296 bytes hash to
+`c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+All 4,802 extracted regular files match the original committed inventory; the
+two old host-added reports remain absent and are not reconstructed. Safe member
+validation precedes extraction. Newly fetched metadata and replay reports have
+their own names and provenance.
+
+Fresh offline replay verifies 24 acceptance receipts, 15 benchmark variants,
+156 oracle controls, five applicable structural/I/O/FD/scaling profiles and 990
+rank results. All five time/RSS checks skip because the recorded host fingerprint
+differs from the budget fingerprint. No cold-cache or universal timing claim is
+made. The initial errno failure and its diagnostic rerun remain separate; no
+stored command or native helper executes. The passing report has SHA-256
+`945a2185dbb3a106e0e4eb4ae8c6f165cd2b6e3d1f68fd7bdf9384bd6ddc86d9`;
+the 15-member `offline-replay-20261022.sha256` index hashes to
+`77f03e5eb8c623b27ec375dfb3aa54947e93b350450bb40cacc30a8ef6ff8e56`.
+Root verifies that inventory and reads the independent report. These files need
+durable backup: `cargo clean` removes `target`. No complete checkpoint or current
+arm64 backup is recovered, and no evidence asset is published.
 
 ## 22 October: closed owned call pairing
 
@@ -2024,7 +2080,7 @@ locations are recorded in the [integration evidence README](../evidence/compact-
 [decision 0030](../decisions/0030-evidence-retention.md). Evidence release assets
 have not been published; there is no fabricated `bundle.json` or remote durable
 retention claim. Local files alone will not survive transfer of this repository.
-The indexed checkpoint now prepares and restores 18,588 captured files without
+The historical indexed checkpoint prepared and restored 18,588 captured files without
 rewriting them; replay from a new root passes 94 receipts, ten budget profiles
 and 1,980 rank results. The archive is 619,802,268 bytes with SHA-256
 `aa8b2291a670791f8a50626c1098eb2281b8b616cff260163c9aa895ddc8879f`.
@@ -2033,6 +2089,14 @@ receipts, 15 benchmark variants, 156 controls and 990 rank results, with the
 4,804-file subtree unchanged. Review artifacts created after preparation are
 separate from that frozen checkpoint; exact identities and commands are in the
 evidence README.
+
+The 22 October availability audit finds that original temporary checkpoint and
+its archive copies missing. Only the exact 4,802-file x86_64 artifact subtree has
+been recovered so far, with new independent replay and separately named reports.
+See the [current recovery checkpoint](#22-october-linux-proof-portability-and-evidence-recovery)
+and the evidence README before relying on historical locations below. Complete
+arm64/current-checkpoint recovery or fresh native runs and durable retention
+remain required.
 
 Remaining M2 work includes a complete, validated Darwin extraction backend and
 the required macOS corpus, negative controls and budgets. Native

@@ -1,5 +1,29 @@
 # Compact MVP integration evidence
 
+22 October availability update: the original `/private/tmp` checkpoint and its
+prepared/restored archives are missing their indexed files. The inventories
+below remain historical records; they do not establish present local retention.
+No backup of the complete 18,588-file checkpoint has been identified.
+
+The exact original x86_64 Actions ZIP has been recovered into the ignored local
+directory `target/mvp-retention/recovered-x86-38800548172`. All 4,802 artifact
+payloads match their hashes in `local-evidence.sha256`. Only the two host-added
+original reports, `artifact-metadata.json` and `independent-replay.json`, remain
+absent from that 4,804-file subtree; newly obtained metadata and replay results
+are kept separately. Fresh offline replay passes 24 acceptance receipts, 15
+benchmark receipts, 156 oracle controls, five applicable structural/I/O/FD/scaling
+budgets and 990 rank results. Time/RSS limits remain host scoped and are skipped
+where the recorded fingerprint differs. This is replay, not new native execution.
+The 15-member recovery/replay index is `offline-replay-20261022.sha256`, SHA-256
+`77f03e5eb8c623b27ec375dfb3aa54947e93b350450bb40cacc30a8ef6ff8e56`.
+The initial cross-host errno-checker failure is preserved beside the passing
+replay. The recovered files need a durable backup; `cargo clean` removes `target`.
+No evidence asset has been published, and the missing arm64/current checkpoint
+must be recovered from another backup or replaced by a fresh native run.
+
+The owner has merged the original implementation stack and follow-ups through
+`dfc7747`. The dated account below preserves the original checkpoint context.
+
 15 October 2026. This record covers the combined `codex/mvp-r04-docs` feature
 stack. The [implementation ledger](../../plans/mvp-implementation.md) records all
 26 task branches and separates implemented behavior from remaining acceptance.
