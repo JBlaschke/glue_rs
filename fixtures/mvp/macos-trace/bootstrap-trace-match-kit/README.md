@@ -43,6 +43,14 @@ actual proof/capture access. The existing tracing suite remains separate and
 unchanged. Passing these tests does not demonstrate a built kit or tracing
 readiness.
 
+Historical checks retain the exact native builder, registry, packet-preparer
+and parent-test bytes. The host calibration reader advances separately with
+the [reviewed code-dependency integration](../../../../docs/decisions/mvp-r02-owned-reader-dependencies.md).
+Its distinct `REVIEWED_HOST_READER_PINS` check fixes the current checker SHA256
+`0249c241d801fb736e346cd0a6640bbd4285256df19f2abbd00337b4b1a368ba`;
+it is not described as unchanged historical code. Both pin sets remain exact.
+This separation changes no native kit, registry or packet admission.
+
 `unconfigured-inputs.fixture.json` preserves the exact original null/empty
 registry for explicitly test-only refusal controls. The immutable
 `UNCONFIGURED_POLICY` differs from the production policy only in its fixed

@@ -266,4 +266,68 @@ class LoaderContractControls(unittest.TestCase):
                 if change=='observation':v=json.loads(active['admitted-proof.json']);v['observation']['components'][3]['fsid'][0]+=1;active['admitted-proof.json']=encode(v)
                 with self.subTest(change=change),self.assertRaises(ValueError):contract.load_approved_kit(directory,approved,lambda:(Injected(),trace))
 
+
+class DependencyClosureControls(unittest.TestCase):
+    PATHS = ('syscall-contract/syscall_contract.py',
+             'owned-trace-check/owned_trace_check.py',
+             'owned-trace-cases/legacy_codecs.py',
+             'owned-trace-cases/owned_trace_cases.py')
+    NAMES = ('owned_trace_check', 'legacy_codecs', 'owned_trace_cases')
+
+    def source_layout(self, temporary):
+        # Relocate only the trusted source root. Production pin and approval
+        # globals stay fixed; there is no helper preload or module injection.
+        root=Path(temporary)/'sources'
+        here=root/'bootstrap-trace-calibration-vm';here.mkdir(parents=True)
+        for relative in self.PATHS:
+            target=root/relative;target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_bytes((HERE.parent/relative).read_bytes())
+        return here
+
+    def test_17_all_code_preflight_before_load_even_with_cached_modules(self):
+        for cached in (False,True):
+            with self.subTest(cached=cached),tempfile.TemporaryDirectory(prefix='glue-reader-code-') as d:
+                here=self.source_layout(d)
+                with patch.object(check,'HERE',here),patch.dict(sys.modules):
+                    for name in self.NAMES:sys.modules.pop(name,None)
+                    if cached:
+                        loaded=check.libraries()
+                        self.assertEqual(tuple(module.__name__ for module in loaded),self.NAMES)
+                    for relative in self.PATHS:
+                        path=here.parent/relative;original=path.read_bytes()
+                        for fault in ('missing','modified'):
+                            with self.subTest(relative=relative,fault=fault):
+                                if fault=='missing':path.unlink()
+                                else:path.write_bytes(original+b'\n# unreviewed code bytes\n')
+                                with patch.object(check,'load',side_effect=AssertionError('load before complete preflight')) as load:
+                                    expected=FileNotFoundError if fault=='missing' else ValueError
+                                    with self.assertRaises(expected):check.libraries()
+                                    load.assert_not_called()
+                                path.write_bytes(original)
+
+    def test_18_real_library_order_identity_and_aggregate_without_contract_asset(self):
+        with tempfile.TemporaryDirectory(prefix='glue-reader-complete-') as d:
+            here=self.source_layout(d)
+            self.assertFalse((here.parent/'syscall-contract/contracts.json').exists())
+            with patch.object(check,'HERE',here),patch.dict(sys.modules):
+                for name in self.NAMES:sys.modules.pop(name,None)
+                with patch.object(check,'load',wraps=check.load) as load:
+                    loaded=check.libraries()
+                    again=check.libraries()
+                    self.assertEqual(tuple(call.args[0] for call in load.call_args_list),self.NAMES*2)
+                self.assertEqual(tuple(module.__name__ for module in loaded),self.NAMES)
+                self.assertTrue(all(first is second for first,second in zip(loaded,again)))
+                raw,codec,cases=loaded
+                self.assertIs(cases.RawFacts,raw.RawFacts)
+                self.assertIs(cases.codec,codec)
+                self.assertEqual(codec.RAW_SOURCE_SHA256,check.LIBRARY_PINS['owned_trace_check'][1])
+                unused_positive,unused_denied,capture=f.pair()
+                def no_io(*args,**kwargs):raise AssertionError('aggregate validator attempted file I/O')
+                with patch('builtins.open',no_io),patch('io.open',no_io),patch('os.open',no_io):
+                    facts=raw.validate_raw(capture['program.d'],capture['probes.tsv'],capture['errors.jsonl'],
+                        iter(capture['events.jsonl'].splitlines(keepends=True)),owner_pid=123,target_pid=456)
+                self.assertIs(type(facts),raw.RawFacts)
+                self.assertEqual((facts.events,facts.begin_event,facts.terminal_event,facts.end_event),(3,1,2,3))
+                self.assertEqual(facts.raw_sha256,check.sha(capture['events.jsonl']))
+
 if __name__=='__main__':unittest.main()

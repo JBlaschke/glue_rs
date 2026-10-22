@@ -340,7 +340,10 @@ class CaseControls(unittest.TestCase):
         legacy = (HERE.parent / 'bootstrap-vm' / 'checker.py').read_bytes()
         self.assertEqual(sha(legacy), '0d42737849bd96ab9fdf6e92a4d4418b799b70caeac43f98d38c4335d03b2e0e')
         raw = (HERE.parent / 'owned-trace-check' / 'owned_trace_check.py').read_bytes()
-        self.assertEqual(sha(raw), '0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a')
+        self.assertEqual(sha(raw), '1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec')
+        self.assertEqual(codecs.RAW_SOURCE_SHA256, sha(raw))
+        helper = (HERE.parent / 'syscall-contract' / 'syscall_contract.py').read_bytes()
+        self.assertEqual(sha(helper), '35a4229894dd0373de1b312747e8acd1a23ae2074566391e8d28855ca0624dbf')
         def definitions(source):
             result = {}
             for node in ast.parse(source).body:

@@ -36,7 +36,11 @@ HISTORICAL_PINS = {
     'bootstrap-trace-vm/prepare.py': '3549edd7c6418ea9f40c9c791c919573dcf9ae6ea9d9eb609a849787de4e1719',
     'bootstrap-trace-vm/kit_contract.py': 'a16e2e25b78acb5c7d85ffbf9805941f9634b84003c43b515d3f8ccbd1de2fc2',
     'bootstrap-trace-calibration-vm/prepare.py': '32728f45845e1d7aec1f3e3c99a7fb17edca710d0f84e177a6a6bafd684e5487',
-    'bootstrap-trace-calibration-vm/checker.py': '04118245223ecbbc8004486f5811a325ef481520a6c32c95054bf91f240f3afd',
+}
+# The host reader deliberately advances with reviewed source dependencies;
+# native builders, registries and packet preparation above remain historical.
+REVIEWED_HOST_READER_PINS = {
+    'bootstrap-trace-calibration-vm/checker.py': '0249c241d801fb736e346cd0a6640bbd4285256df19f2abbd00337b4b1a368ba',
 }
 
 
@@ -296,9 +300,13 @@ class MatchKitControls(unittest.TestCase):
             with self.subTest(artifact=artifact), self.assertRaises(core.Refusal):
                 match.macho(good, artifact=artifact)
 
-    def test_historical_builder_registry_packet_and_test_bytes_preserved(self):
+    def test_historical_native_inputs_and_reviewed_current_host_reader(self):
         for relative, expected in HISTORICAL_PINS.items():
             with self.subTest(relative=relative):
+                self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
+        for relative, expected in REVIEWED_HOST_READER_PINS.items():
+            with self.subTest(current_host_reader=relative):
+                self.assertNotIn(relative, HISTORICAL_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
         production = match.trace.registry(match.trace.REGISTRY.read_bytes())
         self.assertEqual(production['source_revision'], 'e2c728bcdb25ceb151f8f434859c668faf0abcd0')
