@@ -29,3 +29,11 @@ during loading; it is not authentication against concurrent privileged changes.
 Native source kits, preparers, registries, packet/admission identities and older
 evidence remain unchanged. New source/fixture tests and a full local baseline
 must pass; neither supplies native calibration or full Darwin R02 acceptance.
+
+The first integration baseline also exposes a historical whole-file checker pin
+in `bootstrap-trace-match-kit/test_build_kit.py`. Separate that current host
+reader pin from its historical native builder/registry/packet inputs and advance
+only the reviewed host checker hash. Keep exact checks for both sets. This
+records the intentional source dependency integration without changing native
+kit or packet admission, and avoids describing the updated checker as unchanged
+historical bytes. Other historical pins remain literal and unchanged.
