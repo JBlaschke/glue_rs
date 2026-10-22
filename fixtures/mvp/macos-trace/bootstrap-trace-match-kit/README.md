@@ -43,6 +43,16 @@ actual proof/capture access. The existing tracing suite remains separate and
 unchanged. Passing these tests does not demonstrate a built kit or tracing
 readiness.
 
+`unconfigured-inputs.fixture.json` preserves the exact original null/empty
+registry for explicitly test-only refusal controls. The immutable
+`UNCONFIGURED_POLICY` differs from the production policy only in its fixed
+registry path. Empty parsing, construction and fixture CLI controls use that
+policy without mutating module globals. Separate production registry and CLI
+checks explicitly require the still-empty production registry; closed-option
+checks exercise the actual production wrapper. A later actual admission must
+update those production expectations deliberately while preserving the fixture
+controls. There are no adaptive acceptance paths or skipped admission checks.
+
 A later step must freeze reviewed committed repaired sources and the complete
 wrapper closure, then register a fresh independently reviewed post-reboot
 disabled-SIP proof. Normal enabled-SIP verification belongs to security

@@ -1,0 +1,51 @@
+{
+  "revision": 1,
+  "protocol": "darwin-mapping-unit-source-abi-v1",
+  "sdk": {
+    "canonical_name": "macosx27.0",
+    "version": "27.0",
+    "inspected": "2026-10-20",
+    "resolved_path": "/Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk"
+  },
+  "constants": {
+    "PROT_NONE": 0,
+    "PROT_READ": 1,
+    "PROT_WRITE": 2,
+    "PROT_EXEC": 4,
+    "MAP_FILE": 0,
+    "MAP_SHARED": 1,
+    "MAP_PRIVATE": 2,
+    "MAP_FIXED": 16,
+    "MAP_JIT": 2048,
+    "MAP_ANON": 4096
+  },
+  "aliases": {
+    "MAP_COPY": "MAP_PRIVATE",
+    "MAP_ANONYMOUS": "MAP_ANON"
+  },
+  "map_failed": "pointer minus one; no raw return normalization supplied",
+  "full_trace_acceptance": false,
+  "scope": "Exact local SDK source constants and candidate primitive semantics; no native ABI, page-size, object, failure-atomicity or guest equivalence proof.",
+  "sources": {
+    "SDKSettings.json": {
+      "bytes": 7948,
+      "sha256": "7b93ad7e534cc4b31c6a4e39d19b5e0288acf2168c2649479a796d1cb51939fb"
+    },
+    "usr/include/sys/mman.h": {
+      "bytes": 11090,
+      "sha256": "07adbf7f11a601e6461ca508a2deca037103008600608f8dbe93a4b0887d46e9"
+    },
+    "usr/share/man/man2/mmap.2": {
+      "bytes": 11710,
+      "sha256": "ccc6064c76ad2b01d7e82b0079d3e8ed3d84878c086aa300f12fb3eeb5645659"
+    },
+    "usr/share/man/man2/mprotect.2": {
+      "bytes": 5078,
+      "sha256": "818ececb641630643b612ae2cc1700e91d982ab88c5592c4f7cf3b68f1c174a9"
+    },
+    "usr/share/man/man2/munmap.2": {
+      "bytes": 5377,
+      "sha256": "610a0cefd19decf5f00cba83a86a81138372bd647ea4d5917b91c8849b808f65"
+    }
+  }
+}

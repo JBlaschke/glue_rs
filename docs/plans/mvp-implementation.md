@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-19 October 2026. Product authority remains [the plan](../../PLAN.md),
+20 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -174,6 +174,8 @@ Follow-up branches preserve the original task commits:
 | V01 | `codex/mvp-v01-macos-cli-refusal-timeout` | `e939d7c` | Increase one configured CLI test's outer deadline; clean local23-test suite and source review pass, hosted repair pending |
 | R02 | `codex/mvp-r02-tree-open-intent` | decision `8e01b37`, implementation `b9ef538` | Strict historical tree-open provenance plus pure flag classification; 38 focused controls and 32,841 compatibility inputs pass; full extraction acceptance always refuses |
 | R02 | `codex/mvp-r02-trace-match-kit` | decision `9f9fc3a`, implementation `7daa902` | Thin unconfigured match-repair profile; 13 source/synthetic controls and independent review pass; old registrations preserved; actual admission/build/calibration pending |
+| R02 | `codex/mvp-r02-trace-match-admission` | decision `c787755`, fixture split `4255819` | Reviewed 42-source candidate frozen at `7daa902`; separate empty fixture and 14 controls pass; production remains empty pending fresh disabled proof |
+| R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -217,6 +219,114 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 20 October: mapping write-intent state
+
+Decision `866a222` precedes implementation `e831200` on the separate
+`codex/mvp-r02-darwin-mapping-state` branch. The engine preserves declared mapping
+and backing generations across partial protect/unmap, address reuse and process
+epochs. Shared-file write-capability requests survive failed calls; failed
+protect/unmap poisons replay while retaining incomplete diagnostics. Strict
+JSONL, cumulative fragment/history/output budgets and exact input-metadata
+boundaries are enforced. Full acceptance always refuses before input access.
+Existing state/readers, registries and kits remain unchanged.
+
+The final focused command is `python3 -B
+fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v`, using recorded
+Python 3.15.0 on the development Mac. All 38 controls pass without skips in
+0.139 seconds; the outer process returns zero in 0.316760125 seconds. Independent
+page-grid and disjoint-range controls check interval effects. The 21-payload
+receipt at `/private/tmp/glue-mapping-unit-controls-jh28sx1u` has manifest
+`d7df39f863e9cc76ea9ed8c2ad3d2f267610eb2700c52ae88f2a4940b094c3f0`.
+Its two immutable prior links preserve the first 37-test run's two failures and
+one error from cleanup-interfering metadata mocks, then a passing 37-test run
+before the final metadata-boundary group. No earlier result is overwritten.
+
+Independent source/receipt review at `/private/tmp/glue-mapping-unit-peer-fanqehtt`
+has 37 payloads plus manifest
+`52ff6ff4779560af24213d5d12e0a37f6c5fc825fd85465be74e846de9cdf3c1`.
+Root verifies both complete final inventories and reads the report. All nine
+test source/context identities and copies match; the single CI addition brings
+configured Python invocations to 41. Shell syntax and diff checks pass. No
+hosted result or publication approval covers this newer branch.
+
+These controls establish declared synthetic consistency. The SDK 27.0 source
+pins do not establish equivalence to the macOS 26.6.2 guest; raw ABI, seeded
+identity, effect ordering, inheritance/Mach aliases and complete extraction
+corpus validation remain open. Ordinary test completion does not attest native
+or descendant cleanup. No native kit/provider/capture or security change occurs
+in this source step. The guest is in Recovery Terminal with fresh enabled
+preflight verified; a new guest-only SIP confirmation remains pending.
+Full Darwin R02, macOS R03, R04/M2 and durable evidence publication remain open.
+
+## 20 October: match source candidate and refusal fixture
+
+Decision `c787755` fixes the eventual repaired source revision at
+`7daa90268432d74bf44d14df7b344602b810485f`. The external candidate retains the
+39 C/header sources and three mandatory helpers, exact ordered 2/19/6 compile
+lists and the unchanged literal local-include graph. Only backend C changes
+among the historical 41 keys; the new wrapper is the sole addition. Its canonical
+42-source map SHA256 is
+`1d9c56bdd00bd711cfec0c09979cf427e98a2b56b62e5da7d848b3de59d3b02d`.
+The 96-payload candidate record is
+`/private/tmp/glue-trace-match-source-candidate-9ulrkuoo`, manifest
+`630a3ebf730246be90c83710577b421184c40643b8d670967a5b346432b5e054`.
+Independent review at `/private/tmp/glue-trace-match-source-peer-men39guz`
+has 10 payloads plus manifest
+`1eef8dc00b0a5ffb56819382228d03e3e7b1b727bc75cdbc52b6359b790cb0a7`.
+This is source preparation, not admission or native calibration.
+
+Fixture split `4255819` preserves the original 181-byte null/empty registry,
+SHA256 `218255f76dcb5da45760c0c84a1e7b17098063055452f752c8eef7850109685d`,
+as `unconfigured-inputs.fixture.json`. Its immutable test-only policy differs
+only in the fixed registry path. Empty parsing/construction/CLI refusal controls
+use that fixture; separate production registry/CLI checks explicitly require
+the still-empty production registry. No adaptive acceptance or skip is added.
+All 14 focused controls pass without skips, with 58 source/context identities
+unchanged before/after. The 68-payload receipt is
+`/private/tmp/glue-trace-match-fixture-controls-idjbqho1`, manifest
+`75f558b0857eca07eee53f0c3c3474536839dd86e689745b0a471349ae898c7b`.
+Independent review finds no actionable issue at
+`/private/tmp/glue-trace-match-fixture-peer-dirvq6n_`: 14 payloads plus manifest
+`2735b09c25fea58952d0bd420f668bf549758a6bd1e5905402279a8f6d637cbe`.
+The existing 42 candidate source pins remain unchanged.
+
+The approved `27d39c3` profile checkpoint is published in
+[PR #39](https://github.com/JBlaschke/glue_rs/pull/39), stacked on
+[PR #38](https://github.com/JBlaschke/glue_rs/pull/38); merge #38 first.
+Both exact-head runs
+[39379506210](https://github.com/JBlaschke/glue_rs/actions/runs/39379506210) and
+[39379517486](https://github.com/JBlaschke/glue_rs/actions/runs/39379517486)
+pass all nine jobs. CI configures 40 Python suites. The 25-payload hosted record
+is `/private/tmp/glue-trace-match-kit-hosted-ci-20261020-16ndknuw`, manifest
+`c5a8f1cfc7e2979e303e2f5934b89c2441d28f1c3b4b2afb111e1d4fac5b0833`.
+Three initial network-preflight failures remain retained before the successful
+authorized query; they are not CI job failures. No hosted result or publication
+approval covers current `4255819`.
+
+The fresh normal-boot enabled preflight is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-aK6rBHWQ`:
+27 payloads plus manifest
+`cafa6e64fbce51fc05566b2ec1e1e0681c9672df761934d62f38a60347fccd99`.
+All six commands return zero and SIP stdout is exactly enabled with its LF.
+The independent review at `/private/tmp/glue-enabled-preflight-peer-c5zn5b03`
+retains 42 payloads plus manifest
+`83cdea6e54be36e29efa7dcf44e41de09dda38e396be2c2d3f2f34843dd93e71`.
+Root verifies both complete inventories and reads the report. Inspector toolkit
+and six direct source files remain unchanged. This is enabled preflight only,
+not source admission or post-disable proof. The VM shuts down cleanly and UTM's
+Run Recovery starts the guest boot selector. No fresh weakening approval or
+security change is recorded. The new UI coordination record is in progress at
+`/private/tmp/glue-owned-trace-sip-window-20261020-01`; the earlier closed window
+remains unchanged. UI chronology does not supply command exit statuses.
+
+The production match registry remains null/empty. A fresh independently reviewed
+normal-boot disabled-SIP proof and separate actual registration are still
+required before a reproducible native kit build and new packet/calibration.
+The existing builders, registrations, proof/kit/packet bytes and failed attempts
+remain unchanged. These source/test/status steps run no SDK build, native kit,
+provider or actual capture. Full Darwin R02, macOS corpus/budgets, R04/M2 and
+durable evidence publication remain open.
 
 ## 19 October: match-repair kit and restoration
 
