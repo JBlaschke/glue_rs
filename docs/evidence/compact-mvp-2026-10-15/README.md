@@ -14,6 +14,9 @@ are kept separately. Fresh offline replay passes 24 acceptance receipts, 15
 benchmark receipts, 156 oracle controls, five applicable structural/I/O/FD/scaling
 budgets and 990 rank results. Time/RSS limits remain host scoped and are skipped
 where the recorded fingerprint differs. This is replay, not new native execution.
+That replay binds 14 original helper/budget sources to `e3962701`; the archived
+driver requires matching frozen sources or a new, separately recorded source
+revision after the portability repair.
 The 15-member recovery/replay index is `offline-replay-20261022.sha256`, SHA-256
 `77f03e5eb8c623b27ec375dfb3aa54947e93b350450bb40cacc30a8ef6ff8e56`.
 The initial cross-host errno-checker failure is preserved beside the passing

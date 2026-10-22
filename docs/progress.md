@@ -1,5 +1,30 @@
 # Implementation progress
 
+## Owned reader dependency integration — 22 October 2026
+
+Decisions `ebe00fc`/`33aa0c2` and implementation `13388ea` on the separate local
+branch `codex/mvp-r02-owned-reader-dependencies` complete the host-side dependency
+integration for the new BSD reader and call pairer. The calibration loader checks
+all three libraries and their fixed syscall helper before any library import,
+including cached imports. RawFacts, selected legacy codecs, case behavior and
+native kit/registry/packet identities remain unchanged. A separate exact pin
+records the reviewed current host checker alongside eight frozen historical
+inputs.
+
+All 44 focused case/calibration/admission controls and 14 kit controls pass;
+independent source and complete-receipt reviews find no actionable issue. The
+full local `sh scripts/ci-portable.sh baseline` then passes on macOS arm64 with
+Rust/Clippy 1.88.0 and Python 3.15.0: 42 Python suites (680 passed, 13 explicit
+skips), 628 Rust tests passed with five ignored, formatting and all-target Clippy
+with warnings denied. Frozen before/after source patches, status and HEAD agree.
+Both earlier failing dependency-pin baselines remain preserved separately.
+Exact records are in the [integration checkpoint](plans/mvp-implementation.md#22-october-owned-reader-source-integration).
+
+All four follow-up branches remain local; no hosted run covers these changes.
+Guest SIP stays enabled and the VM remains stopped. Complete Darwin oracle
+implementation/integration and native corpus, macOS budgets, missing evidence
+recovery and durable retention remain required for R02/R03/R04 and M2.
+
 ## Linux proof replay portability and evidence recovery — 22 October 2026
 
 Decision `724089d` and implementation `95a2799` on the separate local branch
@@ -10,10 +35,11 @@ controls pass; seven native Linux controls explicitly skip on this Mac. Independ
 review also runs the public read-only checker successfully on the recovered
 original x86_64 proof. Portable baseline CI now invokes 42 Python test scripts.
 
-The first complete local baseline attempt stops at an outdated owned-reader
+The first complete local baseline attempt stopped at an outdated owned-reader
 dependency hash in the case-consistency controls. Its unchanged-source failure
-is retained; a separate R02 integration repair must bind the reader's new helper
-dependency before the baseline can pass. No hosted result covers these branches.
+is retained; the separate R02 integration repair above binds the reader's new
+helper dependency and passes the complete baseline. No hosted result covers
+these branches.
 
 The original temporary 18,588-file checkpoint is no longer available. The exact
 original x86_64 Actions ZIP has been recovered, and all 4,802 artifact payloads

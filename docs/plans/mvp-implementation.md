@@ -182,7 +182,8 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
 | R02 | `codex/mvp-r02-owned-bsd-observations` | decision `49aac44`, implementation `a9f95e4` | Complete-transport-backed immutable BSD scalar observations, exact supplied contract bytes and 4,096-phase cap; 45 focused controls pass; native integration remains open |
 | R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
-| V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; baseline dependency repair pending |
+| V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; subsequent R02 dependency repair passes the full local baseline |
+| R02 | `codex/mvp-r02-owned-reader-dependencies` | decisions `ebe00fc`/`33aa0c2`, implementation `13388ea` | Bind all eager code dependencies before library imports and separate reviewed host pin from historical native inputs; 58 focused controls and full 42-suite/Rust local baseline pass; no native acceptance or publication |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -227,6 +228,60 @@ execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
 
+## 22 October: owned reader source integration
+
+The separate local `codex/mvp-r02-owned-reader-dependencies` branch stacks on
+`caf0b12`. Decisions `ebe00fc` and amendment `33aa0c2` precede implementation
+`13388ea`. Case metadata advances coherently to the reviewed owned reader, while
+the selected codec definitions, RawFacts and case implementation remain
+unchanged. Calibration `libraries()` verifies the fixed syscall helper plus all
+three libraries before any import, including cached modules; existing per-load
+hash/path checks and module order remain. Aggregate validation needs no contract
+asset and does not run the new projections. Loading assumes a stable trusted
+source tree. All native builders, registries, preparers, packet/admission pins and
+42 candidate source files remain unchanged.
+
+The first focused run passes 11 case, 18 calibration and 15 admission controls,
+with no skips. `/private/tmp/glue-owned-reader-dependency-controls-q0_3atsu` has
+32 payloads and manifest
+`8363ea899a61a441e1c229d16441f41dc74d2609d7b378c3adce1569db770cc8`.
+Independent review `/private/tmp/glue-owned-reader-dependencies-peer-20261022-zul09dkk`
+has manifest `93d1d1973c06ac4ec27315ded83f8c324ce24969d96d5a5f150655a75a142bf9`.
+It verifies unchanged legacy API/validator semantics, the complete code closure,
+missing/modified dependencies with cold/warm imports and aggregate validation
+without the asset or runtime file I/O. Those six implementation files remain
+unchanged through the subsequent decision amendment and final baseline.
+
+The integration baseline then exposes the old whole-file calibration-checker pin
+in the match-kit controls. Amendment `33aa0c2` separates only that reviewed
+current host checker from eight unchanged historical inputs; exact checks remain
+for both sets. The 14 focused kit controls pass without skips at
+`/private/tmp/glue-match-kit-reader-pin-controls-yia224ii`, manifest
+`89e3ac268bf371807e3dabc691c370c68aefbd9961e96487359181b4ce73f3be`.
+Separate independent review `/private/tmp/glue-match-reader-pin-peer-20261022-x397ax7r`
+has manifest `bd58664958fd9b928649f914fe39b05b7af519fdc4f6ed1922019503b533ba4a`.
+Both reviews find no actionable issue. Root verifies all four inventories and
+reads both reports. A reference scan finds no other live consumers of the eight
+changed files' superseded hashes.
+
+The final frozen `sh scripts/ci-portable.sh baseline` passes on the development
+Mac with Rust/Clippy 1.88.0 and Python 3.15.0. All 42 Python invocations pass:
+693 collected, 680 passed and 13 explicit skips. Workspace Rust tests report
+628 passed and five ignored; formatting and all-target Clippy with `-D warnings`
+pass. The before/after patches, status and HEAD agree. Receipt
+`target/mvp-validation/20261022-baseline-reader-closure-final` has eight payloads
+and manifest `87139a13d034d78199e05448b53ffd219f4426fdd77691e6798961dc737b6e6c`.
+It binds `33aa0c2` plus the frozen working tree: all eight fixture changes later
+committed as `13388ea` and the availability README clarification recorded with
+this ledger.
+The original stale-raw-pin failure remains at `20261022-baseline` (manifest
+`5656a9a4117447e871427bb80b0a02fabd8e7fe6fdfd2c187e19c0bd629b18fa`);
+the stale-host-pin failure remains at `20261022-baseline-reader-dependencies`
+(manifest `fdf91695868c8319dd897e22f4a8a5d719b8428f30e3d223fad253e2ed6136f4`).
+Root verifies all three exact inventories. No hosted run or native acceptance is
+inferred. All four follow-up branches remain local, guest SIP stays enabled and
+full Darwin implementation/corpus, Mac budgets and final retention/M2 remain open.
+
 ## 22 October: Linux proof portability and evidence recovery
 
 The separate local `codex/mvp-v02-linux-proof-portability` branch stacks on
@@ -256,6 +311,8 @@ The receipt is `target/mvp-validation/20261022-baseline`, manifest
 `5656a9a4117447e871427bb80b0a02fabd8e7fe6fdfd2c187e19c0bd629b18fa`.
 This is an integration failure requiring a separate reader/helper dependency
 closure repair, not a passing baseline. No hosted run or publication occurs.
+The [subsequent integration checkpoint](#22-october-owned-reader-source-integration)
+records the repair and successful full local baseline.
 
 The old `/private/tmp` checkpoint, its 18,588 indexed files and all identified
 prepared/restored archive copies are absent. Committed inventories remain
@@ -274,7 +331,10 @@ Fresh offline replay verifies 24 acceptance receipts, 15 benchmark variants,
 rank results. All five time/RSS checks skip because the recorded host fingerprint
 differs from the budget fingerprint. No cold-cache or universal timing claim is
 made. The initial errno failure and its diagnostic rerun remain separate; no
-stored command or native helper executes. The passing report has SHA-256
+stored command or native helper executes. That replay binds 14 original
+helper/budget sources to `e3962701`; rerunning its archived driver requires
+matching frozen sources or a separately recorded source revision after the
+portability repair. The passing report has SHA-256
 `945a2185dbb3a106e0e4eb4ae8c6f165cd2b6e3d1f68fd7bdf9384bd6ddc86d9`;
 the 15-member `offline-replay-20261022.sha256` index hashes to
 `77f03e5eb8c623b27ec375dfb3aa54947e93b350450bb40cacc30a8ef6ff8e56`.
