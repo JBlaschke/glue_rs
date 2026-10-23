@@ -54,6 +54,16 @@ def bounded_read(path,limit):
 
 def load_table(path=SOURCE/'contracts.json'):
     raw=bounded_read(path,MAX_TABLE)
+    return parse_table(raw)
+
+
+def parse_table(raw):
+    """Parse bounded immutable contract bytes without opening any file.
+
+    The caller owns asset identity/admission. This helper preserves load_table's
+    table semantics; it does not assert that arbitrary valid bytes are pinned.
+    """
+    require(type(raw) is bytes and len(raw)<=MAX_TABLE,'bounded immutable contract bytes required')
     table=parse_json(raw)
     require(type(table) is dict and type(table.get('revision')) is int and table['revision']==1 and table.get('protocol')=='darwin-bsd-syscall-contract-v1','unsupported table')
     require(table.get('full_trace_acceptance') is False,'table cannot grant acceptance')

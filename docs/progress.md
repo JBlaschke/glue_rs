@@ -1,5 +1,59 @@
 # Implementation progress
 
+## Owned reader dependency integration — 22 October 2026
+
+Decisions `ebe00fc`/`33aa0c2` and implementation `13388ea` on the separate local
+branch `codex/mvp-r02-owned-reader-dependencies` complete the host-side dependency
+integration for the new BSD reader and call pairer. The calibration loader checks
+all three libraries and their fixed syscall helper before any library import,
+including cached imports. RawFacts, selected legacy codecs, case behavior and
+native kit/registry/packet identities remain unchanged. A separate exact pin
+records the reviewed current host checker alongside eight frozen historical
+inputs.
+
+All 44 focused case/calibration/admission controls and 14 kit controls pass;
+independent source and complete-receipt reviews find no actionable issue. The
+full local `sh scripts/ci-portable.sh baseline` then passes on macOS arm64 with
+Rust/Clippy 1.88.0 and Python 3.15.0: 42 Python suites (680 passed, 13 explicit
+skips), 628 Rust tests passed with five ignored, formatting and all-target Clippy
+with warnings denied. Frozen before/after source patches, status and HEAD agree.
+Both earlier failing dependency-pin baselines remain preserved separately.
+Exact records are in the [integration checkpoint](plans/mvp-implementation.md#22-october-owned-reader-source-integration).
+
+All four follow-up branches remain local; no hosted run covers these changes.
+Guest SIP stays enabled and the VM remains stopped. Complete Darwin oracle
+implementation/integration and native corpus, macOS budgets, missing evidence
+recovery and durable retention remain required for R02/R03/R04 and M2.
+
+## Linux proof replay portability and evidence recovery — 22 October 2026
+
+Decision `724089d` and implementation `95a2799` on the separate local branch
+`codex/mvp-v02-linux-proof-portability` make Linux proof validation independent
+of the replay host's errno constants. Both supported captured ABIs are checked
+explicitly; the native filter and stored proofs are unchanged. Seven new portable
+controls pass; seven native Linux controls explicitly skip on this Mac. Independent
+review also runs the public read-only checker successfully on the recovered
+original x86_64 proof. Portable baseline CI now invokes 42 Python test scripts.
+
+The first complete local baseline attempt stopped at an outdated owned-reader
+dependency hash in the case-consistency controls. Its unchanged-source failure
+is retained; the separate R02 integration repair above binds the reader's new
+helper dependency and passes the complete baseline. No hosted result covers
+these branches.
+
+The original temporary 18,588-file checkpoint is no longer available. The exact
+original x86_64 Actions ZIP has been recovered, and all 4,802 artifact payloads
+match the committed inventory. Fresh offline replay passes its acceptance,
+controls and applicable structural budgets; time/RSS checks remain scoped to
+the recorded host. Two old host-added reports and the remaining checkpoint,
+including the current arm64 evidence, remain missing. The recovered files are
+local under ignored `target`; durable retention remains open. Exact identities,
+replay limits and commands are in the [22 October checkpoint](plans/mvp-implementation.md#22-october-linux-proof-portability-and-evidence-recovery).
+
+The owner's latest choices remain in force: keep guest SIP enabled and keep the
+BSD observation branch local. No source or evidence is published in this step.
+Full Darwin R02, macOS R03 and final R04/M2 remain open.
+
 ## Mapping write-intent state — 20 October 2026
 
 Decision `866a222` and implementation `e831200` on
@@ -1358,3 +1412,32 @@ remains open. The complete Darwin decoder/oracle is still unimplemented and
 unvalidated, so Mac R02 corpus/controls/budgets and M2 remain open. Developer ID
 and notarization are later public-release gates. Current task refs, commands and
 remaining work are recorded in the [implementation ledger](plans/mvp-implementation.md).
+
+## MVP implementation — R02 follow-up (22 October 2026)
+
+Merged `main` at `dfc7747` passes
+[CI run 39780832572](https://github.com/JBlaschke/glue_rs/actions/runs/39780832572).
+The separate `codex/mvp-r02-owned-bsd-observations` branch adds decision
+`49aac44` and implementation `a9f95e4`: the owned transport reader now retains
+bounded immutable BSD syscall phases with source-selected arguments, exact raw
+metadata and explicit unknown/unsupported cases. Complete stream validation
+precedes every result. The old validator and its streaming bounds remain intact.
+The 26 owned-reader and 19 source-contract controls pass on the development Mac;
+independent source/receipt review finds no actionable issue. Existing CI scripts
+already invoke both suites. No hosted result covers this new branch yet.
+
+The missing read-only VM inspector was rebuilt twice and reproduces its original
+signed bytes exactly. The restored toolkit passes independent review and a fresh
+ordinary-user guest inspection confirms SIP enabled. The owner chooses to keep
+SIP enabled and the branch local; the VM shuts down without a security change.
+Native tracing remains on hold under that setting. The source change does not
+establish call pairing, filesystem effects or full Darwin acceptance. R02's Mac
+oracle/corpus, R03's Mac budgets and R04's durable evidence/final M2 remain open;
+exact commands and retained inventories are in the implementation ledger.
+
+The next separate local branch, `codex/mvp-r02-owned-call-pairing`, adds decision
+`f2a4214` and implementation `0f2051e`. It links only fully observed, matching
+BSD/Mach entry/return intervals and rejects ambiguous lifecycle boundaries.
+All 42 focused controls pass, with independent review and unchanged legacy APIs.
+Raw pairs remain ineligible for the filesystem state feed until native lifetime,
+ABI and object associations are established. No native acceptance is inferred.

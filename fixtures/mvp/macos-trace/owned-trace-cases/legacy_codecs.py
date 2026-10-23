@@ -11,7 +11,7 @@ import re
 import struct
 
 LEGACY_SOURCE_SHA256 = '0d42737849bd96ab9fdf6e92a4d4418b799b70caeac43f98d38c4335d03b2e0e'
-RAW_SOURCE_SHA256 = '0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a'
+RAW_SOURCE_SHA256 = '1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec'
 SELECTED_SYMBOLS = ('INT', 'U64', '_SIGNALS', 'SIGNAL_POLICY_SHA', 'Refusal', 'require', 'sha', 'number', 'keys', 'boolean', 'hexsha', 'result_json', 'uint', 'groups', 'path_bytes', 'decode_request', 'decode_catalog', 'decode_status', 'decode_stream', 'decode_probe')
 
 INT = (1 << 31) - 1

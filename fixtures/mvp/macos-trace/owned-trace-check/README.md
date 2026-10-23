@@ -92,3 +92,128 @@ CLOCK_MONOTONIC domain equivalence, timestamp ordering or deadline derivation
 is asserted. This module is not an extraction/effect decoder, full process-tree
 oracle, evidence admission, R02 or M2 proof. Native calibration and later
 independent session/sidecar/packet checks remain separate.
+
+## BSD scalar observations
+
+`observe_raw_bsd(program, probes, errors, event_lines, owner_pid=..., target_pid=...,
+contract_bytes=...)` uses the same private strict transport walk. Supply the exact
+immutable bytes of the checked-in `syscall-contract/contracts.json`:96,972 bytes,
+SHA-256 `31f96f93c2ca1bd58ae322a6d3c223dd764e5a763088cfed2dbf78a8a21104e2`.
+The API checks that identity before parsing or consuming the stream; it never
+opens the asset. `syscall_contract.parse_table` is the reusable pure bounded-byte
+parser; the existing file loader and default entry-facts API retain their paths.
+The old `validate_raw` signature, transport rules, `RawFacts` and streaming memory
+are unchanged, with no projection allocation. Fixed Python helper code loads
+once during ordinary module import, separately from contract-asset access; no
+asset is read during import. After import neither validation API opens a file
+or loads helper code. No `sys.path` or `sys.modules` cache mutation is used.
+
+The frozen `OwnedBsdObservations` result contains `raw: RawFacts`, contract hash,
+`observations: tuple[BsdPhase, ...]`, frozen coverage counts, and
+`full_trace_acceptance: false`. A phase retains ordinal, CPU, probe ID, EPID,
+provider/module/function/name, the five raw header scalars and all eight entry
+or five return words. The complete raw hash and ordinal identify its source;
+original JSON lines are not accumulated or rewritten. Actor PID/TID values stay
+raw; they do not establish kernel generations or an exec epoch.
+
+Known entries retain frozen source-selected fields, declaration number/family,
+argument count and every unresolved requirement from the pinned contract.
+Unknown names remain explicit, with no declaration or allowlist inference.
+Returns retain only the existing raw duplication/errno projection when supported;
+otherwise their words and unsupported-shape reason remain visible. Unmodeled
+control-flow bits remain explicit. No pairing occurs: a return preceding an entry
+or using another thread is not attached to that entry. Failed-return observations
+cannot erase an entry request. Return words are not libc results or completed
+filesystem effects. Coverage counts unknown names by phase; `RawFacts` still
+counts all Mach/lifecycle records outside the selected BSD projection.
+
+The new API separately caps retained BSD phases at4,096 with a prospective guard
+and no override. Exceeding it returns no prefix; the old validator keeps its
+million-event/128MiB bounds. No observation is returned until input exhaustion
+and full BEGIN/terminal/END validation. A later malformed nonselected event or
+source exception invalidates the operation too. The API provides no callback,
+normalized-unit origin, copied pathname, resolved FD/backing object or synthetic
+state bridge. `require_full_trace_acceptance()` always refuses. There is no new
+CLI, capture execution, kit/packet adoption or registry change.
+
+The same existing test script exercises literal source selectors, all raw
+provenance, unknown/nonreturning and unpaired phases, failed write requests,
+unsupported return shapes, deep immutability, complete-facts differential checks,
+hostile/late transport failure, contract pin and projection bounds, and no
+implicit asset reads. The original128MiB streaming memory check remains enabled.
+These controls use serialized fixtures and do not calibrate a provider. A later
+fresh admitted collector capture must establish actual native observations;
+complete process-tree effects, object causality, full oracle/corpus/budgets and
+R02/M2 remain open under the
+[decision](../../../../docs/decisions/mvp-r02-owned-bsd-observations.md).
+
+## Closed owned call intervals
+
+`pair_raw_owned(program, probes, errors, event_lines, owner_pid=..., target_pid=...,
+contract_bytes=...)` takes the same raw inputs and pinned contract bytes. It runs
+the same strict walk through exhaustion. It does not accept `RawFacts`, decoded
+observations or asserted validation. After normal module import all three APIs
+perform no filesystem or helper-code I/O. Existing `validate_raw` and
+`observe_raw_bsd` contracts and streaming paths remain unchanged.
+
+This third API supports a deliberately narrow closed subset. Its first target
+record must be a BSD/Mach entry, seeding a capture-observed numeric TID. It keeps
+one pending slot per TID across both providers. A return must match its entry's
+PID/TID, provider, module, function and BSD/Mach family. Every orphan return,
+including an initial midcall return, overlapping entry, and pending entry at
+thread exit, target terminal or END refuses. There are no nonreturn exceptions.
+Thus current bootstrap captures with gate-read returns, exec transitions, shadow
+cleanup or unreturned `exit` calls may deliberately refuse here while remaining
+valid transport/scalar observations. Source controls do not establish that any
+current native application can satisfy this subset.
+
+An additional TID requires `lwp-create` from a known active creator, then matching
+`lwp-start`. Unknown, repeated or reused numeric TIDs refuse. `lwp-exit` retires
+only an active known TID with no pending call. `proc:start`, every exec-success/
+failure and every shadow-exited record refuse. A `proc:exit` context requires a
+known active TID and no pending call anywhere, then allows only known `lwp-exit`
+cleanup, nonshadow target terminal and END. Its raw detail is never process wait
+status or successful effect. Target terminal requires no pending call and may
+precede known thread cleanup; END requires every observed TID retired and at
+least one pair. No generation, exec epoch, thread birth or effect order is
+inferred from these source-level associations.
+
+Raw timestamps must be globally nondecreasing. An equal timestamp is permitted
+only when the entire bucket consists of BSD/Mach phases; any tie involving
+lifecycle, BEGIN or END refuses. These checks neither compare clock domains nor
+establish kernel effect order.
+
+`OwnedCallPairs` is frozen and contains the unchanged `RawFacts`, contract hash,
+`pairs` ordered by entry ordinal, and `lifecycle` context in consumer order.
+Each `OwnedProviderPair` holds its two frozen phases once, linked by a tuple of
+consumer ordinals that is a capture-local correlation ID. Every phase retains
+exact ordinal, CPU, probe/EPID, descriptor names and all raw scalar words. BSD
+phases retain the same `BsdPhase` facts as the scalar observer, including unknown
+entry names and unsupported return shapes/reasons. Mach phases are opaque
+`OwnedRawPhase` values. Unknown routes remain unsupported; failed raw returns
+cannot erase entry requests. No pointer, signed result, errno, FD, object or
+filesystem effect is normalized.
+
+Frozen counts report phases, pairs by family, observed/declared/started/retired
+TIDs and lifecycle records; BSD coverage retains unknown names and unsupported
+return shapes. `unpaired_phase_count` is zero on every returned result.
+`full_trace_acceptance` and `state_feed_eligible` are always false. No synthetic
+origin, normalized state record, native acceptance or state-feed permission is
+created. The unconditional full-acceptance refusal remains available.
+
+Prospective limits are 4,096 total BSD/Mach phases, 2,048 pairs, 256 distinct
+TIDs including reservations/retirements, and 1,024 retained noncall records
+including BEGIN/terminal/END. No overrides or partial results are exposed. The
+closed thread rules currently limit valid noncall context below1,024; tests
+exercise the maximum770-context complete fixture and exact/over phase/thread
+bounds. The independent1,024-context and2,048-pair guards cannot be exceeded
+without an earlier thread/phase refusal. A late nonselected corruption,
+incomplete footer or source exception
+still yields no result. The existing focused test script covers these rules,
+raw provenance, deep immutability, no runtime I/O and unchanged old APIs/memory.
+
+The [pairing decision](../../../../docs/decisions/mvp-r02-owned-call-pairing.md)
+freezes this source-only contract. It changes no C producer, wire format,
+historical pairer, syscall contracts, state engine, registry, kit, packet or CI
+invocation. Native calibration and complete process-tree/path/FD/backing/Mach
+semantics remain separate work; this API is not an extraction oracle.

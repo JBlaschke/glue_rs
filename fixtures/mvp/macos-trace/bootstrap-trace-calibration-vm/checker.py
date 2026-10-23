@@ -15,10 +15,13 @@ HERE = Path(__file__).resolve().parent
 CHECKING_ENABLED = True
 PREPARE_SHA = '32728f45845e1d7aec1f3e3c99a7fb17edca710d0f84e177a6a6bafd684e5487'
 LIBRARY_PINS = {
-    'owned_trace_check': ('owned-trace-check/owned_trace_check.py', '0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a'),
-    'legacy_codecs': ('owned-trace-cases/legacy_codecs.py', '62161b4932ed355f0af7228cb0a9ca6794bcf2aef66ebc84237f862506f9f9a9'),
+    'owned_trace_check': ('owned-trace-check/owned_trace_check.py', '1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec'),
+    'legacy_codecs': ('owned-trace-cases/legacy_codecs.py', '7f5ac7eb754fb18ba22131c26a8b5ab15d6fce00afda85f9f4dc0192e3b13e0d'),
     'owned_trace_cases': ('owned-trace-cases/owned_trace_cases.py', '185daf20734b47bd6774d187b7b86c0172523b93269f6762d88f43e5fcc1ba96'),
 }
+CODE_HELPER_PINS = (
+    ('syscall-contract/syscall_contract.py', '35a4229894dd0373de1b312747e8acd1a23ae2074566391e8d28855ca0624dbf'),
+)
 
 def require(value, message):
     if not value: raise ValueError(message)
@@ -39,6 +42,10 @@ def load(name, path, pin):
 
 def preparer(): return load('glue_calibration_prepare',HERE/'prepare.py',PREPARE_SHA)
 def libraries():
+    # Verify the whole eager code closure before executing ANY library import,
+    # even if modules are already cached. load() still rechecks each library.
+    for path,pin in (*CODE_HELPER_PINS,*LIBRARY_PINS.values()):
+        require(sha((HERE.parent/path).read_bytes())==pin,'reviewed checker code dependency differs: '+path)
     return tuple(load(name,HERE.parent/path,pin) for name,(path,pin) in LIBRARY_PINS.items())
 def encoded(value): return (json.dumps(value,separators=(',',':'),ensure_ascii=True)+'\n').encode('ascii')
 def json_bytes(data):

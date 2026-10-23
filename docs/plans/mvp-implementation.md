@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-20 October 2026. Product authority remains [the plan](../../PLAN.md),
+22 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -13,6 +13,10 @@ putting the reviewed match-accounting repair on `main` at `08da274`.
 PR #37 subsequently merged the baseline timeout repair at `9f787e9`; both
 repair runs passed all nine jobs. The tree-open intent follow-up below starts
 from that merged baseline.
+The owner has now merged PRs #38, #39 and #40 through `dfc7747`.
+[Merged-main run 39780832572](https://github.com/JBlaschke/glue_rs/actions/runs/39780832572)
+completed successfully. The owned BSD observation work below starts from that
+merged baseline; its new commits have not been published or tested by hosted CI.
 
 Implementation and acceptance are separate. Shared contracts, the three compact
 builders, ordinary-loader native routes, runtime/version discovery, integrity and
@@ -176,6 +180,10 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-trace-match-kit` | decision `9f9fc3a`, implementation `7daa902` | Thin unconfigured match-repair profile; 13 source/synthetic controls and independent review pass; old registrations preserved; actual admission/build/calibration pending |
 | R02 | `codex/mvp-r02-trace-match-admission` | decision `c787755`, fixture split `4255819` | Reviewed 42-source candidate frozen at `7daa902`; separate empty fixture and 14 controls pass; production remains empty pending fresh disabled proof |
 | R02 | `codex/mvp-r02-darwin-mapping-state` | decision `866a222`, implementation `e831200` | Bounded synthetic mapping/backing intervals and shared-write requests; 38 focused controls and independent review pass; native integration remains open |
+| R02 | `codex/mvp-r02-owned-bsd-observations` | decision `49aac44`, implementation `a9f95e4` | Complete-transport-backed immutable BSD scalar observations, exact supplied contract bytes and 4,096-phase cap; 45 focused controls pass; native integration remains open |
+| R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
+| V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; subsequent R02 dependency repair passes the full local baseline |
+| R02 | `codex/mvp-r02-owned-reader-dependencies` | decisions `ebe00fc`/`33aa0c2`, implementation `13388ea` | Bind all eager code dependencies before library imports and separate reviewed host pin from historical native inputs; 58 focused controls and full 42-suite/Rust local baseline pass; no native acceptance or publication |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |
@@ -219,6 +227,206 @@ failed GO write must be treated as possibly delivered. Protected native controll
 execution and collector integration remain open.
 The earlier successful nine-job run covers `64a4dd2`. The subsequent approved
 `3d500d4` run and its two Linux failures are recorded separately below.
+
+## 22 October: owned reader source integration
+
+The separate local `codex/mvp-r02-owned-reader-dependencies` branch stacks on
+`caf0b12`. Decisions `ebe00fc` and amendment `33aa0c2` precede implementation
+`13388ea`. Case metadata advances coherently to the reviewed owned reader, while
+the selected codec definitions, RawFacts and case implementation remain
+unchanged. Calibration `libraries()` verifies the fixed syscall helper plus all
+three libraries before any import, including cached modules; existing per-load
+hash/path checks and module order remain. Aggregate validation needs no contract
+asset and does not run the new projections. Loading assumes a stable trusted
+source tree. All native builders, registries, preparers, packet/admission pins and
+42 candidate source files remain unchanged.
+
+The first focused run passes 11 case, 18 calibration and 15 admission controls,
+with no skips. `/private/tmp/glue-owned-reader-dependency-controls-q0_3atsu` has
+32 payloads and manifest
+`8363ea899a61a441e1c229d16441f41dc74d2609d7b378c3adce1569db770cc8`.
+Independent review `/private/tmp/glue-owned-reader-dependencies-peer-20261022-zul09dkk`
+has manifest `93d1d1973c06ac4ec27315ded83f8c324ce24969d96d5a5f150655a75a142bf9`.
+It verifies unchanged legacy API/validator semantics, the complete code closure,
+missing/modified dependencies with cold/warm imports and aggregate validation
+without the asset or runtime file I/O. Those six implementation files remain
+unchanged through the subsequent decision amendment and final baseline.
+
+The integration baseline then exposes the old whole-file calibration-checker pin
+in the match-kit controls. Amendment `33aa0c2` separates only that reviewed
+current host checker from eight unchanged historical inputs; exact checks remain
+for both sets. The 14 focused kit controls pass without skips at
+`/private/tmp/glue-match-kit-reader-pin-controls-yia224ii`, manifest
+`89e3ac268bf371807e3dabc691c370c68aefbd9961e96487359181b4ce73f3be`.
+Separate independent review `/private/tmp/glue-match-reader-pin-peer-20261022-x397ax7r`
+has manifest `bd58664958fd9b928649f914fe39b05b7af519fdc4f6ed1922019503b533ba4a`.
+Both reviews find no actionable issue. Root verifies all four inventories and
+reads both reports. A reference scan finds no other live consumers of the eight
+changed files' superseded hashes.
+
+The final frozen `sh scripts/ci-portable.sh baseline` passes on the development
+Mac with Rust/Clippy 1.88.0 and Python 3.15.0. All 42 Python invocations pass:
+693 collected, 680 passed and 13 explicit skips. Workspace Rust tests report
+628 passed and five ignored; formatting and all-target Clippy with `-D warnings`
+pass. The before/after patches, status and HEAD agree. Receipt
+`target/mvp-validation/20261022-baseline-reader-closure-final` has eight payloads
+and manifest `87139a13d034d78199e05448b53ffd219f4426fdd77691e6798961dc737b6e6c`.
+It binds `33aa0c2` plus the frozen working tree: all eight fixture changes later
+committed as `13388ea` and the availability README clarification recorded with
+this ledger.
+The original stale-raw-pin failure remains at `20261022-baseline` (manifest
+`5656a9a4117447e871427bb80b0a02fabd8e7fe6fdfd2c187e19c0bd629b18fa`);
+the stale-host-pin failure remains at `20261022-baseline-reader-dependencies`
+(manifest `fdf91695868c8319dd897e22f4a8a5d719b8428f30e3d223fad253e2ed6136f4`).
+Root verifies all three exact inventories. No hosted run or native acceptance is
+inferred. All four follow-up branches remain local, guest SIP stays enabled and
+full Darwin implementation/corpus, Mac budgets and final retention/M2 remain open.
+
+## 22 October: Linux proof portability and evidence recovery
+
+The separate local `codex/mvp-v02-linux-proof-portability` branch stacks on
+`c7e59e9`. Decision `724089d` precedes implementation `95a2799`. The checker now
+uses the captured Linux ABI's errno value rather than the importing host's value;
+unknown architecture selectors refuse. Native C/filter policy, recorded proof,
+helper identities and all other proof/manifest checks remain unchanged.
+
+`python3 -B fixtures/mvp/test_trace_environment.py -v` passes seven portable
+controls and explicitly skips seven native Linux controls on the development
+Mac/Python 3.15.0. Receipt `/private/tmp/glue-linux-proof-portable-controls-3ysgz_ag`
+has 12 payloads and manifest
+`5482fcd7ff5736846ca0ef048788f2d209fc82eed1ac99a58a5a948598c4d0c3`.
+Independent review at
+`/private/tmp/glue-linux-proof-portability-peer-20261022-_igvgk6e`, manifest
+`135e65724192d524e54c145cc5db15b879ace878187ebf2f8c7c6ba9522680c3`,
+finds no actionable issue and verifies the unchanged native suite/filter.
+It also runs `python3 -B fixtures/mvp/trace_environment.py
+target/mvp-retention/recovered-x86-38800548172/raw-artifact/provisioning/trace-environment
+--architecture x86_64` successfully, without `--record`, native execution or
+input changes. Root verifies both inventories and reads the review.
+
+CI adds that test script for 42 configured Python invocations. The first frozen
+`sh scripts/ci-portable.sh baseline` attempt returns 1 at the owned-case test's
+old raw-reader hash, before Rust tests/Clippy. Its before/after patches agree.
+The receipt is `target/mvp-validation/20261022-baseline`, manifest
+`5656a9a4117447e871427bb80b0a02fabd8e7fe6fdfd2c187e19c0bd629b18fa`.
+This is an integration failure requiring a separate reader/helper dependency
+closure repair, not a passing baseline. No hosted run or publication occurs.
+The [subsequent integration checkpoint](#22-october-owned-reader-source-integration)
+records the repair and successful full local baseline.
+
+The old `/private/tmp` checkpoint, its 18,588 indexed files and all identified
+prepared/restored archive copies are absent. Committed inventories remain
+historical records; present retention cannot be inferred from their hashes.
+The exact original x86_64 artifact ZIP from run `38800548172`, artifact
+`12005186009`, is recovered under ignored
+`target/mvp-retention/recovered-x86-38800548172`. Its 160,039,296 bytes hash to
+`c1cc519d76e73888ed0339714deec1e97eea816c1f8861ab551da4579644e7a4`.
+All 4,802 extracted regular files match the original committed inventory; the
+two old host-added reports remain absent and are not reconstructed. Safe member
+validation precedes extraction. Newly fetched metadata and replay reports have
+their own names and provenance.
+
+Fresh offline replay verifies 24 acceptance receipts, 15 benchmark variants,
+156 oracle controls, five applicable structural/I/O/FD/scaling profiles and 990
+rank results. All five time/RSS checks skip because the recorded host fingerprint
+differs from the budget fingerprint. No cold-cache or universal timing claim is
+made. The initial errno failure and its diagnostic rerun remain separate; no
+stored command or native helper executes. That replay binds 14 original
+helper/budget sources to `e3962701`; rerunning its archived driver requires
+matching frozen sources or a separately recorded source revision after the
+portability repair. The passing report has SHA-256
+`945a2185dbb3a106e0e4eb4ae8c6f165cd2b6e3d1f68fd7bdf9384bd6ddc86d9`;
+the 15-member `offline-replay-20261022.sha256` index hashes to
+`77f03e5eb8c623b27ec375dfb3aa54947e93b350450bb40cacc30a8ef6ff8e56`.
+Root verifies that inventory and reads the independent report. These files need
+durable backup: `cargo clean` removes `target`. No complete checkpoint or current
+arm64 backup is recovered, and no evidence asset is published.
+
+## 22 October: closed owned call pairing
+
+The separate local `codex/mvp-r02-owned-call-pairing` branch stacks on `ded2a4d`.
+Decision `f2a4214` precedes implementation `0f2051e`. `pair_raw_owned` validates
+the entire original transport and pairs only closed, matching BSD/Mach intervals
+within established numeric TIDs. Orphans, overlaps, unresolved entries at exit,
+exec/shadow transitions, numeric reuse and ambiguous lifecycle timestamp ties
+refuse. Source words, unsupported return shapes and lifecycle context stay raw
+and immutable. Limits are 4,096 call phases, 2,048 pairs, 256 TIDs and 1,024
+noncall records; the valid closed subset can reach at most 770 noncall records.
+Existing public APIs/types and streaming behavior remain unchanged. The strict
+subset may deliberately refuse current bootstrap captures; native calibration,
+state-feed eligibility, path/FD/backing semantics and full R02 remain open.
+
+`python3 -B fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v`
+passes all 42 controls with no skips on the development Mac/Python 3.15.0,
+including the unchanged 128 MiB memory control and no runtime I/O across all three
+APIs. Final receipt `/private/tmp/glue-owned-pair-controls-llmzdoob` has 15 payloads
+and manifest `13cc6123461ee29b5d87da8b3c8a1aca4c895ec05279ed821076c2fe9210f4e5`;
+the earlier 41-test success remains separate. Independent review at
+`/private/tmp/glue-owned-pairing-peer-20261022-5ptrubbo`, manifest
+`fa6f4cac5d9a36d7f9c2252f3b5baad3c116b5704cc674c6340a22ed4b23a9a8`,
+finds no actionable issue and checks exact legacy API/private-refactor
+equivalence. Root verifies both inventories and reads the review. No CI
+invocation, C/wire/contract/registry/state-engine change or publication occurs.
+
+## 22 October: owned BSD observations and restored inspection toolkit
+
+Decision `49aac44` precedes implementation `a9f95e4` on
+`codex/mvp-r02-owned-bsd-observations`, based on merged `dfc7747`.
+`observe_raw_bsd` retains immutable entry/return scalars and exact record
+provenance after the same complete strict transport walk used by `validate_raw`.
+Known entries use the pinned source contract; unknown names and unsupported
+return shapes remain explicit. The caller supplies the exact 96,972-byte contract
+asset. Neither API opens code or assets after normal module import. A prospective
+4,096-phase projection cap leaves the old streaming API and bounds unchanged.
+There is no call pairing, normalized state conversion or extraction verdict.
+
+Both focused commands pass on the development Mac with Python 3.15.0:
+`python3 -B fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v`
+(26 tests, including the existing 128 MiB memory control) and
+`python3 -B fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v`
+(19 tests). No skips or failed test runs occurred. The final 21-payload receipt is
+`/private/tmp/glue-owned-bsd-controls-_g_rqhtj`, manifest
+`6ba4a2651c10d9f0c0bf0179d06a75bcc7d84b59b197a56fdc17809467eea882`.
+It preserves the separate successful pre-review receipt. Independent review at
+`/private/tmp/glue-owned-bsd-implementation-peer-20261022-b70vfn2c`, manifest
+`07183632c64ff51b69a87ab73817cabee8fbdc73faa3ae00910d53a357ba8a6f`,
+finds no actionable issue and independently compares the old validator body,
+signatures, bounds and parser semantics. Root verifies both complete inventories
+and reads the review. The existing CI suites already cover both scripts; the
+configured invocation count stays 41. Shell syntax and diff checks pass.
+
+The fixed VM inspection toolkit was missing all files. Two fresh builds from
+the six unchanged `d2bd45d` sources reproduce the original 53,600-byte signed
+executable exactly. Build record
+`/private/tmp/glue-inspector-rebuild-20261022-4cy1udig` has manifest
+`7fce9af57aaeeef987fd584df0911d84a38bb89c1cc3ae706c8d43e03d1bd2e0`;
+independent source/tool/Mach-O/signature review has manifest
+`d77f70a74ad5a25ad226a9549ec1db10b8f17a9ac33f6ac8479622d03da35016`.
+The empty old skeleton is preserved. All nine restored payloads match the
+original toolkit manifest `d5f5519e2f59eff40114297e6c4bdef952f40968352bfe2154e1e4efd96e6505`;
+no pin, registry or preflight constant changes. Historical producer provenance
+is retained as historical, rather than reconstructed.
+
+A fresh ordinary-user guest inspection completes all six commands with zero
+status and exact enabled-SIP output at 13:09:48 UTC on 22 October. Its 27-payload
+record is
+`/private/tmp/glue-mvp-macos-vm-results/glue-bootstrap-deployment-v1-1xvViCac`,
+manifest `a28bcc1604215fec403cf073e0e7424bea288f0a74df83ca91abb3185d157b34`.
+Independent review has manifest
+`a509870c23d308380ada8f6e59936021e58580cbce55266a9a01242eb4081fc0`.
+Actual devices/FSIDs are retained without normalizing to older boots. Root
+verifies both inventories and reads the review. This is enabled preflight only;
+no tracing proof or boot-security-policy attestation follows from it.
+The 20 October coordination window closes before any agent security weakening,
+with manifest `2d36f8401533dad6ba6c8040672e19868c3e87dbad6942926d7c6ebf3d61246c`.
+The guest shuts down cleanly and reaches Recovery Terminal. Capturing input in
+UTM restores menu interaction. The owner then chooses to keep guest SIP enabled
+and keep `ded2a4d` local. No SIP change or publication occurs. Recovery shuts down
+cleanly with input capture released. The closed no-change chronology is
+`/private/tmp/glue-owned-trace-sip-window-20261022-01`, manifest
+`72f672abce406947220a3daa127e8d425b5ea252fc278708826f99af6618752c`.
+Native tracing remains on hold under that setting. No new native capture,
+source admission, full Darwin oracle, macOS budgets or M2 completion is claimed.
 
 ## 20 October: mapping write-intent state
 
@@ -1932,7 +2140,7 @@ locations are recorded in the [integration evidence README](../evidence/compact-
 [decision 0030](../decisions/0030-evidence-retention.md). Evidence release assets
 have not been published; there is no fabricated `bundle.json` or remote durable
 retention claim. Local files alone will not survive transfer of this repository.
-The indexed checkpoint now prepares and restores 18,588 captured files without
+The historical indexed checkpoint prepared and restored 18,588 captured files without
 rewriting them; replay from a new root passes 94 receipts, ten budget profiles
 and 1,980 rank results. The archive is 619,802,268 bytes with SHA-256
 `aa8b2291a670791f8a50626c1098eb2281b8b616cff260163c9aa895ddc8879f`.
@@ -1941,6 +2149,14 @@ receipts, 15 benchmark variants, 156 controls and 990 rank results, with the
 4,804-file subtree unchanged. Review artifacts created after preparation are
 separate from that frozen checkpoint; exact identities and commands are in the
 evidence README.
+
+The 22 October availability audit finds that original temporary checkpoint and
+its archive copies missing. Only the exact 4,802-file x86_64 artifact subtree has
+been recovered so far, with new independent replay and separately named reports.
+See the [current recovery checkpoint](#22-october-linux-proof-portability-and-evidence-recovery)
+and the evidence README before relying on historical locations below. Complete
+arm64/current-checkpoint recovery or fresh native runs and durable retention
+remain required.
 
 Remaining M2 work includes a complete, validated Darwin extraction backend and
 the required macOS corpus, negative controls and budgets. Native
