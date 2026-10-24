@@ -53,6 +53,17 @@ small pinned `../bootstrap-trace-vm/kit_contract.py`; its early SIM guard still
 runs before loading that helper. No module policy globals are overridden.
 Shared core/wrapper/gates/raw/case/codec source pins are checked. Native sources,
 both builders, registries and historical nontracing policy remain unchanged.
+The host reader closure now includes the extended raw validator at SHA256
+`1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec`,
+codec metadata at `7f5ac7eb754fb18ba22131c26a8b5ab15d6fce00afda85f9f4dc0192e3b13e0d`,
+and its fixed sibling `syscall-contract/syscall_contract.py` helper at
+`35a4229894dd0373de1b312747e8acd1a23ae2074566391e8d28855ca0624dbf`.
+Before any of the three library imports, `libraries()` verifies every library
+and that helper's exact fixed path/digest. Missing or changed code refuses even
+with cached modules; the existing per-library loader still rechecks source and
+module paths. The selected codec definitions, case implementation and `RawFacts`
+are unchanged. Source loading assumes a stable trusted repository tree and is
+not authentication against concurrent privileged modification.
 Structural equality with the original f8e50d1 loader body is retained in the
 closed source review; it is not a Python-version-dependent runtime AST hash
 assertion. The loader is exercised against an independent valid injected
@@ -93,6 +104,12 @@ manifest for the local reader). Legacy8MiB/64MiB helpers are unchanged. Source
 exceptions, file changes, read/close failures or trailing data return no facts.
 The exact pinned raw validator yields RawFacts; the complete case checker then
 links both catalog/request/BW/NP/result/sidecar cases and raw/session counters.
+This aggregate path neither reads `contracts.json` nor invokes BSD projection
+or call pairing. The fixed helper is ordinary code, not a new proof asset or
+native kit/packet admission. Portable source controls relocate the four code
+files without a contract asset, check real import identity/order and aggregate
+validation, and require missing/modified helper or library files to refuse before
+any load call, both before and after normal imports.
 Reported controller/child PIDs are cross-bound observations, not independently
 attested ownership. Frozen PairFacts retain tracingtrue/execfalse/fullfalse.
 No original clock origin/budget proof or DTrace/monotonic equivalence is claimed.

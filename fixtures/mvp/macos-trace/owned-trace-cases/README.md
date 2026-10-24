@@ -86,9 +86,18 @@ pass; this supplies no native clock/deadline provenance or timing proof.
 only standard hashlib/json/re/struct imports and explicit pin metadata are
 added. No full case checker, producer, packet loader, filesystem helper or CLI
 is copied/imported/called, and no module globals are overridden. The RawFacts
-source pin is `0e741d951934ec153ed3c89d7e7fab048515aab2c4f2bed40c0e6e27b0d7d66a`.
+source pin is `1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec`.
+That reader preserves the accepted `RawFacts` and aggregate validator API while
+adding separate BSD/pairing observations. Its fixed eager helper-code import is
+`syscall-contract/syscall_contract.py`, SHA256
+`35a4229894dd0373de1b312747e8acd1a23ae2074566391e8d28855ca0624dbf`.
+The source controls bind both code files and require the codec's raw-source
+metadata to match. Selected codec definitions and complete case behavior are
+unchanged; only the raw dependency metadata advances.
 The trusted loader/caller must make both this directory and the accepted
-`owned-trace-check` module available on Python's import path. Source pins are
+`owned-trace-check` module available on Python's import path, with its fixed
+sibling helper-code layout. The aggregate route does not read `contracts.json`
+or run the new projections. Source pins are
 reviewed build/integration requirements, not runtime authentication checks.
 Legacy sources and registries stay unchanged.
 

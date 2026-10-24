@@ -1,6 +1,5 @@
 """Verify retained evidence for the explicit Linux CI trace environment."""
 import argparse
-import errno
 import hashlib
 import json
 from pathlib import Path
@@ -12,6 +11,8 @@ CALLS = {
     "io_destroy", "io_submit", "io_cancel", "io_getevents", "io_pgetevents",
 }
 FILES = ["trace_environment.c", "glue-trace-environment", "proof.json"]
+# Linux UAPI values for the supported captured ABIs, independent of replay host.
+LINUX_ENOSYS = {"x86_64": 38, "aarch64": 38}
 
 
 def identity(path):
@@ -20,6 +21,9 @@ def identity(path):
 
 
 def check_proof(proof, architecture):
+    if type(architecture) is not str or architecture not in LINUX_ENOSYS:
+        raise ValueError("unsupported Linux trace proof architecture")
+    enosys = LINUX_ENOSYS[architecture]
     if (proof.get("policy"), proof.get("architecture"), proof.get("status")) != (POLICY, architecture, "passed"):
         raise ValueError("trace policy, architecture or probe status differs")
     before = proof["before_policy"]
@@ -34,11 +38,11 @@ def check_proof(proof, architecture):
         calls = record["syscalls"]
         if len(calls) != len(CALLS) or {call["name"] for call in calls} != CALLS:
             raise ValueError(label + ": async syscall probes are incomplete")
-        if any(call["errno"] != errno.ENOSYS for call in calls):
+        if any(call["errno"] != enosys for call in calls):
             raise ValueError(label + ": async syscall did not return ENOSYS")
         if record["ordinary_file_io"] is not True or record["native_syscalls_allowed"] is not True:
             raise ValueError(label + ": ordinary syscall control failed")
-        if architecture == "x86_64" and record["abi_guards"] != {"x32_errno": errno.ENOSYS, "i386_errno": errno.ENOSYS}:
+        if architecture == "x86_64" and record["abi_guards"] != {"x32_errno": enosys, "i386_errno": enosys}:
             raise ValueError(label + ": x32/i386 ABI guard probe failed")
 
 

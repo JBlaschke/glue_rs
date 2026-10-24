@@ -3,12 +3,25 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SPEC=importlib.util.spec_from_file_location('syscall_contract',Path(__file__).with_name('syscall_contract.py'))
 C=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(C)
 
 
 class ContractTests(unittest.TestCase):
+ def test_pure_bounded_parser_matches_file_loader_without_io(self):
+  raw=(C.SOURCE/'contracts.json').read_bytes()
+  expected=C.load_table()
+  with patch.object(C,'bounded_read',side_effect=AssertionError('pure parser opened a file')):
+   actual=C.parse_table(raw)
+   self.assertEqual(actual,expected)
+   self.assertEqual(C.entry_facts('mmap',[1,2,3,4,5,6,7,8],actual)['fields']['fd'],5)
+  for bad in (bytearray(raw),raw.decode(),None,b'x'*(C.MAX_TABLE+1),b'{"x":1,"x":2}'):
+   with self.assertRaises(C.UnsupportedContract):C.parse_table(bad)
+  # Input parsing remains generic; asset pinning belongs to the owned adapter.
+  alternate=json.loads(raw);alternate['calls'][0]['number']=381
+  self.assertEqual(C.parse_table(json.dumps(alternate).encode())[1][alternate['calls'][0]['name']]['number'],381)
  def test_direct_and_guarded_open_positions_differ(self):
   direct=C.entry_facts('open',[101,2,0o644,999,0,0,0,0])
   guarded=C.entry_facts('guarded_open_np',[101,202,303,2,0o644,0,0,0])
