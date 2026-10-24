@@ -28,6 +28,10 @@ export PATH="/absolute/prefix/bin:$PATH"
 Supply already installed dependencies and a matching Python/Node runtime. No
 provider template or hand-written resource inventory is required.
 
+Start with the [runnable examples](examples/README.md): Lua with a Lua package
+and C library, Python with a NumPy venv, and an ordinary npm/Node project. Each
+walks through dependency preparation, app configuration, bundling, and execution.
+
 ```sh
 mkdir -p dist
 glue build lua ./lua-project --lua 5.4 --entry main.lua --output dist/lua-app

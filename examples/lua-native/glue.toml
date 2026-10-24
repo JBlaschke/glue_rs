@@ -1,0 +1,12 @@
+entry = "main.lua"
+delivery = "compact"
+runtime-mode = "bundled"
+exclude = [".deps/**", "native/**", "vendor/**", "prepare.sh", "README.md", "expected.txt", ".gitignore"]
+
+[lua]
+version = "5.4"
+rocks-tree = ".deps/rocks"
+
+# Logical archive path after ingestion of lib/lua/5.4/temperature.so.
+[lua.native-abi]
+"app/temperature.so" = "5.4"

@@ -1,0 +1,3 @@
+python-venv: numpy + packaging
+mean=4.50; solve=[2.00, 3.00]
+argument=hello from relocated app

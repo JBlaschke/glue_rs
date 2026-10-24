@@ -1,8 +1,15 @@
-# Third-party notices: linked Lua profile
+# Third-party notices
 
 These notices cover the Lua source used by the linked execution profile,
 plus the Lua source builder and historical bindings. This is a component notice
 record; it does not replace a complete release dependency inventory.
+
+The [Lua example](examples/lua-native/README.md) also vendors unmodified
+`inspect.lua` from upstream tag v3.1.3, by Enrique García Cota, under the MIT
+license. Its complete copyright and license notice is embedded in
+[`inspect.lua`](examples/lua-native/vendor/inspect-3.1.3/inspect.lua) and remains
+in the packaged module. [Source identity](examples/lua-native/vendor/inspect-3.1.3/README.md)
+records its upstream URL and SHA-256.
 
 The pinned source is `lua-src 551.0.2` (crate SHA-256
 `d400ffef0e3d4d29287092bdc5a276d0bf468b2c69709d5bab0d469312d9f947`),

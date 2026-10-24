@@ -747,26 +747,36 @@ fn runtime_probe(executable: &Path, spec: &DistributionSpec) -> Result<()> {
         RuntimeImplementation::Cpython => {
             let actual = glue_pack::python::discovery::probe(executable, Duration::from_secs(5))
                 .map_err(|e| error(DiagnosticCode::RuntimeAbiMismatch, e))?;
-            let RuntimeAbi::Python {
-                version,
-                gil,
-                debug,
-            } = &spec.runtime.abi
-            else {
-                unreachable!()
-            };
-            if actual.implementation != "cpython"
-                || actual.version != [version.major, version.minor, version.patch]
-                || actual.version_text != spec.runtime.version
-                || actual.debug != *debug
-                || actual.gil_disabled != (*gil == GilMode::FreeThreaded)
-            {
-                return Err(error(
-                    DiagnosticCode::RuntimeAbiMismatch,
-                    "Python executable differs from declared exact version/ABI",
-                ));
-            }
+            validate_python_probe(&actual, &spec.runtime)?;
         }
+    }
+    Ok(())
+}
+
+fn validate_python_probe(
+    actual: &glue_pack::python::discovery::RuntimeMetadata,
+    runtime: &RuntimeDescriptor,
+) -> Result<()> {
+    let RuntimeAbi::Python {
+        version,
+        gil,
+        debug,
+    } = &runtime.abi
+    else {
+        unreachable!()
+    };
+    // Discovery records the exact version token, not sys.version's build banner.
+    // Keep prerelease suffixes: the numeric ABI version alone cannot distinguish them.
+    if actual.implementation != "cpython"
+        || actual.version != [version.major, version.minor, version.patch]
+        || actual.version_text.split_whitespace().next() != Some(runtime.version.as_str())
+        || actual.debug != *debug
+        || actual.gil_disabled != (*gil == GilMode::FreeThreaded)
+    {
+        return Err(error(
+            DiagnosticCode::RuntimeAbiMismatch,
+            "Python executable differs from declared exact version/ABI",
+        ));
     }
     Ok(())
 }
@@ -1159,4 +1169,110 @@ fn rebuild(args: &[OsString]) -> Result<ExitCode> {
         argv.push(flag.into());
     }
     build(&argv, Some(&lock.runtime))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use glue_pack::python::discovery::RuntimeMetadata;
+
+    fn python_probe_fixture() -> (RuntimeMetadata, RuntimeDescriptor) {
+        let actual = RuntimeMetadata {
+            executable: "/runtime/bin/python3.14".into(),
+            prefix: "/runtime".into(),
+            stdlib: "/runtime/lib/python3.14".into(),
+            version: [3, 14, 5],
+            version_text: "3.14.5 (main, May 5 2026, 12:00:00)\n[Clang 18.1.8]".into(),
+            implementation: "cpython".into(),
+            machine: "arm64".into(),
+            system: "Darwin".into(),
+            soabi: "cpython-314-darwin".into(),
+            gil_disabled: false,
+            debug: false,
+            framework: String::new(),
+            extension_suffixes: vec![".cpython-314-darwin.so".into()],
+        };
+        let runtime = RuntimeDescriptor {
+            implementation: RuntimeImplementation::Cpython,
+            version: "3.14.5".into(),
+            target: "aarch64-apple-darwin".into(),
+            abi: RuntimeAbi::Python {
+                version: RuntimeVersion {
+                    major: 3,
+                    minor: 14,
+                    patch: 5,
+                },
+                gil: GilMode::Conventional,
+                debug: false,
+            },
+            provider: RuntimeProvider::Bundled,
+            executable: "runtime/bin/python3.14".into(),
+            inputs: BTreeMap::new(),
+            requirements: BTreeSet::new(),
+        };
+        (actual, runtime)
+    }
+
+    #[test]
+    fn python_probe_accepts_full_build_banner_and_matching_prerelease() {
+        let (mut actual, mut runtime) = python_probe_fixture();
+        validate_python_probe(&actual, &runtime).unwrap();
+        actual.version_text = "3.14.5".into();
+        validate_python_probe(&actual, &runtime).unwrap();
+
+        actual.version = [3, 15, 0];
+        actual.version_text = "3.15.0rc1 (main, Oct 1 2026, 12:00:00) [GCC 14.2.0]".into();
+        runtime.version = "3.15.0rc1".into();
+        let RuntimeAbi::Python { version, .. } = &mut runtime.abi else {
+            unreachable!()
+        };
+        version.minor = 15;
+        version.patch = 0;
+        validate_python_probe(&actual, &runtime).unwrap();
+
+        for text in ["3.15.0rc2 (main, build)", "3.15.0 (main, build)"] {
+            actual.version_text = text.into();
+            assert_eq!(
+                validate_python_probe(&actual, &runtime).unwrap_err().code,
+                DiagnosticCode::RuntimeAbiMismatch,
+                "must preserve the exact prerelease token: {text}",
+            );
+        }
+    }
+
+    #[test]
+    fn python_probe_rejects_wrong_patch_and_numeric_abi() {
+        let (mut actual, runtime) = python_probe_fixture();
+        for text in ["3.14.6 (main, build)", "3.14.5rc1 (main, build)", ""] {
+            actual.version_text = text.into();
+            assert_eq!(
+                validate_python_probe(&actual, &runtime).unwrap_err().code,
+                DiagnosticCode::RuntimeAbiMismatch,
+                "must reject a different or missing exact version: {text:?}",
+            );
+        }
+        actual.version_text = "3.14.5 (main, build)".into();
+        actual.version[2] = 6;
+        assert_eq!(
+            validate_python_probe(&actual, &runtime).unwrap_err().code,
+            DiagnosticCode::RuntimeAbiMismatch,
+        );
+    }
+
+    #[test]
+    fn python_probe_rejects_debug_gil_and_implementation_changes() {
+        let (actual, runtime) = python_probe_fixture();
+        let mut debug = actual.clone();
+        debug.debug = true;
+        let mut free_threaded = actual.clone();
+        free_threaded.gil_disabled = true;
+        let mut different_implementation = actual;
+        different_implementation.implementation = "pypy".into();
+        for changed in [debug, free_threaded, different_implementation] {
+            assert_eq!(
+                validate_python_probe(&changed, &runtime).unwrap_err().code,
+                DiagnosticCode::RuntimeAbiMismatch,
+            );
+        }
+    }
 }
