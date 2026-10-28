@@ -1,6 +1,6 @@
 # MVP implementation and acceptance ledger
 
-22 October 2026. Product authority remains [the plan](../../PLAN.md),
+28 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
@@ -36,6 +36,40 @@ existing Developer ID signatures are retained and accepted by this development
 policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
+
+## 28 October: recovered x86 local retention
+
+The owner merged the prior reader work through PR #41 and examples through PR
+#76, placing `main` at `8097be0` with successful portable run
+[40078316223](https://github.com/JBlaschke/glue_rs/actions/runs/40078316223).
+The owner now authorizes new feature/milestone branches with PRs and overlapping
+CI. Earlier local-only directions below describe their dated checkpoints; guest
+SIP stays enabled.
+
+The independent `codex/mvp-r04-x86-local-retention` branch starts from `8097be0`;
+commit `39e5390` adds only an ignore rule, two inventories and offline metadata.
+Using the unchanged `scripts/evidence-bundle.py` at SHA-256
+`54bca4d7d2a6ba4d8ea93290eaa47760c1d916d5f43c1c4bb35ae84cc10f9828`,
+4,818 explicitly indexed source files prepare and restore with statuses zero.
+All 4,820 indexed members and the exact expected sidecars independently verify
+all hashes, payload sizes, modes and absence of aliases/special files; source identities remain stable.
+No raw test log, capture or archive enters Git. The local archive is 318,451,457 bytes,
+SHA-256 `77b5a9565145b23c492c7c08cecbce4cda29577186d44d68d97637f4d2e9f7df`.
+Local command/review records are under
+`.evidence-local/x86-38800548172/review-20261028-01`; its 18-payload index hashes to
+`4bae520ab650a70d716bf6890ce5803b85f6ff1cdadcf0839475ef0e2d24dd82`.
+Independent review at `/private/tmp/glue-x86-roundtrip-peer-20261028-x8t3iw66`
+has five payloads and manifest
+`10dd2dd463bab025cfece2989e62fff0325491c343fb227deee698228c133175`.
+It also streams the archive without extraction and verifies the complete
+4,823-file prepared / 4,822-file restored rosters, including expected sidecars.
+Root verifies both review inventories and reads both reports.
+The prepared/restored copies are outside `target`. The
+[evidence README](../evidence/compact-mvp-2026-10-15/README.md) records exact
+indices and a restore command. No archived replay/native application executes,
+and local same-host retention does not close external publication, missing
+arm64/current-checkpoint recovery or R04/M2. Existing runtime code is unchanged;
+new portable CI is tracked in the PR independently of this actual round-trip.
 
 ## Task branches
 
@@ -184,6 +218,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
 | V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; subsequent R02 dependency repair passes the full local baseline |
 | R02 | `codex/mvp-r02-owned-reader-dependencies` | decisions `ebe00fc`/`33aa0c2`, implementation `13388ea` | Bind all eager code dependencies before library imports and separate reviewed host pin from historical native inputs; 58 focused controls and full 42-suite/Rust local baseline pass; no native acceptance or publication |
+| R04 | `codex/mvp-r04-x86-local-retention` | `39e5390`, based on `8097be0` | Actual prepare/restore of 4,818 recovered files, all 4,820 archive members verified; local backup survives cargo clean; external durability and missing arm64 evidence remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
 | R04 | `codex/mvp-r04-darwin-calibration-final` | `d9bf81b` | Nine validated owned diagnostics; full extraction corpus remains open |

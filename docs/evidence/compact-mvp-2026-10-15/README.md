@@ -1,5 +1,47 @@
 # Compact MVP integration evidence
 
+28 October local retention update: commit `39e5390` on
+`codex/mvp-r04-x86-local-retention` records a verified local backup outside Cargo's
+`target` directory. The original recovered source files remain unchanged. The
+new `recovered-source-20261028.sha256` selects all 4,802 recovered raw artifact
+files, the 15 recovery/replay index members and that index itself: 4,818 files,
+879,464,961 bytes. The existing helper prepared and restored them with explicit
+5,000-file/1 GiB bounds; both commands exited zero with empty stderr. Independent
+filesystem checks verify all 4,820 indexed members, the exact expected sidecars,
+every hash, and all payload sizes/modes. Source identities and the helper's bytes stay unchanged.
+
+The archive is local at
+`.evidence-local/x86-38800548172/prepared-20261028-01/evidence.tar.gz`, alongside
+`restored-20261028-01` and `review-20261028-01`. It is 318,451,457 bytes, SHA-256
+`77b5a9565145b23c492c7c08cecbce4cda29577186d44d68d97637f4d2e9f7df`.
+The committed `local-prepared-20261028.json` is offline tool metadata, not a
+release pointer. Its source index hashes to
+`0844005037d2f438498d4c1313b5022527c505c222edede5d8a3e49483f7562d`;
+`recovered-bundle-payload-20261028.sha256` hashes to
+`b10500e2da78ba5c9e566f111b2c60ca6afa274cca1f11681a505fe4fa994a00`.
+The 18-payload local review index hashes to
+`4bae520ab650a70d716bf6890ce5803b85f6ff1cdadcf0839475ef0e2d24dd82`.
+Independent review has five payloads and manifest
+`10dd2dd463bab025cfece2989e62fff0325491c343fb227deee698228c133175`.
+Only inventories, metadata, the ignore rule and this account enter Git. The local directory is
+ignored and survives `cargo clean`; same-host copies establish no external
+backup, release publication or complete R04/M2 retention.
+
+To restore the known local archive to a new folder from the primary checkout:
+
+```sh
+python3 -B scripts/evidence-bundle.py restore \
+  --archive .evidence-local/x86-38800548172/prepared-20261028-01/evidence.tar.gz \
+  --metadata docs/evidence/compact-mvp-2026-10-15/local-prepared-20261028.json \
+  --inventory docs/evidence/compact-mvp-2026-10-15/recovered-bundle-payload-20261028.sha256 \
+  --output .evidence-local/x86-38800548172/another-restored-copy \
+  --max-files 5000 --max-bytes 1073741824
+```
+
+This round-trip runs no archived driver, recorded application or native harness.
+The 22 October replay remains historical and source-bound. The two missing old
+host reports, remaining arm64 checkpoint and public evidence retention stay open.
+
 22 October availability update: the original `/private/tmp` checkpoint and its
 prepared/restored archives are missing their indexed files. The inventories
 below remain historical records; they do not establish present local retention.

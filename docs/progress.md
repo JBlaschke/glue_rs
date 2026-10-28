@@ -1,5 +1,26 @@
 # Implementation progress
 
+## Recovered x86 evidence retained locally — 28 October 2026
+
+The owner merged PR #41 and the runnable examples into `main` at `8097be0`.
+[Main CI run 40078316223](https://github.com/JBlaschke/glue_rs/actions/runs/40078316223)
+passes. New feature branches and PRs are authorized; hosted CI can run while the
+next feature proceeds. Guest SIP remains enabled.
+
+Commit `39e5390` on the separate `codex/mvp-r04-x86-local-retention` branch records
+source/complete inventories and offline metadata for a verified local backup
+outside `target`. All 4,818 selected source files (879,464,961 bytes) prepare and
+restore successfully. All 4,820 indexed members and expected sidecars pass
+independent hash, size, mode and membership checks; source identities remain unchanged. The
+318,451,457-byte archive and restored copy stay local under `.evidence-local`,
+which is ignored and survives `cargo clean`. Raw files do not enter the PR.
+
+This protects the recovered x86 checkpoint from target-directory cleanup. It
+establishes no external durability, fresh native acceptance or recovered arm64
+checkpoint. Full Darwin R02, Mac budgets and final R04/M2 remain open. Exact
+commands, archive identities and limits are in the
+[retention record](evidence/compact-mvp-2026-10-15/README.md).
+
 ## Runnable application examples — 22 October 2026
 
 Commit `3976273` on `codex/basic-runtime-examples`, based on merged `dfc7747`, adds
