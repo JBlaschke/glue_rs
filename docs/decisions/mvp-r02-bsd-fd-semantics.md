@@ -49,6 +49,10 @@ Executable success rules:
   opaque; zero-byte requests still retain their entry attempt.
 - ftruncate success additionally requires nonnegative requested length; its
   object can be a vnode or POSIX shared-memory object, not an assumed regular file.
+  Its conditional rule is object-specific: POSIX shared memory can round to page
+  size and permits only one allocation per lifetime. Requested length is not an
+  observed resulting size; branch, page-size, prior-allocation and lifetime
+  witnesses remain required.
 
 The error model must not assert no effects. close releases its slot before
 fg_drop can report an error. dup2 can close/reserve the target before finishdup
