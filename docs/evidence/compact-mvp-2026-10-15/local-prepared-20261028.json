@@ -1,0 +1,11 @@
+{
+  "asset": "evidence.tar.gz",
+  "file_count": 4820,
+  "inventory_sha256": "b10500e2da78ba5c9e566f111b2c60ca6afa274cca1f11681a505fe4fa994a00",
+  "payload_bytes": 879464961,
+  "profile": "external-root-v1",
+  "schema": "glue-evidence-bundle-2",
+  "sha256": "77b5a9565145b23c492c7c08cecbce4cda29577186d44d68d97637f4d2e9f7df",
+  "size": 318451457,
+  "source_inventory_sha256": "0844005037d2f438498d4c1313b5022527c505c222edede5d8a3e49483f7562d"
+}
