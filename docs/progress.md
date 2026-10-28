@@ -1,5 +1,30 @@
 # Implementation progress
 
+## Integrated owned request assessment — 28 October 2026
+
+Decision `724955e` and implementation `84634eb` on
+`codex/mvp-r02-owned-request-assessment` add one raw-input diagnostic API.
+It combines complete owned transport validation, all 161 BSD source contracts
+and conservative common-open flag classification. Frozen requests link their
+original phases; failed/unpaired attempts, unknown calls and unsupported returns
+remain visible. All twelve route families and Mach/lifecycle coverage retain
+explicit gaps. Every result stays incomplete with false extraction/state-feed
+eligibility; no descriptor/path identity or output exemption is inferred.
+
+The crash preserved all three source files and the CI edit byte-for-byte, but
+removed temporary test records. A fresh run on macOS arm64/Python 3.15.2 passes
+all 16 controls with the exact future-CI argv. Its 30-file receipt and independent
+seven-file peer review now live under ignored `.evidence-local`, with ten source
+identities unchanged. Portable baseline adds one invocation, making 43 scripts.
+Shell syntax and diff checks pass. Full hosted checks proceed independently in
+the PR; no new Rust/native acceptance run is claimed.
+
+This branch is stacked on [retention PR #86](https://github.com/JBlaschke/glue_rs/pull/86);
+merge that first. A fresh post-crash audit also confirms its entire archive and
+prepared/restored copies remain intact. Exact records and remaining gaps are in
+the [assessment checkpoint](plans/mvp-implementation.md#28-october-owned-request-assessment).
+The next feature adds bounded physical input handling and an operator command.
+
 ## Recovered x86 evidence retained locally — 28 October 2026
 
 The owner merged PR #41 and the runnable examples into `main` at `8097be0`.

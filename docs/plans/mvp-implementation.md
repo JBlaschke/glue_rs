@@ -37,6 +37,54 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 28 October: owned request assessment
+
+`codex/mvp-r02-owned-request-assessment` is stacked on retention PR #86 at
+`d4cd4dc`. Decision `724955e` precedes implementation `84634eb`. The pure
+`assess_owned_raw` API accepts original bytes and event lines, invokes the strict
+BSD observer itself and returns no prefix before complete transport exhaustion.
+It retains the whole immutable observation result once and links each request
+to its original phase. The explicit twelve-family dispatch covers all 161 pinned
+declarations; common flags for all nine open variants are classified only when
+already uint32. Wider words are retained as unsupported without narrowing.
+
+Source requirements, unknown names, unsupported return shapes, and all BSD/Mach/
+lifecycle counts remain explicit. No family authorizes a harmless read or actual
+write effect. Failed/unpaired requests are retained without requiring the
+stricter pairer. Output exemptions require missing object bindings, so every
+report has incomplete status, false full acceptance and false state-feed
+eligibility. Upstream readers, contracts, ABI/classifier, state engines and all
+native kit/registry/packet bytes remain unchanged.
+
+The owner-reported crash leaves those source bytes unchanged but removes the
+temporary initial 16-pass receipt and review. They are not reconstructed. A fresh
+`python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_assessment.py -v`
+passes all 16 controls on macOS arm64/Python 3.15.2. Receipt
+`.evidence-local/controls/owned-assessment-20261028-postcrash` has 30 files
+including `manifest.json`, SHA-256
+`2afadcdbb50c0bb4e496758d2512aa7dd08cbb530f0187affa534de1105149a9`.
+Ten source/context before/after identities agree. Independent review at
+`.evidence-local/peer/owned-assessment-20261028-postcrash` has seven files,
+manifest `900f3161674af4e3cf3d010ffdc6e1b8cbd0ff38e8890877fecd86b9140cd430`,
+and no actionable findings. Root verifies both exact inventories and reads the
+review. These records are read-only and outside temporary/Cargo storage.
+
+Controls cover independent selector vectors for every declaration, all nine flag
+positions, unsupported high bits, failed/unpaired/orphan/exec/shadow requests,
+Mach/lifecycle/zero activity, exact/over bounds, immutable serialization,
+dependency preflight, runtime no-I/O and late stream failure. CI adds exactly one
+invocation for 43 Python scripts; shell syntax and diff checks pass. Hosted CI
+can run while the next feature proceeds, per the owner's instruction. No full
+local Rust rerun, native calibration, state adoption or M2 completion is inferred.
+
+After the crash, a separate persistent audit at
+`.evidence-local/peer/x86-retention-20261028-postcrash` verifies all 4,820 archive
+members, both physical prepared/restored rosters and the original 18 review
+payloads. Its four-payload manifest hashes to
+`45e8f0af77c1976a3fde53de5da1cb830c9c8e5e4daf23349557ba03e0d6da25`.
+The archive and all committed bindings remain unchanged; the missing older
+temporary peer record is not reconstructed. Local retention remains the scope.
+
 ## 28 October: recovered x86 local retention
 
 The owner merged the prior reader work through PR #41 and examples through PR
@@ -218,6 +266,7 @@ Follow-up branches preserve the original task commits:
 | R02 | `codex/mvp-r02-owned-call-pairing` | decision `f2a4214`, implementation `0f2051e` | Closed BSD/Mach interval pairing with strict observed-thread/lifecycle rules; 42 focused controls pass; no native calibration or state-feed permission |
 | V02 | `codex/mvp-v02-linux-proof-portability` | decision `724089d`, implementation `95a2799` | Explicit captured Linux errno values for both supported ABIs; seven portable controls pass and seven native controls skip on Mac; public original-proof replay passes; subsequent R02 dependency repair passes the full local baseline |
 | R02 | `codex/mvp-r02-owned-reader-dependencies` | decisions `ebe00fc`/`33aa0c2`, implementation `13388ea` | Bind all eager code dependencies before library imports and separate reviewed host pin from historical native inputs; 58 focused controls and full 42-suite/Rust local baseline pass; no native acceptance or publication |
+| R02 | `codex/mvp-r02-owned-request-assessment` | decision `724955e`, implementation `84634eb` | Integrated immutable raw request/coverage assessment across 161 declarations; 16 fresh focused controls and independent review pass; portable CI configures 43 scripts; full native oracle remains open |
 | R04 | `codex/mvp-r04-x86-local-retention` | `39e5390`, based on `8097be0` | Actual prepare/restore of 4,818 recovered files, all 4,820 archive members verified; local backup survives cargo clean; external durability and missing arm64 evidence remain open |
 | R04 | `codex/mvp-r04-acceptance-followup` | `c703309` | Merged-main and first guest-calibration status |
 | R04 | `codex/mvp-r04-darwin-calibration-status` | `2ac8038` | Preserved rejected lifecycle candidates and calibration scope |
