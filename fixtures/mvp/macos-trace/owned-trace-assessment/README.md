@@ -93,6 +93,63 @@ Run the portable controls from the repository root:
 python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_assessment.py
 ```
 
+## Standalone diagnostic CLI
+
+For independently supplied diagnostic data, run:
+
+```sh
+python3 fixtures/mvp/macos-trace/owned-trace-assessment/inspect_trace.py \
+  --input DIRECTORY --owner-pid PID --target-pid PID
+```
+
+The directory must contain exactly four files: `program.d`, `probes.tsv`,
+`errors.jsonl` and `events.jsonl`. Its numeric mode must be 0700. Each leaf must
+be an ordinary, single-link file with numeric mode 0600, owned by the current
+user. Root or mismatched real/effective UID/GID operation refuses. Numeric
+ownership and modes **do not attest ACL privacy**. The input origin and both PIDs
+are caller declarations; ownership, a valid transport and the exact four-file
+roster do not authenticate a capture or establish native export safety.
+
+The inspector stops a roster scan at a fifth entry. It holds no-follow,
+close-on-exec, nonblocking directory/file descriptors, checks held identities
+against the root path and anchored leaf entries before and after consumption,
+and checks the exact roster again. Every opened input descriptor receives one
+close attempt; a read, identity, roster or close error suppresses the report.
+Stable trusted source and owned input namespaces without a concurrent privileged
+mutator remain workflow preconditions.
+Root symlinks and directory paths ending in `.` or `..` refuse; select the
+directory by its explicit path.
+
+The fixed bounds are 16,384 program bytes, 1,048,576 inventory bytes, 65,536 error
+bytes, 134,217,728 event transport bytes and 8,191 bytes per event line. Complete
+upstream validation still requires the exact program, empty errors and valid
+inventory/transport. Static invalidity refuses before event consumption. Fixed
+assessment, helper and asset identities have no caller overrides. Events stream
+through the assessor once; no prefix report is published after a late failure.
+
+Exit 0 means a complete diagnostic JSON report was produced. The report records
+all four exact byte counts and SHA-256 hashes, declared PIDs, fixed assessor/core
+identities and the full assessment. Its `origin` is
+`caller-supplied/unverified`, its `status` is `incomplete`, and
+`native_admission`, `export_admission`, `full_trace_acceptance` and
+`state_feed_eligible` are always false. Canonical compact JSON, including its
+final LF, must fit 16 MiB before any stdout write. Oversize output refuses
+without truncation. A broken stdout pipe can still fail during publication.
+
+Invalid input exits 1 with a bounded generic diagnostic and empty stdout;
+argument errors exit 2. `--acceptance` alone exits 1 before required argument
+checks, helper imports or input access. This command cannot act as a native
+harness backend. It creates no export and does not call or replace packet,
+metadata, closure or export admission. Existing capture/export gates and SIP
+requirements remain in force. It grants no permission to read or copy protected
+failed captures.
+
+Run the synthetic directory/file controls from the repository root:
+
+```sh
+python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_inspect_trace.py -v
+```
+
 The controls use serialized fixtures, literal expected selector vectors for all
 161 declarations and independent positions for all nine open variants. They
 exercise failed/unpaired attempts, high flag bits, unknown/unsupported phases,
