@@ -1,5 +1,26 @@
 # Implementation progress
 
+## Source-grounded paired BSD outcomes — 28 October 2026
+
+Decision `ab8f7fe` and implementation `29f8881` on the independent main-based
+`codex/mvp-r02-owned-bsd-outcomes` branch add typed kernel-result interpretation.
+The API invokes the strict raw pair reader itself before decoding. All 161
+pinned declarations select signed32, signed64 or unsigned64 return semantics;
+kernel errors, successful minus-one values, malformed tuples and restart/control
+flow remain distinct. Original BSD/Mach phases, entry attempts and lifecycle
+records stay retained. Native calibration, effect ordering, object bindings,
+state-feed eligibility and full extraction acceptance remain unresolved.
+
+All 27 focused controls pass on Python 3.15.2 and 3.9.6. Independent review checks
+the exact public XNU bytes, raw-pair integration, complete exhaustion, immutable
+provenance and retained receipt, with no open findings. Review's source-line
+correction affects documentation only. An earlier fixture-only mutable-alias
+failure remains preserved; decoder bytes were unchanged. CI adds one invocation
+(45 scripts here; 48 after parallel arm repair PR #91 merges). Shell syntax and
+staged diff checks pass. Hosted CI proceeds independently, alongside fresh native
+arm run [40754980497](https://github.com/JBlaschke/glue_rs/actions/runs/40754980497).
+Both new PRs target `main`; no native/SIP action or M2 closure is claimed.
+
 ## Diagnostic milestone integration and remaining work — 28 October 2026
 
 The [milestone overview](plans/milestone-status.md) records M0 foundations and M1

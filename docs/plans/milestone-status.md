@@ -22,6 +22,10 @@ commits, tests, target scope and evidence limits.
 2. Extend native Linux acceptance automation to arm64, replacing missing evidence
    with a reproducible fresh run. This requires target-matched runtime inputs,
    the complete 24-case corpus, all five budgets and separately retained output.
+3. Add source-grounded paired BSD result semantics through `29f8881` on an
+   independent main-based branch. Twenty-seven controls pass on both tested
+   Python versions; independent review has no open findings. Native ABI
+   calibration, object bindings and effect ordering remain separate open work.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -30,7 +34,7 @@ the missing Darwin oracle.
 
 ## Remaining M2 gates
 
-- **R02:** implement source-grounded Darwin result/state/object semantics and a
+- **R02:** complete native-calibrated Darwin operation/state/object semantics and a
   complete process-tree filesystem oracle, then run positive/negative controls
   and the relocated/offline product corpus. The current owned collector lacks
   authoritative path/FD/backing/port bindings. Guest SIP remains enabled; native
