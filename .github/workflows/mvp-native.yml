@@ -4,6 +4,13 @@ on:
   push:
     branches: ['codex/mvp-r04-docs']
   workflow_dispatch:
+    inputs:
+      target:
+        description: Native GNU Linux acceptance cell
+        type: choice
+        options: [x86_64, aarch64, both]
+        default: x86_64
+        required: true
 
 permissions:
   contents: read
@@ -13,12 +20,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  linux-x86_64:
-    name: GNU Linux x86_64 / native compact acceptance
-    runs-on: ubuntu-24.04
+  linux:
+    name: GNU Linux ${{ matrix.architecture }} / native compact acceptance
+    strategy:
+      fail-fast: false
+      matrix:
+        include: >-
+          ${{ fromJSON(
+            inputs.target == 'both' && '[{"architecture":"x86_64","runner":"ubuntu-24.04","target":"x86_64-unknown-linux-gnu"},{"architecture":"aarch64","runner":"ubuntu-24.04-arm","target":"aarch64-unknown-linux-gnu"}]' ||
+            inputs.target == 'aarch64' && '[{"architecture":"aarch64","runner":"ubuntu-24.04-arm","target":"aarch64-unknown-linux-gnu"}]' ||
+            '[{"architecture":"x86_64","runner":"ubuntu-24.04","target":"x86_64-unknown-linux-gnu"}]'
+          ) }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
     env:
-      GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ github.run_id }}-${{ github.run_attempt }}
+      GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ matrix.architecture }}-${{ github.run_id }}-${{ github.run_attempt }}
+      GLUE_MVP_CI_EXPECT_TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -34,7 +51,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: mvp-native-linux-x86_64-${{ github.run_id }}-${{ github.run_attempt }}
+          name: mvp-native-linux-${{ matrix.architecture }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ env.GLUE_MVP_CI_ROOT }}/evidence
           if-no-files-found: error
           retention-days: 14

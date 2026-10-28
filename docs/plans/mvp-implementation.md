@@ -37,45 +37,101 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
-## 28 October: source-grounded paired BSD outcomes
+## 28 October: arm benchmark input repair and main delivery
 
-The independent `codex/mvp-r02-owned-bsd-outcomes` branch starts at merged main
-`d1f0e3f`. Decision `ab8f7fe` precedes implementation `29f8881`.
-`decode_owned_bsd_outcomes` directly invokes fixed `pair_raw_owned` on original
-static bytes and the bounded event iterable. Exact contract identity, complete
-transport and unambiguous pairing finish before decoding; caller-created pairs,
-profiles and calibration assertions are not accepted inputs.
+PR #89 merged to `main` as `d1f0e3f`; PR #90 merged into its already-closed base
+as `421cd68`, rather than `main`. The new
+`codex/mvp-v02-arm64-acceptance-repair` branch starts from `main` and integrates
+that reviewed tree. Subsequent PRs target `main` explicitly. All eighteen PR #90
+portable checks passed at `8110478`.
 
-Pinned XNU LP64 rules interpret 143 signed32 `int`, sixteen signed64
-`user_ssize_t` and two unsigned64 `user_addr_t` declarations. Canonical widening,
-secondary-zero and provider failure tuples are checked without masking. Private
-positive kernel codes remain supported without an ELAST cap; successful signed
-minus-one differs from failure. ERESTART/EJUSTRETURN, malformed and unknown
-outcomes remain unsupported with original pairs/reasons. Immutable source
-retains all BSD/Mach phases, entry requirements and lifecycle data. All results
-remain incomplete with native ABI, successful-effect ordering, object binding,
-state feed and acceptance unresolved. Existing readers, collector, assessment,
-inspector, state engines and native kits are unchanged.
+Native run [40722874852](https://github.com/JBlaschke/glue_rs/actions/runs/40722874852)
+at that source records 24 passing case receipts and five successful benchmark
+executions. Lua project/native and Node budget enforcement pass. Both Python
+budgets fail on archive bytes and seek calls. The source variants each add
+exactly 1,930,282 archive bytes against the accepted observations, including the
+empty-runtime variant; CPython 3.13.16 and 86,219,627 runtime bytes are unchanged.
+The 10,000-source-entry scale delta remains 3,810,000 archive bytes, and other
+structural scaling checks pass. The ordinary prepared environment seeds 889
+pip-related entries. Historical records do not prove the old environment kind;
+the recorded payload shape lacks that pip content.
 
-All 27 controls pass on Python 3.15.2 and 3.9.6. Frozen receipt
-`.evidence-local/controls/owned-bsd-outcomes-20261028/attempt-02` indexes fourteen
-payloads; manifest SHA256 is
-`e26db71d665fdda97226522a08d30c4a70b589ea51ed87334b8010601c3f1e1f`.
-Six watched identities remain unchanged. Initial development reused a mutable
-Mach fixture frame; only test serialization changed and that failure is retained.
-Provider/generator/errno bytes and normal TLS-verified fetch records are in
-`.evidence-local/bsd-outcomes-source-20261028`; a local urllib CA failure is
-retained separately, and no TLS check was disabled.
+Artifact `12833115712` is 153,581,348 bytes, SHA256
+`46f2daef647ddd1ed734c34f4df35187250aad99b45adff4951a8d6e63c6142a`.
+The ignored `.evidence-local/native-linux-arm64-40722874852` retains that verified
+ZIP, 4,803 extracted files/696,985,529 bytes, complete inventory and exact pure
+budget-check replay. Root independently verifies the ZIP, diagnostic manifest
+and every extracted member. Complete raw oracle/rank replay remains pending.
 
-Independent review at `.evidence-local/peer/bsd-outcomes-semantic-review-20261028`
-finds no open issues; report SHA256 is
-`dc90c10cf4a5f78ca26bbcc0d21bddc50585d93d8287244678ef011cdcb6a0a5`.
-Root verifies the inventory, helper/public-source hashes and complete report.
-Physical source-line references were corrected in README/decision only, with a
-separate addendum; no behavioral rerun was needed. CI adds one invocation for
-45 Python scripts here (48 with independent arm repair PR #91). Shell syntax and
-staged diff checks pass. Hosted CI proceeds independently; no native capture,
-VM/SIP change, full Darwin acceptance or M2 closure is claimed.
+Decision `b963190` precedes implementation `d510e94`. Closed profiles select
+`ordinary-no-pip` only for arm Python benchmarks, implemented by the ordinary
+venv tool with `--copies --without-pip`. Every supplied package/native fixture
+remains included; this is input preparation, never product package filtering.
+All 24 application cases keep seeded `ordinary`, x86 remains unchanged and the
+entire accepted budget directory is byte-identical to `8110478`. No costs are
+subtracted or limits regenerated. The retained acceptance plan and environment
+receipts identify the selected input kind.
+
+Twenty planner/runner controls, four preparation controls (including real local
+seeded/unseeded venvs), Bash/sh syntax and diff checks pass. CI adds one invocation
+for 47 Python scripts. Frozen receipts are
+`.evidence-local/controls/arm64-benchmark-inputs-20261028-final`; an initial
+descriptor-link assertion failed only on macOS `/var` versus `/private/var`
+aliasing and remains preserved separately. The expected path now resolves both
+sides; both actual venv controls already passed that initial run. No full Rust
+suite was repeated for this Python/shell change; hosted checks proceed with the
+new PR. Independent source review finds no actionable issue after that correction.
+Fresh native enforcement/replay, external retention and full Darwin/M2 remain
+open; no VM or SIP change occurred.
+
+## 28 October: native GNU Linux arm64 acceptance automation
+
+The separate `codex/mvp-v02-native-linux-arm64` branch starts at diagnostic
+milestone PR #89 (`e23e435`), which targets `main`. Decision `0ac9bca` precedes
+implementation `3698ae4`. The workflow dispatch selects native x86_64, aarch64 or
+both; default x86 behavior, all 24 cases, five reviewed budgets, offline namespaces,
+full-tree syscall tracing, negative controls and independent rank/receipt checks
+remain. Every preparation and execution boundary consumes the selected native
+target. Summary closure now checks retained runtime/case/host and benchmark/budget
+identities as well as complete status tables and verified trace policy.
+
+The separate 24-package arm conda lock has SHA256
+`00aaae52c34621dd53def446d467b2bcef65e68a78dcc53aa818e6fedee463ae`.
+Original x86 lock SHA256 remains
+`6b5e2771379581b5010976ae9a47ce0b691a02932b529478b8eab2f615d4164c`.
+The arm micromamba archive is independently verified, and all compressed package
+SHA256/MD5/size identities match official metadata. A verified Mac resolver ran
+only a cross-platform metadata dry-run; no Linux runtime was executed locally.
+Both selected arm PBS archives also match official SHA256SUMS and asset digests.
+The ignored preparation record has 146 indexed payloads/814,897,859 bytes plus
+the manifest, SHA256
+`14f9fec7686ed31513aafec3e1eba8d241a1722932c8f72650cd3a74596f0c42`.
+
+The twenty new runner/planner controls pass on Python 3.15.2 and 3.9.6; seven
+existing tracer controls and three selected budget controls pass. Bash syntax,
+actionlint and diff checks pass. The thirteen conda controls pass with native
+effects mocked, covering both profiles, exact replay/resolution, offline install,
+target receipts and refusal before side effects. Frozen records remain under
+`.evidence-local/native-linux-arm64-automation/final-01` and
+`.evidence-local/provisioning/native-conda-controls-20261028` (earlier development
+attempts retained separately).
+
+Full `sh scripts/ci-portable.sh baseline` passes locally on macOS arm64, with
+`CARGO_BUILD_JOBS=2`, `RUST_TEST_THREADS=2` and bytecode disabled. It includes all
+46 Python scripts, workspace tests, formatting and pinned all-target Clippy;
+ten watched source/context files and HEAD remain unchanged during the run.
+The complete record is
+`.evidence-local/controls/native-linux-arm64-baseline-20261028`.
+
+Independent reviews in `.evidence-local/peer/native-linux-arm64-runner-20261028`
+and `.evidence-local/peer/native-conda-generalization-20261028` find no actionable
+issues and bind the exact frozen sources. The former also replays the new pure
+summary against real recovered x86 metadata: all 24 cases, five benchmarks and
+trace policy pass, without executing recorded commands. The latter independently
+rehashes all arm packages/tool and verifies preserved x86 inputs. Root verifies
+the retained inventories and reads both reports. Fresh native arm64 execution,
+complete independent replay and external retention remain pending; these source
+checks do not establish acceptance, change guest SIP or close M2.
 
 ## 28 October: standalone owned-trace inspector
 
@@ -125,6 +181,48 @@ At the background snapshot, PR #86 at `d4cd4dc` and PR #87 at `a42cdff` each hav
 18 successful push/PR checks. Their completion was not a prerequisite for starting
 the next feature. Merge order is #86, #87, then this dependent inspector PR;
 the new PR's CI is tracked independently without holding subsequent work.
+
+## 28 October: source-grounded paired BSD outcomes
+
+The independent `codex/mvp-r02-owned-bsd-outcomes` branch starts at merged main
+`d1f0e3f`. Decision `ab8f7fe` precedes implementation `29f8881`.
+`decode_owned_bsd_outcomes` directly invokes fixed `pair_raw_owned` on original
+static bytes and the bounded event iterable. Exact contract identity, complete
+transport and unambiguous pairing finish before decoding; caller-created pairs,
+profiles and calibration assertions are not accepted inputs.
+
+Pinned XNU LP64 rules interpret 143 signed32 `int`, sixteen signed64
+`user_ssize_t` and two unsigned64 `user_addr_t` declarations. Canonical widening,
+secondary-zero and provider failure tuples are checked without masking. Private
+positive kernel codes remain supported without an ELAST cap; successful signed
+minus-one differs from failure. ERESTART/EJUSTRETURN, malformed and unknown
+outcomes remain unsupported with original pairs/reasons. Immutable source
+retains all BSD/Mach phases, entry requirements and lifecycle data. All results
+remain incomplete with native ABI, successful-effect ordering, object binding,
+state feed and acceptance unresolved. Existing readers, collector, assessment,
+inspector, state engines and native kits are unchanged.
+
+All 27 controls pass on Python 3.15.2 and 3.9.6. Frozen receipt
+`.evidence-local/controls/owned-bsd-outcomes-20261028/attempt-02` indexes fourteen
+payloads; manifest SHA256 is
+`e26db71d665fdda97226522a08d30c4a70b589ea51ed87334b8010601c3f1e1f`.
+Six watched identities remain unchanged. Initial development reused a mutable
+Mach fixture frame; only test serialization changed and that failure is retained.
+Provider/generator/errno bytes and normal TLS-verified fetch records are in
+`.evidence-local/bsd-outcomes-source-20261028`; a local urllib CA failure is
+retained separately, and no TLS check was disabled.
+
+Independent review at `.evidence-local/peer/bsd-outcomes-semantic-review-20261028`
+finds no open issues; report SHA256 is
+`dc90c10cf4a5f78ca26bbcc0d21bddc50585d93d8287244678ef011cdcb6a0a5`.
+Root verifies the inventory, helper/public-source hashes and complete report.
+Physical source-line references were corrected in README/decision only, with a
+separate addendum; no behavioral rerun was needed. CI adds one invocation for
+48 Python scripts after merged arm repair PR #91 (49 with entry ABI PR #93).
+Shell syntax and
+staged diff checks pass. Hosted CI proceeds independently; no native capture,
+VM/SIP change, full Darwin acceptance or M2 closure is claimed.
+
 
 ## 28 October: owned request assessment
 
