@@ -1,5 +1,27 @@
 # Implementation progress
 
+## Native arm benchmark repair and main integration — 28 October 2026
+
+PR #89 reached `main` at `d1f0e3f`. PR #90 passed all eighteen portable checks but
+merged into its closed feature base at `421cd68`, leaving its automation absent
+from `main`. The new `codex/mvp-v02-arm64-acceptance-repair` milestone starts from
+`main` and includes that reviewed tree; its PR targets `main` explicitly.
+
+[Native arm run 40722874852](https://github.com/JBlaschke/glue_rs/actions/runs/40722874852)
+records 24 passing application receipts and five successful benchmark executions.
+Two Python budget checks fail: the prepared ordinary environment includes pip,
+adding about 1.93 MB to every archive and exceeding archive/seek limits. Source
+scaling, runtime/native/file counts and the three Lua/Node budgets pass. Complete
+independent raw replay remains pending; the failed capture stays intact locally.
+
+Decision `b963190` and implementation `d510e94` make arm Python benchmark inputs
+explicitly pip-free ordinary venvs. All 24 application cases retain their seeded
+ordinary environments, and x86 behavior and every accepted budget byte remain
+unchanged. Twenty planner/runner controls and four preparation controls pass,
+including actual seeded/unseeded venv execution; shell syntax and diff checks
+pass. CI now invokes 47 Python scripts. A fresh native run must prove the repair;
+there is no automatic budget refreeze, extraction exemption or M2 closure.
+
 ## Native GNU Linux arm64 acceptance automation — 28 October 2026
 
 Decision `0ac9bca` and implementation `3698ae4` on

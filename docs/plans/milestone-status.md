@@ -15,15 +15,16 @@ commits, tests, target scope and evidence limits.
 
 ## Current work
 
-1. Consolidate the reviewed owned request assessment and standalone inspector
-   into `main`. PRs #87/#88 merged into their stacked feature bases; the milestone
-   integration targets `main` explicitly. Their exact implementation head passed
-   all eighteen push/PR portable checks.
-2. Run the new native Linux arm64 acceptance automation, replacing missing
-   evidence with a reproducible fresh run. Implementation `3698ae4` adds exact
-   target-matched inputs, the complete 24-case corpus and all five budgets.
-   Portable controls, full local baseline and independent source reviews pass;
-   fresh native execution and separately retained replay remain pending.
+1. The diagnostic milestone reached `main` through PR #89 at `d1f0e3f`. The arm
+   automation PR #90 merged into its closed feature base; the repair milestone
+   includes it in a new PR targeting `main` explicitly. Its eighteen portable
+   checks pass.
+2. Finish the native Linux arm64 acceptance rerun. Run `40722874852` records all
+   24 application receipts passing, but the two Python budgets fail after pip
+   seeding enlarged the benchmark inputs. Implementation `d510e94` makes that
+   input choice explicit for arm benchmarks while retaining seeded application
+   cases and all accepted limits. Fresh enforcement and complete independently
+   retained replay remain pending.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export

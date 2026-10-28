@@ -110,6 +110,15 @@ provisioning, and artifacts and final summaries retain the selected target.
 The arm64 automation requires a fresh passing native result and retained replay;
 portable controls alone do not establish it.
 
+The arm Python benchmark profile explicitly prepares ordinary pip-free venvs
+(`ordinary-no-pip`); x86 benchmarks retain ordinary seeded venvs. All 24
+application acceptance cases continue to use seeded ordinary environments.
+This binds benchmark input content to its reviewed cost profile without changing
+the supplied application/native corpus or any accepted limit. The preparation
+receipt and acceptance plan retain that choice. Run `40722874852` demonstrated
+the mismatch with seeded arm benchmark inputs and remains a failed result until
+a fresh run proves enforcement and independent replay.
+
 Both Linux profiles use the explicitly recorded
 [trace environment policy](../../docs/decisions/mvp-v02-ci-trace-environment.md)
 to disable kernel asynchronous I/O before every case/reference/control and

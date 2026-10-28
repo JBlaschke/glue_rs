@@ -37,6 +37,53 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 28 October: arm benchmark input repair and main delivery
+
+PR #89 merged to `main` as `d1f0e3f`; PR #90 merged into its already-closed base
+as `421cd68`, rather than `main`. The new
+`codex/mvp-v02-arm64-acceptance-repair` branch starts from `main` and integrates
+that reviewed tree. Subsequent PRs target `main` explicitly. All eighteen PR #90
+portable checks passed at `8110478`.
+
+Native run [40722874852](https://github.com/JBlaschke/glue_rs/actions/runs/40722874852)
+at that source records 24 passing case receipts and five successful benchmark
+executions. Lua project/native and Node budget enforcement pass. Both Python
+budgets fail on archive bytes and seek calls. The source variants each add
+exactly 1,930,282 archive bytes against the accepted observations, including the
+empty-runtime variant; CPython 3.13.16 and 86,219,627 runtime bytes are unchanged.
+The 10,000-source-entry scale delta remains 3,810,000 archive bytes, and other
+structural scaling checks pass. The ordinary prepared environment seeds 889
+pip-related entries. Historical records do not prove the old environment kind;
+the recorded payload shape lacks that pip content.
+
+Artifact `12833115712` is 153,581,348 bytes, SHA256
+`46f2daef647ddd1ed734c34f4df35187250aad99b45adff4951a8d6e63c6142a`.
+The ignored `.evidence-local/native-linux-arm64-40722874852` retains that verified
+ZIP, 4,803 extracted files/696,985,529 bytes, complete inventory and exact pure
+budget-check replay. Root independently verifies the ZIP, diagnostic manifest
+and every extracted member. Complete raw oracle/rank replay remains pending.
+
+Decision `b963190` precedes implementation `d510e94`. Closed profiles select
+`ordinary-no-pip` only for arm Python benchmarks, implemented by the ordinary
+venv tool with `--copies --without-pip`. Every supplied package/native fixture
+remains included; this is input preparation, never product package filtering.
+All 24 application cases keep seeded `ordinary`, x86 remains unchanged and the
+entire accepted budget directory is byte-identical to `8110478`. No costs are
+subtracted or limits regenerated. The retained acceptance plan and environment
+receipts identify the selected input kind.
+
+Twenty planner/runner controls, four preparation controls (including real local
+seeded/unseeded venvs), Bash/sh syntax and diff checks pass. CI adds one invocation
+for 47 Python scripts. Frozen receipts are
+`.evidence-local/controls/arm64-benchmark-inputs-20261028-final`; an initial
+descriptor-link assertion failed only on macOS `/var` versus `/private/var`
+aliasing and remains preserved separately. The expected path now resolves both
+sides; both actual venv controls already passed that initial run. No full Rust
+suite was repeated for this Python/shell change; hosted checks proceed with the
+new PR. Independent source review finds no actionable issue after that correction.
+Fresh native enforcement/replay, external retention and full Darwin/M2 remain
+open; no VM or SIP change occurred.
+
 ## 28 October: native GNU Linux arm64 acceptance automation
 
 The separate `codex/mvp-v02-native-linux-arm64` branch starts at diagnostic
