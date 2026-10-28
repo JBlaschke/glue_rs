@@ -1,5 +1,28 @@
 # Implementation progress
 
+## Native GNU Linux arm64 acceptance automation — 28 October 2026
+
+Decision `0ac9bca` and implementation `3698ae4` on
+`codex/mvp-v02-native-linux-arm64` extend the existing native runner to a matching
+Ubuntu arm64 host. Closed profiles bind all runtime archives, wheel platform,
+Node config, library roots, conda lock, tracer and budget identities. Both cells
+retain 24 cases and five 10,000-entry first/warm 1/32-rank benchmarks. Wrong-host
+requests fail before provisioning; final summaries reject incomplete or
+misidentified retained results. Original x86 input bytes and defaults remain.
+
+The independently resolved arm conda closure and PBS archives match official
+metadata and complete compressed-file hashes. Twenty planner/runner controls,
+thirteen conda controls, existing selected tracer/budget checks, shell syntax and
+actionlint pass. The full local portable baseline also passes with all 46 Python
+scripts, workspace tests, formatting and pinned all-target Clippy. Both independent
+source reviews find no actionable issue; the new pure summary replays the
+retained x86 metadata successfully (24 cases/five benchmarks).
+
+The feature is stacked on diagnostic milestone PR #89, whose eighteen portable
+checks pass. Fresh arm64 native execution and independent retained replay are
+still required. Full Darwin oracle/corpus, Mac budgets, external retention and
+M2 remain open; guest SIP stays enabled.
+
 ## Diagnostic milestone integration and remaining work — 28 October 2026
 
 The [milestone overview](plans/milestone-status.md) records M0 foundations and M1
