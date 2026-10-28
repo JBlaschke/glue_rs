@@ -1,5 +1,31 @@
 # Implementation progress
 
+## Bounded standalone trace inspector — 28 October 2026
+
+Decision `68444b6` and implementation `baa6508` on
+`codex/mvp-r02-owned-trace-inspector` add an operator command around the assessment.
+It accepts exactly four separately supplied diagnostic files, validates numeric
+ownership/modes, fixed bounds and held file/path identities before and after
+reading, and closes every input before constructing output. Symlink/terminal-dot
+root aliases, extra names, special files, mutations and close failures refuse.
+Reports bind input hashes/counts but retain caller-unverified origin, incomplete
+status and false native/export/acceptance/state-feed fields.
+
+All 25 synthetic CLI controls and 16 unchanged assessment controls pass on
+macOS arm64/Python 3.15.2. The persistent 39-file receipt and seven-file independent
+peer review verify exact commands, outputs, source stability and boundary checks;
+no findings remain. CI adds exactly one invocation, making 44 Python scripts.
+Shell syntax and staged diff checks pass. Full hosted CI proceeds independently.
+The [checkpoint](plans/mvp-implementation.md#28-october-standalone-owned-trace-inspector)
+records exact identities, assumptions and preserved development attempts.
+
+[Retention PR #86](https://github.com/JBlaschke/glue_rs/pull/86) and
+[assessment PR #87](https://github.com/JBlaschke/glue_rs/pull/87) both pass all
+18 push/PR checks at their reviewed heads. This inspector branch is stacked on
+#87; merge #86, then #87, then the inspector PR. Guest SIP stays enabled. Complete
+Darwin oracle/state integration and native corpus, Mac budgets and external
+evidence retention remain required for M2.
+
 ## Integrated owned request assessment — 28 October 2026
 
 Decision `724955e` and implementation `84634eb` on
@@ -23,7 +49,8 @@ This branch is stacked on [retention PR #86](https://github.com/JBlaschke/glue_r
 merge that first. A fresh post-crash audit also confirms its entire archive and
 prepared/restored copies remain intact. Exact records and remaining gaps are in
 the [assessment checkpoint](plans/mvp-implementation.md#28-october-owned-request-assessment).
-The next feature adds bounded physical input handling and an operator command.
+The dependent inspector checkpoint above records physical input handling and
+the operator command on its own branch.
 
 ## Recovered x86 evidence retained locally — 28 October 2026
 
