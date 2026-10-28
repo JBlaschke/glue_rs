@@ -1,5 +1,77 @@
 # Implementation progress
 
+## Diagnostic milestone integration and remaining work — 28 October 2026
+
+The [milestone overview](plans/milestone-status.md) records M0 foundations and M1
+development preview as delivered, M2 native compact MVP as active, and M3/M4 as
+planned. Original acceptance work remains concentrated in R02/R03/R04.
+
+PRs #87 and #88 merged into their feature bases after retention PR #86 reached
+`main`; their implementation was therefore absent from `main` at `a0a8146`.
+The `codex/mvp-r02-diagnostic-milestone` branch merges the reviewed diagnostic
+stack through `dcc2e7e`, targeting `main` explicitly. Its integration tree equals
+the tested `8d221c4` tree byte-for-byte before these status-document additions.
+Independent review verifies ancestry, source pins and all eighteen successful
+checks at that exact implementation head. No runtime change or duplicate suite
+run is needed for this ancestry-only integration; CI proceeds in the new PR.
+
+Next implementation is native Linux arm64 acceptance automation with exact
+target-matched inputs and the complete corpus/budgets. Full Darwin implementation
+and native acceptance, Mac budgets and externally retained evidence remain open.
+Guest SIP stays enabled.
+
+## Bounded standalone trace inspector — 28 October 2026
+
+Decision `68444b6` and implementation `baa6508` on
+`codex/mvp-r02-owned-trace-inspector` add an operator command around the assessment.
+It accepts exactly four separately supplied diagnostic files, validates numeric
+ownership/modes, fixed bounds and held file/path identities before and after
+reading, and closes every input before constructing output. Symlink/terminal-dot
+root aliases, extra names, special files, mutations and close failures refuse.
+Reports bind input hashes/counts but retain caller-unverified origin, incomplete
+status and false native/export/acceptance/state-feed fields.
+
+All 25 synthetic CLI controls and 16 unchanged assessment controls pass on
+macOS arm64/Python 3.15.2. The persistent 39-file receipt and seven-file independent
+peer review verify exact commands, outputs, source stability and boundary checks;
+no findings remain. CI adds exactly one invocation, making 44 Python scripts.
+Shell syntax and staged diff checks pass. Full hosted CI proceeds independently.
+The [checkpoint](plans/mvp-implementation.md#28-october-standalone-owned-trace-inspector)
+records exact identities, assumptions and preserved development attempts.
+
+[Retention PR #86](https://github.com/JBlaschke/glue_rs/pull/86) and
+[assessment PR #87](https://github.com/JBlaschke/glue_rs/pull/87) both pass all
+18 push/PR checks at their reviewed heads. This inspector branch is stacked on
+#87; merge #86, then #87, then the inspector PR. Guest SIP stays enabled. Complete
+Darwin oracle/state integration and native corpus, Mac budgets and external
+evidence retention remain required for M2.
+
+## Integrated owned request assessment — 28 October 2026
+
+Decision `724955e` and implementation `84634eb` on
+`codex/mvp-r02-owned-request-assessment` add one raw-input diagnostic API.
+It combines complete owned transport validation, all 161 BSD source contracts
+and conservative common-open flag classification. Frozen requests link their
+original phases; failed/unpaired attempts, unknown calls and unsupported returns
+remain visible. All twelve route families and Mach/lifecycle coverage retain
+explicit gaps. Every result stays incomplete with false extraction/state-feed
+eligibility; no descriptor/path identity or output exemption is inferred.
+
+The crash preserved all three source files and the CI edit byte-for-byte, but
+removed temporary test records. A fresh run on macOS arm64/Python 3.15.2 passes
+all 16 controls with the exact future-CI argv. Its 30-file receipt and independent
+seven-file peer review now live under ignored `.evidence-local`, with ten source
+identities unchanged. Portable baseline adds one invocation, making 43 scripts.
+Shell syntax and diff checks pass. Full hosted checks proceed independently in
+the PR; no new Rust/native acceptance run is claimed.
+
+This branch is stacked on [retention PR #86](https://github.com/JBlaschke/glue_rs/pull/86);
+merge that first. A fresh post-crash audit also confirms its entire archive and
+prepared/restored copies remain intact. Exact records and remaining gaps are in
+the [assessment checkpoint](plans/mvp-implementation.md#28-october-owned-request-assessment).
+The dependent inspector checkpoint above records physical input handling and
+the operator command on its own branch.
+
 ## Recovered x86 evidence retained locally — 28 October 2026
 
 The owner merged PR #41 and the runnable examples into `main` at `8097be0`.
