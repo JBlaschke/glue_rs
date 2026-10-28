@@ -1,0 +1,45 @@
+{
+  "schema": "glue-native-linux-acceptance-record-v1",
+  "recorded_date": "2026-10-28",
+  "target": "aarch64-unknown-linux-gnu",
+  "source_head": "30e8d080500de2bd6646c1c68d814eb80208f5f8",
+  "run": {
+    "id": 40754980497,
+    "url": "https://github.com/JBlaschke/glue_rs/actions/runs/40754980497",
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 12846133526,
+    "name": "mvp-native-linux-aarch64-40754980497-1",
+    "bytes": 152530427,
+    "sha256": "0a9ec878b10a3f2d22e87d444f28491f36d684fb101e1d14af5f933fd3b57137",
+    "expires_at": "2026-11-11T19:46:11Z",
+    "url": "https://github.com/JBlaschke/glue_rs/actions/runs/40754980497/artifacts/12846133526"
+  },
+  "raw_inventory": {
+    "files": 4803,
+    "bytes": 694138515,
+    "manifest_sha256": "48eee2e8ee8bab300999bfa9ce78927ad2bf82e65c1a554464ec5f299a3e346b"
+  },
+  "independent_replay": {
+    "status": "passed",
+    "result_sha256": "1a16166f996b7bbae6f9ec0ca378b54307e7f845e0cae638b74a55a5569eef2e",
+    "manifest_sha256": "1179ecf82f09aafc784b00975f89d41b11b8ed1b54e0e51d7e9ca24834a4ce98",
+    "acceptance_cases": 24,
+    "benchmark_variants": 15,
+    "oracle_controls": 156,
+    "rank_results": 990,
+    "accepted_budgets": 5,
+    "python_environment_checks": 18,
+    "payload_cost_reconstructions": 15,
+    "input_identities_unchanged": true
+  },
+  "trace_environment_policy": "traceable-native-syscalls-v1",
+  "scope": "Native stock/reference, packaged, control and rank trees use the recorded syscall fallback policy; no unrestricted asynchronous-I/O-host claim.",
+  "budget_policy": "All accepted structure/I/O/FD/scaling limits enforced unchanged; time/RSS only apply at the budget host fingerprint.",
+  "external_durability_established": true,
+  "full_m2_acceptance": false,
+  "fresh_x86_same_source_run": 40758958354,
+  "release_record": "release.json",
+  "external_retention_scope": "The exact approved arm64 CI capture, inventories and portable verifier assets are published and remotely replayed; the larger local backup remains local."
+}

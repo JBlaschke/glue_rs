@@ -19,12 +19,12 @@ commits, tests, target scope and evidence limits.
    automation PR #90 merged into its closed feature base; the repair milestone
    includes it in a new PR targeting `main` explicitly. Its eighteen portable
    checks pass.
-2. Finish the native Linux arm64 acceptance rerun. Run `40722874852` records all
-   24 application receipts passing, but the two Python budgets fail after pip
-   seeding enlarged the benchmark inputs. Implementation `d510e94` makes that
-   input choice explicit for arm benchmarks while retaining seeded application
-   cases and all accepted limits. Fresh enforcement and complete independently
-   retained replay remain pending.
+2. Native arm run `40754980497` at `30e8d08` and its complete independent replay
+   pass all 24 cases and five unchanged budgets. The explicit benchmark-input
+   repair preserves seeded application cases. All raw identities and a prepared/
+   restored local bundle verify. Approved arm evidence is published and remotely
+   replayed; same-source x86 refresh `40758958354` is queued. See the
+   [arm acceptance record](../evidence/native-linux-arm64-2026-10-28/README.md).
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -41,10 +41,10 @@ the missing Darwin oracle.
 - **R03:** measure and freeze Mac deployment/startup/I/O/FD/memory and multi-rank
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
-- **R04:** recover or regenerate missing arm64/current evidence, establish
-  external durable retention, and finish the exact compatibility/sign-off record.
-  The recovered x86 archive has a verified backup outside `target`, on the same
-  host. That is local integrity protection, not external durability.
+- **R04:** finish remaining target retention and the exact current compatibility/
+  sign-off record. Arm64 evidence is regenerated, replayed, publicly retained and
+  independently downloaded/replayed. Same-source x86 refresh remains pending;
+  its older recovered archive has a verified same-host backup outside `target`.
 
 The 26 cards all have implementation commits; remaining original acceptance
 work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.

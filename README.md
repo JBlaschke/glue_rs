@@ -10,10 +10,12 @@ payloads, install dependencies or compile application modules.
 
 The 26 tasks have separate `codex/mvp-*` feature branches; the owner merged the
 combined implementation into `main` at `96e6958`. See [the task ledger and actual
-acceptance status](docs/plans/mvp-implementation.md). Native Linux x86_64 passes
-all 24 acceptance cases and five reviewed performance budgets under the recorded
-CI tracing policy. M2 remains open pending complete macOS tracing and durable
-evidence retention. The selected
+acceptance status](docs/plans/mvp-implementation.md). Recorded native Linux x86_64
+and fresh [arm64 acceptance](docs/evidence/native-linux-arm64-2026-10-28/README.md)
+each pass 24 cases and five reviewed budgets under the recorded CI tracing policy.
+Arm evidence is published and remotely replayed; a same-source x86 refresh is
+queued. M2 remains open pending complete macOS tracing, Mac budgets and final
+evidence/sign-off. The selected
 macOS policy is ad-hoc signing for development; Developer ID and notarization are
 required before public binary releases.
 

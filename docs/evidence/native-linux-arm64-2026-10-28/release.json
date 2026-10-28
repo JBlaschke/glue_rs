@@ -1,0 +1,82 @@
+{
+  "schema": "glue-published-evidence-record-v1",
+  "repository": "JBlaschke/glue_rs",
+  "release_id": 427136917,
+  "tag": "evidence-linux-arm64-2026-10-28",
+  "url": "https://github.com/JBlaschke/glue_rs/releases/tag/evidence-linux-arm64-2026-10-28",
+  "source_head": "30e8d080500de2bd6646c1c68d814eb80208f5f8",
+  "published_at": "2026-10-28T20:07:49Z",
+  "prerelease": true,
+  "owner_approval": "Explicit approval in this chat on 28 October 2026 for the prepared eight-file arm64 evidence set.",
+  "asset_count": 8,
+  "total_asset_bytes": 153582706,
+  "approved_candidate_manifest_sha256": "f14c0308d041b39e2c91b306f61ee41d635707a86d47a2619b2138037b5c75df",
+  "server_asset_hashes_verified": true,
+  "remote_download_replay_verified": true,
+  "assets": [
+    {
+      "name": "artifact.zip",
+      "bytes": 152530427,
+      "sha256": "0a9ec878b10a3f2d22e87d444f28491f36d684fb101e1d14af5f933fd3b57137",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/artifact.zip"
+    },
+    {
+      "name": "assets.sha256",
+      "bytes": 595,
+      "sha256": "6cf00a52facdea03fa85094b3d10812903185b8d9de5070c5a6e338094b110e7",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/assets.sha256"
+    },
+    {
+      "name": "compact-acceptance.json",
+      "bytes": 3275,
+      "sha256": "114926e82084bfe147264cbea5a9182d6975e426de31e47183bffb4494f7e9d8",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/compact-acceptance.json"
+    },
+    {
+      "name": "independent-replay.json",
+      "bytes": 70277,
+      "sha256": "1a16166f996b7bbae6f9ec0ca378b54307e7f845e0cae638b74a55a5569eef2e",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/independent-replay.json"
+    },
+    {
+      "name": "raw-manifest.json",
+      "bytes": 917352,
+      "sha256": "48eee2e8ee8bab300999bfa9ce78927ad2bf82e65c1a554464ec5f299a3e346b",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/raw-manifest.json"
+    },
+    {
+      "name": "README.md",
+      "bytes": 4746,
+      "sha256": "b440e7b9fe4a071c83bb9aef17f05efb69dfd45190271289b53ecc9adf373e18",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/README.md"
+    },
+    {
+      "name": "replay-tools.tar.gz",
+      "bytes": 52853,
+      "sha256": "450b2611dbd0d9fb12c10eafc2e4a50e97cb1fe3091b3788bea40431d82abe66",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/replay-tools.tar.gz"
+    },
+    {
+      "name": "source-inventory.sha256",
+      "bytes": 3181,
+      "sha256": "52028b34028150a7d3a84f90e7e916fb70e4600a5a01d24de24699b7c83cf1eb",
+      "url": "https://github.com/JBlaschke/glue_rs/releases/download/evidence-linux-arm64-2026-10-28/source-inventory.sha256"
+    }
+  ],
+  "remote_verification": {
+    "finished_utc": "2026-10-28T20:14:29.686439+00:00",
+    "result_sha256": "ca59ef3c158ffd3a29793982d7f308529a2c626b9247683d0465cad8d81cb109",
+    "manifest_sha256": "f83a411d1659573bea8f2a3333dcc1e979a9acf9012146571fb3d5b9afe4cdc8",
+    "downloaded_asset_bytes": 153582706,
+    "all_documented_offline_steps_passed": true,
+    "replay_result_sha256": "0864cca6c287ca2621b0468330c6c09a8e79394013c24d2c3c8e27c30ccc4248",
+    "verified_counts": {
+      "acceptance_cases": 24,
+      "benchmark_variants": 15,
+      "oracle_controls": 156,
+      "rank_results": 990
+    }
+  },
+  "anonymous_checksum_asset_verified": true,
+  "external_durability_established": true
+}
