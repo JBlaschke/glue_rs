@@ -182,6 +182,48 @@ At the background snapshot, PR #86 at `d4cd4dc` and PR #87 at `a42cdff` each hav
 the next feature. Merge order is #86, #87, then this dependent inspector PR;
 the new PR's CI is tracked independently without holding subsequent work.
 
+## 28 October: source-grounded paired BSD outcomes
+
+The independent `codex/mvp-r02-owned-bsd-outcomes` branch starts at merged main
+`d1f0e3f`. Decision `ab8f7fe` precedes implementation `29f8881`.
+`decode_owned_bsd_outcomes` directly invokes fixed `pair_raw_owned` on original
+static bytes and the bounded event iterable. Exact contract identity, complete
+transport and unambiguous pairing finish before decoding; caller-created pairs,
+profiles and calibration assertions are not accepted inputs.
+
+Pinned XNU LP64 rules interpret 143 signed32 `int`, sixteen signed64
+`user_ssize_t` and two unsigned64 `user_addr_t` declarations. Canonical widening,
+secondary-zero and provider failure tuples are checked without masking. Private
+positive kernel codes remain supported without an ELAST cap; successful signed
+minus-one differs from failure. ERESTART/EJUSTRETURN, malformed and unknown
+outcomes remain unsupported with original pairs/reasons. Immutable source
+retains all BSD/Mach phases, entry requirements and lifecycle data. All results
+remain incomplete with native ABI, successful-effect ordering, object binding,
+state feed and acceptance unresolved. Existing readers, collector, assessment,
+inspector, state engines and native kits are unchanged.
+
+All 27 controls pass on Python 3.15.2 and 3.9.6. Frozen receipt
+`.evidence-local/controls/owned-bsd-outcomes-20261028/attempt-02` indexes fourteen
+payloads; manifest SHA256 is
+`e26db71d665fdda97226522a08d30c4a70b589ea51ed87334b8010601c3f1e1f`.
+Six watched identities remain unchanged. Initial development reused a mutable
+Mach fixture frame; only test serialization changed and that failure is retained.
+Provider/generator/errno bytes and normal TLS-verified fetch records are in
+`.evidence-local/bsd-outcomes-source-20261028`; a local urllib CA failure is
+retained separately, and no TLS check was disabled.
+
+Independent review at `.evidence-local/peer/bsd-outcomes-semantic-review-20261028`
+finds no open issues; report SHA256 is
+`dc90c10cf4a5f78ca26bbcc0d21bddc50585d93d8287244678ef011cdcb6a0a5`.
+Root verifies the inventory, helper/public-source hashes and complete report.
+Physical source-line references were corrected in README/decision only, with a
+separate addendum; no behavioral rerun was needed. CI adds one invocation for
+48 Python scripts after merged arm repair PR #91 (49 with entry ABI PR #93).
+Shell syntax and
+staged diff checks pass. Hosted CI proceeds independently; no native capture,
+VM/SIP change, full Darwin acceptance or M2 closure is claimed.
+
+
 ## 28 October: owned request assessment
 
 `codex/mvp-r02-owned-request-assessment` is stacked on retention PR #86 at
