@@ -68,6 +68,7 @@ class NativeLinuxPlanTests(unittest.TestCase):
         self.assertEqual(profile.node_config, "fixtures/mvp/node-project/linux-x86_64.toml")
         self.assertEqual(profile.native_search, "/usr/lib/x86_64-linux-gnu")
         self.assertEqual(profile.conda_lock, "fixtures/mvp/python-matrix/conda-linux-x86_64-3.14.8.lock.json")
+        self.assertEqual(profile.benchmark_python_environment, "ordinary")
         self.assertEqual(profile.pbs312_sha256, "5864001bf969db329fadc2b654c4878c6027d170c6bd77e28f88666260bcaf63")
         self.assertEqual(profile.pbs313_sha256, "1cca1041f693f110a2e0d16417090b8996258c7a121e90eeab66c2f40ea407f2")
 
@@ -78,6 +79,7 @@ class NativeLinuxPlanTests(unittest.TestCase):
         self.assertEqual(profile.node_config, "fixtures/mvp/node-project/linux-arm64.toml")
         self.assertEqual(profile.native_search, "/usr/lib/aarch64-linux-gnu")
         self.assertEqual(profile.conda_lock, "fixtures/mvp/python-matrix/conda-linux-aarch64-3.14.8.lock.json")
+        self.assertEqual(profile.benchmark_python_environment, "ordinary-no-pip")
         self.assertEqual(profile.pbs312_sha256, "b342ccfb577fda349d0237c98b24848234ca767c10f034628a5ff9fc858d662f")
         self.assertEqual(profile.pbs313_sha256, "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34")
 
@@ -146,7 +148,8 @@ class NativeLinuxPlanTests(unittest.TestCase):
             self.assertEqual(acceptance.main(["profile", "--expected-target", "aarch64-unknown-linux-gnu"]), 0)
         fields = output.getvalue().strip().split("\t")
         self.assertEqual(fields[:4], ["aarch64", "aarch64-unknown-linux-gnu", "arm64", "linux-arm64"])
-        self.assertEqual(len(fields), 9)
+        self.assertEqual(len(fields), 10)
+        self.assertEqual(fields[-1], "ordinary-no-pip")
 
     def test_reviewed_budget_roster_and_target_paths_are_closed(self):
         index = json.loads((ROOT / "fixtures/mvp/budgets/index.json").read_text())
@@ -193,6 +196,10 @@ class NativeLinuxPlanTests(unittest.TestCase):
         self.assertLess(source.index('linux_acceptance.py profile'), source.index('mkdir -p'))
         self.assertIn('linux_acceptance.reviewed_budget_paths(profile,', source)
         self.assertIn("report['target'] != selected_target", source)
+        self.assertIn('"GLUE_MVP_PYTHON_ENV_KIND=ordinary"', source)
+        overrides = [line for line in lines if 'GLUE_MVP_PYTHON_ENV_KIND=$benchmark_python_environment' in line]
+        self.assertEqual(len(overrides), 1)
+        self.assertIn('run_benchmark "$recipe"', overrides[0])
 
     def test_dispatch_matrix_binds_selected_architectures_to_native_runners(self):
         source = (ROOT / ".github/workflows/mvp-native.yml").read_text()

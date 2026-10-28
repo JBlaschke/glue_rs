@@ -10,7 +10,7 @@ cd "$repo_dir"
 # involved in preparation. This command reads only source and native host facts.
 profile_fields=$(/usr/bin/python3 fixtures/mvp/linux_acceptance.py profile \
     --expected-target "${GLUE_MVP_CI_EXPECT_TARGET:-}")
-IFS=$'\t' read -r architecture target node_arch wheel_target node_config native_search conda_lock pbs312_sha256 pbs313_sha256 <<< "$profile_fields"
+IFS=$'\t' read -r architecture target node_arch wheel_target node_config native_search conda_lock pbs312_sha256 pbs313_sha256 benchmark_python_environment <<< "$profile_fields"
 ci_root=${GLUE_MVP_CI_ROOT:?set a new absolute directory for this CI run}
 case "$ci_root" in /*) ;; *) echo 'GLUE_MVP_CI_ROOT must be absolute' >&2; exit 2 ;; esac
 test ! -e "$ci_root"
@@ -356,7 +356,8 @@ for recipe in lua55-project lua55-native; do run_benchmark "$recipe"; done
 run_benchmark node-cjs "GLUE_MVP_NODE_RUNTIME=$ci_root/runtimes/node-v24.22.0-linux-$node_arch"
 for recipe in python-source-normalized python-native-normalized; do
     run_benchmark "$recipe" "GLUE_MVP_PYTHON_ROOT=$ci_root/runtimes/python-3.13.16" \
-        "GLUE_MVP_PYTHON_RELATIVE=bin/python3.13" "GLUE_MVP_PYTHON_SITE=$ci_root/inputs/python-cp313/site"
+        "GLUE_MVP_PYTHON_RELATIVE=bin/python3.13" "GLUE_MVP_PYTHON_SITE=$ci_root/inputs/python-cp313/site" \
+        "GLUE_MVP_PYTHON_ENV_KIND=$benchmark_python_environment"
 done
 
 exit "$overall"

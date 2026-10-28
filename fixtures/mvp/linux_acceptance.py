@@ -34,6 +34,7 @@ class LinuxProfile:
     conda_lock: str
     pbs312_sha256: str
     pbs313_sha256: str
+    benchmark_python_environment: str
 
 
 _PROFILES = (
@@ -41,12 +42,14 @@ _PROFILES = (
                  "fixtures/mvp/node-project/linux-x86_64.toml", "/usr/lib/x86_64-linux-gnu",
                  "fixtures/mvp/python-matrix/conda-linux-x86_64-3.14.8.lock.json",
                  "5864001bf969db329fadc2b654c4878c6027d170c6bd77e28f88666260bcaf63",
-                 "1cca1041f693f110a2e0d16417090b8996258c7a121e90eeab66c2f40ea407f2"),
+                 "1cca1041f693f110a2e0d16417090b8996258c7a121e90eeab66c2f40ea407f2",
+                 "ordinary"),
     LinuxProfile("aarch64", "aarch64-unknown-linux-gnu", "arm64", "linux-arm64",
                  "fixtures/mvp/node-project/linux-arm64.toml", "/usr/lib/aarch64-linux-gnu",
                  "fixtures/mvp/python-matrix/conda-linux-aarch64-3.14.8.lock.json",
                  "b342ccfb577fda349d0237c98b24848234ca767c10f034628a5ff9fc858d662f",
-                 "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34"),
+                 "397ca401f416c3c99330a6be16d735d0cbeaf53e82070b80395b2fb4a8891f34",
+                 "ordinary-no-pip"),
 )
 
 
