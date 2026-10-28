@@ -100,7 +100,17 @@ an oracle that simply rejects every trace. The receipt checker re-parses raw
 traces and checks retained trace hashes. `scripts/check-mvp-trace.py` exposes the
 same oracle for independent operator captures.
 
-Hosted Linux x86_64 CI uses the explicitly recorded
+Hosted native GNU Linux CI supports x86_64 and arm64 through closed,
+host-matched profiles. Dispatch `mvp-native.yml` with `target=x86_64`,
+`target=aarch64` or `target=both`; the default remains x86_64. Every selected
+cell requires the complete 24-case corpus and all five reviewed target budgets.
+Target-specific Node/PBS/wheel inputs and the exact CPython 3.14 conda closure
+are prepared independently before packaging. Foreign hosts refuse before
+provisioning, and artifacts and final summaries retain the selected target.
+The arm64 automation requires a fresh passing native result and retained replay;
+portable controls alone do not establish it.
+
+Both Linux profiles use the explicitly recorded
 [trace environment policy](../../docs/decisions/mvp-v02-ci-trace-environment.md)
 to disable kernel asynchronous I/O before every case/reference/control and
 benchmark rank. These results cover the runtime's syscall fallback in that

@@ -37,6 +37,55 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 28 October: native GNU Linux arm64 acceptance automation
+
+The separate `codex/mvp-v02-native-linux-arm64` branch starts at diagnostic
+milestone PR #89 (`e23e435`), which targets `main`. Decision `0ac9bca` precedes
+implementation `3698ae4`. The workflow dispatch selects native x86_64, aarch64 or
+both; default x86 behavior, all 24 cases, five reviewed budgets, offline namespaces,
+full-tree syscall tracing, negative controls and independent rank/receipt checks
+remain. Every preparation and execution boundary consumes the selected native
+target. Summary closure now checks retained runtime/case/host and benchmark/budget
+identities as well as complete status tables and verified trace policy.
+
+The separate 24-package arm conda lock has SHA256
+`00aaae52c34621dd53def446d467b2bcef65e68a78dcc53aa818e6fedee463ae`.
+Original x86 lock SHA256 remains
+`6b5e2771379581b5010976ae9a47ce0b691a02932b529478b8eab2f615d4164c`.
+The arm micromamba archive is independently verified, and all compressed package
+SHA256/MD5/size identities match official metadata. A verified Mac resolver ran
+only a cross-platform metadata dry-run; no Linux runtime was executed locally.
+Both selected arm PBS archives also match official SHA256SUMS and asset digests.
+The ignored preparation record has 146 indexed payloads/814,897,859 bytes plus
+the manifest, SHA256
+`14f9fec7686ed31513aafec3e1eba8d241a1722932c8f72650cd3a74596f0c42`.
+
+The twenty new runner/planner controls pass on Python 3.15.2 and 3.9.6; seven
+existing tracer controls and three selected budget controls pass. Bash syntax,
+actionlint and diff checks pass. The thirteen conda controls pass with native
+effects mocked, covering both profiles, exact replay/resolution, offline install,
+target receipts and refusal before side effects. Frozen records remain under
+`.evidence-local/native-linux-arm64-automation/final-01` and
+`.evidence-local/provisioning/native-conda-controls-20261028` (earlier development
+attempts retained separately).
+
+Full `sh scripts/ci-portable.sh baseline` passes locally on macOS arm64, with
+`CARGO_BUILD_JOBS=2`, `RUST_TEST_THREADS=2` and bytecode disabled. It includes all
+46 Python scripts, workspace tests, formatting and pinned all-target Clippy;
+ten watched source/context files and HEAD remain unchanged during the run.
+The complete record is
+`.evidence-local/controls/native-linux-arm64-baseline-20261028`.
+
+Independent reviews in `.evidence-local/peer/native-linux-arm64-runner-20261028`
+and `.evidence-local/peer/native-conda-generalization-20261028` find no actionable
+issues and bind the exact frozen sources. The former also replays the new pure
+summary against real recovered x86 metadata: all 24 cases, five benchmarks and
+trace policy pass, without executing recorded commands. The latter independently
+rehashes all arm packages/tool and verifies preserved x86 inputs. Root verifies
+the retained inventories and reads both reports. Fresh native arm64 execution,
+complete independent replay and external retention remain pending; these source
+checks do not establish acceptance, change guest SIP or close M2.
+
 ## 28 October: standalone owned-trace inspector
 
 The separate `codex/mvp-r02-owned-trace-inspector` branch stacks on assessment
