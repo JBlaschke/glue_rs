@@ -31,7 +31,8 @@ acceptance false. No object/path/FD/rights binding, state-engine update, native
 capture/export admission or SIP change is added. Native ABI calibration and
 complete semantics remain separate required acceptance work.
 
-Source evidence: systrace.c lines 187–255/261–320, makesyscalls.sh 620–647 and
-errno.h 255–270, with exact hashes and public links in the feature README.
+Source evidence: systrace.c lines 216–257/300–341 (primary duplication 275/343),
+makesyscalls.sh 648–658 and errno.h 275–293, with exact hashes and public links
+in the feature README.
 Portable controls use independent serialized raw fixtures and literal return
 rosters; malformed/late input cannot yield a prefix. Native testing is not claimed.
