@@ -1,5 +1,25 @@
 # Implementation progress
 
+## Diagnostic milestone integration and remaining work — 28 October 2026
+
+The [milestone overview](plans/milestone-status.md) records M0 foundations and M1
+development preview as delivered, M2 native compact MVP as active, and M3/M4 as
+planned. Original acceptance work remains concentrated in R02/R03/R04.
+
+PRs #87 and #88 merged into their feature bases after retention PR #86 reached
+`main`; their implementation was therefore absent from `main` at `a0a8146`.
+The `codex/mvp-r02-diagnostic-milestone` branch merges the reviewed diagnostic
+stack through `dcc2e7e`, targeting `main` explicitly. Its integration tree equals
+the tested `8d221c4` tree byte-for-byte before these status-document additions.
+Independent review verifies ancestry, source pins and all eighteen successful
+checks at that exact implementation head. No runtime change or duplicate suite
+run is needed for this ancestry-only integration; CI proceeds in the new PR.
+
+Next implementation is native Linux arm64 acceptance automation with exact
+target-matched inputs and the complete corpus/budgets. Full Darwin implementation
+and native acceptance, Mac budgets and externally retained evidence remain open.
+Guest SIP stays enabled.
+
 ## Bounded standalone trace inspector — 28 October 2026
 
 Decision `68444b6` and implementation `baa6508` on

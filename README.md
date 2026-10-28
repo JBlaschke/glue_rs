@@ -1,5 +1,7 @@
 # glue_rs
 
+[Current milestones and remaining MVP work](docs/plans/milestone-status.md).
+
 Build a relocatable Linux/macOS distribution from an existing Lua project,
 Python environment or installed Node project. The compact output contains an
 archive for source/resources and a selected runtime plus existing native images.
