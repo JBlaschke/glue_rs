@@ -31,6 +31,63 @@ PINS = {
     'libstdcxx': {'version': '16.2.0', 'build': 'h934c35e_7',
                   'sha256': 'fa7018298629fc429971fffd6ecba3d27a7b02e4e890d6a93ea01ffebe8cb745'},
 }
+DEFAULT_TARGET = 'x86_64-unknown-linux-gnu'
+_COMMON_PACKAGES = frozenset({
+    '_openmp_mutex', 'bzip2', 'ca-certificates', 'libexpat', 'libffi',
+    'libgcc', 'libgomp', 'liblzma', 'libmpdec', 'libpython', 'libsqlite',
+    'libstdcxx', 'libuuid', 'libzlib', 'ncurses', 'openssl', 'pip', 'python',
+    'python_abi', 'readline', 'tk', 'tzdata', 'zstd',
+})
+_NOARCH_PACKAGES = frozenset({'ca-certificates', 'pip', 'python_abi', 'tzdata'})
+PROFILES = {
+    DEFAULT_TARGET: {
+        'target': DEFAULT_TARGET,
+        'machine': 'x86_64',
+        'platform': 'linux-64',
+        'micromamba': MICROMAMBA,
+        'pins': PINS,
+        'packages': _COMMON_PACKAGES | {'ld_impl_linux-64'},
+    },
+    'aarch64-unknown-linux-gnu': {
+        'target': 'aarch64-unknown-linux-gnu',
+        'machine': 'aarch64',
+        'platform': 'linux-aarch64',
+        'micromamba': {
+            'url': CHANNEL + '/linux-aarch64/micromamba-2.3.3-0.tar.bz2',
+            'sha256': '02ed4fe982c8ecbf9c5b1759c07ee29063994842b65fdaab439db77b9b00510a',
+        },
+        'pins': {
+            'python': {'version': '3.14.8', 'build': 'hbec3b18_102_cp314',
+                       'sha256': '83a74d9d10049de392f1cd79d468f9d0eba820df2179a5cccbf0335d98a97845'},
+            'libffi': {'version': '3.7.0', 'build': 'hdaad0be_1',
+                       'sha256': 'b1879d78b622c5f4817fd6d77fe7ae3ab7b501542e3c2f4ac77198c54c62c189'},
+            'libstdcxx': {'version': '16.2.0', 'build': 'hef695bb_7',
+                          'sha256': 'b241a3acfa9cdb1359112864a1241225533c92642de3000d52ae65ef5d3a9786'},
+        },
+        'packages': _COMMON_PACKAGES | {'ld_impl_linux-aarch64'},
+    },
+}
+
+
+def target_profile(target):
+    if not isinstance(target, str) or target not in PROFILES:
+        raise ValueError('unsupported native GNU Linux target')
+    return PROFILES[target]
+
+
+def native_profile(target=None):
+    """Select only the actual supported Linux host, before provisioning effects."""
+    if platform.system() != 'Linux':
+        raise ValueError('requires a native GNU Linux preparation host')
+    machine = platform.machine()
+    native = next((profile for profile in PROFILES.values()
+                   if profile['machine'] == machine), None)
+    if native is None:
+        raise ValueError('unsupported native GNU Linux preparation architecture')
+    selected = native if target is None else target_profile(target)
+    if selected['target'] != native['target']:
+        raise ValueError('requested target differs from native preparation host')
+    return selected
 
 
 def write_json(path, value):
@@ -58,20 +115,31 @@ def fetch(url, destination, expected, maximum=256 * 1024 * 1024):
         raise ValueError('SHA256 mismatch: ' + url)
 
 
-def validate_lock(lock):
-    if lock.get('schema') != 1 or lock.get('platform') != 'linux-64' or lock.get('micromamba') != MICROMAMBA:
+def validate_lock(lock, target=DEFAULT_TARGET):
+    profile = target_profile(target)
+    if (not isinstance(lock, dict) or type(lock.get('schema')) is not int
+            or lock.get('schema') != 1 or lock.get('platform') != profile['platform']
+            or lock.get('micromamba') != profile['micromamba']
+            or lock.get('requested') != profile['pins']):
         raise ValueError('unexpected provisioning lock identity')
-    packages = lock['packages']
-    if not 1 <= len(packages) <= 100:
+    packages = lock.get('packages')
+    if not isinstance(packages, list) or len(packages) != len(profile['packages']):
         raise ValueError('invalid package count')
     names, filenames = set(), set()
     for package in packages:
+        if (not isinstance(package, dict) or any(
+                not isinstance(package.get(key), str) or not package[key]
+                for key in ('name', 'version', 'build', 'filename', 'url', 'sha256', 'md5'))):
+            raise ValueError('invalid package identity')
         parsed = urlparse(package['url'])
         parts = parsed.path.split('/')
+        stem = '-'.join(package[key] for key in ('name', 'version', 'build'))
+        subdir = 'noarch' if package['name'] in _NOARCH_PACKAGES else profile['platform']
         if (parsed.scheme != 'https' or parsed.netloc != 'conda.anaconda.org'
                 or parsed.query or parsed.fragment or len(parts) != 4
-                or parts[1] != 'conda-forge' or parts[2] not in {'linux-64', 'noarch'}
-                or parts[3] != package['filename'] or not parts[3].endswith(('.conda', '.tar.bz2'))):
+                or parts[1] != 'conda-forge' or parts[2] != subdir
+                or parts[3] != package['filename']
+                or package['filename'] not in {stem + '.conda', stem + '.tar.bz2'}):
             raise ValueError('unexpected package source: ' + package['url'])
         if (not re.fullmatch('[0-9a-f]{64}', package['sha256'])
                 or not re.fullmatch('[0-9a-f]{32}', package['md5'])
@@ -79,22 +147,28 @@ def validate_lock(lock):
             raise ValueError('invalid or duplicate package identity')
         names.add(package['name'])
         filenames.add(package['filename'])
-    for name, pin in PINS.items():
+    if names != profile['packages']:
+        raise ValueError('incomplete or unexpected package closure')
+    for name, pin in profile['pins'].items():
         candidates = [p for p in packages if p['name'] == name]
         if len(candidates) != 1 or any(candidates[0][key] != value for key, value in pin.items()):
             raise ValueError('selected input does not match pinned ' + name)
     return packages
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--work', type=Path, required=True, help='new preparation directory')
     parser.add_argument('--output', type=Path, required=True, help='new staged runtime directory')
     parser.add_argument('--evidence', type=Path, required=True, help='new small provenance directory')
     parser.add_argument('--lock', type=Path, help='replay a previously retained complete lock')
-    args = parser.parse_args()
-    if platform.system() != 'Linux' or platform.machine() != 'x86_64':
-        raise ValueError('requires a native GNU Linux x86_64 preparation host')
+    parser.add_argument('--target', choices=tuple(PROFILES), help='expected target; defaults to the native Linux host')
+    args = parser.parse_args(argv)
+    profile = native_profile(args.target)
+    lock = None
+    if args.lock:
+        lock = json.loads(args.lock.read_text())
+        packages = validate_lock(lock, profile['target'])
     for path in [args.work, args.output, args.evidence]:
         if path.exists() or path.is_symlink():
             raise ValueError('preparation destination already exists: ' + str(path))
@@ -106,7 +180,8 @@ def main():
     environment = {'PATH': os.environ['PATH'], 'HOME': str(home), 'LANG': 'C.UTF-8',
                    'MAMBA_ROOT_PREFIX': str(work / 'mamba-root'), 'MAMBA_NO_BANNER': '1'}
     archive = work / 'micromamba.tar.bz2'
-    fetch(MICROMAMBA['url'], archive, MICROMAMBA['sha256'], 16 * 1024 * 1024)
+    micromamba = profile['micromamba']
+    fetch(micromamba['url'], archive, micromamba['sha256'], 16 * 1024 * 1024)
     tool = work / 'micromamba'
     with tarfile.open(archive) as bundle:
         member = bundle.getmember('bin/micromamba')
@@ -127,12 +202,10 @@ def main():
         return result.stdout
 
     raw = work / 'runtime'
-    if args.lock:
-        lock = json.loads(args.lock.read_text())
-    else:
+    if lock is None:
         transaction = json.loads(run(base + ['create', '--yes', '--json', '--dry-run', '--override-channels',
-            '--channel', CHANNEL, '--platform', 'linux-64', '--strict-channel-priority', '--prefix', str(raw)]
-            + [name + '=' + pin['version'] + '=' + pin['build'] for name, pin in PINS.items()], 'resolve'))
+            '--channel', CHANNEL, '--platform', profile['platform'], '--strict-channel-priority', '--prefix', str(raw)]
+            + [name + '=' + pin['version'] + '=' + pin['build'] for name, pin in profile['pins'].items()], 'resolve'))
         if transaction.get('success') is not True:
             raise ValueError('micromamba resolution did not succeed')
         packages = []
@@ -140,9 +213,9 @@ def main():
             packages.append({key: package[source] for key, source in {
                 'name': 'name', 'version': 'version', 'build': 'build_string', 'filename': 'fn',
                 'url': 'url', 'sha256': 'sha256', 'md5': 'md5'}.items()})
-        lock = {'schema': 1, 'platform': 'linux-64', 'micromamba': MICROMAMBA,
-                'requested': PINS, 'packages': sorted(packages, key=lambda p: p['name'])}
-    packages = validate_lock(lock)
+        lock = {'schema': 1, 'platform': profile['platform'], 'micromamba': micromamba,
+                'requested': profile['pins'], 'packages': sorted(packages, key=lambda p: p['name'])}
+        packages = validate_lock(lock, profile['target'])
     write_json(evidence / 'explicit-lock.json', lock)
     (evidence / 'upstream-explicit.txt').write_text('@EXPLICIT\n' + ''.join(p['url'] + '#' + p['md5'] + '\n' for p in packages))
     downloads = work / 'packages'
@@ -167,7 +240,8 @@ def main():
     stage_receipt = output.parent / (output.name + '-stage.json')
     (evidence / 'stage.json').write_bytes(stage_receipt.read_bytes())
     write_json(evidence / 'provisioning.json', {'schema': 1, 'status': 'prepared',
-        'kind': 'independent-prebuilt-conda-forge-input', 'platform': 'linux-64',
+        'kind': 'independent-prebuilt-conda-forge-input', 'platform': profile['platform'],
+        'target': profile['target'], 'host_machine': profile['machine'],
         'lock_sha256': digest(evidence / 'explicit-lock.json'), 'micromamba_sha256': digest(tool),
         'package_count': len(packages), 'runtime': str(output),
         'native_images_recompiled': False, 'product_execution_checked': False,

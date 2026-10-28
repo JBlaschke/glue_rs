@@ -6,8 +6,11 @@ umask 022
 
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$repo_dir"
-test "$(uname -s)" = Linux
-test "$(uname -m)" = x86_64
+# Refuse foreign/unknown hosts before CI-root creation, downloads or subprocesses
+# involved in preparation. This command reads only source and native host facts.
+profile_fields=$(/usr/bin/python3 fixtures/mvp/linux_acceptance.py profile \
+    --expected-target "${GLUE_MVP_CI_EXPECT_TARGET:-}")
+IFS=$'\t' read -r architecture target node_arch wheel_target node_config native_search conda_lock pbs312_sha256 pbs313_sha256 <<< "$profile_fields"
 ci_root=${GLUE_MVP_CI_ROOT:?set a new absolute directory for this CI run}
 case "$ci_root" in /*) ;; *) echo 'GLUE_MVP_CI_ROOT must be absolute' >&2; exit 2 ;; esac
 test ! -e "$ci_root"
@@ -21,56 +24,8 @@ finish() {
     local result=$?
     local summary_result=0
     trap - EXIT
-    if /usr/bin/python3 - "$evidence" "$result" "$budget_mode" <<'PY'
-import datetime, json, sys
-from pathlib import Path
-sys.path.insert(0, str(Path('fixtures/mvp').resolve()))
-import trace_environment
-root, result, budget_mode = Path(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
-try:
-    policy = trace_environment.check(root / 'provisioning/trace-environment', 'x86_64')
-    policy_error = None
-except (OSError, ValueError, KeyError, TypeError) as error:
-    policy, policy_error = None, str(error)
-table = root / 'case-status.tsv'
-cases = []
-if table.exists():
-    for line in table.read_text().splitlines():
-        name, code = line.split('\t')
-        cases.append({'case': name, 'exit': int(code)})
-expected = {f'lua{family}-{corpus}' for family in ['54', '55'] for corpus in ['project', 'native']}
-expected |= {f'node-{version}-{corpus}' for version in ['24.22.0', '26.10.0'] for corpus in ['cjs', 'esm', 'resources', 'native']}
-expected |= {f'python-{version}-{corpus}' for version in ['3.12.15', '3.13.16', '3.14.8'] for corpus in ['source', 'module', 'console', 'native']}
-complete = len(cases) == len(expected) and {c['case'] for c in cases} == expected
-benchmarks = []
-if (root / 'benchmark-status.tsv').exists():
-    for line in (root / 'benchmark-status.tsv').read_text().splitlines():
-        name, code = line.split('\t')
-        benchmarks.append({'case': name, 'exit': int(code)})
-expected_benchmarks = {'lua55-project', 'lua55-native', 'node-cjs', 'python-source-normalized', 'python-native-normalized'}
-benchmark_complete = (len(benchmarks) == len(expected_benchmarks)
-                      and {b['case'] for b in benchmarks} == expected_benchmarks
-                      and all((root / 'benchmarks' / case / 'benchmark.json').is_file()
-                              and (root / 'proposed-budgets' / (case + '.json')).is_file()
-                              for case in expected_benchmarks))
-cases_passed = complete and all(c['exit'] == 0 for c in cases)
-benchmarks_passed = benchmark_complete and all(b['exit'] == 0 for b in benchmarks)
-passed = result == 0 and cases_passed and benchmarks_passed and policy is not None
-summary = {'status': 'passed' if passed else 'failed',
-           'exit': result or (0 if passed else 1), 'target': 'x86_64-unknown-linux-gnu', 'expected_cases': len(expected),
-           'expected_labels': sorted(expected), 'cases': cases,
-           'acceptance_status': 'passed' if cases_passed else 'failed',
-           'expected_benchmarks': sorted(expected_benchmarks), 'benchmarks': benchmarks,
-           'benchmark_status': 'passed' if benchmarks_passed else 'failed',
-           'trace_environment': policy, 'trace_environment_error': policy_error,
-           'budget_mode': budget_mode,
-           'finished_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-           'scope': 'native V02/R02 and R03 under explicit traceable-native-syscalls-v1 CI policy; ' + ('reviewed x86_64 budgets enforced' if budget_mode == 'enforce' else 'generated x86_64 budgets are proposed pending review'),
-           'cache_policy': 'first/warm fresh processes; no cold filesystem-cache claim',
-           'budget_policy': 'time/RSS scoped to recorded host boot fingerprint; no universal host limits'}
-(root / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
-raise SystemExit(0 if summary['status'] == 'passed' else 1)
-PY
+    if /usr/bin/python3 fixtures/mvp/linux_acceptance.py summary \
+        --architecture "$architecture" --evidence "$evidence" --result "$result" --budget-mode "$budget_mode"
     then :; else summary_result=1; fi
     # Tracer files can belong to root/nobody. Only the evidence tree is exposed
     # to upload-artifact; runtime trees, wheels and compiled payloads stay local.
@@ -79,32 +34,31 @@ PY
     exit "$result"
 }
 trap finish EXIT
-printf '%s\n' 'Proposed first observations only. Review these x86_64 reports before accepting limits into Git.' \
+printf '%s\n' "Proposed first observations only. Review these $architecture reports before accepting limits into Git." \
     > "$evidence/proposed-budgets/README.txt"
 
 # Observation mode is an explicit first-run exception. Normal CI requires all
 # reviewed files before provisioning; a missing budget cannot silently refreeze.
-/usr/bin/python3 - "$repo_dir" "$evidence" "$budget_mode" <<'PY'
+/usr/bin/python3 - "$repo_dir" "$evidence" "$budget_mode" "$architecture" <<'PY'
 import hashlib, json, shutil, sys
 from pathlib import Path
 repository, evidence, mode = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
-expected = {'lua55-project', 'lua55-native', 'node-cjs', 'python-source-normalized', 'python-native-normalized'}
+sys.path.insert(0, str(repository / 'fixtures/mvp'))
+import linux_acceptance
+profile = linux_acceptance.profile_for(sys.argv[4])
+selected_target = profile.target
 if mode == 'enforce':
     index = repository / 'fixtures/mvp/budgets/index.json'
-    target = json.loads(index.read_text())['targets']['x86_64-unknown-linux-gnu']
-    items = target['budgets']
-    if len(items) != 5 or {item['case'] for item in items} != expected:
-        raise SystemExit('all five reviewed x86_64 budgets are required')
+    items = linux_acceptance.reviewed_budget_paths(profile, json.loads(index.read_text()))
     destination = evidence / 'accepted-budgets'
     destination.mkdir()
     shutil.copy2(index, destination / 'index.json')
     identities = {}
-    for item in items:
-        path = index.parent / item['budget']
-        if path != index.parent / 'x86_64-unknown-linux-gnu' / (item['case'] + '.json'):
-            raise SystemExit('unexpected reviewed budget path')
+    for case, relative in items:
+        path = index.parent / relative
         budget = json.loads(path.read_text())
-        if budget.get('completeness') != 'passed':
+        if (budget.get('completeness') != 'passed' or budget.get('target') != selected_target
+                or budget.get('case') != case):
             raise SystemExit('reviewed budget is incomplete')
         shutil.copy2(path, destination / path.name)
         identities[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -128,6 +82,7 @@ sudo -n unshare --net /usr/bin/true
     strace --version
 } > "$evidence/toolchain.txt"
 git status --short > "$evidence/source-status.txt"
+/usr/bin/python3 fixtures/mvp/linux_acceptance.py plan --architecture "$architecture" > "$evidence/acceptance-plan.json"
 
 # A syscall tracer cannot observe io_uring SQE writes. Select the ordinary
 # syscall fallback explicitly for the complete test process tree, including
@@ -140,7 +95,7 @@ cc -O2 -std=c11 -Wall -Wextra -Werror "$trace_environment_dir/trace_environment.
 printf '%s\n' 'cc -O2 -std=c11 -Wall -Wextra -Werror trace_environment.c -o glue-trace-environment' \
     > "$trace_environment_dir/build-command.txt"
 sudo -n "$trace_environment" --probe > "$trace_environment_dir/proof.json"
-/usr/bin/python3 fixtures/mvp/trace_environment.py "$trace_environment_dir" --architecture x86_64 --record
+/usr/bin/python3 fixtures/mvp/trace_environment.py "$trace_environment_dir" --architecture "$architecture" --record
 (cd "$trace_environment_dir" && sha256sum trace_environment.c glue-trace-environment proof.json manifest.json) \
     > "$trace_environment_dir/SHA256SUMS"
 
@@ -149,7 +104,7 @@ download() {
 }
 
 for version in 24.22.0 26.10.0; do
-    archive="node-v$version-linux-x64.tar.xz"
+    archive="node-v$version-linux-$node_arch.tar.xz"
     base="https://nodejs.org/dist/v$version"
     download "$base/SHASUMS256.txt" "$evidence/provisioning/node-$version-SHASUMS256.txt"
     download "$base/$archive" "$ci_root/downloads/$archive"
@@ -171,7 +126,7 @@ done
 
 pbs_base=https://github.com/astral-sh/python-build-standalone/releases/download/20261009
 while read -r version checksum; do
-    archive="cpython-$version+20261009-x86_64-unknown-linux-gnu-install_only.tar.gz"
+    archive="cpython-$version+20261009-$target-install_only.tar.gz"
     download "$pbs_base/${archive/+/%2B}" "$ci_root/downloads/$archive"
     printf '%s  %s\n' "$checksum" "$ci_root/downloads/$archive" | sha256sum --check --strict
     printf '%s  %s\n' "$checksum" "$archive" > "$evidence/provisioning/python-$version.sha256"
@@ -185,16 +140,17 @@ while read -r version checksum; do
     /usr/bin/python3 fixtures/mvp/python-matrix/stage-runtime.py "$raw_runtime" "$ci_root/runtimes/python-$version"
     cp "$ci_root/runtimes/python-$version-stage.json" "$evidence/provisioning/"
     rm -rf "$raw_runtime"
-done <<'PBS'
-3.12.15 5864001bf969db329fadc2b654c4878c6027d170c6bd77e28f88666260bcaf63
-3.13.16 1cca1041f693f110a2e0d16417090b8996258c7a121e90eeab66c2f40ea407f2
+done <<PBS
+3.12.15 $pbs312_sha256
+3.13.16 $pbs313_sha256
 PBS
 
 # This independent conventional runtime avoids the selected PBS libffi static
 # trampoline path bug under relocated paths containing spaces. Keep all native
 # bytes unchanged and subject it to the same strict extraction oracle.
 /usr/bin/python3 fixtures/mvp/python-matrix/provision-conda.py \
-    --lock fixtures/mvp/python-matrix/conda-linux-x86_64-3.14.8.lock.json \
+    --target "$target" \
+    --lock "$conda_lock" \
     --work "$ci_root/downloads/python-3.14.8-conda" \
     --output "$ci_root/runtimes/python-3.14.8" \
     --evidence "$evidence/provisioning/python-3.14.8-conda"
@@ -221,12 +177,12 @@ for family in 54 55; do
     fixtures/mvp/lua-native/prepare.sh "$ci_root/inputs/lua$family-native" "$source_dir"
     sha256sum "$source_dir"/*.c "$source_dir"/*.h > "$evidence/provisioning/lua$family-source.sha256"
 done
-fixtures/mvp/node-native/prepare.sh "$ci_root/runtimes/node-v24.22.0-linux-x64/include/node" "$ci_root/inputs/node-native"
+fixtures/mvp/node-native/prepare.sh "$ci_root/runtimes/node-v24.22.0-linux-$node_arch/include/node" "$ci_root/inputs/node-native"
 sha256sum "$CARGO_TARGET_DIR/release/glue" "$CARGO_TARGET_DIR/release/glue-lua54" "$CARGO_TARGET_DIR/release/glue-lua55" "$ci_root/inputs/archive.node" > "$evidence/release-tools.sha256"
 sha256sum "$ci_root/inputs/node-native"/* "$ci_root/inputs/lua54-native"/* "$ci_root/inputs/lua55-native"/* > "$evidence/provisioning/independent-native-inputs.sha256"
 
 for tag in cp312 cp313 cp314; do
-    /usr/bin/python3 fixtures/mvp/python-native/provision.py --fetch --python "$tag" --target linux-x86_64 \
+    /usr/bin/python3 fixtures/mvp/python-native/provision.py --fetch --python "$tag" --target "$wheel_target" \
         --output "$ci_root/inputs/python-$tag" numpy==2.5.4 contourpy==1.4.0 pydantic_core==2.50.1 \
         cffi==2.1.1 pycparser==3.0 typing_extensions==4.15.0 > "$evidence/provisioning/wheels-$tag.log" 2>&1
     cp "$ci_root/inputs/python-$tag/inputs.json" "$evidence/provisioning/wheels-$tag.json"
@@ -239,9 +195,9 @@ common_env=(
     "GLUE_MVP_LUA54=$ci_root/inputs/lua54-reference" "GLUE_MVP_LUA55=$ci_root/inputs/lua55-reference"
     "GLUE_MVP_LUA54_NATIVE=$ci_root/inputs/lua54-native" "GLUE_MVP_LUA55_NATIVE=$ci_root/inputs/lua55-native"
     "GLUE_MVP_NODE_BRIDGE=$ci_root/inputs/archive.node" "GLUE_MVP_NODE_NATIVE=$ci_root/inputs/node-native"
-    "GLUE_MVP_NODE_CONFIG=$repo_dir/fixtures/mvp/node-project/linux-x86_64.toml"
+    "GLUE_MVP_NODE_CONFIG=$repo_dir/$node_config"
     "GLUE_MVP_PYTHON_TOOL=/usr/bin/python3" "GLUE_MVP_PYTHON_ENV_KIND=ordinary"
-    "GLUE_MVP_NATIVE_SEARCH=/usr/lib/x86_64-linux-gnu"
+    "GLUE_MVP_NATIVE_SEARCH=$native_search"
     "GLUE_MVP_PYTHON_SECONDARY=$ci_root/inputs/lua55-native/libsecondary.so"
 )
 overall=0
@@ -251,7 +207,7 @@ run_case() {
     local output="$ci_root/cases/$label" result=0
     echo "Running native offline acceptance: $label"
     if sudo -n env -i "${common_env[@]}" "$@" "$trace_environment" -- unshare --net /usr/bin/python3 fixtures/mvp/harness.py \
-        --case "$recipe" --target x86_64-unknown-linux-gnu --output "$output" > "$evidence/$label.log" 2>&1; then
+        --case "$recipe" --target "$target" --output "$output" > "$evidence/$label.log" 2>&1; then
         if ! sudo -n /usr/bin/python3 scripts/check-mvp-results.py "$output/receipt.json" >> "$evidence/$label.log" 2>&1; then result=1; fi
     else
         result=$?
@@ -288,7 +244,7 @@ for family in 54 55; do
 done
 for version in 24.22.0 26.10.0; do
     for corpus in cjs esm resources native; do
-        run_case "node-$version-$corpus" "node-$corpus" "GLUE_MVP_NODE_RUNTIME=$ci_root/runtimes/node-v$version-linux-x64"
+        run_case "node-$version-$corpus" "node-$corpus" "GLUE_MVP_NODE_RUNTIME=$ci_root/runtimes/node-v$version-linux-$node_arch"
     done
 done
 while read -r version relative tag; do
@@ -304,19 +260,20 @@ done <<'PYTHON'
 PYTHON
 
 check_benchmark() {
-    sudo -n /usr/bin/python3 - "$repo_dir" "$1" "$2" "$3" "$budget_mode" "$evidence" <<'PY'
+    sudo -n /usr/bin/python3 - "$repo_dir" "$1" "$2" "$3" "$budget_mode" "$evidence" "$target" <<'PY'
 import json, sys
 from pathlib import Path
 repository, output, budget_path = map(Path, sys.argv[1:4])
 case = sys.argv[4]
 budget_mode, evidence = sys.argv[5], Path(sys.argv[6])
+selected_target = sys.argv[7]
 sys.path.insert(0, str(repository / 'fixtures/mvp'))
 import benchmark
 import harness
 report = json.loads((output / 'benchmark.json').read_text())
 budget = json.loads(budget_path.read_text())
 errors = benchmark.check_budget(report, budget)
-if report['case'] != case or report['target'] != 'x86_64-unknown-linux-gnu':
+if report['case'] != case or report['target'] != selected_target:
     errors.append('unexpected benchmark case/target')
 if report['source_entries'] != 10000:
     errors.append('expected 10000 additional source entries')
@@ -360,7 +317,7 @@ run_benchmark() {
     local output="$ci_root/benchmarks/$recipe" budget="$evidence/proposed-budgets/$recipe.json" result=0
     echo "Measuring native first observations: $recipe"
     if sudo -n env -i "${common_env[@]}" "$@" "$trace_environment" -- unshare --net /usr/bin/python3 scripts/benchmark-mvp.py \
-        --case "$recipe" --target x86_64-unknown-linux-gnu --source-entries 10000 --ranks 1,32 \
+        --case "$recipe" --target "$target" --source-entries 10000 --ranks 1,32 \
         --output "$output" --freeze-budget "$budget" > "$evidence/benchmark-$recipe.log" 2>&1; then
         if ! check_benchmark "$output" "$budget" "$recipe" >> "$evidence/benchmark-$recipe.log" 2>&1; then result=1; fi
     else
@@ -396,7 +353,7 @@ PY
 }
 
 for recipe in lua55-project lua55-native; do run_benchmark "$recipe"; done
-run_benchmark node-cjs "GLUE_MVP_NODE_RUNTIME=$ci_root/runtimes/node-v24.22.0-linux-x64"
+run_benchmark node-cjs "GLUE_MVP_NODE_RUNTIME=$ci_root/runtimes/node-v24.22.0-linux-$node_arch"
 for recipe in python-source-normalized python-native-normalized; do
     run_benchmark "$recipe" "GLUE_MVP_PYTHON_ROOT=$ci_root/runtimes/python-3.13.16" \
         "GLUE_MVP_PYTHON_RELATIVE=bin/python3.13" "GLUE_MVP_PYTHON_SITE=$ci_root/inputs/python-cp313/site"
