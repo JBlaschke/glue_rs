@@ -69,6 +69,15 @@ manifest `900f3161674af4e3cf3d010ffdc6e1b8cbd0ff38e8890877fecd86b9140cd430`,
 and no actionable findings. Root verifies both exact inventories and reads the
 review. These records are read-only and outside temporary/Cargo storage.
 
+Final tracked diff review removes one extra terminal LF from the test script in
+`1fa75f4`; its AST including positions is identical. The final exact focused argv
+again passes 16/16 at `.evidence-local/controls/owned-assessment-20261028-final`,
+30-file manifest `c50a323c3fb1f56b6ba33d6b573e0d04423c0d9785258845c53e5aa74c79ee59`.
+The separate five-file independent addendum has manifest
+`55b397cfb326394772f7c2dfbdd19c7ab983f3ccb3ef443047a02e88f086d048`.
+Root verifies those inventories and reads the addendum; earlier frozen records
+remain unchanged.
+
 Controls cover independent selector vectors for every declaration, all nine flag
 positions, unsupported high bits, failed/unpaired/orphan/exec/shadow requests,
 Mach/lifecycle/zero activity, exact/over bounds, immutable serialization,
