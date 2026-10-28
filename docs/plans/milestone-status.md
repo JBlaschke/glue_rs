@@ -22,13 +22,18 @@ commits, tests, target scope and evidence limits.
    pass all 24 cases and five unchanged budgets. The explicit benchmark-input
    repair preserves seeded application cases. All raw identities and a prepared/
    restored local bundle verify. Approved arm evidence is published and remotely
-   replayed; same-source x86 refresh `40758958354` is queued. See the
-   [arm acceptance record](../evidence/native-linux-arm64-2026-10-28/README.md).
+   replayed. Same-source x86 refresh `40758958354` also passes all 24 cases/five
+   budgets and independent replay. Its local archive restores successfully; the
+   prepared x86 release set awaits separate publication approval. See the
+   [arm record](../evidence/native-linux-arm64-2026-10-28/README.md) and
+   [x86 record](../evidence/native-linux-x86_64-2026-10-28/README.md).
 3. Independent [paired-result PR #92](https://github.com/JBlaschke/glue_rs/pull/92)
    and [entry-ABI PR #93](https://github.com/JBlaschke/glue_rs/pull/93) add real
    source-grounded Darwin semantics, with 27 and 25 focused controls passing on
-   each tested Python version. Native calibration and object/effect semantics
-   remain separate open work.
+   each tested Python version. [Operation milestone #95](https://github.com/JBlaschke/glue_rs/pull/95)
+   builds on them with eleven descriptor/write/flush/truncate forms and 37
+   passing controls per tested interpreter. These are conditional source rules;
+   native calibration, object binding and effect ordering remain open.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -47,8 +52,9 @@ the missing Darwin oracle.
   their recorded host scope; newer measurements must not silently replace them.
 - **R04:** finish remaining target retention and the exact current compatibility/
   sign-off record. Arm64 evidence is regenerated, replayed, publicly retained and
-  independently downloaded/replayed. Same-source x86 refresh remains pending;
-  its older recovered archive has a verified same-host backup outside `target`.
+  independently downloaded/replayed. Same-source x86 refresh and replay pass;
+  its fresh backup verifies locally and the prepared publication set awaits
+  separate owner approval. The older recovered archive also remains retained.
 
 The 26 cards all have implementation commits; remaining original acceptance
 work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.

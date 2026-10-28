@@ -1,0 +1,51 @@
+{
+  "schema": "glue-native-linux-acceptance-record-v1",
+  "recorded_date": "2026-10-28",
+  "target": "x86_64-unknown-linux-gnu",
+  "source_head": "30e8d080500de2bd6646c1c68d814eb80208f5f8",
+  "run": {
+    "id": 40758958354,
+    "url": "https://github.com/JBlaschke/glue_rs/actions/runs/40758958354",
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 12848803437,
+    "name": "mvp-native-linux-x86_64-40758958354-1",
+    "bytes": 160076851,
+    "sha256": "38b21389998b7e2097f778f577b92279af4526184cbf42f4625fdd63c17eddda",
+    "expires_at": "2026-11-11T20:37:30Z",
+    "url": "https://github.com/JBlaschke/glue_rs/actions/runs/40758958354/artifacts/12848803437"
+  },
+  "raw_inventory": {
+    "files": 4803,
+    "bytes": 719731510,
+    "manifest_sha256": "882c95064d571d6a55d0204d6903a1b4f585fdcb9f99a4f1a8ccfafee2413aa1"
+  },
+  "independent_replay": {
+    "status": "passed",
+    "result_sha256": "06c611872225fdd690eb6eca326be4c25c716258a18aa273ffbf4d63175cf764",
+    "manifest_sha256": "062fd8c133919c64c865cdb2ff4720d11ae52c2aab5a5655808ccb50d3d54c12",
+    "acceptance_cases": 24,
+    "benchmark_variants": 15,
+    "oracle_controls": 156,
+    "rank_results": 990,
+    "accepted_budgets": 5,
+    "python_environment_checks": 18,
+    "payload_cost_reconstructions": 15,
+    "input_identities_unchanged": true
+  },
+  "trace_environment_policy": "traceable-native-syscalls-v1",
+  "scope": "Native stock/reference, packaged, control and rank trees use recorded syscall fallback; no unrestricted asynchronous-I/O-host claim.",
+  "budget_policy": "Accepted structure/I/O/FD/scaling limits enforced unchanged; time/RSS only apply at the accepted host fingerprint.",
+  "python_environment_profile": "ordinary seeded cases and benchmarks; unchanged x86 profile",
+  "publication_proposal": {
+    "assets": 8,
+    "total_bytes": 161129470,
+    "manifest_sha256": "c026c997fac9ed34bfed9c0aa469f271bb128df611e8cc1d08996721a6115467",
+    "clean_offline_validation": "passed",
+    "owner_approval": "pending for x86 set",
+    "published": false
+  },
+  "external_durability_established": false,
+  "full_m2_acceptance": false
+}

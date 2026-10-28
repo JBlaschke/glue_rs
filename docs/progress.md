@@ -1,5 +1,22 @@
 # Implementation progress
 
+## Fresh x86 acceptance at the arm-tested source — 28 October 2026
+
+[Run 40758958354](https://github.com/JBlaschke/glue_rs/actions/runs/40758958354)
+at `30e8d08` passes 24 cases and five unchanged budgets, matching the fresh arm
+source revision. Independent replay verifies 39 receipts, 156 controls and 990
+rank results, plus eighteen Python environment and fifteen cost-inventory checks.
+All x86 cases and benchmarks retain their ordinary seeded Python input profile.
+Exact source/artifact/replay identities are in the
+[x86 acceptance record](evidence/native-linux-x86_64-2026-10-28/README.md).
+
+The 160,076,851-byte original ZIP and all 4,803 raw files are verified. A local
+318,718,289-byte backup prepares/restores with source identities and every
+restored hash/size/mode unchanged. The eight-file, 161,129,470-byte minimal release
+set also passes clean-directory offline verification. It remains local pending
+the separate x86 publication approval; the completed arm authorization does not
+cover it. Complete Darwin/Mac budget and final compatibility gates remain open.
+
 ## Native arm acceptance verified — 28 October 2026
 
 [Run 40754980497](https://github.com/JBlaschke/glue_rs/actions/runs/40754980497)
