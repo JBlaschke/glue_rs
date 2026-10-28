@@ -13,11 +13,32 @@ def run(argv):
     subprocess.run([str(arg) for arg in argv], check=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "UV_PYTHON_DOWNLOADS": "never"})
 
 
+def create_environment(root, python, kind):
+    """Prepare an explicitly selected test input, before product inventory."""
+    environment = root / "environment"
+    if kind in ("ordinary", "ordinary-no-pip"):
+        argv = [python, "-I", "-B", "-m", "venv", "--copies"]
+        if kind == "ordinary-no-pip":
+            argv.append("--without-pip")
+        run([*argv, environment])
+    elif kind == "uv":
+        uv = os.environ["GLUE_MVP_UV"]
+        os.environ["UV_CACHE_DIR"] = str(root.parent / "uv-test-cache")
+        run([uv, "venv", "--offline", "--no-project", "--no-managed-python", "--no-python-downloads", "--python", python, environment])
+    elif kind == "descriptor":
+        (environment / "bin").mkdir(parents=True)
+        (environment / "bin/python").symlink_to(os.path.relpath(python, environment / "bin"))
+        (environment / "pyvenv.cfg").write_text("home = " + str(python.parent) + "\ninclude-system-site-packages = false\n")
+    else:
+        raise ValueError("unsupported environment preparation kind")
+    return environment
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", type=Path)
     parser.add_argument("executable", help="relative existing executable under copied runtime")
-    parser.add_argument("kind", choices=["ordinary", "uv", "descriptor"])
+    parser.add_argument("kind", choices=["ordinary", "ordinary-no-pip", "uv", "descriptor"])
     parser.add_argument("--native", action="store_true")
     parser.add_argument("--framework", action="store_true")
     args = parser.parse_args()
@@ -38,17 +59,7 @@ def main():
         run(["/usr/bin/install_name_tool", "-change", original[0], "@executable_path/../../../../Python", python])
         run(["/usr/bin/codesign", "--force", "--sign", "-", "--timestamp=none", python])
     version = json.loads(subprocess.check_output([str(python), "-I", "-S", "-B", "-c", "import json,sys;print(json.dumps(list(sys.version_info[:2])))"], text=True))
-    environment = root / "environment"
-    if args.kind == "ordinary":
-        run([python, "-I", "-B", "-m", "venv", "--copies", environment])
-    elif args.kind == "uv":
-        uv = os.environ["GLUE_MVP_UV"]
-        os.environ["UV_CACHE_DIR"] = str(root.parent / "uv-test-cache")
-        run([uv, "venv", "--offline", "--no-project", "--no-managed-python", "--no-python-downloads", "--python", python, environment])
-    else:
-        (environment / "bin").mkdir(parents=True)
-        (environment / "bin/python").symlink_to(os.path.relpath(python, environment / "bin"))
-        (environment / "pyvenv.cfg").write_text("home = " + str(python.parent) + "\ninclude-system-site-packages = false\n")
+    environment = create_environment(root, python, args.kind)
     # Preserve actual venv/uv layout while converting only internal interpreter
     # aliases to relative links so the harness can prove copied-prefix removal.
     for path in environment.rglob("*"):

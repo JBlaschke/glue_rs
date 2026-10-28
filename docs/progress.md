@@ -1,5 +1,50 @@
 # Implementation progress
 
+## Native arm benchmark repair and main integration — 28 October 2026
+
+PR #89 reached `main` at `d1f0e3f`. PR #90 passed all eighteen portable checks but
+merged into its closed feature base at `421cd68`, leaving its automation absent
+from `main`. The new `codex/mvp-v02-arm64-acceptance-repair` milestone starts from
+`main` and includes that reviewed tree; its PR targets `main` explicitly.
+
+[Native arm run 40722874852](https://github.com/JBlaschke/glue_rs/actions/runs/40722874852)
+records 24 passing application receipts and five successful benchmark executions.
+Two Python budget checks fail: the prepared ordinary environment includes pip,
+adding about 1.93 MB to every archive and exceeding archive/seek limits. Source
+scaling, runtime/native/file counts and the three Lua/Node budgets pass. Complete
+independent raw replay remains pending; the failed capture stays intact locally.
+
+Decision `b963190` and implementation `d510e94` make arm Python benchmark inputs
+explicitly pip-free ordinary venvs. All 24 application cases retain their seeded
+ordinary environments, and x86 behavior and every accepted budget byte remain
+unchanged. Twenty planner/runner controls and four preparation controls pass,
+including actual seeded/unseeded venv execution; shell syntax and diff checks
+pass. CI now invokes 47 Python scripts. A fresh native run must prove the repair;
+there is no automatic budget refreeze, extraction exemption or M2 closure.
+
+## Native GNU Linux arm64 acceptance automation — 28 October 2026
+
+Decision `0ac9bca` and implementation `3698ae4` on
+`codex/mvp-v02-native-linux-arm64` extend the existing native runner to a matching
+Ubuntu arm64 host. Closed profiles bind all runtime archives, wheel platform,
+Node config, library roots, conda lock, tracer and budget identities. Both cells
+retain 24 cases and five 10,000-entry first/warm 1/32-rank benchmarks. Wrong-host
+requests fail before provisioning; final summaries reject incomplete or
+misidentified retained results. Original x86 input bytes and defaults remain.
+
+The independently resolved arm conda closure and PBS archives match official
+metadata and complete compressed-file hashes. Twenty planner/runner controls,
+thirteen conda controls, existing selected tracer/budget checks, shell syntax and
+actionlint pass. The full local portable baseline also passes with all 46 Python
+scripts, workspace tests, formatting and pinned all-target Clippy. Both independent
+source reviews find no actionable issue; the new pure summary replays the
+retained x86 metadata successfully (24 cases/five benchmarks).
+
+The feature is stacked on diagnostic milestone PR #89, whose eighteen portable
+checks pass. Fresh arm64 native execution and independent retained replay are
+still required. Full Darwin oracle/corpus, Mac budgets, external retention and
+M2 remain open; guest SIP stays enabled.
+
 ## Diagnostic milestone integration and remaining work — 28 October 2026
 
 The [milestone overview](plans/milestone-status.md) records M0 foundations and M1
