@@ -1,5 +1,30 @@
 # Implementation progress
 
+## Source-grounded BSD argument typing — 28 October 2026
+
+Decision `4fd1d45` and implementation `a9840b9` on the independent main-based
+`codex/mvp-r02-bsd-entry-abi` branch type all 530 argument positions across the
+161 pinned declarations and 49 exact type spellings. Fixed LP64 aliases enforce
+canonical signed32/unsigned32 widening and preserve signed64/unsigned64 values.
+The 242 address positions stay opaque numbers. Underlying types, rather than
+the generator's cast spelling, determine signedness. Failed/unpaired requests,
+all BSD return phases and aggregate Mach/lifecycle counts stay retained.
+
+The API calls strict `observe_raw_bsd` itself before any typing and links every
+entry/argument/role to its original source. It accepts no caller profile or
+calibration assertion and performs no input I/O after import. All results remain
+incomplete with native calibration, object binding, state feed and extraction
+acceptance unresolved. Existing core/collector/state-engine bytes are unchanged.
+
+All 25 controls pass on Python 3.15.2 and 3.9.6. Independent review verifies
+nineteen public-source identities, literal vectors for every argument and the
+frozen receipts, with no findings. CI adds one invocation (45 scripts here;
+49 when the independent arm repair and outcome features also merge). Shell
+syntax/staged diff checks pass; hosted CI proceeds independently. Fresh arm
+run `40754980497` and its full replay now pass all cases/budgets; a same-source
+x86 run refreshes the older evidence. Full Darwin/M2 and external retention
+remain open; guest SIP stays enabled.
+
 ## Diagnostic milestone integration and remaining work — 28 October 2026
 
 The [milestone overview](plans/milestone-status.md) records M0 foundations and M1

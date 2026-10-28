@@ -22,6 +22,11 @@ commits, tests, target scope and evidence limits.
 2. Extend native Linux acceptance automation to arm64, replacing missing evidence
    with a reproducible fresh run. This requires target-matched runtime inputs,
    the complete 24-case corpus, all five budgets and separately retained output.
+3. Add source-grounded BSD entry ABI typing through `a9840b9`: 161 declarations,
+   530 arguments and 49 type spellings, with 25 passing controls on each tested
+   Python version and no independent review findings. It complements the
+   separate paired-result feature in PR #92 without depending on it. Neither
+   feature grants native calibration, object/state or extraction acceptance.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
