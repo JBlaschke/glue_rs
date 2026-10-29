@@ -141,6 +141,9 @@ int nr_execute(struct nr_attempt *a) {
   int reported=nr_trace_go_result(a,written);
   int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;a->go_closed=!closed;
   if(nr_trace_gate_result(a,closed,close_errno))reported=-1;
+#ifdef GLUE_RUNTIME_TRACING
+  if(nrw_record_delivery(a,written,closed,close_errno))reported=-1;
+#endif
   if(written || reported || closed)return -1;
 #else
   a->go_attempted=1;
@@ -163,6 +166,9 @@ int nr_execute(struct nr_attempt *a) {
 #ifdef GLUE_OWNED_TRACING
   int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;a->go_closed=!closed;
   int reported=nr_trace_gate_result(a,closed,close_errno);
+#ifdef GLUE_RUNTIME_TRACING
+  if(nrw_record_delivery(a,0,closed,close_errno))reported=-1;
+#endif
   if(closed || reported)return -1;
 #else
 #ifdef GLUE_RUNTIME_PROFILE
