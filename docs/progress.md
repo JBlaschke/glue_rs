@@ -2072,3 +2072,18 @@ corpus, budgets and final retention/sign-off remain. All native/origin, OFD/
 generation/backing/live-state, state, retention-before-CONT and full-acceptance
 authority stays false. M0/M1 delivered, M3 memory mode separate/planned, M4
 deferred. No provider, VM or security-setting action occurs in this feature.
+
+
+## R02 — stopped formatter GCC CI repair (29 October 2026)
+
+PR #117's Linux baseline caught three new guard statements that GCC rejects as
+misleading indentation under the existing strict flags. The repair separates
+those guards from following statements; emitted DTrace program bytes, templates,
+selectors, APIs and old profile bodies remain unchanged. The original GCC failure
+is reproduced and retained. Twelve bounds/canonical checks pass across actual
+GCC 16, Clang and Clang ASan/UBSan, comparing all output bytes with the independent
+reader template. No warning suppression, provider or native execution is added.
+New formatter source SHA256:
+`e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
+The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.
