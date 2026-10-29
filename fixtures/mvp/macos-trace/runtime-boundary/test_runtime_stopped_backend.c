@@ -14,9 +14,17 @@
 #include <unistd.h>
 static uint64_t now=UINT64_C(1000000000);
 static int clock_bad,write_bad=-1,partial_fd=-1,partial_seen,close_bad=-1;
-static int model_clock(clockid_t c,struct timespec *t){assert(c==CLOCK_MONOTONIC);if(clock_bad){errno=EIO;return -1;}t->tv_sec=(time_t)(now/1000000000);t->tv_nsec=(long)(now%1000000000);return 0;}
+static int model_clock(clockid_t c,struct timespec *t){
+#ifdef GLUE_STOPPED_STATUS_CLOCK_CALL
+ GLUE_STOPPED_STATUS_CLOCK_CALL();
+#endif
+ assert(c==CLOCK_MONOTONIC);if(clock_bad){errno=EIO;return -1;}t->tv_sec=(time_t)(now/1000000000);t->tv_nsec=(long)(now%1000000000);return 0;}
 static ssize_t model_write(int fd,const void *p,size_t n){if(fd==write_bad){errno=ENOSPC;return -1;}if(fd==partial_fd){if(partial_seen++){errno=ENOSPC;return -1;}return write(fd,p,n>9?9:n);}return write(fd,p,n);}
-static int model_close(int fd){int rc=close(fd);assert(!rc);if(fd==close_bad){close_bad=-1;errno=EINTR;return -1;}return 0;}
+static int model_close(int fd){int rc=close(fd);assert(!rc);
+#ifdef GLUE_STOPPED_STATUS_AFTER_CLOSE
+ GLUE_STOPPED_STATUS_AFTER_CLOSE(fd);
+#endif
+ if(fd==close_bad){close_bad=-1;errno=EINTR;return -1;}return 0;}
 #define clock_gettime model_clock
 #define write model_write
 #define close model_close
@@ -107,11 +115,6 @@ static void run(const char *mode){setup();struct fixture f;init(&f);
   assert(send_event(&f,marker)==DTRACE_CONSUME_ABORT);id=identity(&f);assert(!id.marker_seen&&id.total_events==4&&id.state==RT_STOPPED_UNUSABLE);finish(&f);return;
  }
  prefix(&f,!strcmp(mode,"marker-order"));id=identity(&f);assert(id.state==RT_STOPPED_PREFIX_RECORDED&&id.entry_ordinal==2&&id.entry_tid==20&&id.exec_success_ordinal==3&&id.new_tid==21&&id.marker_epoch==1&&id.signal==17&&id.lwp_seen);assert(id.lwp_start_ordinal!=id.marker_ordinal&&id.marker_timestamp!=id.lwp_start_timestamp);assert(id.common_counts[2]==1&&id.extra_counts[0]==1&&id.total_events==5);
- if(!strcmp(mode,"malformed-name")){
-  assert(!stopped_class(NULL,20));
-  for(unsigned field=0;field<4;field++){dtrace_probedesc_t bad=*probe(20,"proc_info");char *a[]={bad.dtpd_provider,bad.dtpd_mod,bad.dtpd_func,bad.dtpd_name};size_t n[]={sizeof(bad.dtpd_provider),sizeof(bad.dtpd_mod),sizeof(bad.dtpd_func),sizeof(bad.dtpd_name)};memset(a[field],'x',n[field]);for(unsigned kind=20;kind<=23;kind++)assert(!stopped_class(&bad,kind));}
-  uint64_t bytes=f.b->view.raw_bytes;assert(send_event(&f,(struct event){.kind=20,.fn="proc_info",.pid=f.binding.owner_pid,.tid=40,.detail=1,.args={176,176},.bad=7})==DTRACE_CONSUME_ABORT);id=identity(&f);assert(id.first_error.reason==RT_LAYOUT&&id.state==RT_STOPPED_UNUSABLE&&id.marker_seen&&id.total_events==5&&f.b->view.raw_bytes==bytes);finish(&f);return;
- }
  if(!strcmp(mode,"good")||!strcmp(mode,"marker-order")){uint64_t q[8]={3,f.binding.target_pid,1,1,0x12345000,176};owner_pair(&f,"proc_info",1,20,q,176,0);q[1]=f.binding.owner_pid;q[3]=9;owner_pair(&f,"proc_info",2,20,q,UINT64_MAX,EBADF);uint64_t w[8]={f.binding.target_pid,0x12346000,3,0};owner_pair(&f,"wait4",3,21,w,0,0);owner_pair(&f,"wait4_nocancel",4,21,w,UINT64_MAX,EINTR);uint64_t kill[8]={f.binding.target_pid,19,1};owner_pair(&f,"kill",5,22,kill,0,0);q[5]=175;owner_pair(&f,"proc_info",6,23,q,UINT64_MAX,EINVAL);ok(&f,(struct event){.kind=18,.pid=f.binding.owner_pid});unsigned activity=f.delivered[TS_ACTIVITY];w[2]=1;owner_pair(&f,"wait4_nocancel",7,21,w,UINT64_MAX,ECHILD);assert(f.delivered[TS_ACTIVITY]==activity);int e=0;assert(!f.ops.stop_fn(f.b,f.deadline,&e));f.b->draining=1;ok(&f,(struct event){.kind=17});f.b->draining=0;assert(!f.ops.drain_fn(f.b,f.deadline,consumer,&f,&e));assert(f.b->view.drained);id=identity(&f);assert(id.extra_counts[1]==2&&id.extra_counts[2]==3&&id.extra_counts[3]==1&&id.extra_counts[4]==1);char *raw=read_events(&f);assert(strstr(raw,"\"record_bytes\":272")&&strstr(raw,"\"record_bytes\":100")&&strstr(raw,"\"action\":514,\"size\":0,\"offset\":72")&&strstr(raw,"a5a4a7a6"));free(raw);
  }else if(!strcmp(mode,"drop")){dtrace_dropdata_t d={0};d.dtdda_drops=2;d.dtdda_total=2;d.dtdda_msg="model";assert(drop_cb(&d,cb_arg)==DTRACE_HANDLE_ABORT);id=identity(&f);assert(id.drops==2&&id.marker_seen&&id.state==RT_STOPPED_UNUSABLE);
  }else if(!strcmp(mode,"fault")){dtrace_errdata_t e={0};e.dteda_fault=3;e.dteda_msg="model";assert(error_cb(&e,cb_arg)==DTRACE_HANDLE_ABORT);id=identity(&f);assert(id.faults==1&&id.marker_seen&&id.state==RT_STOPPED_UNUSABLE);

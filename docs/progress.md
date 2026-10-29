@@ -1999,3 +1999,25 @@ coverage and oracle, native corpus, Mac budgets and final retention/sign-off are
 open. M3 memory mode remains separate/planned and M4 deferred. All native,
 quiescence, state, output-exemption, retention-before-continuation and full-trace
 acceptance fields remain false. Guest SIP stays enabled under the current instruction.
+
+
+## R02 — typed stopped-runtime lifecycle status (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-status` adds a distinct pure status getter
+for the new stopped-runtime backend. It exposes actual serialized identity and
+late lifecycle/cleanup outcomes, including successful resource closure after an
+earlier failure, without changing the old snapshot ABI or making it accept the
+new class. Native/quiescence/state/exemption/full-flags authority remains false.
+No callback, I/O, clock, owner lookup or mutation occurs in the getter.
+
+The original40 focused executions pass across both Python versions, normal and
+ASan/UBSan. Four focused name-guard controls verify the inherited correction;
+earlier receipts remain intact. Root review verifies152 guard-addendum payloads
+and exact source inheritance: removing the new include and pure getters yields
+the corrected collector byte-for-byte. CI adds the focused status suite.
+All11 source-location controls pass on Python3.15, including the inherited
+malformed-name case; these are SDK/source models with no provider action.
+No TS/controller/kit, provider, VM or security adoption occurs in this feature.
+M2 remains active; bounded retention/controller integration, native Mac corpus,
+full oracle, budgets and final sign-off remain. M0/M1 delivered, M3 memory mode
+planned separately, M4 deferred. Guest SIP stays enabled.
