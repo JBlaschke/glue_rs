@@ -13,6 +13,7 @@ from typing import Iterable, Optional
 
 _BASE = Path(__file__).resolve().parent.parent
 DEPENDENCY_IDENTITIES = (
+    ('bsd-fcntl-semantics/bsd_fcntl_semantics.py', 'da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260'),
     ('runtime-boundary/runtime_recipe.py', '0eec5212fe031a3c22e63f597faa587a01fd83804db3d1911b53ca3ba746cbd0'),
     ('bsd-fd-semantics/bsd_fd_semantics.py', '1d97f20c18fcc90ab5c467b0d44403aecd288d530394e32ad0d00b5ef5e1c7ba'),
     ('open-intent/open_intent.py', '104dd3e21a78264ae947033e133cd152dc43159cd91807c82569e1718905945a'),
@@ -36,6 +37,7 @@ def _import(name, relative):
 _RECIPE = _import('_runtime_fd_recipe', 'runtime-boundary/runtime_recipe.py')
 _FD = _import('_runtime_fd_operations', 'bsd-fd-semantics/bsd_fd_semantics.py')
 _OPEN = _import('_runtime_fd_open_intent', 'open-intent/open_intent.py')
+_FCNTL = _import('_runtime_fd_fcntl_operations', 'bsd-fcntl-semantics/bsd_fcntl_semantics.py')
 _IMAGES = _RECIPE._IMAGES
 _V1 = _IMAGES._V1
 RawValidationError = _RECIPE.RawValidationError
@@ -49,6 +51,8 @@ MAX_SLOTS = 4096  # Analysis storage bound, never RLIMIT or a numeric FD ceiling
 OPEN_NAMES = frozenset(('open', 'open_nocancel', 'openat', 'openat_nocancel'))
 FD_NAMES = frozenset(name for name, _, _ in _FD.OPERATION_NAMES)
 HANDLED_RUNTIME_NAMES = tuple(sorted(FD_NAMES | OPEN_NAMES))
+FCNTL_NAMES = frozenset(_FCNTL.FCNTL_NAMES)
+FCNTL_HANDLED_RUNTIME_NAMES = tuple(sorted(FD_NAMES | OPEN_NAMES | FCNTL_NAMES))
 
 
 @dataclass(frozen=True)
@@ -178,6 +182,25 @@ class RuntimeFdPolicy:
         return _V1._plain(self)
 
 
+@dataclass(frozen=True)
+class RuntimeFcntlAttempt:
+    attempt_index: int
+    request: object
+    operation: Optional[object]
+
+
+@dataclass(frozen=True)
+class RuntimeFdFcntlPolicy(RuntimeFdPolicy):
+    fcntl_attempts: tuple[RuntimeFcntlAttempt, ...] = ()
+
+
+def _policy_result(extended, fcntl_rows, *args):
+    if extended:
+        return RuntimeFdFcntlPolicy('darwin-runtime-fd-fcntl-policy-v2', *args,
+                                   fcntl_attempts=tuple(fcntl_rows))
+    return RuntimeFdPolicy('darwin-runtime-fd-policy-v1', *args)
+
+
 def _finding(code, attempt, message):
     return PolicyFinding(code, None if attempt is None else attempt.entry.ordinal,
                          '' if attempt is None else attempt.source_name, message)
@@ -196,7 +219,7 @@ def _typed(index, entry, returned, calls, return_types, pair=None):
     return arguments, outcome, reasons
 
 
-def _attempt(index, entry, returned, context, epoch, actor, calls, return_types, pair=None):
+def _attempt(index, entry, returned, context, epoch, actor, calls, return_types, pair=None, *, extended=False, fcntl_rows=None):
     arguments, outcome, reasons = _typed(index, entry, returned, calls, return_types, pair)
     name = entry.function
     # Intent is retained before checking argument/outcome support.
@@ -215,6 +238,20 @@ def _attempt(index, entry, returned, context, epoch, actor, calls, return_types,
             unsupported_reasons=tuple(reasons),
             write_reasons=(intent,) if intent in ('payload-write-attempt', 'flush-attempt', 'truncate-attempt') else (),
             effect_uncertainties=uncertainty)
+    if extended and name in FCNTL_NAMES:
+        request = _FCNTL._request(name, arguments)
+        decoded = None
+        if context == 'runtime':
+            decoded = _FCNTL._decode_operation(index, pair, calls, return_types)
+            reasons = list(decoded.unsupported_reasons)
+            uncertainty = decoded.effect_uncertainties
+        else:
+            uncertainty = ('no ordinary completed fcntl outcome is invented for this context',)
+        fcntl_rows.append((request, decoded))
+        duplicate = request.operation in ('duplicate-minimum', 'duplicate-minimum-cloexec')
+        return PolicyAttempt(name, entry, returned, context, epoch, actor, request.attempt_kind,
+            arguments, outcome, fd=request.fd, source_fd=request.fd if duplicate else None,
+            unsupported_reasons=tuple(reasons), effect_uncertainties=uncertainty)
     if name in OPEN_NAMES:
         selected = calls[name]['selectors']['flags']
         signed = arguments[selected].value
@@ -242,7 +279,7 @@ def _attempt(index, entry, returned, context, epoch, actor, calls, return_types,
         effect_uncertainties=('unhandled effects are never a harmless-operation permission',))
 
 
-def _whole_incomplete(capture, contract_bytes, message):
+def _whole_incomplete(capture, contract_bytes, message, *, extended=False):
     # The upstream exception contains a completely validated physical capture,
     # never a clean image prefix. Project EVERY original entry without pairing,
     # actor generation or a successful state/exemption result.
@@ -250,14 +287,20 @@ def _whole_incomplete(capture, contract_bytes, message):
     types = {name: call['return_type'] for name, call in calls.items()}
     entries = [phase for phase in capture.phases if phase.raw_scalars[0] in (2, 15)]
     _V1._require(len(entries) <= MAX_ATTEMPTS, 'FD policy attempt bound')
-    attempts = tuple(
-        PolicyAttempt(phase.function, phase, None, 'unresolved-image', None, None,
-            'opaque-mach-attempt', (), None,
-            unsupported_reasons=('Mach trap arguments/outcomes have no BSD interpretation',),
-            effect_uncertainties=('Mach/rights/effects remain opaque; no state or authority follows',))
-        if phase.raw_scalars[0] == 15 else
-        _attempt(i, phase, None, 'unresolved-image', None, None, calls, types)
-        for i, phase in enumerate(entries))
+    attempts, fcntl_attempts = [], []
+    for i, phase in enumerate(entries):
+        command_rows = []
+        if phase.raw_scalars[0] == 15:
+            attempt = PolicyAttempt(phase.function, phase, None, 'unresolved-image', None, None,
+                'opaque-mach-attempt', (), None,
+                unsupported_reasons=('Mach trap arguments/outcomes have no BSD interpretation',),
+                effect_uncertainties=('Mach/rights/effects remain opaque; no state or authority follows',))
+        else:
+            attempt = _attempt(i, phase, None, 'unresolved-image', None, None, calls, types,
+                               extended=extended, fcntl_rows=command_rows)
+        attempts.append(attempt)
+        fcntl_attempts.extend(RuntimeFcntlAttempt(i, *row) for row in command_rows)
+    attempts = tuple(attempts)
     by_ordinal = {a.entry.ordinal: i for i, a in enumerate(attempts)}
     _V1._require(len(by_ordinal) == len(entries), 'FD policy all-entry conservation')
     accounting = tuple(PhaseAccounting(p.ordinal,
@@ -267,12 +310,12 @@ def _whole_incomplete(capture, contract_bytes, message):
                                 'forbidden-open-intent', a, 'forbidden requested intent is retained despite incomplete image context')
                        for a in attempts if a.intent == 'path-mutation-attempt' or
                        a.source_name in OPEN_NAMES and a.write_reasons)
-    return RuntimeFdPolicy('darwin-runtime-fd-policy-v1', 'incomplete', capture, None,
+    return _policy_result(extended, fcntl_attempts, 'incomplete', capture, None,
         attempts, accounting, (), (), (), (), violations,
         (PolicyFinding('image-coverage', None, '', message),))
 
 
-def _partition(recipe, contract_bytes):
+def _partition(recipe, contract_bytes, *, extended=False):
     images, capture = recipe.images, recipe.source
     calls = {call['name']: call for call in json.loads(contract_bytes)['calls']}
     types = {name: call['return_type'] for name, call in calls.items()}
@@ -290,13 +333,16 @@ def _partition(recipe, contract_bytes):
     entries = [p for p in capture.phases if p.raw_scalars[0] == 2]
     _V1._require(len(entries) <= MAX_ATTEMPTS and set(contexts) == {p.ordinal for p in entries},
                  'FD policy complete entry partition')
-    attempts, roles = [], {}
+    attempts, roles, fcntl_attempts = [], {}, []
     for entry in entries:
         returned, context, epoch, actor, pair, source_index = contexts[entry.ordinal]
+        command_rows = []
         attempt = _attempt(source_index, pair.entry if pair is not None else entry,
-            returned, context, epoch, actor, calls, types, pair)
+            returned, context, epoch, actor, calls, types, pair,
+            extended=extended, fcntl_rows=command_rows)
         index = len(attempts)
         attempts.append(attempt)
+        fcntl_attempts.extend(RuntimeFcntlAttempt(index, *row) for row in command_rows)
         roles[entry.ordinal] = PhaseAccounting(entry.ordinal, context + '-entry', index)
         if returned is not None:
             _V1._require(returned.ordinal not in roles, 'FD policy return accounted twice')
@@ -315,14 +361,24 @@ def _partition(recipe, contract_bytes):
         _V1._require(kind not in (2, 3), 'FD policy unaccounted ordinary phase')
         role = 'unbound-nonlive-shadow' if phase.ordinal in shadow else lifecycle.get(phase.ordinal, 'validated-lifecycle-context')
         roles[phase.ordinal] = PhaseAccounting(phase.ordinal, role)
-    return tuple(attempts), tuple(roles[p.ordinal] for p in capture.phases)
+    return tuple(attempts), tuple(roles[p.ordinal] for p in capture.phases), tuple(fcntl_attempts)
 
 
-def _window(index, a):
+def _window(index, a, fcntl=None):
     source, target, fd = a.source_fd, a.target_fd, a.fd
     lookups = tuple(sorted({v for v in (source, fd) if v is not None and 0 <= v <= INT_MAX}))
     slots, allocate, unknown = (), False, bool(a.unsupported_reasons)
-    if a.source_name in ('close', 'close_nocancel'):
+    if fcntl is not None:
+        operation = fcntl.request.operation
+        if operation in ('duplicate-minimum', 'duplicate-minimum-cloexec'):
+            allocate = True
+            if a.outcome is not None and a.outcome.disposition == 'kernel-success' and not a.unsupported_reasons:
+                slots = (a.outcome.primary_result,)
+        elif operation == 'set-cloexec':
+            slots = lookups
+        elif operation != 'query-cloexec':
+            unknown = True
+    elif a.source_name in ('close', 'close_nocancel'):
         slots = lookups
     elif a.source_name == 'dup':
         allocate = True
@@ -362,9 +418,11 @@ def _conflicts(windows):
     return tuple(result)
 
 
-def _run(recipe, attempts, accounting):
+def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
     gaps, violations = [], []
-    windows = tuple(_window(i, a) for i, a in enumerate(attempts) if a.context == 'runtime')
+    commands = {row.attempt_index: row for row in fcntl_attempts}
+    handled = FD_NAMES | OPEN_NAMES | (FCNTL_NAMES if extended else frozenset())
+    windows = tuple(_window(i, a, commands.get(i)) for i, a in enumerate(attempts) if a.context == 'runtime')
     conflicts = _conflicts(windows)
     conflicted = {i for row in conflicts for i in (row.first_attempt, row.second_attempt)}
     for row in conflicts:
@@ -378,7 +436,7 @@ def _run(recipe, attempts, accounting):
             violations.append(_finding('forbidden-open-intent', a, ', '.join(a.write_reasons)))
         if a.intent == 'path-mutation-attempt':
             violations.append(_finding('forbidden-path-mutation', a, 'fixed output policy forbids namespace mutation intent'))
-        if a.source_name not in FD_NAMES | OPEN_NAMES and a.intent != 'path-mutation-attempt':
+        if a.source_name not in handled and a.intent != 'path-mutation-attempt':
             gaps.append(_finding('unsupported-route', a, 'no fixed rule for this runtime BSD route'))
         for reason in a.unsupported_reasons:
             gaps.append(_finding('unsupported-frame', a, reason))
@@ -386,6 +444,9 @@ def _run(recipe, attempts, accounting):
             gaps.append(_finding('unresolved-output-binding', a,
                 'pre-exec READY provenance supplies no post-exec output exemption; failed calls may have partial effects'))
         if a.outcome is not None and a.outcome.disposition == 'kernel-error':
+            if extended and a.source_name in FCNTL_NAMES | {'dup'}:
+                gaps.append(_finding('failed-scalar-operation', a,
+                    'error retains lookup/reservation/flag uncertainty without a new alias or bit observation'))
             if a.source_name in ('close', 'close_nocancel'):
                 gaps.append(_finding('failed-close-state', a, 'slot may already be released before close error'))
             if a.source_name == 'dup2':
@@ -466,7 +527,51 @@ def _run(recipe, attempts, accounting):
                 change(fd, 'unknown', None, None, w.end_ordinal, interval, 'conflicting lookup/effect window')
             continue
         success = a.outcome is not None and a.outcome.disposition == 'kernel-success'
-        if a.source_name in ('close', 'close_nocancel'):
+        if extended and success:
+            absent = {fd for fd in w.lookup_slots if state(fd).state == 'absent'}
+            occupied = {fd for fd in w.mutation_slots if w.allocation and
+                        state(fd).state in ('ready-output', 'untrusted-open', 'conditional-alias')}
+            if absent or occupied:
+                if absent:
+                    gaps.append(_finding('inconsistent-present-lookup', a,
+                        'successful lookup contradicts conditional absence throughout isolated interval'))
+                if occupied:
+                    gaps.append(_finding('inconsistent-free-allocation', a,
+                        'allocator selected an already conditionally occupied slot without a release'))
+                # Missing/contradictory state coverage grants no replacement
+                # lineage or flag postcondition, even for a typed success.
+                for fd in absent | set(w.mutation_slots):
+                    change(fd, 'unknown', None, None, w.end_ordinal, interval,
+                           'source-state contradiction retires incompatible certainty')
+                continue
+        if index in commands:
+            command = commands[index].request
+            previous = state(command.fd)
+            operation = command.operation
+            if operation in ('duplicate-minimum', 'duplicate-minimum-cloexec'):
+                if success:
+                    change(a.outcome.primary_result,
+                           'conditional-alias' if previous.analysis_binding_key is not None else 'unknown',
+                           previous.analysis_binding_key, operation == 'duplicate-minimum-cloexec',
+                           w.end_ordinal, interval,
+                           'conditional minimum-descriptor alias after stable isolated lookup/reservation window', command.fd)
+            elif operation == 'set-cloexec':
+                change(command.fd, previous.state, previous.analysis_binding_key,
+                       command.requested_cloexec if success else None, w.end_ordinal, interval,
+                       'descriptor-local conditional CLOEXEC update' if success else
+                       'failed SETFD leaves bit unresolved; isolated backing remains conditional', previous.alias_source)
+            elif operation == 'query-cloexec' and success:
+                observed = bool(a.outcome.primary_result)
+                if previous.cloexec is not None and previous.cloexec != observed:
+                    gaps.append(_finding('contradictory-cloexec-observation', a,
+                        'observed bit contradicts stable prior conditional bit; no replacement binding is inferred'))
+                    change(command.fd, previous.state, previous.analysis_binding_key, None,
+                           w.end_ordinal, interval, 'contradictory GETFD observation clears bit certainty', previous.alias_source)
+                else:
+                    # A point observation is retained in the operation row. It
+                    # never rewrites binding/flags as an at-return snapshot.
+                    pass
+        elif a.source_name in ('close', 'close_nocancel'):
             change(a.fd, 'absent' if success else 'unknown', None, None, w.end_ordinal, interval,
                    'conditional close postcondition after entire isolated window' if success else 'failed close poisons slot')
         elif a.source_name in OPEN_NAMES:
@@ -495,7 +600,7 @@ def _run(recipe, attempts, accounting):
                        previous.analysis_binding_key, False, w.end_ordinal, interval,
                        'conditional chosen-source alias after entire stable window; no kernel/OFD identity', a.source_fd)
     status = 'incomplete' if gaps else 'forbidden-intent' if violations else 'source-conditional-clean'
-    return RuntimeFdPolicy('darwin-runtime-fd-policy-v1', status, recipe.source, recipe, attempts,
+    return _policy_result(extended, fcntl_attempts, status, recipe.source, recipe, attempts,
         accounting, windows, conflicts, tuple(history), tuple(states[fd] for fd in sorted(states)),
         tuple(violations), tuple(gaps))
 
@@ -517,5 +622,26 @@ def evaluate_runtime_fd_policy_raw(program: bytes, probes: bytes, errors: bytes,
         if error.capture is None:
             raise
         return _whole_incomplete(error.capture, contract_bytes, str(error))
-    attempts, accounting = _partition(recipe, contract_bytes)
+    attempts, accounting, _ = _partition(recipe, contract_bytes)
     return _run(recipe, attempts, accounting)
+
+
+def evaluate_runtime_fd_fcntl_policy_raw(program: bytes, probes: bytes, errors: bytes,
+                                        event_lines: Iterable[bytes], *, owner_pid: int, target_pid: int,
+                                        contract_bytes: bytes, launch_evidence: RuntimeRecipeEvidence) -> RuntimeFdFcntlPolicy:
+    """Fixed v2 profile: v1 FD/open scope plus four scalar fcntl commands.
+
+    Exactly one recipe read; command decoding reuses only already-associated
+    pairs. This is not native origin, output authority or a state-feed admission.
+    The original public v1 factory keeps its finite 15-name behavior and shape.
+    """
+    try:
+        recipe = _RECIPE.pair_runtime_recipe_raw(program, probes, errors, event_lines,
+            owner_pid=owner_pid, target_pid=target_pid, contract_bytes=contract_bytes,
+            launch_evidence=launch_evidence)
+    except _IMAGES.ImageValidationError as error:
+        if error.capture is None:
+            raise
+        return _whole_incomplete(error.capture, contract_bytes, str(error), extended=True)
+    attempts, accounting, commands = _partition(recipe, contract_bytes, extended=True)
+    return _run(recipe, attempts, accounting, commands, extended=True)

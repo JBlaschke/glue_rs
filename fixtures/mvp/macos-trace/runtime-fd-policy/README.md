@@ -57,3 +57,43 @@ Bootstrap pairs are treated only as the exact upstream-validated bootstrap conte
 Run `python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_policy.py` from the repository root. The36 independent physical-byte controls cover phase conservation, all three attachment routes, bootstrap retries, first/later exec retirement, typed success/failure domains, zero requests, open/path intent, failed close/dup2, reuse/alias history, source-slot/touching/allocation conflicts, late EJUSTRETURN, unresolved image routes, late transport, exact evidence, single iterator consumption and immutable detached serialization. They execute no target or provider.
 
 Executable helpers and the open ABI asset are identity checked before ordinary imports. Their source grounding remains Apple XNU commit `f6217f891ac0bb64f3d375211650a4c1ff8ca1ea` and the existing fixed Darwin open ABI. See the FD helper's exact handler/dispatcher sources, open-intent ABI and [the policy decision](../../../../docs/decisions/mvp-r02-runtime-fd-policy.md). Installed provider/ABI/clock calibration, authoritative post-exec backing, complete runtime/Mach/mapping/process coverage and actual native corpus/budgets remain required. This source engine neither changes SIP nor closes those gates.
+
+
+## Separate scalar fcntl profile v2
+
+`evaluate_runtime_fd_fcntl_policy_raw` takes the same original-byte arguments,
+but adds F_DUPFD, F_GETFD, F_SETFD and F_DUPFD_CLOEXEC through both fcntl forms.
+The v1 factory keeps its fifteen-name scope and original result shape. The v2
+result adds immutable `fcntl_attempts`, linked by original attempt index and
+retaining the full signed64 argument plus the existing source semantic row. No
+caller policy selector, normalized input or second capture pass is accepted.
+
+GETFD retains a point observation within its closed window; it does not rewrite
+a binding, version or return-time flag snapshot. A contradictory prior bit
+creates a gap and removes bit certainty. SETFD changes only the selected
+descriptor's conditional bit after an isolated interval, preserving its backing
+key and alias provenance. Duplication requires a stable source throughout the
+closed lookup/reservation window; the minimum is never narrowed and returned
+numbers grant no backing identity. Descriptor flag changes do not spread across
+aliases. Relevant touching/overlapping windows remain conservative conflicts.
+
+Canonical failed scalar operations and existing dup get explicit uncertainty
+gaps in v2. Failed SETFD clears only bit certainty under otherwise complete
+conditional mutation coverage; isolated failed allocators infer no destination
+while preserving earlier conditional keys. Unknown or unsupported commands,
+including F_GETFL/F_SETFL, still establish the entry-onward opaque horizon.
+Validated bootstrap observations remain upstream context only. Every exec still
+retires all binding certainty. Successful lookups from a conditionally absent
+source, or allocator returns into a conditionally occupied destination, create
+explicit source-state gaps and retire incompatible certainty; they grant no
+alias/flag replacement. The explicitly replacing dup2 route remains distinct.
+No output exemption, state authority, native calibration or full acceptance is
+granted.
+
+Run the separate controls from the repository root:
+
+```sh
+python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_fcntl_policy.py
+```
+
+The original v1 control suite remains unchanged.
