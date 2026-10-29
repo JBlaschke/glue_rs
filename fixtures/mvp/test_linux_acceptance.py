@@ -1,6 +1,7 @@
 """Portable planning/closure controls; synthetic metadata is not native evidence."""
 import copy
 from dataclasses import replace
+import hashlib
 import io
 import json
 import os
@@ -181,11 +182,13 @@ class NativeLinuxPlanTests(unittest.TestCase):
                       "python-native/provision.py": '--target "$wheel_target"',
                       "fixtures/mvp/harness.py": '--target "$target"',
                       "scripts/benchmark-mvp.py": '--target "$target"',
-                      "fixtures/mvp/trace_environment.py": '--architecture "$architecture"'}
+                      "fixtures/mvp/trace_environment.py": '--architecture "$architecture"',
+                      "fixtures/mvp/python-matrix/run_abi_refusal.py": '--architecture "$architecture"'}
         for command, target_option in boundaries.items():
             invocations = [line for line in lines if command in line]
-            self.assertEqual(len(invocations), 1, command)
-            self.assertIn(target_option, invocations[0], command)
+            self.assertEqual(len(invocations), 2 if command == "python-native/provision.py" else 1, command)
+            for invocation in invocations:
+                self.assertIn(target_option, invocation, command)
         self.assertNotIn("x86_64", source)
         self.assertNotIn("linux-x64", source)
         self.assertNotIn("linux-arm64", source)
@@ -220,6 +223,35 @@ class NativeLinuxPlanTests(unittest.TestCase):
         self.assertIn('GLUE_MVP_CI_EXPECT_TARGET: ${{ matrix.target }}', source)
         self.assertIn('mvp-native-linux-${{ matrix.architecture }}-', source)
         self.assertIn('runs-on: ${{ matrix.runner }}', source)
+
+    def test_native_refusal_finish_gate_cannot_mask_collector_or_input_failure(self):
+        source = (ROOT / "scripts/ci-mvp-linux.sh").read_text()
+        marker = 'if /usr/bin/python3 - "$evidence/abi-summary.json" <<\'PY\'\n'
+        self.assertEqual(source.count(marker), 1)
+        program = source.split(marker, 1)[1].split("\nPY\n", 1)[0]
+        for mutation in (None, "collector-failed", "input-mutated", "raw-changed", "missing-after"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / "abi-refusal-details").mkdir()
+                before = json.dumps({"file": {"size": 1, "sha256": "a" * 64}}).encode()
+                after = (json.dumps({"file": {"size": 2, "sha256": "b" * 64}}).encode()
+                         if mutation == "input-mutated" else before)
+                record = {"status": "failed" if mutation == "collector-failed" else "passed",
+                          "collection_errors": ["mutation"] if mutation == "collector-failed" else []}
+                for key, relative, raw in (("input_inventory", "abi-refusal-input-inventory.json", before),
+                        ("input_inventory_after", "abi-refusal-details/input-inventory-after.json", after)):
+                    record[key] = {"path": relative, "size": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+                    if mutation == "missing-after" and key == "input_inventory_after":
+                        continue
+                    if mutation == "raw-changed" and key == "input_inventory_after":
+                        raw += b"\n"
+                    (root / relative).write_bytes(raw)
+                (root / "abi-refusal.json").write_text(json.dumps(record))
+                path = root / "abi-summary.json"
+                path.write_text(json.dumps({"wrong_abi_refusal": {"status": "passed"}}))
+                result = subprocess.run([sys.executable, "-B", "-c", program, str(path)],
+                                        capture_output=True, timeout=10)
+                self.assertEqual(result.returncode == 0, mutation is None, result.stderr)
 
 
 class NativeLinuxSummaryTests(unittest.TestCase):

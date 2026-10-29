@@ -58,3 +58,47 @@ Fresh native execution and independent raw replay must prove the new cells.
 Additional-patch/same-launcher and abi3 evidence, macOS oracle/signing and Mac
 budgets remain separate gates. `matrix.py` reports supplied historical receipts;
 it cannot infer unrecorded provider or input-route coverage or complete M2.
+
+## Different patch, abi3 and an actual wrong-ABI refusal
+
+An independent optional extension adds three more traced positive cases:
+
+- CPython 3.13.15 source, compared with the baseline 3.13.16 source receipt:
+  different runtime-executable hashes and patch versions, identical included
+  glue launcher bytes and source revision.
+- Prebuilt cryptography 50.0.2 abi3 operations on PBS 3.13.16 and the independent
+  conda 3.14.8 runtime. The same target-specific cryptography wheel and all its
+  input members must match on both minors. Each minor has its own compatible
+  CFFI backend; dependency equality across minors is not inferred. Explicit
+  native-path normalization remains separately reported.
+
+`linux_abi_compatibility.py` checks these retained bindings, crypto operation
+stdout, official runtime/wheel pins and the bounded retained cryptography ZIP.
+The patch staging bridge records verified archive-to-staged-interpreter
+provenance; offline replay does not rehash an absent runtime archive.
+
+`run_abi_refusal.py` separately prepares a real ordinary 3.13.16 environment
+containing the genuine pinned cp314 CFFI wheel, then invokes the existing glue
+binary. It must return `runtime_abi_mismatch` before publishing output. The
+collector retains the wheel, command streams, absent-output observations, input
+inventories and unrelated sibling sentinel contents. A target mismatch refuses
+before any output creation or runtime execution. It downloads no input and
+imports no application code. Its normal preparer uses only the selected
+runtime's bundled venv/ensurepip seed.
+
+The three positive routes and wrong-ABI diagnostic have separate verdicts.
+Native CI also requires the collector's complete status, empty collection
+errors and exact unchanged before/after input observations. A partial or failed
+collection cannot become a passing refusal through its diagnostic alone.
+
+```sh
+gh workflow run mvp-native.yml --ref YOUR_FEATURE_BRANCH \
+  -f target=both -f compatibility=true -f python_abi=true
+```
+
+With both extensions selected this runs 34 application cases, the five unchanged
+performance profiles and one actual prepublication refusal. Both options default
+to false. Portable metadata/collector tests use synthetic evidence and controlled
+children; only fresh native executions and independent retained replay can
+prove these additional cells. Mac compatibility/oracle, Mac budgets, external
+retention and final M2 sign-off remain separate.

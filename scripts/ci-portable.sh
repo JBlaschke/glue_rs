@@ -22,6 +22,8 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/python-matrix/test_provision_conda.py -v
         python3 fixtures/mvp/python-matrix/test_prepare.py -v
         python3 fixtures/mvp/python-matrix/test_linux_compatibility.py -v
+        python3 fixtures/mvp/python-matrix/test_linux_abi_compatibility.py -v
+        python3 fixtures/mvp/python-matrix/test_run_abi_refusal.py -v
         python3 fixtures/mvp/macos-trace/test_read_capability.py -v
         python3 fixtures/mvp/macos-trace/test_observe_open.py -v
         python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v

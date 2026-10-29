@@ -13,6 +13,8 @@ profile_fields=$(/usr/bin/python3 fixtures/mvp/linux_acceptance.py profile \
 IFS=$'\t' read -r architecture target node_arch wheel_target node_config native_search conda_lock pbs312_sha256 pbs313_sha256 benchmark_python_environment <<< "$profile_fields"
 compatibility_mode=${GLUE_MVP_COMPATIBILITY:-disabled}
 case "$compatibility_mode" in disabled|required) ;; *) echo 'GLUE_MVP_COMPATIBILITY must be disabled or required' >&2; exit 2 ;; esac
+abi_mode=${GLUE_MVP_ABI_COMPATIBILITY:-disabled}
+case "$abi_mode" in disabled|required) ;; *) echo 'GLUE_MVP_ABI_COMPATIBILITY must be disabled or required' >&2; exit 2 ;; esac
 ci_root=${GLUE_MVP_CI_ROOT:?set a new absolute directory for this CI run}
 case "$ci_root" in /*) ;; *) echo 'GLUE_MVP_CI_ROOT must be absolute' >&2; exit 2 ;; esac
 test ! -e "$ci_root"
@@ -32,6 +34,43 @@ finish() {
     if test "$compatibility_mode" = required; then
         if /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py summary \
             --architecture "$architecture" --evidence "$evidence" --result "$result"
+        then :; else summary_result=1; fi
+    fi
+    if test "$abi_mode" = required; then
+        if /usr/bin/python3 fixtures/mvp/python-matrix/linux_abi_compatibility.py summary \
+            --architecture "$architecture" --evidence "$evidence" --result "$result"
+        then :; else summary_result=1; fi
+        # Positive route closure alone cannot satisfy the separately executed
+        # prepublication refusal. Require its observed verdict independently.
+        if /usr/bin/python3 - "$evidence/abi-summary.json" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+path = Path(sys.argv[1])
+report = json.loads(path.read_text())
+if report.get('wrong_abi_refusal', {}).get('status') != 'passed':
+    raise SystemExit('actual native wrong-ABI refusal is incomplete or failed')
+root = path.parent
+record = json.loads((root / 'abi-refusal.json').read_text())
+errors = []
+if record.get('status') != 'passed' or record.get('collection_errors') != []:
+    errors.append('native collector did not pass all observations')
+observations = []
+for key, relative in (('input_inventory', 'abi-refusal-input-inventory.json'),
+                      ('input_inventory_after', 'abi-refusal-details/input-inventory-after.json')):
+    raw = (root / relative).read_bytes()
+    observed = record.get(key, {})
+    if (observed.get('path') != relative or type(observed.get('size')) is not int
+            or observed.get('size') != len(raw)
+            or observed.get('sha256') != hashlib.sha256(raw).hexdigest()):
+        errors.append('retained input observation identity differs: ' + key)
+    observations.append(json.loads(raw))
+if not observations[0] or observations[0] != observations[1]:
+    errors.append('before/after input trees differ')
+(root / 'abi-refusal-collection-check.json').write_text(json.dumps({
+    'status': 'failed' if errors else 'passed', 'errors': errors,
+    'scope': 'Collector status and retained before/after input observations, separate from the narrow ABI diagnostic assessment.'}, indent=2) + '\n')
+if errors: raise SystemExit('; '.join(errors))
+PY
         then :; else summary_result=1; fi
     fi
     # Tracer files can belong to root/nobody. Only the evidence tree is exposed
@@ -93,6 +132,10 @@ git status --short > "$evidence/source-status.txt"
 if test "$compatibility_mode" = required; then
     /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py plan --architecture "$architecture" \
         > "$evidence/compatibility-plan.json"
+fi
+if test "$abi_mode" = required; then
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_abi_compatibility.py plan --architecture "$architecture" \
+        > "$evidence/abi-plan.json"
 fi
 
 # A syscall tracer cannot observe io_uring SQE writes. Select the ordinary
@@ -192,6 +235,50 @@ for line in (root / 'provisioning/compatibility-inputs.tsv').read_text().splitli
 PY
 fi
 
+if test "$abi_mode" = required; then
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_abi_compatibility.py inputs --architecture "$architecture" \
+        > "$evidence/provisioning/abi-inputs.tsv"
+    while IFS=$'\t' read -r route name checksum size url; do
+        if test "$route" = patch; then
+            archive="$ci_root/downloads/$name"
+            download "$url" "$archive"
+            /usr/bin/python3 - "$archive" "$checksum" "$size" <<'PY'
+import hashlib, sys
+from pathlib import Path
+path, digest, size = Path(sys.argv[1]), sys.argv[2], int(sys.argv[3])
+hasher = hashlib.sha256()
+with path.open('rb') as stream:
+    while block := stream.read(1024 * 1024): hasher.update(block)
+if path.stat().st_size != size or hasher.hexdigest() != digest:
+    raise SystemExit('official patch runtime checksum/size mismatch')
+PY
+            raw_runtime="$ci_root/downloads/python-3.13.15-raw"
+            mkdir "$raw_runtime"
+            tar -xzf "$archive" --strip-components=1 -C "$raw_runtime"
+            /usr/bin/python3 fixtures/mvp/python-matrix/stage-runtime.py "$raw_runtime" "$ci_root/runtimes/python-3.13.15"
+            cp "$ci_root/runtimes/python-3.13.15-stage.json" "$evidence/provisioning/"
+            rm -rf "$raw_runtime"
+        fi
+    done < "$evidence/provisioning/abi-inputs.tsv"
+    /usr/bin/python3 - "$evidence" "$ci_root/runtimes/python-3.13.15/bin/python3.13" "$target" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+root, executable, target = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+rows = {}
+for line in (root / 'provisioning/abi-inputs.tsv').read_text().splitlines():
+    route, name, digest, size, url = line.split('\t')
+    rows[route] = {'name': name, 'sha256': digest, 'size': int(size), 'url': url}
+(root / 'abi-inputs.json').write_text(json.dumps(rows, indent=2) + '\n')
+digest = hashlib.sha256()
+with executable.open('rb') as stream:
+    while block := stream.read(1024 * 1024): digest.update(block)
+(root / 'abi-patch-runtime.json').write_text(json.dumps({
+    'target': target, 'version': '3.13.15', 'archive': rows['patch'],
+    'runtime_executable': {'size': executable.stat().st_size, 'sha256': digest.hexdigest()},
+    'native_bytes_edited': False}, indent=2) + '\n')
+PY
+fi
+
 # This independent conventional runtime avoids the selected PBS libffi static
 # trampoline path bug under relocated paths containing spaces. Keep all native
 # bytes unchanged and subject it to the same strict extraction oracle.
@@ -234,6 +321,36 @@ for tag in cp312 cp313 cp314; do
         cffi==2.1.1 pycparser==3.0 typing_extensions==4.15.0 > "$evidence/provisioning/wheels-$tag.log" 2>&1
     cp "$ci_root/inputs/python-$tag/inputs.json" "$evidence/provisioning/wheels-$tag.json"
 done
+
+if test "$abi_mode" = required; then
+    mkdir "$evidence/provisioning/abi-wheels"
+    for tag in cp313 cp314; do
+        /usr/bin/python3 fixtures/mvp/python-native/provision.py --fetch --python "$tag" --target "$wheel_target" \
+            --output "$ci_root/inputs/python-abi3-$tag" cryptography==50.0.2 cffi==2.1.1 pycparser==3.0 \
+            > "$evidence/provisioning/abi-wheels-$tag.log" 2>&1
+        /usr/bin/python3 - "$repo_dir" "$architecture" "$tag" "$ci_root/inputs/python-abi3-$tag" "$evidence" <<'PY'
+import json, shutil, sys
+from pathlib import Path
+repository, architecture, tag, inputs, evidence = Path(sys.argv[1]), sys.argv[2], sys.argv[3], Path(sys.argv[4]), Path(sys.argv[5])
+sys.path.insert(0, str(repository / 'fixtures/mvp/python-matrix'))
+import linux_abi_compatibility as abi
+raw = (inputs / 'inputs.json').read_bytes()
+errors = abi._wheel_receipt_errors(raw, tag, architecture, abi.official_manifest(architecture))
+if errors: raise SystemExit('; '.join(errors))
+(evidence / ('abi-wheel-inputs-' + tag + '.json')).write_bytes(raw)
+pin = abi.official_manifest(architecture)['cryptography']
+wheel = inputs / pin['name']
+# Verify actual compressed bytes and bounded members before any case consumes
+# the provisioned installation. Each minor must supply the same pinned wheel.
+abi._cryptography_members(wheel.read_bytes(), pin)
+destination = evidence / 'provisioning/abi-wheels' / pin['name']
+if destination.exists():
+    if destination.read_bytes() != wheel.read_bytes(): raise SystemExit('abi3 wheel differs between minors')
+else:
+    shutil.copy2(wheel, destination)
+PY
+    done
+fi
 
 common_env=(
     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" "HOME=/root" "LANG=C.UTF-8"
@@ -326,6 +443,32 @@ if test "$compatibility_mode" = required; then
         run_case "$label" "$recipe" "${compatibility_env[@]}"
     done < "$evidence/provisioning/compatibility-cells.tsv"
     case_status_file="$evidence/case-status.tsv"
+fi
+
+if test "$abi_mode" = required; then
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_abi_compatibility.py cells --architecture "$architecture" \
+        > "$evidence/provisioning/abi-cells.tsv"
+    case_status_file="$evidence/abi-case-status.tsv"
+    while IFS=$'\t' read -r label recipe route environment_kind; do
+        case "$route" in
+            patch) version=3.13.15; relative=bin/python3.13; site_profile=python-cp313 ;;
+            cp313) version=3.13.16; relative=bin/python3.13; site_profile=python-abi3-cp313 ;;
+            cp314) version=3.14.8; relative=bin/python3.14; site_profile=python-abi3-cp314 ;;
+            *) echo 'unknown patch/abi3 route' >&2; exit 2 ;;
+        esac
+        run_case "$label" "$recipe" \
+            "GLUE_MVP_PYTHON_ROOT=$ci_root/runtimes/python-$version" "GLUE_MVP_PYTHON_RELATIVE=$relative" \
+            "GLUE_MVP_PYTHON_SITE=$ci_root/inputs/$site_profile/site" "GLUE_MVP_PYTHON_ENV_KIND=$environment_kind"
+    done < "$evidence/provisioning/abi-cells.tsv"
+    case_status_file="$evidence/case-status.tsv"
+    mkdir "$ci_root/refusals"
+    if sudo -n env -i "${common_env[@]}" "$trace_environment" -- unshare --net /usr/bin/python3 \
+        fixtures/mvp/python-matrix/run_abi_refusal.py --architecture "$architecture" \
+        --runtime-root "$ci_root/runtimes/python-3.13.16" --foreign-input "$ci_root/inputs/python-abi3-cp314" \
+        --glue "$CARGO_TARGET_DIR/release/glue" --output "$ci_root/refusals/python-wrong-abi-refusal" \
+        --evidence "$evidence" > "$evidence/abi-refusal.log" 2>&1
+    then :; else overall=1; fi
+    cat "$evidence/abi-refusal.log"
 fi
 
 check_benchmark() {
