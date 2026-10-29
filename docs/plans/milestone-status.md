@@ -76,6 +76,14 @@ runs additional-patch, abi3 and genuine wrong-ABI refusal checks independently o
 both native Linux targets. M0/M1 are delivered, M2 remains active, M3 is planned
 and M4 deferred. M3 memory mode is separate from the first compact MVP.
 
+The source-selected runtime producer and first-image reader are now implemented
+and independently reviewed, with 13 C-transport and 35 reader/wire controls per
+tested Python version. They retain bootstrap and changed-thread exec boundaries
+without granting native provenance or output/state acceptance. Generic runtime
+launch recipes and a native macOS host-version query are active separate features.
+Later execs/process-tree handling, sink state policy, native corpus and budgets
+remain before M2 closure.
+
 ## What M3 still needs
 
 The seven [memory roadmap cards](memory-roadmap.md) are separate from the 26
