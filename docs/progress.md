@@ -1892,3 +1892,29 @@ No native/provider/security action or source-closure change occurs. CI adds
 the focused suite. Runtime policy adoption follows separately; full Mac oracle,
 corpus, budgets and retention/sign-off remain. M2 stays active, M0/M1 delivered,
 M3 memory planned and M4 deferred.
+
+
+## R02 — runtime status-query policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fgetfl-policy` adds a fixed v3 factory using
+F_GETFL point-query semantics after one original recipe read. It retains the
+complete signed argument, private status bits and conditional preimages without
+rewriting return-time table/flag/version/backing facts. Supported finite query
+coverage can be source-conditional-clean; all native/state/output/exemption/full
+authority remains false. Canonical failures retain a query gap; unsupported or
+unresolved conversions establish the sticky ENTRY uncertainty horizon. Every
+exec still retires all output certainty. Existing v1/v2 scopes/shapes remain.
+
+All36 v1,27 v2 and16 new v3 methods pass on Python3.15/3.9:158 executions,zero
+skips. Independent review verifies21 frozen artifacts and the six final logs.
+The preserved pilot's45 assertions failed because tests compared capture-hashed
+key spellings across different raw captures; corrected controls compare actual
+capture-local key/version structure. No engine semantics changed for that pilot.
+Forty-seven prior files/file sets and HEAD/ref remain unchanged. Review SHA256:
+`177c0604323fc0e8dae3ea5860c0a422d3cba117ca17686c83c5b3b8024370d4`.
+CI adds the focused suite; native/source-proof closures are unchanged.
+
+This profile still consumes the generic recipe, with no stopped-profile/observer
+adoption. First-exec controller/query correlation work proceeds separately.
+Native Mac coverage/corpus, budgets and retention/sign-off remain open. M2 stays
+active; M0/M1 delivered, M3 memory planned and M4 deferred.

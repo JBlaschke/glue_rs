@@ -2,9 +2,9 @@
 
 All execution input is original byte evidence. Closed windows describe possible
 lookup/effect periods, not effect instants. READY provenance is retired at EVERY
-exec; this first profile has no post-exec observation or output exemption.
+exec; these profiles have no post-exec backing witness or output exemption.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import importlib.util
 import json
@@ -13,6 +13,7 @@ from typing import Iterable, Optional
 
 _BASE = Path(__file__).resolve().parent.parent
 DEPENDENCY_IDENTITIES = (
+    ('bsd-fgetfl-semantics/bsd_fgetfl_semantics.py', '0358db16192afe9442348ca446a89a4478e137f3b376da7072b13485367ef54f'),
     ('bsd-fcntl-semantics/bsd_fcntl_semantics.py', 'da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260'),
     ('runtime-boundary/runtime_recipe.py', '0eec5212fe031a3c22e63f597faa587a01fd83804db3d1911b53ca3ba746cbd0'),
     ('bsd-fd-semantics/bsd_fd_semantics.py', '1d97f20c18fcc90ab5c467b0d44403aecd288d530394e32ad0d00b5ef5e1c7ba'),
@@ -38,6 +39,7 @@ _RECIPE = _import('_runtime_fd_recipe', 'runtime-boundary/runtime_recipe.py')
 _FD = _import('_runtime_fd_operations', 'bsd-fd-semantics/bsd_fd_semantics.py')
 _OPEN = _import('_runtime_fd_open_intent', 'open-intent/open_intent.py')
 _FCNTL = _import('_runtime_fd_fcntl_operations', 'bsd-fcntl-semantics/bsd_fcntl_semantics.py')
+_FGETFL = _import('_runtime_fd_status_operations', 'bsd-fgetfl-semantics/bsd_fgetfl_semantics.py')
 _IMAGES = _RECIPE._IMAGES
 _V1 = _IMAGES._V1
 RawValidationError = _RECIPE.RawValidationError
@@ -194,9 +196,11 @@ class RuntimeFdFcntlPolicy(RuntimeFdPolicy):
     fcntl_attempts: tuple[RuntimeFcntlAttempt, ...] = ()
 
 
-def _policy_result(extended, fcntl_rows, *args):
+def _policy_result(extended, fcntl_rows, *args, status_queries=False):
     if extended:
-        return RuntimeFdFcntlPolicy('darwin-runtime-fd-fcntl-policy-v2', *args,
+        protocol = ('darwin-runtime-fd-status-policy-v3' if status_queries
+                    else 'darwin-runtime-fd-fcntl-policy-v2')
+        return RuntimeFdFcntlPolicy(protocol, *args,
                                    fcntl_attempts=tuple(fcntl_rows))
     return RuntimeFdPolicy('darwin-runtime-fd-policy-v1', *args)
 
@@ -219,7 +223,7 @@ def _typed(index, entry, returned, calls, return_types, pair=None):
     return arguments, outcome, reasons
 
 
-def _attempt(index, entry, returned, context, epoch, actor, calls, return_types, pair=None, *, extended=False, fcntl_rows=None):
+def _attempt(index, entry, returned, context, epoch, actor, calls, return_types, pair=None, *, extended=False, status_queries=False, fcntl_rows=None):
     arguments, outcome, reasons = _typed(index, entry, returned, calls, return_types, pair)
     name = entry.function
     # Intent is retained before checking argument/outcome support.
@@ -241,11 +245,19 @@ def _attempt(index, entry, returned, context, epoch, actor, calls, return_types,
     if extended and name in FCNTL_NAMES:
         request = _FCNTL._request(name, arguments)
         decoded = None
+        status_query = status_queries and request.command == _FGETFL.F_GETFL
         if context == 'runtime':
-            decoded = _FCNTL._decode_operation(index, pair, calls, return_types)
+            decoder = _FGETFL if status_query else _FCNTL
+            decoded = decoder._decode_operation(index, pair, calls, return_types)
+            request = decoded.request
             reasons = list(decoded.unsupported_reasons)
             uncertainty = decoded.effect_uncertainties
         else:
+            if status_query:
+                # Request-only projection. No ordinary paired outcome or status
+                # observation is invented outside associated runtime pairs.
+                request = replace(request, command_name='F_GETFL', operation='query-status-flags',
+                    argument_role='ignored-by-command', attempt_kind='descriptor-status-flag-query-attempt')
             uncertainty = ('no ordinary completed fcntl outcome is invented for this context',)
         fcntl_rows.append((request, decoded))
         duplicate = request.operation in ('duplicate-minimum', 'duplicate-minimum-cloexec')
@@ -279,7 +291,7 @@ def _attempt(index, entry, returned, context, epoch, actor, calls, return_types,
         effect_uncertainties=('unhandled effects are never a harmless-operation permission',))
 
 
-def _whole_incomplete(capture, contract_bytes, message, *, extended=False):
+def _whole_incomplete(capture, contract_bytes, message, *, extended=False, status_queries=False):
     # The upstream exception contains a completely validated physical capture,
     # never a clean image prefix. Project EVERY original entry without pairing,
     # actor generation or a successful state/exemption result.
@@ -297,7 +309,7 @@ def _whole_incomplete(capture, contract_bytes, message, *, extended=False):
                 effect_uncertainties=('Mach/rights/effects remain opaque; no state or authority follows',))
         else:
             attempt = _attempt(i, phase, None, 'unresolved-image', None, None, calls, types,
-                               extended=extended, fcntl_rows=command_rows)
+                               extended=extended, status_queries=status_queries, fcntl_rows=command_rows)
         attempts.append(attempt)
         fcntl_attempts.extend(RuntimeFcntlAttempt(i, *row) for row in command_rows)
     attempts = tuple(attempts)
@@ -312,10 +324,10 @@ def _whole_incomplete(capture, contract_bytes, message, *, extended=False):
                        a.source_name in OPEN_NAMES and a.write_reasons)
     return _policy_result(extended, fcntl_attempts, 'incomplete', capture, None,
         attempts, accounting, (), (), (), (), violations,
-        (PolicyFinding('image-coverage', None, '', message),))
+        (PolicyFinding('image-coverage', None, '', message),), status_queries=status_queries)
 
 
-def _partition(recipe, contract_bytes, *, extended=False):
+def _partition(recipe, contract_bytes, *, extended=False, status_queries=False):
     images, capture = recipe.images, recipe.source
     calls = {call['name']: call for call in json.loads(contract_bytes)['calls']}
     types = {name: call['return_type'] for name, call in calls.items()}
@@ -339,7 +351,7 @@ def _partition(recipe, contract_bytes, *, extended=False):
         command_rows = []
         attempt = _attempt(source_index, pair.entry if pair is not None else entry,
             returned, context, epoch, actor, calls, types, pair,
-            extended=extended, fcntl_rows=command_rows)
+            extended=extended, status_queries=status_queries, fcntl_rows=command_rows)
         index = len(attempts)
         attempts.append(attempt)
         fcntl_attempts.extend(RuntimeFcntlAttempt(index, *row) for row in command_rows)
@@ -376,6 +388,14 @@ def _window(index, a, fcntl=None):
                 slots = (a.outcome.primary_result,)
         elif operation == 'set-cloexec':
             slots = lookups
+        elif operation == 'query-status-flags':
+            decoded = fcntl.operation
+            # Canonical errors retain a gap and no observation. Only the exact
+            # fixed conditional query rule avoids an unsupported ENTRY horizon.
+            query = (decoded is not None and decoded.status == 'conditional-conversion'
+                     and decoded.rule is not None)
+            failed = decoded is not None and decoded.status == 'kernel-error'
+            unknown = unknown or not (query or failed)
         elif operation != 'query-cloexec':
             unknown = True
     elif a.source_name in ('close', 'close_nocancel'):
@@ -418,7 +438,7 @@ def _conflicts(windows):
     return tuple(result)
 
 
-def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
+def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, status_queries=False):
     gaps, violations = [], []
     commands = {row.attempt_index: row for row in fcntl_attempts}
     handled = FD_NAMES | OPEN_NAMES | (FCNTL_NAMES if extended else frozenset())
@@ -429,7 +449,7 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
         first, second = attempts[row.first_attempt], attempts[row.second_attempt]
         gaps.append(_finding('interval-conflict', first,
             'closed possible-effect window conflicts with entry ' + str(second.entry.ordinal)))
-    for a in attempts:
+    for attempt_index, a in enumerate(attempts):
         if a.context != 'runtime':
             continue
         if a.source_name in OPEN_NAMES and a.write_reasons:
@@ -444,7 +464,11 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
             gaps.append(_finding('unresolved-output-binding', a,
                 'pre-exec READY provenance supplies no post-exec output exemption; failed calls may have partial effects'))
         if a.outcome is not None and a.outcome.disposition == 'kernel-error':
-            if extended and a.source_name in FCNTL_NAMES | {'dup'}:
+            command = commands.get(attempt_index) if status_queries else None
+            if command is not None and command.request.operation == 'query-status-flags':
+                gaps.append(_finding('failed-status-query', a,
+                    'failed F_GETFL retains lookup/MAC uncertainty without flag observation or state rewrite'))
+            elif extended and a.source_name in FCNTL_NAMES | {'dup'}:
                 gaps.append(_finding('failed-scalar-operation', a,
                     'error retains lookup/reservation/flag uncertainty without a new alias or bit observation'))
             if a.source_name in ('close', 'close_nocancel'):
@@ -511,19 +535,21 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
             continue
         index, a, w = value
         interval = (w.entry_ordinal, w.end_ordinal)
+        status_query = (status_queries and index in commands and
+                        commands[index].request.operation == 'query-status-flags')
         # These are post-interval facts. Every possible lookup inside a touching
         # or intersecting mutation window is barred; no effect point is chosen.
         if opaque_horizon:
             # A return from an unhandled route does not close asynchronous or
             # unknown effects. Later known calls cannot rebuild precise lineage.
-            for fd in set(w.mutation_slots) | set(w.lookup_slots):
+            for fd in (() if status_query else set(w.mutation_slots) | set(w.lookup_slots)):
                 change(fd, 'unknown', None, None, w.end_ordinal, interval,
                        'sticky opaque-effect horizon forbids later precise state')
             continue
         if index in conflicted:
-            if w.allocation:
+            if w.allocation and not status_query:
                 invalidate(w.end_ordinal, interval, 'conflicting allocation/reservation window')
-            for fd in w.mutation_slots:
+            for fd in (() if status_query else w.mutation_slots):
                 change(fd, 'unknown', None, None, w.end_ordinal, interval, 'conflicting lookup/effect window')
             continue
         success = a.outcome is not None and a.outcome.disposition == 'kernel-success'
@@ -571,6 +597,10 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
                     # A point observation is retained in the operation row. It
                     # never rewrites binding/flags as an at-return snapshot.
                     pass
+            elif operation == 'query-status-flags':
+                # The complete point observation lives in the command row. It
+                # never rewrites table/binding/flag/version state at return.
+                pass
         elif a.source_name in ('close', 'close_nocancel'):
             change(a.fd, 'absent' if success else 'unknown', None, None, w.end_ordinal, interval,
                    'conditional close postcondition after entire isolated window' if success else 'failed close poisons slot')
@@ -602,7 +632,7 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False):
     status = 'incomplete' if gaps else 'forbidden-intent' if violations else 'source-conditional-clean'
     return _policy_result(extended, fcntl_attempts, status, recipe.source, recipe, attempts,
         accounting, windows, conflicts, tuple(history), tuple(states[fd] for fd in sorted(states)),
-        tuple(violations), tuple(gaps))
+        tuple(violations), tuple(gaps), status_queries=status_queries)
 
 
 def evaluate_runtime_fd_policy_raw(program: bytes, probes: bytes, errors: bytes,
@@ -645,3 +675,26 @@ def evaluate_runtime_fd_fcntl_policy_raw(program: bytes, probes: bytes, errors: 
         return _whole_incomplete(error.capture, contract_bytes, str(error), extended=True)
     attempts, accounting, commands = _partition(recipe, contract_bytes, extended=True)
     return _run(recipe, attempts, accounting, commands, extended=True)
+
+
+def evaluate_runtime_fd_status_policy_raw(program: bytes, probes: bytes, errors: bytes,
+                                         event_lines: Iterable[bytes], *, owner_pid: int, target_pid: int,
+                                         contract_bytes: bytes, launch_evidence: RuntimeRecipeEvidence) -> RuntimeFdFcntlPolicy:
+    """Fixed v3: v2 scope plus conditional F_GETFL point-query intent.
+
+    Exactly one complete generic recipe pass precedes private decoding of its
+    already-associated pairs. Queries grant no status snapshot, table mutation,
+    native/state/output authority or full acceptance. v1/v2 scopes stay fixed.
+    """
+    try:
+        recipe = _RECIPE.pair_runtime_recipe_raw(program, probes, errors, event_lines,
+            owner_pid=owner_pid, target_pid=target_pid, contract_bytes=contract_bytes,
+            launch_evidence=launch_evidence)
+    except _IMAGES.ImageValidationError as error:
+        if error.capture is None:
+            raise
+        return _whole_incomplete(error.capture, contract_bytes, str(error),
+                                 extended=True, status_queries=True)
+    attempts, accounting, commands = _partition(recipe, contract_bytes,
+                                                extended=True, status_queries=True)
+    return _run(recipe, attempts, accounting, commands, extended=True, status_queries=True)
