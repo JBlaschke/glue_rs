@@ -1868,3 +1868,27 @@ the retained prior/final receipts; both findings are resolved. Review SHA256:
 `f5b43a57f4a43514628b3ea0f1f627e459a6ffdfc5bdc72ca2a8843202bb8057`.
 Post-exec observation/correlation, full native coverage/corpus, budgets and
 retention/sign-off remain. M2 is active; M0/M1 delivered, M3 planned, M4 deferred.
+
+
+## R02 — conditional F_GETFL status-query semantics (29 October 2026)
+
+Feature `codex/mvp-r02-bsd-fgetfl-semantics` adds a separate fixed raw helper
+for F_GETFL through both syscall forms while preserving the four existing
+scalar command rows. A single strict pairing pass retains every original BSD/
+Mach phase and full argument/outcome words. Conditional status conversion keeps
+all private bits and event-only policy alternatives; no actual fileglob or policy
+state is observed. Only21 ordinary source constructions receive a conditional
+rule; other flag combinations remain unresolved with their exact alternatives.
+
+All24 independently encoded physical-byte controls pass on Python3.15/3.9,
+including legacy row equality, noncanonical/negative/control-flow results,
+late-failure conservation and immutable false-acceptance reports. Root review
+verifies11 retained artifacts and two actual strict-recipe private-hook checks
+per interpreter. Review SHA256:
+`8131182363f2e11040420a81e4498ac9bd919b18bf14176f0cf9dae8bdecc324`.
+Six exact core source identities are retained; supplemental writer byte hashes/
+physical lines remain explicitly unavailable. Pilot test faults stay preserved.
+No native/provider/security action or source-closure change occurs. CI adds
+the focused suite. Runtime policy adoption follows separately; full Mac oracle,
+corpus, budgets and retention/sign-off remain. M2 stays active, M0/M1 delivered,
+M3 memory planned and M4 deferred.

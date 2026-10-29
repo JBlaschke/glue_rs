@@ -83,6 +83,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bsd-entry-abi/test_bsd_entry_abi.py -v
         python3 fixtures/mvp/macos-trace/bsd-fd-semantics/test_bsd_fd_semantics.py -v
         python3 fixtures/mvp/macos-trace/bsd-fcntl-semantics/test_bsd_fcntl_semantics.py -v
+        python3 fixtures/mvp/macos-trace/bsd-fgetfl-semantics/test_bsd_fgetfl_semantics.py -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         python3 fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v
         cargo test --workspace --locked
