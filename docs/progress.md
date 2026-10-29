@@ -1737,3 +1737,21 @@ next. Mac's actual READY handoff adoption is in source review; authoritative
 object/path/lifetime semantics, the complete Mac oracle/corpus and Mac budgets
 remain the critical path. M3 memory mode remains planned. Exact source hashes,
 checks and evidence limits are in the implementation ledger and milestone table.
+
+
+## R02 — hosted macOS 26 environment preflight (29 October 2026)
+
+Feature `codex/mvp-r02-macos-ci-preflight` adds a separate standard-arm64
+Actions job to collect bounded original OS/build/architecture/kernel, SDK/compiler,
+SIP status and syscall-provider listing observations. It changes no security
+setting, enables no probes and runs no traced target. The fixed inventory commands
+have timeout/output bounds and retain their status and original streams in a
+14-day CI artifact. Three local collector controls pass (ordinary collection,
+timeout and output bound); Python compilation and diff checks pass.
+
+A green inventory job means the expected OS/architecture was observed; provider
+listing, SIP policy and native eligibility are reported separately. Even a
+successful listing does not establish probe enablement or native Mac acceptance.
+M2 remains active: raw FD policy is in review; post-exec output observation and
+full syscall/process/mapping coverage, native corpus, budgets and sign-off remain.
+M0/M1 remain delivered, M3 memory mode planned, M4 deferred.

@@ -8,10 +8,12 @@ source/CI publication authorization. This is not a paid runner or a new VM.
 The fixed command list collects OS/build/architecture/kernel, SDK/compiler
 metadata, `csrutil status`, and a syscall entry-provider **listing** with
 `sudo -n dtrace -l`. It enables no probes, runs no traced target, sets no
-destructive option, sends no process-control signal and changes no security
+destructive option, controls no test target and changes no security
 setting. It reads no environment dump, user files or process inventory.
 Each command has a time and output bound; original stdout/stderr and completion
-status are retained in a new private runner-temp folder. CI retains that folder
+status are retained in a new private runner-temp folder. Timeout/fault cleanup
+may kill only the inventory command it launched; unsuccessful cleanup is
+recorded with a bounded wait. CI retains that folder
 as a normal 14-day artifact, not a release asset.
 
 Successful metadata collection is distinct from eligibility. SIP/custom-policy

@@ -1,0 +1,35 @@
+name: macOS native environment preflight
+
+on:
+  push:
+    branches: ['codex/mvp-r02-macos-ci-preflight']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mvp-macos-preflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    name: macOS 26 arm64 / read-only host inventory
+    runs-on: macos-26
+    timeout-minutes: 5
+    env:
+      GLUE_MVP_PREFLIGHT: ${{ runner.temp }}/glue-macos-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Collect bounded OS, SDK, SIP and provider-list observations
+        run: python3 scripts/ci-mvp-macos-preflight.py "$GLUE_MVP_PREFLIGHT"
+      - name: Retain host observations (not native acceptance)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mvp-macos-host-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.GLUE_MVP_PREFLIGHT }}
+          if-no-files-found: error
+          retention-days: 14
