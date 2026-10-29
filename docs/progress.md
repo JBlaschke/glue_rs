@@ -1961,3 +1961,41 @@ This profile still consumes the generic recipe, with no stopped-profile/observer
 adoption. First-exec controller/query correlation work proceeds separately.
 Native Mac coverage/corpus, budgets and retention/sign-off remain open. M2 stays
 active; M0/M1 delivered, M3 memory planned and M4 deferred.
+
+
+## R02 — fixed stopped-runtime collector and reader (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-profile` combines the reviewed observer
+and runtime-policy dependencies on a feature branch. The distinct fixed producer
+retains original target phases and selected owner wait/query/kill controls. Its
+first successful exec/new-image marker has exact source-selected layouts and a
+pure serialized-prefix getter. The matching reader retains complete original
+physical ordering, recipe assets and GLUEPX bytes without granting output or
+state authority. Existing v1/v2/default facts and native proof rosters remain.
+
+The C peer approves freeze03; Python peer approves freeze02. Preserved author
+controls include100 injected mode executions, strict formatter comparisons and
+42 original reader method executions. A compiler literal-bound regression and a
+test payload-count expectation were repaired with focused receipts, preserving
+their original failures. The malformed-name guard has four focused model checks;
+the marker-before-exec source-order fix has eight affected reader checks.
+The adopted harness adds the26th C mode. No fresh full30-test producer matrix is
+claimed from those partial cohorts. Independent review verifies original-byte
+default facts and the two C marker orders. Detailed local receipts remain local.
+
+Source-location integration passes199 methods per Python3.15/3.9 (398 total,
+zero skips):35 boundary,34 image,24 recipe,22 stopped reader,79 FD policy and
+five formatter/unavailable/new-mode/C-to-Python controls. These are source/model
+checks; no provider is linked or enabled.
+
+Runtime FD v1/v2/v3 uses the exact new recipe pin with no scope/shape changes.
+CI adds the fixed producer and reader suites. No provider, privileged bootstrap,
+VM or security-setting action runs here. The next integration adds the typed
+late-cleanup status bridge, file-synced original observation retention, and the
+actual bounded controller; those components are not adopted by this feature.
+
+M0/M1 are delivered. M2 remains active: full Mac filesystem/process/mapping
+coverage and oracle, native corpus, Mac budgets and final retention/sign-off are
+open. M3 memory mode remains separate/planned and M4 deferred. All native,
+quiescence, state, output-exemption, retention-before-continuation and full-trace
+acceptance fields remain false. Guest SIP stays enabled under the current instruction.

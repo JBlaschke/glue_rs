@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterable
 
 _HERE = Path(__file__).resolve().parent
-_IMAGES_SHA256 = '42a2000c54801856c923a749239a3f1cea3cc8ef4d37844181c51fd3e394f1c4'
+_IMAGES_SHA256 = '19824308b8391f2e64e696a1a36f24489520020d0194aa676d10c05784267f91'
 with (_HERE / 'runtime_images.py').open('rb') as _stream:
     _code = _stream.read(65537)
 if len(_code) > 65536 or hashlib.sha256(_code).hexdigest() != _IMAGES_SHA256:
@@ -334,6 +334,15 @@ def _delivery(raw, go, launch):
     return GateDelivery(_sha(raw), _sha(go), 1, 1, 64, 0, 0, 1, 0, 0)
 
 
+def _validated_recipe_assets(evidence, owner_pid, target_pid):
+    # Shared only by fixed original-byte factories, never a public normalized
+    # launch/output/delivery overload.
+    launch = _launch(evidence, owner_pid, target_pid)
+    output = _outputs(evidence.output_witness, launch)
+    delivery = _delivery(evidence.gate_delivery, evidence.go_prefix, launch)
+    return launch, output, delivery
+
+
 def pair_runtime_recipe_raw(program: bytes, probes: bytes, errors: bytes,
                             event_lines: Iterable[bytes], *, owner_pid: int, target_pid: int,
                             contract_bytes: bytes, launch_evidence: RuntimeRecipeEvidence) -> RuntimeRecipeCapture:
@@ -343,9 +352,7 @@ def pair_runtime_recipe_raw(program: bytes, probes: bytes, errors: bytes,
     result.json boolean. Conditional seeds appear only after whole raw/image
     validation; all native/capability authority and state/full admission is false.
     """
-    launch = _launch(launch_evidence, owner_pid, target_pid)
-    output = _outputs(launch_evidence.output_witness, launch)
-    delivery = _delivery(launch_evidence.gate_delivery, launch_evidence.go_prefix, launch)
+    launch, output, delivery = _validated_recipe_assets(launch_evidence, owner_pid, target_pid)
     images = _IMAGES._pair_with_launch(program, probes, errors, event_lines, owner_pid=owner_pid,
         target_pid=target_pid, contract_bytes=contract_bytes, launch=launch)
     seeds = []

@@ -70,6 +70,8 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_boundary.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_images.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_recipe.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_stopped.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_stopped_backend.py -v
         python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_policy.py -v
         python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_fcntl_policy.py -v
         python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_status_policy.py -v
