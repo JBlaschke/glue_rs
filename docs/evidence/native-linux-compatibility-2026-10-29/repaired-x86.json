@@ -1,0 +1,87 @@
+{
+  "schema": "glue-native-compatibility-completed-proof-v1",
+  "run_id": 40858319517,
+  "head": "3698a40d36de076278db9409e367028b5b703062",
+  "architecture": "x86_64",
+  "native_job_status": "success",
+  "replay_status": "passed",
+  "native_run_acceptance_status": "passed",
+  "receipt_counts": {
+    "acceptance_receipts": 24,
+    "benchmark_receipts": 15,
+    "compatibility_receipts": 7,
+    "oracle_controls": 184
+  },
+  "rank_results_checked": 990,
+  "budgets": [
+    {
+      "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "lua55-native",
+      "report_host_fingerprint": "0f9240440dcb93d97dd76f60cc35b05508ef43a082098805a3692d57809f5478",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "lua55-project",
+      "report_host_fingerprint": "0f9240440dcb93d97dd76f60cc35b05508ef43a082098805a3692d57809f5478",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "node-cjs",
+      "report_host_fingerprint": "0f9240440dcb93d97dd76f60cc35b05508ef43a082098805a3692d57809f5478",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "python-native-normalized",
+      "report_host_fingerprint": "0f9240440dcb93d97dd76f60cc35b05508ef43a082098805a3692d57809f5478",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "python-source-normalized",
+      "report_host_fingerprint": "0f9240440dcb93d97dd76f60cc35b05508ef43a082098805a3692d57809f5478",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    }
+  ],
+  "failed_budget_profiles": [],
+  "all_input_identities_unchanged": true,
+  "artifact": {
+    "artifact_id": 12890609580,
+    "archive_bytes": 195489066,
+    "archive_sha256": "a069586380ec6e047042e7a859752816d8f29a2291a2714b26a3131af4c79689",
+    "raw_manifest_sha256": "3e8b6557a2e573b912d1f8ef143f370a1ae273a1b066e3fa8571472118bc188f",
+    "extracted_files": 4952,
+    "extracted_bytes": 873285180
+  },
+  "result": {
+    "path": "full-offline-replay-20261029/result-v2.json",
+    "size": 89073,
+    "sha256": "38bb4869dd17b3f682753578b64c6d1521bf10cea86719a1e75259d2a9a20555"
+  },
+  "replay_manifest": {
+    "path": "full-offline-replay-20261029/replay-manifest.json",
+    "size": 7091,
+    "sha256": "49177d20c435be3b65eaef5f5a4992fcce5ce56679a6a0c75e2b78d23a7d5f7d"
+  },
+  "native_execution_performed_by_replay": false,
+  "publication_performed": false,
+  "external_durability_established": false,
+  "scope": "Native x86 rerun and independent offline replay after streaming repair. The earlier failed run remains unchanged. Structural/I/O/FD/scaling limits apply; all time/RSS gates are inapplicable because host fingerprints differ. No complete M2 or unrestricted-host claim."
+}

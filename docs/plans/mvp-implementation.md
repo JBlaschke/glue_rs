@@ -1,13 +1,13 @@
 # MVP implementation and acceptance ledger
 
-28 October 2026. Product authority remains [the plan](../../PLAN.md),
+29 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
 `codex/mvp-r04-docs` stack into `main` at `96e6958` through
 [PR #34](https://github.com/JBlaschke/glue_rs/pull/34). Task branches retain their
 own implementation commits. Follow-up work continues on feature branches;
-no release asset has been published.
+the separately approved arm evidence prerelease is recorded below.
 The owner subsequently merged the follow-up checkpoints through PRs #35/#36,
 putting the reviewed match-accounting repair on `main` at `08da274`.
 PR #37 subsequently merged the baseline timeout repair at `9f787e9`; both
@@ -36,6 +36,45 @@ existing Developer ID signatures are retained and accepted by this development
 policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
+
+## 29 October: Linux compatibility closure and next native cells
+
+[PR #99](https://github.com/JBlaschke/glue_rs/pull/99) repairs build-time staging
+of large Python runtime members with bounded streaming. Decision `bf6534b`
+precedes implementation `d013b00`; source `3698a40d` passes all eighteen portable
+checks. Native x86 run `40858319517` and complete independent replay pass all
+24 base cases, seven archive/uv routes, five unchanged budgets, 46 receipts,
+184 oracle controls and 990 rank results. Structural/I/O/FD/scaling limits apply;
+all time/RSS gates are inapplicable on this different host fingerprint. The
+[record](../evidence/native-linux-compatibility-2026-10-29/README.md) preserves
+the original failed x86 result and distinguishes the earlier arm source.
+
+Branch `codex/mvp-v02-linux-patch-abi3` adds decision `ce951ad` and implementation
+`1bd4dd7`. Three optional positive cells check CPython 3.13.15 with unchanged
+glue bytes and the same pinned cryptography abi3 wheel on 3.13.16/3.14.8. A
+separate real cp314-cffi/3.13 refusal collector requires the actual product's
+`runtime_abi_mismatch` before output creation, unchanged input inventories and
+an unchanged sibling sentinel. No local native acceptance is inferred.
+
+Thirty pure ABI/patch controls, eighteen collector controls and twenty-one shared
+runner controls pass on Python 3.15.2 and 3.9.6. These include failed/oversized
+evidence retention and actual finish-path rejection of a failed collector even
+when its narrower diagnostic assessment passes. Bash/sh syntax and actionlint
+pass; independent source/receipt reviews have no remaining findings. The
+separate retained manifests are `72acc560b44541802f2a7bfcb268efe50a3cb33adba121e4e2058a820a8d07c9`,
+`fa6177aa5da7c0f8fbe5cde3c139271de7a3bc416adefa542c8a6110a2d5f811` and
+`7f0242d801887ce4f624bd1988cd097b811c455e25217cffd79aa24c9aec9762`.
+Portable CI has 53 Python suite invocations on this branch. A complete native
+run with both extensions requires 34 application cells, fifteen benchmark
+receipts, 196 oracle controls and 990 rank results, plus the separate wrong-ABI
+refusal. Native execution and independent replay of this extension remain open.
+
+Mac READY adoption is being reviewed in an isolated feature worktree. It uses a
+new versioned 512-byte status to carry the actual five-descriptor snapshot; the
+parent compares held output backing before tracing or GO. Existing legacy
+wire sizes remain intact. Neither local helper tests nor that adoption supplies
+the full Darwin oracle, native calibration/corpus or Mac budgets. Guest SIP
+stays enabled. M2 remains in progress; M3 memory mode remains planned.
 
 ## 28 October: fresh x86 acceptance and local retention
 

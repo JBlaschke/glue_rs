@@ -1722,3 +1722,18 @@ BSD/Mach entry/return intervals and rejects ambiguous lifecycle boundaries.
 All 42 focused controls pass, with independent review and unchanged legacy APIs.
 Raw pairs remain ineligible for the filesystem state feed until native lifetime,
 ABI and object associations are established. No native acceptance is inferred.
+
+## MVP progress — 29 October 2026
+
+M0 foundations and the M1 development preview are delivered. M2 remains active.
+The seven extra Linux archive/uv routes pass on both targets at their recorded
+revisions; the repaired x86 run passes 46 independently replayed receipts, 184
+oracle controls and 990 ranks. Structural budgets remain unchanged; its time/RSS
+gates are inapplicable because the host fingerprint differs.
+
+The patch-version/abi3 extension and a genuine prepublication wrong-ABI refusal
+collector are implemented and locally reviewed. Both-target native execution is
+next. Mac's actual READY handoff adoption is in source review; authoritative
+object/path/lifetime semantics, the complete Mac oracle/corpus and Mac budgets
+remain the critical path. M3 memory mode remains planned. Exact source hashes,
+checks and evidence limits are in the implementation ledger and milestone table.
