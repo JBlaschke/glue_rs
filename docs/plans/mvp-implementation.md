@@ -398,6 +398,46 @@ diff checks pass; hosted CI proceeds independently. No native capture, VM/SIP
 change or Darwin/M2 acceptance is claimed.
 
 
+## 29 October: native pre-exec descriptor backing capture
+
+Branch `codex/mvp-r02-target-fd-objects` starts from main `cb24720`.
+Decision `6ad50e5` precedes implementation `e6127e6`. The read-only C primitive
+samples fstat/F_GETFD/F_GETFL twice for exactly five retained child descriptors
+after numeric closure and before GO. Its controller matcher compares stdout/
+stderr with still-held distinct single-link regular capture files. Full status
+words remain visible; parent/child close-on-exec flags deliberately differ.
+Device/inode observations do not become OFD, path, generation or current-slot
+authority. Independent opens of the same backing can match, explicitly tested.
+
+Twenty focused groups pass on the unprivileged physical Mac: eleven injected
+boundary groups and nine actual gated native groups, zero skips. They use real
+endpoint mapping and native Darwin TD closure, successful output bytes and
+negative controls for missing/wrong bindings, unrelated failures, cleanup errors,
+ECHILD ownership loss and EPIPE before GO. Every successful cleanup claim requires
+an actual waitpid reap. Parent SIGPIPE policy is restored. Python 3.9 harness
+syntax passes. A retained read-only csrutil status reports host SIP enabled;
+there is no sudo, VM, trace or security-setting change.
+
+The corrected frozen report is
+`.evidence-local/controls/target-fd-objects-20261029/author-freeze-review-attempt03.json`,
+SHA256 `6d3b3c0b08fd6c5d54528d9e98fb430e1f08e608627c90231ea95cfdac95afbd`.
+Attempt 03 has 86 indexed payloads and manifest
+`82497c4ab24a2314f01d110d2e48f806ce74e84f5ec653887a746e5072263bde`.
+Root verifies those payloads and all ten current source identities. Independent
+peer report SHA256 is
+`a3e64ee0b740ac4b66a86b630ff2282727074e2596dd53c9bae2c04a52b27f67`.
+The first logging-baseline failure (Darwin status bits change on ordinary writes)
+and earlier controls remain retained. Review also corrected uninitialized test
+outputs, an overly broad expected-failure verdict and SIGPIPE cleanup behavior;
+the core primitive/header remained byte-identical through those corrections.
+
+CI adds one invocation, 51 Python scripts at this branch head. Linux builds use
+a clearly labelled test-only procfs inventory adapter for the real native fixture;
+production TD native Linux support remains unchanged and unsupported. Linux
+execution is pending hosted CI. Production READY/wire/controller/guarded-kit
+adoption remains separate. This is real pre-exec capture groundwork, not complete
+Darwin state/oracle, arbitrary object binding, native corpus or M2 acceptance.
+
 ## 28 October: standalone owned-trace inspector
 
 The separate `codex/mvp-r02-owned-trace-inspector` branch stacks on assessment

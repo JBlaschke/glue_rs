@@ -166,6 +166,24 @@ records exact identities, assumptions and preserved development attempts.
 Darwin oracle/state integration and native corpus, Mac budgets and external
 evidence retention remain required for M2.
 
+## Native pre-exec descriptor observations — 29 October 2026
+
+Decision `6ad50e5` and implementation `e6127e6` on
+`codex/mvp-r02-target-fd-objects` capture the five retained descriptors in a gated
+owned child and compare regular stdout/stderr backing observations with held
+controller references. Twenty groups pass, including nine actual native Mac
+groups, zero skips; SIP is observed enabled. The corrected source/receipt and
+independent peer review verify, and CI adds one invocation. Linux native fixture
+execution follows in CI; no production controller adoption or full oracle pass
+is claimed. Next capture work is carrying these observations through real READY
+records and matching before GO.
+
+The independent Linux route run at `e90e21a4` passes all seven new arm64 routes
+and complete replay. X86 retains passing base cases/budgets and five route passes;
+full/install-only build failures exposed its 143,259,064-byte libpython exceeding
+the retained-member cap. A separate streaming build-time staging repair is under
+way. No failed receipt is promoted or accepted budget relaxed.
+
 ## Integrated owned request assessment — 28 October 2026
 
 Decision `724955e` and implementation `84634eb` on
