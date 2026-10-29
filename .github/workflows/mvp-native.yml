@@ -11,6 +11,11 @@ on:
         options: [x86_64, aarch64, both]
         default: x86_64
         required: true
+      compatibility:
+        description: Also run seven traced Python archive/uv compatibility cases
+        type: boolean
+        default: false
+        required: true
 
 permissions:
   contents: read
@@ -36,6 +41,7 @@ jobs:
     env:
       GLUE_MVP_CI_ROOT: /tmp/glue-mvp-native-${{ matrix.architecture }}-${{ github.run_id }}-${{ github.run_attempt }}
       GLUE_MVP_CI_EXPECT_TARGET: ${{ matrix.target }}
+      GLUE_MVP_COMPATIBILITY: ${{ inputs.compatibility && 'required' || 'disabled' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
