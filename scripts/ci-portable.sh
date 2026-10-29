@@ -59,6 +59,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_trace_backend.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_boundary.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_images.py -v
         python3 fixtures/mvp/macos-trace/bsd-outcomes/test_bsd_outcomes.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_assessment.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_inspect_trace.py -v

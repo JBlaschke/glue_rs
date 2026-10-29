@@ -58,6 +58,62 @@ int main(void) {
                      str(HERE / 'runtime_trace_program.c'), '-o', str(output)])
             self.assertEqual(command([str(output)]).stdout, 'pure runtime program contract passed\n')
 
+    def test_pure_images_program_contract(self):
+        with tempfile.TemporaryDirectory(prefix='glue-rt-images-program-') as directory:
+            main = Path(directory) / 'main.c'
+            main.write_text(r'''#include "runtime_trace_program.h"
+#include <assert.h>
+#include <limits.h>
+#include <stdio.h>
+#include <string.h>
+struct guarded { unsigned char before[16];char out[RT_PROGRAM_CAPACITY];unsigned char after[16]; };
+int main(void) {
+ struct guarded g;memset(&g,0xa5,sizeof(g));size_t n=99;char old[RT_PROGRAM_CAPACITY];size_t old_n;
+ assert(rt_images_program(0,g.out,&n)==-1&&n==0&&!g.out[0]);
+ assert(rt_images_program(UINT32_MAX,g.out,&n)==-1&&n==0&&!g.out[0]);
+ assert(rt_images_program(1,NULL,&n)==-1&&n==0);
+ assert(rt_images_program(1,g.out,NULL)==-1&&!g.out[0]);
+ static const uint32_t pids[]={1,17,2147483647};
+ for(unsigned i=0;i<sizeof(pids)/sizeof(pids[0]);i++) {
+  assert(!rt_images_program(pids[i],g.out,&n)&&n==strlen(g.out)&&n<RT_PROGRAM_CAPACITY);
+  assert(strstr(g.out,"/* glue-runtime-images-v2; quiescent-exec; no-process-creation */\n"));
+  assert(!strstr(g.out,"glue-runtime-boundary-v1"));
+  assert(!rt_program(pids[i],old,&old_n));
+  const char *a=strchr(old,'\n'),*b=strchr(g.out,'\n');assert(a&&b);
+  a=strchr(a+1,'\n');b=strchr(b+1,'\n');assert(a&&b&&!strcmp(a+1,b+1));
+  assert(old_n!=n);
+ }
+ for(unsigned i=0;i<16;i++)assert(g.before[i]==0xa5&&g.after[i]==0xa5);
+ puts("pure repeated-image program contract passed");return 0;
+}
+''')
+            output = Path(directory) / 'images-program-contract'
+            command([*compiler(), *FLAGS, '-I', str(HERE), str(main),
+                     str(HERE / 'runtime_trace_program.c'), '-o', str(output)])
+            self.assertEqual(command([str(output)]).stdout,
+                             'pure repeated-image program contract passed\n')
+
+    def test_images_unavailable_factory_clears_all_outputs(self):
+        with tempfile.TemporaryDirectory(prefix='glue-rt-images-refusal-') as directory:
+            main = Path(directory) / 'main.c'
+            main.write_text(r'''#include "runtime_trace_backend.h"
+#include <errno.h>
+#include <string.h>
+int main(void) {
+ struct rt_backend *b=(void*)1;struct ts_operations o;struct rt_error e;
+ memset(&o,0xa5,sizeof(o));memset(&e,0xa5,sizeof(e));
+ if(rt_images_create(&b,99,NULL,1,1,&o,&e)!=-1||b)return 1;
+ const unsigned char *p=(const unsigned char*)&o;
+ for(unsigned i=0;i<sizeof(o);i++)if(p[i])return 2;
+ return e.stage==RT_CREATE&&e.system_errno==0&&e.libdtrace_code==0&&e.callback_error==ENOTSUP?0:3;
+}
+''')
+            output = Path(directory) / 'images-refusal'
+            command([*compiler(), *FLAGS, '-U__APPLE__', '-I', str(HERE), str(main),
+                     str(HERE / 'runtime_trace_backend.c'), str(HERE / 'runtime_trace_program.c'),
+                     '-o', str(output)])
+            self.assertEqual(command([str(output)]).stdout, '')
+
     def test_unavailable_backend_refuses_before_resources(self):
         # Force only the actual backend's non-Darwin implementation on Darwin;
         # this does not simulate a successful native provider or target host.
@@ -144,6 +200,15 @@ class InjectedBackendTests(unittest.TestCase):
 
     def test_writer_failure_preserves_confirmed_prefix(self):
         self.run_group('writer-prefix')
+
+    def test_fixed_images_factory_balances_one_two_and_max_images(self):
+        self.run_group('images-success')
+
+    def test_images_overlap_missing_extra_and_bound_refuse(self):
+        self.run_group('images-refusals')
+
+    def test_images_keep_drop_unsupported_and_late_failures(self):
+        self.run_group('images-fail-closed')
 
 
 if __name__ == '__main__':

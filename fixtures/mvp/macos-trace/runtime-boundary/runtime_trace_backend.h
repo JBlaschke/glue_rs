@@ -6,6 +6,7 @@
 #define RT_MAX_ENABLINGS 8192u
 #define RT_MAX_RAW_BYTES UINT64_C(134217728)
 #define RT_MAX_DIAGNOSTIC_BYTES UINT64_C(65536)
+#define RT_MAX_IMAGE_EXECS 16u
 enum rt_stage { RT_NONE, RT_CREATE, RT_START, RT_PUMP, RT_STOP, RT_DRAIN, RT_CLOSE };
 enum rt_reason { RT_OK, RT_ARGUMENT, RT_OWNER, RT_CLOCK, RT_DEADLINE,
  RT_POSIX, RT_LIBDTRACE, RT_INVENTORY, RT_LAYOUT, RT_BINDING,
@@ -49,6 +50,13 @@ struct rt_backend;
  * All callbacks retain original deadlines; cleanup binds once, at most2s ahead.
  * Native syscall/libdtrace stalls cannot be interrupted by these checks. */
 int rt_create(struct rt_backend **, int held_directory_fd,
+ const struct ts_binding *, uint64_t original_attempt_deadline_ns,
+ int confirmed_ready, struct ts_operations *, struct rt_error *);
+/* Fixed v2 factory: at most RT_MAX_IMAGE_EXECS balanced successful execs.
+ * No profile argument or caller-selected D source. Counters do not establish
+ * quiescence, thread lifetimes, paths, output capabilities or native admission.
+ * All ownership/deadline/cleanup requirements above remain unchanged. */
+int rt_images_create(struct rt_backend **, int held_directory_fd,
  const struct ts_binding *, uint64_t original_attempt_deadline_ns,
  int confirmed_ready, struct ts_operations *, struct rt_error *);
 /* Pure snapshot; lifecycle counts are observations, never a success oracle. */

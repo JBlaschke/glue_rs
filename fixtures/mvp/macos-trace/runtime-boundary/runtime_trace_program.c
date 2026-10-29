@@ -15,12 +15,12 @@ static void append(struct program_buffer *b,const char *format,...) {
 static void header(struct program_buffer *b,unsigned kind,const char *detail) {
  append(b,"trace((uint64_t)%u);trace((uint64_t)timestamp);trace((uint64_t)pid);trace((uint64_t)tid);trace((uint64_t)(%s));",kind,detail);
 }
-int rt_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *used) {
+static int fixed_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *used,const char *profile) {
  if(used)*used=0;
  if(out)out[0]=0;
  if(!out || !used || !target_pid || target_pid>INT32_MAX)return -1;
  struct program_buffer b={0};
- append(&b,"#pragma D option quiet\n/* " RT_PROGRAM_PROFILE " */\nBEGIN { watched[%u]=1;",target_pid);
+ append(&b,"#pragma D option quiet\n/* %s */\nBEGIN { watched[%u]=1;",profile,target_pid);
  header(&b,1,"0");append(&b,"}\nEND {");header(&b,17,"0");append(&b,"}\n");
  const char *providers[]={"syscall","mach_trap"};
  for(unsigned family=0;family<2;family++)for(unsigned returning=0;returning<2;returning++) {
@@ -45,4 +45,10 @@ int rt_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *used) {
  append(&b,"trace((uint64_t)arg1);trace((uint64_t)args[0]->pr_addr);trace((uint64_t)((struct proc *)args[0]->pr_addr)->p_refcount);}\n");
  if(b.failed)return -1;
  memcpy(out,b.bytes,b.used+1);*used=b.used;return 0;
+}
+int rt_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *used) {
+ return fixed_program(target_pid,out,used,RT_PROGRAM_PROFILE);
+}
+int rt_images_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *used) {
+ return fixed_program(target_pid,out,used,RT_IMAGES_PROGRAM_PROFILE);
 }

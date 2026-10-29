@@ -329,11 +329,18 @@ class RuntimeBoundary:
 
 
 def _transport(program, probes, errors, lines, owner, target):
+    # Fixed v1 factory. No public caller can select other expected bytes.
+    return _transport_fixed(program, probes, errors, lines, owner, target,
+                            expected_program(target))
+
+
+def _transport_fixed(program, probes, errors, lines, owner, target, required_program):
+    """Private common parser; fixed public factories supply their own program."""
     _RAW._bounded_bytes(program, _RAW.MAX_PROGRAM_BYTES, 'program bytes')
     _RAW._bounded_bytes(probes, _RAW.MAX_INVENTORY_BYTES, 'inventory bytes')
     _RAW._bounded_bytes(errors, _RAW.MAX_ERROR_BYTES, 'error bytes')
     _require(not errors, 'runtime profile nonempty errors')
-    _require(program == expected_program(target), 'fixed runtime profile program bytes')
+    _require(program == required_program, 'fixed runtime profile program bytes')
     inventory, inventory_counts = _RAW._inventory(probes)
     epids, clauses, counts, phases = {}, {}, [0] * 19, []
     raw_hash = hashlib.sha256()
@@ -412,13 +419,36 @@ def _phase(phase, table):
                            list(phase.raw_scalars))
 
 
+@dataclass(frozen=True)
+class _InitialImage:
+    # Internal only, after complete physical transport validation. Original
+    # ordinals/records are retained; no terminal or return record is synthesized.
+    pairs: tuple[RuntimePair, ...]
+    attachment_return: Optional[AttachmentReturn]
+    selected_exec: SelectedExec
+    thread_states: tuple[tuple[int, str], ...]
+    next_phase_index: int
+
+
 def _pair(capture, launch, table):
+    # Preserve the fixed v1 whole-capture contract and public call signature.
+    return _pair_walk(capture, launch, table, initial_only=False)
+
+
+def _initial_image(capture, launch, table):
+    # Private fixed bootstrap stage for v2. It is never a public successful
+    # prefix; v2 must validate every remaining original phase before returning.
+    return _pair_walk(capture, launch, table, initial_only=True)
+
+
+def _pair_walk(capture, launch, table, *, initial_only):
     pairs, pending, threads = [], {}, {}
     attachment = exec_entry = exec_return = success = start = lwp = termination = None
     bootstrap_tid = None
     epoch = gate_bytes = attempt_bytes = 0
     gate_eof = gate_closed = closing = old_exit_seen = False
     last_time, last_call = -1, False
+    prefix_shadows = 0
     bootstrap, runtime = [], []
     gate, status_fd = launch.kept_fds[3:]
 
@@ -439,7 +469,9 @@ def _pair(capture, launch, table):
         _require(kind not in (15, 16), 'runtime opaque Mach/rights route unsupported')
         _require(kind != 8, 'runtime exec-failure route unsupported')
         if kind == 18 and raw.raw_scalars[7] & _RAW.SHADOW_BIT:
-            _require(exec_entry is not None and capture.raw.shadow_exits <= 1,
+            prefix_shadows += 1
+            _require(exec_entry is not None and prefix_shadows <= 1 and
+                     (initial_only or capture.raw.shadow_exits <= 1),
                      'runtime shadow exit outside selected transition')
             continue
         if closing:
@@ -461,6 +493,13 @@ def _pair(capture, launch, table):
             epoch = 1
             continue
         if success is not None and lwp is None:
+            if initial_only and kind == 3 and tid == bootstrap_tid and raw.function == 'execve':
+                _require(exec_return is None and threads[tid] == 'exec-retired' and
+                         (raw.provider, raw.module) == (exec_entry.provider, exec_entry.module) and
+                         raw.raw_scalars[5:] == (0, 0, 0, U64 - 1, U64 - 1),
+                         'runtime duplicate/noncanonical exec return after image replacement')
+                exec_return = _phase(raw, table)
+                continue
             if kind == 11 and tid == bootstrap_tid:
                 _require(threads[tid] == 'exec-retired', 'runtime duplicate old exec thread exit')
                 threads[tid] = 'retired'
@@ -474,6 +513,15 @@ def _pair(capture, launch, table):
                      'runtime proc:start must precede lwp-start')
             lwp = raw
             threads[tid] = 'active'
+            if initial_only:
+                _require(set(threads) == {bootstrap_tid, tid} and
+                         threads[bootstrap_tid] in ('retired', 'exec-retired') and
+                         threads[tid] == 'active',
+                         'runtime unresolved initial exec thread declaration')
+                transition = SelectedExec(exec_entry, exec_return, success, start, lwp,
+                                          bootstrap_tid, success.raw_scalars[3])
+                return _InitialImage(tuple(pairs), attachment, transition,
+                                     tuple(threads.items()), raw.ordinal)
             continue
         if kind == 5:
             raise RawValidationError('runtime extra proc:start boundary')
