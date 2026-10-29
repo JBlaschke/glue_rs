@@ -2822,3 +2822,36 @@ Public release additionally needs Developer ID/notarization under
 the chosen policy, and publication/verification of retained evidence assets.
 Memory mode and later platform/language expansion remain in
 [their separate roadmap](memory-roadmap.md).
+
+## 29 October: compact host-version query without a subprocess
+
+Decision `c17110f` precedes implementation
+`0c350efbef45548391af6421d16debdc58661490` on
+`codex/mvp-c05-macos-host-query`. A safe public platform observation wraps the
+existing linked-runtime `kern.osproductversion` query; the compact runner reuses
+it instead of spawning `sw_vers`, a reader thread and the child wait/poll loop.
+The existing bounded native buffer/unsafe boundary remains in its original
+module; no new dependency, unsafe code or runner lint relaxation is added.
+Reported length, exact NUL termination and UTF-8 must validate. Numeric OS-floor
+comparison stays byte-identical. Native query errors map to MissingDependency
+without a language-specific prefix; other operating systems explicitly reject
+this macOS query.
+
+Pinned Rust/Clippy 1.88.0 checks pass: 38 Lua library tests, two compact-host
+unit tests, workspace formatting and scoped two-package all-target Clippy.
+Three unrelated binary tests are deliberately filtered, not recorded as passing.
+No tests are ignored. A real Mac 26.7 native query equals the env-cleared
+`sw_vers` test reference. Boundary cases cover invalid lengths/overflow, missing/
+interior NUL and invalid UTF-8; host-floor cases retain comparison/error semantics.
+The 26-payload retained manifest SHA256 is
+`b94807fee28277bf1a57e9f1be2c6b4a72504cdc6e30eaf3c3bf9937eb4cb927`; receipt
+SHA256 is `6a97300fa9b68f3375e35cf87dd8021ce6246ddf5dcccb5b513848c2d07659a5`.
+Independent source/receipt review SHA256 is
+`25c754da01c14eec12d66dee3b66a29150454d281b006263897ea25fa78d4470`.
+Root verifies all three current reviewed source identities. No provider/VM/SIP
+action occurs.
+
+This removes an unnecessary actual application-startup process/thread. It does
+not supply extraction-oracle process/exec support or a measured Mac budget.
+Runtime launch recipes, later image/lifetime handling, sink state policy, native
+Mac corpus and budgets remain open; M2 stays active.

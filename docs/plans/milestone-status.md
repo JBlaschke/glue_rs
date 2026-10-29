@@ -84,6 +84,12 @@ work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.
 Ad-hoc signing is the selected development policy. Developer ID/notarization is
 an additional requirement before public macOS binary publication.
 
+The compact Mac host check now reuses the existing bounded native product-version
+query, removing a helper subprocess and reader thread while preserving OS-floor
+checks. Forty scoped Rust tests, formatting, Clippy and independent review pass.
+Actual runtime launch recipe adoption remains active; the source-selected runtime
+boundary feature is separately available in PR #104.
+
 ## What M3 still needs
 
 The seven [memory roadmap cards](memory-roadmap.md) are separate from the 26
