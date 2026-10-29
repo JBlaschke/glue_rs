@@ -1718,3 +1718,12 @@ unauthenticated provenance; no protected-target/native/output/full acceptance is
 granted. Actual runtime launch recipes and the subprocess-free macOS host query
 are already being implemented on separate branches. No provider/VM/sudo/SIP
 change occurred. M2 remains active; M3 memory mode follows the first compact MVP.
+
+
+## Repeated runtime images and threads — 29 October
+
+Feature `codex/mvp-r02-runtime-images`, source commit `987d251`, adds a separately selected v2 trace producer/backend and a complete-stream reader for up to sixteen quiescent same-PID exec transitions. It retains observed thread lifetimes and reuse generations, preserves changed-thread exec boundaries, and keeps delayed old-image context separate from live actors. Existing v1 behavior remains fixed. Later executable paths and hashes stay unknown; no descriptor capability, descendant coverage or extraction verdict is inferred.
+
+Both available Python versions passed 35 v1 and 34 v2 reader controls without skips. Native transport controls passed 18 checks on each version, plus 13 sanitizer groups. Independent reviews found no open source findings; no provider, VM or target was run. Ignored receipts: Python `e6f83cd4080021305cd056bf3128671a1a6494e38d8dd84371d775062e7cc8ff`; Python peer `3cc0ed40a1ab1d101c213583dad6b3ab08de03351ca3392fc4446a6f351bdbb0`; native peer `3ef6c3375bd7ea4b38c3bb2c330e01b98f345b575a415a4967211a0d98b8dec2`. Existing registered collector profiles are unchanged.
+
+M0/M1 remain delivered and M2 remains active. Next are the actual traced runtime adapter, matching launch/output witness, sink-capability filesystem policy, complete Mac corpus and calibrated budgets, followed by remaining retention/sign-off. M3 memory mode is separate and planned; M4 remains deferred. These source controls do not close native Mac acceptance.
