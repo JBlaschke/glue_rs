@@ -1694,3 +1694,26 @@ SIP stays enabled; no provider/VM/sudo run occurred. This is initial backing
 association, not paths/OFD generations/later lifetime effects or full Mac
 acceptance. Held-directory CWD selection is the next separate feature. M0/M1
 remain delivered, M2 active, M3 planned and M4 deferred.
+
+## MVP R02 — admitted CWD handle selection (29 October 2026)
+
+Branch `codex/mvp-r02-held-cwd` adds decision `6509604`, implementation
+`30a7a99` and registration `8a407bf`. The object child uses its admitted directory
+handle after credential drop, before numeric closure, preserving live permission
+checks and verifying the effective directory. It no longer resolves the CWD
+pathname again. Borrowed flags/ownership stay unchanged; late/readback failure
+records attempted mutation and exits without READY/GO/exec, retry or rollback.
+Legacy selection and the object wire remain unchanged.
+
+All 37 focused Mac controls pass without skips: twelve models, six actual native
+cases, two actual-fchdir cases with injected later faults, and seventeen affected
+runner/kit/legacy controls. Strict GCC syntax and independent review pass. Real
+native cases prove renamed/replaced paths select the held original, live EACCES,
+unchanged parent CWD and CWD persistence after descriptor closure. They do not
+calibrate the privileged credential transition. Both genuine clean source loaders
+pass all 34/41 guards; 26 active registration controls pass. CI adds the twenty
+new controls. No VM/sudo/provider/SIP action occurs.
+
+M2 remains active: runtime capture/image-boundary work is already underway in a
+separate branch, followed by sink-capability state policy, native Mac corpus and
+budgets. M0/M1 remain delivered, M3 planned, M4 deferred.

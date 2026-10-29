@@ -68,13 +68,20 @@ and matches regular output backing against the parent's held references before
 tracing or GO. Its 120 local integration controls and separate wire checks pass;
 after source registration the genuine 34/41-source loaders and 31 targeted
 controls pass. This supplies initial backing association while preserving all
-full-oracle gates. The next branch selects initial CWD from the admitted
-directory handle, including a real renamed/replaced-path control.
+full-oracle gates. Initial CWD selection now uses the admitted directory handle;
+37 focused controls pass, including real renamed/replaced-path, permission and
+parent-CWD checks. Independent review and clean source registration pass.
 
 [Linux compatibility PR #100](https://github.com/JBlaschke/glue_rs/pull/100)
-runs additional-patch, abi3 and genuine wrong-ABI refusal checks independently on
-both native Linux targets. M0/M1 are delivered, M2 remains active, M3 is planned
+passes additional-patch, abi3 and genuine wrong-ABI refusal checks independently
+on both native Linux targets, with complete replay recorded in PR #102. M0/M1 are delivered, M2 remains active, M3 is planned
 and M4 deferred. M3 memory mode is separate from the first compact MVP.
+
+The active next Mac feature establishes an explicit runtime capture/image
+boundary, preserving the complete bootstrap prefix and accounting for exec
+thread changes. A raw sink-capability state policy follows it; unknown or
+ambiguous effects must fail closed. Generic runtime launch adoption, native
+calibration/corpus, Mac budgets and final sign-off remain open.
 
 ## What M3 still needs
 
