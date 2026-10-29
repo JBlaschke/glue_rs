@@ -7,12 +7,14 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef __APPLE__
 /* Root IDs are modeled only for NULL-catalog early refusal. No root action. */
 static uid_t modeled_root_uid(void){return 0;}
 static int forbidden_clock(struct nr_attempt*a,uint64_t*n){(void)a;(void)n;assert(0);return -1;}
 #define getuid modeled_root_uid
 #define geteuid modeled_root_uid
 #define nr_clock forbidden_clock
+#endif
 #include "../bootstrap-runner/runner_parent.c"
 #undef nr_clock
 #undef geteuid
