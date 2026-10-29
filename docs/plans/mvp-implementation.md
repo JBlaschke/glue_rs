@@ -180,6 +180,45 @@ new PR. Independent source review finds no actionable issue after that correctio
 Fresh native enforcement/replay, external retention and full Darwin/M2 remain
 open; no VM or SIP change occurred.
 
+## 29 October: stream large runtime archive members at build time
+
+Native compatibility run `40851345339` at `e90e21a4` passes all 24 base cases and
+five unchanged budgets on both Linux targets. Arm64 also passes every new route;
+independent replay verifies 46 receipts, 184 oracle controls and 990 ranks. X86
+passes five new routes but rejects full/install-only inputs because required
+libpython is 143,259,064 bytes, above the retained reader's 128 MiB cap. Strict
+x86 replay remains failed; its successful components are independently verified
+without promoting the two failures. Exact identities are in the
+[compatibility record](../evidence/native-linux-compatibility-2026-10-29/README.md).
+
+On `codex/mvp-p02-stream-runtime-archives`, decision `bf6534b` precedes
+implementation `d013b00`. A new streaming selection API shares the existing tar
+validator and hashes all payloads. Selected writes use at most 64 KiB chunks;
+retained selection still caps at 128 MiB. Member/tar/decompression limits and
+the Python producer's 1 GiB aggregate staging/input bounds remain unchanged.
+The producer creates exclusive files in a private 0700 directory, checks full
+inventory and compressed input identity before aliases/probing, and discards
+every staged prefix on failure. This is build-time preparation, never deployed
+runtime extraction.
+
+All 78 glue-pbs tests and 107 nonignored glue-pack tests pass; five external
+native-input tests remain explicitly ignored. Regressions include a >128 MiB
+streamed member with bounded writes, unchanged retention refusal, exact hashes,
+empty files, missing/nonregular selections, factory/write/flush failures, late
+corruption, compressed producer staging and removal of an earlier prefix when
+a later valid tar name fails the filesystem. Formatting and pinned all-target
+Clippy pass. The first Clippy attempt only flagged an ambiguous test-header
+escape; an identical two-slice spelling fixes it. No production behavior changed
+in that correction. Prior test logs remain preserved.
+
+Receipts live under `.evidence-local/controls/stream-runtime-archives-20261029`.
+Attempt 02 manifest is
+`20571353fcf0dc67aaab646b4f6c2a901edccf1fa733a5b3ad3a2a00b5093233`.
+Independent review checks the shared validator, sink failure ordering and actual
+producer cleanup. The feature includes PR #97 as a prerequisite and targets
+`main`. Fresh native proof of the repaired x86 routes is next; failed old
+captures, every budget and all unrelated runtime inputs remain unchanged.
+
 ## 29 October: seven native Linux Python compatibility routes
 
 Branch `codex/mvp-v02-linux-compatibility` starts from main `cb24720`.
