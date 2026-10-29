@@ -1,6 +1,6 @@
 # Current milestone status
 
-28 October 2026. The [project plan](../../PLAN.md#milestones) defines five
+29 October 2026. The [project plan](../../PLAN.md#milestones) defines five
 milestones. The [26 task cards](mvp-tasks.md) are implementation assignments,
 not 26 release gates. The [execution ledger](mvp-implementation.md) records exact
 commits, tests, target scope and evidence limits.
@@ -60,6 +60,21 @@ The 26 cards all have implementation commits; remaining original acceptance
 work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.
 Ad-hoc signing is the selected development policy. Developer ID/notarization is
 an additional requirement before public macOS binary publication.
+
+## Recent functional delivery — 29 October
+
+The real Mac bootstrap object profile now captures its initial five descriptors
+and matches regular output backing against the parent's held references before
+tracing or GO. Its 120 local integration controls and separate wire checks pass;
+after source registration the genuine 34/41-source loaders and 31 targeted
+controls pass. This supplies initial backing association while preserving all
+full-oracle gates. The next branch selects initial CWD from the admitted
+directory handle, including a real renamed/replaced-path control.
+
+[Linux compatibility PR #100](https://github.com/JBlaschke/glue_rs/pull/100)
+runs additional-patch, abi3 and genuine wrong-ABI refusal checks independently on
+both native Linux targets. M0/M1 are delivered, M2 remains active, M3 is planned
+and M4 deferred. M3 memory mode is separate from the first compact MVP.
 
 ## What M3 still needs
 
