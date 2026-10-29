@@ -29,7 +29,7 @@ enum raw_kind { RK_BEGIN=1,RK_SYSCALL_ENTRY,RK_SYSCALL_RETURN,RK_CREATE,RK_START
  RK_SPAWN_SUCCESS,RK_SPAWN_FAILURE,RK_UNUSED_OPEN,RK_MACH_ENTRY,RK_MACH_RETURN,
  RK_END,RK_EXITED };
 struct enabling { uint32_t epid,probe; unsigned kind; };
-enum fixed_profile { BOUNDARY_V1, IMAGES_V2 };
+enum fixed_profile { BOUNDARY_V1, IMAGES_V2, RECIPE_IMAGES_V2 };
 struct rt_backend {
  enum fixed_profile profile;
  struct rt_snapshot view; int directory,files[4],failed,fault_delivered; unsigned diagnostics;
@@ -40,7 +40,7 @@ struct rt_backend {
  char program[MAX_PROGRAM];
 };
 static unsigned exec_limit(const struct rt_backend *b) {
- return b->profile==IMAGES_V2?RT_MAX_IMAGE_EXECS:1u;
+ return b->profile==BOUNDARY_V1?1u:RT_MAX_IMAGE_EXECS;
 }
 enum { PROGRAM_FILE,INVENTORY_FILE,EVENT_FILE,ERROR_FILE };
 static const char *const file_names[]={"program.d","probes.tsv","events.jsonl","errors.jsonl"};
@@ -422,7 +422,7 @@ static int drop_event(const dtrace_dropdata_t *data,void *context) {
 }
 static int program(struct rt_backend *b) {
  size_t used=0;
- int formatted=b->profile==IMAGES_V2?
+ int formatted=b->profile!=BOUNDARY_V1?
   rt_images_program(b->view.binding.target_pid,b->program,&used):
   rt_program(b->view.binding.target_pid,b->program,&used);
  if(formatted)
@@ -566,7 +566,8 @@ static int create_fixed(enum fixed_profile profile,struct rt_backend **out,int f
  if(out)*out=NULL;if(ops)memset(ops,0,sizeof(*ops));if(error)memset(error,0,sizeof(*error));
  if(!out || !ops || !error)return -1;
  struct rt_error invalid={RT_CREATE,RT_ARGUMENT,0,0,EINVAL,"invalid confirmed READY/binding/directory/deadline"};
- if(!binding || ready!=1 || fd<0 || binding->fixture!=TS_OWNED_CONTEXT_PROBE || !binding->owner_pid ||
+ const uint32_t fixture=profile==RECIPE_IMAGES_V2?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE;
+ if(!binding || ready!=1 || fd<0 || binding->fixture!=fixture || !binding->owner_pid ||
     !binding->target_pid || binding->owner_pid>INT32_MAX || binding->target_pid>INT32_MAX || binding->owner_pid==binding->target_pid) {*error=invalid;return -1;}
  if((uint64_t)getpid()!=binding->owner_pid){invalid.reason=RT_OWNER;invalid.callback_error=EPERM;*error=invalid;return -1;}
  struct stat s;int flags=fcntl(fd,F_GETFD),status=0;
@@ -589,6 +590,9 @@ int rt_create(struct rt_backend **out,int fd,const struct ts_binding *binding,ui
 int rt_images_create(struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
  return create_fixed(IMAGES_V2,out,fd,binding,attempt,ready,ops,error);
 }
+int rt_recipe_images_create(struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
+ return create_fixed(RECIPE_IMAGES_V2,out,fd,binding,attempt,ready,ops,error);
+}
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *out) {if(!b||!out)return -1;*out=b->view;return 0;}
 int rt_destroy(struct rt_backend **out) {
  if(!out || !*out)return -1;struct rt_backend *b=*out;
@@ -602,6 +606,9 @@ int rt_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t
  if(e){memset(e,0,sizeof(*e));e->stage=RT_CREATE;e->reason=RT_ARGUMENT;e->callback_error=ENOTSUP;snprintf(e->message,sizeof(e->message),"native Darwin runtime boundary backend unavailable");}return -1;
 }
 int rt_images_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t d,int r,struct ts_operations *o,struct rt_error *e) {
+ return rt_create(out,fd,b,d,r,o,e);
+}
+int rt_recipe_images_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t d,int r,struct ts_operations *o,struct rt_error *e) {
  return rt_create(out,fd,b,d,r,o,e);
 }
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *s) {(void)b;(void)s;return -1;}

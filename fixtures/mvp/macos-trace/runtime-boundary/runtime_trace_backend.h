@@ -59,6 +59,13 @@ int rt_create(struct rt_backend **, int held_directory_fd,
 int rt_images_create(struct rt_backend **, int held_directory_fd,
  const struct ts_binding *, uint64_t original_attempt_deadline_ns,
  int confirmed_ready, struct ts_operations *, struct rt_error *);
+/* Separate fixed v2 factory for TS_OWNED_RUNTIME_RECIPE only. Existing v1/v2
+ * factories remain exclusively TS_OWNED_CONTEXT_PROBE. Same exact program,
+ * balanced exec bound, READY requirement, owner/deadlines and cleanup; no
+ * runner/catalog/native admission or public profile selection is added. */
+int rt_recipe_images_create(struct rt_backend **, int held_directory_fd,
+ const struct ts_binding *, uint64_t original_attempt_deadline_ns,
+ int confirmed_ready, struct ts_operations *, struct rt_error *);
 /* Pure snapshot; lifecycle counts are observations, never a success oracle. */
 int rt_snapshot(const struct rt_backend *, struct rt_snapshot *);
 /* Free only after the once-only callback close resolves resources, or before
