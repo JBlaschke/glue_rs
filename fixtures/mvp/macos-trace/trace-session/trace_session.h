@@ -4,9 +4,11 @@
 #include <stdint.h>
 
 #define TS_OWNED_CONTEXT_PROBE 1u
+#define TS_OWNED_RUNTIME_RECIPE 2u
 #define TS_MAX_PUMPS 65536u
 #define TS_MAX_EVENTS 1000000u
 #define TS_STATUS_CAPACITY 769u
+#define TS_RUNTIME_STATUS_CAPACITY 1537u
 enum ts_phase { TS_BOOTSTRAP, TS_WAITING, TS_CLEANUP };
 enum ts_event_kind { TS_PROVIDER_READY=1, TS_BEGIN, TS_ACTIVITY, TS_TERMINAL,
                     TS_END, TS_DROP, TS_BACKEND_FAULT, TS_OUTPUT_FAULT };
@@ -67,6 +69,11 @@ struct ts_session {
  * authorizes native execution. Exact reviewed request cleanup_ms is retained. */
 int ts_init(struct ts_session *, const struct ts_binding *, uint64_t attempt_deadline_ns,
             unsigned cleanup_ms, const struct ts_operations *);
+/* Separate fixed runtime-recipe binding; identical owner/lifecycle policy.
+ * Runtime object-status success retains 1024 bytes and failures at most 1537;
+ * ts_init remains exclusively fixture 1 with its original 512/769-byte bounds. */
+int ts_runtime_init(struct ts_session *, const struct ts_binding *, uint64_t attempt_deadline_ns,
+                    unsigned cleanup_ms, const struct ts_operations *);
 int ts_start(struct ts_session *);
 int ts_pump(struct ts_session *, enum ts_phase);
 int ts_claim_go(struct ts_session *); /*0 grants one use; mark possible release first.*/

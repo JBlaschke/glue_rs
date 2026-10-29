@@ -43,7 +43,7 @@ static ssize_t model_write(int fd,const void *p,size_t n) {
 static dtrace_probedesc_t probes[19];
 static int opened,went,stopped,library_closed,work_calls,open_failure,missing_mach,work_done,work_drop,work_fault;
 static unsigned match_count=17;
-static int expect_images;
+static int expect_images,recipe_profile;
 enum statement_mode { ST_NORMAL,ST_MISSING,ST_EXTRA,ST_DUPLICATE,ST_ALIAS_PROVIDER,
  ST_ID,ST_MODULE,ST_FUNCTION,ST_NAME,ST_UNTERMINATED,ST_NULL,ST_NULL_ECB,ST_BOUND,
  ST_FAIL,ST_EXPIRE,ST_CLOCK,ST_WRONG_HANDLE,ST_WRONG_PROGRAM,ST_EXPIRE_AFTER,ST_EXACT_BOUND };
@@ -210,9 +210,9 @@ static void reset(void) {
 static void initialize_fixed(struct fixture *f,int images) {
  memset(f,0,sizeof(*f));snprintf(f->path,sizeof(f->path),"/private/tmp/glue-rt-model-XXXXXX");assert(mkdtemp(f->path));
  f->directory=open(f->path,O_RDONLY|O_DIRECTORY|O_CLOEXEC);assert(f->directory>=0);
- f->binding=(struct ts_binding){TS_OWNED_CONTEXT_PROBE,(uint32_t)getpid(),(uint32_t)getpid()+1000,{1},{2}};f->deadline=model_now+UINT64_C(5000000000);
- struct rt_error e;expect_images=images;
- int result=images?rt_images_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e):
+ f->binding=(struct ts_binding){recipe_profile?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE,(uint32_t)getpid(),(uint32_t)getpid()+1000,{1},{2}};f->deadline=model_now+UINT64_C(5000000000);
+ struct rt_error e;expect_images=images||recipe_profile;
+ int result=recipe_profile?rt_recipe_images_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e):images?rt_images_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e):
                    rt_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e);
  assert(!result);
 }
@@ -227,8 +227,8 @@ static void cleanup(struct fixture *f) {
  assert(!rmdir(f->path));
 }
 static void readiness_and_full_session(void) {
- reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize(&f);struct ts_session s={0};assert(!ts_init(&s,&f.binding,f.deadline,200,&f.ops));assert(!ts_start(&s));assert(!s.provider_ready&&!s.begin_count);
- enqueue(1);assert(!ts_pump(&s,TS_BOOTSTRAP));assert(s.provider_ready==1&&s.begin_count==1);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(!ts_bootstrap_sealed(&s));
+ reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize(&f);struct ts_session s={0};assert(!(recipe_profile?ts_runtime_init(&s,&f.binding,f.deadline,200,&f.ops):ts_init(&s,&f.binding,f.deadline,200,&f.ops)));assert(!ts_start(&s));assert(!s.provider_ready&&!s.begin_count);
+ enqueue(1);assert(!ts_pump(&s,TS_BOOTSTRAP));assert(s.provider_ready==1&&s.begin_count==1);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));assert(!ts_bootstrap_sealed(&s));assert(s.bootstrap_prefix_bytes==(recipe_profile?1024u:512u));
  enqueue(2);enqueue(7);queue[queued_count-1].tid=999;enqueue(5);queue[queued_count-1].tid=999;enqueue(10);queue[queued_count-1].tid=999;enqueue(18);queue[queued_count-1].refcount=0x1e2;
  assert(!ts_pump(&s,TS_WAITING));assert(!s.terminal_count);assert(!ts_child_reaped(&s,0));assert(!ts_begin_cleanup(&s,model_now+UINT64_C(200000000)));
  assert(!ts_stop(&s));enqueue(18);enqueue(18);queue[queued_count-1].refcount=0x1e2;enqueue(11);enqueue(17);work_done=1;
@@ -471,6 +471,45 @@ static void images_fail_closed(void) {
   cleanup(&f);
  }
 }
+typedef int (*factory_fn)(struct rt_backend **,int,const struct ts_binding *,uint64_t,int,struct ts_operations *,struct rt_error *);
+static void profile_factories(void) {
+ reset();struct fixture f;initialize_images(&f);
+ factory_fn factories[]={rt_create,rt_images_create,rt_recipe_images_create};
+ const uint32_t tags[]={0,TS_OWNED_CONTEXT_PROBE,TS_OWNED_RUNTIME_RECIPE,3,UINT32_MAX};
+ for(unsigned selected=0;selected<3;selected++)for(unsigned tag=0;tag<sizeof(tags)/sizeof(tags[0]);tag++)for(int ready=0;ready<=2;ready++) {
+  struct ts_binding binding=f.binding;binding.fixture=tags[tag];struct rt_backend *b=(void*)(uintptr_t)1;
+  struct ts_operations ops;struct rt_error error;memset(&ops,0xa5,sizeof(ops));memset(&error,0xa5,sizeof(error));
+  int result=factories[selected](&b,f.directory,&binding,f.deadline,ready,&ops,&error);
+  int valid=ready==1&&tags[tag]==(selected==2?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE);
+  assert((result==0)==valid);assert(!opened&&!went&&!owned_closes);
+  if(valid){assert(b&&ops.context==b&&b->view.binding.fixture==tags[tag]);assert(!rt_destroy(&b));}
+  else {
+   assert(!b&&error.reason==RT_ARGUMENT&&error.callback_error==EINVAL);
+   const unsigned char *bytes=(const unsigned char*)&ops;for(size_t i=0;i<sizeof(ops);i++)assert(!bytes[i]);
+  }
+ }
+ cleanup(&f);
+ /* The fixed runtime factory preserves actual owner and original deadline checks. */
+ for(unsigned fault=0;fault<3;fault++) {
+  reset();initialize_images(&f);struct ts_binding binding=f.binding;binding.fixture=TS_OWNED_RUNTIME_RECIPE;
+  uint64_t deadline=f.deadline;if(fault==0)binding.owner_pid++;else if(fault==1)deadline=model_now;else deadline=model_now+UINT64_C(10000000001);
+  struct rt_backend *b=(void*)(uintptr_t)1;struct ts_operations ops;struct rt_error error;
+  assert(rt_recipe_images_create(&b,f.directory,&binding,deadline,1,&ops,&error)==-1&&!b);
+  assert(error.reason==(fault==0?RT_OWNER:RT_DEADLINE)&&!opened&&!went);cleanup(&f);
+ }
+}
+static void recipe_program_binding(void) {
+ int saved_profile=recipe_profile;recipe_profile=1;
+ reset();struct fixture f;initialize_images(&f);begin(&f);
+ char expected[RT_PROGRAM_CAPACITY];size_t length;assert(!rt_images_program(f.binding.target_pid,expected,&length));
+ assert(strlen(f.b->program)==length&&!memcmp(expected,f.b->program,length+1));
+ assert(f.b->profile==RECIPE_IMAGES_V2&&f.binding.fixture==TS_OWNED_RUNTIME_RECIPE);
+ cleanup(&f);
+ reset();initialize_images(&f);struct ts_binding wrong=f.binding;wrong.fixture=TS_OWNED_CONTEXT_PROBE;int error=0;
+ assert(f.ops.start_fn(f.b,&wrong,f.deadline,&error)==-1&&error==EPROTO);
+ assert(f.b->view.first_error.reason==RT_BINDING&&!opened&&!went&&!owned_closes);cleanup(&f);
+ recipe_profile=saved_profile;
+}
 int main(int argc,char **argv) {
  static const struct {const char *name;void (*run)(void);} tests[]={
   {"full-session",readiness_and_full_session},{"rejected-records",rejected_records},
@@ -478,10 +517,12 @@ int main(int argc,char **argv) {
   {"bounds-faults",bounds_and_faults},{"deadline-close",deadline_and_closure},
   {"unsupported-retention",unsupported_routes_are_retained},{"selected-exec",selected_exec_and_completion},
   {"late-retention",late_records_are_retained},{"writer-prefix",genuine_writer_prefix},
-  {"images-success",images_success},{"images-refusals",images_refusals},{"images-fail-closed",images_fail_closed}
+  {"images-success",images_success},{"images-refusals",images_refusals},{"images-fail-closed",images_fail_closed},
+  {"profile-factories",profile_factories},{"program-binding",recipe_program_binding}
  };
  if(argc!=2)return 2;
- for(size_t i=0;i<sizeof(tests)/sizeof(tests[0]);i++)if(!strcmp(argv[1],tests[i].name)) {
+ const char *name=argv[1];if(!strncmp(name,"recipe-",7)){recipe_profile=1;name+=7;}
+ for(size_t i=0;i<sizeof(tests)/sizeof(tests[0]);i++)if(!strcmp(name,tests[i].name)) {
   tests[i].run();puts("runtime trace backend boundary controls passed (fake libdtrace only)");return 0;
  }
  return 2;
