@@ -55,7 +55,12 @@ int rt_images_program(uint32_t target_pid,char out[RT_PROGRAM_CAPACITY],size_t *
 }
 
 int rt_stopped_program(const struct ts_binding *binding,char out[RT_PROGRAM_CAPACITY],size_t *used) {
- if(used)*used=0;if(out)out[0]=0;
+ if(used) {
+  *used=0;
+ }
+ if(out) {
+  out[0]=0;
+ }
  if(!out||!used||!binding||binding->fixture!=TS_OWNED_RUNTIME_RECIPE||
     !binding->owner_pid||binding->owner_pid>INT32_MAX||!binding->target_pid||
     binding->target_pid>INT32_MAX||binding->owner_pid==binding->target_pid)return -1;
@@ -67,7 +72,10 @@ int rt_stopped_program(const struct ts_binding *binding,char out[RT_PROGRAM_CAPA
   request[2*i]=hex[a>>4];request[2*i+1]=hex[a&15];
   catalog[2*i]=hex[b>>4];catalog[2*i+1]=hex[b&15];
  }
- if(!request_present||!catalog_present)return -1;request[64]=catalog[64]=0;
+ if(!request_present||!catalog_present) {
+  return -1;
+ }
+ request[64]=catalog[64]=0;
  struct program_buffer b={0};
  append(&b,
   "#pragma D option quiet\n");
@@ -144,5 +152,10 @@ int rt_stopped_program(const struct ts_binding *binding,char out[RT_PROGRAM_CAPA
   binding->target_pid,
   binding->owner_pid,
   binding->target_pid);
- if(b.failed)return -1;memcpy(out,b.bytes,b.used+1);*used=b.used;return 0;
+ if(b.failed) {
+  return -1;
+ }
+ memcpy(out,b.bytes,b.used+1);
+ *used=b.used;
+ return 0;
 }
