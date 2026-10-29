@@ -6,8 +6,6 @@ use std::{
     fs::File,
     io::Read,
     path::{Path, PathBuf},
-    process::{Command, Stdio},
-    time::{Duration, Instant},
 };
 #[derive(Default)]
 struct Capabilities {
@@ -55,62 +53,11 @@ fn bounded_read(path: &Path, max: u64) -> Result<Vec<u8>> {
     Ok(bytes)
 }
 fn macos_version() -> Result<String> {
-    let mut child = Command::new("/usr/bin/sw_vers")
-        .arg("-productVersion")
-        .env_clear()
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
-        .map_err(|e| error(DiagnosticCode::MissingDependency, e.to_string()))?;
-    let stdout = child.stdout.take().unwrap();
-    let handle = std::thread::spawn(move || {
-        let mut bytes = Vec::new();
-        stdout.take(4097).read_to_end(&mut bytes).map(|_| bytes)
-    });
-    let start = Instant::now();
-    loop {
-        match child.try_wait() {
-            Ok(Some(status)) => {
-                if !status.success() {
-                    return Err(error(
-                        DiagnosticCode::MissingDependency,
-                        "cannot inspect macOS version",
-                    ));
-                }
-                break;
-            }
-            Ok(None) if start.elapsed() < Duration::from_secs(5) => {
-                std::thread::sleep(Duration::from_millis(10))
-            }
-            _ => {
-                let _ = child.kill();
-                let _ = child.wait();
-                return Err(error(
-                    DiagnosticCode::MissingDependency,
-                    "macOS version inspection timed out",
-                ));
-            }
-        }
-    }
-    let bytes = handle
-        .join()
-        .map_err(|_| {
-            error(
-                DiagnosticCode::MissingDependency,
-                "OS inspection thread failed",
-            )
-        })?
-        .map_err(|e| error(DiagnosticCode::MissingDependency, e.to_string()))?;
-    if bytes.len() > 4096 {
-        return Err(error(
-            DiagnosticCode::ResourceLimit,
-            "OS version output exceeds bound",
-        ));
-    }
-    String::from_utf8(bytes)
-        .map(|s| s.trim().to_owned())
-        .map_err(|e| error(DiagnosticCode::InvalidConfiguration, e.to_string()))
+    glue_runtime_lua::profile::macos_product_version().map_err(|query_error| {
+        let (glue_runtime_lua::profile::CapabilityError::Unsupported(message)
+        | glue_runtime_lua::profile::CapabilityError::Invalid(message)) = query_error;
+        error(DiagnosticCode::MissingDependency, message)
+    })
 }
 fn required_versions(inventory: &NativeInventory) -> Result<BTreeMap<String, BTreeSet<String>>> {
     let mut result = BTreeMap::<String, BTreeSet<String>>::new();
@@ -283,6 +230,44 @@ pub(super) fn check(spec: &DistributionSpec) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn macos_floor_keeps_numeric_ordering_zero_padding_and_error_codes() {
+        let mut inventory = NativeInventory::default();
+        inventory.host_requirements.insert("macos>=26.7.0".into());
+        for actual in ["26.7", "26.7.0", "26.7.1", "26.10", "27"] {
+            let caps = Capabilities {
+                version: Some(actual.into()),
+                ..Capabilities::default()
+            };
+            validate(&inventory, &caps).unwrap();
+        }
+        for actual in ["26.6.99", "26", "25.99"] {
+            let caps = Capabilities {
+                version: Some(actual.into()),
+                ..Capabilities::default()
+            };
+            assert_eq!(
+                validate(&inventory, &caps).unwrap_err().code,
+                DiagnosticCode::TargetMismatch
+            );
+        }
+        assert_eq!(
+            validate(&inventory, &Capabilities::default())
+                .unwrap_err()
+                .code,
+            DiagnosticCode::MissingDependency
+        );
+        inventory.host_requirements = BTreeSet::from(["macos>=4294967296.0".into()]);
+        let caps = Capabilities {
+            version: Some("26.7".into()),
+            ..Capabilities::default()
+        };
+        assert_eq!(
+            validate(&inventory, &caps).unwrap_err().code,
+            DiagnosticCode::InvalidConfiguration
+        );
+    }
+
     #[test]
     fn rejects_missing_versions_os_floor_and_cpu_before_application() {
         let mut i = NativeInventory::default();
