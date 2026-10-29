@@ -309,10 +309,10 @@ class MatchKitControls(unittest.TestCase):
                 self.assertNotIn(relative, HISTORICAL_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
         production = match.trace.registry(match.trace.REGISTRY.read_bytes())
-        self.assertEqual(production['source_revision'], '1e2cac796a63b126990516396b9af00ba17b2f0b')
+        self.assertEqual(production['source_revision'], '34c5a8d9df3a8b0706c312633ffdde95a7c10a04')
         self.assertEqual(len(production['sources']), 41)
         self.assertEqual(core.digest(core.canonical(production['sources'])),
-                         'ba1cd3789f85f03275fdfc1213b2bc5dd0207458af30f6488419b82bc63dd5b5')
+                         'fc580c9cdf62eaa862de7b807277e173297fa6638ec7010ae10bac7bfd99ba37')
         self.assertEqual(len(production['proofs']), 1)
 
 

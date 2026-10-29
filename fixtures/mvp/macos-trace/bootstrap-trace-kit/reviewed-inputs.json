@@ -47,7 +47,7 @@
     "fixtures/mvp/macos-trace/owned-trace-backend/owned_trace_backend.c"
   ],
   "schema": "glue-owned-trace-kit-inputs-v1",
-  "source_revision": "1e2cac796a63b126990516396b9af00ba17b2f0b",
+  "source_revision": "34c5a8d9df3a8b0706c312633ffdde95a7c10a04",
   "sources": {
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.c": "6ce683cff07bef135fa28c5bc452bdec1200fae5dc9cdcb5d7410ec1b877a2f1",
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.h": "6993e854c5b9bcef941eca12aabca98627a2bbf0bdba8e3b1658cddfe9891923",
@@ -67,9 +67,9 @@
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_catalog.c": "141fc38210024907a599fd57d56ebc6ace61eaed1739bac3b3f0dd6f8633157e",
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_catalog.h": "dd4d9fb7d9ab1913f8c424d82f046270a2b145203d502cf3aea1cc56e40c1b19",
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_child.c": "50b830f01c99327274b1c62484ee07fd97cb46e8fb05156054ed7fb73c2016cc",
-    "fixtures/mvp/macos-trace/bootstrap-runner/runner_files.c": "6a25440abaf763d5a298398e79a4ff45a7aea36d59bb29899621f1d3bf0b82c8",
-    "fixtures/mvp/macos-trace/bootstrap-runner/runner_internal.h": "c541e2e284eb26cf527b87b66ffb797358b6adc53f5602f532ea68de46893ac5",
-    "fixtures/mvp/macos-trace/bootstrap-runner/runner_parent.c": "b6e57a6e31bac2daf0e3a7a53a34d53a17aa971bef665926fd9b14a820fe0984",
+    "fixtures/mvp/macos-trace/bootstrap-runner/runner_files.c": "78991e8d3e4ce2d27713ee92034aac128caedb02abd622da9085d9c4a3e8a866",
+    "fixtures/mvp/macos-trace/bootstrap-runner/runner_internal.h": "fbb174a4e7847a7280e9aad17d8312b8c6d3e21179c5bf08cf7df7ecf8738aa4",
+    "fixtures/mvp/macos-trace/bootstrap-runner/runner_parent.c": "7698ea39b545175becd02f3936a704950c783de91f220fbff41c5085f0afa961",
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_protocol.c": "a04982d3b523bd7d70cd72dc75210a78049434d71fe687636a45997555f89581",
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_protocol.h": "08186b69f425ba7d6ac6b0fb1d92c2977da42e4a524883c5c1bff8fc3beae758",
     "fixtures/mvp/macos-trace/bootstrap-runner/runner_support.c": "0d490ca411132ee0e7d4aa1f8e48b200a032b1c2dbeb3833da6e93dfa4d9668b",
