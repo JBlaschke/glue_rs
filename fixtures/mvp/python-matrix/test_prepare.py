@@ -2,6 +2,7 @@
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,25 @@ import prepare
 
 
 class EnvironmentPreparationTests(unittest.TestCase):
+    def test_retained_preparation_receipt_survives_input_removal(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            root = output / "inputs"
+            python = root / "runtime/bin/python"
+            python.parent.mkdir(parents=True)
+            python.write_bytes(b"not executed")
+            (root / "installed").mkdir()
+            retained = output / "environment-receipt.json"
+            argv = ["prepare.py", str(root), "bin/python", "descriptor",
+                    "--receipt-output", str(retained)]
+            with patch.object(sys, "argv", argv), patch.object(prepare.subprocess,
+                    "check_output", return_value="[3, 13]\n"):
+                prepare.main()
+            original = (root / "environment-receipt.json").read_bytes()
+            shutil.rmtree(root)
+            self.assertEqual(retained.read_bytes(), original)
+            self.assertEqual(json.loads(original)["kind"], "descriptor")
+
     def test_actual_ordinary_environments_keep_explicit_seed_policy(self):
         for kind, seeded in (("ordinary", True), ("ordinary-no-pip", False)):
             with self.subTest(kind=kind), tempfile.TemporaryDirectory(prefix="glue venv ü ") as temporary:

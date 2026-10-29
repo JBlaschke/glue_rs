@@ -11,6 +11,8 @@ cd "$repo_dir"
 profile_fields=$(/usr/bin/python3 fixtures/mvp/linux_acceptance.py profile \
     --expected-target "${GLUE_MVP_CI_EXPECT_TARGET:-}")
 IFS=$'\t' read -r architecture target node_arch wheel_target node_config native_search conda_lock pbs312_sha256 pbs313_sha256 benchmark_python_environment <<< "$profile_fields"
+compatibility_mode=${GLUE_MVP_COMPATIBILITY:-disabled}
+case "$compatibility_mode" in disabled|required) ;; *) echo 'GLUE_MVP_COMPATIBILITY must be disabled or required' >&2; exit 2 ;; esac
 ci_root=${GLUE_MVP_CI_ROOT:?set a new absolute directory for this CI run}
 case "$ci_root" in /*) ;; *) echo 'GLUE_MVP_CI_ROOT must be absolute' >&2; exit 2 ;; esac
 test ! -e "$ci_root"
@@ -27,6 +29,11 @@ finish() {
     if /usr/bin/python3 fixtures/mvp/linux_acceptance.py summary \
         --architecture "$architecture" --evidence "$evidence" --result "$result" --budget-mode "$budget_mode"
     then :; else summary_result=1; fi
+    if test "$compatibility_mode" = required; then
+        if /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py summary \
+            --architecture "$architecture" --evidence "$evidence" --result "$result"
+        then :; else summary_result=1; fi
+    fi
     # Tracer files can belong to root/nobody. Only the evidence tree is exposed
     # to upload-artifact; runtime trees, wheels and compiled payloads stay local.
     sudo -n chown -R "$(id -u):$(id -g)" "$evidence" || true
@@ -83,6 +90,10 @@ sudo -n unshare --net /usr/bin/true
 } > "$evidence/toolchain.txt"
 git status --short > "$evidence/source-status.txt"
 /usr/bin/python3 fixtures/mvp/linux_acceptance.py plan --architecture "$architecture" > "$evidence/acceptance-plan.json"
+if test "$compatibility_mode" = required; then
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py plan --architecture "$architecture" \
+        > "$evidence/compatibility-plan.json"
+fi
 
 # A syscall tracer cannot observe io_uring SQE writes. Select the ordinary
 # syscall fallback explicitly for the complete test process tree, including
@@ -145,6 +156,42 @@ done <<PBS
 3.13.16 $pbs313_sha256
 PBS
 
+if test "$compatibility_mode" = required; then
+    # These are independent build inputs. Every archive must match the exact
+    # target-specific official digest and size before it is opened or executed.
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py inputs --architecture "$architecture" \
+        > "$evidence/provisioning/compatibility-inputs.tsv"
+    while IFS=$'\t' read -r route name checksum size url; do
+        archive="$ci_root/downloads/$name"
+        if test ! -e "$archive"; then download "$url" "$archive"; fi
+        /usr/bin/python3 - "$archive" "$checksum" "$size" <<'PY'
+import hashlib, sys
+from pathlib import Path
+path, expected, size = Path(sys.argv[1]), sys.argv[2], int(sys.argv[3])
+digest = hashlib.sha256()
+with path.open('rb') as stream:
+    while block := stream.read(1024 * 1024): digest.update(block)
+if path.stat().st_size != size or digest.hexdigest() != expected:
+    raise SystemExit('compatibility input checksum/size mismatch: ' + path.name)
+PY
+        if test "$route" = uv; then
+            mkdir "$ci_root/inputs/uv"
+            tar -xzf "$archive" --strip-components=1 -C "$ci_root/inputs/uv"
+            "$ci_root/inputs/uv/uv" --version > "$evidence/provisioning/uv-version.txt"
+        fi
+    done < "$evidence/provisioning/compatibility-inputs.tsv"
+    /usr/bin/python3 - "$evidence" <<'PY'
+import json, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+rows = {}
+for line in (root / 'provisioning/compatibility-inputs.tsv').read_text().splitlines():
+    route, name, digest, size, url = line.split('\t')
+    rows[route] = {'name': name, 'sha256': digest, 'size': int(size), 'url': url}
+(root / 'compatibility-inputs.json').write_text(json.dumps(rows, indent=2) + '\n')
+PY
+fi
+
 # This independent conventional runtime avoids the selected PBS libffi static
 # trampoline path bug under relocated paths containing spaces. Keep all native
 # bytes unchanged and subject it to the same strict extraction oracle.
@@ -201,6 +248,7 @@ common_env=(
     "GLUE_MVP_PYTHON_SECONDARY=$ci_root/inputs/lua55-native/libsecondary.so"
 )
 overall=0
+case_status_file="$evidence/case-status.tsv"
 run_case() {
     local label=$1 recipe=$2
     shift 2
@@ -234,7 +282,7 @@ PY
     if test "$result" -eq 0; then
         if ! sudo -n /usr/bin/python3 scripts/check-mvp-results.py "$evidence/cases/$label/receipt.json" >> "$evidence/$label.log" 2>&1; then result=1; fi
     fi
-    printf '%s\t%s\n' "$label" "$result" >> "$evidence/case-status.tsv"
+    printf '%s\t%s\n' "$label" "$result" >> "$case_status_file"
     cat "$evidence/$label.log"
     if test "$result" -ne 0; then overall=1; fi
 }
@@ -258,6 +306,27 @@ done <<'PYTHON'
 3.13.16 bin/python3.13 cp313
 3.14.8 bin/python3.14 cp314
 PYTHON
+
+if test "$compatibility_mode" = required; then
+    /usr/bin/python3 fixtures/mvp/python-matrix/linux_compatibility.py cells --architecture "$architecture" \
+        > "$evidence/provisioning/compatibility-cells.tsv"
+    case_status_file="$evidence/compatibility-case-status.tsv"
+    while IFS=$'\t' read -r label recipe route environment_kind; do
+        compatibility_env=(
+            "GLUE_MVP_PYTHON_ROOT=$ci_root/runtimes/python-3.13.16"
+            "GLUE_MVP_PYTHON_RELATIVE=bin/python3.13"
+            "GLUE_MVP_PYTHON_SITE=$ci_root/inputs/python-cp313/site"
+            "GLUE_MVP_PYTHON_ENV_KIND=$environment_kind"
+            "GLUE_MVP_UV=$ci_root/inputs/uv/uv"
+        )
+        if test "$route" != uv; then
+            name=$(awk -F '\t' -v route="$route" '$1 == route {print $2}' "$evidence/provisioning/compatibility-inputs.tsv")
+            compatibility_env+=("GLUE_MVP_PYTHON_ARCHIVE=$ci_root/downloads/$name")
+        fi
+        run_case "$label" "$recipe" "${compatibility_env[@]}"
+    done < "$evidence/provisioning/compatibility-cells.tsv"
+    case_status_file="$evidence/case-status.tsv"
+fi
 
 check_benchmark() {
     sudo -n /usr/bin/python3 - "$repo_dir" "$1" "$2" "$3" "$budget_mode" "$evidence" "$target" <<'PY'

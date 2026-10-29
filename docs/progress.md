@@ -63,6 +63,24 @@ including actual seeded/unseeded venv execution; shell syntax and diff checks
 pass. CI now invokes 47 Python scripts. A fresh native run must prove the repair;
 there is no automatic budget refreeze, extraction exemption or M2 closure.
 
+## Native Linux archive and uv compatibility — 29 October 2026
+
+Decision `856da10` and implementation `62571a2` on
+`codex/mvp-v02-linux-compatibility` add seven explicitly selected native cases:
+PBS full/install-only/stripped archive inputs and uv source/module/console/native
+environments. The original 24 cases and five budgets retain their scope and
+limits. Exact retained preparation, build-route and archive/runtime identities
+are checked before the new summary can pass. All cases use the complete shared
+offline/tracing harness; portable controls do not replace those native runs.
+
+Sixteen new controls pass on Python 3.15.2 and 3.9.6. Existing runner controls,
+five preparation controls on 3.15.2, the new retention control on 3.9.6, syntax,
+actionlint and independent review pass. The old actual copy-venv control cannot
+run on Apple's system 3.9; that failed attempt is retained without changing the
+fixture policy. Native compatibility execution/replay is next. Main includes
+PRs #92–#95 at `cb24720`; scalar fcntl work is separately open as PR #96.
+Full Darwin oracle/corpus, Mac budgets and final compatibility/sign-off remain.
+
 ## Native GNU Linux arm64 acceptance automation — 28 October 2026
 
 Decision `0ac9bca` and implementation `3698ae4` on

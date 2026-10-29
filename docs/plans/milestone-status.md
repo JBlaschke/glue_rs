@@ -1,6 +1,6 @@
 # Current milestone status
 
-28 October 2026. The [project plan](../../PLAN.md#milestones) defines five
+29 October 2026. The [project plan](../../PLAN.md#milestones) defines five
 milestones. The [26 task cards](mvp-tasks.md) are implementation assignments,
 not 26 release gates. The [execution ledger](mvp-implementation.md) records exact
 commits, tests, target scope and evidence limits.
@@ -15,8 +15,9 @@ commits, tests, target scope and evidence limits.
 
 ## Current work
 
-1. Diagnostic PR #89 and arm acceptance repair PR #91 reached `main` at
-   `43bf806`. The repair's eighteen portable checks pass. New PRs target `main`
+1. PRs #92–#95 reached `main` at `cb24720`, including the BSD entry, outcome and
+   descriptor/write semantics and both Linux acceptance records. PR #95's
+   eighteen portable checks pass. New PRs target `main`
    explicitly, and status/evidence changes stay on their own milestone branch.
 2. Native arm run `40754980497` at `30e8d08` and its complete independent replay
    pass all 24 cases and five unchanged budgets. The explicit benchmark-input
@@ -34,6 +35,11 @@ commits, tests, target scope and evidence limits.
    builds on them with eleven descriptor/write/flush/truncate forms and 37
    passing controls per tested interpreter. These are conditional source rules;
    native calibration, object binding and effect ordering remain open.
+4. [Scalar fcntl PR #96](https://github.com/JBlaschke/glue_rs/pull/96) adds four
+   descriptor duplication/flag commands through both syscall forms; thirty
+   controls pass on each tested Python version. The independent Linux
+   compatibility feature adds seven traced archive/uv cases, with sixteen
+   portable controls passing per interpreter. Native execution/replay is pending.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -51,7 +57,9 @@ the missing Darwin oracle.
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
 - **R04:** finish remaining target retention and the exact current compatibility/
-  sign-off record. Arm64 evidence is regenerated, replayed, publicly retained and
+  sign-off record, including archive/uv route execution, additional-patch with
+  unchanged launcher, abi3 and fresh Mac cells. Arm64 evidence is regenerated,
+  replayed, publicly retained and
   independently downloaded/replayed. Same-source x86 refresh and replay pass;
   its fresh backup verifies locally and the prepared publication set awaits
   separate owner approval. The older recovered archive also remains retained.
