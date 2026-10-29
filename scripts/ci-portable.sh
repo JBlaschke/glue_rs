@@ -34,6 +34,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/target-credentials/test_target_credentials.py -v
         python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
         python3 fixtures/mvp/macos-trace/target-endpoints/test_target_endpoints.py -v
+        python3 fixtures/mvp/macos-trace/target-fd-objects/test_target_fd_objects.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-wire/test_bootstrap_wire.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-io/test_observed_io.py -v
@@ -68,6 +69,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
         python3 fixtures/mvp/macos-trace/bsd-entry-abi/test_bsd_entry_abi.py -v
         python3 fixtures/mvp/macos-trace/bsd-fd-semantics/test_bsd_fd_semantics.py -v
+        python3 fixtures/mvp/macos-trace/bsd-fcntl-semantics/test_bsd_fcntl_semantics.py -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         python3 fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v
         cargo test --workspace --locked

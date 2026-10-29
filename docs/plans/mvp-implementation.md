@@ -378,6 +378,35 @@ the retained inventories and reads both reports. Fresh native arm64 execution,
 complete independent replay and external retention remain pending; these source
 checks do not establish acceptance, change guest SIP or close M2.
 
+## 29 October: scalar fcntl descriptor semantics
+
+Branch `codex/mvp-r02-bsd-fcntl-semantics` incorporates main `cb24720`, which
+contains PRs #92–#95. Decision `2ef2cd2` precedes implementation `b6ef6a3`.
+`decode_owned_fcntl_semantics` handles F_DUPFD, F_DUPFD_CLOEXEC, F_GETFD and
+F_SETFD through both fcntl syscall names, after one complete strict raw pairing
+pass. Every BSD pair and all original Mach/lifecycle observations remain visible.
+Canonical minimum/result relations, command-specific low-bit semantics and
+initialized secondary results are checked against six exact pinned XNU sources.
+Descriptor flags remain distinct from shared fileglob flags; failed calls do not
+prove unchanged state. Other commands, including partially mutating F_SETFL,
+retain explicit gaps. Rules require kernel lookup/lifetime/order witnesses and
+never update state or grant native/extraction acceptance.
+
+All thirty controls pass on Python 3.15.2 and 3.9.6, with nine watched source
+identities and HEAD unchanged. The durable first-attempt receipt is
+`.evidence-local/controls/owned-bsd-fcntl-semantics-20261029/attempt-01`; its
+seventeen-payload manifest hashes to
+`945f62404c6fb249be1fc211adca214107a99bca147f8a3abd3aafbbf399b3e5`.
+Module SHA256 is
+`da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260`;
+the six-source provenance manifest is
+`1418c51e2365329c6d334a291195542a008797a90eba929042394b86cc86973f`.
+Root verifies all receipt members, current feature identities and official source
+hashes. Independent source review finds no implementation blocker. One portable
+invocation raises this branch's baseline to 51 Python scripts; shell syntax and
+staged diff checks pass. Hosted CI proceeds independently. Full Darwin object
+capture/state/oracle, native corpus and Mac budgets remain open; SIP stays enabled.
+
 ## 28 October: BSD descriptor and scalar write semantics
 
 Milestone branch `codex/mvp-r02-bsd-fd-semantics` starts from main `43bf806` and
@@ -472,6 +501,46 @@ hashes and the report. CI adds one invocation for 48 scripts after integrating m
 diff checks pass; hosted CI proceeds independently. No native capture, VM/SIP
 change or Darwin/M2 acceptance is claimed.
 
+
+## 29 October: native pre-exec descriptor backing capture
+
+Branch `codex/mvp-r02-target-fd-objects` starts from main `cb24720`.
+Decision `6ad50e5` precedes implementation `e6127e6`. The read-only C primitive
+samples fstat/F_GETFD/F_GETFL twice for exactly five retained child descriptors
+after numeric closure and before GO. Its controller matcher compares stdout/
+stderr with still-held distinct single-link regular capture files. Full status
+words remain visible; parent/child close-on-exec flags deliberately differ.
+Device/inode observations do not become OFD, path, generation or current-slot
+authority. Independent opens of the same backing can match, explicitly tested.
+
+Twenty focused groups pass on the unprivileged physical Mac: eleven injected
+boundary groups and nine actual gated native groups, zero skips. They use real
+endpoint mapping and native Darwin TD closure, successful output bytes and
+negative controls for missing/wrong bindings, unrelated failures, cleanup errors,
+ECHILD ownership loss and EPIPE before GO. Every successful cleanup claim requires
+an actual waitpid reap. Parent SIGPIPE policy is restored. Python 3.9 harness
+syntax passes. A retained read-only csrutil status reports host SIP enabled;
+there is no sudo, VM, trace or security-setting change.
+
+The corrected frozen report is
+`.evidence-local/controls/target-fd-objects-20261029/author-freeze-review-attempt03.json`,
+SHA256 `6d3b3c0b08fd6c5d54528d9e98fb430e1f08e608627c90231ea95cfdac95afbd`.
+Attempt 03 has 86 indexed payloads and manifest
+`82497c4ab24a2314f01d110d2e48f806ce74e84f5ec653887a746e5072263bde`.
+Root verifies those payloads and all ten current source identities. Independent
+peer report SHA256 is
+`a3e64ee0b740ac4b66a86b630ff2282727074e2596dd53c9bae2c04a52b27f67`.
+The first logging-baseline failure (Darwin status bits change on ordinary writes)
+and earlier controls remain retained. Review also corrected uninitialized test
+outputs, an overly broad expected-failure verdict and SIGPIPE cleanup behavior;
+the core primitive/header remained byte-identical through those corrections.
+
+CI adds one invocation, 51 Python scripts at this branch head. Linux builds use
+a clearly labelled test-only procfs inventory adapter for the real native fixture;
+production TD native Linux support remains unchanged and unsupported. Linux
+execution is pending hosted CI. Production READY/wire/controller/guarded-kit
+adoption remains separate. This is real pre-exec capture groundwork, not complete
+Darwin state/oracle, arbitrary object binding, native corpus or M2 acceptance.
 
 ## 28 October: standalone owned-trace inspector
 
