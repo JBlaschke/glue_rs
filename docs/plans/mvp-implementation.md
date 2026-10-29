@@ -37,6 +37,102 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 28 October: fresh x86 acceptance and local retention
+
+Fresh [run 40758958354](https://github.com/JBlaschke/glue_rs/actions/runs/40758958354)
+at `30e8d080500de2bd6646c1c68d814eb80208f5f8` passes all 24 application cases and
+five unchanged accepted budgets. Complete independent replay verifies 24 case
+and fifteen benchmark-variant receipts, 156 oracle controls, 990 rank results,
+eighteen Python preparation checks and fifteen payload inventory reconstructions.
+All source/raw identities remain stable. X86 cases and benchmarks preserve the
+ordinary seeded Python profile; the arm-only pip-free benchmark choice is not
+silently propagated. Both fresh Linux cells now cover the same source revision.
+
+[X86 metadata](../evidence/native-linux-x86_64-2026-10-28/README.md) binds artifact
+`12848803437`: original ZIP 160,076,851 bytes, SHA256
+`38b21389998b7e2097f778f577b92279af4526184cbf42f4625fdd63c17eddda`.
+All 4,803 extracted files/719,731,510 bytes are verified. Replay result SHA256
+`06c611872225fdd690eb6eca326be4c25c716258a18aa273ffbf4d63175cf764`
+and its 26-payload manifest
+`062fd8c133919c64c865cdb2ff4720d11ae52c2aab5a5655808ccb50d3d54c12`
+remain under `.evidence-local/native-linux-x86-40758958354`. Root independently
+verifies the ZIP/all raw members and binds seventeen source snapshots to exact
+tested Git blobs; it reads the full replay report without repeating native runs.
+
+The sibling retention record prepares/restores 4,846 source files/882,116,761
+bytes in a 318,718,289-byte archive, SHA256
+`33e7fa9726a4bf94e4f7dd0fc0adf4ee8dbeb1222d5eec720d10153a23eefb96`.
+Every hash/size/mode/roster and source identity agrees. This is same-host backup,
+not external publication. A minimal eight-file, 161,129,470-byte release proposal
+has manifest `c026c997fac9ed34bfed9c0aa469f271bb128df611e8cc1d08996721a6115467`.
+All documented checksum/extraction/full-replay commands pass in a clean directory,
+and independent review has no findings. Actual content scan hits are four stock
+CPython Windows documentation examples, not local development-host paths.
+No original capture or record is redacted or changed. X86 publication remains
+pending explicit approval; the arm-only approval has already been completed.
+
+Recorded syscall-fallback and host-fingerprint timing scope remain unchanged.
+Complete Darwin oracle/corpus, Mac budgets, remaining retention/compatibility
+and final M2 sign-off remain open. No VM/SIP change occurred.
+
+## 28 October: native arm acceptance and verified local retention
+
+Fresh [run 40754980497](https://github.com/JBlaschke/glue_rs/actions/runs/40754980497)
+at `30e8d080500de2bd6646c1c68d814eb80208f5f8` passes 24 application cases and all
+five accepted cost profiles unchanged. Independent replay verifies 24 case and
+15 benchmark-variant receipts, 156 oracle controls, 990 rank results/streams,
+eighteen Python preparation checks and fifteen payload inventory reconstructions.
+The source Python seek series is 307/446/452 and native is 368/959/961, matching
+historical counts. Scaled archives 3,904,572/7,552,604 bytes fit unchanged limits
+4,294,176/8,306,594. All source/capture identities remain stable.
+
+[Source/acceptance metadata](../evidence/native-linux-arm64-2026-10-28/README.md)
+records artifact `12846133526`: 152,530,427-byte ZIP, SHA256
+`0a9ec878b10a3f2d22e87d444f28491f36d684fb101e1d14af5f933fd3b57137`.
+All 4,803 extracted files/694,138,515 bytes are hash-verified. Replay result
+SHA256 is `1a16166f996b7bbae6f9ec0ca378b54307e7f845e0cae638b74a55a5569eef2e`;
+its 26-payload manifest SHA256 is
+`1179ecf82f09aafc784b00975f89d41b11b8ed1b54e0e51d7e9ca24834a4ce98`.
+Root independently rehashes the ZIP/all raw files, binds seventeen source
+snapshots to exact Git blobs, reads the replay driver/helper and verifies counts.
+The failed predecessor remains retained separately without changing its verdict.
+
+The source-root capture/replay/tool bundle at
+`.evidence-local/native-linux-arm64-40754980497-retention-20261028-01` prepares and
+restores successfully. It includes 4,844 source files/848,966,499 bytes and 4,846
+indexed members. Its 303,529,253-byte archive SHA256 is
+`9edf81505cd9408fa0647cf75953f926dd962624597bc85b6a080febec17bb73`.
+Root verifies the review inventory/archive/sidecars and independently checks
+every restored hash/size/mode. All source identities and exact rosters agree.
+This larger archive remains same-host integrity protection. Separately, the owner
+explicitly approved eight minimal arm evidence assets/153,582,706 bytes. They
+are published as evidence-only prerelease
+[`evidence-linux-arm64-2026-10-28`](https://github.com/JBlaschke/glue_rs/releases/tag/evidence-linux-arm64-2026-10-28)
+at the exact tested commit. Root verified every uploaded server digest/size and
+anonymous checksum retrieval. Independent fresh download verifies all eight
+assets against the approved candidate and passes every documented checksum,
+extraction and full replay command, including all 39 receipts, 156 controls and
+990 ranks. No assets were added or rewritten after approval.
+
+The remote verification result is
+`.evidence-local/native-linux-arm64-remote-verification-20261028-01/result.json`,
+SHA256 `ca59ef3c158ffd3a29793982d7f308529a2c626b9247683d0465cad8d81cb109`;
+its twenty-file review manifest is
+`f83a411d1659573bea8f2a3333dcc1e979a9acf9012146571fb3d5b9afe4cdc8`.
+Root verifies that inventory/report. The exact source/asset and remote-replay
+identities are tracked in `release.json`; this establishes arm external retention.
+The original larger local backup is not published. No macOS evidence or final
+M2-completion claim enters this prerelease.
+
+All results inherit `traceable-native-syscalls-v1`: asynchronous kernel I/O is
+disabled throughout stock/reference, packaged, control and rank process trees.
+Accepted structural/I/O/FD/scaling limits remain enforced; time/RSS apply only
+to recorded host fingerprints. No unrestricted-host or controlled cold-cache
+claim is added. The current arm source also includes the later Python version
+probe fix; historical x86 run `38800548172` tested `e3962701` before that change.
+Same-source x86 refresh `40758958354` is dispatched independently. Complete Darwin
+oracle/corpus, Mac budgets, remaining target retention and final M2 sign-off remain open.
+
 ## 28 October: arm benchmark input repair and main delivery
 
 PR #89 merged to `main` as `d1f0e3f`; PR #90 merged into its already-closed base

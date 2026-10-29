@@ -1,5 +1,46 @@
 # Implementation progress
 
+## Fresh x86 acceptance at the arm-tested source — 28 October 2026
+
+[Run 40758958354](https://github.com/JBlaschke/glue_rs/actions/runs/40758958354)
+at `30e8d08` passes 24 cases and five unchanged budgets, matching the fresh arm
+source revision. Independent replay verifies 39 receipts, 156 controls and 990
+rank results, plus eighteen Python environment and fifteen cost-inventory checks.
+All x86 cases and benchmarks retain their ordinary seeded Python input profile.
+Exact source/artifact/replay identities are in the
+[x86 acceptance record](evidence/native-linux-x86_64-2026-10-28/README.md).
+
+The 160,076,851-byte original ZIP and all 4,803 raw files are verified. A local
+318,718,289-byte backup prepares/restores with source identities and every
+restored hash/size/mode unchanged. The eight-file, 161,129,470-byte minimal release
+set also passes clean-directory offline verification. It remains local pending
+the separate x86 publication approval; the completed arm authorization does not
+cover it. Complete Darwin/Mac budget and final compatibility gates remain open.
+
+## Native arm acceptance verified — 28 October 2026
+
+[Run 40754980497](https://github.com/JBlaschke/glue_rs/actions/runs/40754980497)
+at `30e8d08` passes all 24 application cases and five unchanged budgets. Complete
+independent offline replay also verifies 39 receipts, 156 oracle controls and
+990 rank measurements/streams. Eighteen Python preparation checks and fifteen
+payload cost reconstructions agree. The corrected Python seek counts match the
+historical observations; no budget was relaxed or refrozen.
+
+The [acceptance record](evidence/native-linux-arm64-2026-10-28/README.md) binds the
+exact source, artifact, public ZIP digest, source inventory and replay identities.
+All 4,803 extracted files are verified. A 303,529,253-byte local transfer bundle
+also prepares/restores with all 4,844 source hashes/sizes/modes unchanged. Copies
+remain same-host local protection. The owner separately approved the exact
+eight-file arm proof set for an evidence-only public prerelease. All uploaded
+hashes matched, and a fresh GitHub download passed complete replay. This closes
+arm external retention; [release identities](evidence/native-linux-arm64-2026-10-28/release.json)
+are recorded. Source metadata enters Git; raw captures/archives stay ignored.
+
+This is acceptance under the recorded syscall-fallback trace policy. Time/RSS
+retain their accepted host-fingerprint scope. Historical x86 source predates
+the Python version-probe fix, so same-source x86 run `40758958354` is dispatched
+separately. Full Darwin oracle/corpus, Mac budgets and final M2 remain open.
+
 ## Native arm benchmark repair and main integration — 28 October 2026
 
 PR #89 reached `main` at `d1f0e3f`. PR #90 passed all eighteen portable checks but

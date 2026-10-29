@@ -9,22 +9,31 @@ commits, tests, target scope and evidence limits.
 | --- | --- | --- |
 | M0 — Foundations | Delivered | Distribution contracts/layout, inventory, native-host CI and executable Python/Node provider proofs. |
 | M1 — Source preview | Delivered development preview | Lua 5.4/5.5, Python and Node build/run workflows, runtime selection, relocation/offline checks and runnable examples. Historical evidence recovery is still part of M2 closure. |
-| M2 — Native compact MVP | In progress | Native packaging and ordinary-loader integration work across all three languages. Linux x86_64 recorded 24 acceptance cases and five reviewed budgets. Full Darwin oracle/corpus, Mac budgets and final retained evidence remain open. |
+| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Recorded x86_64 and fresh arm64 Linux cells pass 24 cases/five budgets; arm proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
 | M3 — Memory mode | Planned | Earlier narrow experiments exist. General runtime/native dependency acquisition, Linux memory execution and macOS mapping/TLS/unwind/runtime/signing gates remain. |
 | M4 — Expansion | Deferred | Broader compatibility, Julia bundles, combined executable, HPC sharing and optional mixed-language calls. Windows/BSD follow Linux/macOS completion. |
 
 ## Current work
 
-1. The diagnostic milestone reached `main` through PR #89 at `d1f0e3f`. The arm
-   automation PR #90 merged into its closed feature base; the repair milestone
-   includes it in a new PR targeting `main` explicitly. Its eighteen portable
-   checks pass.
-2. Finish the native Linux arm64 acceptance rerun. Run `40722874852` records all
-   24 application receipts passing, but the two Python budgets fail after pip
-   seeding enlarged the benchmark inputs. Implementation `d510e94` makes that
-   input choice explicit for arm benchmarks while retaining seeded application
-   cases and all accepted limits. Fresh enforcement and complete independently
-   retained replay remain pending.
+1. Diagnostic PR #89 and arm acceptance repair PR #91 reached `main` at
+   `43bf806`. The repair's eighteen portable checks pass. New PRs target `main`
+   explicitly, and status/evidence changes stay on their own milestone branch.
+2. Native arm run `40754980497` at `30e8d08` and its complete independent replay
+   pass all 24 cases and five unchanged budgets. The explicit benchmark-input
+   repair preserves seeded application cases. All raw identities and a prepared/
+   restored local bundle verify. Approved arm evidence is published and remotely
+   replayed. Same-source x86 refresh `40758958354` also passes all 24 cases/five
+   budgets and independent replay. Its local archive restores successfully; the
+   prepared x86 release set awaits separate publication approval. See the
+   [arm record](../evidence/native-linux-arm64-2026-10-28/README.md) and
+   [x86 record](../evidence/native-linux-x86_64-2026-10-28/README.md).
+3. Independent [paired-result PR #92](https://github.com/JBlaschke/glue_rs/pull/92)
+   and [entry-ABI PR #93](https://github.com/JBlaschke/glue_rs/pull/93) add real
+   source-grounded Darwin semantics, with 27 and 25 focused controls passing on
+   each tested Python version. [Operation milestone #95](https://github.com/JBlaschke/glue_rs/pull/95)
+   builds on them with eleven descriptor/write/flush/truncate forms and 37
+   passing controls per tested interpreter. These are conditional source rules;
+   native calibration, object binding and effect ordering remain open.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -41,10 +50,11 @@ the missing Darwin oracle.
 - **R03:** measure and freeze Mac deployment/startup/I/O/FD/memory and multi-rank
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
-- **R04:** recover or regenerate missing arm64/current evidence, establish
-  external durable retention, and finish the exact compatibility/sign-off record.
-  The recovered x86 archive has a verified backup outside `target`, on the same
-  host. That is local integrity protection, not external durability.
+- **R04:** finish remaining target retention and the exact current compatibility/
+  sign-off record. Arm64 evidence is regenerated, replayed, publicly retained and
+  independently downloaded/replayed. Same-source x86 refresh and replay pass;
+  its fresh backup verifies locally and the prepared publication set awaits
+  separate owner approval. The older recovered archive also remains retained.
 
 The 26 cards all have implementation commits; remaining original acceptance
 work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.
