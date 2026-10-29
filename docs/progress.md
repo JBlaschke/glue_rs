@@ -1817,3 +1817,29 @@ Validation: 40 final runtime/object/legacy/traced-parent controls passed, includ
 Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d4703938e58529e5442b8900f`; C peer `13661a4d40a822ab5d7145088a67b95d74d05ca04dd27f538120eaa7dc8b8b17`; reader peer `bd6c3db8ae95b81ceacc3bc526eb05c89fc9b0fd88b0e3469697f022f49ea076`; clean post-registration receipt `064fea40aaf6bfd5d10a3fbbd9f00c57d777460fbe08ab8e306251025b0c1bb6`.
 
 M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
+
+
+## R02 — raw runtime FD interval policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fd-policy` evaluates original recipe captures
+through a fixed finite set of scalar FD and open operations. It retains every
+BSD/Mach attempt and raw phase, records forbidden writable-open/path intent even
+on failure, and handles overlapping possible effect windows conservatively.
+Unsupported effects establish a sticky uncertainty horizon; every exec retires
+all output-binding certainty. No post-exec sink exemption is granted.
+
+All 36 physical-byte FD controls pass on both Python versions without skips;
+existing recipe24/image34/boundary35 controls per interpreter are retained.
+Independent review verifies 238 final evidence payloads and 175 source identities
+with no open findings. Earlier attempts remain preserved. The Mach attempt
+projection repair and opaque-effect horizon are included. CI adds the new suite;
+existing configured source closures and historical native proof are unchanged.
+
+M2 remains active. The next feature observes original output backing after an
+owned exec stop; full BSD/Mach/process/mapping coverage, native Mac calibration,
+corpus, offline/environment checks, budgets and final sign-off remain. All native,
+state-feed, output-authority and full-acceptance flags remain false. M0/M1 remain
+delivered, M3 memory mode planned and M4 deferred.
+
+Ignored review receipt SHA256:
+`e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`.
