@@ -29,7 +29,9 @@ enum raw_kind { RK_BEGIN=1,RK_SYSCALL_ENTRY,RK_SYSCALL_RETURN,RK_CREATE,RK_START
  RK_SPAWN_SUCCESS,RK_SPAWN_FAILURE,RK_UNUSED_OPEN,RK_MACH_ENTRY,RK_MACH_RETURN,
  RK_END,RK_EXITED };
 struct enabling { uint32_t epid,probe; unsigned kind; };
+enum fixed_profile { BOUNDARY_V1, IMAGES_V2 };
 struct rt_backend {
+ enum fixed_profile profile;
  struct rt_snapshot view; int directory,files[4],failed,fault_delivered; unsigned diagnostics;
  uint64_t last_clock,callback_deadline; int clock_seen,draining;
  dtrace_hdl_t *handle; dtrace_probedesc_t inventory[RT_MAX_PROBES];
@@ -37,6 +39,9 @@ struct rt_backend {
  ts_consume_fn consume; void *consume_context;
  char program[MAX_PROGRAM];
 };
+static unsigned exec_limit(const struct rt_backend *b) {
+ return b->profile==IMAGES_V2?RT_MAX_IMAGE_EXECS:1u;
+}
 enum { PROGRAM_FILE,INVENTORY_FILE,EVENT_FILE,ERROR_FILE };
 static const char *const file_names[]={"program.d","probes.tsv","events.jsonl","errors.jsonl"};
 static int time_before(struct rt_backend *,enum rt_stage,uint64_t,int);
@@ -364,12 +369,18 @@ static int consume_probe(const dtrace_probedata_t *data,void *context) {
   failure(b,stage,RT_ORDER,0,0,EPROTO,"unsupported Mach/process/rights/image route in runtime boundary");goto rejected;
  }
  if(kind==RK_SYSCALL_ENTRY && !strcmp(p->dtpd_func,"execve")) {
+  unsigned previous=b->view.selected_exec_entry_count;
   b->view.selected_exec_entry_count++;
-  if(b->view.selected_exec_entry_count!=1 || b->view.selected_exec_success_count)goto order_rejected;
+  if(previous!=b->view.selected_exec_success_count)goto order_rejected;
+  if(b->view.selected_exec_entry_count>exec_limit(b)) {
+   if(b->profile==BOUNDARY_V1)goto order_rejected;
+   failure(b,stage,RT_LIMIT,0,0,EFBIG,"runtime image count exceeds fixed profile bound");goto rejected;
+  }
  }
  if(kind==RK_EXEC_SUCCESS) {
   b->view.selected_exec_success_count++;
-  if(b->view.selected_exec_success_count!=1 || b->view.selected_exec_entry_count!=1)goto order_rejected;
+  if(b->view.selected_exec_success_count!=b->view.selected_exec_entry_count ||
+     b->view.selected_exec_success_count>exec_limit(b))goto order_rejected;
  }
  if(kind==RK_BEGIN) {
   b->view.begin_count=1;
@@ -411,7 +422,10 @@ static int drop_event(const dtrace_dropdata_t *data,void *context) {
 }
 static int program(struct rt_backend *b) {
  size_t used=0;
- if(rt_program(b->view.binding.target_pid,b->program,&used))
+ int formatted=b->profile==IMAGES_V2?
+  rt_images_program(b->view.binding.target_pid,b->program,&used):
+  rt_program(b->view.binding.target_pid,b->program,&used);
+ if(formatted)
   return failure(b,RT_START,RT_LIMIT,0,0,EFBIG,"generated runtime program bound exceeded");
  uint64_t written=0;
  if(write_bytes(b,RT_START,b->view.original_attempt_deadline_ns,b->files[PROGRAM_FILE],b->program,used,&written,MAX_PROGRAM))
@@ -517,7 +531,8 @@ static int drain(void *context,uint64_t d,ts_consume_fn consume,void *argument,i
  }
  b->draining=0;
  if(!done || b->view.begin_count!=1 || b->view.terminal_count!=1 || b->view.end_count!=1 ||
-    b->view.selected_exec_entry_count!=1 || b->view.selected_exec_success_count!=1) {
+    !b->view.selected_exec_entry_count || b->view.selected_exec_entry_count>exec_limit(b) ||
+    b->view.selected_exec_success_count!=b->view.selected_exec_entry_count) {
   failure(b,RT_DRAIN,RT_INCOMPLETE,0,0,EPROTO,"drain lacks actual DONE/BEGIN/selected-exec/terminal/END");bad=-1;
  }
  b->view.drained=!bad;
@@ -547,7 +562,7 @@ static int close_backend(void *context,uint64_t d,int *error) {
  if(time_before(b,RT_CLOSE,d,1))bad=-1;
  return bad?status_error(b,error):0;
 }
-int rt_create(struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
+static int create_fixed(enum fixed_profile profile,struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
  if(out)*out=NULL;if(ops)memset(ops,0,sizeof(*ops));if(error)memset(error,0,sizeof(*error));
  if(!out || !ops || !error)return -1;
  struct rt_error invalid={RT_CREATE,RT_ARGUMENT,0,0,EINVAL,"invalid confirmed READY/binding/directory/deadline"};
@@ -564,9 +579,15 @@ int rt_create(struct rt_backend **out,int fd,const struct ts_binding *binding,ui
  if(attempt<=now || attempt-now>UINT64_C(10000000000)){invalid.reason=RT_DEADLINE;invalid.callback_error=ETIMEDOUT;*error=invalid;return -1;}
  struct rt_backend *b=calloc(1,sizeof(*b));
  if(!b){invalid.reason=RT_POSIX;invalid.system_errno=errno;invalid.callback_error=errno;*error=invalid;return -1;}
- b->directory=fd;b->view.binding=*binding;b->view.original_attempt_deadline_ns=attempt;b->last_clock=now;b->clock_seen=1;
+ b->profile=profile;b->directory=fd;b->view.binding=*binding;b->view.original_attempt_deadline_ns=attempt;b->last_clock=now;b->clock_seen=1;
  for(unsigned i=0;i<4;i++)b->files[i]=-1;
  *ops=(struct ts_operations){b,operation_owner,operation_clock,start,pump,stop,drain,close_backend};*out=b;return 0;
+}
+int rt_create(struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
+ return create_fixed(BOUNDARY_V1,out,fd,binding,attempt,ready,ops,error);
+}
+int rt_images_create(struct rt_backend **out,int fd,const struct ts_binding *binding,uint64_t attempt,int ready,struct ts_operations *ops,struct rt_error *error) {
+ return create_fixed(IMAGES_V2,out,fd,binding,attempt,ready,ops,error);
 }
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *out) {if(!b||!out)return -1;*out=b->view;return 0;}
 int rt_destroy(struct rt_backend **out) {
@@ -579,6 +600,9 @@ struct rt_backend { int unused; };
 int rt_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t d,int r,struct ts_operations *o,struct rt_error *e) {
  (void)fd;(void)b;(void)d;(void)r;if(out)*out=NULL;if(o)memset(o,0,sizeof(*o));
  if(e){memset(e,0,sizeof(*e));e->stage=RT_CREATE;e->reason=RT_ARGUMENT;e->callback_error=ENOTSUP;snprintf(e->message,sizeof(e->message),"native Darwin runtime boundary backend unavailable");}return -1;
+}
+int rt_images_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t d,int r,struct ts_operations *o,struct rt_error *e) {
+ return rt_create(out,fd,b,d,r,o,e);
 }
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *s) {(void)b;(void)s;return -1;}
 int rt_destroy(struct rt_backend **b) {(void)b;return -1;}

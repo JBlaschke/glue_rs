@@ -43,6 +43,7 @@ static ssize_t model_write(int fd,const void *p,size_t n) {
 static dtrace_probedesc_t probes[19];
 static int opened,went,stopped,library_closed,work_calls,open_failure,missing_mach,work_done,work_drop,work_fault;
 static unsigned match_count=17;
+static int expect_images;
 enum statement_mode { ST_NORMAL,ST_MISSING,ST_EXTRA,ST_DUPLICATE,ST_ALIAS_PROVIDER,
  ST_ID,ST_MODULE,ST_FUNCTION,ST_NAME,ST_UNTERMINATED,ST_NULL,ST_NULL_ECB,ST_BOUND,
  ST_FAIL,ST_EXPIRE,ST_CLOCK,ST_WRONG_HANDLE,ST_WRONG_PROGRAM,ST_EXPIRE_AFTER,ST_EXACT_BOUND };
@@ -123,7 +124,10 @@ int dtrace_probe_iter(dtrace_hdl_t *h,const dtrace_probedesc_t *wanted,dtrace_pr
 dtrace_prog_t *dtrace_program_strcompile(dtrace_hdl_t *h,const char *program,dtrace_probespec_t spec,uint_t flags,int argc,char *const argv[]) {
  (void)h;assert(spec==DTRACE_PROBESPEC_NAME&&!flags&&!argc&&!argv);
  assert(strstr(program,"mach_trap:::entry")&&strstr(program,"mach_trap:::return"));
- assert(strstr(program,"/* " RT_PROGRAM_PROFILE " */\n"));
+ assert(strstr(program,expect_images?
+  "/* glue-runtime-images-v2; quiescent-exec; no-process-creation */\n":
+  "/* glue-runtime-boundary-v1; selected-exec; no-process-creation */\n"));
+ assert(!strstr(program,expect_images?"glue-runtime-boundary-v1":"glue-runtime-images-v2"));
  assert(strstr(program,"p_refcount")&&!strstr(program,"copyinstr")&&!strstr(program,"syscall::open"));
  assert(!probe_iterations);compiled_calls++;
  return (dtrace_prog_t *)(uintptr_t)2;
@@ -198,17 +202,22 @@ static void reset(void) {
  close_failure_at=0;
  opened=went=stopped=library_closed=work_calls=open_failure=missing_mach=work_done=work_drop=work_fault=0;
  queued_count=0;make_probes();
- match_count=17;
+ match_count=17;expect_images=0;
  statement_mode=ST_NORMAL;match_mode=MT_NORMAL;
  compiled_calls=statement_calls=probe_iterations=compile_additions=exec_calls=0;
  work_override=0;
 }
-static void initialize(struct fixture *f) {
+static void initialize_fixed(struct fixture *f,int images) {
  memset(f,0,sizeof(*f));snprintf(f->path,sizeof(f->path),"/private/tmp/glue-rt-model-XXXXXX");assert(mkdtemp(f->path));
  f->directory=open(f->path,O_RDONLY|O_DIRECTORY|O_CLOEXEC);assert(f->directory>=0);
  f->binding=(struct ts_binding){TS_OWNED_CONTEXT_PROBE,(uint32_t)getpid(),(uint32_t)getpid()+1000,{1},{2}};f->deadline=model_now+UINT64_C(5000000000);
- struct rt_error e;assert(!rt_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e));
+ struct rt_error e;expect_images=images;
+ int result=images?rt_images_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e):
+                   rt_create(&f->b,f->directory,&f->binding,f->deadline,1,&f->ops,&e);
+ assert(!result);
 }
+static void initialize(struct fixture *f) {initialize_fixed(f,0);}
+static void initialize_images(struct fixture *f) {initialize_fixed(f,1);}
 static int collector(void *context,const struct ts_event *event) {struct fixture *f=context;assert(!memcmp(&event->binding,&f->binding,sizeof(f->binding)));f->delivered[event->kind]++;return 0;}
 static void enqueue(unsigned kind) {assert(queued_count<32);queue[queued_count++]=(struct queued){.kind=kind};}
 static void begin(struct fixture *f) {int e=0;assert(!f->ops.start_fn(f->b,&f->binding,f->deadline,&e));assert(!f->delivered[TS_PROVIDER_READY]);enqueue(1);assert(!f->ops.pump_fn(f->b,TS_BOOTSTRAP,f->deadline,collector,f,&e));assert(f->delivered[TS_PROVIDER_READY]==1&&f->delivered[TS_BEGIN]==1);}
@@ -394,13 +403,82 @@ static void genuine_writer_prefix(void) {
  assert(f.b->view.first_error.reason==RT_OUTPUT&&f.b->view.first_error.system_errno==ENOSPC);
  assert(f.b->view.events==1&&f.delivered[TS_OUTPUT_FAULT]==1);write_failure_fd=-1;cleanup(&f);
 }
+static void images_observe(struct fixture *f,unsigned count) {
+ int e=0;
+ for(unsigned i=0;i<count;i++) {
+  enqueue(2);enqueue(7);queue[1].tid=1000+i;
+  assert(!f->ops.pump_fn(f->b,TS_WAITING,f->deadline,collector,f,&e));
+ }
+}
+static void images_complete(struct fixture *f) {
+ int e=0;enqueue(18);
+ assert(!f->ops.pump_fn(f->b,TS_WAITING,f->deadline,collector,f,&e));
+ assert(!f->ops.stop_fn(f->b,f->deadline,&e));enqueue(17);work_done=1;
+ assert(!f->ops.drain_fn(f->b,f->deadline,collector,f,&e));
+ assert(!f->ops.close_fn(f->b,f->deadline,&e));
+}
+static void images_success(void) {
+ static const unsigned counts[]={1,2,RT_MAX_IMAGE_EXECS};
+ for(unsigned i=0;i<sizeof(counts)/sizeof(counts[0]);i++) {
+  reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize_images(&f);begin(&f);
+  images_observe(&f,counts[i]);images_complete(&f);
+  struct rt_snapshot v;assert(!rt_snapshot(f.b,&v));
+  assert(v.selected_exec_entry_count==counts[i]&&v.selected_exec_success_count==counts[i]);
+  assert(v.drained&&v.resources_closed&&v.events==2*counts[i]+3&&v.first_error.reason==RT_OK);
+  assert(owned_closes==4&&library_closed==1);cleanup(&f);
+ }
+}
+static void images_refusals(void) {
+ for(unsigned failure=0;failure<4;failure++) {
+  reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize_images(&f);begin(&f);int e=0;
+  if(failure==0)enqueue(7); /* No preceding entry. */
+  else if(failure==1){enqueue(2);enqueue(2);} /* Overlapping execs. */
+  else if(failure==2){enqueue(2);enqueue(7);enqueue(7);} /* Extra success. */
+  else {images_observe(&f,RT_MAX_IMAGE_EXECS);enqueue(2);} /* Overflow record remains retained. */
+  assert(f.ops.pump_fn(f.b,TS_WAITING,f.deadline,collector,&f,&e)==-1);
+  assert(f.b->view.first_error.reason==(failure==3?RT_LIMIT:RT_ORDER)&&!f.b->view.drained);
+  if(failure==3) {
+   assert(f.b->view.selected_exec_entry_count==RT_MAX_IMAGE_EXECS+1);
+   assert(f.b->view.selected_exec_success_count==RT_MAX_IMAGE_EXECS&&f.b->view.events==34);
+   retained(&f,"\"event\":34,",34);
+  }
+  cleanup(&f);
+ }
+ for(unsigned unfinished=0;unfinished<2;unfinished++) {
+  reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize_images(&f);begin(&f);int e=0;
+  if(unfinished){images_observe(&f,1);enqueue(2);}
+  enqueue(18);assert(!f.ops.pump_fn(f.b,TS_WAITING,f.deadline,collector,&f,&e));
+  assert(!f.ops.stop_fn(f.b,f.deadline,&e));enqueue(17);work_done=1;
+  assert(f.ops.drain_fn(f.b,f.deadline,collector,&f,&e)==-1);
+  assert(f.b->view.first_error.reason==RT_INCOMPLETE&&!f.b->view.drained);cleanup(&f);
+ }
+}
+static void images_fail_closed(void) {
+ for(unsigned problem=0;problem<4;problem++) {
+  reset();strcpy(probes[2].dtpd_func,"execve");struct fixture f;initialize_images(&f);begin(&f);int e=0;
+  images_observe(&f,2);
+  if(problem==0)work_drop=1;
+  else if(problem==1){enqueue(4);queue[0].detail=f.binding.target_pid+1;}
+  else if(problem==2)enqueue(15);
+  else {
+   enqueue(18);assert(!f.ops.pump_fn(f.b,TS_WAITING,f.deadline,collector,&f,&e));enqueue(2);
+  }
+  assert(f.ops.pump_fn(f.b,TS_WAITING,f.deadline,collector,&f,&e)==-1);
+  assert(f.b->view.first_error.reason==(problem==0?RT_DROP:RT_ORDER)&&!f.b->view.drained);
+  if(problem==1)retained(&f,"\"kind\":4,",6);
+  if(problem==2)retained(&f,"\"kind\":15,",6);
+  if(problem==3)retained(&f,"\"function\":\"execve\"",7);
+  cleanup(&f);
+ }
+}
 int main(int argc,char **argv) {
  static const struct {const char *name;void (*run)(void);} tests[]={
   {"full-session",readiness_and_full_session},{"rejected-records",rejected_records},
   {"start-failures",start_failures},{"compiled-matches",compiled_match_accounting},
   {"bounds-faults",bounds_and_faults},{"deadline-close",deadline_and_closure},
   {"unsupported-retention",unsupported_routes_are_retained},{"selected-exec",selected_exec_and_completion},
-  {"late-retention",late_records_are_retained},{"writer-prefix",genuine_writer_prefix}
+  {"late-retention",late_records_are_retained},{"writer-prefix",genuine_writer_prefix},
+  {"images-success",images_success},{"images-refusals",images_refusals},{"images-fail-closed",images_fail_closed}
  };
  if(argc!=2)return 2;
  for(size_t i=0;i<sizeof(tests)/sizeof(tests[0]);i++)if(!strcmp(argv[1],tests[i].name)) {
