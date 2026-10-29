@@ -93,6 +93,82 @@ pub fn read_selected<R: Read>(
     if max_selected_bytes > MAX_SELECTED_BYTES {
         return Err("selected PBS payload bound exceeds 128 MiB".into());
     }
+    let mut files = BTreeMap::new();
+    let inventory = read_to_sinks(
+        reader,
+        limits,
+        selection,
+        max_selected_bytes,
+        |_, entry| {
+            let mut bytes = Vec::new();
+            bytes
+                .try_reserve_exact(
+                    usize::try_from(entry.size)
+                        .map_err(|_| "selected PBS member cannot fit in memory")?,
+                )
+                .map_err(|error| format!("reserve selected PBS member: {error}"))?;
+            Ok(bytes)
+        },
+        |path, _, bytes| {
+            files.insert(path.to_owned(), bytes);
+            Ok(())
+        },
+    )?;
+    Ok(SelectedInventory { inventory, files })
+}
+
+/// Stream selected regular files to caller-owned writers in at most 64 KiB
+/// chunks, validating and hashing the entire archive with the same limits as
+/// `read_selected`. No complete selected payload is retained here.
+///
+/// Sinks can receive data before later members, aliases or padding validate.
+/// The caller MUST quarantine and discard every output on any error. Writers
+/// are flushed and dropped per member; only a fully validated inventory is
+/// returned. The factory receives canonical names and validated entry headers,
+/// but does not receive final hashes until the returned inventory is available.
+pub fn stream_selected<R, W, F>(
+    reader: R,
+    limits: &Limits,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+    open: F,
+) -> Result<Inventory, String>
+where
+    R: Read,
+    W: io::Write,
+    F: FnMut(&str, &Entry) -> Result<W, String>,
+{
+    if max_selected_bytes > limits.max_total_bytes {
+        return Err("streamed PBS payload bound exceeds the total payload limit".into());
+    }
+    read_to_sinks(
+        reader,
+        limits,
+        selection,
+        max_selected_bytes,
+        open,
+        |_, _, mut writer| {
+            writer
+                .flush()
+                .map_err(|error| format!("flush selected PBS member: {error}"))
+        },
+    )
+}
+
+fn read_to_sinks<R, W, F, C>(
+    reader: R,
+    limits: &Limits,
+    selection: &BTreeSet<String>,
+    max_selected_bytes: u64,
+    mut open: F,
+    mut complete: C,
+) -> Result<Inventory, String>
+where
+    R: Read,
+    W: io::Write,
+    F: FnMut(&str, &Entry) -> Result<W, String>,
+    C: FnMut(&str, &Entry, W) -> Result<(), String>,
+{
     if selection.len() > limits.max_entries {
         return Err("selected PBS member count exceeds the header count limit".into());
     }
@@ -115,7 +191,7 @@ pub fn read_selected<R: Read>(
     let mut headers = 0usize;
     let mut total = 0u64;
     let mut selected_bytes = 0u64;
-    let mut files = BTreeMap::new();
+    let mut seen = BTreeSet::new();
 
     loop {
         let mut header = [0u8; BLOCK_BYTES];
@@ -131,10 +207,10 @@ pub fn read_selected<R: Read>(
             reader.finish_padding()?;
             inventory.decompressed_bytes = reader.consumed;
             resolve_links(&mut inventory.entries, &links)?;
-            if let Some(missing) = selection.iter().find(|path| !files.contains_key(*path)) {
+            if let Some(missing) = selection.iter().find(|path| !seen.contains(*path)) {
                 return Err(format!("selected PBS regular file {missing:?} is absent"));
             }
-            return Ok(SelectedInventory { inventory, files });
+            return Ok(inventory);
         }
 
         headers = headers.checked_add(1).ok_or("tar header count overflow")?;
@@ -228,6 +304,10 @@ pub fn read_selected<R: Read>(
         pending = Extensions::default();
 
         if kind == EntryKind::RegularFile {
+            let capture_metadata = path == "python/PYTHON.json";
+            if capture_metadata && size > limits.max_metadata_bytes {
+                return Err("PYTHON.json exceeds the metadata size limit".into());
+            }
             let mut selected = if capture_selected {
                 selected_bytes = selected_bytes
                     .checked_add(size)
@@ -235,21 +315,10 @@ pub fn read_selected<R: Read>(
                 if selected_bytes > max_selected_bytes {
                     return Err("selected PBS payloads exceed their combined size bound".into());
                 }
-                let mut selected = Vec::new();
-                selected
-                    .try_reserve_exact(
-                        usize::try_from(size)
-                            .map_err(|_| "selected PBS member cannot fit in memory")?,
-                    )
-                    .map_err(|error| format!("reserve selected PBS member: {error}"))?;
-                Some(selected)
+                Some(open(&path, &entry)?)
             } else {
                 None
             };
-            let capture_metadata = path == "python/PYTHON.json";
-            if capture_metadata && size > limits.max_metadata_bytes {
-                return Err("PYTHON.json exceeds the metadata size limit".into());
-            }
             let mut metadata = if capture_metadata {
                 Some(Vec::new())
             } else {
@@ -269,7 +338,9 @@ pub fn read_selected<R: Read>(
                     metadata.extend_from_slice(&buffer[..count]);
                 }
                 if let Some(selected) = selected.as_mut() {
-                    selected.extend_from_slice(&buffer[..count]);
+                    selected
+                        .write_all(&buffer[..count])
+                        .map_err(|error| format!("write selected PBS member: {error}"))?;
                 }
                 remaining -= count as u64;
             }
@@ -285,7 +356,8 @@ pub fn read_selected<R: Read>(
                 inventory.metadata = metadata;
             }
             if let Some(selected) = selected {
-                files.insert(path.clone(), selected);
+                complete(&path, &entry, selected)?;
+                seen.insert(path.clone());
             }
         }
         reader.padding(size)?;
@@ -874,6 +946,234 @@ mod tests {
             read_selected(bytes.as_slice(), &Limits::default(), &BTreeSet::new(), 0).unwrap();
         assert!(empty.files.is_empty());
         assert_eq!(empty.inventory, selected.inventory);
+    }
+
+    struct CountSink(std::rc::Rc<std::cell::Cell<(u64, usize)>>);
+    impl io::Write for CountSink {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            if bytes.iter().any(|byte| *byte != 0x55) {
+                return Err(io::Error::other("streamed payload bytes differ"));
+            }
+            let (total, largest) = self.0.get();
+            self.0
+                .set((total + bytes.len() as u64, largest.max(bytes.len())));
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn streaming_large_member_keeps_chunks_bounded_without_relaxing_retention() {
+        let size = MAX_SELECTED_BYTES + 17;
+        let path = "python/lib/libpython.so";
+        let h = header(path.as_bytes(), b'0', size, b"");
+        let selection = BTreeSet::from([path.to_owned()]);
+        assert!(
+            read_selected(
+                h.as_slice(),
+                &Limits::default(),
+                &selection,
+                MAX_SELECTED_BYTES
+            )
+            .unwrap_err()
+            .contains("combined size bound")
+        );
+        let observed = std::rc::Rc::new(std::cell::Cell::new((0, 0)));
+        let reader = h
+            .as_slice()
+            .chain(io::repeat(0x55).take(size))
+            .chain(io::repeat(0).take((512 - size % 512) % 512 + 1024));
+        let inventory = stream_selected(reader, &Limits::default(), &selection, size, |_, _| {
+            Ok(CountSink(observed.clone()))
+        })
+        .unwrap();
+        assert_eq!(observed.get(), (size, 64 * 1024));
+        assert_eq!(inventory.entries[path].size, size);
+        assert_eq!(
+            inventory.entries[path].sha256.as_deref(),
+            Some("870362ad31b4822c7082467bf4a07be514d606bda6838be2378890d3b13b5fb0")
+        );
+    }
+
+    struct SharedSink(std::rc::Rc<std::cell::RefCell<Vec<u8>>>);
+    impl io::Write for SharedSink {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            self.0.borrow_mut().extend_from_slice(bytes);
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn streamed_selection_matches_inventory_and_preserves_empty_files() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/PYTHON.json", b'0', b"{}", "");
+        append(&mut bytes, "python/runtime", b'0', b"\x7fELFimage", "");
+        append(&mut bytes, "python/empty", b'0', b"", "");
+        append(&mut bytes, "python/alias", b'2', b"", "runtime");
+        let bytes = finish(bytes);
+        let selection = BTreeSet::from(["python/runtime".into(), "python/empty".into()]);
+        let mut outputs = BTreeMap::new();
+        let inventory = stream_selected(
+            bytes.as_slice(),
+            &Limits::default(),
+            &selection,
+            9,
+            |path, entry| {
+                assert_eq!(entry.kind, EntryKind::RegularFile);
+                assert!(entry.sha256.is_none());
+                let data = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
+                outputs.insert(path.to_owned(), data.clone());
+                Ok(SharedSink(data))
+            },
+        )
+        .unwrap();
+        assert_eq!(inventory, read(&bytes).unwrap());
+        assert_eq!(&*outputs["python/runtime"].borrow(), b"\x7fELFimage");
+        assert!(outputs["python/empty"].borrow().is_empty());
+    }
+
+    #[test]
+    fn streaming_header_bounds_refuse_before_opening_a_sink_or_reading_payload() {
+        let selection = BTreeSet::from(["python/file".into()]);
+        let h = header(b"python/file", b'0', 10, b"");
+        let never = |_: &str, _: &Entry| -> Result<io::Sink, String> {
+            panic!("must refuse before opening a sink")
+        };
+        assert!(
+            stream_selected(h.as_slice(), &Limits::default(), &selection, 9, never)
+                .unwrap_err()
+                .contains("combined size bound")
+        );
+        let member_limit = Limits {
+            max_member_bytes: 9,
+            ..Limits::default()
+        };
+        assert!(
+            stream_selected(h.as_slice(), &member_limit, &selection, 10, never)
+                .unwrap_err()
+                .contains("member exceeds")
+        );
+        assert!(
+            stream_selected(
+                h.as_slice(),
+                &Limits::default(),
+                &selection,
+                Limits::default().max_total_bytes + 1,
+                never
+            )
+            .unwrap_err()
+            .contains("total payload")
+        );
+        let h = header(b"python/PYTHON.json", b'0', 2, b"");
+        assert!(
+            stream_selected(
+                h.as_slice(),
+                &Limits {
+                    max_metadata_bytes: 1,
+                    ..Limits::default()
+                },
+                &BTreeSet::from(["python/PYTHON.json".into()]),
+                2,
+                never
+            )
+            .unwrap_err()
+            .contains("metadata")
+        );
+    }
+
+    #[test]
+    fn streaming_rejects_nonregular_missing_and_unsafe_selections() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/file", b'0', b"abc", "");
+        append(&mut bytes, "python/alias", b'2', b"", "file");
+        let bytes = finish(bytes);
+        for path in ["python/absent", "python/alias", "../escape"] {
+            assert!(
+                stream_selected(
+                    bytes.as_slice(),
+                    &Limits::default(),
+                    &BTreeSet::from([path.into()]),
+                    3,
+                    |_, _| Ok(io::sink())
+                )
+                .is_err()
+            );
+        }
+    }
+
+    #[test]
+    fn streaming_does_not_return_an_inventory_after_late_corruption() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/file", b'0', b"abc", "");
+        let mut bad = header(b"python/later", b'0', 0, b"");
+        bad[0] ^= 1;
+        bytes.extend_from_slice(&bad);
+        let output = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
+        let result = stream_selected(
+            bytes.as_slice(),
+            &Limits::default(),
+            &BTreeSet::from(["python/file".into()]),
+            3,
+            |_, _| Ok(SharedSink(output.clone())),
+        );
+        assert!(result.unwrap_err().contains("checksum"));
+        // The caller must discard quarantine: streaming is not transactional.
+        assert_eq!(&*output.borrow(), b"abc");
+    }
+
+    struct RejectSink {
+        on_flush: bool,
+    }
+    impl io::Write for RejectSink {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            if self.on_flush {
+                Ok(bytes.len())
+            } else {
+                Err(io::Error::other("sink write failed"))
+            }
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Err(io::Error::other("sink flush failed"))
+        }
+    }
+
+    #[test]
+    fn streaming_propagates_factory_write_and_flush_failures() {
+        let mut bytes = Vec::new();
+        append(&mut bytes, "python/file", b'0', b"abc", "");
+        let bytes = finish(bytes);
+        let selection = BTreeSet::from(["python/file".into()]);
+        assert!(
+            stream_selected::<_, io::Sink, _>(
+                bytes.as_slice(),
+                &Limits::default(),
+                &selection,
+                3,
+                |_, _| Err("factory failed".into())
+            )
+            .unwrap_err()
+            .contains("factory failed")
+        );
+        for on_flush in [false, true] {
+            let error = stream_selected(
+                bytes.as_slice(),
+                &Limits::default(),
+                &selection,
+                3,
+                |_, _| Ok(RejectSink { on_flush }),
+            )
+            .unwrap_err();
+            assert!(error.contains(if on_flush {
+                "sink flush failed"
+            } else {
+                "sink write failed"
+            }));
+        }
     }
 
     #[test]
