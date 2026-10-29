@@ -21,6 +21,9 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/test_linux_acceptance.py -v
         python3 fixtures/mvp/python-matrix/test_provision_conda.py -v
         python3 fixtures/mvp/python-matrix/test_prepare.py -v
+        python3 fixtures/mvp/python-matrix/test_linux_compatibility.py -v
+        python3 fixtures/mvp/python-matrix/test_linux_abi_compatibility.py -v
+        python3 fixtures/mvp/python-matrix/test_run_abi_refusal.py -v
         python3 fixtures/mvp/macos-trace/test_read_capability.py -v
         python3 fixtures/mvp/macos-trace/test_observe_open.py -v
         python3 fixtures/mvp/macos-trace/syscall-contract/test_syscall_contract.py -v
@@ -77,6 +80,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
         python3 fixtures/mvp/macos-trace/bsd-entry-abi/test_bsd_entry_abi.py -v
         python3 fixtures/mvp/macos-trace/bsd-fd-semantics/test_bsd_fd_semantics.py -v
+        python3 fixtures/mvp/macos-trace/bsd-fcntl-semantics/test_bsd_fcntl_semantics.py -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         python3 fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v
         cargo test --workspace --locked

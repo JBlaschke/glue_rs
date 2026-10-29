@@ -41,6 +41,8 @@ def main():
     parser.add_argument("kind", choices=["ordinary", "ordinary-no-pip", "uv", "descriptor"])
     parser.add_argument("--native", action="store_true")
     parser.add_argument("--framework", action="store_true")
+    parser.add_argument("--receipt-output", type=Path,
+                        help="also retain the preparation receipt outside copied inputs")
     args = parser.parse_args()
     root = args.inputs.resolve()
     runtime = root / "runtime"
@@ -85,7 +87,12 @@ def main():
         package.mkdir()
         (package / "__init__.py").write_text("\n")
         shutil.copy2(root / "secondary", package / ("libsecondary.dylib" if sys.platform == "darwin" else "libsecondary.so"))
-    (root / "environment-receipt.json").write_text(json.dumps({"kind": args.kind, "runtime": str(python), "version": version, "pip_present": any(site.glob("pip-*.dist-info")), "framework_input_prepared": args.framework}, indent=2) + "\n")
+    receipt = json.dumps({"kind": args.kind, "runtime": str(python), "version": version,
+                          "pip_present": any(site.glob("pip-*.dist-info")),
+                          "framework_input_prepared": args.framework}, indent=2) + "\n"
+    (root / "environment-receipt.json").write_text(receipt)
+    if args.receipt_output is not None:
+        args.receipt_output.write_text(receipt)
 
 
 if __name__ == "__main__":
