@@ -1999,3 +1999,18 @@ coverage and oracle, native corpus, Mac budgets and final retention/sign-off are
 open. M3 memory mode remains separate/planned and M4 deferred. All native,
 quiescence, state, output-exemption, retention-before-continuation and full-trace
 acceptance fields remain false. Guest SIP stays enabled under the current instruction.
+
+
+## R02 — stopped formatter GCC CI repair (29 October 2026)
+
+PR #117's Linux baseline caught three new guard statements that GCC rejects as
+misleading indentation under the existing strict flags. The repair separates
+those guards from following statements; emitted DTrace program bytes, templates,
+selectors, APIs and old profile bodies remain unchanged. The original GCC failure
+is reproduced and retained. Twelve bounds/canonical checks pass across actual
+GCC 16, Clang and Clang ASan/UBSan, comparing all output bytes with the independent
+reader template. No warning suppression, provider or native execution is added.
+New formatter source SHA256:
+`e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
+The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.
