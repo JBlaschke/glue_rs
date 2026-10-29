@@ -58,7 +58,13 @@ _Noreturn void nr_child(struct nr_attempt *a) {
  if(a->admission.ready!=1 || a->admission.checked_count!=BA_COMPONENT_COUNT || a->admission.owned_count!=BA_COMPONENT_COUNT)
   ERROR(BW_CWD,BW_MISMATCH,0,TCWD_STAGE_REQUEST);
  if(nr_before(a,a->deadline,NR_READY))ERROR(BW_CWD,BW_TIMEOUT,0,TCWD_STAGE_BEFORE_CHANGE);
- struct tcwd_request cwd_request={a->admission.components[6].fd,a->request.cwd_device,a->request.cwd_inode};
+ #ifdef GLUE_RUNTIME_PROFILE
+ if(a->runtime_cwd_fd<3)ERROR(BW_CWD,BW_MISMATCH,0,TCWD_STAGE_REQUEST);
+ int cwd_fd=a->runtime_cwd_fd;
+ #else
+ int cwd_fd=a->admission.components[6].fd;
+ #endif
+ struct tcwd_request cwd_request={cwd_fd,a->request.cwd_device,a->request.cwd_inode};
  struct tcwd_guard cwd_guard={a,object_cwd_before};struct tcwd_result selected;struct tcwd_error ce;
  if(tcwd_select_in_owned_child(&cwd_request,(uint64_t)a->owner,tcwd_native_operations(),&cwd_guard,&selected,&ce))
   ERROR(BW_CWD,ce.system_errno?BW_SYSCALL:(ce.reason==TCWD_REASON_DEADLINE?BW_TIMEOUT:BW_MISMATCH),ce.system_errno,tcwd_error_detail(&ce));
@@ -131,8 +137,13 @@ _Noreturn void nr_child(struct nr_attempt *a) {
  attempt.sequence=1;attempt.stage=BW_EXEC;attempt.mutation_flags=flags;attempt.detail=-1;
  if(status_write(a,&attempt))_exit(122);
  sequence=2;
+#ifdef GLUE_RUNTIME_PROFILE
+ if(!a->runtime_plan.ready)ERROR(BW_EXEC,BW_MISMATCH,0,-1);
+ execve(a->executable,a->runtime_plan.argv,a->runtime_plan.environment);
+#else
  char *const argv[]={a->executable,"--request-sha256",a->request_hex,NULL};char *const environment[]={NULL};
  execve(a->executable,argv,environment);
+#endif
  int saved=errno;ERROR(BW_EXEC,BW_SYSCALL,saved,-1);
 }
 #undef ERROR
