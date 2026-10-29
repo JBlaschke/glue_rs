@@ -2798,3 +2798,56 @@ implemented independently. The old collector/pairer remains diagnostic-only:
 its fixed probe launch and exec/creation restrictions do not supply the full MVP
 runtime capture. Complete state policy, native corpus, Mac budgets and M2 remain
 open; guest SIP stays enabled. No provider/VM/sudo/security action occurs.
+
+## 29 October: source-selected runtime recipe execution
+
+Decision `c3718ee` precedes implementation C
+`1e2cac796a63b126990516396b9af00ba17b2f0b` on
+`codex/mvp-r02-runtime-launch-recipe`. A bounded planner deep-copies general
+compiled arguments at their final address and hashes exact length-framed argv
+and an empty initial environment. The separate RR request/catalog/result profile
+selects the actual protected launcher with a 16 MiB bound while preserving the
+legacy probe's 4 MiB limit. It binds recipe/R01 lock provenance and reuses glue's
+existing distribution integrity handling. It adds no app-ID allowlist or C
+packaging parser. A separately admitted fixed sibling directory supplies unrelated
+CWD through a held descriptor.
+
+The source-selected child preserves credential transition, held CWD, numeric
+closure, object READY, GO/EOF and signal release before exec. Parent finalization
+retains opaque stdout/stderr (64 KiB each, including overflow observations),
+file identities/hashes and actual wait/exit/signal. Ownership, close and source
+errors suppress successful promotion. The new compiled getter defaults to NULL,
+its registration is exactly null/empty and no loader admits a configured proof.
+Traced builds reject; this is not actual traced-runtime adoption.
+
+The final source-frozen runs pass 53 integration/regression executions: thirteen
+runtime controls on each Python version, ten object controls, seven legacy
+controls and ten traced-parent models. Twenty-two planner controls pass, including
+ASan/UBSan checks; thirteen translation units pass genuine GCC16 strict Mac
+syntax. The ordinary fixture executes real nr_execute/nr_child/gate/CWD/FD/exec
+with admission and credential mutation explicitly modeled. It does not establish
+root bootstrap, native compact-app execution or provider coverage. Preserved
+failed label/GCC attempts remain separate.
+
+Author report SHA256 is
+`8c0db16368486b762f4f61d2a524274722e85bb0fae8c5dab9c403b92a3af36c`; its 987-payload
+manifest is `349369f5cb778a0289b10ec6bd2eec55656099b11312adadc805c488e6d7ed5f`.
+Independent source/receipt review SHA256 is
+`d5d189a3fcacb4675be6d7cef993ec65bf5b671d5524091c77fca0f4ea9e3b67`. Root verifies
+all 35 current source identities against the freeze.
+
+Separate registration R `5df3472d91daa911301538944e91779c2dc61e0b` advances only
+the five reviewed child/files/internal-header/parent/support source hashes in
+each existing registry. All 34/41 rosters, ordered compile lists and historical
+proofs stay unchanged; every registered byte matches exact C Git blobs. Genuine
+unmocked clean loaders and the 12/14 active expectation suites pass without
+skips. Post-registration receipt SHA256 is
+`19c1123a08976f33a282a349255ff4ad8dacb0a6f62e0a972681da14728711c5`; manifest
+SHA256 is `89b7279a5cd725203d012c33b361f864075f4e251c75a3d2c9c1a516783aca1e`.
+CI adds planner and runtime-runner suites. No registry guard or native admission
+is weakened.
+
+Matching traced-runtime transport/recipe witnesses, complete later-image/thread/
+process-tree handling, source sink policy, native Mac corpus and budgets remain.
+The repeated-image feature is independently reviewed on its next branch. No
+provider, VM, sudo, SIP change or raw publication occurs. M2 stays open.

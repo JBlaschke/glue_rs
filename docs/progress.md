@@ -1717,3 +1717,27 @@ new controls. No VM/sudo/provider/SIP action occurs.
 M2 remains active: runtime capture/image-boundary work is already underway in a
 separate branch, followed by sink-capability state policy, native Mac corpus and
 budgets. M0/M1 remain delivered, M3 planned, M4 deferred.
+
+## MVP R02 — fixed runtime launch recipes (29 October 2026)
+
+Branch `codex/mvp-r02-runtime-launch-recipe` adds decision `c3718ee`, implementation
+`1e2cac7` and registration `5df3472`. The new source-selected profile constructs
+bounded copied argv with an empty initial environment, admits the protected
+launcher separately from the old probe limit, selects an independent held CWD,
+and executes the fixed recipe through the real child/gate/FD/signal path. It
+captures bounded opaque stdout/stderr and actual wait/exit/signal observations.
+Existing probe profiles stay intact. The new getter is NULL, its declaration
+empty and traced builds refused; native admission is not configured.
+
+Fifty-three integration/regression control executions and twenty-two planner
+controls pass, including sanitizer checks. Thirteen strict GCC translation units
+and shell syntax pass. The ordinary fixture uses real child/gate/CWD/FD/exec but
+explicitly models admission and credential mutation; it does not run a compact
+MVP app or privileged bootstrap. Independent review verifies all 35 source
+identities and 987 retained payloads. Both genuine clean source loaders and
+twenty-six registration controls pass; only five reviewed shared-source pins
+advance in each registry, preserving rosters/compile lists/historical proofs.
+
+The actual traced runtime adapter, matching generic witness, source sink policy,
+native Mac corpus and budgets remain. Repeated image/thread handling is already
+implemented and being prepared as a separate PR. M2 remains active.
