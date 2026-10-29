@@ -106,6 +106,22 @@ target-matched inputs and the complete corpus/budgets. Full Darwin implementatio
 and native acceptance, Mac budgets and externally retained evidence remain open.
 Guest SIP stays enabled.
 
+## Scalar fcntl descriptor commands — 29 October 2026
+
+Decision `2ef2cd2` and implementation `b6ef6a3` on
+`codex/mvp-r02-bsd-fcntl-semantics` add four exact scalar commands through both
+fcntl syscall names. The rules interpret descriptor duplication and close-on-exec
+queries/changes, preserving failed attempts and unsupported commands. Descriptor
+flags and shared object flags remain distinct. Complete raw pairing happens once;
+no native object binding, state update or extraction acceptance is inferred.
+
+Thirty focused controls pass on Python 3.15.2 and 3.9.6. Retained source/receipt
+identities verify, independent review finds no implementation blocker, and CI
+adds one invocation (51 scripts on this branch). Main now contains PRs #92–#95
+at `cb24720`. The next independent feature adds seven traced Linux Python
+archive/uv input-route cells; complete Darwin oracle/corpus, Mac budgets and
+final compatibility/sign-off remain required for M2.
+
 ## Bounded standalone trace inspector — 28 October 2026
 
 Decision `68444b6` and implementation `baa6508` on

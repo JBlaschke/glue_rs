@@ -229,6 +229,35 @@ the retained inventories and reads both reports. Fresh native arm64 execution,
 complete independent replay and external retention remain pending; these source
 checks do not establish acceptance, change guest SIP or close M2.
 
+## 29 October: scalar fcntl descriptor semantics
+
+Branch `codex/mvp-r02-bsd-fcntl-semantics` incorporates main `cb24720`, which
+contains PRs #92–#95. Decision `2ef2cd2` precedes implementation `b6ef6a3`.
+`decode_owned_fcntl_semantics` handles F_DUPFD, F_DUPFD_CLOEXEC, F_GETFD and
+F_SETFD through both fcntl syscall names, after one complete strict raw pairing
+pass. Every BSD pair and all original Mach/lifecycle observations remain visible.
+Canonical minimum/result relations, command-specific low-bit semantics and
+initialized secondary results are checked against six exact pinned XNU sources.
+Descriptor flags remain distinct from shared fileglob flags; failed calls do not
+prove unchanged state. Other commands, including partially mutating F_SETFL,
+retain explicit gaps. Rules require kernel lookup/lifetime/order witnesses and
+never update state or grant native/extraction acceptance.
+
+All thirty controls pass on Python 3.15.2 and 3.9.6, with nine watched source
+identities and HEAD unchanged. The durable first-attempt receipt is
+`.evidence-local/controls/owned-bsd-fcntl-semantics-20261029/attempt-01`; its
+seventeen-payload manifest hashes to
+`945f62404c6fb249be1fc211adca214107a99bca147f8a3abd3aafbbf399b3e5`.
+Module SHA256 is
+`da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260`;
+the six-source provenance manifest is
+`1418c51e2365329c6d334a291195542a008797a90eba929042394b86cc86973f`.
+Root verifies all receipt members, current feature identities and official source
+hashes. Independent source review finds no implementation blocker. One portable
+invocation raises this branch's baseline to 51 Python scripts; shell syntax and
+staged diff checks pass. Hosted CI proceeds independently. Full Darwin object
+capture/state/oracle, native corpus and Mac budgets remain open; SIP stays enabled.
+
 ## 28 October: BSD descriptor and scalar write semantics
 
 Milestone branch `codex/mvp-r02-bsd-fd-semantics` starts from main `43bf806` and
