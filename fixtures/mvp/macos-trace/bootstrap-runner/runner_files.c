@@ -10,11 +10,24 @@
 #ifdef __APPLE__
 #include <sys/stdio.h>
 #endif
+#ifdef GLUE_FD_OBJECTS
+#define NR_OBJECT_PROFILE_JSON "\"descriptor_observation_profile\":\"fixed-five-v2\","
+#else
+#define NR_OBJECT_PROFILE_JSON ""
+#endif
 #ifdef GLUE_OWNED_TRACING
+#ifdef GLUE_FD_OBJECTS
+#define NR_RECEIPT_SCHEMA "glue-owned-traced-bootstrap-fd-objects-diagnostic-v2"
+#else
 #define NR_RECEIPT_SCHEMA "glue-owned-traced-bootstrap-diagnostic-v1"
+#endif
 #define NR_RECEIPT_TRACING "true"
 #else
+#ifdef GLUE_FD_OBJECTS
+#define NR_RECEIPT_SCHEMA "glue-owned-bootstrap-fd-objects-diagnostic-v2"
+#else
 #define NR_RECEIPT_SCHEMA "glue-owned-bootstrap-diagnostic-v1"
+#endif
 #define NR_RECEIPT_TRACING "false"
 #endif
 static int write_all(struct nr_attempt *a,int fd,const uint8_t *p,size_t n,enum nr_stage stage) {
@@ -136,6 +149,9 @@ static int capture(struct nr_attempt *a,const char *name,const struct stat *expe
 }
 static void hex(const uint8_t *p,size_t n,char *out) {static const char h[]="0123456789abcdef";for(size_t i=0;i<n;i++){out[2*i]=h[p[i]>>4];out[2*i+1]=h[p[i]&15];}out[2*n]=0;}
 int nr_finish_outputs(struct nr_attempt *a) {
+#ifdef GLUE_FD_OBJECTS
+ if(a->held_outputs[0]>=0 || a->held_outputs[1]>=0)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#endif
  if(a->output_fd<0 || !a->output_path[0] || a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped) ||
     (a->signals_initialized&&!a->signals_restored)) {
   (void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
@@ -178,6 +194,9 @@ int nr_finish_outputs(struct nr_attempt *a) {
  }
 #ifdef GLUE_OWNED_TRACING
  int unresolved=a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped);
+#ifdef GLUE_FD_OBJECTS
+ for(unsigned i=0;i<2;i++)if(a->held_outputs[i]>=0)unresolved=1;
+#endif
  for(unsigned i=0;i<5;i++)if(a->sources[i]>=0)unresolved=1;
  for(unsigned i=0;i<2;i++)if(a->gate[i]>=0 || a->status[i]>=0)unresolved=1;
  for(size_t i=0;i<a->endpoints.owned_count;i++)if(a->endpoints.copies[i]>=0)unresolved=1;
@@ -199,7 +218,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
  char json[8192];
  const struct bw_status *ce=&a->stream.wire.reported_error;
  int n=snprintf(json,sizeof(json),
-  "{\"schema\":\"" NR_RECEIPT_SCHEMA "\",\"tracing\":" NR_RECEIPT_TRACING ",\"exec_proved\":false,\"full_acceptance\":false,\"identity_policy\":\"request-declarations-compared-to-observations\","
+  "{\"schema\":\"" NR_RECEIPT_SCHEMA "\",\"tracing\":" NR_RECEIPT_TRACING "," NR_OBJECT_PROFILE_JSON "\"exec_proved\":false,\"full_acceptance\":false,\"identity_policy\":\"request-declarations-compared-to-observations\","
   "\"consistent_owned_probe\":%s,\"controller_pid\":%ld,\"child_pid\":%ld,"
   "\"parent_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
   "\"cleanup_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
@@ -224,6 +243,15 @@ int nr_finish_outputs(struct nr_attempt *a) {
   a->signals.prepared?"true":"false",a->signals_restored?"true":"false",a->signals.pipe_restored?"true":"false",a->signals.mask_restored?"true":"false",a->signal_restore_error.stage,a->signal_restore_error.reason,a->signal_restore_error.system_errno,
   request_h,catalog_h,policy_h,status_h,stdout_h,stderr_h,probe_h,source_h,recipe_h,stdout_valid?"true":"false",stderr_valid?"true":"false",out_n,err_n);
  int rc=0;if(n<0 || (size_t)n>=sizeof(json))rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
+#ifdef GLUE_FD_OBJECTS
+ if(!rc){
+  int extra=snprintf(json+(size_t)n-2,sizeof(json)-(size_t)n+2,
+   ",\"descriptor_observations\":{\"matched\":%s,\"held_references_closed\":true,\"match_stage\":%d,\"match_reason\":%d,\"match_errno\":%d}}\n",
+   a->objects_matched?"true":"false",(int)a->object_match_error.stage,(int)a->object_match_error.reason,a->object_match_error.system_errno);
+  if(extra<0 || (size_t)extra>=sizeof(json)-(size_t)n+2)rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
+  else n=n-2+extra;
+ }
+#endif
 #ifdef GLUE_OWNED_TRACING
  if(!rc) {
   int extra=snprintf(json+(size_t)n-2,sizeof(json)-(size_t)n+2,",\"trace_sidecar\":\"trace.json\",\"trace_finalization_safe\":true,\"trace_success_eligible\":%s}\n",nr_trace_success(a)?"true":"false");

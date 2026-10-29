@@ -29,6 +29,9 @@ static int progress(void *context,struct bio_time original) {
 }
 int nr_trace_start(struct nr_attempt *a) {
  struct nr_trace *t=&a->trace;
+#ifdef GLUE_FD_OBJECTS
+ if(!a->objects_matched || !a->output_matches.ready)return nr_fail(a,NR_TRACE,NR_INVALID,0,-1);
+#endif
  if(t->create_attempted || !a->ready_matched || !a->forked || a->reaped || a->lost_child || a->child<=0)
   return nr_fail(a,NR_TRACE,NR_INVALID,0,-1);
  t->create_attempted=1;
