@@ -1,0 +1,22 @@
+{
+  "schema": "glue-local-evidence-retention-record-v1",
+  "source_files": 4844,
+  "source_bytes": 848966499,
+  "prepared": {
+    "asset": "evidence.tar.gz",
+    "file_count": 4846,
+    "inventory_sha256": "fdce05e7da743aff892c45c98dcd6db16acd94ed5c39a3d9e6e8326722511412",
+    "payload_bytes": 848966499,
+    "profile": "external-root-v1",
+    "schema": "glue-evidence-bundle-2",
+    "sha256": "9edf81505cd9408fa0647cf75953f926dd962624597bc85b6a080febec17bb73",
+    "size": 303529253,
+    "source_inventory_sha256": "224d85f36d145c58ca5f1836c60501638a215e43b21e5a15897d2ad08249e0dd"
+  },
+  "all_restored_hashes_sizes_modes_match": true,
+  "all_sources_unchanged": true,
+  "result_sha256": "317b6834d73ee6604a82c6b5d8fdfae003a596f288aa10d77974fa8475adbb69",
+  "same_host_only": true,
+  "published": false,
+  "external_durability_established": false
+}

@@ -1,0 +1,52 @@
+{
+  "source_head": "30e8d080500de2bd6646c1c68d814eb80208f5f8",
+  "result_sha256": "1a16166f996b7bbae6f9ec0ca378b54307e7f845e0cae638b74a55a5569eef2e",
+  "budgets": [
+    {
+      "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "lua55-native",
+      "report_host_fingerprint": "362d3034db020b1a035dac301e68451989c5ecdba0f3a1388d352916d2f6d3b6",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "lua55-project",
+      "report_host_fingerprint": "362d3034db020b1a035dac301e68451989c5ecdba0f3a1388d352916d2f6d3b6",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "node-cjs",
+      "report_host_fingerprint": "362d3034db020b1a035dac301e68451989c5ecdba0f3a1388d352916d2f6d3b6",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "python-native-normalized",
+      "report_host_fingerprint": "362d3034db020b1a035dac301e68451989c5ecdba0f3a1388d352916d2f6d3b6",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    },
+    {
+      "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+      "errors": [],
+      "expected_failure_preserved": false,
+      "profile": "python-source-normalized",
+      "report_host_fingerprint": "362d3034db020b1a035dac301e68451989c5ecdba0f3a1388d352916d2f6d3b6",
+      "structural_IO_FD_scaling_limits_applied": true,
+      "time_rss_limits_applied": false
+    }
+  ],
+  "scope": "All five cost profiles pass; time/RSS remain scoped to accepted host fingerprints, not universal limits."
+}
