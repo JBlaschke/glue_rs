@@ -9,7 +9,7 @@ commits, tests, target scope and evidence limits.
 | --- | --- | --- |
 | M0 — Foundations | Delivered | Distribution contracts/layout, inventory, native-host CI and executable Python/Node provider proofs. |
 | M1 — Source preview | Delivered development preview | Lua 5.4/5.5, Python and Node build/run workflows, runtime selection, relocation/offline checks and runnable examples. Historical evidence recovery is still part of M2 closure. |
-| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Recorded x86_64 and fresh arm64 Linux cells pass 24 cases/five budgets; arm proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
+| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass the base 24 cases/five budgets; seven extra Python routes pass on each at distinct revisions. Arm base proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
 | M3 — Memory mode | Planned | Earlier narrow experiments exist. General runtime/native dependency acquisition, Linux memory execution and macOS mapping/TLS/unwind/runtime/signing gates remain. |
 | M4 — Expansion | Deferred | Broader compatibility, Julia bundles, combined executable, HPC sharing and optional mixed-language calls. Windows/BSD follow Linux/macOS completion. |
 
@@ -38,8 +38,17 @@ commits, tests, target scope and evidence limits.
 4. [Scalar fcntl PR #96](https://github.com/JBlaschke/glue_rs/pull/96) adds four
    descriptor duplication/flag commands through both syscall forms; thirty
    controls pass on each tested Python version. The independent Linux
-   compatibility feature adds seven traced archive/uv cases, with sixteen
-   portable controls passing per interpreter. Native execution/replay is pending.
+   compatibility feature adds seven traced archive/uv cases. All seven pass native
+   arm execution/replay; [PR #99](https://github.com/JBlaschke/glue_rs/pull/99)'s
+   bounded streaming repair makes all seven pass on x86 too, with 46 receipts,
+   184 controls and 990 ranks independently verified. Time/RSS gates are
+   inapplicable on the repaired x86 host; accepted structural limits remain.
+5. Patch-version/abi3 and a genuine wrong-ABI refusal extension is implemented,
+   with 30 pure controls, 18 collector controls and 21 shared runner controls
+   passing on each tested interpreter. Both-target native execution/replay is
+   next. In parallel, real Mac READY handoff adoption is frozen for review after
+   120 local integration controls; five are actual unprivileged Mac transport
+   cases. Full Mac trace/oracle acceptance remains open.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -57,8 +66,9 @@ the missing Darwin oracle.
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
 - **R04:** finish remaining target retention and the exact current compatibility/
-  sign-off record, including archive/uv route execution, additional-patch with
-  unchanged launcher, abi3 and fresh Mac cells. Arm64 evidence is regenerated,
+  sign-off record, including the current-source compatibility record, additional-patch with
+  unchanged launcher, abi3, genuine wrong-ABI refusal and fresh Mac cells. Archive/uv
+  execution now passes on both Linux targets at the explicitly recorded revisions. Arm64 evidence is regenerated,
   replayed, publicly retained and
   independently downloaded/replayed. Same-source x86 refresh and replay pass;
   its fresh backup verifies locally and the prepared publication set awaits

@@ -12,8 +12,8 @@ Python archive/uv routes on both native Linux targets. The combined run fails:
 The full and install-only x86 archives include a required
 `lib/libpython3.13.so.1.0` of 143,259,064 bytes. Build-time materialization uses a
 128 MiB retained-member reader and refuses it. Stripped input and all uv routes
-pass. The separate streaming repair preserves the failed receipts and requires
-a new native run; it does not substitute stripped input or relax accepted limits.
+pass. The streaming repair preserves these failed receipts; it does not substitute
+stripped input or relax accepted limits. Its fresh result is recorded below.
 
 [acceptance.json](acceptance.json) binds the exact original ZIP, raw inventory
 and independent replay identities for each target. Raw captures, frozen tools
@@ -27,3 +27,20 @@ their matching-host-fingerprint scope; no cold-cache or universal timing claim
 is made. Patch/abi3 evidence, Darwin oracle/corpus, Mac budgets and final M2
 sign-off remain separate. No Mac VM data or new source-runtime admission catalog
 is included.
+
+## Repaired x86 execution
+
+[Run 40858319517](https://github.com/JBlaschke/glue_rs/actions/runs/40858319517)
+at `3698a40d` passes all 24 base cases, seven archive/uv routes and five unchanged
+budget profiles. Independent replay verifies 46 receipts, 184 oracle controls
+and 990 rank results. [repaired-x86.json](repaired-x86.json) binds the original
+195,489,066-byte ZIP, all 4,952 raw files/873,285,180 bytes and the replay result.
+No archived applications execute during replay.
+
+The bounded streaming staging repair handles the required large library while
+retaining the existing in-memory reader limit and archive validation. Structural,
+I/O, FD and scaling limits apply. Every time/RSS gate is inapplicable because the
+recorded host fingerprint differs from the frozen budget host. There is no fresh
+timing acceptance claim. Arm's seven-route result above predates this repair;
+these are distinct source revisions, not a same-source pair. Raw evidence remains
+local; this record neither publishes assets nor closes M2.
