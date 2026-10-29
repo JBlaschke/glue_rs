@@ -180,6 +180,51 @@ new PR. Independent source review finds no actionable issue after that correctio
 Fresh native enforcement/replay, external retention and full Darwin/M2 remain
 open; no VM or SIP change occurred.
 
+## 29 October: seven native Linux Python compatibility routes
+
+Branch `codex/mvp-v02-linux-compatibility` starts from main `cb24720`.
+Decision `856da10` precedes implementation `62571a2`. Explicit workflow input
+`compatibility=true` selects three direct PBS archive inputs (full, install-only,
+stripped) and four normalized uv source/module/console/native cases. Both native
+Linux targets reuse their existing supplied 3.13.16 runtime/wheel inputs and
+complete V02 offline process-tree tracing/controls. Default 24-case/five-budget
+acceptance and every reviewed budget remain unchanged. Separate seven-case
+statuses and `compatibility-summary.json` preserve failures independently.
+
+Target-matched official archive/tool digests, sizes and URLs are fixed test-input
+provenance, not product admission. Preparation retains identical receipt bytes
+outside the removed input tree. Summary closure binds them to the original input
+inventory, exact environment/project/entry/native arguments, direct consumed
+archive identities, and the baseline PBS executable/stdlib for uv cases. Review
+caught and corrected a wrong-environment false pass and missing entry/native
+route checks before publication. No source route can stand in for a native one.
+
+Sixteen focused controls pass on Python 3.15.2 and 3.9.6. Twenty existing native
+planner/runner controls pass. All five preparation controls pass on 3.15.2, and
+the new retained-receipt control also passes on 3.9.6. Bash/sh syntax, actionlint,
+staged diff checks and independent integration review pass. This branch's portable
+baseline has 51 Python invocations (52 when combined with the separate fcntl PR).
+No Rust or packaged runtime behavior changes, so full hosted checks proceed
+independently rather than repeating the entire local workspace suite.
+
+Focused receipt
+`.evidence-local/controls/linux-compatibility-routes-20261029/attempt-01`
+has 22 indexed payloads and manifest SHA256
+`93b4a7dd1983346f04fec60e4716e6470af23d98dbb44b7cb5ab520b9b1a163e`.
+Root verifies its payloads, source stability and all eight official input pins.
+Additional integration records are under
+`.evidence-local/controls/linux-compatibility-integration-20261029`.
+Attempt 02 preserves Apple's system 3.9 copy-venv limitation in the pre-existing
+real-venv control; the newly added retention control passes there. Attempt 03
+records that control and syntax checks with manifest
+`7e7fa28f0bceda5e69bc389a65bdad9edffdd67259192562dee813ac228d1549`.
+No product preparation or test requirement was weakened to hide that failure.
+
+Fresh execution of the seven new cases and complete independent raw replay are
+still required. Additional-patch/same-launcher and abi3 evidence, fresh macOS
+compatibility/oracle, Mac budgets and final M2 sign-off remain open. Raw evidence,
+archives and VM data stay outside Git; guest SIP stays enabled.
+
 ## 28 October: native GNU Linux arm64 acceptance automation
 
 The separate `codex/mvp-v02-native-linux-arm64` branch starts at diagnostic
