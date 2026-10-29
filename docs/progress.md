@@ -63,6 +63,22 @@ including actual seeded/unseeded venv execution; shell syntax and diff checks
 pass. CI now invokes 47 Python scripts. A fresh native run must prove the repair;
 there is no automatic budget refreeze, extraction exemption or M2 closure.
 
+## Large runtime archive staging repair — 29 October 2026
+
+The expanded native run at `e90e21a4` verifies all seven new arm64 routes.
+X86 passes base cases/budgets and five routes, but full/install-only archives
+contain a required 143 MB libpython above the retained staging reader's cap.
+The [exact record](evidence/native-linux-compatibility-2026-10-29/README.md)
+keeps those two failures separate from verified results.
+
+Decision `bf6534b` and implementation `d013b00` on
+`codex/mvp-p02-stream-runtime-archives` stream build-time selected files through
+the same bounded validator into private disposable staging. The retained reader's
+128 MiB cap, aggregate bounds and every accepted budget stay unchanged. All
+78 archive tests and 107 nonignored provider tests pass, including large-member
+and failure-cleanup regressions; formatting and pinned Clippy pass. Fresh native
+x86 compatibility proof follows this PR while the next feature proceeds.
+
 ## Native Linux archive and uv compatibility — 29 October 2026
 
 Decision `856da10` and implementation `62571a2` on
