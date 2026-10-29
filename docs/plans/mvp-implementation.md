@@ -1,13 +1,13 @@
 # MVP implementation and acceptance ledger
 
-28 October 2026. Product authority remains [the plan](../../PLAN.md),
+29 October 2026. Product authority remains [the plan](../../PLAN.md),
 [the contract](mvp-contract.md) and [the 26 task cards](mvp-tasks.md).
 Each card has its own local feature branch, with prerequisite commits stacked or
 cherry-picked for integration. The owner merged the combined
 `codex/mvp-r04-docs` stack into `main` at `96e6958` through
 [PR #34](https://github.com/JBlaschke/glue_rs/pull/34). Task branches retain their
 own implementation commits. Follow-up work continues on feature branches;
-no release asset has been published.
+the separately approved arm evidence prerelease is recorded below.
 The owner subsequently merged the follow-up checkpoints through PRs #35/#36,
 putting the reviewed match-accounting repair on `main` at `08da274`.
 PR #37 subsequently merged the baseline timeout repair at `9f787e9`; both
@@ -36,6 +36,45 @@ existing Developer ID signatures are retained and accepted by this development
 policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
+
+## 29 October: Linux compatibility closure and next native cells
+
+[PR #99](https://github.com/JBlaschke/glue_rs/pull/99) repairs build-time staging
+of large Python runtime members with bounded streaming. Decision `bf6534b`
+precedes implementation `d013b00`; source `3698a40d` passes all eighteen portable
+checks. Native x86 run `40858319517` and complete independent replay pass all
+24 base cases, seven archive/uv routes, five unchanged budgets, 46 receipts,
+184 oracle controls and 990 rank results. Structural/I/O/FD/scaling limits apply;
+all time/RSS gates are inapplicable on this different host fingerprint. The
+[record](../evidence/native-linux-compatibility-2026-10-29/README.md) preserves
+the original failed x86 result and distinguishes the earlier arm source.
+
+Branch `codex/mvp-v02-linux-patch-abi3` adds decision `ce951ad` and implementation
+`1bd4dd7`. Three optional positive cells check CPython 3.13.15 with unchanged
+glue bytes and the same pinned cryptography abi3 wheel on 3.13.16/3.14.8. A
+separate real cp314-cffi/3.13 refusal collector requires the actual product's
+`runtime_abi_mismatch` before output creation, unchanged input inventories and
+an unchanged sibling sentinel. No local native acceptance is inferred.
+
+Thirty pure ABI/patch controls, eighteen collector controls and twenty-one shared
+runner controls pass on Python 3.15.2 and 3.9.6. These include failed/oversized
+evidence retention and actual finish-path rejection of a failed collector even
+when its narrower diagnostic assessment passes. Bash/sh syntax and actionlint
+pass; independent source/receipt reviews have no remaining findings. The
+separate retained manifests are `72acc560b44541802f2a7bfcb268efe50a3cb33adba121e4e2058a820a8d07c9`,
+`fa6177aa5da7c0f8fbe5cde3c139271de7a3bc416adefa542c8a6110a2d5f811` and
+`7f0242d801887ce4f624bd1988cd097b811c455e25217cffd79aa24c9aec9762`.
+Portable CI has 53 Python suite invocations on this branch. A complete native
+run with both extensions requires 34 application cells, fifteen benchmark
+receipts, 196 oracle controls and 990 rank results, plus the separate wrong-ABI
+refusal. Native execution and independent replay of this extension remain open.
+
+Mac READY adoption is being reviewed in an isolated feature worktree. It uses a
+new versioned 512-byte status to carry the actual five-descriptor snapshot; the
+parent compares held output backing before tracing or GO. Existing legacy
+wire sizes remain intact. Neither local helper tests nor that adoption supplies
+the full Darwin oracle, native calibration/corpus or Mac budgets. Guest SIP
+stays enabled. M2 remains in progress; M3 memory mode remains planned.
 
 ## 28 October: fresh x86 acceptance and local retention
 
@@ -180,6 +219,90 @@ new PR. Independent source review finds no actionable issue after that correctio
 Fresh native enforcement/replay, external retention and full Darwin/M2 remain
 open; no VM or SIP change occurred.
 
+## 29 October: stream large runtime archive members at build time
+
+Native compatibility run `40851345339` at `e90e21a4` passes all 24 base cases and
+five unchanged budgets on both Linux targets. Arm64 also passes every new route;
+independent replay verifies 46 receipts, 184 oracle controls and 990 ranks. X86
+passes five new routes but rejects full/install-only inputs because required
+libpython is 143,259,064 bytes, above the retained reader's 128 MiB cap. Strict
+x86 replay remains failed; its successful components are independently verified
+without promoting the two failures. Exact identities are in the
+[compatibility record](../evidence/native-linux-compatibility-2026-10-29/README.md).
+
+On `codex/mvp-p02-stream-runtime-archives`, decision `bf6534b` precedes
+implementation `d013b00`. A new streaming selection API shares the existing tar
+validator and hashes all payloads. Selected writes use at most 64 KiB chunks;
+retained selection still caps at 128 MiB. Member/tar/decompression limits and
+the Python producer's 1 GiB aggregate staging/input bounds remain unchanged.
+The producer creates exclusive files in a private 0700 directory, checks full
+inventory and compressed input identity before aliases/probing, and discards
+every staged prefix on failure. This is build-time preparation, never deployed
+runtime extraction.
+
+All 78 glue-pbs tests and 107 nonignored glue-pack tests pass; five external
+native-input tests remain explicitly ignored. Regressions include a >128 MiB
+streamed member with bounded writes, unchanged retention refusal, exact hashes,
+empty files, missing/nonregular selections, factory/write/flush failures, late
+corruption, compressed producer staging and removal of an earlier prefix when
+a later valid tar name fails the filesystem. Formatting and pinned all-target
+Clippy pass. The first Clippy attempt only flagged an ambiguous test-header
+escape; an identical two-slice spelling fixes it. No production behavior changed
+in that correction. Prior test logs remain preserved.
+
+Receipts live under `.evidence-local/controls/stream-runtime-archives-20261029`.
+Attempt 02 manifest is
+`20571353fcf0dc67aaab646b4f6c2a901edccf1fa733a5b3ad3a2a00b5093233`.
+Independent review checks the shared validator, sink failure ordering and actual
+producer cleanup. The feature includes PR #97 as a prerequisite and targets
+`main`. Fresh native proof of the repaired x86 routes is next; failed old
+captures, every budget and all unrelated runtime inputs remain unchanged.
+
+## 29 October: seven native Linux Python compatibility routes
+
+Branch `codex/mvp-v02-linux-compatibility` starts from main `cb24720`.
+Decision `856da10` precedes implementation `62571a2`. Explicit workflow input
+`compatibility=true` selects three direct PBS archive inputs (full, install-only,
+stripped) and four normalized uv source/module/console/native cases. Both native
+Linux targets reuse their existing supplied 3.13.16 runtime/wheel inputs and
+complete V02 offline process-tree tracing/controls. Default 24-case/five-budget
+acceptance and every reviewed budget remain unchanged. Separate seven-case
+statuses and `compatibility-summary.json` preserve failures independently.
+
+Target-matched official archive/tool digests, sizes and URLs are fixed test-input
+provenance, not product admission. Preparation retains identical receipt bytes
+outside the removed input tree. Summary closure binds them to the original input
+inventory, exact environment/project/entry/native arguments, direct consumed
+archive identities, and the baseline PBS executable/stdlib for uv cases. Review
+caught and corrected a wrong-environment false pass and missing entry/native
+route checks before publication. No source route can stand in for a native one.
+
+Sixteen focused controls pass on Python 3.15.2 and 3.9.6. Twenty existing native
+planner/runner controls pass. All five preparation controls pass on 3.15.2, and
+the new retained-receipt control also passes on 3.9.6. Bash/sh syntax, actionlint,
+staged diff checks and independent integration review pass. This branch's portable
+baseline has 51 Python invocations (52 when combined with the separate fcntl PR).
+No Rust or packaged runtime behavior changes, so full hosted checks proceed
+independently rather than repeating the entire local workspace suite.
+
+Focused receipt
+`.evidence-local/controls/linux-compatibility-routes-20261029/attempt-01`
+has 22 indexed payloads and manifest SHA256
+`93b4a7dd1983346f04fec60e4716e6470af23d98dbb44b7cb5ab520b9b1a163e`.
+Root verifies its payloads, source stability and all eight official input pins.
+Additional integration records are under
+`.evidence-local/controls/linux-compatibility-integration-20261029`.
+Attempt 02 preserves Apple's system 3.9 copy-venv limitation in the pre-existing
+real-venv control; the newly added retention control passes there. Attempt 03
+records that control and syntax checks with manifest
+`7e7fa28f0bceda5e69bc389a65bdad9edffdd67259192562dee813ac228d1549`.
+No product preparation or test requirement was weakened to hide that failure.
+
+Fresh execution of the seven new cases and complete independent raw replay are
+still required. Additional-patch/same-launcher and abi3 evidence, fresh macOS
+compatibility/oracle, Mac budgets and final M2 sign-off remain open. Raw evidence,
+archives and VM data stay outside Git; guest SIP stays enabled.
+
 ## 28 October: native GNU Linux arm64 acceptance automation
 
 The separate `codex/mvp-v02-native-linux-arm64` branch starts at diagnostic
@@ -228,6 +351,35 @@ rehashes all arm packages/tool and verifies preserved x86 inputs. Root verifies
 the retained inventories and reads both reports. Fresh native arm64 execution,
 complete independent replay and external retention remain pending; these source
 checks do not establish acceptance, change guest SIP or close M2.
+
+## 29 October: scalar fcntl descriptor semantics
+
+Branch `codex/mvp-r02-bsd-fcntl-semantics` incorporates main `cb24720`, which
+contains PRs #92–#95. Decision `2ef2cd2` precedes implementation `b6ef6a3`.
+`decode_owned_fcntl_semantics` handles F_DUPFD, F_DUPFD_CLOEXEC, F_GETFD and
+F_SETFD through both fcntl syscall names, after one complete strict raw pairing
+pass. Every BSD pair and all original Mach/lifecycle observations remain visible.
+Canonical minimum/result relations, command-specific low-bit semantics and
+initialized secondary results are checked against six exact pinned XNU sources.
+Descriptor flags remain distinct from shared fileglob flags; failed calls do not
+prove unchanged state. Other commands, including partially mutating F_SETFL,
+retain explicit gaps. Rules require kernel lookup/lifetime/order witnesses and
+never update state or grant native/extraction acceptance.
+
+All thirty controls pass on Python 3.15.2 and 3.9.6, with nine watched source
+identities and HEAD unchanged. The durable first-attempt receipt is
+`.evidence-local/controls/owned-bsd-fcntl-semantics-20261029/attempt-01`; its
+seventeen-payload manifest hashes to
+`945f62404c6fb249be1fc211adca214107a99bca147f8a3abd3aafbbf399b3e5`.
+Module SHA256 is
+`da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260`;
+the six-source provenance manifest is
+`1418c51e2365329c6d334a291195542a008797a90eba929042394b86cc86973f`.
+Root verifies all receipt members, current feature identities and official source
+hashes. Independent source review finds no implementation blocker. One portable
+invocation raises this branch's baseline to 51 Python scripts; shell syntax and
+staged diff checks pass. Hosted CI proceeds independently. Full Darwin object
+capture/state/oracle, native corpus and Mac budgets remain open; SIP stays enabled.
 
 ## 28 October: BSD descriptor and scalar write semantics
 

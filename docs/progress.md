@@ -63,6 +63,40 @@ including actual seeded/unseeded venv execution; shell syntax and diff checks
 pass. CI now invokes 47 Python scripts. A fresh native run must prove the repair;
 there is no automatic budget refreeze, extraction exemption or M2 closure.
 
+## Large runtime archive staging repair — 29 October 2026
+
+The expanded native run at `e90e21a4` verifies all seven new arm64 routes.
+X86 passes base cases/budgets and five routes, but full/install-only archives
+contain a required 143 MB libpython above the retained staging reader's cap.
+The [exact record](evidence/native-linux-compatibility-2026-10-29/README.md)
+keeps those two failures separate from verified results.
+
+Decision `bf6534b` and implementation `d013b00` on
+`codex/mvp-p02-stream-runtime-archives` stream build-time selected files through
+the same bounded validator into private disposable staging. The retained reader's
+128 MiB cap, aggregate bounds and every accepted budget stay unchanged. All
+78 archive tests and 107 nonignored provider tests pass, including large-member
+and failure-cleanup regressions; formatting and pinned Clippy pass. Fresh native
+x86 compatibility proof follows this PR while the next feature proceeds.
+
+## Native Linux archive and uv compatibility — 29 October 2026
+
+Decision `856da10` and implementation `62571a2` on
+`codex/mvp-v02-linux-compatibility` add seven explicitly selected native cases:
+PBS full/install-only/stripped archive inputs and uv source/module/console/native
+environments. The original 24 cases and five budgets retain their scope and
+limits. Exact retained preparation, build-route and archive/runtime identities
+are checked before the new summary can pass. All cases use the complete shared
+offline/tracing harness; portable controls do not replace those native runs.
+
+Sixteen new controls pass on Python 3.15.2 and 3.9.6. Existing runner controls,
+five preparation controls on 3.15.2, the new retention control on 3.9.6, syntax,
+actionlint and independent review pass. The old actual copy-venv control cannot
+run on Apple's system 3.9; that failed attempt is retained without changing the
+fixture policy. Native compatibility execution/replay is next. Main includes
+PRs #92–#95 at `cb24720`; scalar fcntl work is separately open as PR #96.
+Full Darwin oracle/corpus, Mac budgets and final compatibility/sign-off remain.
+
 ## Native GNU Linux arm64 acceptance automation — 28 October 2026
 
 Decision `0ac9bca` and implementation `3698ae4` on
@@ -105,6 +139,22 @@ Next implementation is native Linux arm64 acceptance automation with exact
 target-matched inputs and the complete corpus/budgets. Full Darwin implementation
 and native acceptance, Mac budgets and externally retained evidence remain open.
 Guest SIP stays enabled.
+
+## Scalar fcntl descriptor commands — 29 October 2026
+
+Decision `2ef2cd2` and implementation `b6ef6a3` on
+`codex/mvp-r02-bsd-fcntl-semantics` add four exact scalar commands through both
+fcntl syscall names. The rules interpret descriptor duplication and close-on-exec
+queries/changes, preserving failed attempts and unsupported commands. Descriptor
+flags and shared object flags remain distinct. Complete raw pairing happens once;
+no native object binding, state update or extraction acceptance is inferred.
+
+Thirty focused controls pass on Python 3.15.2 and 3.9.6. Retained source/receipt
+identities verify, independent review finds no implementation blocker, and CI
+adds one invocation (51 scripts on this branch). Main now contains PRs #92–#95
+at `cb24720`. The next independent feature adds seven traced Linux Python
+archive/uv input-route cells; complete Darwin oracle/corpus, Mac budgets and
+final compatibility/sign-off remain required for M2.
 
 ## Bounded standalone trace inspector — 28 October 2026
 
@@ -1672,6 +1722,21 @@ BSD/Mach entry/return intervals and rejects ambiguous lifecycle boundaries.
 All 42 focused controls pass, with independent review and unchanged legacy APIs.
 Raw pairs remain ineligible for the filesystem state feed until native lifetime,
 ABI and object associations are established. No native acceptance is inferred.
+
+## Earlier MVP progress — 29 October 2026
+
+M0 foundations and the M1 development preview are delivered. M2 remains active.
+The seven extra Linux archive/uv routes pass on both targets at their recorded
+revisions; the repaired x86 run passes 46 independently replayed receipts, 184
+oracle controls and 990 ranks. Structural budgets remain unchanged; its time/RSS
+gates are inapplicable because the host fingerprint differs.
+
+The patch-version/abi3 extension and a genuine prepublication wrong-ABI refusal
+collector are implemented and locally reviewed. Both-target native execution is
+next. Mac's actual READY handoff adoption is in source review; authoritative
+object/path/lifetime semantics, the complete Mac oracle/corpus and Mac budgets
+remain the critical path. M3 memory mode remains planned. Exact source hashes,
+checks and evidence limits are in the implementation ledger and milestone table.
 
 ## MVP R02 — held-output READY adoption (29 October 2026)
 
