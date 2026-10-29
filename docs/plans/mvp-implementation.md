@@ -229,6 +229,52 @@ the retained inventories and reads both reports. Fresh native arm64 execution,
 complete independent replay and external retention remain pending; these source
 checks do not establish acceptance, change guest SIP or close M2.
 
+## 28 October: BSD descriptor and scalar write semantics
+
+Milestone branch `codex/mvp-r02-bsd-fd-semantics` starts from main `43bf806` and
+includes the reviewed entry-ABI and paired-outcome prerequisites from PRs #92/#93.
+Decision `4b1d364` precedes implementation `924ed55`; its PR targets `main`.
+`decode_owned_fd_semantics` invokes strict raw pairing exactly once before reusing
+fixed, hash-checked pure argument/result helpers. It produces a row for every
+BSD pair, including unknown and known-unhandled operations, and retains original
+BSD/Mach pairs and lifecycle records. Invalid/unpaired/late input returns no prefix.
+
+Eleven existing declarations have executable rules: close/nocancel, dup/dup2,
+write/nocancel, pwrite/nocancel, fsync/nocancel and ftruncate. Supported successes
+check exact return domains, initialized secondary results, descriptor ranges,
+dup2 target/self behavior and 0 <= written <= requested <= INT_MAX. Positional
+writes retain requested offsets without inventing resolved ranges or position
+updates. All recognized entry attempts remain visible despite noncanonical args,
+errors or unsupported outcomes. Guarded/vector/fcntl/read routes remain explicit
+unhandled operations; the pinned registry is not silently expanded.
+
+Conditional postconditions require kernel-lookup object/descriptor-generation
+and ordering witnesses. They are never applied state or slot-at-return facts.
+Failed close/dup2 can already change table state; failed writes can hide partial
+bytes. No failure establishes absence of effects or authorizes an output.
+Truncate rules retain requested length only: vnode versus POSIX-shm branches,
+page-size rounding, prior allocation and lifetime need separate witnesses.
+Native calibration, successful-effect ordering, state feed and full extraction
+acceptance remain false. No collector/core/state-engine/VM/SIP setting changes.
+
+All 37 controls pass on Python 3.15.2 and 3.9.6. Final frozen receipt
+`.evidence-local/controls/owned-bsd-fd-semantics-20261028/attempt-02` has sixteen
+indexed payloads, manifest SHA256
+`ee460c8f7c50ddbcad8fc682aee632e24e10db57ae2cc46edb1eb8cf25460228`;
+eight watched identities remain unchanged. Seven exact public XNU operation/
+dispatcher sources are retained in `.evidence-local/bsd-fd-semantics-source-20261028`,
+manifest `acf8c66f93b42c8a508a3e4fbd0e17e4afe89a0431fed331d607be9af563db2c`.
+The prior 36-control passing attempt is preserved unchanged. Subsequent source
+review found the shared-memory rounding/lifetime nuance, leading to the explicit
+object-specific rule, witness and one additional control.
+
+Independent review and final addendum have no remaining findings; addendum SHA256
+`7dce9eeb2f867b613457e34f98ae0748dffa64bef1bbf3eae0357a034f5dff97`.
+Root verifies frozen inputs, all seven public-source/four helper hashes and the
+review. CI adds one invocation for 50 baseline Python scripts on this integrated
+branch. Shell syntax/staged diff checks pass; hosted CI proceeds independently.
+Complete native/object/operation coverage and full Darwin/M2 gates remain open.
+
 ## 28 October: source-grounded BSD entry ABI
 
 Independent branch `codex/mvp-r02-bsd-entry-abi` starts at merged main `d1f0e3f`.
