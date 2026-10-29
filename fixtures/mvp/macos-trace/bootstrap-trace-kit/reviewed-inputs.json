@@ -47,7 +47,7 @@
     "fixtures/mvp/macos-trace/owned-trace-backend/owned_trace_backend.c"
   ],
   "schema": "glue-owned-trace-kit-inputs-v1",
-  "source_revision": "4744e339da48543f1d4d8f1dd14f7f543f47d41e",
+  "source_revision": "637109e0b912e5361846ec2259b64568d5966cad",
   "sources": {
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.c": "6ce683cff07bef135fa28c5bc452bdec1200fae5dc9cdcb5d7410ec1b877a2f1",
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.h": "6993e854c5b9bcef941eca12aabca98627a2bbf0bdba8e3b1658cddfe9891923",
@@ -88,7 +88,7 @@
     "fixtures/mvp/macos-trace/target-descriptors/target_descriptors.h": "fa2c38820e0eedfd8b055de76fe27e467e1e34e1adc06ce9d3feca8ba625765d",
     "fixtures/mvp/macos-trace/target-endpoints/target_endpoints.c": "ffd042d978e6a2c3572d2301074a9b94ec0809b1e2fc77176ebee0d6c06b4022",
     "fixtures/mvp/macos-trace/target-endpoints/target_endpoints.h": "3f949d7111808b04713408521a1db3acfc669d9fdbcd888b7b0e2bd7346d5602",
-    "fixtures/mvp/macos-trace/trace-session/trace_session.c": "f896259932e11f3d79b88e7bcb68d8e397dd3323e12283b58ae792d94b25b844",
-    "fixtures/mvp/macos-trace/trace-session/trace_session.h": "2217d8148aa6d896cd336dbf4c72532e6b373117be74d0557e2660e8731756fb"
+    "fixtures/mvp/macos-trace/trace-session/trace_session.c": "e83120dee63357fc8f620005de05e2f5e2abf02cf8e0f152b819aeb1e82542d7",
+    "fixtures/mvp/macos-trace/trace-session/trace_session.h": "2307564b48b08df77d717886f4751ca45a8f30d558e153b82e6ea57c166e807e"
   }
 }

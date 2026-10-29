@@ -56,7 +56,7 @@
     "fixtures/mvp/macos-trace/target-endpoints/target_endpoints.c"
   ],
   "schema": "glue-bootstrap-kit-inputs-v1",
-  "source_revision": "4744e339da48543f1d4d8f1dd14f7f543f47d41e",
+  "source_revision": "637109e0b912e5361846ec2259b64568d5966cad",
   "sources": {
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.c": "6ce683cff07bef135fa28c5bc452bdec1200fae5dc9cdcb5d7410ec1b877a2f1",
     "fixtures/mvp/macos-trace/bootstrap-admission/bootstrap_admission.h": "6993e854c5b9bcef941eca12aabca98627a2bbf0bdba8e3b1658cddfe9891923",
