@@ -140,6 +140,22 @@ target-matched inputs and the complete corpus/budgets. Full Darwin implementatio
 and native acceptance, Mac budgets and externally retained evidence remain open.
 Guest SIP stays enabled.
 
+## Scalar fcntl descriptor commands — 29 October 2026
+
+Decision `2ef2cd2` and implementation `b6ef6a3` on
+`codex/mvp-r02-bsd-fcntl-semantics` add four exact scalar commands through both
+fcntl syscall names. The rules interpret descriptor duplication and close-on-exec
+queries/changes, preserving failed attempts and unsupported commands. Descriptor
+flags and shared object flags remain distinct. Complete raw pairing happens once;
+no native object binding, state update or extraction acceptance is inferred.
+
+Thirty focused controls pass on Python 3.15.2 and 3.9.6. Retained source/receipt
+identities verify, independent review finds no implementation blocker, and CI
+adds one invocation (51 scripts on this branch). Main now contains PRs #92–#95
+at `cb24720`. The next independent feature adds seven traced Linux Python
+archive/uv input-route cells; complete Darwin oracle/corpus, Mac budgets and
+final compatibility/sign-off remain required for M2.
+
 ## Bounded standalone trace inspector — 28 October 2026
 
 Decision `68444b6` and implementation `baa6508` on
@@ -165,6 +181,24 @@ records exact identities, assumptions and preserved development attempts.
 #87; merge #86, then #87, then the inspector PR. Guest SIP stays enabled. Complete
 Darwin oracle/state integration and native corpus, Mac budgets and external
 evidence retention remain required for M2.
+
+## Native pre-exec descriptor observations — 29 October 2026
+
+Decision `6ad50e5` and implementation `e6127e6` on
+`codex/mvp-r02-target-fd-objects` capture the five retained descriptors in a gated
+owned child and compare regular stdout/stderr backing observations with held
+controller references. Twenty groups pass, including nine actual native Mac
+groups, zero skips; SIP is observed enabled. The corrected source/receipt and
+independent peer review verify, and CI adds one invocation. Linux native fixture
+execution follows in CI; no production controller adoption or full oracle pass
+is claimed. Next capture work is carrying these observations through real READY
+records and matching before GO.
+
+The independent Linux route run at `e90e21a4` passes all seven new arm64 routes
+and complete replay. X86 retains passing base cases/budgets and five route passes;
+full/install-only build failures exposed its 143,259,064-byte libpython exceeding
+the retained-member cap. A separate streaming build-time staging repair is under
+way. No failed receipt is promoted or accepted budget relaxed.
 
 ## Integrated owned request assessment — 28 October 2026
 
