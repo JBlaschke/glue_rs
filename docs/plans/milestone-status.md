@@ -9,104 +9,78 @@ commits, tests, target scope and evidence limits.
 | --- | --- | --- |
 | M0 — Foundations | Delivered | Distribution contracts/layout, inventory, native-host CI and executable Python/Node provider proofs. |
 | M1 — Source preview | Delivered development preview | Lua 5.4/5.5, Python and Node build/run workflows, runtime selection, relocation/offline checks and runnable examples. Historical evidence recovery is still part of M2 closure. |
-| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass the base 24 cases/five budgets; seven extra Python routes pass on each at distinct revisions. Arm base proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
+| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass 49 same-source receipts and five applicable structural budgets, plus actual wrong-ABI refusal. Mac controller/oracle integration, native corpus, budgets and final sign-off remain open. |
 | M3 — Memory mode | Planned | Earlier narrow experiments exist. General runtime/native dependency acquisition, Linux memory execution and macOS mapping/TLS/unwind/runtime/signing gates remain. |
 | M4 — Expansion | Deferred | Broader compatibility, Julia bundles, combined executable, HPC sharing and optional mixed-language calls. Windows/BSD follow Linux/macOS completion. |
 
 ## Current work
 
-1. PRs #92–#95 reached `main` at `cb24720`, including the BSD entry, outcome and
-   descriptor/write semantics and both Linux acceptance records. PR #95's
-   eighteen portable checks pass. New PRs target `main`
-   explicitly, and status/evidence changes stay on their own milestone branch.
-2. Native arm run `40754980497` at `30e8d08` and its complete independent replay
-   pass all 24 cases and five unchanged budgets. The explicit benchmark-input
-   repair preserves seeded application cases. All raw identities and a prepared/
-   restored local bundle verify. Approved arm evidence is published and remotely
-   replayed. Same-source x86 refresh `40758958354` also passes all 24 cases/five
-   budgets and independent replay. Its local archive restores successfully; the
-   prepared x86 release set awaits separate publication approval. See the
-   [arm record](../evidence/native-linux-arm64-2026-10-28/README.md) and
-   [x86 record](../evidence/native-linux-x86_64-2026-10-28/README.md).
-3. Independent [paired-result PR #92](https://github.com/JBlaschke/glue_rs/pull/92)
-   and [entry-ABI PR #93](https://github.com/JBlaschke/glue_rs/pull/93) add real
-   source-grounded Darwin semantics, with 27 and 25 focused controls passing on
-   each tested Python version. [Operation milestone #95](https://github.com/JBlaschke/glue_rs/pull/95)
-   builds on them with eleven descriptor/write/flush/truncate forms and 37
-   passing controls per tested interpreter. These are conditional source rules;
-   native calibration, object binding and effect ordering remain open.
-4. [Scalar fcntl PR #96](https://github.com/JBlaschke/glue_rs/pull/96) adds four
-   descriptor duplication/flag commands through both syscall forms; thirty
-   controls pass on each tested Python version. The independent Linux
-   compatibility feature adds seven traced archive/uv cases. All seven pass native
-   arm execution/replay; [PR #99](https://github.com/JBlaschke/glue_rs/pull/99)'s
-   bounded streaming repair makes all seven pass on x86 too, with 46 receipts,
-   184 controls and 990 ranks independently verified. Time/RSS gates are
-   inapplicable on the repaired x86 host; accepted structural limits remain.
-5. Patch-version/abi3 and a genuine wrong-ABI refusal extension is implemented,
-   with 30 pure controls, 18 collector controls and 21 shared runner controls
-   passing on each tested interpreter. Both-target native execution/replay is
-   next. In parallel, real Mac READY handoff adoption is frozen for review after
-   120 local integration controls; five are actual unprivileged Mac transport
-   cases. Full Mac trace/oracle acceptance remains open.
+The compact implementation spans all 26 original task cards. R02, R03 and R04
+remain open, including source integration and oracle work in R02. Implementation
+commits are not accepted release gates. `main` and PR merges remain under your control;
+feature work continues while CI runs.
 
-The diagnostic assessment covers 161 BSD declarations, and its operator command
-adds bounded file handling. Every diagnostic stays incomplete with native/export
-admission and extraction/state-feed eligibility false. These tools do not supply
-the missing Darwin oracle.
+1. **Linux native corpus:** both architectures pass the same-source
+   [cohort 40863475232](https://github.com/JBlaschke/glue_rs/actions/runs/40863475232)
+   at 8532d509. Each has 49 independently replayed V02 receipts: 24 base, 7 archive/uv,
+   3 patch/abi3 and 15 benchmark variants, 196 oracle controls and 990 rank results.
+   Each also retains a separate actual prepublication wrong-ABI refusal. The five
+   structural/I/O/FD/scaling budgets pass unchanged; time/RSS limits were
+   inapplicable because the recorded host fingerprints differ. Older arm evidence
+   is publicly retained; this newer 421.6 MB two-target set is prepared and verified
+   locally, with separate public-asset approval pending. No new native run is
+   implied by replay or archive preparation.
+2. **Mac source integration:** the actual READY/gate/witness runner is in
+   [PR110](https://github.com/JBlaschke/glue_rs/pull/110). The stopped-child output
+   observer is in [PR113](https://github.com/JBlaschke/glue_rs/pull/113). Fixed FD,
+   scalar fcntl and F_GETFL interval profiles are in PRs #112/#114/#115/#116. The stopped
+   collector/reader is in [PR117](https://github.com/JBlaschke/glue_rs/pull/117),
+   typed lifecycle status in [PR118](https://github.com/JBlaschke/glue_rs/pull/118),
+   and file-synced observation retention in
+   [PR119](https://github.com/JBlaschke/glue_rs/pull/119). These are source/model
+   milestones with independent review, not complete native oracle acceptance.
+3. **Active implementation:** connect the fixed controller to actual fork-minted
+   ownership, exclusive stop observation, file sync before continuation, bounded
+   cleanup and final lifecycle receipts. The reviewed stopped-stream FD-policy
+   feature is
+   `codex/mvp-r02-runtime-stopped-fd-policy`; it supplies no output seed or grant.
+   In parallel, implement a small hosted native enablement diagnostic. Raw
+   correlated samples or intended CONT calls do not authorize output exemptions.
+4. **Hosted Mac evidence:** the corrected read-only inventory
+   [run 40915997467](https://github.com/JBlaschke/glue_rs/actions/runs/40915997467)
+   at c869536 passed. It reports an arm64 Mac, existing disabled SIP and a successful
+   syscall-provider listing. It enabled no probes and traced no target; actual
+   enablement/calibration remain unmeasured. Guest SIP stays enabled. This is a
+   possible native test route without changing the guest's security setting.
 
-## Remaining M2 gates
+The new source merge order is #112 → #114 → #115 → #116, #113 after #110, then #117 → #118 → #119;
+#111's host inventory is independent. All PRs target `main`. Merge dependencies
+first to reduce stacked diffs. Exact decisions, sources, tests and limits remain
+in the [execution ledger](mvp-implementation.md) and [progress record](../progress.md).
 
-- **R02:** implement source-grounded Darwin result/state/object semantics and a
-  complete process-tree filesystem oracle, then run positive/negative controls
-  and the relocated/offline product corpus. The current owned collector lacks
-  authoritative path/FD/backing/port bindings. Guest SIP remains enabled; native
-  tracing cannot proceed under the current approved setting.
-- **R03:** measure and freeze Mac deployment/startup/I/O/FD/memory and multi-rank
-  budgets against complete native observations. Existing Linux limits retain
-  their recorded host scope; newer measurements must not silently replace them.
-- **R04:** finish remaining target retention and the exact current compatibility/
-  sign-off record, including the current-source compatibility record, additional-patch with
-  unchanged launcher, abi3, genuine wrong-ABI refusal and fresh Mac cells. Archive/uv
-  execution now passes on both Linux targets at the explicitly recorded revisions. Arm64 evidence is regenerated,
-  replayed, publicly retained and
-  independently downloaded/replayed. Same-source x86 refresh and replay pass;
-  its fresh backup verifies locally and the prepared publication set awaits
-  separate owner approval. The older recovered archive also remains retained.
+## Remaining M2 delivery
 
-The 26 cards all have implementation commits; remaining original acceptance
-work is concentrated in R02/R03/R04. M1 remains a preview until M2 closes.
-Ad-hoc signing is the selected development policy. Developer ID/notarization is
-an additional requirement before public macOS binary publication.
+- **R02 — complete the Mac oracle and native corpus.** Finish controller and
+  runtime-policy integration, source-grounded filesystem/object/process/thread/
+  mapping coverage, then calibrate original native observations. Run the full
+  relocated/offline corpus and positive/negative extraction controls under the
+  selected final development signing policy. Current helpers grant no native
+  state, output exemption or full-trace authority. A scalar enablement diagnostic
+  alone cannot close this work.
+- **R03 — measure Mac deployment costs.** Use complete native observations for
+  deployment/startup/I/O/FD/memory and multi-rank measurements, then freeze numeric
+  budgets. Existing Linux structural budgets remain; newer timing/RSS values
+  cannot silently replace host-scoped limits.
+- **R04 — retain and sign off actual supported cells.** Finish durable retention
+  of the latest approved Linux/Mac evidence, exact compatibility records and fresh
+  operator documentation. Verify each M2 requirement against its receipt and keep
+  unexecuted or unsupported cells explicit.
 
-## Recent functional delivery — 29 October
-
-The real Mac bootstrap object profile now captures its initial five descriptors
-and matches regular output backing against the parent's held references before
-tracing or GO. Its 120 local integration controls and separate wire checks pass;
-after source registration the genuine 34/41-source loaders and 31 targeted
-controls pass. This supplies initial backing association while preserving all
-full-oracle gates. Initial CWD selection now uses the admitted directory handle;
-37 focused controls pass, including real renamed/replaced-path, permission and
-parent-CWD checks. Independent review and clean source registration pass.
-
-[Linux compatibility PR #100](https://github.com/JBlaschke/glue_rs/pull/100)
-passes additional-patch, abi3 and genuine wrong-ABI refusal checks independently
-on both native Linux targets, with complete replay recorded in PR #102. M0/M1 are delivered, M2 remains active, M3 is planned
-and M4 deferred. M3 memory mode is separate from the first compact MVP.
-
-The active next Mac feature establishes an explicit runtime capture/image
-boundary, preserving the complete bootstrap prefix and accounting for exec
-thread changes. A raw sink-capability state policy follows it; unknown or
-ambiguous effects must fail closed. Generic runtime launch adoption, native
-calibration/corpus, Mac budgets and final sign-off remain open.
-
-The fixed generic runtime launch profile now has copied argv, protected launcher
-hashing, independent held CWD and opaque output/wait capture, with 53 integration
-executions, 22 planner controls and clean source registration passing. It remains
-unconfigured and untraced. Repeated image/thread handling is separately reviewed.
-The next source integration connects the actual trace profile and matching
-runtime/output evidence before the sink policy and native Mac corpus.
+The first complete native Mac corpus run remains the next major readiness
+checkpoint. Source control counts do not provide a reliable completion date.
+M1 is a usable development preview while M2 remains open. Ad-hoc signing is the
+selected development policy; Developer ID/notarization is additionally required
+before public macOS product-binary publication.
 
 ## What M3 still needs
 
