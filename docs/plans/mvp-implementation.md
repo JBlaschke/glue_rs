@@ -133,6 +133,55 @@ the retained inventories and reads both reports. Fresh native arm64 execution,
 complete independent replay and external retention remain pending; these source
 checks do not establish acceptance, change guest SIP or close M2.
 
+## 28 October: source-grounded BSD entry ABI
+
+Independent branch `codex/mvp-r02-bsd-entry-abi` starts at merged main `d1f0e3f`.
+Decision `4fd1d45` precedes implementation `a9840b9`.
+`decode_owned_bsd_entries` invokes strict `observe_raw_bsd` on original immutable
+bytes and the bounded iterable; complete transport/exact contract validation
+precedes all typing. It deliberately does not require closed pairs: failed and
+unpaired entry attempts and unsupported/orphan returns remain in the source.
+Only aggregate Mach/lifecycle counts, not their full bodies, are retained by
+that observer. Every typed entry/argument/role points into the original BSD phase.
+
+The exact 161 declarations contain 530 argument positions and 49 type spellings:
+189 signed32, 53 unsigned32, eleven signed64, 35 unsigned64 and 242 opaque-address64.
+Canonical widening is checked without masking; signed64 values are interpreted
+without truncation. Explicit aliases follow the underlying public typedefs:
+gid_t/socklen_t/mach_port_name_t/sae_associd_t remain unsigned32 even though the
+generator casts through int64. Unknown names, unsupported types or noncanonical
+values retain reasons and original raw bits. Undeclared trailing register words
+are not invented arguments. Pointer bits are never dereferenced, untagged or
+validated as actual memory; numeric descriptors confer no output exemption.
+
+All output is immutable with detached serialization. Native ABI calibration,
+path/FD/backing/port objects, process/cwd generations, operation/effect semantics,
+state eligibility and full acceptance remain unresolved. Existing readers,
+contracts, collector/native kits and state engines are byte-unchanged.
+
+All 25 controls pass on Python 3.15.2 and 3.9.6 at the exact future-CI argv.
+The first-attempt fourteen-payload frozen receipt is
+`.evidence-local/controls/owned-bsd-entry-abi-20261028/attempt-01`, manifest SHA256
+`04e88ab6e9226c0ed9087d5280dbd4eaf700a0fd97a9949b56255a20b8217169`.
+Six watched identities remain unchanged; no failed development attempt exists.
+The thirty-eight-payload public header/type audit in
+`.evidence-local/bsd-entry-type-audit-20261028` has manifest SHA256
+`b39457fceb0365ca8a8f5ba8167dd6b1c3eb22108683857b611ee6add68afc6d`.
+Nineteen public-source identities include seventeen typedef headers plus the
+pinned provider/generator; source links and physical anchors are in README.
+
+Independent peer report
+`.evidence-local/peer/bsd-entry-abi-semantic-review-20261028/review-report.json`
+has SHA256 `2ed454b553f57a09d5f5aa08294a7151da4d2431a434c044dcccfa874be976a9`
+and no findings. It independently checks every golden vector against the header
+map, complete-input semantics, canonical boundaries, immutable provenance and
+source/receipt identities. Root verifies the frozen inventory, all public/core
+hashes and the report. CI adds one invocation for 48 scripts after integrating merged arm repair PR #91
+(49 with the independent outcome PR #92). Shell syntax and staged
+diff checks pass; hosted CI proceeds independently. No native capture, VM/SIP
+change or Darwin/M2 acceptance is claimed.
+
+
 ## 28 October: standalone owned-trace inspector
 
 The separate `codex/mvp-r02-owned-trace-inspector` branch stacks on assessment

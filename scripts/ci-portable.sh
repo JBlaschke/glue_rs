@@ -63,6 +63,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-retain-kit03/test_prepare.py -v
         # Native SDK/signature controls keep their separate target receipts.
         python3 fixtures/mvp/macos-trace/open-intent/test_open_intent.py OpenIntentUnits -v
+        python3 fixtures/mvp/macos-trace/bsd-entry-abi/test_bsd_entry_abi.py -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         python3 fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v
         cargo test --workspace --locked
