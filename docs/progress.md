@@ -1703,3 +1703,14 @@ next. Mac's actual READY handoff adoption is in source review; authoritative
 object/path/lifetime semantics, the complete Mac oracle/corpus and Mac budgets
 remain the critical path. M3 memory mode remains planned. Exact source hashes,
 checks and evidence limits are in the implementation ledger and milestone table.
+
+## Linux compatibility milestone — 29 October 2026
+
+Both native Linux targets pass run `40863475232` at PR #100 source `8532d509`.
+Per-target independent replay passes 49 receipts, 196 oracle controls, 990 rank
+results and a separate genuine wrong-ABI refusal. This covers 34 application
+cases plus fifteen benchmark variants. Five unchanged structural/I/O/FD/scaling
+budget profiles pass; time/RSS gates are inapplicable on the different host
+fingerprints. No raw release is published and this cohort's external retention
+remains open. Mac runtime capture/state/oracle, native corpus and budgets remain
+the critical path to M2; READY adoption is PR #101 and held-CWD is active.

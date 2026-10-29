@@ -44,3 +44,35 @@ recorded host fingerprint differs from the frozen budget host. There is no fresh
 timing acceptance claim. Arm's seven-route result above predates this repair;
 these are distinct source revisions, not a same-source pair. Raw evidence remains
 local; this record neither publishes assets nor closes M2.
+
+## Current same-source compatibility cohort
+
+[Run 40863475232](https://github.com/JBlaschke/glue_rs/actions/runs/40863475232)
+at `8532d509a61ab8e762b0926ef55dc179d9b821cd` completes successfully on both
+native Linux architectures. Per target, complete independent replay verifies
+49 V02 receipts: 24 base applications, seven archive/uv routes, three patch/abi3
+cases and fifteen benchmark variants. All 196 oracle controls and 990 rank
+results verify. A separate genuine wrong-ABI build refuses before creating its
+output; retained streams, source identity, unchanged before/after inputs, sibling
+sentinel and pinned cp314 CFFI wheel/member bindings verify.
+
+The patch case uses CPython 3.13.15 with the identical included glue bytes as the
+3.13.16 source case. Both selected minors use the same original cryptography
+abi3 wheel/native inputs within each architecture. Explicit normalization remains
+a separate product transformation; no identical normalized-payload claim is made.
+
+[current-cohort-inventory.json](current-cohort-inventory.json) binds each original
+artifact ZIP, all 5,037 raw members, source revision and independent replay. The
+retained cryptography/cp314 CFFI wheels and members are actually rehashed. The
+original patch runtime archive and other provisioning archives are absent from
+this evidence set; replay verifies their exact source-pinned provenance chain,
+not absent archive bytes. Earlier failures and separate revisions above remain
+unchanged. The arm acquisition observed its selected job completed while the
+combined run was still pending; the later final workflow result is success.
+
+All five unchanged profiles pass structural, I/O, FD and scaling gates. Every
+time/RSS gate is inapplicable because these hosts differ from their frozen
+fingerprints. There is no fresh timing, cold-cache or unrestricted-host claim.
+Raw captures/tools remain local and in expiring CI artifacts; no new release
+assets are published, and external retention of this cohort remains open. Full
+Mac oracle/corpus, Mac budgets and final M2 sign-off remain separate.
