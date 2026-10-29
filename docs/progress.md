@@ -1860,3 +1860,104 @@ Existing runtime profiles/source closures/historical proof remain unchanged.
 Raw stop/query correlation and prospective policy adoption follow separately.
 M2 remains active; full Mac coverage/corpus, budgets and retention/sign-off stay
 open. M0/M1 are delivered, M3 memory planned, M4 deferred. SIP stays unchanged.
+
+
+## R02 — raw runtime FD interval policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fd-policy` evaluates original recipe captures
+through a fixed finite set of scalar FD and open operations. It retains every
+BSD/Mach attempt and raw phase, records forbidden writable-open/path intent even
+on failure, and handles overlapping possible effect windows conservatively.
+Unsupported effects establish a sticky uncertainty horizon; every exec retires
+all output-binding certainty. No post-exec sink exemption is granted.
+
+All 36 physical-byte FD controls pass on both Python versions without skips;
+existing recipe24/image34/boundary35 controls per interpreter are retained.
+Independent review verifies 238 final evidence payloads and 175 source identities
+with no open findings. Earlier attempts remain preserved. The Mach attempt
+projection repair and opaque-effect horizon are included. CI adds the new suite;
+existing configured source closures and historical native proof are unchanged.
+
+M2 remains active. The next feature observes original output backing after an
+owned exec stop; full BSD/Mach/process/mapping coverage, native Mac calibration,
+corpus, offline/environment checks, budgets and final sign-off remain. All native,
+state-feed, output-authority and full-acceptance flags remain false. M0/M1 remain
+delivered, M3 memory mode planned and M4 deferred.
+
+Ignored review receipt SHA256:
+`e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`.
+
+
+## R02 — scalar fcntl interval profile (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fcntl-policy` adds a fixed v2 raw-byte factory for
+F_DUPFD/F_GETFD/F_SETFD/F_DUPFD_CLOEXEC through both syscall forms. It consumes the
+recipe once, retains original arguments/outcomes and links immutable command
+rows to every original attempt. GETFD remains a point observation; SETFD changes
+only the selected descriptor bit. Duplication requires closed isolated lookup/
+reservation windows. Unsupported effects remain sticky and every exec retires
+output certainty. The original v1 fifteen-name factory and shape remain intact.
+
+The v2 profile adds explicit canonical-failure uncertainty and source-state
+consistency guards: a successful lookup cannot preserve conditional absence,
+and an allocator cannot replace known occupancy. Contradictions retire affected
+certainty and yield no alias/flag postcondition. The replacing dup2 route retains
+its distinct semantics. All authority/state/native/full-acceptance flags remain
+false. Existing configured/native source proof is unchanged.
+
+All 27 new physical-byte controls and 36 unchanged v1 controls pass on Python3.15
+and3.9, with zero skips. Independent review verifies 249 source identities and
+the retained prior/final receipts; both findings are resolved. Review SHA256:
+`f5b43a57f4a43514628b3ea0f1f627e459a6ffdfc5bdc72ca2a8843202bb8057`.
+Post-exec observation/correlation, full native coverage/corpus, budgets and
+retention/sign-off remain. M2 is active; M0/M1 delivered, M3 planned, M4 deferred.
+
+
+## R02 — conditional F_GETFL status-query semantics (29 October 2026)
+
+Feature `codex/mvp-r02-bsd-fgetfl-semantics` adds a separate fixed raw helper
+for F_GETFL through both syscall forms while preserving the four existing
+scalar command rows. A single strict pairing pass retains every original BSD/
+Mach phase and full argument/outcome words. Conditional status conversion keeps
+all private bits and event-only policy alternatives; no actual fileglob or policy
+state is observed. Only21 ordinary source constructions receive a conditional
+rule; other flag combinations remain unresolved with their exact alternatives.
+
+All24 independently encoded physical-byte controls pass on Python3.15/3.9,
+including legacy row equality, noncanonical/negative/control-flow results,
+late-failure conservation and immutable false-acceptance reports. Root review
+verifies11 retained artifacts and two actual strict-recipe private-hook checks
+per interpreter. Review SHA256:
+`8131182363f2e11040420a81e4498ac9bd919b18bf14176f0cf9dae8bdecc324`.
+Six exact core source identities are retained; supplemental writer byte hashes/
+physical lines remain explicitly unavailable. Pilot test faults stay preserved.
+No native/provider/security action or source-closure change occurs. CI adds
+the focused suite. Runtime policy adoption follows separately; full Mac oracle,
+corpus, budgets and retention/sign-off remain. M2 stays active, M0/M1 delivered,
+M3 memory planned and M4 deferred.
+
+
+## R02 — runtime status-query policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fgetfl-policy` adds a fixed v3 factory using
+F_GETFL point-query semantics after one original recipe read. It retains the
+complete signed argument, private status bits and conditional preimages without
+rewriting return-time table/flag/version/backing facts. Supported finite query
+coverage can be source-conditional-clean; all native/state/output/exemption/full
+authority remains false. Canonical failures retain a query gap; unsupported or
+unresolved conversions establish the sticky ENTRY uncertainty horizon. Every
+exec still retires all output certainty. Existing v1/v2 scopes/shapes remain.
+
+All36 v1,27 v2 and16 new v3 methods pass on Python3.15/3.9:158 executions,zero
+skips. Independent review verifies21 frozen artifacts and the six final logs.
+The preserved pilot's45 assertions failed because tests compared capture-hashed
+key spellings across different raw captures; corrected controls compare actual
+capture-local key/version structure. No engine semantics changed for that pilot.
+Forty-seven prior files/file sets and HEAD/ref remain unchanged. Review SHA256:
+`177c0604323fc0e8dae3ea5860c0a422d3cba117ca17686c83c5b3b8024370d4`.
+CI adds the focused suite; native/source-proof closures are unchanged.
+
+This profile still consumes the generic recipe, with no stopped-profile/observer
+adoption. First-exec controller/query correlation work proceeds separately.
+Native Mac coverage/corpus, budgets and retention/sign-off remain open. M2 stays
+active; M0/M1 delivered, M3 memory planned and M4 deferred.
