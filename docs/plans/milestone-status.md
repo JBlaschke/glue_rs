@@ -9,14 +9,15 @@ commits, tests, target scope and evidence limits.
 | --- | --- | --- |
 | M0 — Foundations | Delivered | Distribution contracts/layout, inventory, native-host CI and executable Python/Node provider proofs. |
 | M1 — Source preview | Delivered development preview | Lua 5.4/5.5, Python and Node build/run workflows, runtime selection, relocation/offline checks and runnable examples. Historical evidence recovery is still part of M2 closure. |
-| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Recorded x86_64 and fresh arm64 Linux cells pass 24 cases/five budgets; arm proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
+| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass the base 24 cases/five budgets; seven extra Python routes pass on each at distinct revisions. Arm base proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
 | M3 — Memory mode | Planned | Earlier narrow experiments exist. General runtime/native dependency acquisition, Linux memory execution and macOS mapping/TLS/unwind/runtime/signing gates remain. |
 | M4 — Expansion | Deferred | Broader compatibility, Julia bundles, combined executable, HPC sharing and optional mixed-language calls. Windows/BSD follow Linux/macOS completion. |
 
 ## Current work
 
-1. Diagnostic PR #89 and arm acceptance repair PR #91 reached `main` at
-   `43bf806`. The repair's eighteen portable checks pass. New PRs target `main`
+1. PRs #92–#95 reached `main` at `cb24720`, including the BSD entry, outcome and
+   descriptor/write semantics and both Linux acceptance records. PR #95's
+   eighteen portable checks pass. New PRs target `main`
    explicitly, and status/evidence changes stay on their own milestone branch.
 2. Native arm run `40754980497` at `30e8d08` and its complete independent replay
    pass all 24 cases and five unchanged budgets. The explicit benchmark-input
@@ -34,6 +35,20 @@ commits, tests, target scope and evidence limits.
    builds on them with eleven descriptor/write/flush/truncate forms and 37
    passing controls per tested interpreter. These are conditional source rules;
    native calibration, object binding and effect ordering remain open.
+4. [Scalar fcntl PR #96](https://github.com/JBlaschke/glue_rs/pull/96) adds four
+   descriptor duplication/flag commands through both syscall forms; thirty
+   controls pass on each tested Python version. The independent Linux
+   compatibility feature adds seven traced archive/uv cases. All seven pass native
+   arm execution/replay; [PR #99](https://github.com/JBlaschke/glue_rs/pull/99)'s
+   bounded streaming repair makes all seven pass on x86 too, with 46 receipts,
+   184 controls and 990 ranks independently verified. Time/RSS gates are
+   inapplicable on the repaired x86 host; accepted structural limits remain.
+5. Patch-version/abi3 and a genuine wrong-ABI refusal extension is implemented,
+   with 30 pure controls, 18 collector controls and 21 shared runner controls
+   passing on each tested interpreter. Both-target native execution/replay is
+   next. In parallel, real Mac READY handoff adoption is frozen for review after
+   120 local integration controls; five are actual unprivileged Mac transport
+   cases. Full Mac trace/oracle acceptance remains open.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -51,7 +66,10 @@ the missing Darwin oracle.
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
 - **R04:** finish remaining target retention and the exact current compatibility/
-  sign-off record. Arm64 evidence is regenerated, replayed, publicly retained and
+  sign-off record, including the current-source compatibility record, additional-patch with
+  unchanged launcher, abi3, genuine wrong-ABI refusal and fresh Mac cells. Archive/uv
+  execution now passes on both Linux targets at the explicitly recorded revisions. Arm64 evidence is regenerated,
+  replayed, publicly retained and
   independently downloaded/replayed. Same-source x86 refresh and replay pass;
   its fresh backup verifies locally and the prepared publication set awaits
   separate owner approval. The older recovered archive also remains retained.

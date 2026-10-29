@@ -492,6 +492,13 @@ impl RuntimeStage {
     }
 }
 fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
+    materialize_runtime_archive_in(path, &std::env::temp_dir())
+}
+
+fn materialize_runtime_archive_in(
+    path: &Path,
+    staging_parent: &Path,
+) -> Result<RuntimeStage, String> {
     let original_identity = InputIdentity::of(&read_bounded(path, 1024 * 1024 * 1024)?);
     let inventory = discovery::inspect_pbs_archive(path)?;
     let prefix = if inventory
@@ -515,17 +522,9 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
         })
         .map(|(name, _)| name.clone())
         .collect::<BTreeSet<_>>();
-    let mut batches = Vec::new();
-    let mut batch = BTreeSet::new();
-    let mut batch_bytes = 0u64;
     let mut total_bytes = 0u64;
     for name in &selection {
         let size = inventory.entries[name].size;
-        if size > glue_pbs::archive::MAX_SELECTED_BYTES {
-            return Err(
-                "one runtime archive member exceeds the 128 MiB retained-member bound".into(),
-            );
-        }
         total_bytes = total_bytes
             .checked_add(size)
             .ok_or("runtime selection overflow")?;
@@ -534,15 +533,6 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
                 "selected runtime archive bytes exceed the 1 GiB staged-input bound".into(),
             );
         }
-        if batch_bytes + size > glue_pbs::archive::MAX_SELECTED_BYTES {
-            batches.push(std::mem::take(&mut batch));
-            batch_bytes = 0;
-        }
-        batch.insert(name.clone());
-        batch_bytes += size;
-    }
-    if !batch.is_empty() {
-        batches.push(batch);
     }
     let reader = || -> Result<Box<dyn io::Read>, String> {
         let source = io::BufReader::new(File::open(path).map_err(|e| e.to_string())?);
@@ -566,44 +556,50 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
     };
     static NEXT: AtomicU64 = AtomicU64::new(0);
     let stage = loop {
-        let candidate = std::env::temp_dir().join(format!(
+        let candidate = staging_parent.join(format!(
             "glue-python-input-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
-        match fs::create_dir(&candidate) {
+        let mut directory = fs::DirBuilder::new();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::DirBuilderExt;
+            directory.mode(0o700);
+        }
+        match directory.create(&candidate) {
             Ok(()) => break RuntimeStage(candidate, original_identity),
             Err(e) if e.kind() == io::ErrorKind::AlreadyExists => continue,
             Err(e) => return Err(e.to_string()),
         }
     };
-    // Keep the selective reader's 128 MiB memory ceiling while staging larger
-    // ordinary full/install-only runtimes in bounded, independently validated passes.
-    for batch in &batches {
-        let selected = glue_pbs::archive::read_selected(
-            reader()?,
-            &glue_pbs::archive::Limits::default(),
-            batch,
-            glue_pbs::archive::MAX_SELECTED_BYTES,
-        )?;
-        if selected.inventory != inventory {
-            return Err("runtime archive changed during bounded selection".into());
-        }
-        for (name, bytes) in &selected.files {
+    // Keep retained-reader limits unchanged. Stream even a >128 MiB shared
+    // library in fixed chunks into private, disposable build-time staging.
+    let streamed = glue_pbs::archive::stream_selected(
+        reader()?,
+        &glue_pbs::archive::Limits::default(),
+        &selection,
+        1024 * 1024 * 1024,
+        |name, entry| {
             let dest = stage.0.join(name);
             fs::create_dir_all(dest.parent().ok_or("runtime input has no parent")?)
                 .map_err(|e| e.to_string())?;
-            fs::write(&dest, bytes).map_err(|e| e.to_string())?;
+            let file = fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&dest)
+                .map_err(|e| e.to_string())?;
             #[cfg(unix)]
             {
                 use std::os::unix::fs::PermissionsExt;
-                fs::set_permissions(
-                    &dest,
-                    fs::Permissions::from_mode(selected.inventory.entries[name].mode & 0o777),
-                )
-                .map_err(|e| e.to_string())?;
+                file.set_permissions(fs::Permissions::from_mode(entry.mode & 0o777))
+                    .map_err(|e| e.to_string())?;
             }
-        }
+            Ok(file)
+        },
+    )?;
+    if streamed != inventory {
+        return Err("runtime archive changed during bounded selection".into());
     }
     if InputIdentity::of(&read_bounded(path, 1024 * 1024 * 1024)?) != stage.1 {
         return Err("runtime archive changed during build-time inspection".into());
@@ -637,4 +633,148 @@ fn materialize_runtime_archive(path: &Path) -> Result<RuntimeStage, String> {
         }
     }
     Ok(stage)
+}
+
+#[cfg(test)]
+mod archive_staging_tests {
+    use super::*;
+    use std::io::{Read, Seek, SeekFrom};
+
+    struct TestRoot(PathBuf);
+    impl Drop for TestRoot {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn header(path: &str, size: u64, kind: u8, link: Option<&str>) -> [u8; 512] {
+        let mut header = [0; 512];
+        header[..path.len()].copy_from_slice(path.as_bytes());
+        header[100..108].copy_from_slice(b"0000755\0");
+        header[124..136].copy_from_slice(format!("{size:011o}\0").as_bytes());
+        header[156] = kind;
+        if let Some(link) = link {
+            header[157..157 + link.len()].copy_from_slice(link.as_bytes());
+        }
+        header[257..263].copy_from_slice(b"ustar\0");
+        header[263..265].copy_from_slice(b"00");
+        header[148..156].fill(b' ');
+        let checksum: u64 = header.iter().map(|v| u64::from(*v)).sum();
+        header[148..156].copy_from_slice(format!("{checksum:06o}\0 ").as_bytes());
+        header
+    }
+
+    fn member(writer: &mut impl Write, path: &str, size: u64, link: Option<&str>) {
+        writer
+            .write_all(&header(
+                path,
+                size,
+                if link.is_some() { b'2' } else { b'0' },
+                link,
+            ))
+            .unwrap();
+        io::copy(&mut io::repeat(0x55).take(size), writer).unwrap();
+        writer
+            .write_all(&vec![0; ((512 - size % 512) % 512) as usize])
+            .unwrap();
+    }
+
+    #[test]
+    fn large_runtime_member_stages_from_compressed_input_without_retaining_it() {
+        static NEXT_TEST: AtomicU64 = AtomicU64::new(0);
+        let root = TestRoot(std::env::temp_dir().join(format!(
+            "glue streaming archive {}-{}",
+            std::process::id(),
+            NEXT_TEST.fetch_add(1, Ordering::Relaxed)
+        )));
+        fs::create_dir(&root.0).unwrap();
+        let archive = root.0.join("runtime.tar.gz");
+        let file = File::create(&archive).unwrap();
+        let mut gzip = flate2::write::GzEncoder::new(file, flate2::Compression::fast());
+        member(&mut gzip, "python/bin/python3.13", 1, None);
+        let size = glue_pbs::archive::MAX_SELECTED_BYTES + 17;
+        member(&mut gzip, "python/lib/libpython3.13.so.1.0", size, None);
+        member(
+            &mut gzip,
+            "python/lib/libpython3.13.so",
+            0,
+            Some("libpython3.13.so.1.0"),
+        );
+        gzip.write_all(&[0; 1024]).unwrap();
+        gzip.finish().unwrap();
+        let original = fs::read(&archive).unwrap();
+        let stage = materialize_runtime_archive(&archive).unwrap();
+        let installation = stage.runtime_root().unwrap();
+        let library = installation.join("lib/libpython3.13.so.1.0");
+        assert_eq!(fs::metadata(&library).unwrap().len(), size);
+        let mut image = File::open(&library).unwrap();
+        let mut bytes = [0; 64];
+        image.read_exact(&mut bytes).unwrap();
+        assert_eq!(bytes, [0x55; 64]);
+        image.seek(SeekFrom::End(-64)).unwrap();
+        image.read_exact(&mut bytes).unwrap();
+        assert_eq!(bytes, [0x55; 64]);
+        drop(image);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(
+                fs::metadata(&stage.0).unwrap().permissions().mode() & 0o777,
+                0o700
+            );
+            assert_eq!(
+                fs::metadata(&library).unwrap().permissions().mode() & 0o777,
+                0o755
+            );
+            assert_eq!(
+                fs::canonicalize(installation.join("lib/libpython3.13.so")).unwrap(),
+                fs::canonicalize(&library).unwrap()
+            );
+        }
+        let staged_path = stage.0.clone();
+        drop(stage);
+        assert!(!staged_path.exists());
+        assert_eq!(fs::read(archive).unwrap(), original);
+    }
+
+    #[test]
+    #[cfg(unix)]
+    fn streaming_failure_removes_an_earlier_staged_prefix() {
+        let root = TestRoot(
+            std::env::temp_dir().join(format!("glue streaming failure {}", std::process::id())),
+        );
+        fs::create_dir(&root.0).unwrap();
+        let stages = root.0.join("private stages");
+        fs::create_dir(&stages).unwrap();
+        let archive = root.0.join("runtime.tar");
+        let mut output = File::create(&archive).unwrap();
+        member(&mut output, "python/bin/python3.13", 1, None);
+        // Canonical tar path, but the component exceeds native Linux/macOS
+        // filesystem limits. The first inventory succeeds before staging begins.
+        let long_path = format!("python/lib/{}", "x".repeat(1024));
+        let size = long_path.len() as u64 + 1;
+        output
+            .write_all(&header("python/long-name", size, b'L', None))
+            .unwrap();
+        output.write_all(long_path.as_bytes()).unwrap();
+        output.write_all(&[0]).unwrap();
+        output
+            .write_all(&vec![0; ((512 - size % 512) % 512) as usize])
+            .unwrap();
+        member(&mut output, "python/placeholder", 1, None);
+        output.write_all(&[0; 1024]).unwrap();
+        drop(output);
+        let original = fs::read(&archive).unwrap();
+        let inventory = discovery::inspect_pbs_archive(&archive).unwrap();
+        assert_eq!(inventory.entries[&long_path].size, 1);
+        let error = materialize_runtime_archive_in(&archive, &stages)
+            .err()
+            .unwrap();
+        assert!(
+            error.contains("os error"),
+            "expected sink filesystem error: {error}"
+        );
+        assert!(fs::read_dir(stages).unwrap().next().is_none());
+        assert_eq!(fs::read(archive).unwrap(), original);
+    }
 }
