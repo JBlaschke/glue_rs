@@ -45,7 +45,9 @@ static int mstat(void*c,int fd,struct tfo_backing*out,int*e)
 {
     struct model*m=c;assert(fd>=0&&fd<32);if(tick(m,e))return m->bad_result;*out=m->values[fd].backing;
     if(m->change_from&&m->reads>=m->change_from){
-        if(m->change==1)out->device++;if(m->change==2)out->inode++;if(m->change==3)out->links++;
+        if(m->change==1)out->device++;
+        if(m->change==2)out->inode++;
+        if(m->change==3)out->links++;
         if(m->change==4)out->mode^=0040;
     }return 0;
 }
@@ -86,7 +88,10 @@ static void callbacks(void)
     struct model m=model();struct tfo_snapshot s;struct tfo_plan p=plan();struct tfo_error e;
     for(int i=0;i<7;i++){
         struct tfo_operations o=ops(&m);if(i==0)o.getpid_fn=NULL;if(i==1)o.getppid_fn=NULL;if(i==2)o.signals_blocked_fn=NULL;
-        if(i==3)o.stat_fn=NULL;if(i==4)o.getfd_fn=NULL;if(i==5)o.getfl_fn=NULL;if(i==6)o.supported=2;
+        if(i==3)o.stat_fn=NULL;
+        if(i==4)o.getfd_fn=NULL;
+        if(i==5)o.getfl_fn=NULL;
+        if(i==6)o.supported=2;
         assert(tfo_snapshot_in_owned_child(&p,111,&o,&s,&e)==-1&&e.stage==TFO_STAGE_OPERATIONS);empty_snapshot(&s);
     }
     struct tfo_operations o=ops(&m);o.supported=0;
@@ -98,7 +103,10 @@ static void owner_masks(void)
     struct tfo_plan p=plan();struct tfo_snapshot s;struct tfo_error e;
     for(int i=0;i<6;i++){
         struct model m=model();uint64_t owner=111;if(i==0)owner=0;if(i==1)owner=(uint64_t)INT_MAX+1;if(i==2)m.self=111;
-        if(i==3)m.parent=333;if(i==4)m.self=0;if(i==5)m.parent=0;struct tfo_operations o=ops(&m);
+        if(i==3)m.parent=333;
+        if(i==4)m.self=0;
+        if(i==5)m.parent=0;
+        struct tfo_operations o=ops(&m);
         assert(tfo_snapshot_in_owned_child(&p,owner,&o,&s,&e)==-1&&e.stage==TFO_STAGE_CHILD&&!m.reads);empty_snapshot(&s);
     }
     for(int result=-2;result<=0;result++){
@@ -247,7 +255,9 @@ static int linux_inventory(void*c,pid_t pid,struct td_record *out,size_t bytes,i
         if(!strcmp(v->d_name,".")||!strcmp(v->d_name,".."))continue;
         const char *s=v->d_name;if(!*s){error=EINVAL;break;}for(;*s;s++)if(*s<'0'||*s>'9'){error=EINVAL;break;}if(error)break;
         errno=0;char*end=NULL;long fd=strtol(v->d_name,&end,10);if(errno||!end||*end||fd<0||fd>INT_MAX){error=EOVERFLOW;break;}
-        if((int)fd==own)continue;if(n>=cap){error=EOVERFLOW;break;}out[n++]=(struct td_record){(int32_t)fd,0};
+        if((int)fd==own)continue;
+        if(n>=cap){error=EOVERFLOW;break;}
+        out[n++]=(struct td_record){(int32_t)fd,0};
     }
  done:
     if(closedir(d)&&!error)error=errno?errno:EIO;
@@ -259,7 +269,10 @@ struct native_report{int snapshot_result,closure_result;struct td_error closure_
 _Static_assert(sizeof(struct native_report)<=512,"bounded atomic test report");
 static int native_case(const char *name)
 {
-    if(getuid()==0||geteuid()==0)return 77;struct rlimit limit;assert(!getrlimit(RLIMIT_NOFILE,&limit));if(limit.rlim_cur<32)return 77;
+    if(getuid()==0||geteuid()==0)return 77;
+    struct rlimit limit;
+    assert(!getrlimit(RLIMIT_NOFILE,&limit));
+    if(limit.rlim_cur<32)return 77;
     /* Ordinary diagnostic writes can set Darwin FWASWRITTEN on a shared
      * fileglob. Establish that test I/O before the full-word flag baselines. */
     static const char banner[]="owned descriptor control starting\n";
@@ -363,13 +376,18 @@ static int native_case(const char *name)
         else owned=1;
     }
     if(owned&&wait_owned(child,&status,1,&owned,&actually_reaped))cleanup_failed=1;
-    if(independent>=0&&close(independent))cleanup_failed=1;if(read_fd>=0&&close(read_fd))cleanup_failed=1;
+    if(independent>=0&&close(independent))cleanup_failed=1;
+    if(read_fd>=0&&close(read_fd))cleanup_failed=1;
     for(unsigned i=0;i<5;i++)if(prepared.copies[i]>=0&&close(prepared.copies[i]))cleanup_failed=1;
     for(int i=0;i<3;i++)if(close(source[i]))cleanup_failed=1;
-    if(close(wrong))cleanup_failed=1;if(close(sentinel))cleanup_failed=1;
+    if(close(wrong))cleanup_failed=1;
+    if(close(sentinel))cleanup_failed=1;
     for(int i=0;i<2;i++){if(gate[i]>=0&&close(gate[i]))cleanup_failed=1;if(channel[i]>=0&&close(channel[i]))cleanup_failed=1;}
-    if(unlink(input))cleanup_failed=1;if(unlink(outpath))cleanup_failed=1;
-    if(unlink(errpath))cleanup_failed=1;if(unlink(wrongpath))cleanup_failed=1;if(rmdir(directory))cleanup_failed=1;
+    if(unlink(input))cleanup_failed=1;
+    if(unlink(outpath))cleanup_failed=1;
+    if(unlink(errpath))cleanup_failed=1;
+    if(unlink(wrongpath))cleanup_failed=1;
+    if(rmdir(directory))cleanup_failed=1;
     /* Exercise a genuine cleanup syscall failure after all owned paths are gone. */
     if(!strcmp(name,"native-parent-cleanup-failure")&&rmdir(directory))cleanup_failed=1;
     if(pipe_policy_set){if(sigaction(SIGPIPE,&saved_pipe,NULL))cleanup_failed=1;else pipe_policy_restored=1;}
@@ -400,5 +418,7 @@ int main(int argc,char**argv)
         {"success",success},{"plans",plans},{"callbacks",callbacks},{"owner-masks",owner_masks},
         {"errors",errors},{"changes",changes},{"final-guards",final_guards},{"match-errors",match_errors},{"match-shapes",match_shapes},
         {"match-preflight",match_preflight},{"stale-errno-flags",stale_errno_flags}};
-    for(unsigned i=0;i<sizeof(cases)/sizeof(cases[0]);i++)if(!strcmp(argv[1],cases[i].name)){cases[i].run();puts(cases[i].name);return 0;}return 2;
+    for(unsigned i=0;i<sizeof(cases)/sizeof(cases[0]);i++)
+        if(!strcmp(argv[1],cases[i].name)){cases[i].run();puts(cases[i].name);return 0;}
+    return 2;
 }
