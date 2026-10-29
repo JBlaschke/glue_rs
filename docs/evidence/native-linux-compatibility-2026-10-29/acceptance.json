@@ -1,0 +1,63 @@
+{
+  "source": "e90e21a40f7276c8a63401df28ba09d9cd6d4679",
+  "run_id": 40851345339,
+  "run_overall_status": "failure",
+  "trace_policy": "traceable-native-syscalls-v1",
+  "cells": [
+    {
+      "architecture": "aarch64",
+      "source": "e90e21a40f7276c8a63401df28ba09d9cd6d4679",
+      "run_id": 40851345339,
+      "job_status": "success",
+      "artifact_id": 12887952402,
+      "original_zip": {
+        "size": 185423069,
+        "sha256": "5c0bf4a395b1ac35a1fc6cda138bc6450051372aca4bd82be38b0445b17320e2"
+      },
+      "raw_files": 4952,
+      "raw_bytes": 837076816,
+      "raw_manifest_sha256": "27abdeef8762af031a1d2c95689204595e17146ed6e40f3abfef86a3e7a34922",
+      "replay_status": "passed",
+      "replay_sha256": "00ad044d4ccd79961862ea94a36baebee88bf5535ec4fadb30ff4a16c1734158",
+      "base_case_receipts_verified": 24,
+      "benchmark_receipts_verified": 15,
+      "unchanged_budget_profiles": 5,
+      "full_m2_acceptance": false,
+      "compatibility_routes_passed": 7,
+      "oracle_controls_verified": 184,
+      "rank_results_verified": 990
+    },
+    {
+      "architecture": "x86_64",
+      "source": "e90e21a40f7276c8a63401df28ba09d9cd6d4679",
+      "run_id": 40851345339,
+      "job_status": "failure",
+      "artifact_id": 12888710333,
+      "original_zip": {
+        "size": 185339739,
+        "sha256": "1aef0bea7ca713f092f2bb3d64f2376f5ff7844579d6a32437e1d87a192f3e69"
+      },
+      "raw_files": 4930,
+      "raw_bytes": 829307519,
+      "raw_manifest_sha256": "50e6969da66299b9c13094039fde2f72ba6291cc1cf1e2bc165c72f153a6dc17",
+      "replay_status": "failed",
+      "replay_sha256": "0252e61735355cc0b8f218eb7568938e97cd5863527205eec5dff62187425a14",
+      "base_case_receipts_verified": 24,
+      "benchmark_receipts_verified": 15,
+      "unchanged_budget_profiles": 5,
+      "full_m2_acceptance": false,
+      "compatibility_routes_passed": 5,
+      "compatibility_routes_failed": [
+        "python-archive-full",
+        "python-archive-install-only"
+      ],
+      "base_oracle_controls_verified": 156,
+      "selected_route_oracle_controls_verified": 20,
+      "selected_route_replay_sha256": "4ed95994d4d6055c4564d8829699de45d2939e1f2e2939bb55d75c3a8c0857e8",
+      "failure": "Required lib/libpython3.13.so.1.0 is 143259064 bytes; retained-member staging rejects it above 128 MiB. Failed raw receipts remain failed."
+    }
+  ],
+  "external_durability_established": false,
+  "raw_release_published": false,
+  "scope": "Native executions followed by independent offline replay; no archived applications executed during replay. Time/RSS remain host-fingerprint scoped. X86 failure is not promoted; streaming repair needs a new native run."
+}

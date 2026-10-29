@@ -1,0 +1,17 @@
+{
+  "revision": 1,
+  "case": "python-abi3-compatibility",
+  "extends": "python-abi3",
+  "prepare": {
+    "argv": [
+      "${GLUE_MVP_PYTHON_TOOL}",
+      "{repo}/fixtures/mvp/python-matrix/prepare.py",
+      "{inputs}",
+      "${GLUE_MVP_PYTHON_RELATIVE}",
+      "${GLUE_MVP_PYTHON_ENV_KIND}",
+      "--native",
+      "--receipt-output",
+      "{output}/environment-receipt.json"
+    ]
+  }
+}
