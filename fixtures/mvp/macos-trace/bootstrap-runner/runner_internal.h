@@ -5,6 +5,7 @@
 #ifdef GLUE_RUNTIME_PROFILE
 #include "../bootstrap-runtime-runner/runtime_catalog.h"
 #include "../bootstrap-runtime-runner/runtime_request.h"
+#include "../bootstrap-runtime-runner/runtime_witness.h"
 #endif
 #include "runner_protocol.h"
 #include "../bootstrap-signals/bootstrap_signals.h"
@@ -28,6 +29,8 @@ struct nr_attempt {
  const struct nrr_catalog *runtime_catalog;
  struct tl_plan runtime_plan;
  int runtime_cwd_fd,runtime_outputs_valid;
+ int runtime_witness_attempted,runtime_delivery_attempted;
+ int runtime_witness_written,runtime_delivery_written;
  struct ba_metadata runtime_cwd_metadata;
  uint64_t runtime_stream_sizes[2];
  int runtime_stream_observed[2],runtime_stream_oversize[2];

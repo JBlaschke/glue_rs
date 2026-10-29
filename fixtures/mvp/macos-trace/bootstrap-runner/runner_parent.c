@@ -100,9 +100,20 @@ int nr_execute(struct nr_attempt *a) {
 #ifdef GLUE_FD_OBJECTS
  if(nr_before(a,a->deadline,NR_READY))return -1;
  int live=wait_once(a);if(live)return live<0?-1:nr_fail(a,NR_READY,NR_CHILD_STATUS,0,-1);
+#ifdef GLUE_RUNTIME_PROFILE
+ struct tfo_reference_observation observation;
+ int matched=tfo_match_regular_outputs_observed(&a->stream.ready_objects,a->held_outputs,tfo_native_operations(),
+                             &a->output_matches,&observation,&a->object_match_error);
+ /* Preserve original complete sample prefixes even when matching failed. This
+  * is before any trace start or gate operation; never reconstruct observations. */
+ if(matched)(void)nr_fail(a,NR_READY,NR_HELPER,a->object_match_error.system_errno,(int)a->object_match_error.reason);
+ if(nrw_record_ready(a,&observation))return -1;
+ if(matched)return -1;
+#else
  if(tfo_match_regular_outputs(&a->stream.ready_objects,a->held_outputs,tfo_native_operations(),
                              &a->output_matches,&a->object_match_error))
   return nr_fail(a,NR_READY,NR_HELPER,a->object_match_error.system_errno,(int)a->object_match_error.reason);
+#endif
  if(nr_before(a,a->deadline,NR_READY))return -1;
  a->objects_matched=1;
 #endif
@@ -134,7 +145,17 @@ int nr_execute(struct nr_attempt *a) {
 #else
   a->go_attempted=1;
   int written=bio_write_record(a->gate[1],go,sizeof(go),a->deadline,bio_native_operations(),&a->go_result,&a->go_error);
-  int closed=nr_close_owned(a,&a->gate[1],NR_GO);a->go_closed=1;
+#ifdef GLUE_RUNTIME_PROFILE
+  /* Preserve the original failed write before a later close can also fail. */
+  if(written)(void)nr_fail(a,NR_GO,NR_HELPER,a->go_error.system_errno,(int)a->go_error.reason);
+#endif
+  int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;
+#ifdef GLUE_RUNTIME_PROFILE
+  a->go_closed=!closed;
+  if(nrw_record_delivery(a,written,closed,close_errno))return -1;
+#else
+  a->go_closed=1;(void)close_errno;
+#endif
   if(written)return nr_fail(a,NR_GO,NR_HELPER,a->go_error.system_errno,(int)a->go_error.reason);
   if(closed)return -1;
 #endif
@@ -144,8 +165,14 @@ int nr_execute(struct nr_attempt *a) {
   int reported=nr_trace_gate_result(a,closed,close_errno);
   if(closed || reported)return -1;
 #else
+#ifdef GLUE_RUNTIME_PROFILE
+  int closed=nr_close_owned(a,&a->gate[1],NR_GO);int close_errno=closed?errno:0;a->go_closed=!closed;
+  if(nrw_record_delivery(a,0,closed,close_errno))return -1;
+  if(closed)return -1;
+#else
   if(nr_close_owned(a,&a->gate[1],NR_GO))return -1;
   a->go_closed=1;
+#endif
 #endif
  }
 #ifdef GLUE_OWNED_TRACING

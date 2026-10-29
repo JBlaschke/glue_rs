@@ -47,6 +47,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_bootstrap_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-object-runner/test_object_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_witness.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v
@@ -63,6 +64,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_trace_backend.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_boundary.py -v
         python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_images.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_recipe.py -v
         python3 fixtures/mvp/macos-trace/bsd-outcomes/test_bsd_outcomes.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_assessment.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_inspect_trace.py -v

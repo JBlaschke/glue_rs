@@ -124,10 +124,12 @@ static int output_shape(const struct tfo_entry *v,int role,int child,struct tfo_
     if(child && (v->descriptor_flags&FD_CLOEXEC))return fail(e,TFO_STAGE_MATCH,TFO_REASON_CLOEXEC,0,role,v->fd);
     return 0;
 }
-int tfo_match_regular_outputs(const struct tfo_snapshot *input,const int held[2],
-    const struct tfo_operations *operations,struct tfo_matches *out,struct tfo_error *e)
+static int match_regular_outputs(const struct tfo_snapshot *input,const int held[2],
+    const struct tfo_operations *operations,struct tfo_matches *out,
+    struct tfo_reference_observation *observation,struct tfo_error *e)
 {
     if(out)reset_matches(out);
+    if(observation)memset(observation,0,sizeof(*observation));
     if(!e)return -1;
     reset_error(e);
     if(!input||!held||!out)return fail(e,TFO_STAGE_PLAN,TFO_REASON_ARGUMENT,0,-1,-1);
@@ -138,10 +140,14 @@ int tfo_match_regular_outputs(const struct tfo_snapshot *input,const int held[2]
     const struct tfo_operations o=*operations;
     if((uint64_t)o.getpid_fn(o.context)!=snapshot.controller_pid)return fail(e,TFO_STAGE_CONTROLLER,TFO_REASON_NOT_CONTROLLER,0,-1,-1);
     struct tfo_entry first[2];
-    for(unsigned i=0;i<2;i++)if(read_entry(references[i],(int)i+1,TFO_STAGE_REFERENCE_FIRST,&o,&first[i],e))return -1;
+    for(unsigned i=0;i<2;i++){
+        if(read_entry(references[i],(int)i+1,TFO_STAGE_REFERENCE_FIRST,&o,&first[i],e))return -1;
+        if(observation){observation->samples[i]=first[i];observation->completed_samples=i+1;}
+    }
     for(unsigned i=0;i<2;i++){
         struct tfo_entry again;
         if(read_entry(references[i],(int)i+1,TFO_STAGE_REFERENCE_SECOND,&o,&again,e))return -1;
+        if(observation){observation->samples[2+i]=again;observation->completed_samples=3+i;}
         if(!same_entry(&first[i],&again))return fail(e,TFO_STAGE_STABILITY,TFO_REASON_CHANGED,0,(int)i+1,references[i]);
     }
     for(unsigned i=0;i<2;i++){
@@ -162,6 +168,21 @@ int tfo_match_regular_outputs(const struct tfo_snapshot *input,const int held[2]
         v->status_flags=first[i].status_flags;v->backing=first[i].backing;
     }
     pending.ready=1;*out=pending;return 0;
+}
+int tfo_match_regular_outputs(const struct tfo_snapshot *input,const int held[2],
+    const struct tfo_operations *operations,struct tfo_matches *out,struct tfo_error *e)
+{
+    return match_regular_outputs(input,held,operations,out,NULL,e);
+}
+int tfo_match_regular_outputs_observed(const struct tfo_snapshot *input,const int held[2],
+    const struct tfo_operations *operations,struct tfo_matches *out,
+    struct tfo_reference_observation *observation,struct tfo_error *e)
+{
+    if(observation)return match_regular_outputs(input,held,operations,out,observation,e);
+    if(out)reset_matches(out);
+    if(!e)return -1;
+    reset_error(e);
+    return fail(e,TFO_STAGE_PLAN,TFO_REASON_ARGUMENT,0,-1,-1);
 }
 static pid_t native_pid(void *c){(void)c;return getpid();}
 static pid_t native_ppid(void *c){(void)c;return getppid();}

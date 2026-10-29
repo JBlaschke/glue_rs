@@ -391,6 +391,14 @@ def pair_runtime_images_raw(program: bytes, probes: bytes, errors: bytes,
     Unknown Mach/creation/rights or ambiguous lifetimes refuse with no prefix.
     """
     launch = _V1.validate_launch_evidence(launch_evidence, owner_pid=owner_pid, target_pid=target_pid)
+    return _pair_with_launch(program, probes, errors, event_lines, owner_pid=owner_pid,
+                             target_pid=target_pid, contract_bytes=contract_bytes, launch=launch)
+
+
+def _pair_with_launch(program, probes, errors, event_lines, *, owner_pid, target_pid,
+                      contract_bytes, launch):
+    # Fixed private bridge only. Public factories independently validate their
+    # exact original launch assets; no public caller supplies normalized state.
     _V1._bytes(contract_bytes, _RAW.CONTRACT_BYTES, _RAW.CONTRACT_BYTES, 'pinned contract bytes')
     _require(_V1._sha(contract_bytes) == _RAW.CONTRACT_SHA256, 'pinned contract digest')
     table = _RAW._CONTRACT_HELPERS.parse_table(contract_bytes)

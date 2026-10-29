@@ -40,6 +40,7 @@ int main(int argc,char**argv){assert(argc==3);int mode=atoi(argv[1]);assert(strl
  static const struct tl_span args[]={{(const uint8_t*)"run",3}};struct tl_recipe recipe={TL_AARCH64_DARWIN,args,1,0};struct tl_error e;
  assert(!tl_prepare(&recipe,(struct tl_span){(const uint8_t*)"/fixture/glue",13},&a.runtime_plan,&e));
  put(a.output_fd,"app.stdout",mode==1?NRR_OUTPUT_BYTES+1:257,&a.stdout_identity);put(a.output_fd,"app.stderr",19,&a.stderr_identity);
+ a.runtime_witness_written=a.runtime_delivery_written=1; /* explicitly modeled prior packet retention */
  a.forked=a.reaped=a.ready_matched=a.objects_matched=a.output_matches.ready=a.go_attempted=a.go_closed=1;a.stream.end=BW_END_ATTEMPT_WITHOUT_REPORTED_EXEC_ERROR;
  a.owner=getpid();pid_t child=fork();assert(child>=0);if(child==0){if(mode==6){kill(getpid(),SIGKILL);_exit(99);}_exit(mode==2?7:0);}
  a.child=child;assert(waitpid(child,&a.wait_status,0)==child);if(mode==2||mode==6)nr_fail(&a,NR_WAIT,NR_CHILD_STATUS,0,-1);

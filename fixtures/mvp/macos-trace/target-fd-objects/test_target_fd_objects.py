@@ -26,6 +26,8 @@ class TargetFdObjectTests(unittest.TestCase):
                   source.parent / "target-endpoints/target_endpoints.c",
                   source.parent / "target-descriptors/target_descriptors.c"]
         command = ["/usr/bin/cc", "-std=c11", "-Wall", "-Wextra", "-Werror", "-O2"]
+        if os.environ.get("GLUE_TFO_TEST_SANITIZE") == "1":
+            command += ["-O1", "-g", "-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
         if platform.system() == "Darwin":
             sdk = subprocess.check_output(["/usr/bin/xcrun", "--sdk", "macosx", "--show-sdk-path"], text=True).strip()
             command += ["-isysroot", sdk, "-mmacosx-version-min=11.0"]
@@ -73,6 +75,12 @@ class TargetFdObjectTests(unittest.TestCase):
     def test_regular_single_link_write_only_distinct_output_requirements(self): self.control("match-shapes")
     def test_snapshot_and_controller_preflight_before_reference_reads(self): self.control("match-preflight")
     def test_stale_errno_and_status_flags_are_preserved(self): self.control("stale-errno-flags")
+    def test_observed_success_retains_exact_sample_order_and_all_flag_bits(self): self.control("observed-success")
+    def test_observed_all_twelve_scalar_failures_retain_only_completed_original_rows(self): self.control("observed-errors")
+    def test_observed_changed_second_rows_survive_mismatch_without_normalization(self): self.control("observed-changes")
+    def test_observed_preflight_null_outputs_and_error_clear_stale_samples_without_reads(self): self.control("observed-preflight")
+    def test_observed_post_read_shape_identity_and_controller_refusals_retain_all_rows(self): self.control("observed-after-reads")
+    def test_observed_and_original_api_have_identical_results_calls_and_errors(self): self.control("observed-legacy-equivalence")
 
     @unittest.skipUnless(platform.system() in ("Darwin", "Linux") and os.getuid() != 0 and os.geteuid() != 0,
                          "native fixture requires unprivileged Mac or Linux")
