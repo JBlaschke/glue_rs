@@ -2021,3 +2021,26 @@ No TS/controller/kit, provider, VM or security adoption occurs in this feature.
 M2 remains active; bounded retention/controller integration, native Mac corpus,
 full oracle, budgets and final sign-off remain. M0/M1 delivered, M3 memory mode
 planned separately, M4 deferred. Guest SIP stays enabled.
+
+
+## R02 — file-synced original output-observation retention (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-output-retention` adds a one-attempt opaque writer
+from the actual complete/matched owned observer and unchanged original deadline.
+It writes exactly4096 encoded bytes to the fixed exclusive no-follow0600 file in
+a borrowed private held directory. Bounded write/EINTR attempts, actual prefix,
+fsync and once-only close outcomes survive later clock errors. Failed close stays
+ownership-unresolved; no retry, replay, overwrite or partial-file deletion occurs.
+The module sends no signal. File-synced content does not claim durable namespace,
+power-loss safety or persistence before a future continuation.
+
+Independent review approves the eight corrected sources and retained48 original
+method executions (12 per Python3.15/3.9, normal and ASan/UBSan), plus four focused
+null-argument diagnostic rechecks. Actual files/OS operations are used while the
+observer stop/lease is explicitly modeled; no child or provider ran. All12
+source-location controls also pass on Python3.15. Required pinned Rust workspace
+tests, formatting and Clippy pass with incremental compilation disabled after a
+retained broken-cache failure. CI adds the focused suite. The writer is not yet adopted into a controller or reader.
+All native/state/exemption/CONT/full-acceptance claims remain false. M2 stays
+active: controller and complete Mac coverage/oracle/corpus, budgets and final
+retention/sign-off remain. M0/M1 delivered, M3 memory planned, M4 deferred.
