@@ -35,6 +35,8 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
         python3 fixtures/mvp/macos-trace/target-endpoints/test_target_endpoints.py -v
         python3 fixtures/mvp/macos-trace/target-fd-objects/test_target_fd_objects.py -v
+        python3 fixtures/mvp/macos-trace/target-cwd/test_target_cwd.py -v
+        python3 fixtures/mvp/macos-trace/target-launch/test_target_launch.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-wire/test_bootstrap_wire.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-object-wire/test_bootstrap_object_wire.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
@@ -47,6 +49,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-inspector/test_inspect_deployment.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_bootstrap_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-object-runner/test_object_runner.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v

@@ -90,7 +90,11 @@ int nr_execute(struct nr_attempt *a) {
   * form child endpoint declarations. Preserve these before parent close. */
  expected.kept_fds[3]=a->ready_context_fds[0];expected.kept_fds[4]=a->ready_context_fds[1];
  memcpy(expected.signal_policy_sha256,a->policy_sha,32);struct br_error be;
+#ifdef GLUE_RUNTIME_PROFILE
+ a->ready_fault=rr_ready_compare(&a->request,&expected,&a->ready,&be);
+#else
  a->ready_fault=br_ready_compare(&a->request,&expected,&a->ready,&be);
+#endif
  if(a->ready_fault!=BR_OK)return nr_fail(a,NR_READY,NR_MISMATCH,0,(int)be.field);
  a->ready_matched=1;
 #ifdef GLUE_FD_OBJECTS
@@ -203,6 +207,9 @@ void nr_cleanup(struct nr_attempt *a) {
 #endif
   for(unsigned i=0;i<2;i++){(void)nr_close_owned(a,&a->gate[i],NR_CLEANUP);(void)nr_close_owned(a,&a->status[i],NR_CLEANUP);}
   for(size_t i=0;i<a->admission.owned_count;i++)(void)nr_close_owned(a,&a->admission.components[i].fd,NR_CLEANUP);
+#ifdef GLUE_RUNTIME_PROFILE
+  (void)nr_close_owned(a,&a->runtime_cwd_fd,NR_CLEANUP);
+#endif
  }
 #ifdef GLUE_OWNED_TRACING
  nr_trace_close_backend(a);
@@ -220,8 +227,17 @@ int nr_native_run_once(const char *request_path,const char *output_path) {
 #else
  /* No unsafe native mode exists. Reject before input/output opens or signals. */
  if(getuid()!=0 || geteuid()!=0)return 2;
+#ifdef GLUE_RUNTIME_PROFILE
+ #if !defined(__aarch64__) && !defined(__arm64__)
+ return 2;
+ #endif
+ const struct nrr_catalog *runtime_catalog=nrr_compiled_catalog();if(!runtime_catalog)return 2;
+ struct nr_attempt a;memset(&a,0,sizeof(a));a.runtime_catalog=runtime_catalog;a.runtime_cwd_fd=-1;
+#else
  const struct nr_catalog *catalog=nr_compiled_catalog();if(!catalog)return 2;
- struct nr_attempt a;memset(&a,0,sizeof(a));a.catalog=catalog;a.owner=getpid();a.child=-1;a.output_fd=-1;
+ struct nr_attempt a;memset(&a,0,sizeof(a));a.catalog=catalog;
+#endif
+ a.owner=getpid();a.child=-1;a.output_fd=-1;
  for(unsigned i=0;i<5;i++){a.sources[i]=-1;a.endpoints.copies[i]=-1;}
 #ifdef GLUE_FD_OBJECTS
  for(unsigned i=0;i<2;i++)a.held_outputs[i]=-1;
@@ -229,6 +245,9 @@ int nr_native_run_once(const char *request_path,const char *output_path) {
  for(unsigned i=0;i<2;i++){a.gate[i]=-1;a.status[i]=-1;}
  for(unsigned i=0;i<BA_COMPONENT_COUNT;i++)a.admission.components[i].fd=-1;
  if(a.owner<=0 || a.owner>INT32_MAX)return 2;
+#ifdef GLUE_RUNTIME_PROFILE
+ if(nrr_prepare(&a))return 2;
+#endif
  if(nr_clock(&a,&a.start_clock) || a.start_clock>UINT64_MAX-UINT64_C(10000000000))return 2;
  uint64_t limit=a.start_clock+UINT64_C(10000000000);a.deadline=(struct bio_time){limit/1000000000,limit%1000000000};
  a.signals_initialized=1;
@@ -254,7 +273,11 @@ int nr_native_run_once(const char *request_path,const char *output_path) {
   /* Finalization closes the held output dir before result promotion. Never add
    * a fallible operation here after successful nr_finish_outputs. */
   if(nr_finish_outputs(&a))return 2;
+#ifdef GLUE_RUNTIME_PROFILE
+  return a.error.stage==NR_NONE&&a.runtime_outputs_valid?0:1;
+#else
   return a.error.stage==NR_NONE&&a.probe_matched?0:1;
+#endif
  }
 #ifdef GLUE_OWNED_TRACING
  (void)nr_trace_parent_closed(&a,1);

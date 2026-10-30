@@ -2,6 +2,10 @@
 #define GLUE_RUNNER_INTERNAL_H
 #define _DARWIN_C_SOURCE 1
 #include "runner_catalog.h"
+#ifdef GLUE_RUNTIME_PROFILE
+#include "../bootstrap-runtime-runner/runtime_catalog.h"
+#include "../bootstrap-runtime-runner/runtime_request.h"
+#endif
 #include "runner_protocol.h"
 #include "../bootstrap-signals/bootstrap_signals.h"
 #include "../target-endpoints/target_endpoints.h"
@@ -20,6 +24,14 @@ enum nr_reason {NR_NO_ERROR,NR_INVALID,NR_UNSUPPORTED,NR_NOT_ROOT,NR_UNCONFIGURE
 struct nr_error {enum nr_stage stage;enum nr_reason reason;int saved_errno;int detail;};
 struct nr_attempt {
  const struct nr_catalog *catalog;
+#ifdef GLUE_RUNTIME_PROFILE
+ const struct nrr_catalog *runtime_catalog;
+ struct tl_plan runtime_plan;
+ int runtime_cwd_fd,runtime_outputs_valid;
+ struct ba_metadata runtime_cwd_metadata;
+ uint64_t runtime_stream_sizes[2];
+ int runtime_stream_observed[2],runtime_stream_oversize[2];
+#endif
  struct nr_error error,cleanup_error;
  uint8_t request_wire[BR_MAX_WIRE];size_t request_size;struct br_request request;
  uint8_t request_sha[32],catalog_sha[32],policy_sha[32];char request_hex[65];
