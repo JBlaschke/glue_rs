@@ -27,7 +27,8 @@ RUNNER_SOURCES = tuple(BASE + n for n in (
     'bootstrap-io/bootstrap_io.c', 'bootstrap-signals/bootstrap_signals.c',
     'bootstrap-admission/bootstrap_admission.c', 'target-credentials/target_credentials.c',
     'target-descriptors/target_descriptors.c', 'target-endpoints/target_endpoints.c',
-    'bootstrap-object-wire/bootstrap_object_wire.c', 'target-fd-objects/target_fd_objects.c'))
+    'bootstrap-object-wire/bootstrap_object_wire.c', 'target-fd-objects/target_fd_objects.c',
+    'target-cwd/target_cwd.c'))
 POLICY = replace(
     core.LEGACY_POLICY,
     registry_relative=REGISTRY_RELATIVE, registry_schema='glue-bootstrap-fd-objects-kit-inputs-v1',
