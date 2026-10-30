@@ -8,6 +8,7 @@
 #define BIO_GO_RECORD_BYTES 64u
 #define BIO_STATUS_RECORD_BYTES 256u
 #define BIO_MAX_RECORD_BYTES 256u
+#define BIO_OBJECT_STATUS_RECORD_BYTES 512u
 #define BIO_MAX_STEPS 4096u
 #define BIO_MAX_FUTURE_SECONDS 30u
 #define BIO_OBSERVER_POLL_MS 20
@@ -16,6 +17,11 @@ struct bio_time { uint64_t seconds; uint64_t nanoseconds; };
 struct bio_result {
     size_t bytes_moved;
     unsigned char prefix[BIO_MAX_RECORD_BYTES];
+};
+/* Additive object-profile storage; legacy result layout and accepted sizes stay fixed. */
+struct bio_object_result {
+    size_t bytes_moved;
+    unsigned char prefix[BIO_OBJECT_STATUS_RECORD_BYTES];
 };
 enum bio_stage {
     BIO_STAGE_NONE, BIO_STAGE_ARGUMENT, BIO_STAGE_OPERATIONS,
@@ -84,6 +90,20 @@ int bio_write_record_observed(int, const unsigned char *, size_t, struct bio_tim
                               struct bio_result *, struct bio_error *);
 int bio_require_eof_observed(int, struct bio_time, const struct bio_operations *,
                              const struct bio_observer *, struct bio_result *, struct bio_error *);
+/* Fixed 512-byte object-profile status only. Same deadline, confirmed-prefix,
+ * no-replay, endpoint, callback and signal-policy requirements as above.
+ * Legacy record APIs continue to refuse 512-byte requests. No framing or
+ * atomic-delivery claim is supplied by these byte-transfer operations. */
+int bio_read_object_status(int, struct bio_time, const struct bio_operations *,
+                           struct bio_object_result *, struct bio_error *);
+int bio_write_object_status(int, const unsigned char[BIO_OBJECT_STATUS_RECORD_BYTES],
+                            struct bio_time, const struct bio_operations *,
+                            struct bio_object_result *, struct bio_error *);
+int bio_read_object_status_observed(int, struct bio_time, const struct bio_operations *,
+                                    const struct bio_observer *, struct bio_object_result *, struct bio_error *);
+int bio_write_object_status_observed(int, const unsigned char[BIO_OBJECT_STATUS_RECORD_BYTES],
+                                     struct bio_time, const struct bio_operations *,
+                                     const struct bio_observer *, struct bio_object_result *, struct bio_error *);
 const struct bio_operations *bio_native_operations(void);
 const char *bio_stage_name(enum bio_stage);
 const char *bio_reason_name(enum bio_reason);

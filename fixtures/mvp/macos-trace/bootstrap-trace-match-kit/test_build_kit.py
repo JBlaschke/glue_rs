@@ -29,10 +29,10 @@ fixtures = parent_fixtures.fixtures
 
 HISTORICAL_PINS = {
     'bootstrap-kit/build_kit.py': '440cdc2cadf5d86acae91e313c266b815d1c40130b4ce53d58a77e36b13fff48',
-    'bootstrap-kit/reviewed-inputs.json': '0f9d7cfe9e164a3ae8e085f7c9987f27f0ed99d348ff8b36d8d4d7d06e734ec1',
+    'bootstrap-kit/reviewed-inputs.json': 'd150cb9503abc66133a54d0cb72eaf9c5b36e8d5699b03f448fffa09f44b6635',
     'bootstrap-trace-kit/build_kit.py': '53a136ec3b3728bbb5e977bc0d962c287f49e21b43614082caead8e2597d44f1',
-    'bootstrap-trace-kit/reviewed-inputs.json': 'de0dea7e3b5f594333427ebe0d70e983121a93b78c8838775742023899128d85',
-    'bootstrap-trace-kit/test_build_kit.py': '15bf5da8684d0bfe0589af565ce468c67cb5d2be19bd44e9958c308c2a3c072b',
+    'bootstrap-trace-kit/reviewed-inputs.json': '1e7315ad58035ce00e2c57fdad62c8af2330cf81b8778344801acd7b23bebcd2',
+    'bootstrap-trace-kit/test_build_kit.py': '7dc1795d6e0ffe083c81c03a63ebc865d9ee76feaf35788d3068ff7ecf5e7297',
     'bootstrap-trace-vm/prepare.py': '3549edd7c6418ea9f40c9c791c919573dcf9ae6ea9d9eb609a849787de4e1719',
     'bootstrap-trace-vm/kit_contract.py': 'a16e2e25b78acb5c7d85ffbf9805941f9634b84003c43b515d3f8ccbd1de2fc2',
     'bootstrap-trace-calibration-vm/prepare.py': '32728f45845e1d7aec1f3e3c99a7fb17edca710d0f84e177a6a6bafd684e5487',
@@ -309,10 +309,10 @@ class MatchKitControls(unittest.TestCase):
                 self.assertNotIn(relative, HISTORICAL_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
         production = match.trace.registry(match.trace.REGISTRY.read_bytes())
-        self.assertEqual(production['source_revision'], 'e2c728bcdb25ceb151f8f434859c668faf0abcd0')
+        self.assertEqual(production['source_revision'], '4744e339da48543f1d4d8f1dd14f7f543f47d41e')
         self.assertEqual(len(production['sources']), 41)
         self.assertEqual(core.digest(core.canonical(production['sources'])),
-                         '75fce31776344598d92f8705e5a831a2451687e99b423fc200e89c35e053f997')
+                         '99e0222e2b511edf0d64e76db7af20fca38af2f22da30ef6fdec36f1266c6aef')
         self.assertEqual(len(production['proofs']), 1)
 
 

@@ -1,8 +1,8 @@
 #include "runner_protocol.h"
 #include <string.h>
-static int append(struct nr_status_stream *s,const struct bio_result *r) {
-    if(r->bytes_moved>sizeof(r->prefix) || r->bytes_moved>NR_STATUS_CAPACITY-s->used)return -1;
-    memcpy(s->raw+s->used,r->prefix,r->bytes_moved);s->used+=r->bytes_moved;return 0;
+static int append(struct nr_status_stream *s,const unsigned char *prefix,size_t moved,size_t capacity) {
+    if(moved>capacity || s->used>NR_STATUS_CAPACITY || moved>NR_STATUS_CAPACITY-s->used)return -1;
+    memcpy(s->raw+s->used,prefix,moved);s->used+=moved;return 0;
 }
 static int io_fail(struct nr_status_stream *s,const struct bio_error *e) {
     if(!s->failed)s->first_io_error=*e;
@@ -23,7 +23,7 @@ static int finish(struct nr_status_stream *s,int fd,struct bio_time d,const stru
                   int observed,const struct bio_observer *v) {
     struct bio_result r;struct bio_error e;
     int rc=observed?bio_require_eof_observed(fd,d,o,v,&r,&e):bio_require_eof(fd,d,o,&r,&e);
-    if(append(s,&r))return wire_fail(s,BW_FAULT_EXTRA);
+    if(append(s,r.prefix,r.bytes_moved,sizeof(r.prefix)))return wire_fail(s,BW_FAULT_EXTRA);
     if(rc)return io_fail(s,&e);
     s->end=bw_state_finish(&s->wire);s->ended=1;
     if(s->end==BW_END_INVALID)return wire_fail(s,BW_FAULT_STATE);
@@ -34,10 +34,17 @@ static int next(struct nr_status_stream *s,int fd,struct bio_time d,const struct
     if(!s)return -1;
     if(s->failed || s->ended)return wire_fail(s,BW_FAULT_STATE);
     if(s->wire.phase==BW_REPORTED_ERROR || s->wire.accepted_records>=3)return finish(s,fd,d,o,observed,v);
-    struct bio_result r;struct bio_error e;
+    struct bio_error e;
+#ifdef GLUE_FD_OBJECTS
+    struct bio_object_result r;
+    int rc=observed?bio_read_object_status_observed(fd,d,o,v,&r,&e):
+                    bio_read_object_status(fd,d,o,&r,&e);
+#else
+    struct bio_result r;
     int rc=observed?bio_read_record_observed(fd,BW_STATUS_SIZE,d,o,v,&r,&e):
                     bio_read_record(fd,BW_STATUS_SIZE,d,o,&r,&e);
-    if(append(s,&r))return wire_fail(s,BW_FAULT_EXTRA);
+#endif
+    if(append(s,r.prefix,r.bytes_moved,sizeof(r.prefix)))return wire_fail(s,BW_FAULT_EXTRA);
     if(rc) {
         if(e.stage==BIO_STAGE_READ && e.reason==BIO_REASON_TRUNCATED && e.system_errno==0 && r.bytes_moved==0)
             /* Record-mode zero read lacks a post-read clock check. Require a
@@ -45,8 +52,17 @@ static int next(struct nr_status_stream *s,int fd,struct bio_time d,const struct
             return finish(s,fd,d,o,observed,v);
         return io_fail(s,&e);
     }
+#ifdef GLUE_FD_OBJECTS
+    struct bw_status record;struct tfo_snapshot objects;
+    enum bw_fault f=bow_status_decode(r.prefix,r.bytes_moved,&s->wire.expected,&record,&objects);
+    if(f!=BW_OK)return wire_fail(s,f);
+    f=bw_state_push(&s->wire,r.prefix+BOW_PAYLOAD_OFFSET,BW_STATUS_SIZE);
+    if(f!=BW_OK)return wire_fail(s,f);
+    if(record.kind==BW_READY)s->ready_objects=objects;
+#else
     enum bw_fault f=bw_state_push(&s->wire,r.prefix,BW_STATUS_SIZE);
     if(f!=BW_OK)return wire_fail(s,f);
+#endif
     return 0;
 }
 int nr_status_next(struct nr_status_stream *s,int fd,struct bio_time d,const struct bio_operations *o) {
