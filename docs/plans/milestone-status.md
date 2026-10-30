@@ -94,6 +94,14 @@ runs additional-patch, abi3 and genuine wrong-ABI refusal checks independently o
 both native Linux targets. M0/M1 are delivered, M2 remains active, M3 is planned
 and M4 deferred. M3 memory mode is separate from the first compact MVP.
 
+The source-selected runtime producer and first-image reader are now implemented
+and independently reviewed, with 13 C-transport and 35 reader/wire controls per
+tested Python version. They retain bootstrap and changed-thread exec boundaries
+without granting native provenance or output/state acceptance. Generic runtime
+launch recipes and a native macOS host-version query are active separate features.
+Later execs/process-tree handling, sink state policy, native corpus and budgets
+remain before M2 closure.
+
 ## What M3 still needs
 
 The seven [memory roadmap cards](memory-roadmap.md) are separate from the 26
@@ -116,3 +124,21 @@ zero payload-file creation and no extraction fallback. Unsupported capabilities
 must reject explicitly. M3 permits a launcher plus archive; the combined single
 executable is the later X01 expansion task. Compact-mode native success alone
 does not satisfy memory-mode acceptance.
+
+
+## Repeated runtime images and threads — 29 October
+
+Feature `codex/mvp-r02-runtime-images`, source commit `987d251`, adds a separately selected v2 trace producer/backend and a complete-stream reader for up to sixteen quiescent same-PID exec transitions. It retains observed thread lifetimes and reuse generations, preserves changed-thread exec boundaries, and keeps delayed old-image context separate from live actors. Existing v1 behavior remains fixed. Later executable paths and hashes stay unknown; no descriptor capability, descendant coverage or extraction verdict is inferred.
+
+Both available Python versions passed 35 v1 and 34 v2 reader controls without skips. Native transport controls passed 18 checks on each version, plus 13 sanitizer groups. Independent reviews found no open source findings; no provider, VM or target was run. Ignored receipts: Python `e6f83cd4080021305cd056bf3128671a1a6494e38d8dd84371d775062e7cc8ff`; Python peer `3cc0ed40a1ab1d101c213583dad6b3ab08de03351ca3392fc4446a6f351bdbb0`; native peer `3ef6c3375bd7ea4b38c3bb2c330e01b98f345b575a415a4967211a0d98b8dec2`. Existing registered collector profiles are unchanged.
+
+M0/M1 remain delivered and M2 remains active. Next are the actual traced runtime adapter, matching launch/output witness, sink-capability filesystem policy, complete Mac corpus and calibrated budgets, followed by remaining retention/sign-off. M3 memory mode is separate and planned; M4 remains deferred. These source controls do not close native Mac acceptance.
+
+
+## Fixed runtime trace session and backend — 29 October
+
+Feature `codex/mvp-r02-runtime-trace-profile`, source `637109e`, adds separate fixed `ts_runtime_init` and `rt_recipe_images_create` entry points for runtime fixture2 and the existing v2 program. Original probe factories remain exclusively fixture1 with unchanged public layouts and rejection behavior. Runtime status success retains 1024 bytes and failures up to 1537; the old 512/769-byte bounds remain fixed. Ownership, READY, deadlines, once-only lifecycle, unsupported-route refusal and balanced exec limits remain unchanged.
+
+All 136 final controls pass without skips across both Python versions, normal and ASan/UBSan: 13 session and 21 backend controls per cell, exercising both fixed profiles. These are isolated/fake-provider and SDK checks; no provider or target runs. Source freeze report `1d909eb92310322ca06e6ff70dab604c02a9665a769029933240cf24c88bbe53` and independent review `3751800e406f669c60d40214e42a0a524c5f58646ca526d530cc8c0c010a66c1` are retained locally. Registration changes only the reviewed session bytes, preserving source rosters and proofs. Genuine 34/41-file loaders and all 26 active controls pass at `39ec6ba`; receipt `eb6345eba21742376c831d25ab94f549e551244464365b7f4bfe00ee143b07c5`.
+
+The actual traced runtime wrapper is the next source integration. This factory feature admits no runtime catalog, native observation, sink capability or extraction verdict. M0/M1 remain delivered, M2 active, M3 memory mode planned separately and M4 deferred. Full native Mac corpus, offline/environment integration, policy/coverage, budgets and retention/sign-off remain before compact acceptance.
