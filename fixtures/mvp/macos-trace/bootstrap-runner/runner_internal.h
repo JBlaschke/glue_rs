@@ -35,6 +35,11 @@ struct nr_attempt {
  struct nr_status_stream stream;struct bw_status ready;int ready_matched,probe_matched;
  struct bio_result go_result;struct bio_error go_error;int go_attempted,go_closed;
  enum br_fault ready_fault;enum np_fault probe_fault;
+#ifdef GLUE_FD_OBJECTS
+ int held_outputs[2],objects_matched;
+ struct tfo_snapshot child_objects;
+ struct tfo_matches output_matches;struct tfo_error object_match_error;
+#endif
 #ifdef GLUE_OWNED_TRACING
  struct nr_trace trace;
 #endif
