@@ -60,6 +60,14 @@ int nr_execute(struct nr_attempt *a) {
  if(!a->child)nr_child(a);
  a->forked=1;
  if(a->child>INT32_MAX)return nr_fail(a,NR_FORK,NR_INVALID,0,-1);
+#ifdef GLUE_FD_OBJECTS
+ /* Transfer ownership, without duplicating or reopening the actual source refs.
+  * The child retains its forked table; numeric closure removes its source aliases. */
+ if(a->held_outputs[0]!=-1 || a->held_outputs[1]!=-1 ||
+    a->sources[1]<3 || a->sources[2]<3 || a->sources[1]==a->sources[2])
+  return nr_fail(a,NR_ENDPOINTS,NR_INVALID,0,-1);
+ for(unsigned i=0;i<2;i++){a->held_outputs[i]=a->sources[i+1];a->sources[i+1]=-1;}
+#endif
  if(child_ends(a))return -1;
  if(setpgid(a->child,a->child))return nr_fail(a,NR_PROCESS_GROUP,NR_SYSCALL,errno,-1);
  pid_t pg=getpgid(a->child);
@@ -85,12 +93,31 @@ int nr_execute(struct nr_attempt *a) {
  a->ready_fault=br_ready_compare(&a->request,&expected,&a->ready,&be);
  if(a->ready_fault!=BR_OK)return nr_fail(a,NR_READY,NR_MISMATCH,0,(int)be.field);
  a->ready_matched=1;
+#ifdef GLUE_FD_OBJECTS
+ if(nr_before(a,a->deadline,NR_READY))return -1;
+ int live=wait_once(a);if(live)return live<0?-1:nr_fail(a,NR_READY,NR_CHILD_STATUS,0,-1);
+ if(tfo_match_regular_outputs(&a->stream.ready_objects,a->held_outputs,tfo_native_operations(),
+                             &a->output_matches,&a->object_match_error))
+  return nr_fail(a,NR_READY,NR_HELPER,a->object_match_error.system_errno,(int)a->object_match_error.reason);
+ if(nr_before(a,a->deadline,NR_READY))return -1;
+ a->objects_matched=1;
+#endif
 #ifdef GLUE_OWNED_TRACING
  if(nr_trace_start(a))return -1;
 #endif
  if(nr_before(a,a->deadline,NR_GO))return -1;
+#ifdef GLUE_FD_OBJECTS
+ if(!a->objects_matched || !a->output_matches.ready)return nr_fail(a,NR_GO,NR_INVALID,0,-1);
+ int live_go=wait_once(a);if(live_go)return live_go<0?-1:nr_fail(a,NR_GO,NR_CHILD_STATUS,0,-1);
+ if(nr_before(a,a->deadline,NR_GO))return -1;
+#endif
  if(a->request.release_action==BR_SEND_GO) {
-  uint8_t go[BW_GO_SIZE];if(bw_go_encode(&binding,go)!=BW_OK)return nr_fail(a,NR_GO,NR_PROTOCOL,0,-1);
+  uint8_t go[BW_GO_SIZE];
+#ifdef GLUE_FD_OBJECTS
+  if(bow_go_encode(&binding,go)!=BW_OK)return nr_fail(a,NR_GO,NR_PROTOCOL,0,-1);
+#else
+  if(bw_go_encode(&binding,go)!=BW_OK)return nr_fail(a,NR_GO,NR_PROTOCOL,0,-1);
+#endif
 #ifdef GLUE_OWNED_TRACING
   if(nr_trace_claim_go(a))return -1;
   a->go_attempted=1;
@@ -171,6 +198,9 @@ void nr_cleanup(struct nr_attempt *a) {
    }
   }
   (void)child_ends(a);
+#ifdef GLUE_FD_OBJECTS
+  for(unsigned i=0;i<2;i++)(void)nr_close_owned(a,&a->held_outputs[i],NR_CLEANUP);
+#endif
   for(unsigned i=0;i<2;i++){(void)nr_close_owned(a,&a->gate[i],NR_CLEANUP);(void)nr_close_owned(a,&a->status[i],NR_CLEANUP);}
   for(size_t i=0;i<a->admission.owned_count;i++)(void)nr_close_owned(a,&a->admission.components[i].fd,NR_CLEANUP);
  }
@@ -193,6 +223,9 @@ int nr_native_run_once(const char *request_path,const char *output_path) {
  const struct nr_catalog *catalog=nr_compiled_catalog();if(!catalog)return 2;
  struct nr_attempt a;memset(&a,0,sizeof(a));a.catalog=catalog;a.owner=getpid();a.child=-1;a.output_fd=-1;
  for(unsigned i=0;i<5;i++){a.sources[i]=-1;a.endpoints.copies[i]=-1;}
+#ifdef GLUE_FD_OBJECTS
+ for(unsigned i=0;i<2;i++)a.held_outputs[i]=-1;
+#endif
  for(unsigned i=0;i<2;i++){a.gate[i]=-1;a.status[i]=-1;}
  for(unsigned i=0;i<BA_COMPONENT_COUNT;i++)a.admission.components[i].fd=-1;
  if(a.owner<=0 || a.owner>INT32_MAX)return 2;

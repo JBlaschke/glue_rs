@@ -2892,6 +2892,48 @@ the chosen policy, and publication/verification of retained evidence assets.
 Memory mode and later platform/language expansion remain in
 [their separate roadmap](memory-roadmap.md).
 
+## 29 October: real READY output-backing admission
+
+The separate `codex/mvp-r02-ready-fd-objects` branch builds on descriptor PR #98
+and its passing GCC test repair `f73294e`. Decision `c55ff66` precedes reviewed
+implementation C `4744e339da48543f1d4d8f1dd14f7f543f47d41e`. The real child
+captures its fixed five descriptors after numeric closure and signal checks;
+the parent holds the actual output source references, decodes the distinct full
+512-byte record and matches backing before trace creation or GO. The fixed
+object GO has its own magic/version; legacy records and partial prefixes cannot
+release this profile. Legacy public IO sizes and root admission remain intact.
+References stay owned through cleanup; close/ownership failures suppress final
+promotion. The object kit stays empty and refuses construction.
+
+The first ten-suite integration run passes 120 controls. The wire passes ten
+controls normally and ten with ASan/UBSan. A later affected IO/runner rerun passes
+37 controls after the fixed-array declaration correction. After `f73294e`, five
+actual native Mac gated exchanges pass without skips, and strict genuine GCC16
+syntax passes. Independent review approves all 35 frozen files; root verifies
+all source hashes and all 589 retained payloads across the three implementation
+attempts. Freeze SHA256 is
+`d6e5bec02b1af89c8881ffe479d01ad67bdf967f545ddda99cb8972e539785db`; peer report
+SHA256 is `b67f2b4951754612da25b9a0fc423d0ee6bd6baf7ba07328749a9e14d38c9e4c`.
+
+Separate registration R `2af6ed8861f585ce26ece3e709630ad3bcb88ad2` advances the
+two existing registries to C with their 34/41 source rosters, ordered compile
+lists and literal proof entries unchanged. Eight default and nine READY-related
+trace hashes change. A tenth trace hash explicitly carries forward the already
+merged compiled-selector backend `490a8c3`; its separate source-only review and
+decision do not claim newer provider execution. All registered files match exact
+C Git blobs. Genuine clean source loaders pass all guards; the two active
+registration suites pass 12/14 controls. The 46-payload post-registration manifest
+SHA256 is `7adc86e1ba44a85075326ffffe3d2c90e4e0d7c829662c56e1e2e3c315e9c95e`;
+result SHA256 is `5146ce3c85936ee152435e4cd706d5049f774c9de318ee6faa6da2fd751ccadd`.
+No source guard or historical artifact approval is weakened.
+
+Portable CI adds the three new suites (54 Python invocations on this branch).
+No VM, sudo, provider run, SIP change or raw publication occurs. Initial regular
+output backing is not an OFD/path/generation/later-call witness. Full Darwin
+process-tree state/oracle, native calibration/corpus, Mac budgets and M2 remain
+open. The next functional branch selects CWD using the already admitted directory
+handle. Other Linux compatibility work continues independently in PR #100.
+
 ## 29 October: compact host-version query without a subprocess
 
 Decision `c17110f` precedes implementation

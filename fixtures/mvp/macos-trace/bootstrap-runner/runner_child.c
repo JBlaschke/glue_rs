@@ -6,9 +6,16 @@
 #include <string.h>
 #include <unistd.h>
 static int status_write(struct nr_attempt *a,const struct bw_status *s) {
- uint8_t bytes[BW_STATUS_SIZE];struct bio_result r;struct bio_error e;
+ struct bio_error e;
+#ifdef GLUE_FD_OBJECTS
+ uint8_t bytes[BOW_STATUS_SIZE];struct bio_object_result r;
+ if(bow_status_encode(s,s->kind==BW_READY?&a->child_objects:NULL,bytes)!=BW_OK)return -1;
+ return bio_write_object_status(a->endpoints.copies[TE_STATUS_WRITER],bytes,a->deadline,bio_native_operations(),&r,&e);
+#else
+ uint8_t bytes[BW_STATUS_SIZE];struct bio_result r;
  if(bw_status_encode(s,bytes)!=BW_OK)return -1;
  return bio_write_record(a->endpoints.copies[TE_STATUS_WRITER],bytes,sizeof(bytes),a->deadline,bio_native_operations(),&r,&e);
+#endif
 }
 static _Noreturn void child_error(struct nr_attempt *a,const struct bw_binding *b,unsigned seq,unsigned stage,unsigned flags,unsigned reason,int saved,int detail) {
  struct bw_status s;memset(&s,0,sizeof(s));s.binding=*b;s.kind=BW_ERROR;s.sequence=seq;s.stage=stage;s.mutation_flags=flags;
@@ -53,6 +60,14 @@ _Noreturn void nr_child(struct nr_attempt *a) {
  if(td.closure_attempted)flags|=BW_DESCRIPTOR_ATTEMPT;
  if(flags!=BR_READY_FLAGS)ERROR(BW_READY_IO,BW_MISMATCH,0,-1);
  if(bs_check_in_owned_child(&a->signals,&se))ERROR(BW_READY_IO,se.system_errno?BW_SYSCALL:BW_SIGNAL_POLICY,se.system_errno,se.signal_number);
+#ifdef GLUE_FD_OBJECTS
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_READY_IO,BW_TIMEOUT,0,-1);
+ struct tfo_plan object_plan;for(unsigned i=0;i<5;i++)object_plan.keep[i]=plan.keep[i];
+ struct tfo_error oe;
+ if(tfo_snapshot_in_owned_child(&object_plan,(uint64_t)a->owner,tfo_native_operations(),&a->child_objects,&oe))
+  ERROR(BW_READY_IO,oe.system_errno?BW_SYSCALL:BW_MISMATCH,oe.system_errno,oe.fd);
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_READY_IO,BW_TIMEOUT,0,-1);
+#endif
  struct bw_status ready;memset(&ready,0,sizeof(ready));ready.binding=binding;ready.kind=BW_READY;ready.detail=-1;ready.mutation_flags=flags;
  uint64_t ids[]={getuid(),geteuid(),getgid(),getegid()};
  for(unsigned i=0;i<4;i++)if(!ids[i] || ids[i]>INT32_MAX)ERROR(BW_READY_IO,BW_RANGE,0,(int)i);
@@ -74,7 +89,11 @@ _Noreturn void nr_child(struct nr_attempt *a) {
  if(bio_read_record(plan.keep[3],BW_GO_SIZE,a->deadline,bio_native_operations(),&go,&ioe))
   ERROR(BW_GO_IO,ioe.system_errno?BW_SYSCALL:(ioe.reason==BIO_REASON_TRUNCATED?BW_EOF:BW_TIMEOUT),ioe.system_errno,-1);
  struct bw_binding decoded;
+#ifdef GLUE_FD_OBJECTS
+ if(bow_go_decode(go.prefix,go.bytes_moved,&binding,&decoded)!=BW_OK)ERROR(BW_GO_VALIDATE,BW_MISMATCH,0,-1);
+#else
  if(bw_go_decode(go.prefix,go.bytes_moved,&binding,&decoded)!=BW_OK)ERROR(BW_GO_VALIDATE,BW_MISMATCH,0,-1);
+#endif
  if(bio_require_eof(plan.keep[3],a->deadline,bio_native_operations(),&go,&ioe))
   ERROR(BW_GO_VALIDATE,ioe.system_errno?BW_SYSCALL:(ioe.reason==BIO_REASON_TRAILING?BW_EXTRA:BW_TIMEOUT),ioe.system_errno,-1);
  int gate=plan.keep[3];
