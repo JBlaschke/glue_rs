@@ -189,10 +189,10 @@ static struct px_retention *create(const struct px_observer *observer,int direct
  *e=(struct px_retention_error){PXRET_VALIDATE,PXRET_OK,0};return s;
 }
 int px_retention_snapshot(const struct px_retention *s,struct px_retention_status *out){
- if(out)memset(out,0,sizeof(*out));if(!s||!out)return -1;*out=s->status;return 0;
+ if(out){memset(out,0,sizeof(*out));}if(!s||!out)return -1;*out=s->status;return 0;
 }
 int px_retention_copy_observation(const struct px_retention *s,uint8_t out[PX_BYTES]){
- if(out)memset(out,0,PX_BYTES);if(!s||!out||!s->status.observation_encoded)return -1;memcpy(out,s->observation,PX_BYTES);return 0;
+ if(out){memset(out,0,PX_BYTES);}if(!s||!out||!s->status.observation_encoded)return -1;memcpy(out,s->observation,PX_BYTES);return 0;
 }
 void px_retention_free(struct px_retention *s){if(s){memset(s,0,sizeof(*s));free(s);}}
 static pid_t native_owner(void *c){(void)c;return getpid();}

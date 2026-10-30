@@ -1723,9 +1723,7 @@ All 42 focused controls pass, with independent review and unchanged legacy APIs.
 Raw pairs remain ineligible for the filesystem state feed until native lifetime,
 ABI and object associations are established. No native acceptance is inferred.
 
-## Earlier MVP progress snapshot — 29 October 2026
-
-This earlier snapshot is retained for chronology; the later sections record subsequent work.
+## Earlier MVP progress — 29 October 2026
 
 M0 foundations and the M1 development preview are delivered. M2 remains active.
 The seven extra Linux archive/uv routes pass on both targets at their recorded
@@ -1809,6 +1807,25 @@ The actual traced runtime adapter, matching generic witness, source sink policy,
 native Mac corpus and budgets remain. Repeated image/thread handling is already
 implemented and being prepared as a separate PR. M2 remains active.
 
+## R02 — explicit native-fixture preflight CI accounting (29 October 2026)
+
+The Mac runtime fixture previously returned silent77 for preflight identity/group/
+adapter refusals, while its Python caller asserted0. It now emits a closed
+before-effects diagnostic and reports a verified refusal as an explicit unittest
+skip with native_executed=false. Exact stderr, empty stdout and no filesystem
+node (including dangling links) are required. Unknown77, syscall errors, group
+count races, invalid adapters, side effects and non77 failures still fail.
+Production credentials, protected admission and execution assertions are unchanged.
+
+Independent review verifies 269 retained payloads. Both Python versions pass the
+full22-method source suite (44 total, zero skips), with two actual ordinary owned
+child executions under the existing admission/credential models. Eighteen focused
+wrapper controls and13 private actual-C guard fault controls pass. The original
+CI guard cannot be identified from its blank stderr; no specific guard is claimed.
+The earliest runtime-launch backport also passes all22 methods on Python3.15,
+including its actual owned-child exec and original pre-witness assertions. Only
+two test files change; original source models and fixture scope remain explicit.
+This CI repair does not provide privileged bootstrap, provider or M2 acceptance.
 
 ## Original runtime output and gate evidence — 29 October
 
@@ -2086,4 +2103,35 @@ reader template. No warning suppression, provider or native execution is added.
 New formatter source SHA256:
 `e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
 The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — stopped-backend malformed-name control repair (30 October 2026)
+
+PR #118's status stage removed the inherited `malformed-name` branch from
+`test_runtime_stopped_backend.c`, but `test_runtime_stopped_backend.py` still
+runs that mode, so the injected Darwin model reached its unknown-mode assertion
+and aborted. Hosted macOS had not reached this suite because the earlier
+owned-child fixture preflight failed first; Linux skips the injected SDK model.
+The repair restores the original branch byte-for-byte from #117, including the
+four probe-description name-guard controls, so the file again differs from #117
+only by the two status hooks. The abort reproduces before the repair; after it
+the backend, status and stopped suites pass on Python 3.15 under Clang and
+Clang ASan/UBSan. No producer, formatter, getter, provider or native execution
+change is made.
+New backend control source SHA256:
+`5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — retention fixture GCC CI repair (30 October 2026)
+
+PR #119's Linux baseline rejected fourteen guards in the new retention writer,
+its observer fixture and its controls as GCC misleading indentation under the
+existing strict flags. The repair only braces those guard bodies; control flow,
+writer behavior, retained bytes and every control expectation are unchanged.
+GCC 16 with the suite's `-std=c11 -Wall -Wextra -Werror -O2` flags reproduces
+all fourteen errors before the repair and reports none after it, for both the
+test and production builds; the twelve retention controls pass under Clang and
+Clang ASan/UBSan. No warning suppression, provider or native execution is added.
+New writer source SHA256:
+`b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
 M2 remains active; this repair supplies no native acceptance or admission.

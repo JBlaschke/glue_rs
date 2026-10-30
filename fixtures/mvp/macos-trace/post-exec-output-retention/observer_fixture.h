@@ -38,6 +38,6 @@ static struct px_observer *fixture_observer(struct observer_fixture *f,int state
   fixture_put(r+12,0100600,4,0);fixture_put(r+16,9,8,0);fixture_put(r+24,11+role,8,0);fixture_put(r+32,1,8,0);}
  struct px_test_operations ops={f,fixture_owner,fixture_policy,fixture_clock,fixture_wait,fixture_query};
  struct px_error error;struct px_observer *o=px_observer_model_new(p,&ops,&error);
- if(o&&state!=4)(void)px_observer_poll(o,&error);return o;
+ if(o&&state!=4){(void)px_observer_poll(o,&error);}return o;
 }
 #endif
