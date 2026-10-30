@@ -2101,9 +2101,10 @@ its observer fixture and its controls as GCC misleading indentation under the
 existing strict flags. The repair only braces those guard bodies; control flow,
 writer behavior, retained bytes and every control expectation are unchanged.
 GCC 16 with the suite's `-std=c11 -Wall -Wextra -Werror -O2` flags reproduces
-all fourteen errors before the repair and reports none after it, for both the
-test and production builds; the twelve retention controls pass under Clang and
-Clang ASan/UBSan. No warning suppression, provider or native execution is added.
+all fourteen errors in the test build before the repair, two of them also in
+the writer-only production build, and reports none in either build after it;
+the twelve retention controls pass under Clang and Clang ASan/UBSan. No warning
+suppression, provider or native execution is added.
 New writer source SHA256:
 `b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
 M2 remains active; this repair supplies no native acceptance or admission.
