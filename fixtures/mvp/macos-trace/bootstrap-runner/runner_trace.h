@@ -1,13 +1,23 @@
 #ifndef GLUE_RUNNER_TRACE_H
 #define GLUE_RUNNER_TRACE_H
+#ifdef GLUE_RUNTIME_TRACING
+#include "../runtime-boundary/runtime_trace_backend.h"
+typedef struct rt_backend nr_trace_backend;
+typedef struct rt_snapshot nr_trace_snapshot;
+typedef struct rt_error nr_trace_backend_error;
+#else
 #include "../owned-trace-backend/owned_trace_backend.h"
+typedef struct otb_backend nr_trace_backend;
+typedef struct otb_snapshot nr_trace_snapshot;
+typedef struct otb_error nr_trace_backend_error;
+#endif
 #include "../bootstrap-io/bootstrap_io.h"
 struct nr_attempt;
 struct nr_trace {
- struct otb_backend *backend;
+ nr_trace_backend *backend;
  struct ts_session session;
- struct otb_snapshot snapshot;
- struct otb_error create_error;
+ nr_trace_snapshot snapshot;
+ nr_trace_backend_error create_error;
  struct bio_observer observer;
  struct bio_time cleanup_deadline;
  int create_attempted,session_present,cleanup_attempted,cleanup_valid;

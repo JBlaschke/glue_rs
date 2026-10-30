@@ -1759,3 +1759,352 @@ SIP stays enabled; no provider/VM/sudo run occurred. This is initial backing
 association, not paths/OFD generations/later lifetime effects or full Mac
 acceptance. Held-directory CWD selection is the next separate feature. M0/M1
 remain delivered, M2 active, M3 planned and M4 deferred.
+
+## MVP R02 — admitted CWD handle selection (29 October 2026)
+
+Branch `codex/mvp-r02-held-cwd` adds decision `6509604`, implementation
+`30a7a99` and registration `8a407bf`. The object child uses its admitted directory
+handle after credential drop, before numeric closure, preserving live permission
+checks and verifying the effective directory. It no longer resolves the CWD
+pathname again. Borrowed flags/ownership stay unchanged; late/readback failure
+records attempted mutation and exits without READY/GO/exec, retry or rollback.
+Legacy selection and the object wire remain unchanged.
+
+All 37 focused Mac controls pass without skips: twelve models, six actual native
+cases, two actual-fchdir cases with injected later faults, and seventeen affected
+runner/kit/legacy controls. Strict GCC syntax and independent review pass. Real
+native cases prove renamed/replaced paths select the held original, live EACCES,
+unchanged parent CWD and CWD persistence after descriptor closure. They do not
+calibrate the privileged credential transition. Both genuine clean source loaders
+pass all 34/41 guards; 26 active registration controls pass. CI adds the twenty
+new controls. No VM/sudo/provider/SIP action occurs.
+
+M2 remains active: runtime capture/image-boundary work is already underway in a
+separate branch, followed by sink-capability state policy, native Mac corpus and
+budgets. M0/M1 remain delivered, M3 planned, M4 deferred.
+
+## MVP R02 — fixed runtime launch recipes (29 October 2026)
+
+Branch `codex/mvp-r02-runtime-launch-recipe` adds decision `c3718ee`, implementation
+`1e2cac7` and registration `5df3472`. The new source-selected profile constructs
+bounded copied argv with an empty initial environment, admits the protected
+launcher separately from the old probe limit, selects an independent held CWD,
+and executes the fixed recipe through the real child/gate/FD/signal path. It
+captures bounded opaque stdout/stderr and actual wait/exit/signal observations.
+Existing probe profiles stay intact. The new getter is NULL, its declaration
+empty and traced builds refused; native admission is not configured.
+
+Fifty-three integration/regression control executions and twenty-two planner
+controls pass, including sanitizer checks. Thirteen strict GCC translation units
+and shell syntax pass. The ordinary fixture uses real child/gate/CWD/FD/exec but
+explicitly models admission and credential mutation; it does not run a compact
+MVP app or privileged bootstrap. Independent review verifies all 35 source
+identities and 987 retained payloads. Both genuine clean source loaders and
+twenty-six registration controls pass; only five reviewed shared-source pins
+advance in each registry, preserving rosters/compile lists/historical proofs.
+
+The actual traced runtime adapter, matching generic witness, source sink policy,
+native Mac corpus and budgets remain. Repeated image/thread handling is already
+implemented and being prepared as a separate PR. M2 remains active.
+
+## R02 — explicit native-fixture preflight CI accounting (29 October 2026)
+
+The Mac runtime fixture previously returned silent77 for preflight identity/group/
+adapter refusals, while its Python caller asserted0. It now emits a closed
+before-effects diagnostic and reports a verified refusal as an explicit unittest
+skip with native_executed=false. Exact stderr, empty stdout and no filesystem
+node (including dangling links) are required. Unknown77, syscall errors, group
+count races, invalid adapters, side effects and non77 failures still fail.
+Production credentials, protected admission and execution assertions are unchanged.
+
+Independent review verifies 269 retained payloads. Both Python versions pass the
+full22-method source suite (44 total, zero skips), with two actual ordinary owned
+child executions under the existing admission/credential models. Eighteen focused
+wrapper controls and13 private actual-C guard fault controls pass. The original
+CI guard cannot be identified from its blank stderr; no specific guard is claimed.
+The earliest runtime-launch backport also passes all22 methods on Python3.15,
+including its actual owned-child exec and original pre-witness assertions. Only
+two test files change; original source models and fixture scope remain explicit.
+This CI repair does not provide privileged bootstrap, provider or M2 acceptance.
+
+## Original runtime output and gate evidence — 29 October
+
+Feature `codex/mvp-r02-runtime-witness`, implementation `34c5a8d`, retains both original parent-held output sampling rounds before tracing or GO. It binds those rows to actual owner/child and exact request/catalog/READY bytes. The actual parent separately records confirmed GO bytes and write/error/close outcomes, including failed full delivery; retention attempts are once-only and successful finalization requires both witnesses. The strict generic RR/RC/TL reader checks the complete original 1024-byte status stream, launcher up to 16 MiB, separate sibling CWD, actual character-device stdin topology, both sample rounds and gate delivery. It validates the entire raw capture before returning conditional output lineage values. Existing public probe profiles and empty runtime admission remain unchanged.
+
+Validation: 40 final runtime/object/legacy/traced-parent controls passed, including an actual ordinary child/gate/CWD/FD/exec and retained witnesses with explicitly modeled protected admission/credentials. The observed helper passed 26 controls on both Python versions normally and under ASan/UBSan; independent wire/adapter controls passed 13 in each cell. Existing v1(35), v2(34) and new recipe(24) reader controls passed on both versions, including actual C codec comparison. A test-only portability define repair passed its two affected controls on each version. Strict GCC checks and independent C/Python reviews passed. Source registration preserves historical proof entries and rosters; genuine 34/41-file loaders and all 26 active registration controls pass after a retained test-pin repair. Historical metadata bytes are separate non-executable fixtures, not reclassified native proof.
+
+Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d4703938e58529e5442b8900f`; C peer `13661a4d40a822ab5d7145088a67b95d74d05ca04dd27f538120eaa7dc8b8b17`; reader peer `bd6c3db8ae95b81ceacc3bc526eb05c89fc9b0fd88b0e3469697f022f49ea076`; clean post-registration receipt `064fea40aaf6bfd5d10a3fbbd9f00c57d777460fbe08ab8e306251025b0c1bb6`.
+
+M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
+
+
+## Owned traced runtime runner — 29 October
+
+Feature `codex/mvp-r02-runtime-trace-runner`, implementation `9b5af34`, joins the fixed runtime launch and original witnesses to the fixture2/v2 trace session/backend. Eight fixed wrappers share the traced attempt layout, including admission and witness units. The untraced profile header remains unchanged and direct tracing markers still refuse. Actual READY comparison and original output witness retention precede attach; provider readiness and BEGIN precede GO. The traced path retains actual confirmed GO bytes, write/error and close outcomes, including failed full delivery. Early unresolved CWD/output references report failed parent closure, and no result can promote before complete cleanup, final snapshot and destruction. Runtime result and sidecar schemas are distinct and keep all native/exemption/full-acceptance flags false.
+
+All 116 source-isolated controls pass on both Python versions, normal and ASan/UBSan. A narrow four-run addendum strengthens the positive promotion assertion; original receipts remain intact. Forty existing runtime/object/legacy/traced-parent controls pass without skips, including an ordinary real child fixture with explicitly modeled protected admission and credentials. Four retained old probe JSON examples remain byte-identical. The SDK build links the unconfigured runner without running a provider, and all eight GCC non-Apple wrapper syntax checks pass on Mac. Independent peer review verifies 1434 retained base/additive payloads and reports no open findings.
+
+The approved import of main preserves every reviewed production/test byte; its documentation conflict retains both chronological records and its four CI additions remain. Registration `609118f` carries only two legacy and six trace source hashes, with rosters/proofs/historical snapshots unchanged. Genuine clean loaders pass 34/41 files, and 26 registration plus 30 imported fcntl controls pass without skips. Final registration receipt `ecba855352765d054b2d28a57da87a0a4ca04c45e5de1b336ff5a6df35d38032`; independent peer `735dda30ea7deb09a8d4b56a1107dfcb8f2b6ef243d55bfce8f415040e38c2f1`; author report `fa541aa70999810c6f7e8d4078085820f04dfe3879d4366e2b2a1d12a715a1bc`. All raw controls stay local.
+
+M2 remains active. The raw FD interval policy is now the next implementation, with a separate post-exec backing witness required before output exemptions: clear CLOEXEC does not establish retained output backing because exec can implicitly close/replace stdio. Full BSD/Mach/VM/process/thread coverage, offline/environment integration, native Mac calibration/corpus, budgets and final retention/sign-off remain. M0/M1 are delivered; M3 memory mode is separately planned and M4 deferred. No provider, VM, sudo, ptrace or SIP action occurs in this source feature.
+
+
+## R02 — stopped owned-child output observation (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-output-observer` consumes an actual owned-child
+SIGSTOP wait and samples eight original vnode FD metadata buffers: parent-held
+stdout/stderr around two child-fd1/fd2 rounds. Its fixed4096-byte packet retains
+original wait/query prefixes, actual lifecycle loss and failure timing. The native
+factory verifies the original output-witness hash; the strict independent Python
+reader checks complete fields, backing and byte framing. Terminal waits/ECHILD
+retire ownership before fallible clock reads; sampling never replays. The library
+provides no signal/resume/provider API and grants no state or output authority.
+
+Independent review verifies602 retained evidence members and all eight frozen
+sources. The base92 executions retain90 passes and two actual sanitizer native
+test failures caused by stale full-status equality; the observer had completed.
+The18 affected decoder/native controls pass after correction, followed by four
+normal/sanitized native refinements across Python3.15/3.9, all actually continued
+and reaped without ownership loss or kill. The test permits only FWASWRITTEN
+status variation and retains complete raw words. No final24-by-four replay is
+claimed. Models/native fixtures use synthetic request/bootstrap bindings around
+actual owned metadata; no provider or privileged bootstrap acceptance is implied.
+
+Peer review SHA256:
+`a9cbd32ad72d6f2c684d304fc6e8883b31f47e8c518eb9bc312db003ce197794`.
+CI adds the focused suite; unsupported hosts exercise fixed native refusal.
+Existing runtime profiles/source closures/historical proof remain unchanged.
+Raw stop/query correlation and prospective policy adoption follow separately.
+M2 remains active; full Mac coverage/corpus, budgets and retention/sign-off stay
+open. M0/M1 are delivered, M3 memory planned, M4 deferred. SIP stays unchanged.
+
+
+## R02 — raw runtime FD interval policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fd-policy` evaluates original recipe captures
+through a fixed finite set of scalar FD and open operations. It retains every
+BSD/Mach attempt and raw phase, records forbidden writable-open/path intent even
+on failure, and handles overlapping possible effect windows conservatively.
+Unsupported effects establish a sticky uncertainty horizon; every exec retires
+all output-binding certainty. No post-exec sink exemption is granted.
+
+All 36 physical-byte FD controls pass on both Python versions without skips;
+existing recipe24/image34/boundary35 controls per interpreter are retained.
+Independent review verifies 238 final evidence payloads and 175 source identities
+with no open findings. Earlier attempts remain preserved. The Mach attempt
+projection repair and opaque-effect horizon are included. CI adds the new suite;
+existing configured source closures and historical native proof are unchanged.
+
+M2 remains active. The next feature observes original output backing after an
+owned exec stop; full BSD/Mach/process/mapping coverage, native Mac calibration,
+corpus, offline/environment checks, budgets and final sign-off remain. All native,
+state-feed, output-authority and full-acceptance flags remain false. M0/M1 remain
+delivered, M3 memory mode planned and M4 deferred.
+
+Ignored review receipt SHA256:
+`e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`.
+
+
+## R02 — scalar fcntl interval profile (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fcntl-policy` adds a fixed v2 raw-byte factory for
+F_DUPFD/F_GETFD/F_SETFD/F_DUPFD_CLOEXEC through both syscall forms. It consumes the
+recipe once, retains original arguments/outcomes and links immutable command
+rows to every original attempt. GETFD remains a point observation; SETFD changes
+only the selected descriptor bit. Duplication requires closed isolated lookup/
+reservation windows. Unsupported effects remain sticky and every exec retires
+output certainty. The original v1 fifteen-name factory and shape remain intact.
+
+The v2 profile adds explicit canonical-failure uncertainty and source-state
+consistency guards: a successful lookup cannot preserve conditional absence,
+and an allocator cannot replace known occupancy. Contradictions retire affected
+certainty and yield no alias/flag postcondition. The replacing dup2 route retains
+its distinct semantics. All authority/state/native/full-acceptance flags remain
+false. Existing configured/native source proof is unchanged.
+
+All 27 new physical-byte controls and 36 unchanged v1 controls pass on Python3.15
+and3.9, with zero skips. Independent review verifies 249 source identities and
+the retained prior/final receipts; both findings are resolved. Review SHA256:
+`f5b43a57f4a43514628b3ea0f1f627e459a6ffdfc5bdc72ca2a8843202bb8057`.
+Post-exec observation/correlation, full native coverage/corpus, budgets and
+retention/sign-off remain. M2 is active; M0/M1 delivered, M3 planned, M4 deferred.
+
+
+## R02 — conditional F_GETFL status-query semantics (29 October 2026)
+
+Feature `codex/mvp-r02-bsd-fgetfl-semantics` adds a separate fixed raw helper
+for F_GETFL through both syscall forms while preserving the four existing
+scalar command rows. A single strict pairing pass retains every original BSD/
+Mach phase and full argument/outcome words. Conditional status conversion keeps
+all private bits and event-only policy alternatives; no actual fileglob or policy
+state is observed. Only21 ordinary source constructions receive a conditional
+rule; other flag combinations remain unresolved with their exact alternatives.
+
+All24 independently encoded physical-byte controls pass on Python3.15/3.9,
+including legacy row equality, noncanonical/negative/control-flow results,
+late-failure conservation and immutable false-acceptance reports. Root review
+verifies11 retained artifacts and two actual strict-recipe private-hook checks
+per interpreter. Review SHA256:
+`8131182363f2e11040420a81e4498ac9bd919b18bf14176f0cf9dae8bdecc324`.
+Six exact core source identities are retained; supplemental writer byte hashes/
+physical lines remain explicitly unavailable. Pilot test faults stay preserved.
+No native/provider/security action or source-closure change occurs. CI adds
+the focused suite. Runtime policy adoption follows separately; full Mac oracle,
+corpus, budgets and retention/sign-off remain. M2 stays active, M0/M1 delivered,
+M3 memory planned and M4 deferred.
+
+
+## R02 — runtime status-query policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fgetfl-policy` adds a fixed v3 factory using
+F_GETFL point-query semantics after one original recipe read. It retains the
+complete signed argument, private status bits and conditional preimages without
+rewriting return-time table/flag/version/backing facts. Supported finite query
+coverage can be source-conditional-clean; all native/state/output/exemption/full
+authority remains false. Canonical failures retain a query gap; unsupported or
+unresolved conversions establish the sticky ENTRY uncertainty horizon. Every
+exec still retires all output certainty. Existing v1/v2 scopes/shapes remain.
+
+All36 v1,27 v2 and16 new v3 methods pass on Python3.15/3.9:158 executions,zero
+skips. Independent review verifies21 frozen artifacts and the six final logs.
+The preserved pilot's45 assertions failed because tests compared capture-hashed
+key spellings across different raw captures; corrected controls compare actual
+capture-local key/version structure. No engine semantics changed for that pilot.
+Forty-seven prior files/file sets and HEAD/ref remain unchanged. Review SHA256:
+`177c0604323fc0e8dae3ea5860c0a422d3cba117ca17686c83c5b3b8024370d4`.
+CI adds the focused suite; native/source-proof closures are unchanged.
+
+This profile still consumes the generic recipe, with no stopped-profile/observer
+adoption. First-exec controller/query correlation work proceeds separately.
+Native Mac coverage/corpus, budgets and retention/sign-off remain open. M2 stays
+active; M0/M1 delivered, M3 memory planned and M4 deferred.
+
+
+## R02 — fixed stopped-runtime collector and reader (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-profile` combines the reviewed observer
+and runtime-policy dependencies on a feature branch. The distinct fixed producer
+retains original target phases and selected owner wait/query/kill controls. Its
+first successful exec/new-image marker has exact source-selected layouts and a
+pure serialized-prefix getter. The matching reader retains complete original
+physical ordering, recipe assets and GLUEPX bytes without granting output or
+state authority. Existing v1/v2/default facts and native proof rosters remain.
+
+The C peer approves freeze03; Python peer approves freeze02. Preserved author
+controls include100 injected mode executions, strict formatter comparisons and
+42 original reader method executions. A compiler literal-bound regression and a
+test payload-count expectation were repaired with focused receipts, preserving
+their original failures. The malformed-name guard has four focused model checks;
+the marker-before-exec source-order fix has eight affected reader checks.
+The adopted harness adds the26th C mode. No fresh full30-test producer matrix is
+claimed from those partial cohorts. Independent review verifies original-byte
+default facts and the two C marker orders. Detailed local receipts remain local.
+
+Source-location integration passes199 methods per Python3.15/3.9 (398 total,
+zero skips):35 boundary,34 image,24 recipe,22 stopped reader,79 FD policy and
+five formatter/unavailable/new-mode/C-to-Python controls. These are source/model
+checks; no provider is linked or enabled.
+
+Runtime FD v1/v2/v3 uses the exact new recipe pin with no scope/shape changes.
+CI adds the fixed producer and reader suites. No provider, privileged bootstrap,
+VM or security-setting action runs here. The next integration adds the typed
+late-cleanup status bridge, file-synced original observation retention, and the
+actual bounded controller; those components are not adopted by this feature.
+
+M0/M1 are delivered. M2 remains active: full Mac filesystem/process/mapping
+coverage and oracle, native corpus, Mac budgets and final retention/sign-off are
+open. M3 memory mode remains separate/planned and M4 deferred. All native,
+quiescence, state, output-exemption, retention-before-continuation and full-trace
+acceptance fields remain false. Guest SIP stays enabled under the current instruction.
+
+
+## R02 — typed stopped-runtime lifecycle status (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-status` adds a distinct pure status getter
+for the new stopped-runtime backend. It exposes actual serialized identity and
+late lifecycle/cleanup outcomes, including successful resource closure after an
+earlier failure, without changing the old snapshot ABI or making it accept the
+new class. Native/quiescence/state/exemption/full-flags authority remains false.
+No callback, I/O, clock, owner lookup or mutation occurs in the getter.
+
+The original40 focused executions pass across both Python versions, normal and
+ASan/UBSan. Four focused name-guard controls verify the inherited correction;
+earlier receipts remain intact. Root review verifies152 guard-addendum payloads
+and exact source inheritance: removing the new include and pure getters yields
+the corrected collector byte-for-byte. CI adds the focused status suite.
+All11 source-location controls pass on Python3.15, including the inherited
+malformed-name case; these are SDK/source models with no provider action.
+No TS/controller/kit, provider, VM or security adoption occurs in this feature.
+M2 remains active; bounded retention/controller integration, native Mac corpus,
+full oracle, budgets and final sign-off remain. M0/M1 delivered, M3 memory mode
+planned separately, M4 deferred. Guest SIP stays enabled.
+
+
+## R02 — file-synced original output-observation retention (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-output-retention` adds a one-attempt opaque writer
+from the actual complete/matched owned observer and unchanged original deadline.
+It writes exactly4096 encoded bytes to the fixed exclusive no-follow0600 file in
+a borrowed private held directory. Bounded write/EINTR attempts, actual prefix,
+fsync and once-only close outcomes survive later clock errors. Failed close stays
+ownership-unresolved; no retry, replay, overwrite or partial-file deletion occurs.
+The module sends no signal. File-synced content does not claim durable namespace,
+power-loss safety or persistence before a future continuation.
+
+Independent review approves the eight corrected sources and retained48 original
+method executions (12 per Python3.15/3.9, normal and ASan/UBSan), plus four focused
+null-argument diagnostic rechecks. Actual files/OS operations are used while the
+observer stop/lease is explicitly modeled; no child or provider ran. All12
+source-location controls also pass on Python3.15. Required pinned Rust workspace
+tests, formatting and Clippy pass with incremental compilation disabled after a
+retained broken-cache failure. CI adds the focused suite. The writer is not yet adopted into a controller or reader.
+All native/state/exemption/CONT/full-acceptance claims remain false. M2 stays
+active: controller and complete Mac coverage/oracle/corpus, budgets and final
+retention/sign-off remain. M0/M1 delivered, M3 memory planned, M4 deferred.
+
+
+## R02 — stopped formatter GCC CI repair (29 October 2026)
+
+PR #117's Linux baseline caught three new guard statements that GCC rejects as
+misleading indentation under the existing strict flags. The repair separates
+those guards from following statements; emitted DTrace program bytes, templates,
+selectors, APIs and old profile bodies remain unchanged. The original GCC failure
+is reproduced and retained. Twelve bounds/canonical checks pass across actual
+GCC 16, Clang and Clang ASan/UBSan, comparing all output bytes with the independent
+reader template. No warning suppression, provider or native execution is added.
+New formatter source SHA256:
+`e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
+The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — stopped-backend malformed-name control repair (30 October 2026)
+
+PR #118's status stage removed the inherited `malformed-name` branch from
+`test_runtime_stopped_backend.c`, but `test_runtime_stopped_backend.py` still
+runs that mode, so the injected Darwin model reached its unknown-mode assertion
+and aborted. Hosted macOS had not reached this suite because the earlier
+owned-child fixture preflight failed first; Linux skips the injected SDK model.
+The repair restores the original branch byte-for-byte from #117, including the
+four probe-description name-guard controls, so the file again differs from #117
+only by the two status hooks. The abort reproduces before the repair; after it
+the backend, status and stopped suites pass on Python 3.15 under Clang and
+Clang ASan/UBSan. No producer, formatter, getter, provider or native execution
+change is made.
+New backend control source SHA256:
+`5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — retention fixture GCC CI repair (30 October 2026)
+
+PR #119's Linux baseline rejected fourteen guards in the new retention writer,
+its observer fixture and its controls as GCC misleading indentation under the
+existing strict flags. The repair only braces those guard bodies; control flow,
+writer behavior, retained bytes and every control expectation are unchanged.
+GCC 16 with the suite's `-std=c11 -Wall -Wextra -Werror -O2` flags reproduces
+all fourteen errors in the test build before the repair, two of them also in
+the writer-only production build, and reports none in either build after it;
+the twelve retention controls pass under Clang and Clang ASan/UBSan. No warning
+suppression, provider or native execution is added.
+New writer source SHA256:
+`b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
+M2 remains active; this repair supplies no native acceptance or admission.

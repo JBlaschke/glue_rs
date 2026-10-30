@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+static uint32_t model_fixture=TS_OWNED_CONTEXT_PROBE;
 struct model {
  struct ts_binding binding; uint32_t owner; uint64_t now, expected_deadline;
  uint64_t start_advance,pump_advance,drain_advance;
@@ -15,14 +16,17 @@ struct model {
 };
 static uint32_t owner(void *v,int *e){(void)e;return ((struct model*)v)->owner;}
 static int clock_now(void *v,uint64_t *now,int *e){struct model*m=v;if(m->clock_error){*e=m->clock_error;return -1;}*now=m->now;return 0;}
-static int start(void*v,const struct ts_binding*b,uint64_t d,int*e){struct model*m=v;m->starts++;assert(d==m->expected_deadline);assert(b->owner_pid==100&&b->target_pid==200&&b->fixture==1);assert(!memcmp(b->request_sha256,m->binding.request_sha256,32));assert(!memcmp(b->catalog_sha256,m->binding.catalog_sha256,32));m->now+=m->start_advance;if(m->start_error){*e=m->start_error;return -1;}return 0;}
-static int emit(struct model*m,enum ts_event_kind kind,ts_consume_fn consume,void*context){struct ts_event event={kind,m->binding};switch(m->wrong_binding){case 1:event.binding.fixture++;break;case 2:event.binding.owner_pid++;break;case 3:event.binding.target_pid++;break;case 4:event.binding.request_sha256[7]^=1;break;case 5:event.binding.catalog_sha256[17]^=1;break;default:break;}return consume(context,&event);}
+static int start(void*v,const struct ts_binding*b,uint64_t d,int*e){struct model*m=v;m->starts++;assert(d==m->expected_deadline);assert(b->owner_pid==100&&b->target_pid==200&&b->fixture==m->binding.fixture);assert(!memcmp(b->request_sha256,m->binding.request_sha256,32));assert(!memcmp(b->catalog_sha256,m->binding.catalog_sha256,32));m->now+=m->start_advance;if(m->start_error){*e=m->start_error;return -1;}return 0;}
+static int emit(struct model*m,enum ts_event_kind kind,ts_consume_fn consume,void*context){struct ts_event event={kind,m->binding};switch(m->wrong_binding){case 1:event.binding.fixture=m->binding.fixture==TS_OWNED_CONTEXT_PROBE?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE;break;case 2:event.binding.owner_pid++;break;case 3:event.binding.target_pid++;break;case 4:event.binding.request_sha256[7]^=1;break;case 5:event.binding.catalog_sha256[17]^=1;break;default:break;}return consume(context,&event);}
 static int pump(void*v,enum ts_phase phase,uint64_t d,ts_consume_fn consume,void*context,int*e){struct model*m=v;m->pumps++;assert(phase==TS_BOOTSTRAP||phase==TS_WAITING||phase==TS_CLEANUP);assert(d==m->expected_deadline);m->now+=m->pump_advance;if(m->pump_error){*e=m->pump_error;return -1;}if(m->odd_pump)return 2;if(m->null_event){(void)consume(context,NULL);return 0;}size_t count=m->queued_count;m->queued_count=0;for(size_t i=0;i<count;i++)if(emit(m,m->queued[i],consume,context)){*e=EPROTO;return -1;}for(unsigned i=0;i<m->bulk_events;i++)if(emit(m,TS_ACTIVITY,consume,context)){*e=EPROTO;return -1;}return 0;}
 static int stop(void*v,uint64_t d,int*e){struct model*m=v;m->stops++;assert(d==m->expected_deadline);if(m->stop_error){*e=m->stop_error;return -1;}return 0;}
 static int drain(void*v,uint64_t d,ts_consume_fn consume,void*context,int*e){struct model*m=v;m->drains++;assert(d==m->expected_deadline);m->now+=m->drain_advance;for(size_t i=0;i<m->final_count;i++)if(emit(m,m->final[i],consume,context)){*e=EPROTO;return -1;}if(m->drain_error){*e=m->drain_error;return -1;}return 0;}
 static int close_backend(void*v,uint64_t d,int*e){struct model*m=v;m->closes++;assert(d==m->expected_deadline);if(m->close_error){*e=m->close_error;return -1;}return 0;}
 static struct ts_operations operations(struct model*m){struct ts_operations o={m,owner,clock_now,start,pump,stop,drain,close_backend};return o;}
-static void initial(struct ts_session*s,struct model*m,unsigned cleanup){memset(s,0,sizeof(*s));memset(m,0,sizeof(*m));m->binding.fixture=1;m->binding.owner_pid=m->owner=100;m->binding.target_pid=200;memset(m->binding.request_sha256,17,32);memset(m->binding.catalog_sha256,34,32);m->now=UINT64_C(100000000);m->expected_deadline=UINT64_C(1000000000);m->final[0]=TS_TERMINAL;m->final[1]=TS_END;m->final_count=2;struct ts_operations o=operations(m);assert(!ts_init(s,&m->binding,m->expected_deadline,cleanup,&o));}
+static int model_init(struct ts_session*s,const struct ts_binding*b,uint64_t deadline,unsigned cleanup,const struct ts_operations*o){
+ return model_fixture==TS_OWNED_RUNTIME_RECIPE?ts_runtime_init(s,b,deadline,cleanup,o):ts_init(s,b,deadline,cleanup,o);
+}
+static void initial(struct ts_session*s,struct model*m,unsigned cleanup){memset(s,0,sizeof(*s));memset(m,0,sizeof(*m));m->binding.fixture=model_fixture;m->binding.owner_pid=m->owner=100;m->binding.target_pid=200;memset(m->binding.request_sha256,17,32);memset(m->binding.catalog_sha256,34,32);m->now=UINT64_C(100000000);m->expected_deadline=UINT64_C(1000000000);m->final[0]=TS_TERMINAL;m->final[1]=TS_END;m->final_count=2;struct ts_operations o=operations(m);assert(!model_init(s,&m->binding,m->expected_deadline,cleanup,&o));}
 static void setup(struct ts_session*s,struct model*m){initial(s,m,200);assert(!ts_start(s));}
 static void enqueue(struct model*m,enum ts_event_kind a,enum ts_event_kind b){m->queued[0]=a;m->queued_count=1;if(b){m->queued[1]=b;m->queued_count=2;}}
 static void armed(struct ts_session*s,struct model*m){setup(s,m);enqueue(m,TS_PROVIDER_READY,TS_BEGIN);assert(!ts_pump(s,TS_BOOTSTRAP));}
@@ -94,8 +98,8 @@ static void close_reports(void){struct ts_session s;struct model m;
  armed(&s,&m);assert(ts_gate_close_failed(&s,0));assert(s.gate_close_seen&&!s.gate_closed&&s.error.reason==TS_PARENT_FAILURE&&s.error.system_errno==0);assert(ts_gate_close_result(&s,0)&&!s.gate_closed);
  released(&s,&m);assert(!ts_child_reaped(&s,0));assert(ts_parent_close_failed(&s,0));assert(s.parent_close_seen&&!s.parent_closed&&s.error.reason==TS_PARENT_FAILURE&&s.error.system_errno==0);assert(ts_parent_close_result(&s,0)&&!s.parent_closed);
 }
-static void boundaries(void){struct ts_session s;struct model m;initial(&s,&m,200);struct ts_binding b=m.binding;struct ts_operations o=operations(&m);struct ts_session invalid={0};b.fixture=2;assert(ts_init(&invalid,&b,m.expected_deadline,200,&o)&&!ts_kill_eligible(&invalid));assert(ts_start(&invalid)&&m.starts==0);assert(ts_close(&invalid)&&m.closes==0);
- b=m.binding;memset(&invalid,0,sizeof(invalid));o.clock_fn=NULL;assert(ts_init(&invalid,&b,m.expected_deadline,200,&o));assert(ts_close(&invalid)&&m.closes==0);
+static void boundaries(void){struct ts_session s;struct model m;initial(&s,&m,200);struct ts_binding b=m.binding;struct ts_operations o=operations(&m);struct ts_session invalid={0};b.fixture=model_fixture==TS_OWNED_CONTEXT_PROBE?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE;assert(model_init(&invalid,&b,m.expected_deadline,200,&o)&&!ts_kill_eligible(&invalid));assert(ts_start(&invalid)&&m.starts==0);assert(ts_close(&invalid)&&m.closes==0);
+ b=m.binding;memset(&invalid,0,sizeof(invalid));o.clock_fn=NULL;assert(model_init(&invalid,&b,m.expected_deadline,200,&o));assert(ts_close(&invalid)&&m.closes==0);
  setup(&s,&m);m.owner=101;assert(ts_pump(&s,TS_BOOTSTRAP)&&m.pumps==0&&s.error.reason==TS_WRONG_OWNER);
  initial(&s,&m,200);m.binding.request_sha256[0]^=1;assert(s.binding.request_sha256[0]==17);m.binding.request_sha256[0]^=1;assert(!ts_start(&s));
  setup(&s,&m);assert(ts_start(&s)&&m.starts==1);assert(ts_pump(&s,TS_CLEANUP)&&m.pumps==0);
@@ -103,6 +107,40 @@ static void boundaries(void){struct ts_session s;struct model m;initial(&s,&m,20
  armed(&s,&m);m.bulk_events=TS_MAX_EVENTS;assert(ts_pump(&s,TS_BOOTSTRAP)&&s.error.reason==TS_LIMIT);
  /* A trusted READY caller already owns this fixed child even when session
   * initialization fails only on owner/time observation. Cleanup must survive. */
- for(unsigned fault=0;fault<3;fault++){initial(&s,&m,200);struct ts_session early={0};o=operations(&m);if(fault==0)m.clock_error=EIO;else if(fault==1)m.now=m.expected_deadline;else m.owner=101;assert(ts_init(&early,&m.binding,m.expected_deadline,200,&o));assert(early.configured&&!early.initialized&&ts_kill_eligible(&early));struct ts_error first=early.error;if(fault==2)assert(ts_claim_kill(&early));m.clock_error=0;m.owner=100;assert(!ts_claim_kill(&early)&&!ts_kill_eligible(&early));(void)ts_gate_close_result(&early,0);assert(ts_child_reaped(&early,9));cleanup(&early,&m);assert(!ts_parent_close_result(&early,0));assert(!ts_close(&early)&&m.closes==0&&m.starts==0);assert(ts_finalization_safe(&early)&&!ts_success_eligible(&early)&&same_error(&first,&early.error));}
+ for(unsigned fault=0;fault<3;fault++){initial(&s,&m,200);struct ts_session early={0};o=operations(&m);if(fault==0)m.clock_error=EIO;else if(fault==1)m.now=m.expected_deadline;else m.owner=101;assert(model_init(&early,&m.binding,m.expected_deadline,200,&o));assert(early.configured&&!early.initialized&&ts_kill_eligible(&early));struct ts_error first=early.error;if(fault==2)assert(ts_claim_kill(&early));m.clock_error=0;m.owner=100;assert(!ts_claim_kill(&early)&&!ts_kill_eligible(&early));(void)ts_gate_close_result(&early,0);assert(ts_child_reaped(&early,9));cleanup(&early,&m);assert(!ts_parent_close_result(&early,0));assert(!ts_close(&early)&&m.closes==0&&m.starts==0);assert(ts_finalization_safe(&early)&&!ts_success_eligible(&early)&&same_error(&first,&early.error));}
 }
-int main(int argc,char**argv){assert(argc==2);if(!strcmp(argv[1],"success"))success();else if(!strcmp(argv[1],"readiness"))readiness();else if(!strcmp(argv[1],"deadlines"))deadlines();else if(!strcmp(argv[1],"go"))go_once();else if(!strcmp(argv[1],"bootstrap"))bootstrap();else if(!strcmp(argv[1],"cleanup"))cleanup_pumping();else if(!strcmp(argv[1],"wait"))wait_ownership();else if(!strcmp(argv[1],"backend"))backend_faults();else if(!strcmp(argv[1],"drain"))drain_order();else if(!strcmp(argv[1],"close-reports"))close_reports();else if(!strcmp(argv[1],"boundaries"))boundaries();else return 2;puts(argv[1]);return 0;}
+static void profile_factories(void){
+ struct ts_session seed;struct model m;initial(&seed,&m,200);struct ts_operations o=operations(&m);
+ const uint32_t fixtures[]={0,TS_OWNED_CONTEXT_PROBE,TS_OWNED_RUNTIME_RECIPE,3,UINT32_MAX};
+ for(unsigned factory=0;factory<2;factory++)for(unsigned i=0;i<sizeof(fixtures)/sizeof(fixtures[0]);i++){
+  struct ts_session s={0};struct ts_binding b=m.binding;b.fixture=fixtures[i];
+  int rc=factory?ts_runtime_init(&s,&b,m.expected_deadline,200,&o):ts_init(&s,&b,m.expected_deadline,200,&o);
+  int accepted=fixtures[i]==(factory?TS_OWNED_RUNTIME_RECIPE:TS_OWNED_CONTEXT_PROBE);
+  assert((rc==0)==accepted);assert(s.configured==accepted&&s.initialized==accepted);
+  assert(!m.starts&&!m.pumps&&!m.closes);
+  /* An attempted wrong-profile initialization cannot be repaired in-place. */
+  if(!accepted){assert(ts_start(&s));assert(ts_runtime_init(&s,&m.binding,m.expected_deadline,200,&o));}
+ }
+}
+static void status_profile_bounds(void){
+ struct ts_session s;struct model m;released(&s,&m);
+ assert(s.bootstrap_prefix_bytes==(model_fixture==TS_OWNED_RUNTIME_RECIPE?1024u:512u));
+ const size_t prefixes[]={0,1,511,512,513,768,769,770,1023,1024,1536,1537,1538};
+ size_t cap=model_fixture==TS_OWNED_RUNTIME_RECIPE?1537u:769u;
+ for(unsigned i=0;i<sizeof(prefixes)/sizeof(prefixes[0]);i++){
+  armed(&s,&m);assert(!ts_claim_go(&s));assert(!ts_go_result(&s,64,0));assert(!ts_gate_close_result(&s,0));
+  assert(ts_bootstrap_failed(&s,prefixes[i],0));
+  assert(s.bootstrap_seen==(prefixes[i]<=cap));
+  assert(s.bootstrap_prefix_bytes==(prefixes[i]<=cap?prefixes[i]:0));
+  assert(s.error.reason==(prefixes[i]<=cap?TS_PARENT_FAILURE:TS_INVALID));
+  if(prefixes[i]<=cap)assert(ts_bootstrap_sealed(&s));
+  else {(void)ts_bootstrap_sealed(&s);assert(!ts_success_eligible(&s));}
+  assert(ts_claim_go(&s));
+ }
+}
+int main(int argc,char**argv){
+ assert(argc==2);const char*name=argv[1];
+ if(!strncmp(name,"runtime-",8)){model_fixture=TS_OWNED_RUNTIME_RECIPE;name+=8;}
+ if(!strcmp(name,"success"))success();else if(!strcmp(name,"readiness"))readiness();else if(!strcmp(name,"deadlines"))deadlines();else if(!strcmp(name,"go"))go_once();else if(!strcmp(name,"bootstrap"))bootstrap();else if(!strcmp(name,"cleanup"))cleanup_pumping();else if(!strcmp(name,"wait"))wait_ownership();else if(!strcmp(name,"backend"))backend_faults();else if(!strcmp(name,"drain"))drain_order();else if(!strcmp(name,"close-reports"))close_reports();else if(!strcmp(name,"boundaries"))boundaries();else if(!strcmp(name,"profiles"))profile_factories();else if(!strcmp(name,"status-bounds"))status_profile_bounds();else return 2;
+ puts(argv[1]);return 0;
+}
