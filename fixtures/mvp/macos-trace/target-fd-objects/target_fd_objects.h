@@ -20,6 +20,13 @@ struct tfo_output_match {
     struct tfo_backing backing;
 };
 struct tfo_matches { int ready; struct tfo_output_match outputs[TFO_OUTPUT_COUNT]; };
+/* Completed reference reads only: first stdout/stderr, then second stdout/stderr.
+ * Unused rows stay entirely zero; completed_samples distinguishes an unread fd0
+ * sentinel from a completed value. Samples are observations, never matches. */
+struct tfo_reference_observation {
+    unsigned completed_samples;
+    struct tfo_entry samples[4];
+};
 enum tfo_stage {
     TFO_STAGE_NONE, TFO_STAGE_PLAN, TFO_STAGE_OPERATIONS, TFO_STAGE_CHILD,
     TFO_STAGE_SIGNALS, TFO_STAGE_FIRST, TFO_STAGE_SECOND, TFO_STAGE_STABILITY,
@@ -66,6 +73,14 @@ int tfo_snapshot_in_owned_child(const struct tfo_plan *, uint64_t owner_pid,
  * No input descriptor is closed, and no partial match is published. */
 int tfo_match_regular_outputs(const struct tfo_snapshot *, const int held[2],
     const struct tfo_operations *, struct tfo_matches *, struct tfo_error *);
+/* Same preconditions and matching policy as the original API. observation is
+ * required, valid, stable and nonoverlapping with every other span. It clears
+ * on entry, then retains only fully completed read_entry originals, even on
+ * failure. A changed second sample is retained before comparison/refusal.
+ * No unread/partial row is invented; matches still publish all-or-none. */
+int tfo_match_regular_outputs_observed(const struct tfo_snapshot *, const int held[2],
+    const struct tfo_operations *, struct tfo_matches *,
+    struct tfo_reference_observation *, struct tfo_error *);
 const struct tfo_operations *tfo_native_operations(void);
 const char *tfo_stage_name(enum tfo_stage);
 const char *tfo_reason_name(enum tfo_reason);
