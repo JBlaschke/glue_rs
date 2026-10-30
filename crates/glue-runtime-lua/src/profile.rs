@@ -63,6 +63,14 @@ pub fn source_pin() -> SourcePin {
     }
 }
 
+/// Observe the running macOS product version with a bounded, read-only native
+/// kernel query. This does not select or initialize Lua, a runtime provider or
+/// an archive, and starts no process or thread. Other operating systems return
+/// `CapabilityError::Unsupported`.
+pub fn macos_product_version() -> Result<String, CapabilityError> {
+    platform::macos_version()
+}
+
 /// Validate the selected entrypoint against the exact linked runtime and this
 /// host, returning its canonical archive resource key only on success.
 pub fn validate(manifest: &Manifest) -> Result<String, CapabilityError> {

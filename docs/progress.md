@@ -1759,3 +1759,30 @@ SIP stays enabled; no provider/VM/sudo run occurred. This is initial backing
 association, not paths/OFD generations/later lifetime effects or full Mac
 acceptance. Held-directory CWD selection is the next separate feature. M0/M1
 remain delivered, M2 active, M3 planned and M4 deferred.
+
+## Linux compatibility milestone — 29 October 2026
+
+Both native Linux targets pass run `40863475232` at PR #100 source `8532d509`.
+Per-target independent replay passes 49 receipts, 196 oracle controls, 990 rank
+results and a separate genuine wrong-ABI refusal. This covers 34 application
+cases plus fifteen benchmark variants. Five unchanged structural/I/O/FD/scaling
+budget profiles pass; time/RSS gates are inapplicable on the different host
+fingerprints. No raw release is published and this cohort's external retention
+remains open. Mac runtime capture/state/oracle, native corpus and budgets remain
+the critical path to M2; READY adoption is PR #101 and held-CWD is active.
+
+## Compact macOS startup — native host query (29 October 2026)
+
+Branch `codex/mvp-c05-macos-host-query` adds decision `c17110f` and implementation
+`0c350ef`. Compact startup obtains the macOS product version through the bounded
+native query already used by the linked runtime platform layer. It removes the
+`sw_vers` subprocess and reader thread. Numeric OS-floor checks remain unchanged;
+query failure still reports MissingDependency with the native-query detail. No
+new dependency, unsafe block or runner lint exception is introduced.
+
+Under pinned Rust/Clippy 1.88.0, 38 Lua library tests and two compact host tests
+pass, including the real native query compared with an env-cleared system
+reference. Malformed/oversized/unterminated native strings and OS-floor ordering
+are checked. Workspace formatting and two-package all-target Clippy pass;
+independent source/receipt review is clear. This removes startup work while the
+full Mac runtime capture/state/corpus and budgets remain active M2 work.

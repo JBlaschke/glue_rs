@@ -37,6 +37,32 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 29 October: same-source Linux compatibility acceptance
+
+Native [run 40863475232](https://github.com/JBlaschke/glue_rs/actions/runs/40863475232)
+at `8532d509a61ab8e762b0926ef55dc179d9b821cd` passes both Linux targets.
+Independent complete replay verifies 49 V02 receipts, 196 extraction controls,
+990 rank results and the separate actual wrong-ABI refusal per target. The
+34 application cases include every unchanged base/route case plus patch and abi3
+coverage; the other fifteen receipts are benchmark variants. Input/source
+identities remain unchanged. PR #100 also passes all eighteen portable checks.
+
+Five unchanged budgets pass structural/I/O/FD/scaling gates; all time/RSS limits
+are inapplicable on these different host fingerprints. The exact original ZIPs,
+5,037 raw files per target, replay and refusal identities are recorded in the
+[current inventory](../evidence/native-linux-compatibility-2026-10-29/current-cohort-inventory.json).
+Retained crypto/cp314 CFFI wheels are rehashed; absent patch/other provisioning
+archives are source-pinned provenance checks only. The cohort receipt SHA256 is
+`61cbb474b1e3768c66f0ea5fe5a2950561057e98c9fb8155e25c05d1767a2467`.
+No raw release is published and external retention of this cohort remains open.
+Earlier failed x86 and arm runs remain failed and unchanged. This closes the
+new Linux execution/replay gap, not full M2.
+
+The Mac handoff feature is separately open as PR #101; held-directory CWD
+selection is being implemented on its own branch. A complete runtime capture
+boundary/process tree, source-grounded sink-capability state policy, native Mac
+corpus and budgets remain. Guest SIP stays enabled; no VM action occurred.
+
 ## 29 October: Linux compatibility closure and next native cells
 
 [PR #99](https://github.com/JBlaschke/glue_rs/pull/99) repairs build-time staging
@@ -2907,3 +2933,36 @@ output backing is not an OFD/path/generation/later-call witness. Full Darwin
 process-tree state/oracle, native calibration/corpus, Mac budgets and M2 remain
 open. The next functional branch selects CWD using the already admitted directory
 handle. Other Linux compatibility work continues independently in PR #100.
+
+## 29 October: compact host-version query without a subprocess
+
+Decision `c17110f` precedes implementation
+`0c350efbef45548391af6421d16debdc58661490` on
+`codex/mvp-c05-macos-host-query`. A safe public platform observation wraps the
+existing linked-runtime `kern.osproductversion` query; the compact runner reuses
+it instead of spawning `sw_vers`, a reader thread and the child wait/poll loop.
+The existing bounded native buffer/unsafe boundary remains in its original
+module; no new dependency, unsafe code or runner lint relaxation is added.
+Reported length, exact NUL termination and UTF-8 must validate. Numeric OS-floor
+comparison stays byte-identical. Native query errors map to MissingDependency
+without a language-specific prefix; other operating systems explicitly reject
+this macOS query.
+
+Pinned Rust/Clippy 1.88.0 checks pass: 38 Lua library tests, two compact-host
+unit tests, workspace formatting and scoped two-package all-target Clippy.
+Three unrelated binary tests are deliberately filtered, not recorded as passing.
+No tests are ignored. A real Mac 26.7 native query equals the env-cleared
+`sw_vers` test reference. Boundary cases cover invalid lengths/overflow, missing/
+interior NUL and invalid UTF-8; host-floor cases retain comparison/error semantics.
+The 26-payload retained manifest SHA256 is
+`b94807fee28277bf1a57e9f1be2c6b4a72504cdc6e30eaf3c3bf9937eb4cb927`; receipt
+SHA256 is `6a97300fa9b68f3375e35cf87dd8021ce6246ddf5dcccb5b513848c2d07659a5`.
+Independent source/receipt review SHA256 is
+`25c754da01c14eec12d66dee3b66a29150454d281b006263897ea25fa78d4470`.
+Root verifies all three current reviewed source identities. No provider/VM/SIP
+action occurs.
+
+This removes an unnecessary actual application-startup process/thread. It does
+not supply extraction-oracle process/exec support or a measured Mac budget.
+Runtime launch recipes, later image/lifetime handling, sink state policy, native
+Mac corpus and budgets remain open; M2 stays active.
