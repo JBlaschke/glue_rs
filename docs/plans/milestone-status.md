@@ -86,13 +86,27 @@ and matches regular output backing against the parent's held references before
 tracing or GO. Its 120 local integration controls and separate wire checks pass;
 after source registration the genuine 34/41-source loaders and 31 targeted
 controls pass. This supplies initial backing association while preserving all
-full-oracle gates. The next branch selects initial CWD from the admitted
-directory handle, including a real renamed/replaced-path control.
+full-oracle gates. Initial CWD selection now uses the admitted directory handle;
+37 focused controls pass, including real renamed/replaced-path, permission and
+parent-CWD checks. Independent review and clean source registration pass.
 
 [Linux compatibility PR #100](https://github.com/JBlaschke/glue_rs/pull/100)
-runs additional-patch, abi3 and genuine wrong-ABI refusal checks independently on
-both native Linux targets. M0/M1 are delivered, M2 remains active, M3 is planned
+passes additional-patch, abi3 and genuine wrong-ABI refusal checks independently
+on both native Linux targets, with complete replay recorded in PR #102. M0/M1 are delivered, M2 remains active, M3 is planned
 and M4 deferred. M3 memory mode is separate from the first compact MVP.
+
+The active next Mac feature establishes an explicit runtime capture/image
+boundary, preserving the complete bootstrap prefix and accounting for exec
+thread changes. A raw sink-capability state policy follows it; unknown or
+ambiguous effects must fail closed. Generic runtime launch adoption, native
+calibration/corpus, Mac budgets and final sign-off remain open.
+
+The fixed generic runtime launch profile now has copied argv, protected launcher
+hashing, independent held CWD and opaque output/wait capture, with 53 integration
+executions, 22 planner controls and clean source registration passing. It remains
+unconfigured and untraced. Repeated image/thread handling is separately reviewed.
+The next source integration connects the actual trace profile and matching
+runtime/output evidence before the sink policy and native Mac corpus.
 
 ## What M3 still needs
 
@@ -116,3 +130,14 @@ zero payload-file creation and no extraction fallback. Unsupported capabilities
 must reject explicitly. M3 permits a launcher plus archive; the combined single
 executable is the later X01 expansion task. Compact-mode native success alone
 does not satisfy memory-mode acceptance.
+
+
+## Original runtime output and gate evidence — 29 October
+
+Feature `codex/mvp-r02-runtime-witness`, implementation `34c5a8d`, retains both original parent-held output sampling rounds before tracing or GO. It binds those rows to actual owner/child and exact request/catalog/READY bytes. The actual parent separately records confirmed GO bytes and write/error/close outcomes, including failed full delivery; retention attempts are once-only and successful finalization requires both witnesses. The strict generic RR/RC/TL reader checks the complete original 1024-byte status stream, launcher up to 16 MiB, separate sibling CWD, actual character-device stdin topology, both sample rounds and gate delivery. It validates the entire raw capture before returning conditional output lineage values. Existing public probe profiles and empty runtime admission remain unchanged.
+
+Validation: 40 final runtime/object/legacy/traced-parent controls passed, including an actual ordinary child/gate/CWD/FD/exec and retained witnesses with explicitly modeled protected admission/credentials. The observed helper passed 26 controls on both Python versions normally and under ASan/UBSan; independent wire/adapter controls passed 13 in each cell. Existing v1(35), v2(34) and new recipe(24) reader controls passed on both versions, including actual C codec comparison. A test-only portability define repair passed its two affected controls on each version. Strict GCC checks and independent C/Python reviews passed. Source registration preserves historical proof entries and rosters; genuine 34/41-file loaders and all 26 active registration controls pass after a retained test-pin repair. Historical metadata bytes are separate non-executable fixtures, not reclassified native proof.
+
+Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d4703938e58529e5442b8900f`; C peer `13661a4d40a822ab5d7145088a67b95d74d05ca04dd27f538120eaa7dc8b8b17`; reader peer `bd6c3db8ae95b81ceacc3bc526eb05c89fc9b0fd88b0e3469697f022f49ea076`; clean post-registration receipt `064fea40aaf6bfd5d10a3fbbd9f00c57d777460fbe08ab8e306251025b0c1bb6`.
+
+M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.

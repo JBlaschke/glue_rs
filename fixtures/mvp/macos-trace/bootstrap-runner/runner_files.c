@@ -7,6 +7,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef GLUE_RUNTIME_PROFILE
+#include <sys/wait.h>
+#define NR_STDOUT_NAME "app.stdout"
+#define NR_STDERR_NAME "app.stderr"
+#else
+#define NR_STDOUT_NAME "probe.stdout"
+#define NR_STDERR_NAME "probe.stderr"
+#endif
 #ifdef __APPLE__
 #include <sys/stdio.h>
 #endif
@@ -46,7 +54,11 @@ static int directory(struct nr_attempt *a,int fd,unsigned index,int mode) {
  struct ba_metadata m;memset(&m,0,sizeof(m));m.acl_present=-1;
  struct ba_probe_error e={BA_META_NONE,0};const struct ba_operations *ops=ba_native_operations();
  if(ops->inspect_fn(ops->context,fd,&m,&e))return nr_fail(a,NR_OUTPUT,NR_HELPER,e.system_errno,(int)e.step);
+#ifdef GLUE_RUNTIME_PROFILE
+ const struct ba_mount_id *wanted=index<3?&a->runtime_catalog->deployment.root:&a->runtime_catalog->deployment.data;
+#else
  const struct ba_mount_id *wanted=index<3?&a->catalog->deployment.root:&a->catalog->deployment.data;
+#endif
  if(m.uid || (m.mode&S_IFMT)!=S_IFDIR || (m.mode&~(uint32_t)(S_IFMT|07777)) ||
     (mode>=0?(m.mode&07777)!=(uint32_t)mode:(m.mode&(S_IWGRP|S_IWOTH|S_ISUID|S_ISGID))) ||
     m.populated!=(BA_OWNER_PRESENT|BA_GROUP_PRESENT|BA_MODE_PRESENT) ||
@@ -93,7 +105,14 @@ int nr_output(struct nr_attempt *a,const char *path) {
  }
  for(unsigned i=0;i<6;i++)if(nr_close_owned(a,&held[i],NR_OUTPUT))rc=-1;
  if(rc)return -1;
- return nr_write_new(a,"request.bin",a->request_wire,a->request_size);
+ if(nr_write_new(a,"request.bin",a->request_wire,a->request_size))return -1;
+#ifdef GLUE_RUNTIME_PROFILE
+ uint8_t catalog[NRR_CATALOG_CAPACITY];size_t used;
+ if(nrr_catalog_bytes(a->runtime_catalog,catalog,&used))return nr_fail(a,NR_OUTPUT,NR_INVALID,0,-1);
+ return nr_write_new(a,"runtime-catalog.bin",catalog,used);
+#else
+ return 0;
+#endif
 #else
  (void)path;return nr_fail(a,NR_OUTPUT,NR_UNSUPPORTED,0,-1);
 #endif
@@ -113,7 +132,7 @@ int nr_endpoints(struct nr_attempt *a) {
  struct stat st;
  if(fstat(a->sources[0],&st))return nr_fail(a,NR_ENDPOINTS,NR_SYSCALL,errno,0);
  if(!S_ISCHR(st.st_mode))return nr_fail(a,NR_ENDPOINTS,NR_MISMATCH,0,0);
- const char *const names[]={"probe.stdout","probe.stderr"};
+ const char *const names[]={NR_STDOUT_NAME,NR_STDERR_NAME};
  for(unsigned i=1;i<3;i++) {
   a->sources[i]=openat(a->output_fd,names[i-1],O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC,0600);
   if(a->sources[i]<0)return nr_fail(a,NR_ENDPOINTS,NR_SYSCALL,errno,(int)i);
@@ -134,7 +153,13 @@ static int capture(struct nr_attempt *a,const char *name,const struct stat *expe
  *used=0;int fd=openat(a->output_fd,name,O_RDONLY|O_NOFOLLOW|O_NONBLOCK|O_CLOEXEC);
  if(fd<0)return nr_fail(a,NR_PROBE,NR_SYSCALL,errno,-1);
  struct stat st;int rc=0;
- if(fstat(fd,&st))rc=nr_fail(a,NR_PROBE,NR_SYSCALL,errno,-1);
+ int stated=fstat(fd,&st);
+#ifdef GLUE_RUNTIME_PROFILE
+ if(!stated&&st.st_size>=0){unsigned index=strcmp(name,NR_STDOUT_NAME)?1:0;
+  a->runtime_stream_observed[index]=1;a->runtime_stream_sizes[index]=(uint64_t)st.st_size;
+  a->runtime_stream_oversize[index]=(uint64_t)st.st_size>capacity;}
+#endif
+ if(stated)rc=nr_fail(a,NR_PROBE,NR_SYSCALL,errno,-1);
  else if(!S_ISREG(st.st_mode) || st.st_uid!=0 || (st.st_mode&07777)!=0600 || st.st_nlink!=1 ||
          st.st_dev!=expected->st_dev || st.st_ino!=expected->st_ino || st.st_size<0 || (uint64_t)st.st_size>capacity)
   rc=nr_fail(a,NR_PROBE,NR_MISMATCH,0,-1);
@@ -151,6 +176,9 @@ static void hex(const uint8_t *p,size_t n,char *out) {static const char h[]="012
 int nr_finish_outputs(struct nr_attempt *a) {
 #ifdef GLUE_FD_OBJECTS
  if(a->held_outputs[0]>=0 || a->held_outputs[1]>=0)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#ifdef GLUE_RUNTIME_PROFILE
+ if(a->runtime_cwd_fd>=0)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#endif
 #endif
  if(a->output_fd<0 || !a->output_path[0] || a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped) ||
     (a->signals_initialized&&!a->signals_restored)) {
@@ -160,12 +188,16 @@ int nr_finish_outputs(struct nr_attempt *a) {
 #endif
   return -1;
  }
+#ifdef GLUE_RUNTIME_PROFILE
+ uint8_t stdout_bytes[NRR_OUTPUT_BYTES],stderr_byte[NRR_OUTPUT_BYTES],stdout_sha[32]={0},stderr_sha[32]={0},status_sha[32]={0};
+#else
  uint8_t stdout_bytes[NP_REPORT_SIZE],stderr_byte[4096],stdout_sha[32]={0},stderr_sha[32]={0},status_sha[32]={0};
+#endif
  size_t out_n=0,err_n=0;
  int stdout_valid=0,stderr_valid=0;
  if(a->sources[1]<0 && a->sources[2]<0 && a->stdout_identity.st_ino && a->stderr_identity.st_ino) {
-  int x=capture(a,"probe.stdout",&a->stdout_identity,stdout_bytes,sizeof(stdout_bytes),&out_n,stdout_sha);
-  int y=capture(a,"probe.stderr",&a->stderr_identity,stderr_byte,sizeof(stderr_byte),&err_n,stderr_sha);
+  int x=capture(a,NR_STDOUT_NAME,&a->stdout_identity,stdout_bytes,sizeof(stdout_bytes),&out_n,stdout_sha);
+  int y=capture(a,NR_STDERR_NAME,&a->stderr_identity,stderr_byte,sizeof(stderr_byte),&err_n,stderr_sha);
   stdout_valid=!x;stderr_valid=!y;
  }
  /* A capture-reader close can fail AFTER the entry guard. Do not create or
@@ -176,6 +208,13 @@ int nr_finish_outputs(struct nr_attempt *a) {
 #endif
   return -1;
  }
+#ifdef GLUE_RUNTIME_PROFILE
+ a->runtime_outputs_valid=stdout_valid&&stderr_valid;
+ if(a->error.stage==NR_NONE&&(!a->forked||!a->reaped||a->lost_child||!WIFEXITED(a->wait_status)||WEXITSTATUS(a->wait_status)!=0||
+    !a->ready_matched||!a->objects_matched||!a->output_matches.ready||!a->go_attempted||!a->go_closed||
+    !a->runtime_witness_written||!a->runtime_delivery_written||
+    a->stream.end!=BW_END_ATTEMPT_WITHOUT_REPORTED_EXEC_ERROR))nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#else
  if(stdout_valid && stderr_valid && a->error.stage==NR_NONE) {
   struct np_report report;
   a->probe_fault=np_report_decode(stdout_bytes,out_n,a->request_sha,&report);
@@ -184,6 +223,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
    nr_fail(a,NR_PROBE,NR_MISMATCH,0,(int)a->probe_fault);
   else a->probe_matched=1;
  }
+#endif
  int status_failed=nr_write_new(a,"status.bin",a->stream.raw,a->stream.used);
  if(!status_failed && nr_sha_bytes(a->stream.raw,a->stream.used,status_sha))status_failed=nr_fail(a,NR_FINALIZE,NR_HELPER,0,-1);
  if(status_failed){
@@ -206,16 +246,47 @@ int nr_finish_outputs(struct nr_attempt *a) {
  if(!nr_trace_success(a))(void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
  if(nr_trace_write_sidecar(a))return -1;
 #endif
+#ifdef GLUE_RUNTIME_PROFILE
+ uint8_t launch[TL_CANONICAL_CAPACITY],launch_sha[32];size_t launch_n;
+ if(tl_canonical(&a->runtime_plan,launch,sizeof(launch),&launch_n)||nr_sha_bytes(launch,launch_n,launch_sha)||
+    nr_write_new(a,"launch-plan.bin",launch,launch_n))return nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
+ char request_h[65],catalog_h[65],status_h[65],stdout_h[65],stderr_h[65],launch_h[65],recipe_h[65],lock_h[65];
+ hex(a->request_sha,32,request_h);hex(a->catalog_sha,32,catalog_h);hex(status_sha,32,status_h);
+ hex(stdout_sha,32,stdout_h);hex(stderr_sha,32,stderr_h);hex(launch_sha,32,launch_h);
+ hex(a->runtime_catalog->recipe_sha256,32,recipe_h);hex(a->runtime_catalog->r01_lock_sha256,32,lock_h);
+#else
  char request_h[65],catalog_h[65],policy_h[65],status_h[65],stdout_h[65],stderr_h[65],source_h[65],recipe_h[65],probe_h[65];
  hex(a->request_sha,32,request_h);hex(a->catalog_sha,32,catalog_h);hex(a->policy_sha,32,policy_h);hex(status_sha,32,status_h);
  hex(stdout_sha,32,stdout_h);hex(stderr_sha,32,stderr_h);hex(a->catalog->runner_static_sources_sha256,32,source_h);
  hex(a->catalog->build_recipe_sha256,32,recipe_h);hex(a->catalog->probe_sha256,32,probe_h);
+#endif
  int pending=openat(a->output_fd,"result.pending",O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC,0600);
  if(pending<0)return nr_fail(a,NR_FINALIZE,NR_SYSCALL,errno,-1);
  if(nr_close_owned(a,&a->output_fd,NR_FINALIZE)){nr_close_owned(a,&pending,NR_FINALIZE);return -1;}
  /* No resource owns a writer now except this pending file. Namespace stability
   * follows the explicit root-private output invariant, not a generic resolver. */
  char json[8192];
+#ifdef GLUE_RUNTIME_PROFILE
+ int n=snprintf(json,sizeof(json),
+  "{\"schema\":\"glue-owned-runtime-recipe-diagnostic-v1\",\"target\":\"aarch64-apple-darwin\",\"exec_proved\":false,\"full_acceptance\":false,"
+  "\"status\":\"%s\",\"controller_pid\":%ld,\"child_pid\":%ld,"
+  "\"parent_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
+  "\"cleanup_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
+  "\"wait\":{\"forked\":%s,\"reaped\":%s,\"lost\":%s,\"raw_status\":%d,\"exit\":%d,\"signal\":%d},"
+  "\"ready_matched\":%s,\"objects_matched\":%s,\"held_references_closed\":true,\"cwd_reference_closed\":true,"
+  "\"protocol\":{\"records\":%u,\"bytes\":%zu,\"wire_fault\":%d,\"io_reason\":%d},"
+  "\"streams\":{\"stdout\":{\"file\":\"app.stdout\",\"valid\":%s,\"captured_bytes\":%zu,\"size_observed\":%s,\"observed_bytes\":%" PRIu64 ",\"oversize\":%s,\"sha256\":\"%s\"},"
+  "\"stderr\":{\"file\":\"app.stderr\",\"valid\":%s,\"captured_bytes\":%zu,\"size_observed\":%s,\"observed_bytes\":%" PRIu64 ",\"oversize\":%s,\"sha256\":\"%s\"}},"
+  "\"identities\":{\"request_sha256\":\"%s\",\"catalog_sha256\":\"%s\",\"status_sha256\":\"%s\",\"launch_plan_sha256\":\"%s\",\"recipe_sha256\":\"%s\",\"r01_lock_sha256\":\"%s\"}}\n",
+  a->error.stage==NR_NONE&&a->runtime_outputs_valid?"passed":"failed",(long)a->owner,(long)a->child,
+  a->error.stage,a->error.reason,a->error.saved_errno,a->error.detail,a->cleanup_error.stage,a->cleanup_error.reason,a->cleanup_error.saved_errno,a->cleanup_error.detail,
+  a->forked?"true":"false",a->reaped?"true":"false",a->lost_child?"true":"false",a->wait_status,
+  a->reaped&&WIFEXITED(a->wait_status)?WEXITSTATUS(a->wait_status):-1,a->reaped&&WIFSIGNALED(a->wait_status)?WTERMSIG(a->wait_status):0,
+  a->ready_matched?"true":"false",a->objects_matched?"true":"false",a->stream.wire.accepted_records,a->stream.used,a->stream.first_wire_error,a->stream.first_io_error.reason,
+  stdout_valid?"true":"false",out_n,a->runtime_stream_observed[0]?"true":"false",a->runtime_stream_sizes[0],a->runtime_stream_oversize[0]?"true":"false",stdout_h,
+  stderr_valid?"true":"false",err_n,a->runtime_stream_observed[1]?"true":"false",a->runtime_stream_sizes[1],a->runtime_stream_oversize[1]?"true":"false",stderr_h,
+  request_h,catalog_h,status_h,launch_h,recipe_h,lock_h);
+#else
  const struct bw_status *ce=&a->stream.wire.reported_error;
  int n=snprintf(json,sizeof(json),
   "{\"schema\":\"" NR_RECEIPT_SCHEMA "\",\"tracing\":" NR_RECEIPT_TRACING "," NR_OBJECT_PROFILE_JSON "\"exec_proved\":false,\"full_acceptance\":false,\"identity_policy\":\"request-declarations-compared-to-observations\","
@@ -242,8 +313,9 @@ int nr_finish_outputs(struct nr_attempt *a) {
   a->ready_matched?"true":"false",a->probe_matched?"true":"false",a->forked?"true":"false",a->reaped?"true":"false",a->lost_child?"true":"false",a->kill_attempted?"true":"false",a->wait_status,
   a->signals.prepared?"true":"false",a->signals_restored?"true":"false",a->signals.pipe_restored?"true":"false",a->signals.mask_restored?"true":"false",a->signal_restore_error.stage,a->signal_restore_error.reason,a->signal_restore_error.system_errno,
   request_h,catalog_h,policy_h,status_h,stdout_h,stderr_h,probe_h,source_h,recipe_h,stdout_valid?"true":"false",stderr_valid?"true":"false",out_n,err_n);
+#endif
  int rc=0;if(n<0 || (size_t)n>=sizeof(json))rc=nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
-#ifdef GLUE_FD_OBJECTS
+#if defined(GLUE_FD_OBJECTS) && !defined(GLUE_RUNTIME_PROFILE)
  if(!rc){
   int extra=snprintf(json+(size_t)n-2,sizeof(json)-(size_t)n+2,
    ",\"descriptor_observations\":{\"matched\":%s,\"held_references_closed\":true,\"match_stage\":%d,\"match_reason\":%d,\"match_errno\":%d}}\n",
