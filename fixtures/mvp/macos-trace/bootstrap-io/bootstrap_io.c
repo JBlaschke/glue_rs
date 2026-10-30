@@ -11,11 +11,12 @@
 
 #define NS_PER_SECOND UINT64_C(1000000000)
 #define NS_PER_MS UINT64_C(1000000)
+struct result_view { size_t *bytes_moved; unsigned char *prefix; size_t capacity; };
 struct run {
     struct bio_operations ops;
     struct bio_observer observer;
     int observed;
-    struct bio_result *result;
+    struct result_view result;
     struct bio_error *error;
     uint64_t deadline, last;
 };
@@ -24,7 +25,7 @@ static int fail(struct run *r, enum bio_stage stage, enum bio_reason reason,
     r->error->stage = stage;
     r->error->reason = reason;
     r->error->system_errno = saved_errno;
-    r->error->bytes_moved = r->result->bytes_moved;
+    r->error->bytes_moved = *r->result.bytes_moved;
     return -1;
 }
 static int flatten(struct bio_time t, uint64_t *n) {
@@ -63,17 +64,20 @@ static int transfer(int fd, const unsigned char *input, size_t length,
                     int writing, int eof, struct bio_time deadline,
                     const struct bio_operations *operations,
                     int observed, const struct bio_observer *observer,
-                    struct bio_result *result, struct bio_error *error) {
+                    struct result_view result, int objects, struct bio_error *error) {
     struct run r;
     memset(&r, 0, sizeof(r));
     r.result = result;
     r.error = error;
-    if (result) memset(result, 0, sizeof(*result));
+    if (result.bytes_moved) *result.bytes_moved = 0;
+    if (result.prefix) memset(result.prefix, 0, result.capacity);
     if (error) memset(error, 0, sizeof(*error));
-    if (!result || !error) return -1;
+    if (!result.bytes_moved || !result.prefix || !error) return -1;
     if (fd < 0 || (writing && !input))
         return fail(&r, BIO_STAGE_ARGUMENT, BIO_REASON_ARGUMENT, 0);
-    if (!eof && length != BIO_GO_RECORD_BYTES && length != BIO_STATUS_RECORD_BYTES)
+    if (!eof && (length > result.capacity ||
+        (objects ? length != BIO_OBJECT_STATUS_RECORD_BYTES :
+         (length != BIO_GO_RECORD_BYTES && length != BIO_STATUS_RECORD_BYTES))))
         return fail(&r, BIO_STAGE_ARGUMENT, BIO_REASON_LENGTH, 0);
     if (!operations || !operations->clock_fn || !operations->stat_fn ||
         !operations->flags_fn || !operations->poll_fn || !operations->read_fn ||
@@ -84,7 +88,7 @@ static int transfer(int fd, const unsigned char *input, size_t length,
         return fail(&r, BIO_STAGE_OPERATIONS, BIO_REASON_ARGUMENT, 0);
     r.observed = observed;
     if (observed) r.observer = *observer;
-    unsigned char source[BIO_MAX_RECORD_BYTES] = {0};
+    unsigned char source[BIO_OBJECT_STATUS_RECORD_BYTES] = {0};
     if (writing) memcpy(source, input, length);
     int reason = flatten(deadline, &r.deadline);
     if (reason) return fail(&r, BIO_STAGE_CLOCK, (enum bio_reason)reason, 0);
@@ -141,8 +145,8 @@ static int transfer(int fd, const unsigned char *input, size_t length,
         if (check_time(&r, &now)) return -1;
         if (observe(&r, &now)) return -1;
         if (rc != 1) continue;
-        unsigned char chunk[BIO_MAX_RECORD_BYTES] = {0};
-        size_t moved = result->bytes_moved;
+        unsigned char chunk[BIO_OBJECT_STATUS_RECORD_BYTES] = {0};
+        size_t moved = *result.bytes_moved;
         size_t want = eof ? 1 : length - moved;
         e = 0;
         ssize_t amount = writing ?
@@ -160,39 +164,64 @@ static int transfer(int fd, const unsigned char *input, size_t length,
             if (check_time(&r, &now)) return -1;
             return observe(&r, &now);
         }
-        memcpy(result->prefix + moved, writing ? source + moved : chunk, (size_t)amount);
-        result->bytes_moved += (size_t)amount;
+        memcpy(result.prefix + moved, writing ? source + moved : chunk, (size_t)amount);
+        *result.bytes_moved += (size_t)amount;
         if (check_time(&r, &now)) return -1;
         if (eof) return fail(&r, BIO_STAGE_EOF, BIO_REASON_TRAILING, 0);
         if (observe(&r, &now)) return -1;
-        if (result->bytes_moved == length) return 0;
+        if (*result.bytes_moved == length) return 0;
     }
     return fail(&r, BIO_STAGE_POLL, BIO_REASON_RETRY_LIMIT, 0);
 }
+static struct result_view legacy_view(struct bio_result *r) {
+    return r ? (struct result_view){&r->bytes_moved, r->prefix, sizeof(r->prefix)} :
+               (struct result_view){NULL, NULL, 0};
+}
+static struct result_view object_view(struct bio_object_result *r) {
+    return r ? (struct result_view){&r->bytes_moved, r->prefix, sizeof(r->prefix)} :
+               (struct result_view){NULL, NULL, 0};
+}
 int bio_read_record(int fd, size_t n, struct bio_time d, const struct bio_operations *o,
                     struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, n, 0, 0, d, o, 0, NULL, r, e);
+    return transfer(fd, NULL, n, 0, 0, d, o, 0, NULL, legacy_view(r), 0, e);
 }
 int bio_write_record(int fd, const unsigned char *p, size_t n, struct bio_time d,
                      const struct bio_operations *o, struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, p, n, 1, 0, d, o, 0, NULL, r, e);
+    return transfer(fd, p, n, 1, 0, d, o, 0, NULL, legacy_view(r), 0, e);
 }
 int bio_require_eof(int fd, struct bio_time d, const struct bio_operations *o,
                     struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, 0, 0, 1, d, o, 0, NULL, r, e);
+    return transfer(fd, NULL, 0, 0, 1, d, o, 0, NULL, legacy_view(r), 0, e);
 }
 int bio_read_record_observed(int fd, size_t n, struct bio_time d, const struct bio_operations *o,
                              const struct bio_observer *v, struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, n, 0, 0, d, o, 1, v, r, e);
+    return transfer(fd, NULL, n, 0, 0, d, o, 1, v, legacy_view(r), 0, e);
 }
 int bio_write_record_observed(int fd, const unsigned char *p, size_t n, struct bio_time d,
                               const struct bio_operations *o, const struct bio_observer *v,
                               struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, p, n, 1, 0, d, o, 1, v, r, e);
+    return transfer(fd, p, n, 1, 0, d, o, 1, v, legacy_view(r), 0, e);
 }
 int bio_require_eof_observed(int fd, struct bio_time d, const struct bio_operations *o,
                              const struct bio_observer *v, struct bio_result *r, struct bio_error *e) {
-    return transfer(fd, NULL, 0, 0, 1, d, o, 1, v, r, e);
+    return transfer(fd, NULL, 0, 0, 1, d, o, 1, v, legacy_view(r), 0, e);
+}
+int bio_read_object_status(int fd, struct bio_time d, const struct bio_operations *o,
+                           struct bio_object_result *r, struct bio_error *e) {
+    return transfer(fd, NULL, BIO_OBJECT_STATUS_RECORD_BYTES, 0, 0, d, o, 0, NULL, object_view(r), 1, e);
+}
+int bio_write_object_status(int fd, const unsigned char p[BIO_OBJECT_STATUS_RECORD_BYTES], struct bio_time d,
+                            const struct bio_operations *o, struct bio_object_result *r, struct bio_error *e) {
+    return transfer(fd, p, BIO_OBJECT_STATUS_RECORD_BYTES, 1, 0, d, o, 0, NULL, object_view(r), 1, e);
+}
+int bio_read_object_status_observed(int fd, struct bio_time d, const struct bio_operations *o,
+                                    const struct bio_observer *v, struct bio_object_result *r, struct bio_error *e) {
+    return transfer(fd, NULL, BIO_OBJECT_STATUS_RECORD_BYTES, 0, 0, d, o, 1, v, object_view(r), 1, e);
+}
+int bio_write_object_status_observed(int fd, const unsigned char p[BIO_OBJECT_STATUS_RECORD_BYTES], struct bio_time d,
+                                     const struct bio_operations *o, const struct bio_observer *v,
+                                     struct bio_object_result *r, struct bio_error *e) {
+    return transfer(fd, p, BIO_OBJECT_STATUS_RECORD_BYTES, 1, 0, d, o, 1, v, object_view(r), 1, e);
 }
 static int native_clock(void *c, struct bio_time *t, int *e) {
     (void)c;

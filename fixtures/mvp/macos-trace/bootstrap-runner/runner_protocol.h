@@ -3,7 +3,13 @@
 #include "../bootstrap-io/bootstrap_io.h"
 #include "../bootstrap-request/bootstrap_request.h"
 #include "../bootstrap-probe/probe_report.h"
-#define NR_STATUS_CAPACITY (3u*BW_STATUS_SIZE+1u)
+#ifdef GLUE_FD_OBJECTS
+#include "../bootstrap-object-wire/bootstrap_object_wire.h"
+#define NR_STATUS_RECORD_BYTES BOW_STATUS_SIZE
+#else
+#define NR_STATUS_RECORD_BYTES BW_STATUS_SIZE
+#endif
+#define NR_STATUS_CAPACITY (3u*NR_STATUS_RECORD_BYTES+1u)
 struct nr_status_stream {
     struct bw_state wire;
     uint8_t raw[NR_STATUS_CAPACITY]; size_t used;
@@ -11,6 +17,9 @@ struct nr_status_stream {
     enum bw_fault first_wire_error;
     enum bw_eof_result end;
     int failed, ended;
+#ifdef GLUE_FD_OBJECTS
+    struct tfo_snapshot ready_objects;
+#endif
 };
 /* Internal trusted state: initialize once; no rebind/concurrent caller mutation.
  * Native entry supplies bio_native_operations only. Tests use isolated models.

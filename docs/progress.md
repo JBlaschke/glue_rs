@@ -1723,7 +1723,7 @@ All 42 focused controls pass, with independent review and unchanged legacy APIs.
 Raw pairs remain ineligible for the filesystem state feed until native lifetime,
 ABI and object associations are established. No native acceptance is inferred.
 
-## MVP progress — 29 October 2026
+## Earlier MVP progress — 29 October 2026
 
 M0 foundations and the M1 development preview are delivered. M2 remains active.
 The seven extra Linux archive/uv routes pass on both targets at their recorded
@@ -1737,3 +1737,25 @@ next. Mac's actual READY handoff adoption is in source review; authoritative
 object/path/lifetime semantics, the complete Mac oracle/corpus and Mac budgets
 remain the critical path. M3 memory mode remains planned. Exact source hashes,
 checks and evidence limits are in the implementation ledger and milestone table.
+
+## MVP R02 — held-output READY adoption (29 October 2026)
+
+Branch `codex/mvp-r02-ready-fd-objects` adds decision `c55ff66`, implementation
+`4744e33` and separate source registration `2af6ed8`. The actual owned child
+captures its five retained descriptors; the parent validates a distinct complete
+512-byte status and matches output backing against still-held original handles
+before tracing or GO. Legacy protocol/result sizes remain intact. Partial, late,
+wrong-reference and cross-profile records cannot release the child.
+
+All 120 affected integration controls pass, plus ten wire controls normally and
+under ASan/UBSan. After the prerequisite GCC fixture repair, five actual native
+Mac gated cases pass without skips, and genuine GCC strict syntax passes. The
+real configured source loaders accept all 34 default and 41 trace sources from
+the reviewed implementation commit in a clean checkout; 26 active registry
+controls pass. Historical proof entries/rosters/compile lists remain unchanged.
+The new object kit stays unconfigured. Independent review reports no findings.
+
+SIP stays enabled; no provider/VM/sudo run occurred. This is initial backing
+association, not paths/OFD generations/later lifetime effects or full Mac
+acceptance. Held-directory CWD selection is the next separate feature. M0/M1
+remain delivered, M2 active, M3 planned and M4 deferred.
