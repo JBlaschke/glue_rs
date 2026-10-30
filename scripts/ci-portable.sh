@@ -35,6 +35,8 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/target-descriptors/test_target_descriptors.py -v
         python3 fixtures/mvp/macos-trace/target-endpoints/test_target_endpoints.py -v
         python3 fixtures/mvp/macos-trace/target-fd-objects/test_target_fd_objects.py -v
+        python3 fixtures/mvp/macos-trace/target-cwd/test_target_cwd.py -v
+        python3 fixtures/mvp/macos-trace/target-launch/test_target_launch.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-wire/test_bootstrap_wire.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-object-wire/test_bootstrap_object_wire.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-io/test_bootstrap_io.py -v
@@ -47,6 +49,10 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-inspector/test_inspect_deployment.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_bootstrap_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-object-runner/test_object_runner.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_witness.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-trace-runner/test_runtime_trace_runner.py -v
+        python3 fixtures/mvp/macos-trace/post-exec-output/test_post_exec_output.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v
@@ -60,6 +66,16 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/trace-session/test_trace_session.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-backend/test_owned_trace_backend.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-check/test_owned_trace_check.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_trace_backend.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_boundary.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_images.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_recipe.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_stopped.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_stopped_backend.py -v
+        python3 fixtures/mvp/macos-trace/runtime-boundary/test_runtime_stopped_status.py -v
+        python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_policy.py -v
+        python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_fcntl_policy.py -v
+        python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_status_policy.py -v
         python3 fixtures/mvp/macos-trace/bsd-outcomes/test_bsd_outcomes.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_assessment.py -v
         python3 fixtures/mvp/macos-trace/owned-trace-assessment/test_inspect_trace.py -v
@@ -73,6 +89,7 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bsd-entry-abi/test_bsd_entry_abi.py -v
         python3 fixtures/mvp/macos-trace/bsd-fd-semantics/test_bsd_fd_semantics.py -v
         python3 fixtures/mvp/macos-trace/bsd-fcntl-semantics/test_bsd_fcntl_semantics.py -v
+        python3 fixtures/mvp/macos-trace/bsd-fgetfl-semantics/test_bsd_fgetfl_semantics.py -v
         python3 fixtures/mvp/macos-trace/state-units/test_state_machine.py -v
         python3 fixtures/mvp/macos-trace/mapping-units/test_mapping_state.py -v
         cargo test --workspace --locked
