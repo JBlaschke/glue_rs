@@ -24,15 +24,29 @@ static int modeled_credentials(const struct tc_request*r,uint64_t owner,const st
 #include "../bootstrap-runner/runner_child.c"
 #undef tc_drop_in_owned_child
 
+static int unavailable(const char *reason){
+ fprintf(stderr,"runtime native fixture unavailable: %s\n",reason);return 77;
+}
 #ifdef __APPLE__
+static int unexpected(const char *operation,int saved_errno){
+ fprintf(stderr,"runtime native fixture error: %s errno=%d\n",operation,saved_errno);return 1;
+}
 static void channel(int fds[2]){assert(!pipe(fds));for(unsigned i=0;i<2;i++){int f=fcntl(fds[i],F_GETFL),d=fcntl(fds[i],F_GETFD);assert(f>=0&&d>=0&&!fcntl(fds[i],F_SETFL,f|O_NONBLOCK)&&!fcntl(fds[i],F_SETFD,d|FD_CLOEXEC));}}
 #endif
 int main(int argc,char**argv){assert(argc==3);
 #if !defined(__APPLE__)
- (void)argv;return 77;
+ (void)argv;return unavailable("unsupported-platform");
 #else
- if(getuid()==0||geteuid()==0||!getgid())return 77;
- gid_t groups[16];int count=getgroups(16,groups);if(count<1||count>16||groups[0]!=getgid()||!td_native_operations()->supported)return 77;
+ if(getuid()==0||geteuid()==0||!getgid())return unavailable("actual-identity");
+ errno=0;int available=getgroups(0,NULL);if(available<0)return unexpected("getgroups-count",errno);
+ if(available<1||available>16)return unavailable("actual-group-vector");
+ gid_t groups[16];errno=0;int count=getgroups(16,groups);if(count<0)return unexpected("getgroups-read",errno);
+ if(count!=available)return unexpected("group-vector-changed",0);
+ if(groups[0]!=getgid())return unavailable("actual-group-vector");
+ const struct td_operations *native=td_native_operations();
+ if(!native)return unexpected("descriptor-adapter-null",0);
+ if(native->supported==0)return unavailable("descriptor-adapter");
+ if(native->supported!=1)return unexpected("descriptor-adapter-value",0);
  assert(strlen(argv[1])<BA_PATH_MAX&&strlen(argv[2])+sizeof("/unrelated")<BA_PATH_MAX);
  struct stat parent_before,parent_after;assert(!stat(".",&parent_before));assert(!mkdir(argv[2],0700));char cwd[BA_PATH_MAX],archive[BA_PATH_MAX],out[BA_PATH_MAX],err[BA_PATH_MAX];
  assert(snprintf(cwd,sizeof(cwd),"%s/unrelated",argv[2])>0&&snprintf(archive,sizeof(archive),"%s/app.glue",argv[2])>0&&snprintf(out,sizeof(out),"%s/app.stdout",argv[2])>0&&snprintf(err,sizeof(err),"%s/app.stderr",argv[2])>0);assert(!mkdir(cwd,0700));
