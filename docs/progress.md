@@ -1723,9 +1723,7 @@ All 42 focused controls pass, with independent review and unchanged legacy APIs.
 Raw pairs remain ineligible for the filesystem state feed until native lifetime,
 ABI and object associations are established. No native acceptance is inferred.
 
-## Earlier MVP progress snapshot — 29 October 2026
-
-This earlier snapshot is retained for chronology; the later sections record subsequent work.
+## Earlier MVP progress — 29 October 2026
 
 M0 foundations and the M1 development preview are delivered. M2 remains active.
 The seven extra Linux archive/uv routes pass on both targets at their recorded
@@ -1809,6 +1807,25 @@ The actual traced runtime adapter, matching generic witness, source sink policy,
 native Mac corpus and budgets remain. Repeated image/thread handling is already
 implemented and being prepared as a separate PR. M2 remains active.
 
+## R02 — explicit native-fixture preflight CI accounting (29 October 2026)
+
+The Mac runtime fixture previously returned silent77 for preflight identity/group/
+adapter refusals, while its Python caller asserted0. It now emits a closed
+before-effects diagnostic and reports a verified refusal as an explicit unittest
+skip with native_executed=false. Exact stderr, empty stdout and no filesystem
+node (including dangling links) are required. Unknown77, syscall errors, group
+count races, invalid adapters, side effects and non77 failures still fail.
+Production credentials, protected admission and execution assertions are unchanged.
+
+Independent review verifies 269 retained payloads. Both Python versions pass the
+full22-method source suite (44 total, zero skips), with two actual ordinary owned
+child executions under the existing admission/credential models. Eighteen focused
+wrapper controls and13 private actual-C guard fault controls pass. The original
+CI guard cannot be identified from its blank stderr; no specific guard is claimed.
+The earliest runtime-launch backport also passes all22 methods on Python3.15,
+including its actual owned-child exec and original pre-witness assertions. Only
+two test files change; original source models and fixture scope remain explicit.
+This CI repair does not provide privileged bootstrap, provider or M2 acceptance.
 
 ## Original runtime output and gate evidence — 29 October
 
