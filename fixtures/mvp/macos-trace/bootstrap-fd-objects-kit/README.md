@@ -1,7 +1,7 @@
 # Unconfigured fixed object-READY kit profile
 
 This additive, host-only profile selects the real object READY runner through
-fixed wrapper translation units and exact ordered 2/18/6 compile lists. Those
+fixed wrapper translation units and exact ordered 2/19/6 compile lists. Those
 source choices enter the existing immutable recipe and source digest. The shared
 Python builder is unchanged; no new unrecorded compiler flag selects the object
 profile. The profile has distinct registry/recipe/build/result/signing identities

@@ -5,6 +5,15 @@
 #include <limits.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef GLUE_FD_OBJECTS
+#include "../target-cwd/target_cwd.h"
+static int object_cwd_before(void *context,int *saved) {
+ struct nr_attempt *a=context;
+ if(!nr_before(a,a->deadline,NR_READY))return 0;
+ *saved=a->error.reason==NR_TIMEOUT?0:(a->error.saved_errno>0?a->error.saved_errno:-1);
+ return -1;
+}
+#endif
 static int status_write(struct nr_attempt *a,const struct bw_status *s) {
  struct bio_error e;
 #ifdef GLUE_FD_OBJECTS
@@ -44,11 +53,35 @@ _Noreturn void nr_child(struct nr_attempt *a) {
   ERROR(BW_CREDENTIALS,tc.system_errno?BW_SYSCALL:BW_MISMATCH,tc.system_errno,(int)tc.stage);
  }
  flags|=BW_CREDENTIAL_ATTEMPT;
+ int cwd_detail=-1;
+#ifdef GLUE_FD_OBJECTS
+ if(a->admission.ready!=1 || a->admission.checked_count!=BA_COMPONENT_COUNT || a->admission.owned_count!=BA_COMPONENT_COUNT)
+  ERROR(BW_CWD,BW_MISMATCH,0,TCWD_STAGE_REQUEST);
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_CWD,BW_TIMEOUT,0,TCWD_STAGE_BEFORE_CHANGE);
+ #ifdef GLUE_RUNTIME_PROFILE
+ if(a->runtime_cwd_fd<3)ERROR(BW_CWD,BW_MISMATCH,0,TCWD_STAGE_REQUEST);
+ int cwd_fd=a->runtime_cwd_fd;
+ #else
+ int cwd_fd=a->admission.components[6].fd;
+ #endif
+ struct tcwd_request cwd_request={cwd_fd,a->request.cwd_device,a->request.cwd_inode};
+ struct tcwd_guard cwd_guard={a,object_cwd_before};struct tcwd_result selected;struct tcwd_error ce;
+ if(tcwd_select_in_owned_child(&cwd_request,(uint64_t)a->owner,tcwd_native_operations(),&cwd_guard,&selected,&ce))
+  ERROR(BW_CWD,ce.system_errno?BW_SYSCALL:(ce.reason==TCWD_REASON_DEADLINE?BW_TIMEOUT:BW_MISMATCH),ce.system_errno,tcwd_error_detail(&ce));
+ cwd_detail=TCWD_STAGE_FINAL|TCWD_MUTATION_DETAIL;
+ if(!selected.ready)ERROR(BW_CWD,BW_MISMATCH,0,cwd_detail);
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_CWD,BW_TIMEOUT,0,cwd_detail);
+ cwd_detail=TCWD_STAGE_READBACK|TCWD_MUTATION_DETAIL;
+#else
  if(chdir(a->cwd))ERROR(BW_CWD,BW_SYSCALL,errno,-1);
+#endif
  struct stat cwd;
- if(stat(".",&cwd))ERROR(BW_CWD,BW_SYSCALL,errno,-1);
+ if(stat(".",&cwd))ERROR(BW_CWD,BW_SYSCALL,errno,cwd_detail);
  if((uint64_t)(uint32_t)cwd.st_dev!=a->request.cwd_device || (uint64_t)cwd.st_ino!=a->request.cwd_inode || !S_ISDIR(cwd.st_mode))
-  ERROR(BW_CWD,BW_MISMATCH,0,-1);
+  ERROR(BW_CWD,BW_MISMATCH,0,cwd_detail);
+#ifdef GLUE_FD_OBJECTS
+ if(nr_before(a,a->deadline,NR_READY))ERROR(BW_CWD,BW_TIMEOUT,0,TCWD_STAGE_FINAL|TCWD_MUTATION_DETAIL);
+#endif
  struct td_record scratch[TD_MAX_CAPACITY];struct td_plan plan={{0,1,2,a->endpoints.copies[TE_GATE_READER],a->endpoints.copies[TE_STATUS_WRITER]},scratch,TD_MAX_CAPACITY};
  struct td_error td;
  if(td_close_in_owned_child(&plan,(uint64_t)a->owner,td_native_operations(),&td)) {
@@ -104,8 +137,13 @@ _Noreturn void nr_child(struct nr_attempt *a) {
  attempt.sequence=1;attempt.stage=BW_EXEC;attempt.mutation_flags=flags;attempt.detail=-1;
  if(status_write(a,&attempt))_exit(122);
  sequence=2;
+#ifdef GLUE_RUNTIME_PROFILE
+ if(!a->runtime_plan.ready)ERROR(BW_EXEC,BW_MISMATCH,0,-1);
+ execve(a->executable,a->runtime_plan.argv,a->runtime_plan.environment);
+#else
  char *const argv[]={a->executable,"--request-sha256",a->request_hex,NULL};char *const environment[]={NULL};
  execve(a->executable,argv,environment);
+#endif
  int saved=errno;ERROR(BW_EXEC,BW_SYSCALL,saved,-1);
 }
 #undef ERROR
