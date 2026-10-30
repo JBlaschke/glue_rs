@@ -2053,3 +2053,20 @@ New formatter source SHA256:
 `e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
 The separate Mac owned-child fixture preflight refusal remains under diagnosis.
 M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — stopped-backend malformed-name control repair (30 October 2026)
+
+PR #118's status stage removed the inherited `malformed-name` branch from
+`test_runtime_stopped_backend.c`, but `test_runtime_stopped_backend.py` still
+runs that mode, so the injected Darwin model reached its unknown-mode assertion
+and aborted. Hosted macOS had not reached this suite because the earlier
+owned-child fixture preflight failed first; Linux skips the injected SDK model.
+The repair restores the original branch byte-for-byte from #117, including the
+four probe-description name-guard controls, so the file again differs from #117
+only by the two status hooks. The abort reproduces before the repair; after it
+the backend, status and stopped suites pass on Python 3.15 under Clang and
+Clang ASan/UBSan. No producer, formatter, getter, provider or native execution
+change is made.
+New backend control source SHA256:
+`5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
+M2 remains active; this repair supplies no native acceptance or admission.
