@@ -37,6 +37,32 @@ policy; every image's actual signature class is recorded. Developer ID plus
 notarization is required before publishing macOS binaries; it is a later release
 check, not a claim established by the development signatures.
 
+## 29 October: same-source Linux compatibility acceptance
+
+Native [run 40863475232](https://github.com/JBlaschke/glue_rs/actions/runs/40863475232)
+at `8532d509a61ab8e762b0926ef55dc179d9b821cd` passes both Linux targets.
+Independent complete replay verifies 49 V02 receipts, 196 extraction controls,
+990 rank results and the separate actual wrong-ABI refusal per target. The
+34 application cases include every unchanged base/route case plus patch and abi3
+coverage; the other fifteen receipts are benchmark variants. Input/source
+identities remain unchanged. PR #100 also passes all eighteen portable checks.
+
+Five unchanged budgets pass structural/I/O/FD/scaling gates; all time/RSS limits
+are inapplicable on these different host fingerprints. The exact original ZIPs,
+5,037 raw files per target, replay and refusal identities are recorded in the
+[current inventory](../evidence/native-linux-compatibility-2026-10-29/current-cohort-inventory.json).
+Retained crypto/cp314 CFFI wheels are rehashed; absent patch/other provisioning
+archives are source-pinned provenance checks only. The cohort receipt SHA256 is
+`61cbb474b1e3768c66f0ea5fe5a2950561057e98c9fb8155e25c05d1767a2467`.
+No raw release is published and external retention of this cohort remains open.
+Earlier failed x86 and arm runs remain failed and unchanged. This closes the
+new Linux execution/replay gap, not full M2.
+
+The Mac handoff feature is separately open as PR #101; held-directory CWD
+selection is being implemented on its own branch. A complete runtime capture
+boundary/process tree, source-grounded sink-capability state policy, native Mac
+corpus and budgets remain. Guest SIP stays enabled; no VM action occurred.
+
 ## 29 October: Linux compatibility closure and next native cells
 
 [PR #99](https://github.com/JBlaschke/glue_rs/pull/99) repairs build-time staging
