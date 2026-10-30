@@ -2093,3 +2093,17 @@ change is made.
 New backend control source SHA256:
 `5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
 M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — retention fixture GCC CI repair (30 October 2026)
+
+PR #119's Linux baseline rejected fourteen guards in the new retention writer,
+its observer fixture and its controls as GCC misleading indentation under the
+existing strict flags. The repair only braces those guard bodies; control flow,
+writer behavior, retained bytes and every control expectation are unchanged.
+GCC 16 with the suite's `-std=c11 -Wall -Wextra -Werror -O2` flags reproduces
+all fourteen errors before the repair and reports none after it, for both the
+test and production builds; the twelve retention controls pass under Clang and
+Clang ASan/UBSan. No warning suppression, provider or native execution is added.
+New writer source SHA256:
+`b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
+M2 remains active; this repair supplies no native acceptance or admission.

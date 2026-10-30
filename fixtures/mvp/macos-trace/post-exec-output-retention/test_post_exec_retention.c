@@ -22,7 +22,7 @@ static uid_t uid(void *c){return ((struct model *)c)->uid;}
 static int clock_fn(void *c,uint64_t *out,int *e){struct model *m=c;unsigned n=++m->clocks;
  if(n==m->clock_fail){*e=EIO;return -1;}*out=++m->now;
  if(n==m->clock_late||m->next_late){*out=1000000;m->next_late=0;}
- if(n==m->clock_back)*out=1;return 0;}
+ if(n==m->clock_back){*out=1;}return 0;}
 static int flags(void *c,int fd,int cmd,int *e){(void)e;struct model *m=c;m->flags++;
  if((fd!=50&&fd!=51)||(cmd!=F_GETFD&&cmd!=F_GETFL))m->bad_call=1;
  int value=cmd==F_GETFD?FD_CLOEXEC:fd==50?O_RDONLY:O_WRONLY;
@@ -48,7 +48,7 @@ static int stat_fn(void *c,int fd,struct stat *s,int *e){(void)e;struct model *m
 }
 static int open_fn(void *c,int fd,const char *name,int f,mode_t mode,int *e){struct model *m=c;m->opens++;
  if(fd!=50||strcmp(name,PXRET_BASENAME)||mode!=0600||f!=(O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC))m->bad_call=1;
- if(m->after==1)m->next_late=1;if(m->open_fail){*e=EEXIST;return -1;}return 51;}
+ if(m->after==1){m->next_late=1;}if(m->open_fail){*e=EEXIST;return -1;}return 51;}
 static ssize_t write_fn(void *c,int fd,const void *p,size_t n,int *e){struct model *m=c;m->writes++;
  if(fd!=51||n>PX_BYTES-m->used)m->bad_call=1;
  if(m->after==2)m->next_late=1;
@@ -57,9 +57,9 @@ static ssize_t write_fn(void *c,int fd,const void *p,size_t n,int *e){struct mod
  if(m->short_size&&n>m->short_size)n=m->short_size;
  memcpy(m->bytes+m->used,p,n);m->used+=n;return (ssize_t)n;}
 static int sync_fn(void *c,int fd,int *e){struct model *m=c;m->syncs++;if(fd!=51)m->bad_call=1;
- if(m->after==3)m->next_late=1;if(m->sync_fail){*e=EIO;return -1;}return 0;}
+ if(m->after==3){m->next_late=1;}if(m->sync_fail){*e=EIO;return -1;}return 0;}
 static int close_fn(void *c,int fd,int *e){struct model *m=c;m->closes++;if(fd!=51)m->bad_call=1;
- if(m->after==4)m->next_late=1;if(m->close_fail){*e=EINTR;return -1;}return 0;}
+ if(m->after==4){m->next_late=1;}if(m->close_fail){*e=EINTR;return -1;}return 0;}
 static struct px_retention *start(struct model *m,const struct px_observer *o,uint64_t deadline){
  struct px_retention_test_operations ops={m,owner,uid,clock_fn,flags,stat_fn,open_fn,write_fn,sync_fn,close_fn};
  struct px_retention_error e;return px_retention_model_new(o,50,deadline,&ops,&e);
@@ -90,7 +90,7 @@ static int bad_observers(void){for(int state=1;state<=4;state++){
  struct observer_fixture f;struct px_observer *o=fixture_observer(&f,0,0);A(o);
  for(unsigned kind=0;kind<3;kind++){struct model m=model();if(kind==0)m.owner++;if(kind==1)m.uid++;
   struct px_retention *r=start(&m,o,kind==2?1000001:1000000);A(r);
-  if(kind==1)m.uid++;struct px_retention_error e;A(px_retention_write(r,&e)==-1);
+  if(kind==1){m.uid++;}struct px_retention_error e;A(px_retention_write(r,&e)==-1);
   A(m.opens==0&&m.writes==0&&m.closes==0);px_retention_free(r);}
  px_observer_free(o);return 0;}
 static int metadata(void){struct observer_fixture f;struct px_observer *o=fixture_observer(&f,0,0);A(o);
@@ -108,7 +108,7 @@ static int short_writes(void){struct observer_fixture f;struct px_observer *o=fi
  px_observer_free(o);puts("short_lengths=4095 eintr_boundaries=2");return 0;}
 static int native_failures(void){struct observer_fixture f;struct px_observer *o=fixture_observer(&f,0,0);A(o);
  for(int kind=0;kind<6;kind++){struct model m=model();if(kind==0)m.open_fail=1;
-  if(kind>=1&&kind<=3)m.write_fail=kind;if(kind==4)m.sync_fail=1;if(kind==5)m.close_fail=1;
+  if(kind>=1&&kind<=3){m.write_fail=kind;}if(kind==4)m.sync_fail=1;if(kind==5)m.close_fail=1;
   struct px_retention_status s;A(run(&m,o,&s)==-1);A(m.closes==(unsigned)(kind!=0));A(!s.file_synced_content);
   if(kind==5)A(s.file_ownership_unresolved&&!s.close_succeeded&&s.close_call.system_errno==EINTR);
   if(kind==4)A(s.sync_call.result==-1&&s.sync_call.system_errno==EIO&&s.bytes_written==4096);
@@ -134,7 +134,7 @@ static int clocks(void){struct observer_fixture f;struct px_observer *o=fixture_
 static int arguments(void){struct px_retention_error e;struct px_retention_status s;memset(&s,0xa5,sizeof(s));
  A(px_retention_snapshot(NULL,&s)==-1&&!s.owner_pid&&!s.file_synced_content);
  uint8_t b[4096];memset(b,1,sizeof(b));A(px_retention_copy_observation(NULL,b)==-1);
- for(unsigned i=0;i<4096;i++)A(b[i]==0);A(px_retention_write(NULL,&e)==-1);
+ for(unsigned i=0;i<4096;i++){A(b[i]==0);}A(px_retention_write(NULL,&e)==-1);
  A(e.stage==PXRET_VALIDATE&&e.reason==PXRET_ARGUMENT&&e.system_errno==0);px_retention_free(NULL);
  struct observer_fixture f;struct px_observer *o=fixture_observer(&f,0,0);A(o);
  A(!px_retention_new(NULL,50,1000000,&e));A(!px_retention_new(o,2,1000000,&e));A(!px_retention_new(o,50,0,&e));A(!px_retention_new(o,50,1000000,NULL));
@@ -162,10 +162,10 @@ static int real_file(const char *path,int kind){struct observer_fixture f;struct
  if(kind==3){char link[64];A(readlinkat(fd,PXRET_BASENAME,link,sizeof(link))==21);}
  A(close(fd)==0);px_observer_free(o);puts("file_io=real observer_stop_and_lease=model provider=none signals=none");return 0;}
 int main(int argc,char **argv){if(argc<2)return 2;
- if(!strcmp(argv[1],"success"))return success();if(!strcmp(argv[1],"bad-observers"))return bad_observers();
- if(!strcmp(argv[1],"metadata"))return metadata();if(!strcmp(argv[1],"short-writes"))return short_writes();
- if(!strcmp(argv[1],"syscalls"))return native_failures();if(!strcmp(argv[1],"clocks"))return clocks();
+ if(!strcmp(argv[1],"success")){return success();}if(!strcmp(argv[1],"bad-observers"))return bad_observers();
+ if(!strcmp(argv[1],"metadata")){return metadata();}if(!strcmp(argv[1],"short-writes"))return short_writes();
+ if(!strcmp(argv[1],"syscalls")){return native_failures();}if(!strcmp(argv[1],"clocks"))return clocks();
  if(!strcmp(argv[1],"arguments"))return arguments();
  if(argc==3){if(!strcmp(argv[1],"real"))return real_file(argv[2],0);if(!strcmp(argv[1],"existing"))return real_file(argv[2],1);
-  if(!strcmp(argv[1],"no-cloexec"))return real_file(argv[2],2);if(!strcmp(argv[1],"symlink"))return real_file(argv[2],3);}
+  if(!strcmp(argv[1],"no-cloexec")){return real_file(argv[2],2);}if(!strcmp(argv[1],"symlink"))return real_file(argv[2],3);}
  return 2;}
