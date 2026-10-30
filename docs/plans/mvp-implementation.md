@@ -2907,3 +2907,50 @@ output backing is not an OFD/path/generation/later-call witness. Full Darwin
 process-tree state/oracle, native calibration/corpus, Mac budgets and M2 remain
 open. The next functional branch selects CWD using the already admitted directory
 handle. Other Linux compatibility work continues independently in PR #100.
+
+## 29 October: source-selected runtime capture and first image transition
+
+Decision `9fe847e` precedes implementation `7fc6e6121388f6022bc20d68cea74093598ef358`
+on `codex/mvp-r02-runtime-boundary`. The separately named C backend/program keep
+the legacy scalar transport layout and original bounded deadline/drop/fault/
+writer/finalization rules. A byte-significant marker selects the fixed profile.
+Unsupported creation/rights/Mach records serialize before session refusal; clean
+backend completion requires exactly one selected exec entry and success. Those
+counters are not image/thread/bootstrap proof. Descendants are outside this
+profile and no generic runtime catalog is adopted.
+
+The independent reader consumes the physical stream once and validates complete
+transport before immutable facts. It retains the entire bootstrap prefix, exact
+launch byte/digest bindings, one explicitly accounted attachment return, the gate
+close/EXEC_ATTEMPT/exec sequence, and the source-grounded changed-TID image
+transition. It refuses later execs, unsupported routes, ambiguous thread/order
+boundaries and late malformed transport without exposing a clean prefix. Scalar
+pointers do not attest the executable pathname. Supplied catalog/source/recipe/
+artifact bytes establish consistency, not native/protected-launch provenance or
+output capability. Every native/state/full-acceptance flag stays false.
+
+Thirteen C-transport controls pass on both tested Python versions; the independent
+reader passes thirty-five per version, including actual compiled C program and
+existing C request/object-wire differential checks. Source review tightens exact
+remaining-byte I/O requests/EOF, Darwin nonblocking/access/int flag prerequisites
+and exact-zero fstat results. High status bits remain intact because READY writes
+can change kernel write-history flags. All prior attempts remain immutable.
+No native provider is run.
+
+Native freeze report SHA256 is
+`9116e263c1ea864b426f144a5c72aed14c1488941122ae6dd1243165936106dd`; its corrected
+identifier-prefix derivation addendum is
+`9073944879c1935bcf3ade636c635396e6146c59d692f66673268b4faeb07955`. Reader attempt03
+receipt is `7552a84c38f530c8a255a232f4ed3008f445530796cc0c0ac2ef7f74071a7f5d`;
+its 49-payload manifest is
+`35dbc0d827ff8deb4143d1cfa95e4848f82f34301348e32b22d2694d22653b1c`. Native peer
+report is `a1b8d9d8a74f2a65fc8ce89c5d63ffc3169390537a6ae99d9eabda27ce1c940f`;
+reader peer report is
+`afb610deeef1a1127e9ea895db22909c188a1b32c54a3dbd66b66b99a2053521`.
+
+Two new suites enter portable CI. Legacy registered sources stay byte-identical,
+so no source registry is repinned. Generic runtime launch recipes are being
+implemented independently; the compact launcher also has a separate native host
+query optimization underway. Later runtime exec/CLOEXEC transfer, process-tree/
+rights/VM effects, raw sink-capability state policy, native calibration/corpus,
+Mac budgets and final M2 remain open. Guest SIP remains enabled.

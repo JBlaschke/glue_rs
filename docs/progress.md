@@ -1759,3 +1759,27 @@ SIP stays enabled; no provider/VM/sudo run occurred. This is initial backing
 association, not paths/OFD generations/later lifetime effects or full Mac
 acceptance. Held-directory CWD selection is the next separate feature. M0/M1
 remain delivered, M2 active, M3 planned and M4 deferred.
+
+## MVP R02 — selected runtime image boundary (29 October 2026)
+
+Branch `codex/mvp-r02-runtime-boundary` adds decision `9fe847e` and implementation
+`7fc6e61`. A separately named C producer/backend and independent reader retain
+the entire bootstrap prefix and correlate its first exec across the new-thread
+transition. The one explicit attachment return is retained, not erased or turned
+into a fabricated call. Unsupported creation/rights/Mach/later-image routes and
+late transport faults reject the whole result. Legacy source/APIs remain intact.
+
+Thirteen C-transport controls and thirty-five reader/wire controls pass on both
+Python 3.15 and 3.9. They compare actual C program bytes and unchanged C request/
+object-wire decoders, test full-stream refusal and exact source I/O prerequisites,
+and distinguish source-conditional launch bytes from native origin. Independent
+reviews approve native and reader source. CI adds both suites. No registry update
+is required because all legacy registered files remain unchanged.
+
+This is a capture/image-correlation foundation. Generic launcher/catalog/result
+adoption, later execs and process-tree support, native output capability, state
+policy and native Mac corpus/budgets remain open. The supplied launch bytes are
+unauthenticated provenance; no protected-target/native/output/full acceptance is
+granted. Actual runtime launch recipes and the subprocess-free macOS host query
+are already being implemented on separate branches. No provider/VM/sudo/SIP
+change occurred. M2 remains active; M3 memory mode follows the first compact MVP.
