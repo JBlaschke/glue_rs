@@ -49,3 +49,27 @@ Kernel source commit remains `f6217f891ac0bb64f3d375211650a4c1ff8ca1ea`. The ret
 Run `test_runtime_boundary.py` for the unchanged v1 controls, `test_runtime_images.py` for the new physical-stream/image/thread controls, and `test_runtime_trace_backend.py` for the native transport controls. Tests compare actual compiled v1/v2 C producers with independent templates and cover multiple/max execs, quiescence, observed generations, late projections, retirement/unknown terminal calls, unbound shadows, malformed/unsupported/later faults, single physical consumption and immutable fresh results. They do not run a provider or target.
 
 Source snapshots and receipts remain ignored under `.evidence-local/controls/runtime-images-20261029/`. Native calibration, protected-target attestation, successful effect ordering, output capability seeding, state-feed eligibility and full trace acceptance remain false in every result.
+
+## Fixed generic recipe transport factory
+
+`rt_recipe_images_create` selects the same byte-for-byte version 2 program and
+balanced one-to-sixteen exec transport for `TS_OWNED_RUNTIME_RECIPE` (fixture 2).
+Its private closed profile fixes both choices. The existing `rt_create` and
+`rt_images_create` entries remain exclusively fixture 1, with their original
+version 1/version 2 program and completion behavior. A crossed fixture or anything
+other than confirmed READY 1 refuses before tracing resources exist. Actual owner,
+original deadlines, complete event binding, output limits and once-only cleanup
+remain mandatory. All three factories clear handle/operations and return the
+same unsupported error on the non-Darwin branch.
+
+This entry supplies a later traced-runtime adapter; it does not itself compose
+that adapter or relax this reader's existing probe launch-evidence contract.
+Generic launch/held-output witness checking, protected deployment, native corpus
+and state/capability admission remain separate. No registry or proof is added.
+
+The injected backend controls run lifecycle, inventory, faults, ownership,
+deadlines and version 2 exec limits through both fixed factories. They compare
+the runtime factory's actual program with the fixed producer and exercise
+factory/READY/fixture cross-refusals. `GLUE_RUNTIME_TRACE_RETAIN` keeps command
+records, model binaries and source identities. SDK linking is never provider
+execution; the injected executable defines every DTrace symbol itself.

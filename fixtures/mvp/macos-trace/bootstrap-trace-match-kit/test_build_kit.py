@@ -46,9 +46,9 @@ REVIEWED_HOST_READER_PINS = {
 # native input record. Their original bytes remain non-executable snapshots.
 HISTORICAL_REGISTRATION = HERE / 'historical-registration'
 REVIEWED_REGISTRATION_PINS = {
-    'bootstrap-kit/reviewed-inputs.json': '5124d300cd3a33ac23dd80e30e912fc9209c6665ef15f205187afc0e92e41846',
-    'bootstrap-trace-kit/reviewed-inputs.json': 'cd302475022b64285fc3cb0f703184da7f7181eaa16df01a6095abd5fcfa68e6',
-    'bootstrap-trace-kit/test_build_kit.py': 'e2ae2026bc1fdef6ed3eca82ac0ed8dca9aca45eec247dd54f7e0bdf2390912d',
+    'bootstrap-kit/reviewed-inputs.json': '73da286fd0febf4f7241fd20f04a12cb3791e0106ebd084598284f8b3153c84e',
+    'bootstrap-trace-kit/reviewed-inputs.json': 'ec6d448568ed9e20bc2e34dc5685356ca69e5cbda768d2d1d44c960f9efe515c',
+    'bootstrap-trace-kit/test_build_kit.py': '4acf701f17ea7ef421726da5ec2af89266e1bbf656f1c581d5660cfe4feac9a9',
 }
 
 
@@ -332,10 +332,10 @@ class MatchKitControls(unittest.TestCase):
                 self.assertNotIn(relative, REVIEWED_REGISTRATION_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
         production = match.trace.registry(match.trace.REGISTRY.read_bytes())
-        self.assertEqual(production['source_revision'], '34c5a8d9df3a8b0706c312633ffdde95a7c10a04')
+        self.assertEqual(production['source_revision'], '9b5af347f167044630332d545ca1ec0f7cd17109')
         self.assertEqual(len(production['sources']), 41)
         self.assertEqual(core.digest(core.canonical(production['sources'])),
-                         'fc580c9cdf62eaa862de7b807277e173297fa6638ec7010ae10bac7bfd99ba37')
+                         '382efc9a8cd6d990d514392d1f39d175a5d9b6ffa3cc035de8b86b3483f35832')
         self.assertEqual(len(production['proofs']), 1)
 
 

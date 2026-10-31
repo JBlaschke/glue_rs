@@ -73,10 +73,10 @@ class TraceKitControls(unittest.TestCase):
         self.assertTrue(all(rules[k] == [] for k in ('probe_sources', 'runner_sources', 'request_sources')))
         self.assertEqual(replace(UNCONFIGURED_POLICY, registry_relative=trace.POLICY.registry_relative), trace.POLICY)
         production = trace.registry(trace.REGISTRY.read_bytes())
-        self.assertEqual(production['source_revision'], '34c5a8d9df3a8b0706c312633ffdde95a7c10a04')
+        self.assertEqual(production['source_revision'], '9b5af347f167044630332d545ca1ec0f7cd17109')
         self.assertEqual(len(production['sources']), 41)
         self.assertEqual(core.digest(core.canonical(production['sources'])),
-                         'fc580c9cdf62eaa862de7b807277e173297fa6638ec7010ae10bac7bfd99ba37')
+                         '382efc9a8cd6d990d514392d1f39d175a5d9b6ffa3cc035de8b86b3483f35832')
         self.assertEqual(len(production['proofs']), 1)
         self.assertEqual(production['proofs'][0]['manifest_sha256'],
                          'cd57a36af2a9db11f7d24105485137f7afb2ad9743161db190d7ed6c7ca361fd')
