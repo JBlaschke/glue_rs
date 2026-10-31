@@ -15,7 +15,7 @@ _BASE = Path(__file__).resolve().parent.parent
 DEPENDENCY_IDENTITIES = (
     ('bsd-fgetfl-semantics/bsd_fgetfl_semantics.py', '0358db16192afe9442348ca446a89a4478e137f3b376da7072b13485367ef54f'),
     ('bsd-fcntl-semantics/bsd_fcntl_semantics.py', 'da6ea5ae6887d47f1d2b9b2da616e9632d2c9f6ad4b32d7cb0981187030f3260'),
-    ('runtime-boundary/runtime_recipe.py', '0eec5212fe031a3c22e63f597faa587a01fd83804db3d1911b53ca3ba746cbd0'),
+    ('runtime-boundary/runtime_recipe.py', '95ddd5a12362a7b8dc3e1803de7f45282478a6ca56e58a8cb7d924c450ba02ef'),
     ('bsd-fd-semantics/bsd_fd_semantics.py', '1d97f20c18fcc90ab5c467b0d44403aecd288d530394e32ad0d00b5ef5e1c7ba'),
     ('open-intent/open_intent.py', '104dd3e21a78264ae947033e133cd152dc43159cd91807c82569e1718905945a'),
     ('open-intent/abi.json', 'a76cfb519805f5b45a196defb10d6a5185a5e861f41e8c75f66a653cb11d7b20'),

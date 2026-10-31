@@ -14,6 +14,7 @@ from typing import Iterable, Optional
 
 _BASE = Path(__file__).resolve().parent.parent
 DEPENDENCY_IDENTITIES = (
+    ('runtime-boundary/runtime_physical.py', '02a1955354af4ce385ba4c126159eb773377652175a55a54359a403aadd4ce4a'),
     ('owned-trace-check/owned_trace_check.py', '1d8616b51002225c8b9abf4a18940c48f01d1ef97a3f7c54e120153ca8c978ec'),
     ('syscall-contract/syscall_contract.py', '35a4229894dd0373de1b312747e8acd1a23ae2074566391e8d28855ca0624dbf'),
 )
@@ -27,6 +28,11 @@ _spec = importlib.util.spec_from_file_location('_runtime_boundary_raw',
                                               _BASE / 'owned-trace-check/owned_trace_check.py')
 _RAW = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_RAW)
+del _spec
+_spec = importlib.util.spec_from_file_location('_runtime_boundary_physical',
+                                              _BASE / 'runtime-boundary/runtime_physical.py')
+_PHYSICAL = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_PHYSICAL)
 del _spec
 
 RawValidationError = _RAW.RawValidationError
@@ -251,6 +257,18 @@ class RuntimeCapture:
     phases: tuple[_RAW.OwnedRawPhase, ...]
 
 
+@dataclass(frozen=True)
+class CapturedMemory:
+    source_ordinal: int
+    payload: bytes
+
+
+@dataclass(frozen=True)
+class RuntimeStoppedCapture(RuntimeCapture):
+    memory: tuple[CapturedMemory, ...]
+    image_skip_ordinals: tuple[int, ...]
+
+
 class BoundaryValidationError(RawValidationError):
     """No pairing result; capture exists only after complete transport validation."""
     def __init__(self, message, capture=None):
@@ -335,14 +353,33 @@ def _transport(program, probes, errors, lines, owner, target):
 
 
 def _transport_fixed(program, probes, errors, lines, owner, target, required_program):
-    """Private common parser; fixed public factories supply their own program."""
+    """Private legacy wrapper; existing fixed factories preserve their shape."""
+    return _transport_common(program, probes, errors, lines, owner, target, required_program,
+                             stopped=False)
+
+
+def _transport_stopped(program, probes, errors, lines, owner, target, required_program):
+    # Private fixed diagnostic entry; no public grammar/policy argument exists.
+    return _transport_common(program, probes, errors, lines, owner, target, required_program,
+                             stopped=True)
+
+
+def _transport_common(program, probes, errors, lines, owner, target, required_program, *, stopped):
+    """One bounded physical pass; internal factories select a closed grammar."""
     _RAW._bounded_bytes(program, _RAW.MAX_PROGRAM_BYTES, 'program bytes')
     _RAW._bounded_bytes(probes, _RAW.MAX_INVENTORY_BYTES, 'inventory bytes')
     _RAW._bounded_bytes(errors, _RAW.MAX_ERROR_BYTES, 'error bytes')
     _require(not errors, 'runtime profile nonempty errors')
     _require(program == required_program, 'fixed runtime profile program bytes')
     inventory, inventory_counts = _RAW._inventory(probes)
-    epids, clauses, counts, phases = {}, {}, [0] * 19, []
+    epids, clauses, counts, phases = {}, {}, [0] * (24 if stopped else 19), []
+    memory, skip = [], []
+    if stopped:
+        for function in ('proc_info', 'wait4', 'wait4_nocancel', 'kill'):
+            for phase_name in ('entry', 'return'):
+                _require(any(names[0] == 'syscall' and names[2:] == (function, phase_name)
+                             for names, _ in inventory.values()),
+                         'stopped required owner-control probe absent')
     raw_hash = hashlib.sha256()
     size = begin = terminal = end = shadow = cleanup = 0
     terminal_words = None
@@ -352,7 +389,14 @@ def _transport_fixed(program, probes, errors, lines, owner, target, required_pro
                  'one complete LF event')
         _RAW._stream_budget(ordinal - 1, size, len(line))
         _require(ordinal <= MAX_PHASES and not end, 'runtime retained-event bound/after END')
-        kind, epid, probe, words, cpu = _RAW._event(line, ordinal, inventory)
+        payload = b''
+        if stopped:
+            decoded = _PHYSICAL._stopped_event(_RAW, line, ordinal, inventory)
+            kind, epid, probe, words, cpu = (decoded.kind, decoded.epid, decoded.probe,
+                                            decoded.words, decoded.cpu)
+            payload = decoded.memory
+        else:
+            kind, epid, probe, words, cpu = _PHYSICAL._legacy_event(_RAW, line, ordinal, inventory)
         clause = (probe, kind)
         _require(epid not in epids or epids[epid] == clause, 'runtime EPID rebound')
         _require(clause not in clauses or clauses[clause] == epid, 'runtime multiple clause EPIDs')
@@ -364,6 +408,15 @@ def _transport_fixed(program, probes, errors, lines, owner, target, required_pro
         elif kind == 18:
             _require(detail == target and words[6] != 0 and words[7] <= _RAW.U32,
                      'runtime target exited identity')
+        elif stopped and (kind in (20, 21, 22, 23) or kind == 2 and actor == owner):
+            _require(actor == owner and 0 < detail <= _RAW.U64 and
+                     inventory[probe][0][2] in ('proc_info', 'wait4', 'wait4_nocancel', 'kill'),
+                     'stopped owner control identity')
+            skip.append(ordinal)
+        elif stopped and kind == 19:
+            _require(actor == target and detail == 1 and words[5:] == (words[3], 17),
+                     'stopped selected marker header')
+            skip.append(ordinal)
         else:
             _require(actor == target, 'runtime target actor')
             if kind in (2, 3, 5, 7, 15, 16):
@@ -378,7 +431,8 @@ def _transport_fixed(program, probes, errors, lines, owner, target, required_pro
         else:
             _require(begin != 0, 'runtime event before BEGIN')
         if terminal:
-            _require(kind in (11, 17), 'runtime activity after terminal')
+            _require(kind in (11, 17) or stopped and actor == owner and
+                     kind in (2, 20, 21, 22, 23), 'runtime activity after terminal')
         if kind == 18:
             if words[7] & _RAW.SHADOW_BIT:
                 shadow += 1
@@ -392,6 +446,8 @@ def _transport_fixed(program, probes, errors, lines, owner, target, required_pro
             end = ordinal
         phases.append(_RAW.OwnedRawPhase(ordinal, cpu, probe, epid,
                                          *inventory[probe][0], tuple(words)))
+        if payload:
+            memory.append(CapturedMemory(ordinal, payload))
         counts[kind] += 1
         size += len(line)
         raw_hash.update(line)
@@ -400,6 +456,8 @@ def _transport_fixed(program, probes, errors, lines, owner, target, required_pro
         len(inventory), inventory_counts, len(epids), len(phases), size, raw_hash.hexdigest(),
         0, _sha(errors), tuple(counts), begin, terminal, end, shadow, cleanup,
         terminal_words[2], terminal_words[5], terminal_words[6], terminal_words[7])
+    if stopped:
+        return RuntimeStoppedCapture(raw, tuple(phases), tuple(memory), tuple(skip))
     return RuntimeCapture(raw, tuple(phases))
 
 
@@ -435,13 +493,13 @@ def _pair(capture, launch, table):
     return _pair_walk(capture, launch, table, initial_only=False)
 
 
-def _initial_image(capture, launch, table):
+def _initial_image(capture, launch, table, *, skipped_ordinals=()):
     # Private fixed bootstrap stage for v2. It is never a public successful
     # prefix; v2 must validate every remaining original phase before returning.
-    return _pair_walk(capture, launch, table, initial_only=True)
+    return _pair_walk(capture, launch, table, initial_only=True, skipped_ordinals=skipped_ordinals)
 
 
-def _pair_walk(capture, launch, table, *, initial_only):
+def _pair_walk(capture, launch, table, *, initial_only, skipped_ordinals=()):
     pairs, pending, threads = [], {}, {}
     attachment = exec_entry = exec_return = success = start = lwp = termination = None
     bootstrap_tid = None
@@ -450,12 +508,17 @@ def _pair_walk(capture, launch, table, *, initial_only):
     last_time, last_call = -1, False
     prefix_shadows = 0
     bootstrap, runtime = [], []
+    skipped = frozenset(skipped_ordinals)
+    child_position = 0
     gate, status_fd = launch.kept_fds[3:]
 
     def active(tid):
         _require(threads.get(tid) == 'active', 'runtime call on inactive/undeclared thread')
 
     for raw in capture.phases:
+        if raw.ordinal in skipped:
+            continue
+        child_position += 1
         kind, timestamp, pid, tid, detail = raw.raw_scalars[:5]
         call = kind in (2, 3, 15, 16)
         _require(timestamp >= last_time and
@@ -565,7 +628,7 @@ def _pair_walk(capture, launch, table, *, initial_only):
                 pending[tid] = phase
                 continue
             if tid not in pending:
-                _require(epoch == 0 and attachment is None and raw.ordinal == 2 and tid == bootstrap_tid,
+                _require(epoch == 0 and attachment is None and child_position == 2 and tid == bootstrap_tid,
                          'runtime arbitrary orphan return')
                 value = _success(raw)
                 name = raw.function

@@ -1848,6 +1848,7 @@ Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d470
 
 M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
 
+
 ## Owned traced runtime runner — 29 October
 
 Feature `codex/mvp-r02-runtime-trace-runner`, implementation `9b5af34`, joins the fixed runtime launch and original witnesses to the fixture2/v2 trace session/backend. Eight fixed wrappers share the traced attempt layout, including admission and witness units. The untraced profile header remains unchanged and direct tracing markers still refuse. Actual READY comparison and original output witness retention precede attach; provider readiness and BEGIN precede GO. The traced path retains actual confirmed GO bytes, write/error and close outcomes, including failed full delivery. Early unresolved CWD/output references report failed parent closure, and no result can promote before complete cleanup, final snapshot and destruction. Runtime result and sidecar schemas are distinct and keep all native/exemption/full-acceptance flags false.
@@ -1887,6 +1888,7 @@ Existing runtime profiles/source closures/historical proof remain unchanged.
 Raw stop/query correlation and prospective policy adoption follow separately.
 M2 remains active; full Mac coverage/corpus, budgets and retention/sign-off stay
 open. M0/M1 are delivered, M3 memory planned, M4 deferred. SIP stays unchanged.
+
 
 ## R02 — raw runtime FD interval policy (29 October 2026)
 
@@ -1987,3 +1989,56 @@ This profile still consumes the generic recipe, with no stopped-profile/observer
 adoption. First-exec controller/query correlation work proceeds separately.
 Native Mac coverage/corpus, budgets and retention/sign-off remain open. M2 stays
 active; M0/M1 delivered, M3 memory planned and M4 deferred.
+
+
+## R02 — fixed stopped-runtime collector and reader (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-profile` combines the reviewed observer
+and runtime-policy dependencies on a feature branch. The distinct fixed producer
+retains original target phases and selected owner wait/query/kill controls. Its
+first successful exec/new-image marker has exact source-selected layouts and a
+pure serialized-prefix getter. The matching reader retains complete original
+physical ordering, recipe assets and GLUEPX bytes without granting output or
+state authority. Existing v1/v2/default facts and native proof rosters remain.
+
+The C peer approves freeze03; Python peer approves freeze02. Preserved author
+controls include100 injected mode executions, strict formatter comparisons and
+42 original reader method executions. A compiler literal-bound regression and a
+test payload-count expectation were repaired with focused receipts, preserving
+their original failures. The malformed-name guard has four focused model checks;
+the marker-before-exec source-order fix has eight affected reader checks.
+The adopted harness adds the26th C mode. No fresh full30-test producer matrix is
+claimed from those partial cohorts. Independent review verifies original-byte
+default facts and the two C marker orders. Detailed local receipts remain local.
+
+Source-location integration passes199 methods per Python3.15/3.9 (398 total,
+zero skips):35 boundary,34 image,24 recipe,22 stopped reader,79 FD policy and
+five formatter/unavailable/new-mode/C-to-Python controls. These are source/model
+checks; no provider is linked or enabled.
+
+Runtime FD v1/v2/v3 uses the exact new recipe pin with no scope/shape changes.
+CI adds the fixed producer and reader suites. No provider, privileged bootstrap,
+VM or security-setting action runs here. The next integration adds the typed
+late-cleanup status bridge, file-synced original observation retention, and the
+actual bounded controller; those components are not adopted by this feature.
+
+M0/M1 are delivered. M2 remains active: full Mac filesystem/process/mapping
+coverage and oracle, native corpus, Mac budgets and final retention/sign-off are
+open. M3 memory mode remains separate/planned and M4 deferred. All native,
+quiescence, state, output-exemption, retention-before-continuation and full-trace
+acceptance fields remain false. Guest SIP stays enabled under the current instruction.
+
+
+## R02 — stopped formatter GCC CI repair (29 October 2026)
+
+PR #117's Linux baseline caught three new guard statements that GCC rejects as
+misleading indentation under the existing strict flags. The repair separates
+those guards from following statements; emitted DTrace program bytes, templates,
+selectors, APIs and old profile bodies remain unchanged. The original GCC failure
+is reproduced and retained. Twelve bounds/canonical checks pass across actual
+GCC 16, Clang and Clang ASan/UBSan, comparing all output bytes with the independent
+reader template. No warning suppression, provider or native execution is added.
+New formatter source SHA256:
+`e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
+The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.

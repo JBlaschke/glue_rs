@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 _HERE = Path(__file__).resolve().parent
-_V1_SHA256 = '118fe319f42e31d051e7fd5653576d8e9d643ea3029f4b778b4f7b97b3eb689a'
+_V1_SHA256 = '1c5a464ad19ec60c912762086cd330fe2d6c374c9380b8ffecd82f2641dd8bb3'
 with (_HERE / 'runtime_boundary.py').open('rb') as _stream:
     _code = _stream.read(65537)
 if len(_code) > 65536 or hashlib.sha256(_code).hexdigest() != _V1_SHA256:
@@ -139,8 +139,9 @@ class RuntimeImages:
         return _V1._plain(self)
 
 
-def _walk(capture, launch, table):
-    initial = _V1._initial_image(capture, launch, table)
+def _walk(capture, launch, table, *, skipped_ordinals=()):
+    skipped = frozenset(skipped_ordinals)
+    initial = _V1._initial_image(capture, launch, table, skipped_ordinals=skipped)
     first = initial.selected_exec
     prefix = capture.phases[:initial.next_phase_index]
     threads, current, generations = [], {}, {}
@@ -200,6 +201,8 @@ def _walk(capture, launch, table):
         return index
 
     for raw in capture.phases[initial.next_phase_index:]:
+        if raw.ordinal in skipped:
+            continue
         kind, timestamp, pid, tid, detail = raw.raw_scalars[:5]
         call = kind in (2, 3, 15, 16)
         _require(timestamp >= last_time and
@@ -404,7 +407,13 @@ def _pair_with_launch(program, probes, errors, event_lines, *, owner_pid, target
     table = _RAW._CONTRACT_HELPERS.parse_table(contract_bytes)
     capture = _V1._transport_fixed(program, probes, errors, event_lines, owner_pid, target_pid,
                                    expected_images_program(target_pid))
+    return _pair_capture(capture, launch, table)
+
+
+def _pair_capture(capture, launch, table, *, skipped_ordinals=()):
+    # Private interpretation of one already completed physical pass. Public
+    # factories never accept this capture/table/skip view as an input.
     try:
-        return _walk(capture, launch, table)
+        return _walk(capture, launch, table, skipped_ordinals=skipped_ordinals)
     except RawValidationError as error:
         raise ImageValidationError(str(error), capture) from error
