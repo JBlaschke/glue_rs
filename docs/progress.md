@@ -1848,7 +1848,6 @@ Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d470
 
 M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
 
-
 ## Owned traced runtime runner — 29 October
 
 Feature `codex/mvp-r02-runtime-trace-runner`, implementation `9b5af34`, joins the fixed runtime launch and original witnesses to the fixture2/v2 trace session/backend. Eight fixed wrappers share the traced attempt layout, including admission and witness units. The untraced profile header remains unchanged and direct tracing markers still refuse. Actual READY comparison and original output witness retention precede attach; provider readiness and BEGIN precede GO. The traced path retains actual confirmed GO bytes, write/error and close outcomes, including failed full delivery. Early unresolved CWD/output references report failed parent closure, and no result can promote before complete cleanup, final snapshot and destruction. Runtime result and sidecar schemas are distinct and keep all native/exemption/full-acceptance flags false.
@@ -1888,3 +1887,28 @@ Existing runtime profiles/source closures/historical proof remain unchanged.
 Raw stop/query correlation and prospective policy adoption follow separately.
 M2 remains active; full Mac coverage/corpus, budgets and retention/sign-off stay
 open. M0/M1 are delivered, M3 memory planned, M4 deferred. SIP stays unchanged.
+
+## R02 — raw runtime FD interval policy (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fd-policy` evaluates original recipe captures
+through a fixed finite set of scalar FD and open operations. It retains every
+BSD/Mach attempt and raw phase, records forbidden writable-open/path intent even
+on failure, and handles overlapping possible effect windows conservatively.
+Unsupported effects establish a sticky uncertainty horizon; every exec retires
+all output-binding certainty. No post-exec sink exemption is granted.
+
+All 36 physical-byte FD controls pass on both Python versions without skips;
+existing recipe24/image34/boundary35 controls per interpreter are retained.
+Independent review verifies 238 final evidence payloads and 175 source identities
+with no open findings. Earlier attempts remain preserved. The Mach attempt
+projection repair and opaque-effect horizon are included. CI adds the new suite;
+existing configured source closures and historical native proof are unchanged.
+
+M2 remains active. The next feature observes original output backing after an
+owned exec stop; full BSD/Mach/process/mapping coverage, native Mac calibration,
+corpus, offline/environment checks, budgets and final sign-off remain. All native,
+state-feed, output-authority and full-acceptance flags remain false. M0/M1 remain
+delivered, M3 memory mode planned and M4 deferred.
+
+Ignored review receipt SHA256:
+`e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`.
