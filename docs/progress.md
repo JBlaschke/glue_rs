@@ -1912,3 +1912,28 @@ delivered, M3 memory mode planned and M4 deferred.
 
 Ignored review receipt SHA256:
 `e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`.
+
+
+## R02 — scalar fcntl interval profile (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-fcntl-policy` adds a fixed v2 raw-byte factory for
+F_DUPFD/F_GETFD/F_SETFD/F_DUPFD_CLOEXEC through both syscall forms. It consumes the
+recipe once, retains original arguments/outcomes and links immutable command
+rows to every original attempt. GETFD remains a point observation; SETFD changes
+only the selected descriptor bit. Duplication requires closed isolated lookup/
+reservation windows. Unsupported effects remain sticky and every exec retires
+output certainty. The original v1 fifteen-name factory and shape remain intact.
+
+The v2 profile adds explicit canonical-failure uncertainty and source-state
+consistency guards: a successful lookup cannot preserve conditional absence,
+and an allocator cannot replace known occupancy. Contradictions retire affected
+certainty and yield no alias/flag postcondition. The replacing dup2 route retains
+its distinct semantics. All authority/state/native/full-acceptance flags remain
+false. Existing configured/native source proof is unchanged.
+
+All 27 new physical-byte controls and 36 unchanged v1 controls pass on Python3.15
+and3.9, with zero skips. Independent review verifies 249 source identities and
+the retained prior/final receipts; both findings are resolved. Review SHA256:
+`f5b43a57f4a43514628b3ea0f1f627e459a6ffdfc5bdc72ca2a8843202bb8057`.
+Post-exec observation/correlation, full native coverage/corpus, budgets and
+retention/sign-off remain. M2 is active; M0/M1 delivered, M3 planned, M4 deferred.
