@@ -44,7 +44,8 @@ class ObjectKitControls(unittest.TestCase):
         self.assertEqual([a.name for a in kit.POLICY.artifacts], ['context-probe', 'bootstrap-fd-objects-runner', 'make-request'])
         runner = kit.POLICY.artifacts[1]
         self.assertEqual(runner.compiler_flags, ())
-        self.assertEqual(len(runner.expected_sources), 18)
+        self.assertEqual(len(runner.expected_sources), 19)
+        self.assertIn(kit.BASE + 'target-cwd/target_cwd.c', runner.expected_sources)
         self.assertIn(kit.BASE + 'bootstrap-object-runner/object_parent.c', runner.expected_sources)
         self.assertIn(kit.BASE + 'bootstrap-object-wire/bootstrap_object_wire.c', runner.expected_sources)
         self.assertIn(kit.BASE + 'target-fd-objects/target_fd_objects.c', runner.expected_sources)

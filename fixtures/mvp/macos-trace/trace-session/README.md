@@ -124,3 +124,27 @@ owner checks and resource bounds. No model forks, waits, signals, executes a
 target, operates on protected paths or accesses a tracing provider.
 
 See [the decision](../../../../docs/decisions/mvp-r02-trace-session-coordinator.md).
+
+## Fixed runtime recipe entry
+
+`TS_OWNED_RUNTIME_RECIPE` is fixture 2. The separate `ts_runtime_init` entry fixes
+that identifier through the same private initializer; `ts_init` still accepts
+fixture 1 exclusively. Neither entry accepts a public profile selector. Every
+consumed event must match the original complete binding, including the fixture,
+owner/child PIDs and request/catalog digests. All owner, readiness, GO, child,
+deadline, error-precedence and once-only cleanup rules above are shared.
+
+The runtime entry's object-status success retains 1024 bytes (READY+ATTEMPT), and
+its opaque failure prefix is bounded at 1537 bytes. The original entry preserves
+its 512-byte success and 769-byte failure cap. This is fixed source selection,
+not caller permission to decode a failed prefix or choose an arbitrary bound.
+
+This source addition does not adopt a traced-runtime runner, configure a catalog
+or grant native proof. The old adapter remains independently registered. Its
+source registration must advance separately before the changed coordinator
+bytes can pass the configured source loader.
+
+The session controls run every lifecycle group through both fixed entries,
+including crossed factory/event bindings and both status-prefix bounds. Set
+`GLUE_TRACE_SESSION_RETAIN` to a fresh directory to keep compiler/model commands,
+streams, binary and source identities. These are injected models only.
