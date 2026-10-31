@@ -3,6 +3,7 @@
 #include "runtime_trace_backend.h"
 #include "runtime_trace_program.h"
 #include "runtime_stopped_trace.h"
+#include "runtime_stopped_status.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -721,6 +722,16 @@ int rt_stopped_identity(const struct rt_backend *b,struct rt_stopped_identity *o
  return 0;
 }
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *out) {if(!b||!out)return -1;if(b->profile==STOPPED_RECIPE_V1){memset(out,0,sizeof(*out));return -1;}*out=b->view;return 0;}
+int rt_stopped_status(const struct rt_backend *b,struct rt_stopped_status *out) {
+ if(out)memset(out,0,sizeof(*out));
+ if(!b||!out||b->profile!=STOPPED_RECIPE_V1)return -1;
+ out->version=RT_STOPPED_STATUS_VERSION;
+ out->profile_version=RT_STOPPED_PROFILE_VERSION;
+ out->layout_version=RT_STOPPED_LAYOUT_VERSION;
+ if(rt_stopped_identity(b,&out->identity)){memset(out,0,sizeof(*out));return -1;}
+ out->lifecycle=b->view;
+ return 0;
+}
 int rt_destroy(struct rt_backend **out) {
  if(!out || !*out)return -1;struct rt_backend *b=*out;
  if(b->view.start_attempted && (!b->view.close_attempted || !b->view.resources_closed))return -1;
@@ -740,6 +751,7 @@ int rt_recipe_images_create(struct rt_backend **out,int fd,const struct ts_bindi
 }
 int rt_stopped_recipe_create(struct rt_backend **out,int fd,const struct ts_binding *b,uint64_t d,int r,struct ts_operations *o,struct rt_error *e) {return rt_create(out,fd,b,d,r,o,e);}
 int rt_stopped_identity(const struct rt_backend *b,struct rt_stopped_identity *out) {(void)b;if(out)memset(out,0,sizeof(*out));return -1;}
+int rt_stopped_status(const struct rt_backend *b,struct rt_stopped_status *out) {(void)b;if(out)memset(out,0,sizeof(*out));return -1;}
 int rt_snapshot(const struct rt_backend *b,struct rt_snapshot *s) {(void)b;(void)s;return -1;}
 int rt_destroy(struct rt_backend **b) {(void)b;return -1;}
 #endif

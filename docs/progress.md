@@ -2029,6 +2029,28 @@ quiescence, state, output-exemption, retention-before-continuation and full-trac
 acceptance fields remain false. Guest SIP stays enabled under the current instruction.
 
 
+## R02 — typed stopped-runtime lifecycle status (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-runtime-status` adds a distinct pure status getter
+for the new stopped-runtime backend. It exposes actual serialized identity and
+late lifecycle/cleanup outcomes, including successful resource closure after an
+earlier failure, without changing the old snapshot ABI or making it accept the
+new class. Native/quiescence/state/exemption/full-flags authority remains false.
+No callback, I/O, clock, owner lookup or mutation occurs in the getter.
+
+The original40 focused executions pass across both Python versions, normal and
+ASan/UBSan. Four focused name-guard controls verify the inherited correction;
+earlier receipts remain intact. Root review verifies152 guard-addendum payloads
+and exact source inheritance: removing the new include and pure getters yields
+the corrected collector byte-for-byte. CI adds the focused status suite.
+All11 source-location controls pass on Python3.15, including the inherited
+malformed-name case; these are SDK/source models with no provider action.
+No TS/controller/kit, provider, VM or security adoption occurs in this feature.
+M2 remains active; bounded retention/controller integration, native Mac corpus,
+full oracle, budgets and final sign-off remain. M0/M1 delivered, M3 memory mode
+planned separately, M4 deferred. Guest SIP stays enabled.
+
+
 ## R02 — stopped formatter GCC CI repair (29 October 2026)
 
 PR #117's Linux baseline caught three new guard statements that GCC rejects as
@@ -2041,4 +2063,21 @@ reader template. No warning suppression, provider or native execution is added.
 New formatter source SHA256:
 `e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
 The separate Mac owned-child fixture preflight refusal remains under diagnosis.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — stopped-backend malformed-name control repair (30 October 2026)
+
+PR #118's status stage removed the inherited `malformed-name` branch from
+`test_runtime_stopped_backend.c`, but `test_runtime_stopped_backend.py` still
+runs that mode, so the injected Darwin model reached its unknown-mode assertion
+and aborted. Hosted macOS had not reached this suite because the earlier
+owned-child fixture preflight failed first; Linux skips the injected SDK model.
+The repair restores the original branch byte-for-byte from #117, including the
+four probe-description name-guard controls, so the file again differs from #117
+only by the two status hooks. The abort reproduces before the repair; after it
+the backend, status and stopped suites pass on Python 3.15 under Clang and
+Clang ASan/UBSan. No producer, formatter, getter, provider or native execution
+change is made.
+New backend control source SHA256:
+`5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
 M2 remains active; this repair supplies no native acceptance or admission.

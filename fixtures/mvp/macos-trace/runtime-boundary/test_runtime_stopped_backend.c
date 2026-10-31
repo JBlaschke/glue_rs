@@ -14,9 +14,17 @@
 #include <unistd.h>
 static uint64_t now=UINT64_C(1000000000);
 static int clock_bad,write_bad=-1,partial_fd=-1,partial_seen,close_bad=-1;
-static int model_clock(clockid_t c,struct timespec *t){assert(c==CLOCK_MONOTONIC);if(clock_bad){errno=EIO;return -1;}t->tv_sec=(time_t)(now/1000000000);t->tv_nsec=(long)(now%1000000000);return 0;}
+static int model_clock(clockid_t c,struct timespec *t){
+#ifdef GLUE_STOPPED_STATUS_CLOCK_CALL
+ GLUE_STOPPED_STATUS_CLOCK_CALL();
+#endif
+ assert(c==CLOCK_MONOTONIC);if(clock_bad){errno=EIO;return -1;}t->tv_sec=(time_t)(now/1000000000);t->tv_nsec=(long)(now%1000000000);return 0;}
 static ssize_t model_write(int fd,const void *p,size_t n){if(fd==write_bad){errno=ENOSPC;return -1;}if(fd==partial_fd){if(partial_seen++){errno=ENOSPC;return -1;}return write(fd,p,n>9?9:n);}return write(fd,p,n);}
-static int model_close(int fd){int rc=close(fd);assert(!rc);if(fd==close_bad){close_bad=-1;errno=EINTR;return -1;}return 0;}
+static int model_close(int fd){int rc=close(fd);assert(!rc);
+#ifdef GLUE_STOPPED_STATUS_AFTER_CLOSE
+ GLUE_STOPPED_STATUS_AFTER_CLOSE(fd);
+#endif
+ if(fd==close_bad){close_bad=-1;errno=EINTR;return -1;}return 0;}
 #define clock_gettime model_clock
 #define write model_write
 #define close model_close
