@@ -8,11 +8,29 @@
 #include <string.h>
 #include <time.h>
 
+/* Private compile-time selection: native entry points expose no profile/source
+ * selector. The existing probe branch retains its original concrete calls. */
+#ifdef GLUE_RUNTIME_TRACING
+#define trace_backend_create rt_recipe_images_create
+#define trace_backend_snapshot rt_snapshot
+#define trace_backend_destroy rt_destroy
+#define trace_session_init ts_runtime_init
+#define NR_TRACE_FIXTURE TS_OWNED_RUNTIME_RECIPE
+#define NR_TRACE_SCHEMA "glue-runtime-recipe-trace-session-diagnostic-v1"
+#else
+#define trace_backend_create otb_create
+#define trace_backend_snapshot otb_snapshot
+#define trace_backend_destroy otb_destroy
+#define trace_session_init ts_init
+#define NR_TRACE_FIXTURE TS_OWNED_CONTEXT_PROBE
+#define NR_TRACE_SCHEMA "glue-owned-trace-session-diagnostic-v1"
+#endif
+
 static uint64_t ns(struct bio_time d) {return d.seconds*UINT64_C(1000000000)+d.nanoseconds;}
 static int fault(struct nr_attempt *a,enum nr_stage stage) {
  int e=a->trace.create_error.system_errno;
- struct otb_snapshot snapshot;
- if(a->trace.backend && !otb_snapshot(a->trace.backend,&snapshot))e=snapshot.first_error.system_errno;
+ nr_trace_snapshot snapshot;
+ if(a->trace.backend && !trace_backend_snapshot(a->trace.backend,&snapshot))e=snapshot.first_error.system_errno;
  return nr_fail(a,stage,NR_HELPER,e,(int)a->trace.session.error.reason);
 }
 int nr_trace_pump(struct nr_attempt *a,enum ts_phase phase) {
@@ -31,15 +49,18 @@ int nr_trace_start(struct nr_attempt *a) {
  struct nr_trace *t=&a->trace;
 #ifdef GLUE_FD_OBJECTS
  if(!a->objects_matched || !a->output_matches.ready)return nr_fail(a,NR_TRACE,NR_INVALID,0,-1);
+#ifdef GLUE_RUNTIME_TRACING
+ if(!a->runtime_witness_written || !a->runtime_witness_attempted)return nr_fail(a,NR_TRACE,NR_INVALID,0,-1);
+#endif
 #endif
  if(t->create_attempted || !a->ready_matched || !a->forked || a->reaped || a->lost_child || a->child<=0)
   return nr_fail(a,NR_TRACE,NR_INVALID,0,-1);
  t->create_attempted=1;
- struct ts_binding b={TS_OWNED_CONTEXT_PROBE,(uint32_t)a->owner,(uint32_t)a->child,{0},{0}};
+ struct ts_binding b={NR_TRACE_FIXTURE,(uint32_t)a->owner,(uint32_t)a->child,{0},{0}};
  memcpy(b.request_sha256,a->request_sha,32);memcpy(b.catalog_sha256,a->catalog_sha,32);
  struct ts_operations operations;
- if(otb_create(&t->backend,a->output_fd,&b,ns(a->deadline),1,&operations,&t->create_error))return fault(a,NR_TRACE);
- int rc=ts_init(&t->session,&b,ns(a->deadline),(unsigned)a->request.cleanup_ms,&operations);
+ if(trace_backend_create(&t->backend,a->output_fd,&b,ns(a->deadline),1,&operations,&t->create_error))return fault(a,NR_TRACE);
+ int rc=trace_session_init(&t->session,&b,ns(a->deadline),(unsigned)a->request.cleanup_ms,&operations);
  t->session_present=t->session.configured;
  t->observer=(struct bio_observer){a,progress};
  if(rc || ts_start(&t->session))return fault(a,NR_TRACE);
@@ -118,9 +139,9 @@ int nr_trace_parent_closed(struct nr_attempt *a,int unresolved) {
  /* Parent reporting performs owner/clock callbacks: context stays alive above.
   * Only pure session observations are permitted after this snapshot/destroy. */
  if(t->backend) {
-  t->snapshot_valid=!otb_snapshot(t->backend,&t->snapshot);
+  t->snapshot_valid=!trace_backend_snapshot(t->backend,&t->snapshot);
   t->destroy_attempted=1;
-  t->destroyed=!otb_destroy(&t->backend);
+  t->destroyed=!trace_backend_destroy(&t->backend);
   if(!t->snapshot_valid || !t->destroyed){(void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);return -1;}
  }
  t->resources_safe=!unresolved && (!t->session_present || ts_finalization_safe(&t->session));
@@ -147,26 +168,30 @@ static void binding_json(struct json *j,const struct ts_binding *b) {
 static void ts_error_json(struct json *j,const struct ts_error *e) {
  put(j,"{\"stage\":%d,\"reason\":%d,\"callback_error\":%d,\"detail\":%zu}",e->stage,e->reason,e->system_errno,e->detail);
 }
-static void otb_error_json(struct json *j,const struct otb_error *e) {
+static void backend_error_json(struct json *j,const nr_trace_backend_error *e) {
  size_t n=strnlen(e->message,sizeof(e->message));char message[1027];
  if(n==sizeof(e->message)){j->failed=1;return;}bytes_hex((const uint8_t *)e->message,n,message);
  put(j,"{\"stage\":%d,\"reason\":%d,\"system_errno\":%d,\"libdtrace_code\":%d,\"callback_error\":%d,\"message_hex\":\"%s\"}",e->stage,e->reason,e->system_errno,e->libdtrace_code,e->callback_error,message);
 }
 int nr_trace_write_sidecar(struct nr_attempt *a) {
- const struct nr_trace *t=&a->trace;const struct ts_session *s=&t->session;const struct otb_snapshot *b=&t->snapshot;
+ const struct nr_trace *t=&a->trace;const struct ts_session *s=&t->session;const nr_trace_snapshot *b=&t->snapshot;
  if(!t->finalized || !t->resources_safe)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
  struct json j={{0},0,0};
- put(&j,"{\"schema\":\"glue-owned-trace-session-diagnostic-v1\",\"tracing\":true,\"exec_proved\":false,\"full_acceptance\":false,\"parent_cleanup_deadline_ns\":%" PRIu64 ",\"parent_cleanup_valid\":%d,\"create_attempted\":%d,\"session_present\":%d,\"snapshot_valid\":%d,\"backend_destroyed\":%d,\"finalization_safe\":%d,\"success_eligible\":%d,\"create_error\":",ns(t->cleanup_deadline),t->cleanup_valid,t->create_attempted,t->session_present,t->snapshot_valid,t->destroyed,t->resources_safe,nr_trace_success(a));
- otb_error_json(&j,&t->create_error);put(&j,",\"session\":{\"binding\":");binding_json(&j,&s->binding);
+ put(&j,"{\"schema\":\"" NR_TRACE_SCHEMA "\",\"tracing\":true,\"exec_proved\":false,\"full_acceptance\":false,\"parent_cleanup_deadline_ns\":%" PRIu64 ",\"parent_cleanup_valid\":%d,\"create_attempted\":%d,\"session_present\":%d,\"snapshot_valid\":%d,\"backend_destroyed\":%d,\"finalization_safe\":%d,\"success_eligible\":%d,\"create_error\":",ns(t->cleanup_deadline),t->cleanup_valid,t->create_attempted,t->session_present,t->snapshot_valid,t->destroyed,t->resources_safe,nr_trace_success(a));
+ backend_error_json(&j,&t->create_error);put(&j,",\"session\":{\"binding\":");binding_json(&j,&s->binding);
  put(&j,",\"attempt_deadline_ns\":%" PRIu64 ",\"cleanup_deadline_ns\":%" PRIu64 ",\"cleanup_ms\":%u,\"cleanup_attempted\":%d,\"cleanup_bound\":%d,\"error\":",s->attempt_deadline_ns,s->cleanup_deadline_ns,s->cleanup_ms,s->cleanup_attempted,s->cleanup_bound);ts_error_json(&j,&s->error);
  put(&j,",\"cleanup_error\":");ts_error_json(&j,&s->cleanup_error);
  put(&j,",\"configured\":%d,\"initialized\":%d,\"start_attempted\":%d,\"backend_touched\":%d,\"last_ns\":%" PRIu64 ",\"total_pumps\":%u",s->configured,s->initialized,s->start_attempted,s->backend_touched,s->last_ns,s->total_pumps);
  put(&j,",\"child\":%d,\"wait_status\":%u,\"kill_claimed\":%d,\"started\":%d,\"provider_ready\":%u,\"begin\":%u,\"terminal\":%u,\"end\":%u,\"pumps\":[%u,%u,%u],\"events\":%u,\"go_claim_attempted\":%d,\"go_possibly_released\":%d,\"go_result_seen\":%d,\"go_complete\":%d,\"go_bytes\":%zu,\"bootstrap_seen\":%d,\"bootstrap_sealed\":%d,\"bootstrap_prefix_bytes\":%zu,\"gate_close_seen\":%d,\"gate_closed\":%d,\"stop_attempted\":%d,\"stopped\":%d,\"drain_attempted\":%d,\"drained\":%d,\"close_attempted\":%d,\"closed\":%d,\"parent_close_seen\":%d,\"parent_closed\":%d},\"backend\":{\"binding\":",s->child,s->wait_status,s->kill_claimed,s->started,s->provider_ready,s->begin_count,s->terminal_count,s->end_count,s->pump_calls[0],s->pump_calls[1],s->pump_calls[2],s->events,s->go_claim_attempted,s->go_possibly_released,s->go_result_seen,s->go_complete,s->go_bytes,s->bootstrap_seen,s->bootstrap_sealed,s->bootstrap_prefix_bytes,s->gate_close_seen,s->gate_closed,s->stop_attempted,s->stopped,s->drain_attempted,s->drained,s->close_attempted,s->closed,s->parent_close_seen,s->parent_closed);
  binding_json(&j,&b->binding);
- put(&j,",\"original_attempt_deadline_ns\":%" PRIu64 ",\"cleanup_deadline_ns\":%" PRIu64 ",\"first_error\":",b->original_attempt_deadline_ns,b->cleanup_deadline_ns);otb_error_json(&j,&b->first_error);put(&j,",\"close_error\":");otb_error_json(&j,&b->close_error);
- put(&j,",\"writer_close_error\":");otb_error_json(&j,&b->writer_close_error);
+ put(&j,",\"original_attempt_deadline_ns\":%" PRIu64 ",\"cleanup_deadline_ns\":%" PRIu64 ",\"first_error\":",b->original_attempt_deadline_ns,b->cleanup_deadline_ns);backend_error_json(&j,&b->first_error);put(&j,",\"close_error\":");backend_error_json(&j,&b->close_error);
+ put(&j,",\"writer_close_error\":");backend_error_json(&j,&b->writer_close_error);
  put(&j,",\"writer_close_files\":[\"program.d\",\"probes.tsv\",\"events.jsonl\",\"errors.jsonl\"],\"writer_close_attempted_mask\":%u,\"writer_close_failed_mask\":%u,\"writer_close_errno\":[%d,%d,%d,%d]",b->writer_close_attempted_mask,b->writer_close_failed_mask,b->writer_close_errno[0],b->writer_close_errno[1],b->writer_close_errno[2],b->writer_close_errno[3]);
- put(&j,",\"events\":%" PRIu64 ",\"raw_bytes\":%" PRIu64 ",\"diagnostic_bytes\":%" PRIu64 ",\"inventory_bytes\":%" PRIu64 ",\"drops\":%" PRIu64 ",\"faults\":%" PRIu64 ",\"inventory_probes\":%u,\"expected_matches\":%u,\"enabled_matches\":%u,\"enablings\":%u,\"begin\":%u,\"terminal\":%u,\"end\":%u,\"start_attempted\":%d,\"started\":%d,\"stop_attempted\":%d,\"stopped\":%d,\"drain_attempted\":%d,\"drained\":%d,\"close_attempted\":%d,\"resources_closed\":%d}}\n",b->events,b->raw_bytes,b->diagnostic_bytes,b->inventory_bytes,b->drops,b->faults,b->inventory_probes,b->expected_matches,b->enabled_matches,b->enablings,b->begin_count,b->terminal_count,b->end_count,b->start_attempted,b->started,b->stop_attempted,b->stopped,b->drain_attempted,b->drained,b->close_attempted,b->resources_closed);
+ put(&j,",\"events\":%" PRIu64 ",\"raw_bytes\":%" PRIu64 ",\"diagnostic_bytes\":%" PRIu64 ",\"inventory_bytes\":%" PRIu64 ",\"drops\":%" PRIu64 ",\"faults\":%" PRIu64 ",\"inventory_probes\":%u,\"expected_matches\":%u,\"enabled_matches\":%u,\"enablings\":%u,\"begin\":%u,\"terminal\":%u,\"end\":%u,\"start_attempted\":%d,\"started\":%d,\"stop_attempted\":%d,\"stopped\":%d,\"drain_attempted\":%d,\"drained\":%d,\"close_attempted\":%d,\"resources_closed\":%d}",b->events,b->raw_bytes,b->diagnostic_bytes,b->inventory_bytes,b->drops,b->faults,b->inventory_probes,b->expected_matches,b->enabled_matches,b->enablings,b->begin_count,b->terminal_count,b->end_count,b->start_attempted,b->started,b->stop_attempted,b->stopped,b->drain_attempted,b->drained,b->close_attempted,b->resources_closed);
+#ifdef GLUE_RUNTIME_TRACING
+ put(&j,",\"runtime_recipe\":{\"output_witness_file\":\"output-witness.bin\",\"gate_delivery_file\":\"gate-delivery.bin\",\"go_prefix_file\":\"go-prefix.bin\",\"status_file\":\"status.bin\",\"launch_plan_file\":\"launch-plan.bin\",\"output_witness_written\":%d,\"gate_delivery_written\":%d,\"cwd_reference_closed\":%s,\"selected_exec_entry_count\":%u,\"selected_exec_success_count\":%u,\"native_admission\":false,\"output_capabilities_authorized\":false}",a->runtime_witness_written,a->runtime_delivery_written,a->runtime_cwd_fd<0?"true":"false",b->selected_exec_entry_count,b->selected_exec_success_count);
+#endif
+ put(&j,"}\n");
  if(j.failed)return nr_fail(a,NR_FINALIZE,NR_INVALID,0,-1);
  return nr_write_new(a,"trace.json",(const uint8_t *)j.data,j.used);
 }

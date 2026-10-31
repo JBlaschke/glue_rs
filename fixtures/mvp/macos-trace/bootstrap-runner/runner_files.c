@@ -11,6 +11,13 @@
 #include <sys/wait.h>
 #define NR_STDOUT_NAME "app.stdout"
 #define NR_STDERR_NAME "app.stderr"
+#ifdef GLUE_RUNTIME_TRACING
+#define NR_RUNTIME_SCHEMA "glue-owned-runtime-recipe-traced-diagnostic-v1"
+#define NR_RUNTIME_TRACE_JSON "\"tracing\":true,"
+#else
+#define NR_RUNTIME_SCHEMA "glue-owned-runtime-recipe-diagnostic-v1"
+#define NR_RUNTIME_TRACE_JSON ""
+#endif
 #else
 #define NR_STDOUT_NAME "probe.stdout"
 #define NR_STDERR_NAME "probe.stderr"
@@ -175,10 +182,17 @@ static int capture(struct nr_attempt *a,const char *name,const struct stat *expe
 static void hex(const uint8_t *p,size_t n,char *out) {static const char h[]="0123456789abcdef";for(size_t i=0;i<n;i++){out[2*i]=h[p[i]>>4];out[2*i+1]=h[p[i]&15];}out[2*n]=0;}
 int nr_finish_outputs(struct nr_attempt *a) {
 #ifdef GLUE_FD_OBJECTS
- if(a->held_outputs[0]>=0 || a->held_outputs[1]>=0)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+ if(a->held_outputs[0]>=0 || a->held_outputs[1]>=0
 #ifdef GLUE_RUNTIME_PROFILE
- if(a->runtime_cwd_fd>=0)return nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+    || a->runtime_cwd_fd>=0
 #endif
+ ) {
+  (void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
+#ifdef GLUE_RUNTIME_TRACING
+  (void)nr_trace_parent_closed(a,1);
+#endif
+  return -1;
+ }
 #endif
  if(a->output_fd<0 || !a->output_path[0] || a->ownership_uncertain || a->close_failed || (a->forked&&!a->reaped) ||
     (a->signals_initialized&&!a->signals_restored)) {
@@ -241,6 +255,9 @@ int nr_finish_outputs(struct nr_attempt *a) {
  for(unsigned i=0;i<2;i++)if(a->gate[i]>=0 || a->status[i]>=0)unresolved=1;
  for(size_t i=0;i<a->endpoints.owned_count;i++)if(a->endpoints.copies[i]>=0)unresolved=1;
  for(size_t i=0;i<a->admission.owned_count;i++)if(a->admission.components[i].fd>=0)unresolved=1;
+#ifdef GLUE_RUNTIME_TRACING
+ if(a->runtime_cwd_fd>=0)unresolved=1;
+#endif
  if(a->signals_initialized && (!a->signals_restored || !a->signals.pipe_restored || !a->signals.mask_restored))unresolved=1;
  if(nr_trace_parent_closed(a,unresolved))return -1;
  if(!nr_trace_success(a))(void)nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
@@ -268,7 +285,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
  char json[8192];
 #ifdef GLUE_RUNTIME_PROFILE
  int n=snprintf(json,sizeof(json),
-  "{\"schema\":\"glue-owned-runtime-recipe-diagnostic-v1\",\"target\":\"aarch64-apple-darwin\",\"exec_proved\":false,\"full_acceptance\":false,"
+  "{\"schema\":\"" NR_RUNTIME_SCHEMA "\"," NR_RUNTIME_TRACE_JSON "\"target\":\"aarch64-apple-darwin\",\"exec_proved\":false,\"full_acceptance\":false,"
   "\"status\":\"%s\",\"controller_pid\":%ld,\"child_pid\":%ld,"
   "\"parent_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"
   "\"cleanup_error\":{\"stage\":%d,\"reason\":%d,\"errno\":%d,\"detail\":%d},"

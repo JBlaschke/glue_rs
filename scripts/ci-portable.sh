@@ -51,6 +51,8 @@ case "${1:-baseline}" in
         python3 fixtures/mvp/macos-trace/bootstrap-object-runner/test_object_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_witness.py -v
+        python3 fixtures/mvp/macos-trace/bootstrap-runtime-trace-runner/test_runtime_trace_runner.py -v
+        python3 fixtures/mvp/macos-trace/post-exec-output/test_post_exec_output.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_runner_protocol_observed.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-runner/test_owned_trace_parent.py -v
         python3 fixtures/mvp/macos-trace/bootstrap-kit/test_build_kit.py -v

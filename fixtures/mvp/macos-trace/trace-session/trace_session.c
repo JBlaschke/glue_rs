@@ -76,11 +76,11 @@ static int consume(void *context,const struct ts_event *event) {
 bad:
  s->consume_failed=1;return fail(s,st,reason,0,event?(size_t)event->kind:0);
 }
-int ts_init(struct ts_session *s,const struct ts_binding *b,uint64_t attempt,unsigned cleanup_ms,const struct ts_operations *o) {
+static int init_fixed(struct ts_session *s,const struct ts_binding *b,uint64_t attempt,unsigned cleanup_ms,const struct ts_operations *o,uint32_t fixture) {
  if(!s || !b || !o || s->tag)return -1;
  memset(s,0,sizeof(*s));s->tag=TS_TAG;s->binding=*b;s->operations=*o;
  s->attempt_deadline_ns=attempt;s->cleanup_ms=cleanup_ms;s->child=TS_CHILD_LIVE;
- if(b->fixture!=TS_OWNED_CONTEXT_PROBE || !b->owner_pid || !b->target_pid ||
+ if(b->fixture!=fixture || !b->owner_pid || !b->target_pid ||
  b->owner_pid>INT32_MAX || b->target_pid>INT32_MAX || b->owner_pid==b->target_pid ||
  !cleanup_ms || cleanup_ms>2000 || !o->owner_fn || !o->clock_fn || !o->start_fn || !o->pump_fn ||
  !o->stop_fn || !o->drain_fn || !o->close_fn)return fail(s,TS_STAGE_INIT,TS_INVALID,0,0);
@@ -88,6 +88,12 @@ int ts_init(struct ts_session *s,const struct ts_binding *b,uint64_t attempt,uns
  if(owned(s,TS_STAGE_INIT) || before(s,TS_STAGE_INIT,attempt))return -1;
  if(attempt-s->last_ns>UINT64_C(10000000000))return fail(s,TS_STAGE_INIT,TS_INVALID,0,0);
  s->initialized=1;return 0;
+}
+int ts_init(struct ts_session *s,const struct ts_binding *b,uint64_t attempt,unsigned cleanup_ms,const struct ts_operations *o) {
+ return init_fixed(s,b,attempt,cleanup_ms,o,TS_OWNED_CONTEXT_PROBE);
+}
+int ts_runtime_init(struct ts_session *s,const struct ts_binding *b,uint64_t attempt,unsigned cleanup_ms,const struct ts_operations *o) {
+ return init_fixed(s,b,attempt,cleanup_ms,o,TS_OWNED_RUNTIME_RECIPE);
 }
 int ts_start(struct ts_session *s) {
  if(owned(s,TS_STAGE_START))return -1;
@@ -153,13 +159,13 @@ int ts_gate_close_failed(struct ts_session *s,int error) {return close_result(s,
 int ts_bootstrap_sealed(struct ts_session *s) {
  if(owned(s,TS_STAGE_BOOTSTRAP))return -1;
  if(s->bootstrap_seen || !s->go_complete || !s->gate_closed)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,0);
- s->bootstrap_seen=1;s->bootstrap_prefix_bytes=512;
+ s->bootstrap_seen=1;s->bootstrap_prefix_bytes=s->binding.fixture==TS_OWNED_RUNTIME_RECIPE?1024u:512u;
  if(before(s,TS_STAGE_BOOTSTRAP,s->attempt_deadline_ns))return -1;
  s->bootstrap_sealed=1;return 0;
 }
 int ts_bootstrap_failed(struct ts_session *s,size_t prefix,int error) {
  if(owned(s,TS_STAGE_BOOTSTRAP))return -1;
- if(s->bootstrap_seen || prefix>TS_STATUS_CAPACITY || error<0)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,prefix);
+ if(s->bootstrap_seen || prefix>(s->binding.fixture==TS_OWNED_RUNTIME_RECIPE?TS_RUNTIME_STATUS_CAPACITY:TS_STATUS_CAPACITY) || error<0)return fail(s,TS_STAGE_BOOTSTRAP,TS_INVALID,0,prefix);
  s->bootstrap_seen=1;s->bootstrap_prefix_bytes=prefix;
  return fail(s,TS_STAGE_BOOTSTRAP,TS_PARENT_FAILURE,error,prefix);
 }

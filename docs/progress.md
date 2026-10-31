@@ -1848,6 +1848,45 @@ Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d470
 
 M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
 
+## Owned traced runtime runner — 29 October
+
+Feature `codex/mvp-r02-runtime-trace-runner`, implementation `9b5af34`, joins the fixed runtime launch and original witnesses to the fixture2/v2 trace session/backend. Eight fixed wrappers share the traced attempt layout, including admission and witness units. The untraced profile header remains unchanged and direct tracing markers still refuse. Actual READY comparison and original output witness retention precede attach; provider readiness and BEGIN precede GO. The traced path retains actual confirmed GO bytes, write/error and close outcomes, including failed full delivery. Early unresolved CWD/output references report failed parent closure, and no result can promote before complete cleanup, final snapshot and destruction. Runtime result and sidecar schemas are distinct and keep all native/exemption/full-acceptance flags false.
+
+All 116 source-isolated controls pass on both Python versions, normal and ASan/UBSan. A narrow four-run addendum strengthens the positive promotion assertion; original receipts remain intact. Forty existing runtime/object/legacy/traced-parent controls pass without skips, including an ordinary real child fixture with explicitly modeled protected admission and credentials. Four retained old probe JSON examples remain byte-identical. The SDK build links the unconfigured runner without running a provider, and all eight GCC non-Apple wrapper syntax checks pass on Mac. Independent peer review verifies 1434 retained base/additive payloads and reports no open findings.
+
+The approved import of main preserves every reviewed production/test byte; its documentation conflict retains both chronological records and its four CI additions remain. Registration `609118f` carries only two legacy and six trace source hashes, with rosters/proofs/historical snapshots unchanged. Genuine clean loaders pass 34/41 files, and 26 registration plus 30 imported fcntl controls pass without skips. Final registration receipt `ecba855352765d054b2d28a57da87a0a4ca04c45e5de1b336ff5a6df35d38032`; independent peer `735dda30ea7deb09a8d4b56a1107dfcb8f2b6ef243d55bfce8f415040e38c2f1`; author report `fa541aa70999810c6f7e8d4078085820f04dfe3879d4366e2b2a1d12a715a1bc`. All raw controls stay local.
+
+M2 remains active. The raw FD interval policy is now the next implementation, with a separate post-exec backing witness required before output exemptions: clear CLOEXEC does not establish retained output backing because exec can implicitly close/replace stdio. Full BSD/Mach/VM/process/thread coverage, offline/environment integration, native Mac calibration/corpus, budgets and final retention/sign-off remain. M0/M1 are delivered; M3 memory mode is separately planned and M4 deferred. No provider, VM, sudo, ptrace or SIP action occurs in this source feature.
+
+
+## R02 — stopped owned-child output observation (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-output-observer` consumes an actual owned-child
+SIGSTOP wait and samples eight original vnode FD metadata buffers: parent-held
+stdout/stderr around two child-fd1/fd2 rounds. Its fixed4096-byte packet retains
+original wait/query prefixes, actual lifecycle loss and failure timing. The native
+factory verifies the original output-witness hash; the strict independent Python
+reader checks complete fields, backing and byte framing. Terminal waits/ECHILD
+retire ownership before fallible clock reads; sampling never replays. The library
+provides no signal/resume/provider API and grants no state or output authority.
+
+Independent review verifies602 retained evidence members and all eight frozen
+sources. The base92 executions retain90 passes and two actual sanitizer native
+test failures caused by stale full-status equality; the observer had completed.
+The18 affected decoder/native controls pass after correction, followed by four
+normal/sanitized native refinements across Python3.15/3.9, all actually continued
+and reaped without ownership loss or kill. The test permits only FWASWRITTEN
+status variation and retains complete raw words. No final24-by-four replay is
+claimed. Models/native fixtures use synthetic request/bootstrap bindings around
+actual owned metadata; no provider or privileged bootstrap acceptance is implied.
+
+Peer review SHA256:
+`a9cbd32ad72d6f2c684d304fc6e8883b31f47e8c518eb9bc312db003ce197794`.
+CI adds the focused suite; unsupported hosts exercise fixed native refusal.
+Existing runtime profiles/source closures/historical proof remain unchanged.
+Raw stop/query correlation and prospective policy adoption follow separately.
+M2 remains active; full Mac coverage/corpus, budgets and retention/sign-off stay
+open. M0/M1 are delivered, M3 memory planned, M4 deferred. SIP stays unchanged.
 
 ## R02 — raw runtime FD interval policy (29 October 2026)
 
