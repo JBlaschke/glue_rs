@@ -1,0 +1,242 @@
+{
+  "schema": "glue-linux-compatibility-evidence-inventory-v1",
+  "run_id": 40863475232,
+  "source": "8532d509a61ab8e762b0926ef55dc179d9b821cd",
+  "workflow_conclusion": "success",
+  "cohort_receipt_sha256": "61cbb474b1e3768c66f0ea5fe5a2950561057e98c9fb8155e25c05d1767a2467",
+  "trace_policy": "traceable-native-syscalls-v1",
+  "cells": [
+    {
+      "schema": "glue-native-abi-completed-proof-v1",
+      "run_id": 40863475232,
+      "head": "8532d509a61ab8e762b0926ef55dc179d9b821cd",
+      "architecture": "aarch64",
+      "native_selected_job_conclusion": "success",
+      "native_run_conclusion_at_acquisition": "",
+      "replay_status": "passed",
+      "native_run_acceptance_status": "passed",
+      "receipt_counts": {
+        "acceptance_receipts": 24,
+        "benchmark_receipts": 15,
+        "compatibility_receipts": 7,
+        "abi_receipts": 3,
+        "oracle_controls": 196
+      },
+      "rank_results_checked": 990,
+      "budgets": [
+        {
+          "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "lua55-native",
+          "report_host_fingerprint": "257da50bf6f4ab9e7bd03cf5f1b37ce70a06eb0e9e6569f0c147af7bd2213796",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "lua55-project",
+          "report_host_fingerprint": "257da50bf6f4ab9e7bd03cf5f1b37ce70a06eb0e9e6569f0c147af7bd2213796",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "node-cjs",
+          "report_host_fingerprint": "257da50bf6f4ab9e7bd03cf5f1b37ce70a06eb0e9e6569f0c147af7bd2213796",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "python-native-normalized",
+          "report_host_fingerprint": "257da50bf6f4ab9e7bd03cf5f1b37ce70a06eb0e9e6569f0c147af7bd2213796",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "a785091aad95c4a499dfb5efcc24c181a4064d8e6cb699b9a9c4d07b9fc5ee58",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "python-source-normalized",
+          "report_host_fingerprint": "257da50bf6f4ab9e7bd03cf5f1b37ce70a06eb0e9e6569f0c147af7bd2213796",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        }
+      ],
+      "failed_budget_profiles": [],
+      "all_input_identities_unchanged": true,
+      "separate_actual_refusal": {
+        "assessment": {
+          "errors": [],
+          "native_execution_performed_by_summary": false,
+          "status": "passed",
+          "validation_basis": "Separate native runner observations; metadata assessment does not execute a refusal."
+        },
+        "before_after_inventory": {
+          "sha256": "ffe3e990db751fdb42cb2ac3ffb151cfa3bcccca2ce9dd0b4da4a9fd218bf4a8",
+          "size": 371385
+        },
+        "collection_check": {
+          "errors": [],
+          "scope": "Collector status and retained before/after input observations, separate from the narrow ABI diagnostic assessment.",
+          "status": "passed"
+        },
+        "scope": "Replayed retained actual native prepublication refusal; no command executed by replay.",
+        "status": "passed",
+        "wheel": {
+          "name": "cffi-2.1.1-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+          "sha256": "58acb8ab8e295e6c5ea12f888cbb13cf21511ef2a3303a23f4325c29d17fe5c1",
+          "size": 222328,
+          "url": "https://files.pythonhosted.org/packages/67/b8/b42132ca113dc567d37684437b46ca1dafc885902b02a110a02d5b511857/cffi-2.1.1-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl"
+        },
+        "wheel_member_count": 31
+      },
+      "abi_input_scope": "Retained cryptography and cp314 CFFI wheel bytes and members rehashed; cp313 CFFI/other provision wheels and patch archive retain exact source-pinned metadata/provenance but their original archives are absent and are not rehashed.",
+      "artifact": {
+        "artifact_id": 12893631736,
+        "archive_bytes": 205176045,
+        "archive_sha256": "5189bc3051175e61cade1547cae89a751b6371870f1408f1161753430d429225",
+        "raw_manifest_sha256": "59538d1e9672ab73de27e7d3dd723616073e229374054ff84f441782c769998b",
+        "extracted_files": 5037,
+        "extracted_bytes": 907670408
+      },
+      "result": {
+        "path": "full-offline-replay-20261029/result-v4.json",
+        "size": 101778,
+        "sha256": "c41dc81bbe842388b11c9b8d8db4a359cb40a344d02b78437a6d0769f34291c1"
+      },
+      "replay_manifest": {
+        "path": "full-offline-replay-20261029/replay-manifest.json",
+        "size": 8835,
+        "sha256": "8e73a25371587e5da5a55c0224329277d06ea1c619c0e05bbe211aeff23faeb4"
+      },
+      "completed_proof_sha256": "b9987d9be6bc984d3a576285719feeb5f837bbdcd7019af665bee4c418aa926d",
+      "v02_receipts_verified": 49
+    },
+    {
+      "schema": "glue-native-abi-completed-proof-v1",
+      "run_id": 40863475232,
+      "head": "8532d509a61ab8e762b0926ef55dc179d9b821cd",
+      "architecture": "x86_64",
+      "native_selected_job_conclusion": "success",
+      "native_run_conclusion_at_acquisition": "success",
+      "replay_status": "passed",
+      "native_run_acceptance_status": "passed",
+      "receipt_counts": {
+        "acceptance_receipts": 24,
+        "benchmark_receipts": 15,
+        "compatibility_receipts": 7,
+        "abi_receipts": 3,
+        "oracle_controls": 196
+      },
+      "rank_results_checked": 990,
+      "budgets": [
+        {
+          "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "lua55-native",
+          "report_host_fingerprint": "c17e71c500e70566cc36461b59939b11128d946807a171d57e38fb30fe147e56",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "lua55-project",
+          "report_host_fingerprint": "c17e71c500e70566cc36461b59939b11128d946807a171d57e38fb30fe147e56",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "node-cjs",
+          "report_host_fingerprint": "c17e71c500e70566cc36461b59939b11128d946807a171d57e38fb30fe147e56",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "python-native-normalized",
+          "report_host_fingerprint": "c17e71c500e70566cc36461b59939b11128d946807a171d57e38fb30fe147e56",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        },
+        {
+          "budget_host_fingerprint": "7eb6db48acd6b68de0840e5dacb631e22f230fdc37b11e2e6916bf2dc8a01cc5",
+          "errors": [],
+          "expected_failure_preserved": false,
+          "profile": "python-source-normalized",
+          "report_host_fingerprint": "c17e71c500e70566cc36461b59939b11128d946807a171d57e38fb30fe147e56",
+          "structural_IO_FD_scaling_limits_applied": true,
+          "time_rss_limits_applied": false
+        }
+      ],
+      "failed_budget_profiles": [],
+      "all_input_identities_unchanged": true,
+      "separate_actual_refusal": {
+        "assessment": {
+          "errors": [],
+          "native_execution_performed_by_summary": false,
+          "status": "passed",
+          "validation_basis": "Separate native runner observations; metadata assessment does not execute a refusal."
+        },
+        "before_after_inventory": {
+          "sha256": "40f65941cc542f7a4e479eaf5b389faba27b92775127b9dcfed8db41ac2ee7fa",
+          "size": 371369
+        },
+        "collection_check": {
+          "errors": [],
+          "scope": "Collector status and retained before/after input observations, separate from the narrow ABI diagnostic assessment.",
+          "status": "passed"
+        },
+        "scope": "Replayed retained actual native prepublication refusal; no command executed by replay.",
+        "status": "passed",
+        "wheel": {
+          "name": "cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "sha256": "b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96",
+          "size": 221525,
+          "url": "https://files.pythonhosted.org/packages/e9/02/4e7d553a7ac4b4238b38b3c1b80d486e9d4436f8d2acbf87a0997fe3f402/cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+        },
+        "wheel_member_count": 31
+      },
+      "abi_input_scope": "Retained cryptography and cp314 CFFI wheel bytes and members rehashed; cp313 CFFI/other provision wheels and patch archive retain exact source-pinned metadata/provenance but their original archives are absent and are not rehashed.",
+      "artifact": {
+        "artifact_id": 12893473251,
+        "archive_bytes": 215925159,
+        "archive_sha256": "917c1ca9157032d19b4d1cedb90055054bb7f6e3b8e2b65ed4a996b1047f9357",
+        "raw_manifest_sha256": "ef05cc0cc0a9f0151894f1b258be8a3bb7a01ff63257149e1405ca053ee675a1",
+        "extracted_files": 5037,
+        "extracted_bytes": 946643248
+      },
+      "result": {
+        "path": "full-offline-replay-20261029/result-v4.json",
+        "size": 101609,
+        "sha256": "6493e6ecef2eb7e099262d5d98cce1fee7048a89dde1727bb49de9df350a5eb1"
+      },
+      "replay_manifest": {
+        "path": "full-offline-replay-20261029/replay-manifest.json",
+        "size": 8830,
+        "sha256": "5716026ad6130557c536e8eb4ce7ad77e3e90efd7247002691944d7306783569"
+      },
+      "completed_proof_sha256": "7142a627c6b1b2b48dd7c7f051618391c285945b6b727e8c4f0dd60eeb2c15e1",
+      "v02_receipts_verified": 49
+    }
+  ],
+  "external_durability_established": false,
+  "raw_release_published": false,
+  "full_m2_acceptance": false,
+  "compact_peer_review_sha256": "a073558b208a706a190d4b1d5765921c9e6f4316bec231e986b29726d75ea720"
+}
