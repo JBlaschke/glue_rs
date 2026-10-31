@@ -1,4 +1,4 @@
-# Initial raw runtime FD interval policy
+# Fixed raw runtime FD interval policies
 
 `runtime_fd_policy.py` applies a fixed, finite request policy to original runtime capture bytes. It calls the strict recipe reader once, retains every original phase and entry attempt, and reasons about closed possible lookup/effect windows. It never accepts a caller-created capture, normalized operation, object token, authority boolean or selectable policy.
 
@@ -96,4 +96,96 @@ Run the separate controls from the repository root:
 python3 fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_fcntl_policy.py
 ```
 
-The original v1 control suite remains unchanged.
+The original v1 control suite remains unchanged. This candidate is staged during
+the approval-service outage; its feature decision/publication is pending.
+
+## Separate fixed status-query profile v3
+
+`evaluate_runtime_fd_status_policy_raw` uses the same original immutable byte
+inputs and exact `RuntimeRecipeEvidence` type, with protocol
+`darwin-runtime-fd-status-policy-v3`. It adds only the approved bounded F_GETFL
+command3 semantics through `fcntl` and `fcntl_nocancel` to v2's finite scope.
+Both old public factories retain their scopes, result classes and fields;
+F_GETFL stays unsupported through v1/v2. V3 uses the same immutable
+`RuntimeFdFcntlPolicy` result class and `RuntimeFcntlAttempt` rows with its distinct
+protocol. Caller profiles, captures, policy constants and authority booleans
+remain unsupported inputs.
+
+```python
+from runtime_fd_policy import evaluate_runtime_fd_status_policy_raw
+
+result = evaluate_runtime_fd_status_policy_raw(
+    program, probes, errors, raw_event_lines, owner_pid=owner_pid,
+    target_pid=target_pid, contract_bytes=contract_bytes,
+    launch_evidence=evidence)
+```
+
+The approved F_GETFL helper source is identity-checked as SHA256
+`0358db16192afe9442348ca446a89a4478e137f3b376da7072b13485367ef54f` before any
+helper import. V3 performs exactly one complete generic `pair_runtime_recipe_raw`
+pass. Only after validation does its private fixed dispatch call the approved
+F_GETFL `_decode_operation` on already-associated ordinary runtime pairs, using
+their original source-pair index. The command row separately retains its policy
+attempt index. Existing four-command rows use their unchanged scalar decoder.
+No public helper or raw reader reparses the capture.
+
+Each F_GETFL command row retains the full typed request, ignored signed64 long,
+original tail words, outcome, `FgetflOperation`, signed32/uint32 result view,
+all exact algebraic preimages and source/policy uncertainty. Its approved
+21-construction ordinary subset includes FWASWRITTEN on writable states and
+FEXEC alone. A `conditional-conversion` plus conditional rule admits only a
+closed numeric-descriptor lookup/query window: lookup slot present, no table
+mutation slot or allocation, no chosen effect instant. It supplies no flag,
+binding, generation, backing, version or at-return snapshot. Its converted
+result is not an open request and is never passed to the open-intent classifier.
+No preimage or event-only process-policy branch is selected.
+
+The query's successful return does not update state, including when an earlier
+opaque horizon or conflict exists. The existing successful-lookup consistency
+guard still applies: a successful lookup contradicting known conditional absence
+produces an incomplete gap and retires incompatible certainty to unknown, never
+a present binding or flag postcondition. Touching mutation/allocation windows
+retain existing conflicts. Shared-flag writers through aliases can still race;
+an isolated descriptor-table window does not certify stable fileglob flags.
+
+A canonically typed kernel-error query has a `failed-status-query` gap and no
+observation, rule or table/version rewrite. Unsupported or unresolved conversions
+install the sticky opaque horizon at ENTRY. Event-only, private/unknown bit
+combinations, source-inconsistent results, unsupported signed result framing
+and noncanonical requests remain explicit and cannot be repaired by later
+supported queries. F_SETFL retains pre-ioctl shared updates, errors and partial
+rollback uncertainty; unknown commands acquire no family-wide permission.
+
+Outside ordinary runtime pairs, v3 projects typed F_GETFL request intent only.
+The whole-capture image-error fallback retains every original BSD/Mach entry and
+phase with no invented outcome, operation, window or successful state prefix.
+Bootstrap flags stay upstream context. Every exec retires all binding certainty;
+point queries never restore READY seeds or authorize writes to fd0/1/2.
+
+The runtime finite-policy status keeps its existing meaning. A supported query
+may occur in a `source-conditional-clean` v3 result because this policy consumes
+no flag value as authority or state; the unobserved preimage alone adds no gap.
+Failed/unresolved queries, conflicts, prior unknown horizons and output-binding
+gaps remain incomplete. This differs from the standalone source helper's
+always-incomplete diagnostic status. All operation witnesses remain retained,
+and native admission, state-feed, successful linearization, live final state,
+output authority and full acceptance remain false for every runtime status.
+
+Run all three source suites from the repository root:
+
+```sh
+python3 -B fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_policy.py -v
+python3 -B fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_fcntl_policy.py -v
+python3 -B fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_fd_status_policy.py -v
+```
+
+The original36/v1 and27/v2 test methods remain byte-for-byte unchanged. The new
+focused suite adds16 methods, including42 ordinary-subset query vectors across
+both syscall names, actual associated-pair/private-only single-pass checking,
+unknown/private/event-only/signed/error/control-flow cases, request/tail/index
+retention, touch/alias conflicts, cross-exec retirement, fixed old scopes and
+immutable authority-free output. These are modeled original physical-byte
+controls, not captured kernel evidence. Stage evidence retains pilot faults,
+exact interpreter/count logs, prior-stage/HEAD identities and source hashes.
+Only staged engine/README/new controls/decision change; no configured native
+closure, observer adoption, CI, provider, target, VM or native action occurs.
