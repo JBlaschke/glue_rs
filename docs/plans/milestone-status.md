@@ -9,7 +9,7 @@ commits, tests, target scope and evidence limits.
 | --- | --- | --- |
 | M0 — Foundations | Delivered | Distribution contracts/layout, inventory, native-host CI and executable Python/Node provider proofs. |
 | M1 — Source preview | Delivered development preview | Lua 5.4/5.5, Python and Node build/run workflows, runtime selection, relocation/offline checks and runnable examples. Historical evidence recovery is still part of M2 closure. |
-| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass the base 24 cases/five budgets; seven extra Python routes pass on each at distinct revisions. Arm base proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
+| M2 — Native compact MVP | In progress | Native packaging works across all three languages. Both Linux targets pass 34 application cases and five structural budget profiles at the same source, with complete independent replay; time/RSS gates are host-scoped and inapplicable on the fresh hosts. Arm base proof is externally retained and replayed. Full Darwin oracle/corpus, Mac budgets and final sign-off remain open. |
 | M3 — Memory mode | Planned | Earlier narrow experiments exist. General runtime/native dependency acquisition, Linux memory execution and macOS mapping/TLS/unwind/runtime/signing gates remain. |
 | M4 — Expansion | Deferred | Broader compatibility, Julia bundles, combined executable, HPC sharing and optional mixed-language calls. Windows/BSD follow Linux/macOS completion. |
 
@@ -46,9 +46,14 @@ commits, tests, target scope and evidence limits.
 5. Patch-version/abi3 and a genuine wrong-ABI refusal extension is implemented,
    with 30 pure controls, 18 collector controls and 21 shared runner controls
    passing on each tested interpreter. Both-target native execution/replay is
-   next. In parallel, real Mac READY handoff adoption is frozen for review after
-   120 local integration controls; five are actual unprivileged Mac transport
-   cases. Full Mac trace/oracle acceptance remains open.
+   complete: native run `40863475232` at `8532d509` and independent replay pass on
+   both targets, with 49 receipts, 196 controls, 990 ranks and the separate genuine
+   refusal each. All five structural budgets pass; time/RSS are inapplicable.
+6. [Mac READY PR #101](https://github.com/JBlaschke/glue_rs/pull/101) completes
+   initial output-backing adoption with 120 integration controls and clean genuine
+   source-loader validation. Held-directory CWD selection is being implemented.
+   Full runtime capture boundaries/tree pairing, filesystem state policy and
+   native Mac trace/oracle acceptance remain open.
 
 The diagnostic assessment covers 161 BSD declarations, and its operator command
 adds bounded file handling. Every diagnostic stays incomplete with native/export
@@ -66,9 +71,9 @@ the missing Darwin oracle.
   budgets against complete native observations. Existing Linux limits retain
   their recorded host scope; newer measurements must not silently replace them.
 - **R04:** finish remaining target retention and the exact current compatibility/
-  sign-off record, including the current-source compatibility record, additional-patch with
-  unchanged launcher, abi3, genuine wrong-ABI refusal and fresh Mac cells. Archive/uv
-  execution now passes on both Linux targets at the explicitly recorded revisions. Arm64 evidence is regenerated,
+  sign-off record, including externally retained current compatibility evidence and fresh Mac
+  cells. Linux archive/uv, additional-patch, abi3 and genuine wrong-ABI refusal
+  execution/replay now pass on both targets at `8532d509`. Arm64 evidence is regenerated,
   replayed, publicly retained and
   independently downloaded/replayed. Same-source x86 refresh and replay pass;
   its fresh backup verifies locally and the prepared publication set awaits
