@@ -2074,6 +2074,34 @@ active: controller and complete Mac coverage/oracle/corpus, budgets and final
 retention/sign-off remain. M0/M1 delivered, M3 memory planned, M4 deferred.
 
 
+## R02 — stopped-stream FD policy integration (29 October 2026)
+
+Feature `codex/mvp-r02-runtime-stopped-fd-policy` consumes the fixed original
+stopped stream once, retains the complete reader capture and projects only child
+FD/fcntl/F_GETFL attempts through the shared private evaluator. Owner controls
+retain separate indexes and every outer phase remains accounted. No filtered
+capture, output seed, future CONT receipt or output exemption is introduced.
+Diagnostic gaps retain requests/accounting with no invented successful state
+prefix. The three old public factories/classes/scopes and defaults stay exact.
+
+Independent review verifies 75 retained payloads and all five source identities.
+All 196 selected methods pass on Python 3.15.2/3.9.6, zero skips: 79 unchanged
+plus 19 new per interpreter. Twenty-one complete serialization oracles and 12
+early/late refusal comparisons per interpreter match the frozen old engine.
+Twenty unchanged functions/classes retain exact source bytes; three private
+delegators share the same evaluator. Pilots and five original-byte vector
+archives stay local. No C, reader, recipe or native source closure changes.
+All 19 source-location controls also pass on Python 3.15, including the exact
+old-result/refusal differential checks. CI adds the focused suite; the milestone page now reflects current source PRs,
+verified Linux corpus and unmeasured hosted Mac enablement.
+
+M2 remains active: controller integration, full Mac oracle/coverage and native
+corpus, budgets and final retention/sign-off remain. All native/origin, OFD/
+generation/backing/live-state, state, retention-before-CONT and full-acceptance
+authority stays false. M0/M1 delivered, M3 memory mode separate/planned, M4
+deferred. No provider, VM or security-setting action occurs in this feature.
+
+
 ## R02 — stopped formatter GCC CI repair (29 October 2026)
 
 PR #117's Linux baseline caught three new guard statements that GCC rejects as

@@ -291,13 +291,9 @@ def _attempt(index, entry, returned, context, epoch, actor, calls, return_types,
         effect_uncertainties=('unhandled effects are never a harmless-operation permission',))
 
 
-def _whole_incomplete(capture, contract_bytes, message, *, extended=False, status_queries=False):
-    # The upstream exception contains a completely validated physical capture,
-    # never a clean image prefix. Project EVERY original entry without pairing,
-    # actor generation or a successful state/exemption result.
+def _unpaired_attempts(entries, contract_bytes, *, extended=False, status_queries=False):
     calls = {call['name']: call for call in json.loads(contract_bytes)['calls']}
     types = {name: call['return_type'] for name, call in calls.items()}
-    entries = [phase for phase in capture.phases if phase.raw_scalars[0] in (2, 15)]
     _V1._require(len(entries) <= MAX_ATTEMPTS, 'FD policy attempt bound')
     attempts, fcntl_attempts = [], []
     for i, phase in enumerate(entries):
@@ -312,7 +308,16 @@ def _whole_incomplete(capture, contract_bytes, message, *, extended=False, statu
                                extended=extended, status_queries=status_queries, fcntl_rows=command_rows)
         attempts.append(attempt)
         fcntl_attempts.extend(RuntimeFcntlAttempt(i, *row) for row in command_rows)
-    attempts = tuple(attempts)
+    return tuple(attempts), tuple(fcntl_attempts)
+
+
+def _whole_incomplete(capture, contract_bytes, message, *, extended=False, status_queries=False):
+    # The upstream exception contains a completely validated physical capture,
+    # never a clean image prefix. Project EVERY original entry without pairing,
+    # actor generation or a successful state/exemption result.
+    entries = [phase for phase in capture.phases if phase.raw_scalars[0] in (2, 15)]
+    attempts, fcntl_attempts = _unpaired_attempts(entries, contract_bytes,
+        extended=extended, status_queries=status_queries)
     by_ordinal = {a.entry.ordinal: i for i, a in enumerate(attempts)}
     _V1._require(len(by_ordinal) == len(entries), 'FD policy all-entry conservation')
     accounting = tuple(PhaseAccounting(p.ordinal,
@@ -327,8 +332,7 @@ def _whole_incomplete(capture, contract_bytes, message, *, extended=False, statu
         (PolicyFinding('image-coverage', None, '', message),), status_queries=status_queries)
 
 
-def _partition(recipe, contract_bytes, *, extended=False, status_queries=False):
-    images, capture = recipe.images, recipe.source
+def _paired_attempts(images, entries, contract_bytes, *, extended=False, status_queries=False):
     calls = {call['name']: call for call in json.loads(contract_bytes)['calls']}
     types = {name: call['return_type'] for name, call in calls.items()}
     contexts = {}
@@ -342,7 +346,6 @@ def _partition(recipe, contract_bytes, *, extended=False, status_queries=False):
         terminal = images.terminating_call
         contexts[terminal.entry.ordinal] = (None, 'termination', terminal.image_epoch,
                                             terminal.thread_instance, None, len(contexts))
-    entries = [p for p in capture.phases if p.raw_scalars[0] == 2]
     _V1._require(len(entries) <= MAX_ATTEMPTS and set(contexts) == {p.ordinal for p in entries},
                  'FD policy complete entry partition')
     attempts, roles, fcntl_attempts = [], {}, []
@@ -359,6 +362,14 @@ def _partition(recipe, contract_bytes, *, extended=False, status_queries=False):
         if returned is not None:
             _V1._require(returned.ordinal not in roles, 'FD policy return accounted twice')
             roles[returned.ordinal] = PhaseAccounting(returned.ordinal, context + '-return', index)
+    return tuple(attempts), roles, tuple(fcntl_attempts)
+
+
+def _partition(recipe, contract_bytes, *, extended=False, status_queries=False):
+    images, capture = recipe.images, recipe.source
+    entries = [p for p in capture.phases if p.raw_scalars[0] == 2]
+    attempts, roles, fcntl_attempts = _paired_attempts(images, entries, contract_bytes,
+        extended=extended, status_queries=status_queries)
     attachment = images.attachment_return
     if attachment is not None:
         ordinal = attachment.phase.ordinal
@@ -438,7 +449,19 @@ def _conflicts(windows):
     return tuple(result)
 
 
-def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, status_queries=False):
+@dataclass(frozen=True)
+class _FdEvaluation:
+    status: str
+    windows: tuple
+    conflicts: tuple
+    transitions: tuple
+    final_bindings: tuple
+    violations: tuple
+    gaps: tuple
+
+
+def _evaluate_validated(capture, launch, image_transitions, conditional_output_seeds,
+                        attempts, fcntl_attempts=(), *, extended=False, status_queries=False):
     gaps, violations = [], []
     commands = {row.attempt_index: row for row in fcntl_attempts}
     handled = FD_NAMES | OPEN_NAMES | (FCNTL_NAMES if extended else frozenset())
@@ -477,7 +500,7 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, sta
                 gaps.append(_finding('failed-dup2-state', a, 'target may already be closed/reserved before error'))
 
     states, history, serial = {}, [], 0
-    raw_digest = recipe.source.raw.raw_sha256
+    raw_digest = capture.raw.raw_sha256
 
     def state(fd):
         return states.get(fd, FdState(fd, 0, 'unknown', None, None, 0))
@@ -498,14 +521,14 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, sta
         for fd in tuple(states):
             change(fd, 'unknown', None, None, ordinal, window, reason)
 
-    seeds = {seed.child.fd: seed.capture_key for seed in recipe.conditional_output_seeds}
-    for row in recipe.launch.objects:
+    seeds = {seed.child.fd: seed.capture_key for seed in conditional_output_seeds}
+    for row in launch.objects:
         change(row.fd, 'ready-output' if row.fd in seeds else 'unknown', seeds.get(row.fd),
             bool(row.descriptor_flags & 1), 0, (0, 0), 'pre-exec READY provenance only')
     by_index = {w.attempt_index: w for w in windows}
     events = []
     opaque_horizon = False
-    for transition in recipe.images.transitions:
+    for transition in image_transitions:
         events.append((transition.success.raw_scalars[1], 0, transition.success.ordinal, 'exec', transition))
     for i, a in enumerate(attempts):
         if a.context == 'runtime':
@@ -630,9 +653,17 @@ def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, sta
                        previous.analysis_binding_key, False, w.end_ordinal, interval,
                        'conditional chosen-source alias after entire stable window; no kernel/OFD identity', a.source_fd)
     status = 'incomplete' if gaps else 'forbidden-intent' if violations else 'source-conditional-clean'
-    return _policy_result(extended, fcntl_attempts, status, recipe.source, recipe, attempts,
-        accounting, windows, conflicts, tuple(history), tuple(states[fd] for fd in sorted(states)),
-        tuple(violations), tuple(gaps), status_queries=status_queries)
+    return _FdEvaluation(status, windows, conflicts, tuple(history),
+        tuple(states[fd] for fd in sorted(states)), tuple(violations), tuple(gaps))
+
+
+def _run(recipe, attempts, accounting, fcntl_attempts=(), *, extended=False, status_queries=False):
+    result = _evaluate_validated(recipe.source, recipe.launch, recipe.images.transitions,
+        recipe.conditional_output_seeds, attempts, fcntl_attempts,
+        extended=extended, status_queries=status_queries)
+    return _policy_result(extended, fcntl_attempts, result.status, recipe.source, recipe,
+        attempts, accounting, result.windows, result.conflicts, result.transitions,
+        result.final_bindings, result.violations, result.gaps, status_queries=status_queries)
 
 
 def evaluate_runtime_fd_policy_raw(program: bytes, probes: bytes, errors: bytes,

@@ -189,3 +189,80 @@ controls, not captured kernel evidence. Stage evidence retains pilot faults,
 exact interpreter/count logs, prior-stage/HEAD identities and source hashes.
 Only staged engine/README/new controls/decision change; no configured native
 closure, observer adoption, CI, provider, target, VM or native action occurs.
+
+## Separate fixed stopped-runtime policy
+
+`runtime_stopped_fd_policy.evaluate_runtime_stopped_fd_policy_raw` accepts the
+original stopped program, probe inventory, error bytes, event iterable, contract,
+eight recipe assets and exact 4096-byte GLUEPX observation. Import its separate
+`RuntimeRecipeEvidence` type from that module. It returns immutable
+`RuntimeStoppedFdPolicy`, protocol `darwin-runtime-stopped-fd-policy-v1`.
+
+```python
+from runtime_stopped_fd_policy import (
+    RuntimeRecipeEvidence, evaluate_runtime_stopped_fd_policy_raw)
+
+result = evaluate_runtime_stopped_fd_policy_raw(
+    program, probes, errors, raw_event_lines, owner_pid=owner_pid,
+    target_pid=target_pid, contract_bytes=contract_bytes,
+    launch_evidence=evidence, output_observation=original_gluepx_bytes)
+```
+
+The new fixed module verifies the approved stopped reader 0fdec3de and its exact
+shared FD engine before import. It calls `pair_runtime_stopped_raw` once and then
+uses only private attempt projection and evaluation. The original reader-owned
+capture is retained without replacement: every phase's original scalar words,
+copied memory bytes, outer ordinal and whole raw byte count/hash remain visible
+through `result.diagnostic` and `result.source`. Original JSON event lines are
+authenticated by their hash rather than duplicated in the result. Input bytes
+are not normalized, a filtered capture is never built, and no legacy public raw
+factory or standalone semantic helper is called to reparse them.
+
+Only fixed target-child entry selection enters the private FD evaluator. Every
+outer owner, child, Mach and auxiliary phase has a `StoppedPolicyPhaseAccounting`
+row retaining the reader role. `child_attempt_index` and `owner_control_index`
+are separate optional fields with separate domains. Owner proc_info/wait/kill
+controls cannot become child FD operations. Child command operations retain the
+original associated-pair index, full request/tail/outcome, image epoch and thread
+instance. Distinct ECB timestamps need not match and no C/trace clock mapping is
+introduced.
+
+Complete correlated diagnostics can use the existing finite FD/four-scalar/
+F_GETFL rules and closed possible-effect windows. No output seeds are supplied,
+including for matching samples or numeric fd1/2. A supported F_GETFL operation is
+only the same conditional point query described above; unknown conversions keep
+the sticky ENTRY horizon. Existing conflict, known-absence and exec-retirement
+rules still apply. With no other gaps or forbidden intent, the result can be
+`source-conditional-clean` with every authority flag false.
+
+Any diagnostic gap produces request/accounting facts only, even if the diagnostic
+retains associated child pairs. No outcome, epoch, command operation, successful
+window, state transition or final state prefix is fabricated in that path.
+Forbidden requested intent and every diagnostic gap remain visible. Invalid
+physical bytes or a late iterator failure still raise without a clean prefix.
+
+The raw CONT control remains a conditional intended cut. This profile accepts no
+controller/CONT receipt and proves no retention-before-CONT, native origin,
+quiescence, stable flag snapshot, OFD/generation/backing identity, live final state,
+state feed, sink exemption, output permission or full trace acceptance. GLUEPX
+matching adds no authorization. Full Mach/macOS coverage and native controller
+adoption remain open.
+
+The shared private evaluator does not alter the original v1/v2/v3 factories,
+result classes, scopes, errors or serialized defaults. Their copied 36 + 27 + 16
+methods remain unchanged. The focused stopped suite adds 19 methods: 42 ordinary
+status-query constructions, scalar/FD rules, every outer phase/index, owner
+prelude, marker order, before-CONT requests only, failed controls/copy mismatch,
+Mach and second-exec gaps, touching child windows, sticky unknowns, output refusal,
+single consumption, late faults and immutability. It also compares 21 full old
+serialized results and 12 early/late refusals against actual frozen 62556cff
+execution. Both Python 3.15 and 3.9 pass 98 methods each (196 total, zero skips).
+These are independently encoded original physical-byte controls; no target,
+provider, native trace or controller fixture runs. Sanitizers do not apply to
+this Python-only feature. Stage evidence preserves failed pilots, original
+source, oracles and exact logs. Dependencies, old stages and configured compiled
+closures remain unchanged.
+
+```sh
+python3 -B fixtures/mvp/macos-trace/runtime-fd-policy/test_runtime_stopped_fd_policy.py -v
+```
