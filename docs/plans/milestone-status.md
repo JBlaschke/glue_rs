@@ -106,6 +106,13 @@ thread changes. A raw sink-capability state policy follows it; unknown or
 ambiguous effects must fail closed. Generic runtime launch adoption, native
 calibration/corpus, Mac budgets and final sign-off remain open.
 
+The fixed generic runtime launch profile now has copied argv, protected launcher
+hashing, independent held CWD and opaque output/wait capture, with 53 integration
+executions, 22 planner controls and clean source registration passing. It remains
+unconfigured and untraced. Repeated image/thread handling is separately reviewed.
+The next source integration connects the actual trace profile and matching
+runtime/output evidence before the sink policy and native Mac corpus.
+
 ## What M3 still needs
 
 The seven [memory roadmap cards](memory-roadmap.md) are separate from the 26

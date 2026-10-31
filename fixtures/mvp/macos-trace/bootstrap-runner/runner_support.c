@@ -73,7 +73,11 @@ int nr_read_request(struct nr_attempt *a,const char *path) {
   if(!rc) {ssize_t n=read(fd,&extra,1);if(n!=0)rc=nr_fail(a,NR_REQUEST,n<0?NR_SYSCALL:NR_INVALID,n<0?errno:0,-1);}
   if(!rc) {
    struct br_error error;
+   #ifdef GLUE_RUNTIME_PROFILE
+   if(rr_request_decode(a->request_wire,expected,&a->request,&error)!=BR_OK)
+#else
    if(br_request_decode(a->request_wire,expected,&a->request,&error)!=BR_OK)
+#endif
     rc=nr_fail(a,NR_REQUEST,NR_INVALID,0,(int)error.field);
    else a->request_size=expected;
   }
@@ -86,6 +90,9 @@ int nr_read_request(struct nr_attempt *a,const char *path) {
  a->request_hex[64]=0;return 0;
 }
 int nr_admit(struct nr_attempt *a) {
+#ifdef GLUE_RUNTIME_PROFILE
+ return nrr_admit(a);
+#else
  uint8_t bytes[NR_CATALOG_CAPACITY];size_t n;
  if(nr_catalog_bytes(a->catalog,bytes,&n) || nr_catalog_paths(a->catalog,a->executable,a->cwd) ||
     nr_sha_bytes(bytes,n,a->catalog_sha))return nr_fail(a,NR_CATALOG,NR_INVALID,0,-1);
@@ -127,6 +134,7 @@ int nr_admit(struct nr_attempt *a) {
  return nr_fail(a,NR_ADMISSION,NR_UNSUPPORTED,0,-1);
 #endif
  return nr_before(a,a->deadline,NR_ADMISSION);
+#endif
 }
 #ifdef __APPLE__
 #pragma clang diagnostic pop
