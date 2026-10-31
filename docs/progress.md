@@ -2051,6 +2051,29 @@ full oracle, budgets and final sign-off remain. M0/M1 delivered, M3 memory mode
 planned separately, M4 deferred. Guest SIP stays enabled.
 
 
+## R02 — file-synced original output-observation retention (29 October 2026)
+
+Feature `codex/mvp-r02-stopped-output-retention` adds a one-attempt opaque writer
+from the actual complete/matched owned observer and unchanged original deadline.
+It writes exactly4096 encoded bytes to the fixed exclusive no-follow0600 file in
+a borrowed private held directory. Bounded write/EINTR attempts, actual prefix,
+fsync and once-only close outcomes survive later clock errors. Failed close stays
+ownership-unresolved; no retry, replay, overwrite or partial-file deletion occurs.
+The module sends no signal. File-synced content does not claim durable namespace,
+power-loss safety or persistence before a future continuation.
+
+Independent review approves the eight corrected sources and retained48 original
+method executions (12 per Python3.15/3.9, normal and ASan/UBSan), plus four focused
+null-argument diagnostic rechecks. Actual files/OS operations are used while the
+observer stop/lease is explicitly modeled; no child or provider ran. All12
+source-location controls also pass on Python3.15. Required pinned Rust workspace
+tests, formatting and Clippy pass with incremental compilation disabled after a
+retained broken-cache failure. CI adds the focused suite. The writer is not yet adopted into a controller or reader.
+All native/state/exemption/CONT/full-acceptance claims remain false. M2 stays
+active: controller and complete Mac coverage/oracle/corpus, budgets and final
+retention/sign-off remain. M0/M1 delivered, M3 memory planned, M4 deferred.
+
+
 ## R02 — stopped formatter GCC CI repair (29 October 2026)
 
 PR #117's Linux baseline caught three new guard statements that GCC rejects as
@@ -2080,4 +2103,19 @@ Clang ASan/UBSan. No producer, formatter, getter, provider or native execution
 change is made.
 New backend control source SHA256:
 `5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
+M2 remains active; this repair supplies no native acceptance or admission.
+
+## R02 — retention fixture GCC CI repair (30 October 2026)
+
+PR #119's Linux baseline rejected fourteen guards in the new retention writer,
+its observer fixture and its controls as GCC misleading indentation under the
+existing strict flags. The repair only braces those guard bodies; control flow,
+writer behavior, retained bytes and every control expectation are unchanged.
+GCC 16 with the suite's `-std=c11 -Wall -Wextra -Werror -O2` flags reproduces
+all fourteen errors in the test build before the repair, two of them also in
+the writer-only production build, and reports none in either build after it;
+the twelve retention controls pass under Clang and Clang ASan/UBSan. No warning
+suppression, provider or native execution is added.
+New writer source SHA256:
+`b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
 M2 remains active; this repair supplies no native acceptance or admission.
