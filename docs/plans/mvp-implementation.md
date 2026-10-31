@@ -2933,3 +2933,46 @@ output backing is not an OFD/path/generation/later-call witness. Full Darwin
 process-tree state/oracle, native calibration/corpus, Mac budgets and M2 remain
 open. The next functional branch selects CWD using the already admitted directory
 handle. Other Linux compatibility work continues independently in PR #100.
+
+## 29 October: select the admitted CWD handle
+
+Branch `codex/mvp-r02-held-cwd` adds decision `6509604`, implementation C
+`30a7a9964a18bbac4d2a664eca9972180a338aa1` and separate registration R
+`8a407bf7b78ae72f8dbc1063f155e43f8dd9dd49`. The object-profile child borrows
+admission component 6 after successful credential drop and calls one `fchdir`
+before numeric closure. It verifies full metadata/flags and effective `stat(".")`
+under original cooperative deadline, ownership and signal checks. The kernel
+checks current credentials; opening a directory earlier does not waive search
+permission. Failed/late/readback paths retain attempted mutation and terminate,
+without retry, rollback or READY/GO/exec. Legacy selection and status/GO bytes
+remain unchanged. Controlled no-thread-CWD-override and stable namespace/mount
+assumptions remain explicit; sampled metadata is not atomicity or generation proof.
+
+Twenty new controls pass on the Mac: twelve injected models, six actual native
+cases and two actual fchdir cases with injected subsequent faults. Ten object
+runner, six object-kit and one legacy-child regression also pass; zero skips.
+Native controls cover renamed/replaced paths selecting the held original, wrong/
+closed/non-directory descriptors, live search denial, unchanged parent CWD and
+borrowed FD, and actual numeric closure while CWD persists. They do not establish
+privileged credential-transition calibration or Linux execution. Strict genuine
+GCC16 syntax and independent source review pass. Eleven frozen source identities
+and all 141 retained payloads verify. Author manifest SHA256 is
+`4b8fc81edadf4a9c82dae2c1a73e33fd89506115b84c371036e7a50062b143c1`; peer report
+SHA256 is `d7a9881b81fda0236e28c0ea418cee213b7562cb3cfabf990f458931fa1e409a`.
+
+Only the reviewed child source pin changes in each legacy registry; both advance
+to C with all 34/41 source rosters, ordered compile lists and historical proofs
+unchanged. Root verifies every registered byte against exact C Git blobs. Genuine
+unmocked configured loaders pass in the clean R checkout; active registration
+suites pass 12/14 controls without skips. The post-registration receipt SHA256
+is `d456c6f7b2f3d676100dd349768c1692906e9d3f52686e77da5db2e49a465826`; its
+manifest SHA256 is `dace39c401e51d3c0f26a591e8fe01291670da3d05f19323239fe7186dd721e7`.
+The object kit remains empty and unconfigured. CI adds one suite (55 Python
+test-suite invocations on this branch). No source guard or native admission is
+relaxed.
+
+Source-selected runtime capture and image-aware pairing are already being
+implemented independently. The old collector/pairer remains diagnostic-only:
+its fixed probe launch and exec/creation restrictions do not supply the full MVP
+runtime capture. Complete state policy, native corpus, Mac budgets and M2 remain
+open; guest SIP stays enabled. No provider/VM/sudo/security action occurs.
