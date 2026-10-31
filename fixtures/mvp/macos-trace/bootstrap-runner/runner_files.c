@@ -212,6 +212,7 @@ int nr_finish_outputs(struct nr_attempt *a) {
  a->runtime_outputs_valid=stdout_valid&&stderr_valid;
  if(a->error.stage==NR_NONE&&(!a->forked||!a->reaped||a->lost_child||!WIFEXITED(a->wait_status)||WEXITSTATUS(a->wait_status)!=0||
     !a->ready_matched||!a->objects_matched||!a->output_matches.ready||!a->go_attempted||!a->go_closed||
+    !a->runtime_witness_written||!a->runtime_delivery_written||
     a->stream.end!=BW_END_ATTEMPT_WITHOUT_REPORTED_EXEC_ERROR))nr_fail(a,NR_FINALIZE,NR_INCOMPLETE,0,-1);
 #else
  if(stdout_valid && stderr_valid && a->error.stage==NR_NONE) {

@@ -41,7 +41,26 @@ complete setup/gate/status state, normal reaped exit 0, valid bounded captures a
 safe cleanup. Result/catalog/launch-plan schemas and output names are distinct
 from probe data; no NP report or post-exec root-regain claim is invented.
 
-Run `python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v`.
+The actual parent now retains `output-witness.bin` before any tracing or GO.
+It contains both original held-reference sampling rounds and binds them to the
+owner, actual child and exact request/catalog/first READY bytes. Completed
+sample prefixes survive helper refusal; unread rows stay zero. An additive
+observed helper shares the original match engine and keeps match publication
+all-or-none. The new strict reader recomputes the comparison from these rows;
+`objects_matched` in the result is advisory metadata.
+
+After the actual gate write and close, `go-prefix.bin` retains only confirmed
+original BIO bytes. `gate-delivery.bin` independently records their count,
+write/error details and close outcome. A failed write can have delivered all
+64 bytes; it remains failed. Retention attempts are claimed before fallible
+operations and cannot be replayed. Successful finalization also requires both
+witnesses to have been written. Complete `status.bin` and `launch-plan.bin`
+remain separate original inputs. These bytes authenticate neither the collector
+nor protected installation and grant no sink exemption or extraction verdict.
+
+Run `python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_witness.py -v`
+for independent byte/adapter controls and
+`python3 fixtures/mvp/macos-trace/bootstrap-runtime-runner/test_runtime_runner.py -v`.
 The controls separate pure request/catalog checks, production-child models,
 ordinary file IO with explicitly modeled root metadata/protocol state, actual
 wait/cleanup operations and an ordinary real child/gate/CWD/FD/exec fixture with

@@ -51,7 +51,7 @@ int main(int argc,char**argv){assert(argc==3);
  struct stat parent_before,parent_after;assert(!stat(".",&parent_before));assert(!mkdir(argv[2],0700));char cwd[BA_PATH_MAX],archive[BA_PATH_MAX],out[BA_PATH_MAX],err[BA_PATH_MAX];
  assert(snprintf(cwd,sizeof(cwd),"%s/unrelated",argv[2])>0&&snprintf(archive,sizeof(archive),"%s/app.glue",argv[2])>0&&snprintf(out,sizeof(out),"%s/app.stdout",argv[2])>0&&snprintf(err,sizeof(err),"%s/app.stderr",argv[2])>0);assert(!mkdir(cwd,0700));
  int archive_fd=open(archive,O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC,0600);assert(archive_fd>=0&&write(archive_fd,"fixture",7)==7&&!close(archive_fd));
- struct nr_attempt a;memset(&a,0,sizeof(a));a.owner=getpid();a.child=-1;a.output_fd=-1;a.held_outputs[0]=a.held_outputs[1]=-1;
+ struct nr_attempt a;memset(&a,0,sizeof(a));a.owner=getpid();a.child=-1;a.output_fd=open(argv[2],O_RDONLY|O_DIRECTORY|O_CLOEXEC);assert(a.output_fd>=3);a.held_outputs[0]=a.held_outputs[1]=-1;
  for(unsigned i=0;i<5;i++)a.sources[i]=a.endpoints.copies[i]=-1;
  for(unsigned i=0;i<2;i++)a.gate[i]=a.status[i]=-1;
  for(unsigned i=0;i<BA_COMPONENT_COUNT;i++)a.admission.components[i].fd=-1;
@@ -64,9 +64,20 @@ int main(int argc,char**argv){assert(argc==3);
  struct bs_error se;a.signals_initialized=1;assert(!bs_prepare_parent(bs_native_operations(),&a.signals,&se));unsigned char policy[BS_POLICY_CAPACITY];size_t used;assert(!bs_policy_bytes(&a.signals,policy,&used,&se)&&!nr_sha_bytes(policy,used,a.policy_sha));
  a.sources[0]=open("/dev/null",O_RDONLY|O_NOFOLLOW|O_CLOEXEC);a.sources[1]=open(out,O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC,0600);a.sources[2]=open(err,O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC,0600);assert(a.sources[0]>=3&&a.sources[1]>=3&&a.sources[2]>=3);
  channel(a.gate);channel(a.status);a.sources[3]=a.gate[0];a.sources[4]=a.status[1];struct te_request tr;memcpy(tr.source,a.sources,sizeof(tr.source));assert(!te_prepare_owned_sources(&tr,te_native_operations(),&a.endpoints,&a.endpoint_error));a.ready_context_fds[0]=(uint64_t)a.endpoints.copies[3];a.ready_context_fds[1]=(uint64_t)a.endpoints.copies[4];
- assert(!nr_deadline(&a,5000,&a.deadline));int result=nr_execute(&a);nr_cleanup(&a);assert(!result&&a.reaped&&!a.lost_child&&!a.error.stage&&!a.cleanup_error.stage&&a.runtime_cwd_fd==-1&&a.held_outputs[0]==-1&&a.held_outputs[1]==-1&&a.objects_matched&&a.go_attempted&&a.go_closed&&a.stream.used==1024);
+ assert(!nr_deadline(&a,5000,&a.deadline));int result=nr_execute(&a);nr_cleanup(&a);assert(!result&&a.reaped&&!a.lost_child&&!a.error.stage&&!a.cleanup_error.stage&&a.runtime_cwd_fd==-1&&a.held_outputs[0]==-1&&a.held_outputs[1]==-1&&a.runtime_witness_written&&a.runtime_delivery_written&&a.objects_matched&&a.go_attempted&&a.go_closed&&a.stream.used==1024);
  assert(!stat(".",&parent_after)&&parent_before.st_dev==parent_after.st_dev&&parent_before.st_ino==parent_after.st_ino);
  unsigned char bytes[32];int fd=open(out,O_RDONLY);assert(fd>=0);ssize_t n=read(fd,bytes,sizeof(bytes));assert(n==15&&!memcmp(bytes,"\0fixed-runtime\n",15)&&!close(fd));assert(!stat(err,&st)&&st.st_size==0);
- puts("actual owned child/gate/FD/CWD/exec; modeled admission and credential mutation; empty env literal case argv; parent CWD unchanged");return 0;
+ /* Read actual parent artifacts after cleanup; this ordinary fixture still
+  * models protected admission/credential mutation and has no native recipe. */
+ uint8_t witness[NRW_OUTPUT_BYTES],delivery[NRW_DELIVERY_BYTES],go[BW_GO_SIZE],ready_sha[32];
+ fd=openat(a.output_fd,"output-witness.bin",O_RDONLY|O_CLOEXEC);assert(fd>=0&&read(fd,witness,sizeof(witness))==(ssize_t)sizeof(witness)&&read(fd,bytes,1)==0&&!close(fd));
+ assert(!memcmp(witness,"GLUERW01",8)&&witness[27]==4&&!nr_sha_bytes(a.stream.raw,BOW_STATUS_SIZE,ready_sha)&&!memcmp(witness+96,ready_sha,32));
+ assert(!memcmp(witness+160,witness+240,80));
+ fd=openat(a.output_fd,"gate-delivery.bin",O_RDONLY|O_CLOEXEC);assert(fd>=0&&read(fd,delivery,sizeof(delivery))==(ssize_t)sizeof(delivery)&&read(fd,bytes,1)==0&&!close(fd));
+ assert(!memcmp(delivery,"GLUERD01",8)&&delivery[131]==64&&delivery[155]==1&&!memcmp(delivery+96,ready_sha,32));
+ fd=openat(a.output_fd,"go-prefix.bin",O_RDONLY|O_CLOEXEC);assert(fd>=0&&read(fd,go,sizeof(go))==(ssize_t)sizeof(go)&&read(fd,bytes,1)==0&&!close(fd));
+ assert(!memcmp(go,a.go_result.prefix,sizeof(go))&&!memcmp(go,delivery+176,sizeof(go))&&a.go_result.bytes_moved==64&&!a.go_error.bytes_moved);
+ assert(!nr_close_owned(&a,&a.output_fd,NR_FINALIZE));
+ puts("actual owned child/gate/FD/CWD/exec and original parent witness; modeled admission and credential mutation; empty env literal case argv; parent CWD unchanged");return 0;
 #endif
 }

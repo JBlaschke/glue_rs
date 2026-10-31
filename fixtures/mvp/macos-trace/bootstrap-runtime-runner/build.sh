@@ -16,7 +16,7 @@ case $(uname -s) in Darwin) native_libs=-lproc ;; *) native_libs= ;; esac
  "$base/bootstrap-request/bootstrap_request.c" "$base/bootstrap-wire/bootstrap_wire.c" \
  "$base/bootstrap-object-wire/bootstrap_object_wire.c" "$base/target-fd-objects/target_fd_objects.c" \
  "$base/target-cwd/target_cwd.c" "$base/target-launch/target_launch.c" \
- "$profile/runtime_catalog.c" "$profile/runtime_request.c" "$profile/runtime_admission.c" \
+ "$profile/runtime_witness.c" "$profile/runtime_catalog.c" "$profile/runtime_request.c" "$profile/runtime_admission.c" \
  "$base/bootstrap-kit/request_catalog.c" \
  "$base/bootstrap-probe/probe_report.c" "$base/bootstrap-io/bootstrap_io.c" \
  "$base/bootstrap-signals/bootstrap_signals.c" "$base/bootstrap-admission/bootstrap_admission.c" \

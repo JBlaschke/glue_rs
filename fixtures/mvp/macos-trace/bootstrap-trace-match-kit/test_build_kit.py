@@ -42,6 +42,14 @@ HISTORICAL_PINS = {
 REVIEWED_HOST_READER_PINS = {
     'bootstrap-trace-calibration-vm/checker.py': '0249c241d801fb736e346cd0a6640bbd4285256df19f2abbd00337b4b1a368ba',
 }
+# These three registration/test files advance independently of the historical
+# native input record. Their original bytes remain non-executable snapshots.
+HISTORICAL_REGISTRATION = HERE / 'historical-registration'
+REVIEWED_REGISTRATION_PINS = {
+    'bootstrap-kit/reviewed-inputs.json': '5124d300cd3a33ac23dd80e30e912fc9209c6665ef15f205187afc0e92e41846',
+    'bootstrap-trace-kit/reviewed-inputs.json': 'cd302475022b64285fc3cb0f703184da7f7181eaa16df01a6095abd5fcfa68e6',
+    'bootstrap-trace-kit/test_build_kit.py': 'e2ae2026bc1fdef6ed3eca82ac0ed8dca9aca45eec247dd54f7e0bdf2390912d',
+}
 
 
 def configured_parser_rules():
@@ -303,16 +311,31 @@ class MatchKitControls(unittest.TestCase):
     def test_historical_native_inputs_and_reviewed_current_host_reader(self):
         for relative, expected in HISTORICAL_PINS.items():
             with self.subTest(relative=relative):
+                source = (HISTORICAL_REGISTRATION / (relative + '.snapshot')
+                          if relative in REVIEWED_REGISTRATION_PINS else HERE.parent / relative)
+                self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), expected)
+        for relative, expected in REVIEWED_REGISTRATION_PINS.items():
+            with self.subTest(current_registration=relative):
+                self.assertIn(relative, HISTORICAL_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
+        for relative, parse in (('bootstrap-kit/reviewed-inputs.json', core.registry),
+                                ('bootstrap-trace-kit/reviewed-inputs.json', match.trace.registry)):
+            with self.subTest(unchanged_registration_admission=relative):
+                historical = parse((HISTORICAL_REGISTRATION / (relative + '.snapshot')).read_bytes())
+                current = parse((HERE.parent / relative).read_bytes())
+                self.assertEqual(set(current['sources']), set(historical['sources']))
+                for field in ('schema', 'probe_sources', 'runner_sources', 'request_sources', 'proofs'):
+                    self.assertEqual(current[field], historical[field], field)
         for relative, expected in REVIEWED_HOST_READER_PINS.items():
             with self.subTest(current_host_reader=relative):
                 self.assertNotIn(relative, HISTORICAL_PINS)
+                self.assertNotIn(relative, REVIEWED_REGISTRATION_PINS)
                 self.assertEqual(hashlib.sha256((HERE.parent / relative).read_bytes()).hexdigest(), expected)
         production = match.trace.registry(match.trace.REGISTRY.read_bytes())
-        self.assertEqual(production['source_revision'], '1e2cac796a63b126990516396b9af00ba17b2f0b')
+        self.assertEqual(production['source_revision'], '34c5a8d9df3a8b0706c312633ffdde95a7c10a04')
         self.assertEqual(len(production['sources']), 41)
         self.assertEqual(core.digest(core.canonical(production['sources'])),
-                         'ba1cd3789f85f03275fdfc1213b2bc5dd0207458af30f6488419b82bc63dd5b5')
+                         'fc580c9cdf62eaa862de7b807277e173297fa6638ec7010ae10bac7bfd99ba37')
         self.assertEqual(len(production['proofs']), 1)
 
 
