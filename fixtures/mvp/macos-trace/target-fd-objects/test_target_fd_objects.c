@@ -206,6 +206,144 @@ static void stale_errno_flags(void)
     assert(!strcmp(tfo_stage_name((enum tfo_stage)-1),"unknown")&&!strcmp(tfo_reason_name((enum tfo_reason)-1),"unknown"));
 }
 
+static void zero_bytes(const void *input,size_t n)
+{ const unsigned char *p=input;for(size_t i=0;i<n;i++)assert(!p[i]); }
+static void entry_equal(const struct tfo_entry *a,const struct tfo_entry *b)
+{
+    assert(a->fd==b->fd&&a->descriptor_flags==b->descriptor_flags&&a->status_flags==b->status_flags);
+    assert(a->backing.device==b->backing.device&&a->backing.inode==b->backing.inode&&
+           a->backing.links==b->backing.links&&a->backing.mode==b->backing.mode);
+}
+static void observed_prefix(const struct tfo_reference_observation *o,unsigned count,const struct model *m)
+{
+    assert(o->completed_samples==count);
+    for(unsigned i=0;i<count;i++)entry_equal(&o->samples[i],&m->values[20+i%2]);
+    for(unsigned i=count;i<4;i++)zero_bytes(&o->samples[i],sizeof(o->samples[i]));
+}
+static struct tfo_snapshot controller_model(struct model *m)
+{
+    struct tfo_snapshot s=snapshot(m);m->self=111;m->reads=m->pid_calls=0;return s;
+}
+static void observed_success(void)
+{
+    struct model m=model();
+    m.values[1].status_flags=m.values[20].status_flags=O_WRONLY|O_APPEND|O_NONBLOCK|0x10000000;
+    m.values[2].status_flags=m.values[21].status_flags=O_WRONLY|O_APPEND|0x20000000;
+    m.values[20].descriptor_flags=FD_CLOEXEC|0x1000;m.values[21].descriptor_flags=FD_CLOEXEC|0x2000;
+    struct tfo_snapshot s=controller_model(&m);struct tfo_operations o=ops(&m);
+    struct tfo_matches v;struct tfo_reference_observation observed;struct tfo_error e;int refs[]={20,21};
+    memset(&observed,0xa5,sizeof(observed));memset(&v,0xa5,sizeof(v));memset(&e,0xa5,sizeof(e));
+    assert(!tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e));
+    assert(v.ready&&m.reads==12&&m.pid_calls==2&&e.reason==TFO_REASON_NONE&&!e.system_errno&&e.role==-1&&e.fd==-1);
+    observed_prefix(&observed,4,&m);
+    assert(v.outputs[0].status_flags==m.values[20].status_flags&&v.outputs[1].status_flags==m.values[21].status_flags);
+    assert(v.outputs[0].controller_descriptor_flags==m.values[20].descriptor_flags);
+    assert(v.outputs[1].controller_descriptor_flags==m.values[21].descriptor_flags);
+}
+static void observed_errors(void)
+{
+    for(int call=1;call<=12;call++){
+        struct model m=model();struct tfo_snapshot s=controller_model(&m);m.fail_at=call;
+        struct tfo_operations o=ops(&m);struct tfo_matches v;struct tfo_error e;
+        struct tfo_reference_observation observed;int refs[]={20,21};memset(&observed,0xa5,sizeof(observed));
+        assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e)==-1);
+        assert(m.reads==call&&e.reason==TFO_REASON_SYSCALL&&e.system_errno==EIO&&
+               e.stage==(call<=6?TFO_STAGE_REFERENCE_FIRST:TFO_STAGE_REFERENCE_SECOND)&&
+               e.role==1+((call-1)/3)%2&&e.fd==20+((call-1)/3)%2);
+        observed_prefix(&observed,(unsigned)(call-1)/3,&m);empty_matches(&v);
+    }
+    /* Even a populated stat row is not published until flags also complete. */
+    struct model m=model();struct tfo_snapshot s=controller_model(&m);m.values[20].backing.mode=0;
+    struct tfo_operations o=ops(&m);struct tfo_matches v;struct tfo_error e;struct tfo_reference_observation observed;int refs[]={20,21};
+    assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e)==-1&&m.reads==1&&e.reason==TFO_REASON_STAT_SHAPE);
+    observed_prefix(&observed,0,&m);empty_matches(&v);
+    m=model();s=controller_model(&m);m.fail_at=3;m.bad_result=-2;o=ops(&m);
+    assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e)==-1&&e.reason==TFO_REASON_ADAPTER&&!e.system_errno);
+    observed_prefix(&observed,0,&m);empty_matches(&v);
+}
+static void observed_changes(void)
+{
+    for(unsigned which=0;which<2;which++)for(int field=1;field<=6;field++){
+        struct model m=model();struct tfo_snapshot s=controller_model(&m);m.change=field;m.change_from=7+3*(int)which;
+        struct tfo_operations o=ops(&m);struct tfo_matches v;struct tfo_error e;int refs[]={20,21};
+        struct tfo_reference_observation observed;memset(&observed,0xa5,sizeof(observed));
+        assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e)==-1&&
+               e.stage==TFO_STAGE_STABILITY&&e.reason==TFO_REASON_CHANGED&&e.role==(int)which+1&&e.fd==refs[which]);
+        assert(m.reads==9+3*(int)which&&observed.completed_samples==3+which);empty_matches(&v);
+        for(unsigned i=0;i<2+which;i++)entry_equal(&observed.samples[i],&m.values[20+i%2]);
+        struct tfo_entry changed=m.values[refs[which]];
+        if(field==1)changed.backing.device++;
+        if(field==2)changed.backing.inode++;
+        if(field==3)changed.backing.links++;
+        if(field==4)changed.backing.mode^=0040;
+        if(field==5)changed.descriptor_flags^=FD_CLOEXEC;
+        if(field==6)changed.status_flags^=O_NONBLOCK;
+        entry_equal(&observed.samples[2+which],&changed);
+        for(unsigned i=3+which;i<4;i++)zero_bytes(&observed.samples[i],sizeof(observed.samples[i]));
+    }
+}
+static void observed_preflight(void)
+{
+    for(unsigned problem=0;problem<9;problem++){
+        struct model m=model();struct tfo_snapshot s=controller_model(&m);struct tfo_operations o=ops(&m);
+        struct tfo_matches v;struct tfo_error e;struct tfo_reference_observation observed;int refs[]={20,21};
+        memset(&observed,0xa5,sizeof(observed));memset(&v,0xa5,sizeof(v));memset(&e,0xa5,sizeof(e));
+        if(problem==4)s.ready=0;
+        if(problem==5)refs[1]=refs[0];
+        if(problem==6)o.getfl_fn=NULL;
+        if(problem==7)o.supported=0;
+        if(problem==8)m.self=999;
+        assert(tfo_match_regular_outputs_observed(problem==0?NULL:&s,problem==1?NULL:refs,
+            problem==2?NULL:&o,problem==3?NULL:&v,&observed,&e)==-1);
+        zero_bytes(&observed,sizeof(observed));assert(!m.reads&&m.pid_calls==(problem==8?1:0));
+        if(problem!=3)empty_matches(&v);
+        assert(e.reason!=TFO_REASON_NONE&&e.role==-1&&e.fd==-1&&e.system_errno==(problem==7?ENOTSUP:0));
+    }
+    struct model m=model();struct tfo_snapshot s=controller_model(&m);struct tfo_operations o=ops(&m);
+    struct tfo_matches v;struct tfo_error e;struct tfo_reference_observation observed;int refs[]={20,21};
+    assert(!tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e));
+    m.reads=m.pid_calls=0;
+    assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,NULL)==-1);
+    zero_bytes(&observed,sizeof(observed));empty_matches(&v);assert(!m.reads&&!m.pid_calls);
+    memset(&v,0xa5,sizeof(v));memset(&e,0xa5,sizeof(e));
+    assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,NULL,&e)==-1);
+    empty_matches(&v);assert(e.stage==TFO_STAGE_PLAN&&e.reason==TFO_REASON_ARGUMENT&&!e.system_errno&&e.role==-1&&e.fd==-1);
+    assert(!m.reads&&!m.pid_calls);
+    assert(tfo_match_regular_outputs_observed(&s,refs,&o,NULL,NULL,NULL)==-1&&!m.reads&&!m.pid_calls);
+}
+static void observed_after_reads(void)
+{
+    for(unsigned problem=0;problem<3;problem++){
+        struct model m=model();struct tfo_snapshot s=controller_model(&m);
+        if(problem==0)s.entries[1].backing.links=2;
+        if(problem==1)m.values[20].backing.inode++;
+        if(problem==2)m.self_final=333;
+        struct tfo_operations o=ops(&m);struct tfo_matches v;struct tfo_error e;struct tfo_reference_observation observed;int refs[]={20,21};
+        assert(tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e)==-1&&m.reads==12);
+        observed_prefix(&observed,4,&m);empty_matches(&v);
+        assert(e.reason==(problem==0?TFO_REASON_LINKS:problem==1?TFO_REASON_MISMATCH:TFO_REASON_NOT_CONTROLLER));
+    }
+}
+static void observed_legacy_equivalence(void)
+{
+    for(int problem=0;problem<=13;problem++){
+        struct model m=model();struct tfo_snapshot s=controller_model(&m);m.fail_at=problem<=12?problem:0;
+        if(problem==13){m.change=2;m.change_from=10;}
+        struct model legacy=m;struct tfo_operations o=ops(&m),old=ops(&legacy);
+        struct tfo_matches v,previous;struct tfo_error e,before;struct tfo_reference_observation observed;int refs[]={20,21};
+        int a=tfo_match_regular_outputs(&s,refs,&old,&previous,&before);
+        int b=tfo_match_regular_outputs_observed(&s,refs,&o,&v,&observed,&e);
+        assert(a==b&&m.reads==legacy.reads&&m.pid_calls==legacy.pid_calls);
+        assert(e.stage==before.stage&&e.reason==before.reason&&e.system_errno==before.system_errno&&e.role==before.role&&e.fd==before.fd);
+        assert(v.ready==previous.ready);
+        if(!b)for(unsigned i=0;i<2;i++){
+            assert(v.outputs[i].child_fd==previous.outputs[i].child_fd&&v.outputs[i].controller_fd==previous.outputs[i].controller_fd&&
+                   v.outputs[i].child_descriptor_flags==previous.outputs[i].child_descriptor_flags&&
+                   v.outputs[i].controller_descriptor_flags==previous.outputs[i].controller_descriptor_flags&&v.outputs[i].status_flags==previous.outputs[i].status_flags);
+        }else {empty_matches(&v);empty_matches(&previous);}
+    }
+}
+
 static int64_t milliseconds(void)
 {
     struct timespec t;if(clock_gettime(CLOCK_MONOTONIC,&t))return -1;
@@ -417,7 +555,9 @@ int main(int argc,char**argv)
     const struct{const char*name;void(*run)(void);} cases[]={
         {"success",success},{"plans",plans},{"callbacks",callbacks},{"owner-masks",owner_masks},
         {"errors",errors},{"changes",changes},{"final-guards",final_guards},{"match-errors",match_errors},{"match-shapes",match_shapes},
-        {"match-preflight",match_preflight},{"stale-errno-flags",stale_errno_flags}};
+        {"match-preflight",match_preflight},{"stale-errno-flags",stale_errno_flags},
+        {"observed-success",observed_success},{"observed-errors",observed_errors},{"observed-changes",observed_changes},
+        {"observed-preflight",observed_preflight},{"observed-after-reads",observed_after_reads},{"observed-legacy-equivalence",observed_legacy_equivalence}};
     for(unsigned i=0;i<sizeof(cases)/sizeof(cases[0]);i++)
         if(!strcmp(argv[1],cases[i].name)){cases[i].run();puts(cases[i].name);return 0;}
     return 2;
