@@ -110,7 +110,7 @@ fn glibc_version() -> Result<String, CapabilityError> {
 }
 
 #[cfg(target_os = "macos")]
-fn macos_version() -> Result<String, CapabilityError> {
+pub(super) fn macos_version() -> Result<String, CapabilityError> {
     let mut buffer = [0u8; 128];
     let mut length = buffer.len();
     // SAFETY: the query name is a terminated static string. The output pointer
@@ -125,15 +125,90 @@ fn macos_version() -> Result<String, CapabilityError> {
             0,
         )
     };
-    if result != 0 || length == 0 || length > buffer.len() {
+    if result != 0 {
         return Err(unsupported(format!(
             "macOS product version query failed: {}",
             std::io::Error::last_os_error()
         )));
     }
-    std::ffi::CStr::from_bytes_until_nul(&buffer[..length])
-        .map_err(|_| unsupported("macOS product version is not terminated"))?
+    decode_macos_version(&buffer, length)
+}
+
+#[cfg(not(target_os = "macos"))]
+pub(super) fn macos_version() -> Result<String, CapabilityError> {
+    Err(unsupported(
+        "macOS product version is unavailable on this host",
+    ))
+}
+
+#[cfg(any(test, target_os = "macos"))]
+fn decode_macos_version(buffer: &[u8], length: usize) -> Result<String, CapabilityError> {
+    let bytes = buffer
+        .get(..length)
+        .filter(|bytes| !bytes.is_empty())
+        .ok_or_else(|| unsupported("macOS product version query returned an invalid length"))?;
+    let version = std::ffi::CStr::from_bytes_with_nul(bytes)
+        .map_err(|_| unsupported("macOS product version is not exactly terminated"))?
         .to_str()
-        .map(str::to_owned)
-        .map_err(|_| unsupported("macOS product version is not UTF-8"))
+        .map_err(|_| unsupported("macOS product version is not UTF-8"))?;
+    if version.is_empty() {
+        return Err(unsupported(
+            "macOS product version query returned an empty value",
+        ));
+    }
+    Ok(version.to_owned())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn product_version_decoding_respects_reported_storage_and_exact_termination() {
+        assert_eq!(decode_macos_version(b"26.7\0ignored", 5).unwrap(), "26.7");
+        assert_eq!(decode_macos_version(b"26.7.1\0", 7).unwrap(), "26.7.1");
+        for (bytes, length) in [
+            (&b"26.7\0"[..], 0),
+            (&b"26.7\0"[..], 6),
+            (&b"26.7"[..], 4),
+            (&b"26.7\0junk\0"[..], 10),
+            (&b"\0"[..], 1),
+            (&b"26.\xff\0"[..], 5),
+        ] {
+            assert!(
+                matches!(
+                    decode_macos_version(bytes, length),
+                    Err(CapabilityError::Unsupported(_))
+                ),
+                "{bytes:?} length {length}"
+            );
+        }
+        assert!(decode_macos_version(&[b'1'; 128], 128).is_err());
+        assert!(decode_macos_version(&[0; 128], usize::MAX).is_err());
+    }
+
+    #[test]
+    #[cfg(target_os = "macos")]
+    fn native_product_version_matches_clean_environment_system_reference() {
+        let actual = crate::profile::macos_product_version().unwrap();
+        let output = std::process::Command::new("/usr/bin/sw_vers")
+            .arg("-productVersion")
+            .env_clear()
+            .stdin(std::process::Stdio::null())
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "{:?}", output.stderr);
+        let expected = std::str::from_utf8(&output.stdout).unwrap().trim();
+        assert!(!expected.is_empty());
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    #[cfg(not(target_os = "macos"))]
+    fn product_version_is_explicitly_unsupported_on_other_hosts() {
+        assert!(matches!(
+            crate::profile::macos_product_version(),
+            Err(CapabilityError::Unsupported(_))
+        ));
+    }
 }

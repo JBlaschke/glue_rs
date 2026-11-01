@@ -2148,6 +2148,22 @@ New writer source SHA256:
 `b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
 M2 remains active; this repair supplies no native acceptance or admission.
 
+## Compact macOS startup — native host query (29 October 2026)
+
+Branch `codex/mvp-c05-macos-host-query` adds decision `c17110f` and implementation
+`0c350ef`. Compact startup obtains the macOS product version through the bounded
+native query already used by the linked runtime platform layer. It removes the
+`sw_vers` subprocess and reader thread. Numeric OS-floor checks remain unchanged;
+query failure still reports MissingDependency with the native-query detail. No
+new dependency, unsafe block or runner lint exception is introduced.
+
+Under pinned Rust/Clippy 1.88.0, 38 Lua library tests and two compact host tests
+pass, including the real native query compared with an env-cleared system
+reference. Malformed/oversized/unterminated native strings and OS-floor ordering
+are checked. Workspace formatting and two-package all-target Clippy pass;
+independent source/receipt review is clear. This removes startup work while the
+full Mac runtime capture/state/corpus and budgets remain active M2 work.
+
 ## R02 — hosted macOS 26 environment preflight (29 October 2026)
 
 Feature `codex/mvp-r02-macos-ci-preflight` adds a separate standard-arm64
