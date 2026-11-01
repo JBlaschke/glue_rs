@@ -38,9 +38,10 @@ This helper supplies expected input data, not authorization, native executable
 or CWD admission, runtime closure verification, successful execution, tracing or
 MVP acceptance. The initial bootstrap-to-glue environment may be empty while
 existing compact code creates a declared environment for its later Python/Node
-exec. macOS host checks can also spawn `sw_vers` and a reader thread. Later
-adoption requires complete lifecycle joins, a quiescent successful exec epoch
-and CLOEXEC/mapping transfer; a one-exec reader does not establish that chain.
+exec. macOS host checks read the product version with a native
+`kern.osproductversion` query and start no process or thread. Later adoption
+requires complete lifecycle joins, a quiescent successful exec epoch and
+CLOEXEC/mapping transfer; a one-exec reader does not establish that chain.
 See `docs/decisions/mvp-r02-runtime-launch-recipe.md`.
 
 Run `python3 test_target_launch.py` for eleven pure C data controls. Set
