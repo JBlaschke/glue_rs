@@ -2163,3 +2163,20 @@ reference. Malformed/oversized/unterminated native strings and OS-floor ordering
 are checked. Workspace formatting and two-package all-target Clippy pass;
 independent source/receipt review is clear. This removes startup work while the
 full Mac runtime capture/state/corpus and budgets remain active M2 work.
+
+## R02 — hosted macOS 26 environment preflight (29 October 2026)
+
+Feature `codex/mvp-r02-macos-ci-preflight` adds a separate standard-arm64
+Actions job to collect bounded original OS/build/architecture/kernel, SDK/compiler,
+SIP status and syscall-provider listing observations. It changes no security
+setting, enables no probes and runs no traced target. The fixed inventory commands
+have timeout/output bounds and retain their status and original streams in a
+14-day CI artifact. Three local collector controls pass (ordinary collection,
+timeout and output bound); Python compilation and diff checks pass.
+
+A green inventory job means the expected OS/architecture was observed; provider
+listing, SIP policy and native eligibility are reported separately. Even a
+successful listing does not establish probe enablement or native Mac acceptance.
+M2 remains active: raw FD policy is in review; post-exec output observation and
+full syscall/process/mapping coverage, native corpus, budgets and sign-off remain.
+M0/M1 remain delivered, M3 memory mode planned, M4 deferred.
