@@ -3082,5 +3082,81 @@ action occurs.
 
 This removes an unnecessary actual application-startup process/thread. It does
 not supply extraction-oracle process/exec support or a measured Mac budget.
-Runtime launch recipes, later image/lifetime handling, sink state policy, native
-Mac corpus and budgets remain open; M2 stays active.
+Runtime launch recipes (PR #106, without configured native admission) and the
+bounded repeated-image/thread-lifetime pairing (through PR #108) have since
+merged; complete later-image/thread/process-tree handling, sink state policy,
+native Mac corpus and budgets remain open. M2 stays active.
+
+## 1 November: records carried from the closed runtime-boundary stack
+
+PRs #104, #107 and #109 were closed without merging. Their decision and feature
+commits had already reached `main` as same-patch cherry-picks: the runtime
+boundary and repeated-image commits through PR #108, the fixed trace
+session/backend through PR #110. #109's own registration commit did not land;
+`main`'s later registration pins the same session-source hashes. The three
+validation records below existed only on those branches. Each keeps its original
+branch commit and adds the same-patch `main` commit in parentheses. Next-step
+sentences that later records supersede are left out. Receipts and reports remain
+ignored local evidence.
+
+### 29 October: source-selected runtime capture and first image transition
+
+Decision `9fe847e` precedes implementation
+`7fc6e6121388f6022bc20d68cea74093598ef358` on `codex/mvp-r02-runtime-boundary`
+(`781c8d3` and `ba900c1` on `main`). The separately named C backend/program keep
+the legacy scalar transport layout and original bounded deadline/drop/fault/
+writer/finalization rules. A byte-significant marker selects the fixed profile.
+Unsupported creation/rights/Mach records serialize before session refusal; clean
+backend completion requires exactly one selected exec entry and success. Those
+counters are not image/thread/bootstrap proof. Descendants are outside this
+profile and no generic runtime catalog is adopted.
+
+The independent reader consumes the physical stream once and validates complete
+transport before immutable facts. It retains the entire bootstrap prefix, exact
+launch byte/digest bindings, one explicitly accounted attachment return, the gate
+close/EXEC_ATTEMPT/exec sequence, and the source-grounded changed-TID image
+transition. It refuses later execs, unsupported routes, ambiguous thread/order
+boundaries and late malformed transport without exposing a clean prefix. Scalar
+pointers do not attest the executable pathname. Supplied catalog/source/recipe/
+artifact bytes establish consistency, not native/protected-launch provenance or
+output capability. Every native/state/full-acceptance flag stays false.
+
+Thirteen C-transport controls pass on both tested Python versions; the independent
+reader passes thirty-five per version, including actual compiled C program and
+existing C request/object-wire differential checks. Source review tightens exact
+remaining-byte I/O requests/EOF, Darwin nonblocking/access/int flag prerequisites
+and exact-zero fstat results. High status bits remain intact because READY writes
+can change kernel write-history flags. All prior attempts remain immutable.
+No native provider is run.
+
+Native freeze report SHA256 is
+`9116e263c1ea864b426f144a5c72aed14c1488941122ae6dd1243165936106dd`; its corrected
+identifier-prefix derivation addendum is
+`9073944879c1935bcf3ade636c635396e6146c59d692f66673268b4faeb07955`. Reader attempt03
+receipt is `7552a84c38f530c8a255a232f4ed3008f445530796cc0c0ac2ef7f74071a7f5d`;
+its 49-payload manifest is
+`35dbc0d827ff8deb4143d1cfa95e4848f82f34301348e32b22d2694d22653b1c`. Native peer
+report is `a1b8d9d8a74f2a65fc8ce89c5d63ffc3169390537a6ae99d9eabda27ce1c940f`;
+reader peer report is
+`afb610deeef1a1127e9ea895db22909c188a1b32c54a3dbd66b66b99a2053521`.
+
+Two new suites enter portable CI. Legacy registered sources stay byte-identical,
+so no source registry is repinned. Later runtime exec/CLOEXEC transfer, process-tree/
+rights/VM effects, raw sink-capability state policy, native calibration/corpus,
+Mac budgets and final M2 remain open. Guest SIP remains enabled.
+
+### Repeated runtime images and threads — 29 October
+
+Feature `codex/mvp-r02-runtime-images`, source commit `987d251` (`c244645` on `main`), adds a separately selected v2 trace producer/backend and a complete-stream reader for up to sixteen quiescent same-PID exec transitions. It retains observed thread lifetimes and reuse generations, preserves changed-thread exec boundaries, and keeps delayed old-image context separate from live actors. Existing v1 behavior remains fixed. Later executable paths and hashes stay unknown; no descriptor capability, descendant coverage or extraction verdict is inferred.
+
+Both available Python versions passed 35 v1 and 34 v2 reader controls without skips. Native transport controls passed 18 checks on each version, plus 13 sanitizer groups. Independent reviews found no open source findings; no provider, VM or target was run. Ignored receipts: Python `e6f83cd4080021305cd056bf3128671a1a6494e38d8dd84371d775062e7cc8ff`; Python peer `3cc0ed40a1ab1d101c213583dad6b3ab08de03351ca3392fc4446a6f351bdbb0`; native peer `3ef6c3375bd7ea4b38c3bb2c330e01b98f345b575a415a4967211a0d98b8dec2`. Existing registered collector profiles are unchanged.
+
+M0/M1 remain delivered and M2 remains active. M3 memory mode is separate and planned; M4 remains deferred. These source controls do not close native Mac acceptance.
+
+### Fixed runtime trace session and backend — 29 October
+
+Feature `codex/mvp-r02-runtime-trace-profile`, source `637109e` (`0b0410d` on `main`), adds separate fixed `ts_runtime_init` and `rt_recipe_images_create` entry points for runtime fixture2 and the existing v2 program. Original probe factories remain exclusively fixture1 with unchanged public layouts and rejection behavior. Runtime status success retains 1024 bytes and failures up to 1537; the old 512/769-byte bounds remain fixed. Ownership, READY, deadlines, once-only lifecycle, unsupported-route refusal and balanced exec limits remain unchanged.
+
+All 136 final controls pass without skips across both Python versions, normal and ASan/UBSan: 13 session and 21 backend controls per cell, exercising both fixed profiles. These are isolated/fake-provider and SDK checks; no provider or target runs. Source freeze report `1d909eb92310322ca06e6ff70dab604c02a9665a769029933240cf24c88bbe53` and independent review `3751800e406f669c60d40214e42a0a524c5f58646ca526d530cc8c0c010a66c1` are retained locally. The branch's separate registration `39ec6ba` changed only the reviewed session bytes, preserving source rosters and proofs; genuine 34/41-file loaders and all 26 active controls passed there (receipt `eb6345eba21742376c831d25ab94f549e551244464365b7f4bfe00ee143b07c5`). It did not reach `main`, whose registries advanced through registration `609118f` instead (see the owned traced runtime runner record).
+
+This factory feature admits no runtime catalog, native observation, sink capability or extraction verdict. M0/M1 remain delivered, M2 active, M3 memory mode planned separately and M4 deferred. Full native Mac corpus, offline/environment integration, policy/coverage, budgets and retention/sign-off remain before compact acceptance.

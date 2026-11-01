@@ -1,6 +1,6 @@
 # Current milestone status
 
-29 October 2026. The [project plan](../../PLAN.md#milestones) defines five
+1 November 2026. The [project plan](../../PLAN.md#milestones) defines five
 milestones. The [26 task cards](mvp-tasks.md) are implementation assignments,
 not 26 release gates. The [execution ledger](mvp-implementation.md) records exact
 commits, tests, target scope and evidence limits.
@@ -30,20 +30,27 @@ feature work continues while CI runs.
    is publicly retained; this newer 421.6 MB two-target set is prepared and verified
    locally, with separate public-asset approval pending. No new native run is
    implied by replay or archive preparation.
-2. **Mac source integration:** the actual READY/gate/witness runner is in
+2. **Mac source integration:** merged on `main` on 31 October. Held-CWD selection
+   ([PR103](https://github.com/JBlaschke/glue_rs/pull/103)), fixed runtime launch
+   recipes ([PR106](https://github.com/JBlaschke/glue_rs/pull/106)) and original
+   output/gate witnesses ([PR108](https://github.com/JBlaschke/glue_rs/pull/108))
+   came first. The actual READY/gate/witness runner is in
    [PR110](https://github.com/JBlaschke/glue_rs/pull/110). The stopped-child output
    observer is in [PR113](https://github.com/JBlaschke/glue_rs/pull/113). Fixed FD,
    scalar fcntl and F_GETFL interval profiles are in PRs #112/#114/#115/#116. The stopped
    collector/reader is in [PR117](https://github.com/JBlaschke/glue_rs/pull/117),
    typed lifecycle status in [PR118](https://github.com/JBlaschke/glue_rs/pull/118),
-   and file-synced observation retention in
-   [PR119](https://github.com/JBlaschke/glue_rs/pull/119). These are source/model
-   milestones with independent review, not complete native oracle acceptance.
+   file-synced observation retention in
+   [PR119](https://github.com/JBlaschke/glue_rs/pull/119) and stopped-stream FD-policy
+   integration in [PR120](https://github.com/JBlaschke/glue_rs/pull/120). The runtime
+   image boundary and repeated-image pairing of the closed PRs #104/#107 arrived
+   through PR108, and the fixed trace session/backend of the closed PR #109 through
+   PR110. These are source/model milestones with independent review, not complete
+   native oracle acceptance.
 3. **Active implementation:** connect the fixed controller to actual fork-minted
    ownership, exclusive stop observation, file sync before continuation, bounded
-   cleanup and final lifecycle receipts. The reviewed stopped-stream FD-policy
-   feature is
-   `codex/mvp-r02-runtime-stopped-fd-policy`; it supplies no output seed or grant.
+   cleanup and final lifecycle receipts. The merged stopped-stream FD policy
+   supplies no output seed or grant.
    In parallel, implement a small hosted native enablement diagnostic. Raw
    correlated samples or intended CONT calls do not authorize output exemptions.
 4. **Hosted Mac evidence:** the corrected read-only inventory
@@ -51,11 +58,14 @@ feature work continues while CI runs.
    at c869536 passed. It reports an arm64 Mac, existing disabled SIP and a successful
    syscall-provider listing. It enabled no probes and traced no target; actual
    enablement/calibration remain unmeasured. Guest SIP stays enabled. This is a
-   possible native test route without changing the guest's security setting.
+   possible native test route without changing the guest's security setting. The
+   inventory job merged in [PR111](https://github.com/JBlaschke/glue_rs/pull/111)
+   on 1 November.
 
-The new source merge order is #112 → #114 → #115 → #116, #113 after #110, then #117 → #118 → #119;
-#111's host inventory is independent. All PRs target `main`. Merge dependencies
-first to reduce stacked diffs. Exact decisions, sources, tests and limits remain
+The compact host query ([PR105](https://github.com/JBlaschke/glue_rs/pull/105)) merged
+on 1 November as well. PRs #104, #107 and #109 were closed without merging because
+their features were already on `main`; their validation records are carried into
+the ledger and progress record. Exact decisions, sources, tests and limits remain
 in the [execution ledger](mvp-implementation.md) and [progress record](../progress.md).
 
 ## Remaining M2 delivery
@@ -85,8 +95,9 @@ before public macOS product-binary publication.
 The compact Mac host check now reuses the existing bounded native product-version
 query, removing a helper subprocess and reader thread while preserving OS-floor
 checks. Forty scoped Rust tests, formatting, Clippy and independent review pass.
-Actual runtime launch recipe adoption remains active; the source-selected runtime
-boundary feature is separately available in PR #104.
+Runtime launch recipes and the source-selected runtime boundary are on `main`
+through PR106 and PR108; native admission of the runtime catalog is still not
+configured.
 
 ## What M3 still needs
 
@@ -110,25 +121,3 @@ zero payload-file creation and no extraction fallback. Unsupported capabilities
 must reject explicitly. M3 permits a launcher plus archive; the combined single
 executable is the later X01 expansion task. Compact-mode native success alone
 does not satisfy memory-mode acceptance.
-
-
-## Original runtime output and gate evidence — 29 October
-
-Feature `codex/mvp-r02-runtime-witness`, implementation `34c5a8d`, retains both original parent-held output sampling rounds before tracing or GO. It binds those rows to actual owner/child and exact request/catalog/READY bytes. The actual parent separately records confirmed GO bytes and write/error/close outcomes, including failed full delivery; retention attempts are once-only and successful finalization requires both witnesses. The strict generic RR/RC/TL reader checks the complete original 1024-byte status stream, launcher up to 16 MiB, separate sibling CWD, actual character-device stdin topology, both sample rounds and gate delivery. It validates the entire raw capture before returning conditional output lineage values. Existing public probe profiles and empty runtime admission remain unchanged.
-
-Validation: 40 final runtime/object/legacy/traced-parent controls passed, including an actual ordinary child/gate/CWD/FD/exec and retained witnesses with explicitly modeled protected admission/credentials. The observed helper passed 26 controls on both Python versions normally and under ASan/UBSan; independent wire/adapter controls passed 13 in each cell. Existing v1(35), v2(34) and new recipe(24) reader controls passed on both versions, including actual C codec comparison. A test-only portability define repair passed its two affected controls on each version. Strict GCC checks and independent C/Python reviews passed. Source registration preserves historical proof entries and rosters; genuine 34/41-file loaders and all 26 active registration controls pass after a retained test-pin repair. Historical metadata bytes are separate non-executable fixtures, not reclassified native proof.
-
-Ignored final evidence: integration `e0864dec56dc70875361cd31893677897ebe619d4703938e58529e5442b8900f`; C peer `13661a4d40a822ab5d7145088a67b95d74d05ca04dd27f538120eaa7dc8b8b17`; reader peer `bd6c3db8ae95b81ceacc3bc526eb05c89fc9b0fd88b0e3469697f022f49ea076`; clean post-registration receipt `064fea40aaf6bfd5d10a3fbbd9f00c57d777460fbe08ab8e306251025b0c1bb6`.
-
-M0/M1 remain delivered; M2 is active. The next implementation connects the fixed runtime trace session/backend to the actual runner, followed by conservative sink-capability state and complete syscall/process/mapping coverage. Native Mac calibration/corpus, offline/environment integration, budgets and final retention/sign-off remain. These consistency facts authenticate neither native origin nor OFD/generation identity and authorize no sink exemption, state feed or full extraction verdict. M3 memory mode remains planned and separate from the first compact MVP; M4 stays deferred.
-
-
-## Owned traced runtime runner — 29 October
-
-Feature `codex/mvp-r02-runtime-trace-runner`, implementation `9b5af34`, joins the fixed runtime launch and original witnesses to the fixture2/v2 trace session/backend. Eight fixed wrappers share the traced attempt layout, including admission and witness units. The untraced profile header remains unchanged and direct tracing markers still refuse. Actual READY comparison and original output witness retention precede attach; provider readiness and BEGIN precede GO. The traced path retains actual confirmed GO bytes, write/error and close outcomes, including failed full delivery. Early unresolved CWD/output references report failed parent closure, and no result can promote before complete cleanup, final snapshot and destruction. Runtime result and sidecar schemas are distinct and keep all native/exemption/full-acceptance flags false.
-
-All 116 source-isolated controls pass on both Python versions, normal and ASan/UBSan. A narrow four-run addendum strengthens the positive promotion assertion; original receipts remain intact. Forty existing runtime/object/legacy/traced-parent controls pass without skips, including an ordinary real child fixture with explicitly modeled protected admission and credentials. Four retained old probe JSON examples remain byte-identical. The SDK build links the unconfigured runner without running a provider, and all eight GCC non-Apple wrapper syntax checks pass on Mac. Independent peer review verifies 1434 retained base/additive payloads and reports no open findings.
-
-The approved import of main preserves every reviewed production/test byte; its documentation conflict retains both chronological records and its four CI additions remain. Registration `609118f` carries only two legacy and six trace source hashes, with rosters/proofs/historical snapshots unchanged. Genuine clean loaders pass 34/41 files, and 26 registration plus 30 imported fcntl controls pass without skips. Final registration receipt `ecba855352765d054b2d28a57da87a0a4ca04c45e5de1b336ff5a6df35d38032`; independent peer `735dda30ea7deb09a8d4b56a1107dfcb8f2b6ef243d55bfce8f415040e38c2f1`; author report `fa541aa70999810c6f7e8d4078085820f04dfe3879d4366e2b2a1d12a715a1bc`. All raw controls stay local.
-
-M2 remains active. The raw FD interval policy is now the next implementation, with a separate post-exec backing witness required before output exemptions: clear CLOEXEC does not establish retained output backing because exec can implicitly close/replace stdio. Full BSD/Mach/VM/process/thread coverage, offline/environment integration, native Mac calibration/corpus, budgets and final retention/sign-off remain. M0/M1 are delivered; M3 memory mode is separately planned and M4 deferred. No provider, VM, sudo, ptrace or SIP action occurs in this source feature.
