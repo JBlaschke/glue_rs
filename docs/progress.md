@@ -2233,3 +2233,21 @@ Feature `codex/mvp-r02-runtime-trace-profile`, source `637109e` (`0b0410d` on `m
 All 136 final controls pass without skips across both Python versions, normal and ASan/UBSan: 13 session and 21 backend controls per cell, exercising both fixed profiles. These are isolated/fake-provider and SDK checks; no provider or target runs. Source freeze report `1d909eb92310322ca06e6ff70dab604c02a9665a769029933240cf24c88bbe53` and independent review `3751800e406f669c60d40214e42a0a524c5f58646ca526d530cc8c0c010a66c1` are retained locally. The branch's separate registration `39ec6ba` changed only the reviewed session bytes, preserving source rosters and proofs; genuine 34/41-file loaders and all 26 active controls passed there (receipt `eb6345eba21742376c831d25ab94f549e551244464365b7f4bfe00ee143b07c5`). It did not reach `main`, whose registries advanced through registration `609118f` instead (see the owned traced runtime runner record).
 
 This factory feature admits no runtime catalog, native observation, sink capability or extraction verdict. M0/M1 remain delivered, M2 active, M3 memory mode planned separately and M4 deferred. Full native Mac corpus, offline/environment integration, policy/coverage, budgets and retention/sign-off remain before compact acceptance.
+
+## MVP ledger records for PRs #111–#120 (1 November 2026)
+
+PRs #111–#120 added the progress entries above but no records to the
+[implementation ledger](plans/mvp-implementation.md), although every other
+merged `codex/mvp-*` PR from #35 on added one, including #105, which merged
+between #120 and #111. The ledger now ends with a dated 1 November section
+holding a short record for each of the ten merges, drawn from these entries, the
+PR descriptions and the merge commits. Each names its decision, implementation,
+any CI repair and merge commits; control counts and receipt hashes are copied
+unchanged. The ledger's #110 record no longer calls the raw FD interval policy
+the next implementation.
+
+The target-launch fixture README no longer says macOS host checks can spawn
+`sw_vers` and a reader thread; since PR #105 they use the native
+`kern.osproductversion` query. The 29 October launch-recipe decision keeps its
+text and gains a closing pointer to the host-query decision, as decision 0006
+points to its successor. This is a docs-only change.

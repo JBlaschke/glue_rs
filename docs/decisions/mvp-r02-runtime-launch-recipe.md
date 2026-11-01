@@ -56,3 +56,7 @@ credential/admission step. No privileged credential transition, configured root
 bootstrap, provider, VM, sudo or SIP change is performed. Configured historical
 registries and shared CI/status files remain untouched. Root owns subsequent C
 and separate reviewed C-to-R registration.
+
+Compact macOS host checks no longer spawn `sw_vers` or a reader thread: the
+[native host-query decision](mvp-c05-macos-host-query.md) replaced them in
+PR #105. The text above records the 29 October launch scope.

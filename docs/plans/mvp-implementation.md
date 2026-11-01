@@ -3050,7 +3050,7 @@ All 116 source-isolated controls pass on both Python versions, normal and ASan/U
 
 The approved import of main preserves every reviewed production/test byte; its documentation conflict retains both chronological records and its four CI additions remain. Registration `609118f` carries only two legacy and six trace source hashes, with rosters/proofs/historical snapshots unchanged. Genuine clean loaders pass 34/41 files, and 26 registration plus 30 imported fcntl controls pass without skips. Final registration receipt `ecba855352765d054b2d28a57da87a0a4ca04c45e5de1b336ff5a6df35d38032`; independent peer `735dda30ea7deb09a8d4b56a1107dfcb8f2b6ef243d55bfce8f415040e38c2f1`; author report `fa541aa70999810c6f7e8d4078085820f04dfe3879d4366e2b2a1d12a715a1bc`. All raw controls stay local.
 
-M2 remains active. The raw FD interval policy is now the next implementation, with a separate post-exec backing witness required before output exemptions: clear CLOEXEC does not establish retained output backing because exec can implicitly close/replace stdio. Full BSD/Mach/VM/process/thread coverage, offline/environment integration, native Mac calibration/corpus, budgets and final retention/sign-off remain. M0/M1 are delivered; M3 memory mode is separately planned and M4 deferred. No provider, VM, sudo, ptrace or SIP action occurs in this source feature.
+M2 remains active. The raw FD interval policy has since merged (PR #112, recorded below), with a separate post-exec backing witness required before output exemptions: clear CLOEXEC does not establish retained output backing because exec can implicitly close/replace stdio. Full BSD/Mach/VM/process/thread coverage, offline/environment integration, native Mac calibration/corpus, budgets and final retention/sign-off remain. M0/M1 are delivered; M3 memory mode is separately planned and M4 deferred. No provider, VM, sudo, ptrace or SIP action occurs in this source feature.
 
 ## 29 October: compact host-version query without a subprocess
 
@@ -3160,3 +3160,205 @@ Feature `codex/mvp-r02-runtime-trace-profile`, source `637109e` (`0b0410d` on `m
 All 136 final controls pass without skips across both Python versions, normal and ASan/UBSan: 13 session and 21 backend controls per cell, exercising both fixed profiles. These are isolated/fake-provider and SDK checks; no provider or target runs. Source freeze report `1d909eb92310322ca06e6ff70dab604c02a9665a769029933240cf24c88bbe53` and independent review `3751800e406f669c60d40214e42a0a524c5f58646ca526d530cc8c0c010a66c1` are retained locally. The branch's separate registration `39ec6ba` changed only the reviewed session bytes, preserving source rosters and proofs; genuine 34/41-file loaders and all 26 active controls passed there (receipt `eb6345eba21742376c831d25ab94f549e551244464365b7f4bfe00ee143b07c5`). It did not reach `main`, whose registries advanced through registration `609118f` instead (see the owned traced runtime runner record).
 
 This factory feature admits no runtime catalog, native observation, sink capability or extraction verdict. M0/M1 remain delivered, M2 active, M3 memory mode planned separately and M4 deferred. Full native Mac corpus, offline/environment integration, policy/coverage, budgets and retention/sign-off remain before compact acceptance.
+
+## 1 November: records for PRs #111–#120
+
+PRs #113, #112 and #114–#120 merged on 31 October and PR #111 on 1 November.
+Each added a dated progress entry but no ledger record. The short records below
+are drawn from those entries, the PR descriptions and the merge commits, in
+merge order. Each names its branch's decision, implementation and any CI repair
+commits and its merge commit on `main`. Control counts and receipt hashes are
+copied unchanged; receipts and reports remain ignored local evidence.
+Merged-main portable runs passed all nine jobs at `5c95e24`
+([41238836688](https://github.com/JBlaschke/glue_rs/actions/runs/41238836688)),
+`b1fadab`
+([41241465699](https://github.com/JBlaschke/glue_rs/actions/runs/41241465699)),
+`912b01d`
+([41242778036](https://github.com/JBlaschke/glue_rs/actions/runs/41242778036))
+and `a514864`
+([41297765995](https://github.com/JBlaschke/glue_rs/actions/runs/41297765995)).
+The workflow's concurrency group cancelled the runs for the merges in between.
+
+### 29 October: stopped owned-child output observation (PR #113)
+
+Decision `a05609c`, refined by `70de2e4`, precedes implementation `2b0e45c` on
+`codex/mvp-r02-stopped-output-observer`; PR #113 merged as `5c95e24`. The
+observer consumes an actual owned-child SIGSTOP wait and samples eight original
+vnode FD metadata buffers; a strict independent Python reader checks its fixed
+4096-byte packet. Sampling never replays. The library has no
+signal/resume/provider API and grants no state or output authority.
+
+Independent review verifies 602 retained evidence members and all eight frozen
+sources. The base 92 executions retain 90 passes and two test-only sanitizer
+failures caused by stale full-status equality; the 18 affected decoder/native
+controls then pass, followed by four normal/sanitized native refinements across
+Python 3.15/3.9. No final 24-by-four replay is claimed. Peer review SHA256 is
+`a9cbd32ad72d6f2c684d304fc6e8883b31f47e8c518eb9bc312db003ce197794`. CI adds the
+focused suite.
+
+### 29 October: raw runtime FD interval policy (PR #112)
+
+Decision `6cd63da` precedes implementation `52e5c7c` on
+`codex/mvp-r02-runtime-fd-policy`; PR #112 merged as `5118791`. A fixed raw-byte
+policy evaluates original recipe captures through eleven scalar FD routes and
+four open routes, retaining every BSD/Mach attempt and raw phase. Unsupported
+effects establish a sticky uncertainty horizon; every exec retires all
+output-binding certainty. No post-exec sink exemption is granted.
+
+All 36 physical-byte FD controls pass on both Python versions without skips;
+existing recipe24/image34/boundary35 controls per interpreter are retained.
+Independent review verifies 238 final evidence payloads and 175 source
+identities with no open findings. Ignored review receipt SHA256 is
+`e71b322a7a73b1ca6596c4a67efe74e54299aa56f2a53fa898d91a41ad47e763`. CI adds the
+new suite; configured source closures are unchanged.
+
+### 29 October: scalar fcntl interval profile (PR #114)
+
+Decision `3f206cb` precedes implementation `c4f9ffa` on
+`codex/mvp-r02-runtime-fcntl-policy`; PR #114 merged as `5da89ba`. A fixed v2
+raw-byte factory adds F_DUPFD/F_GETFD/F_SETFD/F_DUPFD_CLOEXEC through both
+syscall forms, linking immutable command rows to every original attempt.
+Contradictory source-state histories retire affected certainty and yield no
+alias/flag postcondition. The v1 fifteen-name factory and shape remain intact;
+all authority/state/native/full-acceptance flags remain false.
+
+All 27 new physical-byte controls and 36 unchanged v1 controls pass on Python
+3.15 and 3.9 with zero skips. Independent review verifies 249 source identities
+and the retained prior/final receipts; both findings are resolved. Review
+SHA256 is `f5b43a57f4a43514628b3ea0f1f627e459a6ffdfc5bdc72ca2a8843202bb8057`.
+CI adds the focused suite.
+
+### 29 October: conditional F_GETFL status-query semantics (PR #115)
+
+Decision `c1192d2` precedes implementation `4485938` on
+`codex/mvp-r02-bsd-fgetfl-semantics`; PR #115 merged as `3c49bdf`. A separate
+fixed raw helper decodes F_GETFL through both syscall forms while preserving the
+four existing scalar command rows. Conditional status conversion keeps all
+private bits and event-only policy alternatives; only 21 ordinary source
+constructions receive a conditional rule, and other flag combinations remain
+unresolved with their exact alternatives.
+
+All 24 independently encoded physical-byte controls pass on Python 3.15/3.9.
+Root review verifies 11 retained artifacts and two actual strict-recipe
+private-hook checks per interpreter. Review SHA256 is
+`8131182363f2e11040420a81e4498ac9bd919b18bf14176f0cf9dae8bdecc324`. Six exact
+core source identities are retained; supplemental writer byte hashes/physical
+lines remain explicitly unavailable. CI adds the focused suite.
+
+### 29 October: runtime status-query policy (PR #116)
+
+Decision `4ecde39` precedes implementation `5410617` on
+`codex/mvp-r02-runtime-fgetfl-policy`; PR #116 merged as `b1fadab`. A fixed v3
+factory applies F_GETFL point-query semantics after one original recipe read,
+without rewriting return-time table/flag/version/backing facts. Canonical
+failures retain a query gap; unsupported or unresolved conversions establish the
+sticky ENTRY uncertainty horizon. Existing v1/v2 scopes and shapes remain.
+
+All 36 v1, 27 v2 and 16 new v3 methods pass on Python 3.15/3.9: 158 executions,
+zero skips. Independent review verifies 21 frozen artifacts and the six final
+logs. The preserved pilot's 45 assertion failures came from tests comparing
+capture-hashed key spellings across different raw captures; no engine semantics
+changed. Review SHA256 is
+`177c0604323fc0e8dae3ea5860c0a422d3cba117ca17686c83c5b3b8024370d4`. CI adds the
+focused suite.
+
+### 29 October: fixed stopped-runtime collector and reader (PR #117)
+
+Decision `5c8d435` precedes implementation `5ed87a2` on
+`codex/mvp-r02-stopped-runtime-profile`, which combines the reviewed observer
+(PR #113) and runtime-policy (PR #116) dependencies; GCC repair `c9cec28`
+follows. PR #117 merged as `6226625`. A distinct fixed producer retains original
+target phases and selected owner wait/query/kill controls. The matching reader
+retains complete original physical ordering, recipe assets and GLUEPX bytes
+without granting output or state authority. The new profile is not adopted into
+the runner or a native kit.
+
+The C peer approves freeze03 and the Python peer approves freeze02. Preserved
+author controls include 100 injected mode executions and 42 original reader
+method executions; no fresh full 30-test producer matrix is claimed.
+Source-location integration passes 199 methods per Python 3.15/3.9 (398 total,
+zero skips). CI adds the fixed producer and reader suites. The PR's Linux
+baseline then caught three new guard statements that GCC rejects as misleading
+indentation. Repair `c9cec28` separates them without changing emitted DTrace
+program bytes; twelve bounds/canonical checks pass across GCC 16, Clang and
+Clang ASan/UBSan. New formatter source SHA256 is
+`e84059ae59396a9f79492eb493ba97da76814b6a4648e15c677869b7f5e0d678`.
+
+### 29 October: typed stopped-runtime lifecycle status (PR #118)
+
+Decision `af74cb0` precedes implementation `32374e5` on
+`codex/mvp-r02-stopped-runtime-status`; control repair `39579a3` follows on
+30 October. PR #118 merged as `0636ade`. A distinct pure status getter exposes
+the new stopped-runtime backend's actual serialized identity and late
+lifecycle/cleanup outcomes without changing the old snapshot ABI. All
+native/quiescence/state/exemption/full-flags authority remains false.
+
+The original 40 focused executions pass across both Python versions, normal and
+ASan/UBSan, and four focused name-guard controls verify the inherited
+correction. Root review verifies 152 guard-addendum payloads and exact source
+inheritance. All 11 source-location controls pass on Python 3.15. CI adds the
+focused status suite. Repair `39579a3` restores the inherited `malformed-name`
+branch of `test_runtime_stopped_backend.c` byte-for-byte from PR #117; its
+removal had made the injected Darwin model abort. The backend, status and
+stopped suites then pass on Python 3.15 under Clang and Clang ASan/UBSan. New
+backend control source SHA256 is
+`5b5e726920b0404438cf9b61c20c0903d20c05d0b2af9bbf974c38be7bb064a2`.
+
+### 29 October: file-synced original output-observation retention (PR #119)
+
+Decision `e80057c` precedes implementation `b95297a` on
+`codex/mvp-r02-stopped-output-retention`; GCC repair `9490c1e` and its note
+correction `c6bc543` follow on 30 October. PR #119 merged as `05c3b4b`. A
+one-attempt opaque writer writes exactly 4096 encoded bytes from the actual
+complete/matched owned observer to a fixed exclusive no-follow 0600 file, with
+bounded writes, fsync and once-only close outcomes. It sends no signal, claims
+no durable namespace, power-loss safety or persistence before a future
+continuation, and is not yet adopted into a controller or reader.
+
+Independent review approves the eight corrected sources and retained 48
+original method executions (12 per Python 3.15/3.9, normal and ASan/UBSan),
+plus four focused null-argument diagnostic rechecks. All 12 source-location
+controls pass on Python 3.15. Pinned Rust workspace tests, formatting and Clippy
+pass with incremental compilation disabled after a retained broken-cache
+failure. CI adds the focused suite. Repair `9490c1e` braces fourteen guard
+bodies that GCC rejected as misleading indentation, without changing behavior or
+control expectations; GCC 16 reports none after it, and the twelve retention
+controls pass under Clang and Clang ASan/UBSan. New writer source SHA256 is
+`b960c5f96fe8f33c7ea0cbb73c6184c7afef03e4cd17d5979ec4b0502ee7f07f`.
+
+### 29 October: stopped-stream FD policy integration (PR #120)
+
+Decision `c22737d` precedes implementation `9b9cdc1` on
+`codex/mvp-r02-runtime-stopped-fd-policy`; PR #120 merged as `912b01d`. It
+consumes the fixed original stopped stream once, retains the complete reader
+capture and projects only child FD/fcntl/F_GETFL attempts through the shared
+private evaluator. No filtered capture, output seed, future CONT receipt or
+output exemption is introduced; the three old public factories/classes/scopes
+and defaults stay exact.
+
+Independent review verifies 75 retained payloads and all five source
+identities. All 196 selected methods pass on Python 3.15.2/3.9.6, zero skips:
+79 unchanged plus 19 new per interpreter. Twenty-one complete serialization
+oracles and 12 early/late refusal comparisons per interpreter match the frozen
+old engine, and all 19 source-location controls pass on Python 3.15. CI adds
+the focused suite. The PR also rewrote the [milestone page](milestone-status.md).
+
+### 29 October: hosted macOS 26 environment preflight (PR #111)
+
+Decision `0028ee5` precedes implementation `0f4d366` and runner temp-path repair
+`c869536` on `codex/mvp-r02-macos-ci-preflight`; PR #111 merged on 1 November as
+`a514864`. A separate standard `macos-26` arm64 Actions job collects bounded
+OS/build/architecture/kernel, SDK/compiler, SIP status and syscall-provider
+listing observations into a 14-day CI artifact. It changes no security setting,
+enables no probes and runs no traced target.
+
+Three local collector controls pass (ordinary collection, timeout and output
+bound). The corrected inventory
+[run 40915997467](https://github.com/JBlaschke/glue_rs/actions/runs/40915997467)
+at `c869536` passed: it reports an arm64 Mac, existing disabled SIP and a
+successful syscall-provider listing. Even a successful listing does not
+establish probe enablement or native Mac acceptance.
+
+M2 remains active: controller integration, full syscall/process/mapping
+coverage, native corpus, budgets and sign-off remain. M0/M1 remain delivered,
+M3 memory mode planned and M4 deferred.
